@@ -168,7 +168,7 @@ public class PnlVideoCode : MonoBehaviour
 
     private void ResetPanel()
     {
-        txtDownloadPercentage.text = "";
+        //txtDownloadPercentage.text = "";
 
         imgLoading.gameObject.SetActive(false);
         imgLoadingCanvasGroup.alpha = 0;
@@ -241,16 +241,16 @@ public class PnlVideoCode : MonoBehaviour
 
     void ToggleSampleCodeSection(bool enable, bool fade = false)
     {
-        imgSampleCodesCanvasGroup.blocksRaycasts = enable;
-        imgSampleCodesCanvasGroup.interactable = enable;
-        if (fade)
-        {
-            imgSampleCodesCanvasGroup.DOFade(enable ? 1 : 0, .5f);
-        }
-        else
-        {
-            imgSampleCodesCanvasGroup.alpha = enable ? 1 : 0;
-        }
+        //imgSampleCodesCanvasGroup.blocksRaycasts = enable;
+        //imgSampleCodesCanvasGroup.interactable = enable;
+        //if (fade)
+        //{
+        //    imgSampleCodesCanvasGroup.DOFade(enable ? 1 : 0, .5f);
+        //}
+        //else
+        //{
+        //    imgSampleCodesCanvasGroup.alpha = enable ? 1 : 0;
+        //}
     }
 
     IEnumerator DelayCodeCheck(string code)

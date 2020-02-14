@@ -22,7 +22,11 @@ public class AnimatedTransition : MonoBehaviour
     [SerializeField]
     UnityEvent OnShowTransitionComplete;
 
-    public enum AnimDir { Left, Down };
+    [Range(0, 255)]
+    [SerializeField]
+    int alphaFadeToValue = 100;
+
+    public enum AnimDir { Left, Right, Down };
 
     RectTransform parentRect;
 
@@ -78,9 +82,12 @@ public class AnimatedTransition : MonoBehaviour
             case AnimDir.Down:
                 rectToMove?.DOAnchorPosY(show ? originalPosition.y : -rectToMove.rect.height, speed).SetId(MoveTweenName);
                 break;
+            case AnimDir.Right:
+                rectToMove?.DOAnchorPosX(show ? originalPosition.x : rectToMove.rect.width, speed).SetId(MoveTweenName);
+                break;
         }
 
-        imgBackground?.DOFade(show ? 100 / 255f : 0, speed).SetId(MoveTweenName).OnComplete(() =>
+        imgBackground?.DOFade(show ? alphaFadeToValue / 255f : 0, speed).SetId(MoveTweenName).OnComplete(() =>
         {
             if (show)
             {
