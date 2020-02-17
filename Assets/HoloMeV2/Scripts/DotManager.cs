@@ -20,6 +20,11 @@ public class DotManager : MonoBehaviour
         PassCodeChanged();
     }
 
+    private void OnEnable()
+    {
+        inputText.ActivateInputField();
+    }
+
     public void PassCodeChanged()
     {
         for (int i = 0; i < dotTransforms.Length; i++)
