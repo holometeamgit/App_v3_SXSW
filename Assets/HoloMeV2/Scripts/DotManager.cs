@@ -22,6 +22,11 @@ public class DotManager : MonoBehaviour
 
     private void OnEnable()
     {
+        ActivateTextField();
+    }
+
+    public void ActivateTextField()
+    {
         inputText.ActivateInputField();
     }
 

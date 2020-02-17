@@ -411,6 +411,7 @@ public class PnlVideoCode : MonoBehaviour
         IncorrectCodeShake();
         yield return new WaitForSeconds(2);
         dotManager.ClearText();
+        dotManager.ActivateTextField();
         ToggleIncorrectCodeText(false);
     }
 

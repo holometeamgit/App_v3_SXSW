@@ -43,7 +43,7 @@ public class S3Handler : MonoBehaviour
 #if STAGING
         S3BucketName = "dynamicvideoappstaging";
 #else
-        S3BucketName = "dynamicvideoapplive";
+        S3BucketName = "holomev3";
 #endif
         UnityInitializer.AttachToGameObject(this.gameObject);
         AWSConfigs.HttpClient = AWSConfigs.HttpClientOption.UnityWebRequest;
