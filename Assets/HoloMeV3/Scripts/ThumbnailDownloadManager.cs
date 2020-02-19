@@ -1,0 +1,73 @@
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ThumbnailDownloadManager : MonoBehaviour
+{
+    [SerializeField]
+    S3Handler s3Handler;
+
+    int thumbnailFiles;
+    int thumbnailSeverCount;
+    int thumbnailImagesDownloaded;
+
+    public Action OnThumbnailsDataDownloaded;
+
+    List<VideoThumbnailJsonData> allThumbnailData = new List<VideoThumbnailJsonData>();
+    public List<VideoThumbnailJsonData> videoThumbnailShowcaseJsonDatas = new List<VideoThumbnailJsonData>();
+    public List<VideoThumbnailJsonData> videoThumbnailUserJsonDatas = new List<VideoThumbnailJsonData>();
+
+    void IncrementThumbnailJsonDownloaded()
+    {
+        thumbnailFiles++;
+        if (thumbnailFiles == thumbnailSeverCount)
+        {
+            DownloadThumbnailImageFiles();
+        }
+    }
+
+    void IncrementThumbnailDownloaded()
+    {
+        thumbnailImagesDownloaded++;
+        if (thumbnailImagesDownloaded == thumbnailSeverCount)
+        {
+            foreach (var data in allThumbnailData)
+            {
+                if (data.showcaseHologram)
+                    videoThumbnailShowcaseJsonDatas.Add(data);
+                else
+                    videoThumbnailUserJsonDatas.Add(data);
+            }
+
+            allThumbnailData.Clear();
+            OnThumbnailsDataDownloaded?.Invoke();
+        }
+    }
+
+    void DownloadThumbnailImageFiles()
+    {
+        foreach (var data in s3Handler.thumbnailData)
+        {
+            VideoThumbnailJsonData videoThumbnailJsonData = JsonParser.CreateFromJSON<VideoThumbnailJsonData>(JsonParser.ParseFileName(data.Value.FileName));
+            allThumbnailData.Add(videoThumbnailJsonData);
+            s3Handler.DownloadGeneric(videoThumbnailJsonData.imageURL, IncrementThumbnailDownloaded);
+        }
+    }
+
+    public void DownloadVideoThumbnails()
+    {
+        if (!s3Handler.Ready || !s3Handler.PopulateComplete)
+        {
+            Debug.LogError("S3 Handler wasn't ready so can't get thumbnails");
+            return;
+        }
+
+        thumbnailSeverCount = s3Handler.thumbnailData.Count;
+        thumbnailFiles = 0;
+        thumbnailImagesDownloaded = 0;
+        foreach (var data in s3Handler.thumbnailData)
+        {
+            s3Handler.DownloadGeneric(data.Value.FileName, OnDownloadCompleteOneOff: IncrementThumbnailJsonDownloaded);
+        }
+    }
+}

@@ -13,9 +13,4 @@ public class VideoJsonData
     {
         return new Vector3(positionOffsetX, positionOffsetY, positionOffsetZ);
     }
-
-    public static VideoJsonData CreateFromJSON(string jsonString)
-    {
-        return JsonUtility.FromJson<VideoJsonData>(jsonString);
-    }
 }

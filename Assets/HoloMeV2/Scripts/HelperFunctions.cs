@@ -9,6 +9,11 @@ public class HelperFunctions
 
     public const string versionFile = "Version.json";
 
+    public static bool IsVideoThumbnailData(string name)
+    {
+        return name.Contains("VidThumb");
+    }
+
     public static string PersistentDir()
     {
         return Application.persistentDataPath + "/";
@@ -48,7 +53,7 @@ public class HelperFunctions
     {
         if (IsFileJSON(jsonCode))
         {
-            var videoJsonData = VideoJsonData.CreateFromJSON(JsonParser.ParseCode(jsonCode));
+            var videoJsonData = JsonParser.CreateFromJSON<VideoJsonData>(JsonParser.ParseFileName(jsonCode));
             return (DoesFileExist(videoJsonData.logoImage) && DoesFileExist(videoJsonData.videoCode));
         }
         else

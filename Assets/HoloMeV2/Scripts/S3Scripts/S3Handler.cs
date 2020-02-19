@@ -24,15 +24,16 @@ public class S3Handler : MonoBehaviour
     string S3BucketName = null;
 
     public Action<float> OnDownloadProgressUpdate;
-    public Action OnDownloadComplete;
+    public Action OnDownloadVideoComplete;
     public Action OnDownloadFailed;
     public Action OnReadyForServerCalls;
 
     public bool Ready { get; private set; }
+    public bool PopulateComplete { get; private set; }
 
     ServerFileData versionFileData;
+    public Dictionary<string, ServerFileData> thumbnailData = new Dictionary<string, ServerFileData>();
 
-    // Start is called before the first frame update
     void Start()
     {
         if (Application.isEditor)
@@ -82,10 +83,8 @@ public class S3Handler : MonoBehaviour
 
     #endregion
 
-    public void PopulateVideoDictionary(Action<Dictionary<string, ServerFileData>> OnReceived)
+    public void PopulateData(Action<Dictionary<string, ServerFileData>> OnVideoDataReceived)
     {
-        Dictionary<string, ServerFileData> videoDataList = new Dictionary<string, ServerFileData>();
-
         var request = new ListObjectsRequest() { BucketName = S3BucketName };
 
         try
@@ -94,15 +93,27 @@ public class S3Handler : MonoBehaviour
             {
                 if (responseObject.Exception == null)
                 {
+                    //PopulateVideoDictionary(responseObject.Response.S3Objects, OnVideoDataReceived);
+
+                    Dictionary<string, ServerFileData> videoDataList = new Dictionary<string, ServerFileData>();
+
+                    List<S3Object> s3Objects = responseObject.Response.S3Objects;
+
                     //print("Count = " + responseObject.Response.S3Objects.Count);
-                    for (int i = 0; i < responseObject.Response.S3Objects.Count; i++)
+                    for (int i = 0; i < s3Objects.Count; i++)
                     {
-                        var o = responseObject.Response.S3Objects[i];
+                        var o = s3Objects[i];
                         try
                         {
-                            if (o.Key == HelperFunctions.versionFile)
+                            if (o.Key == HelperFunctions.versionFile)//Needs to be changed so this class takes a generic type list to add data too if 
                             {
                                 versionFileData = new ServerFileData(o.Key, o.ETag, o.LastModified);
+                                continue;
+                            }
+
+                            if (HelperFunctions.IsVideoThumbnailData(o.Key) && !thumbnailData.ContainsKey(GetKey(o.ETag)))
+                            {
+                                thumbnailData.Add(o.Key, new ServerFileData(o.Key, o.ETag, o.LastModified));
                                 continue;
                             }
 
@@ -122,9 +133,8 @@ public class S3Handler : MonoBehaviour
                         //print("i = " + i);
                     }
 
-                    OnReceived?.Invoke(videoDataList);
-
-                    //print("VIDEO ADDED");
+                    PopulateComplete = true;
+                    OnVideoDataReceived?.Invoke(videoDataList);
                 }
                 else
                 {
@@ -270,7 +280,7 @@ public class S3Handler : MonoBehaviour
         });
     }
 
-    public void DownloadVideo(string fileName, string saveAsName = "")
+    public void DownloadVideo(string fileName, string saveAsName = "", Action OnDownloadCompleteOneOff = null)
     {
         Client.GetObjectAsync(S3BucketName, fileName, (responseObj) =>
         {
@@ -286,24 +296,10 @@ public class S3Handler : MonoBehaviour
                 {
                     try
                     {
-                        if (HelperFunctions.DoesFileExist(saveAsName == "" ? fileName : saveAsName))
-                        {
-                            File.Delete(HelperFunctions.PersistentDir() + (saveAsName == "" ? fileName : saveAsName));
-                        }
+                        WriteFile(saveAsName == "" ? fileName : saveAsName, response);
 
-                        using (var fs = System.IO.File.Create(HelperFunctions.PersistentDir() + (saveAsName == "" ? fileName : saveAsName)))
-                        {
-                            byte[] buffer = new byte[81920];
-                            int count;
-                            while ((count = response.ResponseStream.Read(buffer, 0, buffer.Length)) != 0)
-                                fs.Write(buffer, 0, count);
-                            fs.Flush();
-                        }
-
-                        File.SetCreationTime(HelperFunctions.PersistentDir() + (saveAsName == "" ? fileName : saveAsName), DateTime.Now);
-                        //print(File.GetCreationTime(HelperFunctions.PersistentDir()  + fileName));
-
-                        OnDownloadComplete?.Invoke();
+                        OnDownloadVideoComplete?.Invoke();
+                        OnDownloadCompleteOneOff?.Invoke();
                     }
                     catch (Exception e)
                     {
@@ -318,12 +314,63 @@ public class S3Handler : MonoBehaviour
         });
     }
 
+    public void DownloadGeneric(string fileName, Action OnDownloadCompleteOneOff = null)
+    {
+        Client.GetObjectAsync(S3BucketName, fileName, (responseObj) =>
+        {
+            if (responseObj.Exception != null)
+            {
+                Debug.LogError(responseObj.Exception.Message + " File = " + fileName);
+                OnDownloadFailed?.Invoke();
+            }
+            else
+            {
+                var response = responseObj.Response;
+                if (response.ResponseStream != null)
+                {
+                    try
+                    {
+                        WriteFile(fileName, response);
+                        OnDownloadCompleteOneOff?.Invoke();
+                    }
+                    catch (Exception e)
+                    {
+                        print(e.Message);
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Response Stream was null");
+                }
+            }
+        });
+    }
+
+    private static void WriteFile(string fileName, GetObjectResponse response)
+    {
+        if (HelperFunctions.DoesFileExist(fileName))
+        {
+            File.Delete(HelperFunctions.PersistentDir() + fileName);
+        }
+
+        using (var fs = System.IO.File.Create(HelperFunctions.PersistentDir() + fileName))
+        {
+            byte[] buffer = new byte[81920];
+            int count;
+            while ((count = response.ResponseStream.Read(buffer, 0, buffer.Length)) != 0)
+                fs.Write(buffer, 0, count);
+            fs.Flush();
+        }
+
+        File.SetCreationTime(HelperFunctions.PersistentDir() + fileName, DateTime.Now);
+        //print(File.GetCreationTime(HelperFunctions.PersistentDir()  + fileName));
+    }
+
     public void UploadFile()
     {
-
         string fileName = GetFileHelper();
         var stream = new FileStream(Application.persistentDataPath + Path.DirectorySeparatorChar + fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-        
+
         var request = new PostObjectRequest()
         {
             Region = _S3Region,

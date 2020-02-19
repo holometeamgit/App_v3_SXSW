@@ -22,7 +22,7 @@ public class VersionMismatchCheck : MonoBehaviour
     void OnVersionJSONReceived()
     {
         currentVersion = Application.version;
-        VersionJsonData versionData = VersionJsonData.CreateFromJSON(JsonParser.ParseCode(HelperFunctions.versionFile));
+        VersionJsonData versionData = JsonParser.CreateFromJSON<VersionJsonData>(JsonParser.ParseFileName(HelperFunctions.versionFile));
         serverVersion = Application.platform == RuntimePlatform.Android ? versionData.versionAndroid : versionData.versionIOS;
 
         if (currentVersion != serverVersion && !versionData.allowOldVersions)

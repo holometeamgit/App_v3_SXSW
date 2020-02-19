@@ -22,7 +22,7 @@ public class ServerDataHandler : MonoBehaviour
     {
         if (s3Handler.Ready)
         {
-            s3Handler.PopulateVideoDictionary(OnVideoDataReturned);
+            s3Handler.PopulateData(OnVideoDataReturned);
         }
         else
         {
@@ -37,7 +37,7 @@ public class ServerDataHandler : MonoBehaviour
 
     public void AssignDownloadCompleteAction(Action action)
     {
-        s3Handler.OnDownloadComplete += action;
+        s3Handler.OnDownloadVideoComplete += action;
     }
 
     public void AssignDownloadFailedAction(Action action)
@@ -73,7 +73,7 @@ public class ServerDataHandler : MonoBehaviour
     {
         if (HelperFunctions.DoesFileExist(code))
         {
-            s3Handler.OnDownloadComplete?.Invoke();
+            s3Handler.OnDownloadVideoComplete?.Invoke();
         }
         else
         {
@@ -89,7 +89,7 @@ public class ServerDataHandler : MonoBehaviour
     {
         if (HelperFunctions.DoesFileExist(fileName))
         {
-            s3Handler.OnDownloadComplete?.Invoke();
+            s3Handler.OnDownloadVideoComplete?.Invoke();
         }
         else
         {

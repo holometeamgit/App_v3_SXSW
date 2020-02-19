@@ -83,7 +83,7 @@ public class PnlVideoCode : MonoBehaviour
         switch (dataDownloadState)
         {
             case DataDownloadState.DownloadingJson:
-                videoJsonData = VideoJsonData.CreateFromJSON(JsonParser.ParseCode(validCode));
+                videoJsonData = JsonParser.CreateFromJSON<VideoJsonData>(JsonParser.ParseFileName(validCode));
                 if (!DoesVideoExist(videoJsonData.videoCode))//Check if the code in the JSON file exists as a video on the server
                 {
                     break;
