@@ -87,17 +87,24 @@ public class AnimatedTransition : MonoBehaviour
                 break;
         }
 
-        imgBackground?.DOFade(show ? alphaFadeToValue / 255f : 0, speed).SetId(MoveTweenName).OnComplete(() =>
+        if (imgBackground != null)
         {
-            if (show)
+            imgBackground.DOFade(show ? alphaFadeToValue / 255f : 0, speed).SetId(MoveTweenName).OnComplete(() =>
             {
-                OnShowTransitionComplete?.Invoke();
-                TogglePostAnimationBehaviours(true);
-            }
-            else
-            {
-                gameObject.SetActive(false);
-            }
-        });
+                if (show)
+                {
+                    OnShowTransitionComplete?.Invoke();
+                    TogglePostAnimationBehaviours(true);
+                }
+                else
+                {
+                    gameObject.SetActive(false);
+                }
+            });
+        }
+        else
+        {
+            Debug.LogError("Transition background image was null this will cause post animation issues " + transform.name);
+        }
     }
 }

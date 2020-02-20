@@ -34,7 +34,7 @@ public class UIAnimator : MonoBehaviour
 
     IEnumerator Animate()
     {
-        while (gameObject.activeSelf)
+        while (gameObject.activeSelf && frames.Length > 1)
         {
             yield return new WaitForSeconds(speed);
             imgToAnimate.sprite = frames[frameIndex++];

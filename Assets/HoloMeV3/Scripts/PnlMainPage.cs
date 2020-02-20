@@ -23,9 +23,16 @@ public class PnlMainPage : MonoBehaviour
     VerticalLayoutGroup verticalLayoutGroup;
 
     bool hasFetchedData;
+    bool initiallaunch;
 
-    private void OnEnable()
+    void OnEnable()
     {
+        if (!initiallaunch)
+        {
+            initiallaunch = true;
+            return;
+        }
+
         if (!hasFetchedData)
         {
             pnlFetchingData.Activate(FetchThumbnailData);

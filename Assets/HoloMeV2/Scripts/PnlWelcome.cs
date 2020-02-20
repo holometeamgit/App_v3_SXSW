@@ -6,17 +6,18 @@ public class PnlWelcome : MonoBehaviour
     AnimatedTransition animatedTransition;
 
     [SerializeField]
-    PnlVideoCode pnlVideoCode;
+    PnlMainPage pnlMainPage;
 
     const string PrefHasSeenWelcome = nameof(PrefHasSeenWelcome);
 
     private void OnEnable()
     {
+        PlayerPrefs.DeleteAll();
         int HasSeen = PlayerPrefs.GetInt(PrefHasSeenWelcome, 0);
         if (HasSeen == 1)
         {
             animatedTransition.enabled = false;
-            pnlVideoCode.Open();
+            pnlMainPage.gameObject.SetActive(true);
             gameObject.SetActive(false);
         }
     }
