@@ -194,25 +194,25 @@ public class PnlVideoCode : MonoBehaviour
     {
         ResetPanel();
 
-        if (validCode == null)
-        {
-            gameObject.SetActive(true);
-            TryFetchVideoData();
-            return;
-        }
+        //if (validCode == null)
+        //{
+        gameObject.SetActive(true);
+        TryFetchVideoData();
+        return;
+        //}
 
-        if (videoJsonData != null)
-        {
-            if (serverDataHandler.GetVideoData(videoJsonData.videoCode) == null)
-            {
-                gameObject.SetActive(true);
-                TryFetchVideoData();
-                return; //Return if JSON file's video doesn't exist
-            }
-        }
+        //if (videoJsonData != null)
+        //{
+        //    if (serverDataHandler.GetVideoData(videoJsonData.videoCode) == null)
+        //    {
+        //        gameObject.SetActive(true);
+        //        TryFetchVideoData();
+        //        return; //Return if JSON file's video doesn't exist
+        //    }
+        //}
 
-        pnlViewingExperience.ActivateSelf(validCode, videoJsonData);
-        pnlMainPage.GetComponent<AnimatedTransition>().DoMenuTransition(false);
+        //pnlViewingExperience.ActivateSelf(validCode, videoJsonData);
+        //pnlMainPage.GetComponent<AnimatedTransition>().DoMenuTransition(false);
     }
 
     public void OpenWithCode(string code)
