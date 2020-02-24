@@ -191,10 +191,15 @@ public class FocusSquare : PlacementHandler
     }
 
     bool forcePlace;
-
+    bool initialPlacementDone;
     public void ForcePlace()
     {
-        forcePlace = true;
+        if (!initialPlacementDone)
+        {
+            forcePlace = true;
+            initialPlacementDone = true;
+            print("ForcePlace Set");
+        }
     }
 
     private void Update()
@@ -204,17 +209,19 @@ public class FocusSquare : PlacementHandler
 
         SurfaceDetected = hits.Count > 0;
 
-        if (hits.Count > 0)
+        if (SurfaceDetected)
         {
             if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)
                 ||
-                forcePlace)
+                (forcePlace /*&& Vector3.Distance(arCamera.transform.position, hits[0].pose.position) > 0.5f)*/))
             {
+                forcePlace = false;
                 OnPlaced?.Invoke();
                 OnPlaceDetected?.Invoke(hits[0].pose.position);
                 hologramPlacedPosition = quad.transform.position;
-            }
 
+                //print($"Positions camera = {arCamera.transform.position} Position for place {hits[0].pose.position}");
+            }
             FollowCamera(hits[0].pose.position);
         }
 

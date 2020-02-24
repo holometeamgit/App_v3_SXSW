@@ -56,8 +56,11 @@ public class PnlVideoCode : MonoBehaviour
     [SerializeField]
     PnlPostRecord pnlPostRecord;
 
+    //[SerializeField]
+    //CanvasGroup imgSampleCodesCanvasGroup;
+
     [SerializeField]
-    CanvasGroup imgSampleCodesCanvasGroup;
+    PnlMainPage pnlMainPage;
 
     enum DataDownloadState { DownloadingJson, DownloadingLogo, DownloadingVideo };
     DataDownloadState dataDownloadState = DataDownloadState.DownloadingVideo;
@@ -129,6 +132,7 @@ public class PnlVideoCode : MonoBehaviour
         animatedTransition.DoMenuTransition(false);
         var currentCode = validCode;
         pnlViewingExperience.ActivateSelf(currentCode, videoJsonData);
+        pnlMainPage.GetComponent<AnimatedTransition>().DoMenuTransition(false);
     }
 
     private void DisplayDownloadFailedMessage()
@@ -168,7 +172,8 @@ public class PnlVideoCode : MonoBehaviour
 
     private void ResetPanel()
     {
-        //txtDownloadPercentage.text = "";
+        txtDownloadPercentage.text = "";
+        btnBurger.SetActive(true);
 
         imgLoading.gameObject.SetActive(false);
         imgLoadingCanvasGroup.alpha = 0;
@@ -207,6 +212,7 @@ public class PnlVideoCode : MonoBehaviour
         }
 
         pnlViewingExperience.ActivateSelf(validCode, videoJsonData);
+        pnlMainPage.GetComponent<AnimatedTransition>().DoMenuTransition(false);
     }
 
     public void OpenWithCode(string code)

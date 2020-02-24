@@ -26,7 +26,7 @@ public class ARAmbientLight : MonoBehaviour
         {
             float newLightValue = eventArgs.lightEstimation.averageBrightness.Value;
             light.intensity = Mathf.Clamp(newLightValue * 2, 0, 1.25f);
-            print($"Brightness changed {eventArgs.lightEstimation.averageBrightness.Value} new value = {light.intensity}");
+            //print($"Brightness changed {eventArgs.lightEstimation.averageBrightness.Value} new value = {light.intensity}");
         }
 
         if (eventArgs.lightEstimation.averageColorTemperature.HasValue)

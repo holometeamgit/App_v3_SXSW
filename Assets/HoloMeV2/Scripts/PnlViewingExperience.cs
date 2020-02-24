@@ -19,8 +19,11 @@ public class PnlViewingExperience : MonoBehaviour
     [SerializeField]
     PnlCameraAccess pnlCameraAccess;
 
+    //[SerializeField]
+    //RectTransform messageRT;
+
     [SerializeField]
-    RectTransform messageRT;
+    RectTransform scanMessageRT;
 
     [SerializeField]
     HologramHandler hologramHandler;
@@ -46,7 +49,6 @@ public class PnlViewingExperience : MonoBehaviour
     Coroutine scanAnimationRoutine;
 
     bool tutorialDisplayed;
-    bool messageActive;
 
     float messageAnimationSpeed = 0.25f;
     float messageTime = 6;
@@ -73,7 +75,7 @@ public class PnlViewingExperience : MonoBehaviour
     private void RunTutorial()
     {
         scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
-        ShowMessage("Scan the floor to start");
+        //ShowMessage("Scan the floor to start");
         tutorialState = TutorialState.MessageTapToPlace;
         arPlaneManager.enabled = true;
     }
@@ -102,6 +104,10 @@ public class PnlViewingExperience : MonoBehaviour
         scanAnimationItems.transform.localScale = Vector3.zero;
         scanAnimationItems.SetActive(true);
         scanAnimationItems.transform.DOScale(Vector3.one, animationSpeed).SetDelay(0.5f);
+
+        scanMessageRT.localScale = Vector3.zero;
+        scanMessageRT.gameObject.SetActive(true);
+        scanMessageRT.DOScale(Vector3.one, animationSpeed).SetDelay(0.5f);
     }
 
     private void HideScanAnimation(float animationSpeed)
@@ -110,17 +116,15 @@ public class PnlViewingExperience : MonoBehaviour
         {
             scanAnimationItems.SetActive(false);
         });
+
+        scanMessageRT.DOScale(Vector3.zero, animationSpeed).OnComplete(() =>
+        {
+            scanMessageRT.gameObject.SetActive(false);
+        });
     }
 
     public void ShowTapToPlaceMessage()
     {
-        OnSurfaceDetected?.Invoke();
-        StopCoroutine(scanAnimationRoutine);
-        HideScanAnimation(animationSpeed);
-        HideMessage();
-        StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
-        tutorialState = TutorialState.TutorialComplete;
-
         //if (tutorialState == TutorialState.MessageTapToPlace)
         //{
         //    StopCoroutine(scanAnimationRoutine);
@@ -129,6 +133,23 @@ public class PnlViewingExperience : MonoBehaviour
         //    ShowMessage("Tap screen to place", messageAnimationSpeed);
         //    tutorialState = TutorialState.WaitingForTap;
         //}
+    }
+
+    public void SkipTutorialStepOne()
+    {
+        OnSurfaceDetected?.Invoke();
+    }
+
+    public void SkipTutorialStepTwo()
+    {
+        if (scanAnimationItems != null)
+        {
+            StopCoroutine(scanAnimationRoutine);
+        }
+        HideScanAnimation(animationSpeed);
+        //HideMessage();
+        StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
+        tutorialState = TutorialState.TutorialComplete;
     }
 
     public void OnPlaced()
@@ -143,20 +164,20 @@ public class PnlViewingExperience : MonoBehaviour
     IEnumerator DelayStartRecordPanel(float delay)
     {
         yield return new WaitForSeconds(delay);
-        HideMessage();
+        //HideMessage();
         pnlRecord.gameObject.SetActive(true);
     }
 
-    public void ShowMessage(string message, float delay = 0)
-    {
-        messageRT.GetComponentInChildren<TextMeshProUGUI>().text = message;
-        messageRT.DOAnchorPosY(messageRT.rect.height, messageAnimationSpeed).SetDelay(delay);
-    }
+    //public void ShowMessage(string message, float delay = 0)
+    //{
+    //    messageRT.GetComponentInChildren<TextMeshProUGUI>().text = message;
+    //    messageRT.DOAnchorPosY(messageRT.rect.height, messageAnimationSpeed).SetDelay(delay);
+    //}
 
-    public void HideMessage()
-    {
-        messageRT.DOAnchorPosY(0, messageAnimationSpeed);
-    }
+    //public void HideMessage()
+    //{
+    //    messageRT.DOAnchorPosY(0, messageAnimationSpeed);
+    //}
 
     public void ActivateSelf(string code, VideoJsonData videoJsonData)
     {

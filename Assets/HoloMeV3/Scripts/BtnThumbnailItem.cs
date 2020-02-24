@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class BtnThumbnailItem : MonoBehaviour
@@ -11,6 +12,12 @@ public class BtnThumbnailItem : MonoBehaviour
     {
         imgThumbnail = GetComponent<Image>();
         buttonComponent = GetComponent<Button>();
+    }
+
+    public void SetThumbnailPressAction(Action<string> OnPress)
+    {
+        buttonComponent.onClick.RemoveAllListeners();
+        buttonComponent.onClick.AddListener(() => OnPress?.Invoke(code));
     }
 
     public void UpdateThumbnailData(string code, Sprite sprite)

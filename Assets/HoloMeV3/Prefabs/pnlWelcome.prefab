@@ -226,7 +226,40 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8878574082533107722}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 4480088706810936314}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5113826342692203961}
+        m_MethodName: SetToSeen
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4284919391747990843
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,6 +335,78 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &4309232580031442058
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4819319314687684832}
+  - component: {fileID: 6052728322004848286}
+  - component: {fileID: 6660435879197298745}
+  m_Layer: 5
+  m_Name: TMP SubMeshUI [NeueHaasGrotesk-Roman SDF Material]
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4819319314687684832
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4309232580031442058}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5997835407672694281}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &6052728322004848286
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4309232580031442058}
+  m_CullTransparentMesh: 0
+--- !u!114 &6660435879197298745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4309232580031442058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 058cba836c1846c3aa1c5fd2e28aea77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_fontAsset: {fileID: 11400000, guid: 71e4f71fb3bf11649a5e5ae53c58fe9a, type: 2}
+  m_spriteAsset: {fileID: 0}
+  m_material: {fileID: 0}
+  m_sharedMaterial: {fileID: 0}
+  m_isDefaultMaterial: 0
+  m_padding: 1.25
+  m_canvasRenderer: {fileID: 6052728322004848286}
+  m_TextComponent: {fileID: 4242493320443622265}
+  m_materialReferenceIndex: 2
 --- !u!1 &4480088706810936314
 GameObject:
   m_ObjectHideFlags: 0
@@ -314,6 +419,7 @@ GameObject:
   - component: {fileID: 2732712272120995769}
   - component: {fileID: 6200560193969888589}
   - component: {fileID: 5113826342692203961}
+  - component: {fileID: 1011938734}
   m_Layer: 5
   m_Name: pnlWelcome
   m_TagString: Untagged
@@ -390,8 +496,100 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2691ff23d65bb9f409a90774b83b3b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatedTransition: {fileID: 0}
+  animatedTransition: {fileID: 1011938734}
   pnlMainPage: {fileID: 0}
+--- !u!114 &1011938734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4480088706810936314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 621436e3907fda640956e0c097e91e30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  postAnimationActiveButtons: []
+  rectToMove: {fileID: 2017050572038508383}
+  imgBackground: {fileID: 5351565539009354124}
+  dir: 0
+  OnShowTransitionComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  alphaFadeToValue: 255
+--- !u!1 &4547421780649873472
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6022096395093839634}
+  - component: {fileID: 3657941667994929177}
+  - component: {fileID: 4927232885882608053}
+  m_Layer: 5
+  m_Name: TMP SubMeshUI [NeueHaasGrotesk-Roman SDF Material]
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6022096395093839634
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4547421780649873472}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5997835407672694281}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 135.19922}
+  m_SizeDelta: {x: 0, y: -270.3}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &3657941667994929177
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4547421780649873472}
+  m_CullTransparentMesh: 0
+--- !u!114 &4927232885882608053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4547421780649873472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 058cba836c1846c3aa1c5fd2e28aea77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_fontAsset: {fileID: 11400000, guid: 71e4f71fb3bf11649a5e5ae53c58fe9a, type: 2}
+  m_spriteAsset: {fileID: 0}
+  m_material: {fileID: 0}
+  m_sharedMaterial: {fileID: 0}
+  m_isDefaultMaterial: 0
+  m_padding: 1.25
+  m_canvasRenderer: {fileID: 3657941667994929177}
+  m_TextComponent: {fileID: 4242493320443622265}
+  m_materialReferenceIndex: 4
 --- !u!1 &5581536458691264875
 GameObject:
   m_ObjectHideFlags: 0
@@ -523,18 +721,21 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5603592380937564262}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1099607501708964888}
+  - {fileID: 4819319314687684832}
+  - {fileID: 932053040568638321}
+  - {fileID: 6022096395093839634}
   m_Father: {fileID: 97502156981876693}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.12890625}
+  m_SizeDelta: {x: 0.29992676, y: 0.25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3254522783859174329
 CanvasRenderer:
@@ -570,7 +771,806 @@ MonoBehaviour:
     in its sole discretion to, for example, reflect changes to the law or changes
     to our Services. It remains your responsibility to access and check this Agreement
     for updates. The latest version of the Agreement will govern any future use of
-    the Services and shall become effective immediately."
+    the Services and shall become effective immediately.  \r\nINTERPRETATION\r\nThe
+    definitions and rules of interpretation in this clause apply in these Terms of
+    Use.\r\nAssets means a video which has been converted into augmented reality
+    format as further described in Schedule 1. \r\nBusiness Days means a day other
+    than a Saturday, Sunday or public holiday in England when banks in London are
+    open for business.\r\nCharges means any charge payable by the Customer to HoloMe
+    as specified in the Order.\r\nConfidential Information means all confidential
+    information (however recorded or preserved) disclosed by a party or its employees,
+    officers, representatives, advisers or subcontractors involved in the provision
+    or receipt of the Services (together, its Representatives) to the other party
+    and that party\u2019s Representatives in connection with this agreement which
+    information is either labelled as such or should reasonably be considered as
+    confidential because of its nature and the manner of its disclosure.  Confidential
+    Information includes the existence of this Agreement and any of its provisions.\r\nCustomer
+    means the customer accepting the terms of this Agreement.\r\nCustomer Data means
+    any data (including personal data) that is provided by the Customer to HoloMe
+    as part of the Customer\u2019s use of the Services. For the avoidance of doubt,
+    this shall include video used to generate Assets. \r\nCustomer Personal Data
+    means Customer Data which is personal data together with any other personal data
+    that HoloMe processes on behalf of the Customer in the course of providing the
+    Services.\r\nData Protection Laws means (i) the UK Data Protection Act 2018;
+    (ii) Regulation 2016/679 of the European Parliament and of the Council on the
+    protection of natural persons with regard to the Processing of Personal Data
+    and on the free movement of such data (General Data Protection Regulation) (the
+    \u201CGDPR\u201D); (iii) the EU e-Privacy Directive (Directive 2002/58/EC); and
+    (iv) any and all applicable national data protection laws made under or pursuant
+    to (ii) or (iii), in each case as may be amended or superseded from time to time.\r\nEffective
+    Date means the date the Customer accepts the terms of this Agreement. \r\nGood
+    Industry Practice means the provision of a service and the exercise of that degree
+    of prudence and foresight that would reasonably and ordinarily be expected from
+    a skilled and experienced provider of services, that are the materially same
+    as those provided by HoloMe, seeking in good faith to comply with its contractual
+    obligations, all legislation, applicable guidance and industry codes, policies
+    and standards.\r\nHoloMe means Holome Technologies Limited, Company number 10829904,
+    whose registered office is at New Bridge Street House, 30-34 New Bridge Street,
+    London, EC4V 6BJ, United Kingdom.\r\nHoloMe Asset Conversion Platform means the
+    HoloMe Asset Conversion Platform as described in Schedule 1.\r\nIntellectual
+    Property means patents, rights to inventions, copyright and related rights, trade
+    marks, trade names, domain names, rights in get-up, rights in goodwill or to
+    sue for passing off, unfair competition rights, rights in designs, rights in
+    computer software, code, database right, topography rights, moral rights, rights
+    in confidential information (including without limitation know-how and trade
+    secrets) and any other intellectual property rights, in each case whether registered
+    or unregistered and including all existing and future rights capable of present
+    assignment, applications for and renewals or extensions of such rights, and all
+    similar or equivalent rights or forms of protection in any part of the world.
+    \r\nLosses or Loss means any claim, suit, action, legal proceedings, judgment,
+    settlements, sanction, fine, penalty, award, liability, loss, cost, injury, expense
+    and/or damage of whatever kind or character, including reasonable professional
+    fees incurred in connection therewith. \r\nMaintenance Services means the general
+    maintenance of the Platform and Hosted Services, and the application of updates
+    and upgrades.\r\nOrder means an order placed by the Customer  subject to the
+    terms of this Agreement.\r\nSDK means HoloMe\u2019s Software Development Kit.\r\nService
+    Levels means the service level agreement as set out in Schedule 3. \r\nServices
+    means the services provided to the Customer as specified in the Order which may
+    include the HoloMe Asset Conversion Platform, the SDK, the provision of Assets
+    and any other services provided by HoloMe in relation to this Agreement.\r\nSub-processor
+    means any natural or legal person (other than employee of HoloMe) who pursuant
+    to a contract with HoloMe receives Customer Personal Data for processing activities
+    to be carried out in the course of providing the Services. \r\nSupport Services
+    means support in relation to the use of, and the identification and resolution
+    of errors in the Services. \r\nTerm means the duration the Services will be provided
+    as specified in the Order. \r\nUsers means up to five (5) employees, agents and
+    independent contractors of the Customer who are authorised by the Customer to
+    use the Services.\r\nVAT means value added tax chargeable under English law for
+    the time being and any similar additional tax.\r\nClause, schedule and paragraph
+    headings shall not affect the interpretation of this agreement. If there is an
+    inconsistency between any of the provisions in the main body of this agreement
+    and the Schedules, the provisions in the main body of this agreement shall prevail.\r\nPROVISION
+    OF THE SERVICES\r\nSubject to the terms of this Agreement, HoloMe agrees to grant
+    the Customer a non-exclusive, non-transferable, non-resellable right to use the
+    Services specified in the Order during the Term solely for the Customer\u2019s
+    internal business operations. HoloMe may make changes to the any of the Services
+    from time to time. The Customer acknowledges that the Services are subject to
+    continuous deployment and the Customer may not be notified when individual deployments
+    are made.  These changes may include updates, new releases and changes to the
+    user interface.  Once incorporated, these changes form part of the Services. 
+    \r\nHOLOME OBLIGATIONS\r\nSubject to the provisions of this Agreement, HoloMe
+    undertakes that the Services shall be delivered substantially in accordance with
+    the relevant Service Description as set out in Schedule 1, all Services shall
+    be performed with reasonable care and skill and in accordance with Good Industry
+    Practice provided in accordance with all applicable laws, and provided in accordance
+    with the relevant specifications referred to in this Agreement; and insofar as
+    reasonably practicable, free from defects in design and viruses. HoloMe does
+    not warrant that the Services will operate in an uninterrupted or error-free
+    manner; or will integrate to or work with all operating systems and browsers.
+    HoloMe is not responsible for any delays, or any other loss or damage resulting
+    from the transfer of data over communications networks and facilities, or any
+    third party failure, including the internet or the Customer\u2019s failure to
+    comply with its own obligations set out in this Agreement. This Agreement shall
+    not prevent HoloMe from entering into similar agreements with third parties,
+    or from independently developing, using, selling or licensing documentation,
+    products and/or services which are similar to those provided under this Agreement.\r\nCUSTOMER
+    OBLIGATIONS\r\nThe Customer warrants that it has not relied on any representation
+    made by HoloMe which has not been stated expressly in this Agreement or upon
+    any descriptions, illustrations or specifications contained in any document including
+    any publicity material provided by HoloMe. During the Term, the Customer shall:
+    provide HoloMe with all necessary co-operation, directions, access and information
+    as may be required by it to perform the Services including but not limited to
+    security access, information and configuration services; comply with all applicable
+    laws and regulations with respect to its activities under this Agreement; and
+    maintain the confidentiality of each login name and password allocated to the
+    Customer and its Users and not disclose them to any third party.  In the event
+    of any delays in the Customer\u2019s provision of such assistance or in the event
+    that any of the identified assumptions made by HoloMe are incorrect, HoloMe may
+    adjust any agreed timetable or delivery schedule as reasonably necessary. The
+    Customer shall: ensure that it uses the HoloMe Asset Conversion Platform in accordance
+    with this Agreement, including the Acceptable Use Policy set out at Schedule
+    5, and shall be responsible for any User\u2019s breach of this Agreement; and
+    to the extent necessary, shall obtain and maintain all contracts, licences, consents,
+    and permissions necessary for HoloMe, its contractors and agents to perform their
+    obligations under this Agreement. The Customer shall not: attempt to copy, modify,
+    duplicate, create derivative works from, frame, mirror, republish, download,
+    display, transmit, or distribute all or any portion of the SDK or the HoloMe
+    Asset Conversion Platform; attempt to reverse compile, disassemble, reverse engineer
+    or otherwise reduce to human-perceivable form all or any part of the SDK or the
+    HoloMe Asset Conversion Platform; access all or any part of the SDK or the HoloMe
+    Asset Conversion Platform in order to build a product or service which competes
+    with HoloMe\u2019s; license, sell, rent, lease, transfer, assign, distribute,
+    display, disclose, or otherwise commercially exploit, or otherwise make the HoloMe
+    Asset Conversion Platform available to any third party except the Users, attempt
+    to obtain, or assist third parties in obtaining, access to the HoloMe Asset Conversion
+    Platform, other than as provided for in this Agreement; or either for its own
+    benefit or the benefit of another, directly or indirectly solicit, procure, induce
+    or entice away from HoloMe or employ or attempt to employ any person who is,
+    or has been engaged as an employee of HoloMe.\r\nCHARGES AND PAYMENT\r\nThe Customer
+    agrees to pay the relevant Charges in accordance with the payment terms as set
+    out in the Order.  The Charges shall apply from the Effective Date unless otherwise
+    specified. Each 12 months commencing one year from the Effective Date, the Charges
+    specified in the Agreement will be adjusted by the percentage increase in RPI+1%
+    as published by the Office of National Statistics during the 12 months prior
+    to the date of the proposed increase. The Charges specified in the Order shall
+    be due on the date(s) specified in the Order. If HoloMe has not received payment
+    within 30 days of the payment due date, and without prejudice to any other rights
+    and remedies of HoloMe: HoloMe may, without liability to the Customer, disable
+    the Customer\u2019s password, account and access to all or part of the HoloMe
+    Asset Conversion Platform and HoloMe shall be under no obligation to provide
+    access to the HoloMe Asset Conversion Platform or any other Services while the
+    invoice(s) concerned remain unpaid. Except as otherwise stated, all amounts and
+    fees stated or referred to in this agreement: shall be payable in the currency
+    specified in the Order; are, subject to any limitation of liability, non-cancellable
+    and non-refundable; and are exclusive of VAT, which shall be added to HoloMe\u2019s
+    invoice(s) at the appropriate rate.\r\nINTELLECTUAL PROPERTY RIGHTS\r\nHoloMe
+    shall own and retain all rights, title and interest in its own Intellectual Property
+    including all Intellectual Property in the SDK and the HoloMe Asset Conversion
+    Platform and any changes or improvements to the HoloMe Asset Conversion Platform
+    (regardless of whether the Customer proposed or paid for those changes or improvements).
+    The Customer acquires only the right to use the SDK and the HoloMe Asset Conversion
+    Platform, but does not acquire any ownership rights in the SDK or any other rights
+    in any Intellectual Property associated with the HoloMe Asset Conversion Platform.
+    HoloMe warrants that all of the Intellectual Property subsisting or capable of
+    subsisting in the SDK and the HoloMe Asset Conversion Platform (and all modifications
+    made thereto) or any other Intellectual Property provided to the Customer as
+    part of the HoloMe Asset Conversion Platform belongs to HoloMe. The Customer
+    shall own and retain all rights, title and interest in its own Intellectual Property.
+    Except where otherwise specified in this Agreement, HoloMe shall only use the
+    Customer\u2019s Intellectual Property for the purposes of providing the HoloMe
+    Asset Conversion Platform.  Nothing in this Agreement affects either party\u2019s
+    rights in pre-existing Intellectual Property (including pre-existing Intellectual
+    Property of either party contained in or relating to Confidential Information).\r\nLIMITATION
+    OF LIABILITY\r\nNothing in this Agreement excludes or limits: either party\u2019s
+    liability to the other party for any death or personal injury resulting from
+    negligence or for any fraudulent acts or omissions or fraudulent misrepresentation
+    by a party or its agents, officers, directors or employees, or unpaid Charges;
+    or any liability which cannot be otherwise excluded or limited by law. The parties
+    expressly understand and agree that neither party shall be liable for any indirect,
+    incidental, special, consequential, or exemplary damages or any loss of profits,
+    business, corruption of data, pure economic loss, contract, sales, revenue, goodwill,
+    reputation, use, data or other intangible losses (even if the other party has
+    been advised of the possibility of such damages).  Subject to clause 7, each
+    party\u2019s liability in contract, tort (including negligence), misrepresentation
+    or otherwise arising out of or in connection with this Agreement is limited to
+    an amount equal to the previous 12 months Charges paid (or if 12 months has not
+    elapsed, payable) for the period immediately prior to the breach of this Agreement
+    in respect of which such liability first arose. Each party shall use reasonable
+    endeavours to mitigate any Loss or damage suffered arising out of or in connection
+    with a breach of this Agreement by the other party, including any Losses for
+    which the relevant party is entitled to bring a claim against the other party
+    pursuant to any indemnities in this Agreement.\r\nINDEMNITY\r\nHoloMe shall indemnify,
+    keep indemnified and hold harmless the Customer from and against all Losses incurred
+    by the Customer as a result of a claim that the HoloMe Asset Conversion Platform
+    or the SDK infringes the Intellectual Property Rights of a third party.  In relation
+    to any claim to be indemnified under this clause, the Customer shall: (a) as
+    soon as reasonably practicable give written notice of that matter to HoloMe,
+    specifying in reasonable detail the nature of the relevant matter and shall use
+    its reasonable endeavours to avoid and mitigate the Losses it incurs; (b) not
+    make any admission of liability, agreement or compromise in relation to the matter
+    in respect of which it seeks to be indemnified without the prior written consent
+    of HoloMe; (c) allow HoloMe to have the conduct of all proceedings relating to
+    the indemnity (and cooperate with HoloMe in relation to all such proceedings)
+    and HoloMe shall at its sole discretion decide what action if any to take in
+    respect of such matter.\r\nINSURANCE\r\nThe parties shall maintain in force insurance
+    policies with reputable insurance companies, without any unusual or excessive
+    excess or other terms, to cover its relevant potential liabilities in connection
+    with this Agreement (including, without limitation, public liability, professional
+    indemnity and employer\u2019s liability insurance) during the term of this Agreement.
+    \r\nCUSTOMER DATA\r\nThe parties agree that: the Customer shall own all right,
+    title and interest in and to all of the Customer Data and shall have sole responsibility
+    for the legality, reliability, integrity, accuracy and quality of the Customer
+    Data; the Customer is the data controller and HoloMe is the data processor when
+    performing its obligations under this Agreement (data controller and data processor
+    shall have the meanings defined in Data Protection Laws); both parties shall
+    comply with all applicable requirements of the Data Protection Laws. Schedule
+    4 sets out the parties\u2019 respective data protection obligations and the information
+    required under Data Protection Laws. The Customer grants HoloMe a non-exclusive
+    right to copy, reproduce, store, distribute, publish, export, adapt, edit and
+    translate the Customer Data. The Customer grants HoloMe the right to sub-license
+    these rights to its hosting, connectivity and telecommunications service providers.\r\nTERM
+    AND TERMINATION\r\nThe Agreement will be effective for the Term.  Thereafter,
+    if not terminated, the Agreement will automatically renew for successive periods
+    of 12 months (Renewal Periods).  Either party may terminate this Agreement  by
+    giving one month\u2019s written notice to the other party.  In the event that
+    either party alleges a material breach of the Agreement, that party shall afford 
+    the other party a reasonable opportunity to remedy the alleged material breach
+    before exercising any termination right and in any event, either party may not
+    give less than one (1) month\u2019s written notice for termination for material
+    breach of the Agreement. On termination or expiry, the Customer will cease to
+    use all HoloMe Services.  The Customer acknowledges that HoloMe will block the
+    Customer\u2019s access to the Services on the date of termination or expiry. 
+    Any Charges outstanding or due up to the termination date remain payable.\r\nFORCE
+    MAJEURE\r\nHoloMe shall have no liability to the Customer under this Agreement
+    if it is prevented from or delayed in performing its obligations under this Agreement,
+    or from carrying on its business, by acts, events, omissions or accidents beyond
+    its reasonable control, including, without limitation, strikes, lock-outs or
+    other industrial disputes (whether involving the workforce of the HoloMe or any
+    other party), failure of a utility service or transport or telecommunications
+    network, act of God, war, riot, civil commotion, malicious damage, compliance
+    with any law or governmental order, rule, regulation or direction, accident,
+    breakdown of plant or machinery, fire, flood, storm or default of suppliers or
+    sub-contractors, provided that the Customer is notified within a reasonable period
+    of time of such an event and its expected duration.\r\nCONFIDENTIALITY\r\nEach
+    party shall keep the other party\u2019s Confidential Information confidential
+    and shall not: use, disclose or distribute such Confidential Information except
+    for the purpose of exercising or performing its rights and obligations under
+    this Agreement (Permitted Purpose); or disclose any Confidential Information
+    in whole or in part to any third party, except as expressly permitted under this
+    Agreement. This clause shall not apply to any Confidential Information that:
+    is or becomes generally freely available to the public (other than as a result
+    of its disclosure by the receiving party or its Representatives in breach of
+    this clause); was available to the receiving party on a non-confidential basis
+    before disclosure by the disclosing party; was, is or becomes available to the
+    receiving party on a non-confidential basis from a person who, to the receiving
+    party\u2019s knowledge, is not bound by a confidentiality agreement with the
+    disclosing party or otherwise prohibited from disclosing the information to the
+    receiving party; or is developed by or for the receiving party independently
+    of the information disclosed by the disclosing party. A party may disclose the
+    other party\u2019s Confidential Information to those of its Representatives who
+    need to know such Confidential Information for the Permitted Purpose, provided
+    that: it informs such Representatives of the confidential nature of the Confidential
+    Information before disclosure; and at all times, it is responsible for such Representatives\u2019
+    compliance with the confidentiality obligations set out in this clause. A party
+    may disclose Confidential Information to the extent such Confidential Information
+    is required to be disclosed by law, by any governmental or other regulatory authority
+    or by a court or other authority of competent jurisdiction provided that, to
+    the extent it is legally permitted to do so, it gives the other party as much
+    notice of such disclosure as possible and, where notice of disclosure is not
+    prohibited and is given in accordance with this clause, it takes into account
+    the reasonable requests of the other party in relation to the content of such
+    disclosure. A party may, provided that it has reasonable grounds to believe that
+    the other party is involved in activity that may constitute a criminal offence
+    under the Bribery Act 2010, disclose Confidential Information to the Serious
+    Fraud Office without first informing the other party of such disclosure. Each
+    party reserves all rights in its Confidential Information. No rights or obligations
+    in respect of a party\u2019s Confidential Information other than those expressly
+    stated in this agreement are granted to the other party, or to be implied from
+    this agreement. Each party shall not without the prior written consent of the
+    other party disclose the existence of any terms of this Agreement including the
+    charges associated with the Agreement. The provisions of this clause shall continue
+    to apply after termination of this agreement.\r\nDISPUTE RESOLUTION\r\nThe Customer
+    and HoloMe (collectively the Disputing Parties) will attempt to promptly resolve
+    any dispute or controversy arising out of or relating to the formation, performance
+    or termination of this Agreement. If the Disputing Parties are unable to reach
+    a settlement amicably, such dispute shall be settled as provided for in this
+    Agreement. If a dispute arises out of or in connection with this Agreement or
+    the performance, validity or enforceability of it (Dispute) then the Disputing
+    Parties shall follow the procedure set out in this clause: either of the Disputing
+    Parties shall give to the other written notice of the Dispute, setting out its
+    nature and full particulars (Dispute Notice), together with relevant supporting
+    documents; and if on service of the Dispute Notice, HoloMe\u2019s nominated account
+    manager and Customer\u2019s nominated representative are for any reason unable
+    to resolve the Dispute within 30 days of service of the Dispute Notice, the Dispute
+    shall be referred to the senior director, account management of HoloMe and the
+    executive sponsor of the Customer (together, the Senior Management), who together
+    shall attempt in good faith to resolve the Dispute; and only if the Dispute cannot
+    be resolved by Senior Management within a further period of 30 days may the parties
+    seek any other remedies available to them.\r\nMARKETING\r\nThe Customer shall
+    name HoloMe in all marketing or promotional materials relating to the Services.
+    The Customer agrees to permit HoloMe to reference the Customer and reproduce
+    any of its logos on HoloMe\u2019s website, social media and any other location
+    as required. The Customer agrees to HoloMe releasing a press release in relation
+    to this Agreement, subject to the contents of such press release being approved
+    by the Customer (such approval not to be unreasonably withheld). \r\nSUBCONTRACTING\r\nHoloMe
+    may subcontract any of its obligations under this Agreement. HoloMe shall remain
+    responsible to the Customer for the performance of any subcontracted obligations.\r\nGENERAL\r\nNotices. 
+    Any notice required to be given under this agreement shall be in writing and
+    shall be delivered by email to legal@holo.me  Waiver.  Neither party will be
+    treated as having waived any rights by not exercising (or delaying the exercise
+    of) any rights under any Agreement. Severance.  If any term (or part of a term)
+    of an Agreement is invalid, illegal or unenforceable, the rest of the Agreement
+    will remain in effect. Entire Agreement.  This Agreement constitutes the entire
+    Agreement between the parties and supersedes all previous agreements between
+    the parties relating to its subject matter.  Each party acknowledges that: in
+    entering into this Agreement it does not rely on, and shall have no remedies
+    in respect of, any statement, representation, assurance or warranty (whether
+    made innocently or negligently) that is not set out in this Agreement; and it
+    shall have no claim for innocent or negligent misrepresentation or negligent
+    misstatement based on any statement in this Agreement. Counterparts.  The Parties
+    may execute this Agreement in counterparts, including PDF, and other electronic
+    copies, which taken together shall constitute one instrument. No partnership
+    or agency.  No Agreement creates any agency, partnership or joint venture between
+    the Parties. Change of control.  Neither party may terminate the Agreement in
+    the event the other party experiences a change of control (for example, through
+    a share purchase or sale, merger, or other form of corporate transaction). Survival. 
+    Those provisions that by their nature should survive termination of an Agreement,
+    shall survive termination of such Agreement. Third party rights.  No term of
+    this Agreement is enforceable under the Contracts (Rights of Third Parties) Act
+    1999 applicable in the UK by a party who is not a party to this Agreement.  Assignment. 
+    The Customer will not transfer, grant a security interest in or otherwise assign
+    any of its rights or obligations under this Agreement, in whole or in part, without
+    obtaining the prior written consent of the HoloMe.  HoloMe may transfer, grant
+    a security interest in or otherwise assign any of its rights or obligations under
+    this Agreement, in whole or in part, without obtaining the prior written consent
+    of the Customer. Cooperation. From time to time, HoloMe may collect information
+    or request feedback from the Customer regarding the performance of the Services.
+    The Customer agrees to provide HoloMe with such Performance Data as defined in
+    Schedule 4. Governing law and jurisdiction.  This Agreement shall be governed
+    and construed in accordance with the laws of England and Wales and each party
+    hereby submits to the exclusive jurisdiction of the Courts of England and Wales.
+    By using the HoloMe Asset Conversion Platform, and accepting receipt of the Services,
+    the Customer accepts HoloMe\u2019s offer to enter into a binding contract on
+    the terms set out in the Agreement. Customer represents: (a) that it has full
+    power and authority to enter into the Agreement; and (b) the Agreement is the
+    valid and binding obligation of Customer, enforceable in accordance with its
+    terms.\r\nSchedule 1  \u2013 SERVICE DESCRIPTION\r\nService level options\r\nHoloMe
+    offers three different options to its Customers in terms of its Services: Entry,
+    Intermediate and Pro. The Customer\u2019s chosen option will be specified in
+    the Order.\r\nPlatform purpose and objectives\r\nThe HoloMe Asset Conversion
+    Platform is a web-based platform that allows customers to upload and convert
+    videos of live subjects shot on either green or blue screen backgrounds, so they
+    can be deployed into a mobile app environment, for use in an Augmented Reality
+    experience.\r\nThe HoloMe Asset Conversion Platform has the following key objectives:\r\nProvide
+    a solution that allows Users to upload, convert and download video assets\r\nAllow
+    Users to manage their accounts\r\nA clear and effective User journey/UX\r\nAdmin
+    panel customised for ease-of-use\r\nA secure, scalable solution to be built upon
+    in future phases\r\n\r\nDefinitions\r\nWebApp \u2013 the main web application
+    which provides core functionality like authentication, User management, video
+    upload and encoding etc. Also known as \u2018web portal\u2019 or \u2018customer
+    portal\u2019.\r\nHVP \u2013 HoloMe Video Processor, an application responsible
+    for converting videos into a format which can be used by HoloMe SDK-based applications\r\nCMS
+    \u2013 Content Management System\r\nMVP \u2013 Minimum Viable Product\r\nProject
+    \u2013 Collection of one or multiple videos \r\nAsset Conversion \u2013 The process
+    of creating a new Project, uploading videos, processing and downloading completed
+    Assets\r\nAsset \u2013 Video once it has been converted into a format which can
+    be used by the Customer\r\nSuper Admin \u2013 HoloMe Admin account\r\nAdmin \u2013
+    Customer Administrator account\r\nUser \u2013 Customer User account\r\n\r\nScope\r\nHoloMe
+    will provide the following as part of the HoloMe Portal:\r\nThe ability to convert
+    video content captured in .MOV, .MP4 and .MXF formats into augmented reality
+    ready assets. \r\nThe ability to deliver one converted AR ready asset per video
+    asset uploaded\r\nThe ability to manage Users.\r\nThe following are not supported:\r\nOriginal
+    / example assets\r\nDelivery of more than one unique scene per video\r\n\r\nAccounts
+    Access & Functions\r\nThere are three different user types available via the
+    HoloMe Asset Conversion Platform outlined below. These Users have the ability
+    to access and perform functions in the platform via a secure login.\r\n\r\nSuper
+    Admin (HoloMe)\r\nCreate a Customer account\r\nCreate/edit/delete Admin and User
+    accounts. \r\nView a list of all accounts associated with each Customer\r\nApply
+    a monthly limit/cap to the number of Asset Conversions allowed per month (configurable)\r\nPut
+    the company account on hold to prevent Asset Conversions\r\nAbility to reset
+    their own password via \u2018Forgot Password\u2019 link\r\nMax 1 Admin and 5
+    User accounts\r\n\r\nAdmin (Customer)\r\nCreate/edit/delete User accounts. \r\nName
+    and Email Address will be entered into the system. \r\nUsers will receive an
+    email with a verification link \r\nUsers will be asked to create their own password
+    on initial entry into the system\r\nUpdate/edit their name, email address and
+    password\r\nView a list of all User accounts associated with their company\r\nAbility
+    to reset their own password via \u2018Forgot Password\u2019 link\r\nAdd/Edit/Delete
+    monthly limit/cap\r\nEmail notification to Admin when 80% of the monthly cap
+    is reached\r\n\r\nUser (Customer)\r\nUpdate/edit their name, email address and
+    password\r\nAbility to reset their own password via \u2018Forgot Password\u2019
+    link\r\n\r\nAsset Conversion\r\nThe main purpose of the HoloMe Asset Conversion
+    Platform is to allow Users to upload, edit, submit for processing and download
+    the final Asset to use within their (the customer) own platform. This is the
+    process that Users will take to convert an Asset:\r\nCreate a new Project\r\nAssign
+    a unique title\r\nUpload a video file (via file selection or drag and drop)\r\nUsers
+    will have the option to upload a single file, or upload multiple files at once\r\nEach
+    video will be recognised by their file name\r\nIf there are two files with the
+    same name, the second file will be automatically assigned a number to make the
+    file name unique (e.g (2) added at the end of the file name) \r\nMulti-uploader
+    will have a limit of 100 files at a time \r\nThis figure will be configurable
+    for future releases\r\nFilename and thumbnail for each video to display\r\nHVP
+    to randomly select 1 frame from the video(s) \r\nUser will have the option to
+    colour pick the hex code from one of the displayed thumbnails via a pop-up window
+    containing a carousel of the generated frames\r\nOne hex code will be selected
+    and can be applied to all videos\r\nIf a different hex code is required for each
+    video, they will need to be uploaded separately\r\nOnce hex codes are entered,
+    the platform will generate a composite preview for each thumbnail cut out\r\nEach
+    video will take approximately 5 seconds to process\r\nAs each preview finishes
+    processing, it will display. All processing videos will show a loading symbol
+    with a progress bar indicating the total progress across all videos\r\nUser will
+    inspect the composite preview and either click \u2018Accept\u2019 or Request
+    QA\u2019\r\nThe preview will be able to be enlarged for easier viewing in accordance
+    with browser supported Accessibility requirements\r\n\u2018Accept\u2019 signifies
+    the User being happy with the preview output\r\n\u2018Request QA\u2019 signifies
+    the User is not satisfied with the preview and is requesting HoloMe to review\r\nOnce
+    each video has been assigned either \u2018Accept\u2019 or Request QA\u2019, the
+    User will click \u2018Submit\u2019 to submit the videos for processing\r\nUser
+    will have the ability to bulk \u2018Accept\u2019 all\r\nA pop-up confirmation
+    box will display, confirming the number of videos being submitted for processing,
+    highlighting the number accepted, and the number flagged.\r\nOn clicking \u2018Process
+    Videos\u2019, the User is accepting all agreed terms\r\nUUID generated by the
+    system for this Project\r\nThis will be autogenerated by the system based on
+    the first three letters of the company name, followed by a hyphen and a unique
+    number, starting at 000001 e.g aso-000001\r\nNotification triggered to predefined
+    HoloMe email address to advise the final videos are ready to be downloaded and 
+    processed offline\r\nThe User will be displayed a screen with instructional text,
+    advising the next steps\r\nOnce complete, HoloMe will load the Assets into the
+    relevant Project folder via the Admin panel\r\nHoloMe will trigger an email notification
+    to the User when the Assets are ready to be downloaded via a \u2018submit\u2019
+    button\r\nAssets to be available within 7 working days\r\nA static history of
+    the Assets will be available to both the company, and HoloMe to review. This
+    will consist of a thumbnail, filename, date processed and Project name\r\nThe
+    User will click on the unique link in the email, opening the relevant Project
+    folder (after relevant authentication) and be able to download their processed
+    videos\r\n\r\nStorage\r\nThe original video file, and Asset will be available
+    for 7 days, albeit configurable via the Admin CMS, after which they will be permanently
+    deleted from the system.\r\nReporting\r\nA CSV will be available for HoloMe to
+    export containing each Asset with the following attributes:\r\nUUID\r\nFile name\r\nProject
+    name\r\nCustomer\r\nUploader (username)\r\nPrior to exporting, HoloMe will be
+    able to filter by Date Range and Customer.\r\nDesign\r\nThe HoloMe Asset Conversion
+    Platform is designed purely for Desktop use only. It will be made available via
+    a mobile web browser but HoloMe does not currently support any of the functionality
+    or User experience for mobile or tablet environments.\r\nAccount Creation\r\nHoloMe
+    will create all Customer accounts\r\nTraining\r\nCustomer Admin Users will be
+    provided with an onboarding process to ensure they are familiar with the platform
+    and how to use all features. It is the responsibility of the Customer to ensure
+    all registered Users under their agreement are subsequently trained. HoloMe provide
+    a Support Desk as best practice where all registered Users can request help via
+    a web form.  Charges for training are stated in the Order.\r\nSecurity Considerations\r\nHoloMe
+    ensures the HoloMe Asset Conversion Platform meets a high standard of security.
+    Please refer to the Technical Specification documents for full details of the
+    security requirements. Documents are made available upon request via the Support
+    Pages.\r\nTesting and Quality Assurance \r\nThe following tests and QA processes
+    will be applied by HoloMe:\r\nTest planning and documented test plans\r\nFunctional
+    testing\r\nLoad testing\r\nSecurity testing\r\nUX and internal UI checks\r\nBug
+    and issue tracking\r\nDelivery Checklist & Go Live Checklist\r\nBrowser Compatibility
+    & Mobile Devices\r\nThe HoloMe Asset Conversion Platform supports the latest
+    three versions of all modern browsers (IE 11+ to Edge, Chrome, Firefox and Safari
+    ) and is currently tested on  desktop only, not mobile devices. An alert/User
+    warning for Users of older and unsupported browsers will display prompting them
+    to update their browsers for the best experience of the HoloMe Asset Conversion
+    Platform\r\nDomains, Hosting & SSLs\r\nThe HoloMe Asset Conversion Platform is
+    hosted via Amazon Web Services (AWS) https://www.holo.me/one\r\nSDK (software
+    development kit)\r\nHoloMe\u2019s SDK supports the following core programming
+    languages:\r\niOS\r\nAndroid\r\nUnity\r\nCordova\r\nWeb (JS)\r\nXamarin\r\nReact\r\nEach
+    SDK conforms to an interface specification that makes the SDKs feel similar across
+    each supported language. This includes the following characteristics:\r\nData
+    Model \u2013 The class names and properties of the object model are similar.\r\nCustomer
+    Interface \u2013 a naming convention is established for API calls (WebAR TBC)\r\nEven
+    though the SDKs provide similar features across our supported platforms, it is
+    understood that these platforms are different and have different conventions
+    and features, according to language appropriate design.\r\nHoloMe uses a number
+    of third party technologies to support its services, as listed:\r\niOS \u2013
+    ARkit/AVFoundation/SceneKit/SpriteKit\r\nAndroid \u2013 ARCore/(Android media
+    and 3d graphics libraries)\r\nWeb \u2013 8th Wall \r\nUnity \u2013 AR Foundation\r\nSDK
+    functionality\r\nThe SDK will enable the following functions:\r\nPlay local or
+    streaming video file (play/pause/stop/replay)\r\nAmbient light from AR\r\nRotation
+    Calculations\r\nFocus square (only custom logo and standard behaviour)\r\nPinch
+    to Zoom\r\nAll basic features, functions and members are documented with examples.\r\nFull
+    custom focus square\r\nVideo cache system example\r\nReal-time shadow (coming
+    soon)\r\nAR reflection (coming soon)\r\n \r\nSchedule 2  \u2013 SUPPORT & MAINTENANCE\r\nMAINTENANCE
+    SERVICES\r\nHoloMe may provide Maintenance Services on an adhoc basis and without
+    notice.\r\nHoloMe shall where practicable give to the customer written notice
+    of scheduled Maintenance Services that are likely to affect the availability
+    of the Services or are likely to have a material negative impact on the Services.\r\nHoloMe
+    shall provide Maintenance Services in accordance with Good Industry Practice.\r\nUpdates
+    will contain change logs identifying new features.\r\nHoloMe will only support
+    the current version of the SDK.\r\nHoloMe follows a standard testing practice
+    before any deployment, and may employ external independent testing services to
+    ratify test logs and requirements.\r\nHoloMe supports bug tracking via an online
+    web form made available to its Customers.\r\nSUPPORT SERVICES\r\nHoloMe shall
+    provide Support Services to the customer during the Term.\r\nHoloMe shall make
+    available to the customer Support Services in accordance with the provisions
+    of these Service Standards.\r\nThe customer may use the Support Services for
+    the purposes of requesting and, where applicable, receiving the Support Services;
+    and the customer must not use the Support Service for any other purpose.\r\nHoloMe
+    shall respond promptly to all requests for Support Services made by the customer
+    via support@holo.me\r\nHoloMe may suspend the provision of the Support Services
+    if any amount due to be paid by the customer to HoloMe under these Service Standards
+    is overdue.\r\n \r\nSchedule 3  \u2013 SERVICE LEVEL AGREEMENT\r\nAVAILABILITY\r\nHoloMe
+    will use commercially reasonable efforts to make HoloMe Asset Conversion Platform
+    available with an Availability of at least 99%.\r\nDefinitions\r\nThe following
+    definitions shall apply for the purposes of this Schedule 1:\r\nA or Availability
+    means the % availability of HoloMe Asset Conversion Platform over the Measurement
+    Period, calculated as follows:\r\nA (%) = ((SH \u2013 PD \u2013 D) / (SH \u2013
+    PD)) * 100\r\nD means Downtime during the Measurement Period.\r\nDowntime means
+    any period of time where the entire HoloMe Asset Conversion Platform is unavailable
+    as confirmed by HoloMe\u2019s monitoring that is not Permitted Downtime.\r\nMeasurement
+    Period means a given calendar month (00:00 on first day to 23:59 last day).\r\nPD
+    means Permitted Downtime during the Measurement Period.\r\nPermitted Downtime
+    means scheduled maintenance periods where the entirety of the HoloMe Asset Conversion
+    Platform is not available or emergency downtime that is scheduled on an urgent
+    basis.\r\nSH means Service Hours (24\xD77) during the Measurement Period.\r\nPermitted
+    Downtime means HoloMe is allowed Permitted Downtime. HoloMe will work in collaboration
+    with the Customer to agree appropriate system maintenance windows determined
+    always by HoloMe. Although HoloMe is typically able to provide a zero hours\u2019
+    downtime maintenance window, HoloMe reserves the right at its discretion to schedule
+    a 1 to 3 hour downtime maintenance window when the HoloMe Asset Conversion Platform
+    will not be available. Notice of Permitted Downtime will be given in writing
+    to the Customer. The notice period for Permitted Downtime is five (5) Business
+    Days (except where emergency downtime needs to be scheduled in which case no
+    notice will be required).\r\n \r\nAVAILABILITY EXCLUSION\r\nThe Availability
+    set out at clause 1.1 of this Schedule 3 does not apply to any unavailability,
+    suspension or termination of the HoloMe Asset Conversion Platform, or any other
+    performance issues:\r\nresulting from a suspension as described in the Agreement;\r\ncaused
+    by factors outside of HoloMe\u2019s reasonable control, including any force majeure
+    event, internet access, or problems beyond the demarcation point of the HoloMe
+    Asset Conversion Platform;\r\nresulting from any actions or inactions of the
+    Customer or any third party;\r\nresulting from the equipment, software or other
+    technology of the Customer or third party (other than third party equipment within
+    HoloMe\u2019s direct control);\r\nresulting from failures of the HoloMe Asset
+    Conversion Platform not attributable to Downtime except where it is stated; or\r\nresulting
+    from any Permitted Downtime.\r\n \r\nSchedule 4  \u2013 DATA PROTECTION\r\nDEFINITIONS\r\n\u201Cdata
+    controller\u201D, \u201Cdata processor\u201D, \u201Cdata subject\u201D, \u201Cpersonal
+    data\u201D, \u201Cprocessing\u201D and \u201Cappropriate technical and organisational
+    measures\u201D shall be interpreted in accordance with applicable Data Protection
+    Laws;\r\nCustomer Data, Customer Personal Data and Sub-processor are as defined
+    in the Agreement;\r\nPerformance Data means data provided by and/or collected
+    from the Customer relating to the performance of the Services;\r\nSecurity Breach
+    means any accidental, unauthorised or unlawful destruction, loss, alteration,
+    disclosure, or access to Customer Personal Data;\r\nSensitive Personal Data means
+    the categories of personal data defined in Article 9 GDPR, and data relating
+    to criminal convictions and offences;\r\nChildren\u2019s Data means personal
+    data relating to an individual under 18 years.\r\n \r\nLAWFUL BASIS FOR PROCESSING\r\nThe
+    Customer will ensure that it and any other data controllers of the Customer Personal
+    Data:\r\nhave complied and will continue to comply with their obligations under
+    the Data Protection Laws, including ensuring that it is fair and lawful for HoloMe,
+    its staff and sub-contractors to process the Customer Data;\r\nhave all necessary
+    and appropriate consents and notices in place so that HoloMe may lawfully receive,
+    transfer, use and process the Customer Data for the duration and purposes of
+    this Agreement;\r\nThe Customer warrants that it and any other data controllers
+    of the Customer Personal Data shall not knowingly transmit Children\u2019s Data
+    or Sensitive Personal Data to HoloMe or via the HoloMe Asset Conversion Platform.\r\nThe
+    Customer shall defend, indemnify and hold harmless HoloMe against all claims,
+    fines (including regulatory fines), actions, proceedings, losses, damages, expenses
+    and costs (including without limitation court costs and reasonable legal fees)
+    arising out of or in connection with the Customer\u2019s breach of its obligations
+    under this Schedule 4.\r\nHoloMe shall, in providing the Services, comply with
+    its Data Protection and Information Security Policies relating to the privacy
+    and security of the Customer Personal Data, as such documents may be amended
+    from time to time by HoloMe.\r\n \r\nPROCESSING ON CUSTOMER\u2019S INSTRUCTIONS\r\nWhen
+    processing Customer Personal Data in connection with the performance of HoloMe\u2019s
+    obligations under this Agreement, HoloMe will act only in accordance with the
+    lawful and documented instructions of the Customer as set out in this Agreement
+    or as provided in writing by the Customer from time to time (subject to HoloMe\u2019s
+    right to charge additional sums at its then-current rates should the scope of
+    the agreed Services be exceeded), unless HoloMe is required by law to process
+    the Customer Personal Data. Where HoloMe is relying on applicable law as the
+    basis for processing Customer Personal Data, HoloMe shall notify the Customer
+    before performing the processing required by law unless such laws prohibit HoloMe
+    from notifying the Customer.\r\nThe Customer hereby instructs HoloMe to process
+    the Customer Personal Data:\r\nfor the provision of the Services and the HoloMe
+    Asset Conversion Platform (and for each of these purposes HoloMe may share such
+    Customer Personal Data with HoloMe\u2019s Sub-processors as necessary to provide
+    the Services);\r\nfor the purpose of fulfilling its obligations and exercising
+    its rights under this Agreement;\r\nas may be required by law, court order or
+    any governmental or regulatory authority; and\r\nuntil the date that HoloMe ceases
+    to provide the Services to the Customer.\r\nThe Customer acknowledges that HoloMe
+    processes the Customer Data on the Customer\u2019s instructions. Consequently,
+    HoloMe shall not be liable for any claim brought by a data subject arising from
+    any action or omission by HoloMe, to the extent that such action or omission
+    resulted directly from the Customer\u2019s instructions.\r\nThe Customer acknowledges
+    that the HoloMe Asset Conversion Platform supports secure transmission of data.
+    To the extent that the Customer chooses to transfer data to or from HoloMe by
+    an insecure method or instructs HoloMe to transmit data to or receive data from
+    third parties who do not support secure transmission of data, the Customer accepts
+    the risks related to such transmission. \r\nAnnex 1 sets out the nature and purpose
+    of the processing, the types of Customer Personal Data HoloMe processes and the
+    categories of data subjects whose personal data are processed.\r\nHoloMe shall
+    notify the Customer if it considers that an instruction from the Customer is
+    in breach of Data Protection Laws, and HoloMe shall be entitled but not obliged
+    to suspend execution of the instructions concerned, until the Customer confirms
+    such instructions in writing.\r\n\r\nHOLOME OBLIGATIONS\r\nIn relation to any
+    Customer Personal Data processed in connection with the performance of its obligations
+    under this Agreement, HoloMe shall:\r\nImplement appropriate technical and organisational
+    measures to protect against unauthorised or unlawful processing of Customer Personal
+    Data and against accidental, unauthorised or unlawful destruction, loss, alteration,
+    disclosure or access to Customer Personal Data;\r\nAt the Customer\u2019s written
+    request, assist the Customer in responding to any request from a data subject
+    necessary for compliance with its obligations under the Data Protection Laws;\r\nNotify
+    the Customer without undue delay upon becoming aware of any Security Breach involving
+    Customer Personal Data;\r\nAt the Customer\u2019s written request, taking into
+    account the nature of processing and the information available to HoloMe, assist
+    the Customer with its obligations under Articles 32 to 36 of the GDPR and the
+    Data Protection Laws with respect to security, breach notifications, impact assessments
+    and consultations with supervisory authorities or regulators;\r\nAt the Customer\u2019s
+    written request, taking into account the nature of processing and the information
+    available to HoloMe, assist the Customer by making available to the Customer
+    all information which the Customer reasonably requests to allow the Customer
+    to demonstrate that the obligations set out in Article 28 of the GDPR relating
+    to the appointment of processors have been met;\r\nMaintain complete and accurate
+    records of all processing operations under its responsibility. Such records shall
+    contain the information required by the Data Protection Laws;\r\nOn the Customer\u2019s
+    written request, allow the Customer and its respective auditors or authorised
+    agents to conduct audits or inspections of HoloMe within business hours during
+    the term of the Agreement, on ten (10) Business Days\u2019 prior written notice
+    from the Customer. The purposes of any audit pursuant to this paragraph is to
+    verify that HoloMe is processing Customer Personal Data in accordance with its
+    obligations under this Agreement.\r\nThe Customer undertakes to treat the results
+    of such audits and inspections as Confidential Information and to ensure that
+    its agents do likewise;\r\nAt the Customer\u2019s written request, delete or
+    return to the Customer any Customer Personal Data after the end of the provision
+    of the Services, unless applicable law requires longer storage of the Customer
+    Personal Data;\r\nEnsure that all HoloMe personnel who have access to or process
+    the Customer Personal Data are subject to a binding duty of confidentiality and
+    have received appropriate training on Data Protection Laws.\r\n\r\n\r\nHoloMe
+    will not generally charge for responding to the Customer\u2019s written requests
+    (as set out above in this paragraph), but reserves the right, at its sole discretion,
+    to charge reasonable fees based on the administrative costs of providing such
+    assistance, if provision of such assistance requires excessive resources or occurs
+    at an excessive frequency.\r\nSUB-PROCESSORS AND DATA TRANSFERS\r\nThe Customer
+    agrees that HoloMe may transfer the Customer Personal Data or give access to
+    Customer Personal Data to third party suppliers as Sub-processors for the purpose
+    of providing the Services, provided that HoloMe complies with the provisions
+    of this Agreement.\r\nHoloMe shall ensure that it enters into written agreements
+    with its Sub-processors which incorporate terms which are materially equivalent
+    to those in paragraph 3 and as are required by applicable Data Protection Laws.\r\nHoloMe
+    shall remain responsible for its Sub-processor\u2019s compliance with the obligations
+    of this Schedule.\r\nA list of Sub-Processors approved as at the date of this
+    Agreement is as follows: Amazon Web Services; Apple iTunes; Google Play; Gmail
+    (Google); Google Analytics; JBiDesign; TEN10 Engineering; Axmor; and 8th Wall.
+    This list may be updated from time to time. \r\nHoloMe can at any time appoint
+    a new Sub-processor. The Customer may legitimately object to the appointment
+    of a new Sub-processor within  (10) Business Days . Legitimate objections must
+    contain reasonable and documented grounds relating to a Sub-processor\u2019s
+    non-compliance with applicable Data Protection Laws. If, in HoloMe\u2019s reasonable
+    opinion, such objections are legitimate, HoloMe shall refrain from using such
+    Sub-processor to process Customer Personal Data. In such cases, HoloMe may use
+    commercially reasonable efforts to make available to the Customer a change in
+    the Services to avoid the processing of Customer Personal Data by the objected-to
+    Sub-processor.\r\nThe Customer hereby agrees that HoloMe may transfer the Customer
+    Personal Data outside the EEA or to Sub-processors outside the EEA where HoloMe
+    participates in a cross-border transfer mechanism which is valid under the Data
+    Protection Laws and after providing the Customer with sufficient notice (as set
+    out in this paragraph 4). Valid cross-border transfer mechanisms include:\r\ntransfers
+    to a country which is subject to an adequacy decision of the European Commission;\r\ntransfers
+    permitted under the EU-US Privacy Shield;\r\ntransfers permitted under an approved
+    code of conduct pursuant to Article 40 GDPR or an approved certification mechanism
+    pursuant to Article 42 GDPR, in each case together with binding and enforceable
+    commitments of the Sub-processor to apply the appropriate safeguards, including
+    as regards data subject\u2019s rights;\r\ntransfers permitted through execution
+    of the Standard Contractual Clauses (controller to processor transfers). The
+    Customer hereby authorises HoloMe to enter into the Standard Contractual Clauses
+    (as set out at https://eur-lex.europa.eu/eli/dec/2010/87/oj) with the Sub-processor
+    in the Customer\u2019s name and on its behalf. HoloMe shall be the \u201Cdata
+    exporter\u201D on behalf of the Customer and the Sub-processor shall be \u201Cdata
+    importer\u201D. \r\n\r\nMISCELLANEOUS\r\nIn the event of any conflict or inconsistency
+    between the provisions of the Agreement and this Schedule, the provisions of
+    these terms shall prevail. Save as specifically modified and amended in these
+    terms, all of the terms, provisions and requirements contained in the Agreement
+    shall remain in full force and effect and govern these terms. \r\nHoloMe shall
+    be entitled to retain and process Performance Data for internal business purposes
+    such as improving its Services,  benchmarking, trend evaluation, industry wide
+    analytics, analysis of potential fraudulent Customer activity and for developing
+    and commercially exploiting products and services offered to third parties that
+    incorporate Performance Data. In all such cases Performance Data will only be
+    shared with third parties in a form that does not enable the third party to identify
+    data subjects. The Customer hereby authorises and irrevocably licenses HoloMe
+    to use Performance Data for the purposes specified above, subject always to the
+    Performance Data being supplied to third parties on an anonymised and aggregated
+    basis.\r\nANNEX 1 TO SCHEDULE 4: DATA PROTECTION\r\nThis summary sets out details
+    of the processing of Customer Personal Data under the Agreement.\r\nSubject matter
+    and duration of the processing\r\nThe Customer Personal Data shall be provided
+    to HoloMe by the Customer and processed in accordance with the Customer\u2019s
+    instructions in order to allow HoloMe to provide the Services.\r\nThe processing
+    shall take place for Term, unless otherwise directed by the Customer.\r\nHoloMe
+    shall retain User Customer Data for 90 days from the date the Services are completed
+    in respect of such data, except where otherwise agreed with the Customer.\r\nNature
+    and purpose of the processing\r\nHoloMe will process personal data of the Customer\u2019s
+    staff in order to:\r\nprovide access to HoloMe Services, such as accounts on
+    the HoloMe Asset Conversion Platform, and access to support.\r\nprovide relevant
+    information to the Customer in connection with the Agreement.\r\nmanage the commercial
+    relationship with the Customer in line with the provisions of the Agreement.\r\n\r\nHoloMe
+    will process personal data of the Customer\u2019s end users in order to:\r\nfulfil
+    the terms of the Agreement with the Customer by providing the Services.\r\n\r\nCategories
+    of Data Subjects\r\nThe Customer Personal Data processed relates to the following
+    categories of Data Subjects:\r\nCustomer\u2019s Users \r\nCustomer\u2019s staff
+    (including employees, workers and contractors)\r\n \r\nTypes of Personal Data\r\nThe
+    Customer Personal Data is provided to HoloMe by the Customer. There may be variations
+    in the data provided to HoloMe by a specific Customer, but typically the following
+    categories of data are processed:\r\nCustomer Staff Personal Data\r\nNames\r\n(Business)
+    email addresses\r\n(Business) telephone numbers\r\nUsernames and passwords\r\nJob
+    Titles\r\n\r\nOther data as set out in the HoloMe website privacy policy, which
+    is available here\r\nCustomer\u2019s User Personal Data\r\nNames\r\nTelephone
+    Numbers\r\nEmail Addresses\r\nJob titles\r\nVideo images of end users\r\nOther
+    personal data as provided to HoloMe by the Customer\r\nThe Customer acknowledges
+    that it has control over the content of the Customer Data which it shares with
+    HoloMe.\r\nThe Customer shall not knowingly provide Special Categories of data,
+    nor Children\u2019s Data.\r\nSchedule 5 - ACCEPTABLE USE POLICY\r\nPLEASE READ
+    THIS POLICY CAREFULLY BEFORE USING \r\nWhat is in this policy?  \r\nThis acceptable
+    use policy (this \"policy\") sets out the standards that apply when you upload
+    or generate content using our app, portal or website (together \"our ecosystem\"),
+    make contact with other users via our ecosystem, link to our ecosystem, or interact
+    with our ecosystem in any other way. \r\nOur ecosystem is operated by Holome
+    Technologies Limited (\u201Dwe\u201D or \"us\"). \r\nBy using our ecosystem you
+    accept this policy  \r\nBy using our ecosystem, you confirm that you accept this
+    policy and that you agree to comply with it.\r\nIf you do not agree to this policy,
+    you must not use our ecosystem.\r\n We recommend that you print a copy of this
+    policy for future reference.\r\nThere are other terms that may apply to you 
+    \r\nOur Terms of Use also apply to your use of our ecosystem.\r\nWe may make
+    changes to this policy  \r\nWe amend this policy from time to time. Every time
+    you wish to use our ecosystem, please check this policy to ensure you understand
+    the terms that apply at that time. By continuing to use or access our ecosystem,
+    you confirm that you accept this policy, as it appears here at the relevant time.\r\nProhibited
+    uses  \r\n You may use our ecosystem only for lawful purposes. You may not use
+    our ecosystem:\r\nin any way that breaches any applicable local, national or
+    international law or regulation;\r\nin any way that is unlawful or fraudulent,
+    or has any unlawful or fraudulent purpose or effect;\r\nfor the purpose of harming
+    or attempting to harm minors in any way;\r\nto bully, insult, intimidate or humiliate
+    any person;\r\nto send, knowingly receive, upload, download, use or re-use any
+    material which does not comply with this policy;\r\nto transmit, or procure the
+    sending of, any unsolicited or unauthorised advertising or promotional material
+    or any other form of similar solicitation (spam); or\r\nto knowingly transmit
+    any data, send or upload any material that contains viruses, Trojan horses, worms,
+    time-bombs, keystroke loggers, spyware, adware or any other harmful programs
+    or similar computer code designed to adversely affect the operation of any computer
+    software or hardware.\r\nYou also agree:\r\nnot to reproduce, duplicate, copy
+    or re-sell any part of our ecosystem in contravention of the provisions of our
+    Terms of Use \r\nnot to access without authority, interfere with, damage or disrupt:\r\nany
+    part of our ecosystem;\r\nany equipment or network on which our ecosystem is
+    stored;\r\nany software used in the provision of our ecosystem; or\r\nany equipment
+    or network or software owned or used by any third party.\r\nInteractive services 
+    \r\nWe may from time to time provide interactive services on our ecosystem, including,
+    without limitation, user like and comment functionality (\"interactive services\").\r\nWhere
+    we do provide any interactive service, we will provide clear information to you
+    about the kind of service offered, if it is moderated and what form of moderation
+    is used (including whether it is human or technical).\r\nWe will do our best
+    to assess any possible risks for users (and in particular, for children) from
+    third parties when they use any interactive service provided on our ecosystem,
+    and we will decide in each case whether it is appropriate to use moderation of
+    the relevant service (including what kind of moderation to use) in the light
+    of those risks. However, we are under no obligation to oversee, monitor or moderate
+    any interactive service we provide on our ecosystem, and we expressly exclude
+    our liability for any loss or damage arising from the use of any interactive
+    service by a user in contravention of our content standards, whether the service
+    is moderated or not.\r\nThe use of any of our interactive services by a minor
+    is subject to the consent of their parent or guardian. We advise parents who
+    permit their children to use an interactive service that it is important that
+    they communicate with their children about their safety online, as moderation
+    is not fool proof. Minors who are using any interactive service should be made
+    aware of the potential risks to them.\r\nWhere we do moderate an interactive
+    service, we will normally provide you with a means of contacting the moderator,
+    should a concern or difficulty arise.\r\nContent standards  \r\nThese content
+    standards apply to any and all material which you create or contribute to using
+    our ecosystem (\"Contribution\"), and to any interactive services associated
+    with it.\r\nThese content standards must be complied with in spirit as well as
+    to the letter. The standards apply to each part of any Contribution as well as
+    to its whole.\r\n Holome Technologies Limited will determine, in its discretion,
+    whether a Contribution breaches the Content Standards.\r\n A Contribution must:\r\nbe
+    accurate (where it states facts);\r\nbe genuinely held (where it states opinions);
+    and\r\ncomply with the law applicable in England and Wales and in any country
+    from which it is posted.\r\nA Contribution must not:\r\nbe defamatory of any
+    person;\r\nbe obscene, offensive, hateful or inflammatory;\r\nbully, insult,
+    intimidate or humiliate;\r\npromote sexually explicit material;\r\npromote violence;\r\npromote
+    discrimination based on race, sex, religion, nationality, disability, sexual
+    orientation or age;\r\ninfringe any copyright, database right or trademark of
+    any other person;\r\nbe likely to deceive any person;\r\nbreach any legal duty
+    owed to a third party, such as a contractual duty or a duty of confidence;\r\npromote
+    any illegal activity;\r\nbe in contempt of court;\r\nbe threatening, abuse or
+    invade another\u2019s privacy, or cause annoyance, inconvenience or needless
+    anxiety;\r\nbe likely to harass, upset, embarrass, alarm or annoy any other person;\r\nimpersonate
+    any person, or misrepresent your identity or affiliation with any person;\r\ngive
+    the impression that the Contribution emanates from Holome Technologies Limited,
+    if this is not the case;\r\nadvocate, promote, incite any party to commit, or
+    assist any unlawful or criminal act such as (by way of example only) copyright
+    infringement or computer misuse;\r\ncontain a statement which you know or believe,
+    or have reasonable grounds for believing, that members of the public to whom
+    the statement is, or is to be, published are likely to understand as a direct
+    or indirect encouragement or other inducement to the commission, preparation
+    or instigation of acts of terrorism; or\r\ncontain any advertising or promote
+    any services or web links to other ecosystems.\r\nBreach of this policy  \r\nWhen
+    we consider that a breach of this acceptable use policy has occurred, we may
+    take such action as we deem appropriate.\r\nFailure to comply with this policy
+    constitutes a material breach of the Terms of Use upon which you are permitted
+    to use our ecosystem, and may result in our taking all or any of the following
+    actions:\r\nimmediate, temporary or permanent withdrawal of your right to use
+    our ecosystem;\r\nimmediate, temporary or permanent removal of any Contribution
+    uploaded by you to our ecosystem;\r\nissue of a warning to you;\r\nlegal proceedings
+    against you for reimbursement of all costs on an indemnity basis (including,
+    but not limited to, reasonable administrative and legal costs) resulting from
+    the breach;\r\nfurther legal action against you; and/or\r\ndisclosure of such
+    information to law enforcement authorities as we reasonably feel is necessary
+    or as required by law.\r\nWe exclude our liability for all action we may take
+    in response to breaches of this acceptable use policy. The actions we may take
+    are not limited to those described above, and we may take any other action we
+    reasonably deem appropriate.\r\nHow to complain about content uploaded by other
+    users  \r\n If you wish to complain about any Contribution made by other users,
+    please contact us.\r\nWhich country\u2019s laws apply to any disputes?  \r\nThis
+    policy, its subject matter and its formation are governed by English law. You
+    and we both agree that the courts of England and Wales will have exclusive jurisdiction
+    except that if you are a resident of Northern Ireland you may also bring proceedings
+    in Northern Ireland, and if you are resident of Scotland, you may also bring
+    proceedings in Scotland.\r\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 71e4f71fb3bf11649a5e5ae53c58fe9a, type: 2}
   m_sharedMaterial: {fileID: -5132721197388374977, guid: 71e4f71fb3bf11649a5e5ae53c58fe9a,
@@ -640,14 +1640,14 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 4242493320443622265}
-    characterCount: 668
+    characterCount: 63827
     spriteCount: 0
-    spaceCount: 108
-    wordCount: 109
+    spaceCount: 10016
+    wordCount: 9904
     linkCount: 0
-    lineCount: 14
+    lineCount: 1436
     pageCount: 1
-    materialCount: 2
+    materialCount: 5
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
@@ -655,9 +1655,9 @@ MonoBehaviour:
   m_subTextObjects:
   - {fileID: 0}
   - {fileID: 3130306750100038501}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 6660435879197298745}
+  - {fileID: 7197562320965197525}
+  - {fileID: 4927232885882608053}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -699,7 +1699,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 10.900024, y: -0.3300171}
+  m_AnchoredPosition: {x: 10.900024, y: -0.33007812}
   m_SizeDelta: {x: 30.5, y: -17}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &5711601183850846773
@@ -781,7 +1781,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 4914818237378904008}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.54705215
+  m_Size: 0.00893609
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1018,6 +2018,78 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &7773338097773735244
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 932053040568638321}
+  - component: {fileID: 3633295550405783041}
+  - component: {fileID: 7197562320965197525}
+  m_Layer: 5
+  m_Name: TMP SubMeshUI [NeueHaasGrotesk-Roman SDF Material]
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &932053040568638321
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7773338097773735244}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5997835407672694281}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &3633295550405783041
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7773338097773735244}
+  m_CullTransparentMesh: 0
+--- !u!114 &7197562320965197525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7773338097773735244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 058cba836c1846c3aa1c5fd2e28aea77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_fontAsset: {fileID: 11400000, guid: 71e4f71fb3bf11649a5e5ae53c58fe9a, type: 2}
+  m_spriteAsset: {fileID: 0}
+  m_material: {fileID: 0}
+  m_sharedMaterial: {fileID: 0}
+  m_isDefaultMaterial: 0
+  m_padding: 1.25
+  m_canvasRenderer: {fileID: 3633295550405783041}
+  m_TextComponent: {fileID: 4242493320443622265}
+  m_materialReferenceIndex: 3
 --- !u!1 &7961549493517421400
 GameObject:
   m_ObjectHideFlags: 0
@@ -1051,8 +2123,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -279.6501}
-  m_SizeDelta: {x: 0, y: 559.3}
+  m_AnchoredPosition: {x: 0, y: -37458.426}
+  m_SizeDelta: {x: 0, y: 74916.85}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8038268957350821508
 GameObject:
@@ -1117,7 +2189,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Continue
+  m_text: Accept
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 71e4f71fb3bf11649a5e5ae53c58fe9a, type: 2}
   m_sharedMaterial: {fileID: -5132721197388374977, guid: 71e4f71fb3bf11649a5e5ae53c58fe9a,
@@ -1187,7 +2259,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 4942250109153713844}
-    characterCount: 8
+    characterCount: 6
     spriteCount: 0
     spaceCount: 0
     wordCount: 1

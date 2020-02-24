@@ -22,6 +22,15 @@ public class PnlMainPage : MonoBehaviour
     [SerializeField]
     VerticalLayoutGroup verticalLayoutGroup;
 
+    [SerializeField]
+    PnlViewingExperience pnlViewingExperience;
+
+    [SerializeField]
+    PnlVideoCode pnlVideoCode;
+
+    [SerializeField]
+    ScrollRect scrollRect;
+
     bool hasFetchedData;
     bool initiallaunch;
 
@@ -53,16 +62,21 @@ public class PnlMainPage : MonoBehaviour
         {
             var newThumbnail = Instantiate(thumbnailPrefab, contentShowcaseThumbnails);
             Sprite s = LoadSprite(HelperFunctions.PersistentDir() + thumbnailDownloadManager.videoThumbnailShowcaseJsonDatas[i].imageURL);
-            newThumbnail.GetComponent<BtnThumbnailItem>().UpdateThumbnailData(thumbnailDownloadManager.videoThumbnailShowcaseJsonDatas[i].code, s);
+
+            var thumbnailItem = newThumbnail.GetComponent<BtnThumbnailItem>();
+            thumbnailItem.UpdateThumbnailData(thumbnailDownloadManager.videoThumbnailShowcaseJsonDatas[i].code, s);
+            thumbnailItem.SetThumbnailPressAction(pnlVideoCode.OpenWithCode);
         }
 
         for (int i = 0; i < thumbnailDownloadManager.videoThumbnailUserJsonDatas.Count; i++)
         {
             var newThumbnail = Instantiate(thumbnailPrefab, contentUserThumbnails);
             Sprite s = LoadSprite(HelperFunctions.PersistentDir() + thumbnailDownloadManager.videoThumbnailUserJsonDatas[i].imageURL);
-            newThumbnail.GetComponent<BtnThumbnailItem>().UpdateThumbnailData(thumbnailDownloadManager.videoThumbnailUserJsonDatas[i].code, s);
-        }
 
+            var thumbnailItem = newThumbnail.GetComponent<BtnThumbnailItem>();
+            thumbnailItem.UpdateThumbnailData(thumbnailDownloadManager.videoThumbnailUserJsonDatas[i].code, s);
+            thumbnailItem.SetThumbnailPressAction(pnlVideoCode.OpenWithCode);
+        }
         StartCoroutine(RefreshLayoutGroup());
     }
 
@@ -85,5 +99,7 @@ public class PnlMainPage : MonoBehaviour
         verticalLayoutGroup.enabled = false;
         yield return new WaitForEndOfFrame();
         verticalLayoutGroup.enabled = true;
+        yield return new WaitForEndOfFrame();
+        scrollRect.verticalNormalizedPosition = 1;
     }
 }

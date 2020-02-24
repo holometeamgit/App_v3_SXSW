@@ -20,11 +20,6 @@ public class DotManager : MonoBehaviour
         PassCodeChanged();
     }
 
-    private void OnEnable()
-    {
-        ActivateTextField();
-    }
-
     public void ActivateTextField()
     {
         inputText.ActivateInputField();
