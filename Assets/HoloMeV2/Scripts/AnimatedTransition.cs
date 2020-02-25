@@ -66,6 +66,7 @@ public class AnimatedTransition : MonoBehaviour
     {
         if (show)
         {
+            gameObject.SetActive(true);
             //Set in front for better effect
             parentRect.SetAsLastSibling();
         }

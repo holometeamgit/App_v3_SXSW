@@ -46,7 +46,7 @@ public class PnlViewingExperience : MonoBehaviour
     [SerializeField]
     UnityEvent OnSurfaceDetected;
 
-    Coroutine scanAnimationRoutine;
+    //Coroutine scanAnimationRoutine;
 
     bool tutorialDisplayed;
 
@@ -74,8 +74,9 @@ public class PnlViewingExperience : MonoBehaviour
 
     private void RunTutorial()
     {
-        scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
+        //scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         //ShowMessage("Scan the floor to start");
+        ShowScanAnimation(animationSpeed);
         tutorialState = TutorialState.MessageTapToPlace;
         arPlaneManager.enabled = true;
     }
@@ -142,10 +143,10 @@ public class PnlViewingExperience : MonoBehaviour
 
     public void SkipTutorialStepTwo()
     {
-        if (scanAnimationItems != null)
-        {
-            StopCoroutine(scanAnimationRoutine);
-        }
+        //if (scanAnimationItems != null)
+        //{
+        //    StopCoroutine(scanAnimationRoutine);
+        //}
         HideScanAnimation(animationSpeed);
         //HideMessage();
         StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));

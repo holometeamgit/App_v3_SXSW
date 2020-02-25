@@ -16,15 +16,21 @@ public class PnlWelcome : MonoBehaviour
         int HasSeen = PlayerPrefs.GetInt(PrefHasSeenWelcome, 0);
         if (HasSeen == 1)
         {
-            animatedTransition.enabled = false;
-            pnlMainPage.gameObject.SetActive(true);
-            gameObject.SetActive(false);
+            ShowNextPanel();
         }
+    }
+
+    private void ShowNextPanel()
+    {
+        pnlMainPage.gameObject.SetActive(true);
+        animatedTransition.DoMenuTransition(true);
+        gameObject.SetActive(false);
     }
 
     //Link to close button
     public void SetToSeen()
     {
         PlayerPrefs.SetInt(PrefHasSeenWelcome, 1);
+        ShowNextPanel();
     }
 }

@@ -316,6 +316,15 @@ public class S3Handler : MonoBehaviour
 
     public void DownloadGeneric(string fileName, Action OnDownloadCompleteOneOff = null)
     {
+        if (HelperFunctions.DoesFileExist(HelperFunctions.versionFile))
+        {
+            if (!IsOutOfDate(versionFileData))
+            {
+                OnDownloadCompleteOneOff?.Invoke();
+                return;
+            }
+        }
+
         Client.GetObjectAsync(S3BucketName, fileName, (responseObj) =>
         {
             if (responseObj.Exception != null)

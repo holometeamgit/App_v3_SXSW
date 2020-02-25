@@ -23,13 +23,13 @@ public class PnlMainPage : MonoBehaviour
     VerticalLayoutGroup verticalLayoutGroup;
 
     [SerializeField]
-    PnlViewingExperience pnlViewingExperience;
-
-    [SerializeField]
     PnlVideoCode pnlVideoCode;
 
     [SerializeField]
     ScrollRect scrollRect;
+
+    [SerializeField]
+    AnimatedTransition PnlGenericLoading;
 
     bool hasFetchedData;
     bool initiallaunch;
@@ -51,6 +51,7 @@ public class PnlMainPage : MonoBehaviour
 
     private void FetchThumbnailData()
     {
+        PnlGenericLoading.DoMenuTransition(true);
         thumbnailDownloadManager.OnThumbnailsDataDownloaded -= OnThumbnailsDownloaded;
         thumbnailDownloadManager.OnThumbnailsDataDownloaded += OnThumbnailsDownloaded;
         thumbnailDownloadManager.DownloadVideoThumbnails();
@@ -101,5 +102,6 @@ public class PnlMainPage : MonoBehaviour
         verticalLayoutGroup.enabled = true;
         yield return new WaitForEndOfFrame();
         scrollRect.verticalNormalizedPosition = 1;
+        PnlGenericLoading.DoMenuTransition(false);
     }
 }
