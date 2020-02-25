@@ -12,6 +12,7 @@ public class PnlWelcome : MonoBehaviour
 
     private void OnEnable()
     {
+        PlayerPrefs.DeleteAll();
         int HasSeen = PlayerPrefs.GetInt(PrefHasSeenWelcome, 0);
         if (HasSeen == 1)
         {
