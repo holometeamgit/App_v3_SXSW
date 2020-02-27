@@ -655,6 +655,7 @@ GameObject:
   - component: {fileID: 4732217423955128799}
   - component: {fileID: 5187266277347712108}
   - component: {fileID: 582396479280300759}
+  - component: {fileID: 6787993944389252017}
   m_Layer: 5
   m_Name: btnRecord
   m_TagString: Untagged
@@ -760,6 +761,46 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6787993944389252017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2353910837166811660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86ef40b4af8606342ad17ead8d0a4663, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnHeldDown:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3181961947608742104}
+        m_MethodName: ToggleRecord
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnRelease:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3181961947608742104}
+        m_MethodName: ToggleRecord
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3867255401236391216
 GameObject:
   m_ObjectHideFlags: 0
@@ -965,7 +1006,6 @@ MonoBehaviour:
   spriteStop: {fileID: 0}
   spriteRecord: {fileID: 0}
   btnToggleMode: {fileID: 4468515617332328277}
-  btnRecord: {fileID: 582396479280300759}
   txtVideo: {fileID: 2342687092199290239}
   txtPhoto: {fileID: 5286312134110650503}
   pnlPostRecord: {fileID: 0}

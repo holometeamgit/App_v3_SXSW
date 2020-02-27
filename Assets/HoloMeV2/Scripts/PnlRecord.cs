@@ -32,8 +32,8 @@ public class PnlRecord : MonoBehaviour
     [SerializeField]
     Button btnToggleMode;
 
-    [SerializeField]
-    Button btnRecord;
+    //[SerializeField]
+    //Button btnRecord;
 
     [SerializeField]
     TextMeshProUGUI txtVideo;
@@ -77,7 +77,7 @@ public class PnlRecord : MonoBehaviour
     private AudioInput audioInput;
     private Coroutine currentCoroutine;
 
-    const int RecordTimeLimit = 60;
+    const int RecordTimeLimit = 15;
     int videoWidth;
     int videoHeight;
     float startRecordTime;
@@ -98,18 +98,18 @@ public class PnlRecord : MonoBehaviour
                     rtButtonContainer.DOAnchorPosX(videoButtonContainerPosition.x, .25f);
                     txtPhoto.color = HelperFunctions.GetColor(176, 176, 176);
                     txtVideo.color = Color.white;
-                    btnRecord.GetComponent<Image>().sprite = spriteRecord;
+                    //btnRecord.GetComponent<Image>().sprite = spriteRecord;
                     imgRecordFill.gameObject.SetActive(true);
                     break;
                 case Mode.Photo:
                     rtButtonContainer.DOAnchorPosX(videoButtonContainerPosition.x - rtButtonContainer.rect.width / 2, .25f);
                     txtPhoto.color = Color.white;
                     txtVideo.color = HelperFunctions.GetColor(176, 176, 176);
-                    btnRecord.GetComponent<Image>().sprite = spriteTakeSnapshot;
+                    //btnRecord.GetComponent<Image>().sprite = spriteTakeSnapshot;
                     imgRecordFill.gameObject.SetActive(false);
                     break;
             }
-            imgFillBackground.enabled = false;
+            //imgFillBackground.enabled = false;
         }
     }
 
@@ -118,18 +118,18 @@ public class PnlRecord : MonoBehaviour
         CorrectResolutionAspect();
         ChangeMode = Mode.Video;
         btnToggleMode.onClick.AddListener(() => ChangeMode = mode == Mode.Video ? Mode.Photo : Mode.Video);
-        btnRecord.onClick.AddListener(() =>
-        {
-            if (mode == Mode.Photo)
-            {
-                MakeScreenshot();
-            }
-            else
-            {
-                ToggleRecord();
-            }
-        });
-        btnRecord.GetComponent<Image>().sprite = spriteRecord;
+        //btnRecord.onClick.AddListener(() =>
+        //{
+        //    if (mode == Mode.Photo)
+        //    {
+        //        MakeScreenshot();
+        //    }
+        //    else
+        //    {
+        //        ToggleRecord();
+        //    }
+        //});
+        //btnRecord.GetComponent<Image>().sprite = spriteRecord;
         videoButtonContainerPosition = rtButtonContainer.anchoredPosition;
         canvasGroup.alpha = 0;
     }
@@ -154,7 +154,7 @@ public class PnlRecord : MonoBehaviour
         //print("RES = " + (int)((float)videoWidth * ratio));
     }
 
-    private void ToggleRecord()
+    public void ToggleRecord()
     {
         if (Recording)
         {
@@ -199,8 +199,8 @@ public class PnlRecord : MonoBehaviour
             audioInput = new AudioInput(videoRecorder, recordingClock, videoSource);
         }
 
-        imgFillBackground.enabled = true;
-        btnRecord.GetComponent<Image>().sprite = spriteStop;
+        //imgFillBackground.enabled = true;
+        //btnRecord.GetComponent<Image>().sprite = spriteStop;
         btnToggleMode.interactable = false;
         InvokeRepeating("Countdown", 0, 1);
         Recording = true;
@@ -252,8 +252,8 @@ public class PnlRecord : MonoBehaviour
         videoRecorder.Dispose();
         //pnlVideoExperience.PauseExperience();
         imgRecordFill.fillAmount = 0;
-        btnRecord.GetComponent<Image>().sprite = spriteRecord;
-        imgFillBackground.enabled = false;
+        //btnRecord.GetComponent<Image>().sprite = spriteRecord;
+        //imgFillBackground.enabled = false;
         btnToggleMode.interactable = true;
         Recording = false;
         OnRecordStopped?.Invoke();
