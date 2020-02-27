@@ -186,6 +186,7 @@ public class PnlVideoCode : MonoBehaviour
 
         ToggleSampleCodeSection(true);
 
+        dotManager.ToggleBoxSprites(false);
         dotManager.ClearText();
         ToggleIncorrectCodeText(false);
     }
@@ -415,7 +416,9 @@ public class PnlVideoCode : MonoBehaviour
         ToggleSampleCodeSection(true);
         ToggleIncorrectCodeText(true);
         IncorrectCodeShake();
+        dotManager.ToggleBoxSprites(true);
         yield return new WaitForSeconds(2);
+        dotManager.ToggleBoxSprites(false);
         dotManager.ClearText();
         dotManager.ActivateTextField();
         ToggleIncorrectCodeText(false);

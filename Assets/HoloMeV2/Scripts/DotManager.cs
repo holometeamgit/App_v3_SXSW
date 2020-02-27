@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using TMPro;
+using UnityEngine.UI;
 
 public class DotManager : MonoBehaviour
 {
@@ -9,6 +10,12 @@ public class DotManager : MonoBehaviour
 
     [SerializeField]
     Transform[] cursorTransforms;
+
+    [SerializeField]
+    Sprite spriteDot;
+
+    [SerializeField]
+    Sprite spriteWrongCode;
 
     [SerializeField]
     TMP_InputField inputText;
@@ -42,6 +49,14 @@ public class DotManager : MonoBehaviour
         if (index <= cursorTransforms.Length - 1)
         {
             cursorTransforms[index].gameObject.SetActive(true);
+        }
+    }
+
+    public void ToggleBoxSprites(bool incorrectCode)
+    {
+        for (int i = 0; i < dotTransforms.Length; i++)
+        {
+            dotTransforms[i].GetComponent<Image>().sprite = incorrectCode ? spriteWrongCode : spriteDot;
         }
     }
 
