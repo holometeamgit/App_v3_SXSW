@@ -212,7 +212,7 @@ public class PnlRecord : MonoBehaviour
         if (Recording)
         {
             float timeRecording = (Time.time - startRecordTime);
-            imgRecordFill.fillAmount = timeRecording / 60f;
+            imgRecordFill.fillAmount = timeRecording / RecordTimeLimit;
         }
     }
 

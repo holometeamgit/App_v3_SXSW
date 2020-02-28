@@ -22,6 +22,9 @@ public class PnlPostRecord : MonoBehaviour
     CanvasGroup imgDownloadSuccessCanvasGroup;
 
     [SerializeField]
+    CanvasGroup safeAreaContent;
+
+    [SerializeField]
     Button btnPreview;
 
     [SerializeField]
@@ -44,7 +47,7 @@ public class PnlPostRecord : MonoBehaviour
 
     private void Start()
     {
-        btnShare.onClick.AddListener(Share);
+        //btnShare.onClick.AddListener(Share);
 
         imgSavingCanvasGroup = imgSaving.GetComponent<CanvasGroup>();
         imgDownloadSuccessCanvasGroup = imgDownloadSuccess.GetComponent<CanvasGroup>();
@@ -89,7 +92,7 @@ public class PnlPostRecord : MonoBehaviour
         lastRecordingPath = lastRecordPath;
     }
 
-    void Share()
+    public void Share()
     {
         if (screenshotWasTaken)
         {
@@ -99,6 +102,12 @@ public class PnlPostRecord : MonoBehaviour
         {
             ShareVideo();
         }
+    }
+
+    public void FadeToggleControls(bool show)
+    {
+        safeAreaContent.DOFade(show ? 1 : 0, 0.5f);
+        safeAreaContent.interactable = show;
     }
 
     #region Video Functions

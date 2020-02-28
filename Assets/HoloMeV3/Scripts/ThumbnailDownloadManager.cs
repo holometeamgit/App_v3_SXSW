@@ -50,7 +50,7 @@ public class ThumbnailDownloadManager : MonoBehaviour
         {
             VideoThumbnailJsonData videoThumbnailJsonData = JsonParser.CreateFromJSON<VideoThumbnailJsonData>(JsonParser.ParseFileName(data.Value.FileName));
             allThumbnailData.Add(videoThumbnailJsonData);
-            s3Handler.DownloadGeneric(videoThumbnailJsonData.imageURL, IncrementThumbnailDownloaded);
+            s3Handler.DownloadGeneric(videoThumbnailJsonData.imageURL, data.Value, IncrementThumbnailDownloaded);
         }
     }
 
@@ -67,7 +67,7 @@ public class ThumbnailDownloadManager : MonoBehaviour
         thumbnailImagesDownloaded = 0;
         foreach (var data in s3Handler.thumbnailData)
         {
-            s3Handler.DownloadGeneric(data.Value.FileName, OnDownloadCompleteOneOff: IncrementThumbnailJsonDownloaded);
+            s3Handler.DownloadGeneric(data.Value.FileName, data.Value, OnDownloadCompleteOneOff: IncrementThumbnailJsonDownloaded);
         }
     }
 }

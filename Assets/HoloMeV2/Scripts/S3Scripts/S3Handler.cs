@@ -314,11 +314,11 @@ public class S3Handler : MonoBehaviour
         });
     }
 
-    public void DownloadGeneric(string fileName, Action OnDownloadCompleteOneOff = null)
+    public void DownloadGeneric(string fileName, ServerFileData serverDataHandler, Action OnDownloadCompleteOneOff = null)
     {
-        if (HelperFunctions.DoesFileExist(HelperFunctions.versionFile))
+        if (HelperFunctions.DoesFileExist(fileName))
         {
-            if (!IsOutOfDate(versionFileData))
+            if (!IsOutOfDate(serverDataHandler))
             {
                 OnDownloadCompleteOneOff?.Invoke();
                 return;
