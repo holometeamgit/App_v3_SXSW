@@ -9,8 +9,8 @@ public class PnlShareOptions : MonoBehaviour
 
     private void Start()
     {
-        string dir = PnlPostRecord.LastRecordingPath;
-        btnInstagram.onClick.AddListener(() => ShareAsStory(dir, true));
+
+        btnInstagram.onClick.AddListener(() => ShareAsStory(true));
     }
 
     private void OnEnable()
@@ -18,8 +18,10 @@ public class PnlShareOptions : MonoBehaviour
         btnInstagram.interactable = InstagramKitManager.IsAvailable();
     }
 
-    private void ShareAsStory(string path, bool isVideo)
+    private void ShareAsStory(bool isVideo)
     {
+        string path = PnlPostRecord.LastRecordingPath;
+        //print("ShareAsStory Called " + "Path is = " + path);
         StoryContent content = new StoryContent(path, isVideo);
 
         // Add any extra data like sticker or caption text or target attachment url
@@ -38,6 +40,7 @@ public class PnlShareOptions : MonoBehaviour
                 Log(message);       
             });
          */
+        //print("ShareAsStory Exit");
     }
 
     private void OnShareComplete(bool success, string error)
