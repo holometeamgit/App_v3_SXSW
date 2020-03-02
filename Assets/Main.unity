@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2622,6 +2622,11 @@ PrefabInstance:
       propertyPath: OnSurfaceDetected.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 4715128580983914915, guid: 3209882b76bfe1b4eb7eeac7cd89997e,
+        type: 3}
+      propertyPath: focusSquare
+      value: 
+      objectReference: {fileID: 1752736595}
     - target: {fileID: 4908216202904122352, guid: 3209882b76bfe1b4eb7eeac7cd89997e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4341,6 +4346,12 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1735340509}
   m_Enabled: 1
+--- !u!1 &1752736595 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 976982207438330182, guid: 65f27277595733c46b483fb8530a683a,
+    type: 3}
+  m_PrefabInstance: {fileID: 5503923335667453287}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1850197904 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4715128580983914915, guid: 3209882b76bfe1b4eb7eeac7cd89997e,
@@ -5955,6 +5966,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: FocusSquareScript
       objectReference: {fileID: 0}
+    - target: {fileID: 976982207438330182, guid: 65f27277595733c46b483fb8530a683a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
         type: 3}
       propertyPath: OnSurfaceFound.m_PersistentCalls.m_Calls.Array.size
@@ -6108,7 +6124,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 5503923335667453287}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1752736595}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d0e6e66099456f45a6750443a6e2362, type: 3}

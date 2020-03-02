@@ -46,6 +46,9 @@ public class PnlViewingExperience : MonoBehaviour
     [SerializeField]
     UnityEvent OnSurfaceDetected;
 
+    [SerializeField]
+    GameObject focusSquare;
+
     //Coroutine scanAnimationRoutine;
 
     bool tutorialDisplayed;
@@ -76,6 +79,7 @@ public class PnlViewingExperience : MonoBehaviour
     {
         //scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         //ShowMessage("Scan the floor to start");
+       
         ShowScanAnimation(animationSpeed);
         tutorialState = TutorialState.MessageTapToPlace;
         arPlaneManager.enabled = true;
@@ -189,6 +193,7 @@ public class PnlViewingExperience : MonoBehaviour
         btnBurger.SetActive(true);
         logoCanvas.ActivateIfLogoAvailable(videoJsonData);
         hologramHandler.InitSession(code);
+        focusSquare.SetActive(true);
         FadeInCanvas();
 
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing

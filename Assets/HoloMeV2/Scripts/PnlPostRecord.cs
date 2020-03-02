@@ -40,7 +40,7 @@ public class PnlPostRecord : MonoBehaviour
     GameObject pnlGenericError;
 
     static string lastRecordingPath;
-    public static string LastRecordingPath { get { return LastRecordingPath; } }
+    public static string LastRecordingPath { get { return lastRecordingPath; } }
     private Texture2D screenShot;
     private bool screenshotWasTaken;
     public string Code { private get; set; }
