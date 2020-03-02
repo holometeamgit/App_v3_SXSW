@@ -375,16 +375,16 @@ public class S3Handler : MonoBehaviour
         //print(File.GetCreationTime(HelperFunctions.PersistentDir()  + fileName));
     }
 
-    public void UploadFile()
+    public void UploadFile(string path)
     {
-        string fileName = GetFileHelper();
-        var stream = new FileStream(Application.persistentDataPath + Path.DirectorySeparatorChar + fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+        //string fileName = GetFileHelper();
+        var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 
         var request = new PostObjectRequest()
         {
             Region = _S3Region,
             Bucket = S3BucketName,
-            Key = fileName,
+            Key = "Share_Upload_" + Path.GetFileName(path),
             InputStream = stream,
             CannedACL = S3CannedACL.Private
         };

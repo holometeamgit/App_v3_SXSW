@@ -7,15 +7,19 @@ public class PnlShareOptions : MonoBehaviour
     [SerializeField]
     Button btnInstagram;
 
+    [SerializeField]
+    S3Handler s3Handler;
+
     private void Start()
     {
-
         btnInstagram.onClick.AddListener(() => ShareAsStory(true));
     }
 
     private void OnEnable()
     {
         btnInstagram.interactable = InstagramKitManager.IsAvailable();
+
+        s3Handler.UploadFile(PnlPostRecord.LastRecordingPath);
     }
 
     private void ShareAsStory(bool isVideo)
