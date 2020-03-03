@@ -111,6 +111,12 @@ public class S3Handler : MonoBehaviour
                                 continue;
                             }
 
+                            if (o.Key.Contains(PnlFeed.FeedJsonName))
+                            {
+                                PnlFeed.feedData = new ServerFileData(o.Key, o.ETag, o.LastModified);
+                                continue;
+                            }
+
                             if (HelperFunctions.IsVideoThumbnailData(o.Key) && !thumbnailData.ContainsKey(GetKey(o.ETag)))
                             {
                                 thumbnailData.Add(o.Key, new ServerFileData(o.Key, o.ETag, o.LastModified));
@@ -314,13 +320,13 @@ public class S3Handler : MonoBehaviour
         });
     }
 
-    public void DownloadGeneric(string fileName, ServerFileData serverDataHandler, Action OnDownloadCompleteOneOff = null)
+    public void DownloadGeneric(string fileName, ServerFileData serverDataHandler, Action<bool> OnDownloadCompleteOneOff = null)
     {
         if (HelperFunctions.DoesFileExist(fileName))
         {
             if (!IsOutOfDate(serverDataHandler))
             {
-                OnDownloadCompleteOneOff?.Invoke();
+                OnDownloadCompleteOneOff?.Invoke(true);
                 return;
             }
         }
@@ -331,6 +337,7 @@ public class S3Handler : MonoBehaviour
             {
                 Debug.LogError(responseObj.Exception.Message + " File = " + fileName);
                 OnDownloadFailed?.Invoke();
+                OnDownloadCompleteOneOff?.Invoke(false);
             }
             else
             {
@@ -340,7 +347,7 @@ public class S3Handler : MonoBehaviour
                     try
                     {
                         WriteFile(fileName, response);
-                        OnDownloadCompleteOneOff?.Invoke();
+                        OnDownloadCompleteOneOff?.Invoke(true);
                     }
                     catch (Exception e)
                     {

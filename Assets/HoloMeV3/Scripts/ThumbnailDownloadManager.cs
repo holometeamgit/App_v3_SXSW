@@ -17,7 +17,7 @@ public class ThumbnailDownloadManager : MonoBehaviour
     public List<VideoThumbnailJsonData> videoThumbnailShowcaseJsonDatas = new List<VideoThumbnailJsonData>();
     public List<VideoThumbnailJsonData> videoThumbnailUserJsonDatas = new List<VideoThumbnailJsonData>();
 
-    void IncrementThumbnailJsonDownloaded()
+    void IncrementThumbnailJsonDownloaded(bool success)
     {
         thumbnailFiles++;
         if (thumbnailFiles == thumbnailSeverCount)
@@ -26,7 +26,7 @@ public class ThumbnailDownloadManager : MonoBehaviour
         }
     }
 
-    void IncrementThumbnailDownloaded()
+    void IncrementThumbnailDownloaded(bool success)
     {
         thumbnailImagesDownloaded++;
         if (thumbnailImagesDownloaded == thumbnailSeverCount)

@@ -1,18 +1,87 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class PnlFeed : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    GameObject pnlLoading;
+
+    [SerializeField]
+    S3Handler s3Handler;
+
+    [SerializeField]
+    VideoPlayer videoPlayer;
+
+    [SerializeField]
+    Button btnRight;
+
+    [SerializeField]
+    Button btnLeft;
+
+    public static ServerFileData feedData;
+    public static string FeedJsonName = "FeedVideo.json";
+
+    int incrementValue = -1;
+
+    FeedVideosCollection feedVideosCollection;
+    public void Activate()
     {
-        
+        gameObject.SetActive(true);
+        pnlLoading.gameObject.SetActive(true);
+        s3Handler.DownloadGeneric(FeedJsonName, feedData, OnDataReturned);
+        btnRight.onClick.AddListener(() => ChangeURLIndex(false));
+        btnLeft.onClick.AddListener(() => ChangeURLIndex(true));
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnDataReturned(bool success)
     {
-        
+        if (success)
+        {
+            pnlLoading.GetComponent<AnimatedTransition>().DoMenuTransition(false);
+            feedVideosCollection = JsonUtility.FromJson<FeedVideosCollection>(JsonParser.ParseFileName(FeedJsonName));
+            ChangeURLIndex(false);
+        }
+        else
+        {
+            Debug.LogError("Feed json failed to download");
+        }
     }
+
+    private void ChangeURLIndex(bool decrement)
+    {
+        int feedCount = feedVideosCollection.feedVideos.Length;
+        int highestIndex = feedCount - 1;
+
+        if (feedCount == 0)
+        {
+            return;
+        }
+
+        incrementValue += decrement ? -1 : 1;
+
+        if (incrementValue > highestIndex)
+            incrementValue = 0;
+        if (incrementValue < 0)
+            incrementValue = highestIndex;
+
+        UpdateVideoURL(feedVideosCollection.feedVideos[incrementValue].URL);
+    }
+
+    private void UpdateVideoURL(string url)
+    {
+        videoPlayer.url = url;
+    }
+}
+
+[System.Serializable]
+public struct FeedVideosCollection
+{
+    public FeedVideos[] feedVideos;
+}
+
+[System.Serializable]
+public struct FeedVideos
+{
+    public string URL;
 }

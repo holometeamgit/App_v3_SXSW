@@ -10,16 +10,24 @@ public class PnlShareOptions : MonoBehaviour
     [SerializeField]
     S3Handler s3Handler;
 
-    private void Start()
+    private void Awake()
     {
         btnInstagram.onClick.AddListener(() => ShareAsStory(true));
     }
 
-    private void OnEnable()
+    public void Activate()
     {
+        gameObject.SetActive(true);
         btnInstagram.interactable = InstagramKitManager.IsAvailable();
 
-        s3Handler.UploadFile(PnlPostRecord.LastRecordingPath);
+        if (!string.IsNullOrEmpty(PnlPostRecord.LastRecordingPath))
+        {
+            s3Handler.UploadFile(PnlPostRecord.LastRecordingPath);
+        }
+        else
+        {
+            Debug.LogError("Last recording path was null or empty");
+        }
     }
 
     private void ShareAsStory(bool isVideo)
@@ -28,7 +36,7 @@ public class PnlShareOptions : MonoBehaviour
         //print("ShareAsStory Called " + "Path is = " + path);
         StoryContent content = new StoryContent(path, isVideo);
 
-        // Add any extra data like sticker or caption text or target attachment url
+        //Add any extra data like sticker or caption text or target attachment url
         //Sticker sticker = GetSticker();
         //string attachmentURL = GetAttachmentURL();
 
