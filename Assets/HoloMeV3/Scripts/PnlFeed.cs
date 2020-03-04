@@ -29,7 +29,7 @@ public class PnlFeed : MonoBehaviour
     {
         gameObject.SetActive(true);
         pnlLoading.gameObject.SetActive(true);
-        s3Handler.DownloadGeneric(FeedJsonName, feedData, OnDataReturned);
+        s3Handler.DownloadGeneric(feedData.FileName, feedData, OnDataReturned);
         btnRight.onClick.AddListener(() => ChangeURLIndex(false));
         btnLeft.onClick.AddListener(() => ChangeURLIndex(true));
     }
@@ -39,12 +39,12 @@ public class PnlFeed : MonoBehaviour
         if (success)
         {
             pnlLoading.GetComponent<AnimatedTransition>().DoMenuTransition(false);
-            feedVideosCollection = JsonUtility.FromJson<FeedVideosCollection>(JsonParser.ParseFileName(FeedJsonName));
+            feedVideosCollection = JsonUtility.FromJson<FeedVideosCollection>(JsonParser.ParseFileName(feedData.FileName));
             ChangeURLIndex(false);
         }
         else
         {
-            Debug.LogError("Feed json failed to download");
+            Debug.LogError("Feed json failed to download " + feedData.FileName);
         }
     }
 

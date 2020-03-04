@@ -22,7 +22,7 @@ public class PnlShareOptions : MonoBehaviour
 
         if (!string.IsNullOrEmpty(PnlPostRecord.LastRecordingPath))
         {
-            s3Handler.UploadFile(PnlPostRecord.LastRecordingPath);
+            s3Handler.UploadFile(PnlPostRecord.LastRecordingPath, "Share_Upload_", "UserContent");
         }
         else
         {

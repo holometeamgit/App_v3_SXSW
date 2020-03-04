@@ -105,21 +105,28 @@ public class S3Handler : MonoBehaviour
                         var o = s3Objects[i];
                         try
                         {
-                            if (o.Key == HelperFunctions.versionFile)//Needs to be changed so this class takes a generic type list to add data too if 
+                            string filename = o.Key;//Path.GetFileName(o.Key);
+
+                            if (filename == HelperFunctions.versionFile)//Needs to be changed so this class takes a generic type list to add data too if 
                             {
-                                versionFileData = new ServerFileData(o.Key, o.ETag, o.LastModified);
+                                versionFileData = new ServerFileData(filename, o.ETag, o.LastModified);
                                 continue;
                             }
 
-                            if (o.Key.Contains(PnlFeed.FeedJsonName))
+                            if (filename.Contains(PnlFeed.FeedJsonName))
                             {
-                                PnlFeed.feedData = new ServerFileData(o.Key, o.ETag, o.LastModified);
+                                PnlFeed.feedData = new ServerFileData(filename, o.ETag, o.LastModified);
                                 continue;
                             }
 
-                            if (HelperFunctions.IsVideoThumbnailData(o.Key) && !thumbnailData.ContainsKey(GetKey(o.ETag)))
+                            if (HelperFunctions.IsVideoThumbnailData(filename) && !thumbnailData.ContainsKey(GetKey(o.ETag)))
                             {
-                                thumbnailData.Add(o.Key, new ServerFileData(o.Key, o.ETag, o.LastModified));
+                                thumbnailData.Add(filename, new ServerFileData(filename, o.ETag, o.LastModified));
+                                continue;
+                            }
+
+                            if (o.Key.Contains("/"))
+                            {
                                 continue;
                             }
 
@@ -129,7 +136,7 @@ public class S3Handler : MonoBehaviour
                             }
                             else
                             {
-                                videoDataList.Add(GetKey(o.ETag), new ServerFileData(o.Key, o.ETag, o.LastModified));
+                                videoDataList.Add(GetKey(o.ETag), new ServerFileData(filename, o.ETag, o.LastModified));
                             }
                         }
                         catch (Exception e)
@@ -195,7 +202,7 @@ public class S3Handler : MonoBehaviour
             bool videoFound = false;
             foreach (ServerFileData data in videoDataList)
             {
-                if (data.FileName == Path.GetFileName(videoName))
+                if (data.FileName ==/* Path.GetFileName*/(videoName))
                 {
                     videoFound = true;
                     break;
@@ -302,7 +309,7 @@ public class S3Handler : MonoBehaviour
                 {
                     try
                     {
-                        WriteFile(saveAsName == "" ? fileName : saveAsName, response);
+                        WriteFile(saveAsName == "" ? /*Path.GetFileName*/(fileName) : saveAsName, response);
 
                         OnDownloadVideoComplete?.Invoke();
                         OnDownloadCompleteOneOff?.Invoke();
@@ -322,7 +329,7 @@ public class S3Handler : MonoBehaviour
 
     public void DownloadGeneric(string fileName, ServerFileData serverDataHandler, Action<bool> OnDownloadCompleteOneOff = null)
     {
-        if (HelperFunctions.DoesFileExist(fileName))
+        if (HelperFunctions.DoesFileExist(/*Path.GetFileName*/(fileName)))
         {
             if (!IsOutOfDate(serverDataHandler))
             {
@@ -346,7 +353,8 @@ public class S3Handler : MonoBehaviour
                 {
                     try
                     {
-                        WriteFile(fileName, response);
+                        //print("Writing " + /*Path.GetFileName*/(fileName));
+                        WriteFile(/*Path.GetFileName*/(fileName), response);
                         OnDownloadCompleteOneOff?.Invoke(true);
                     }
                     catch (Exception e)
@@ -369,6 +377,8 @@ public class S3Handler : MonoBehaviour
             File.Delete(HelperFunctions.PersistentDir() + fileName);
         }
 
+        Directory.CreateDirectory(HelperFunctions.PersistentDir() + Path.GetDirectoryName(fileName));
+
         using (var fs = System.IO.File.Create(HelperFunctions.PersistentDir() + fileName))
         {
             byte[] buffer = new byte[81920];
@@ -382,7 +392,7 @@ public class S3Handler : MonoBehaviour
         //print(File.GetCreationTime(HelperFunctions.PersistentDir()  + fileName));
     }
 
-    public void UploadFile(string path)
+    public void UploadFile(string path, string filePrefix = "", string s3SubDir = "")
     {
         //string fileName = GetFileHelper();
         var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -391,7 +401,7 @@ public class S3Handler : MonoBehaviour
         {
             Region = _S3Region,
             Bucket = S3BucketName,
-            Key = "Share_Upload_" + Path.GetFileName(path),
+            Key = s3SubDir + "/" + filePrefix + Path.GetFileName(path),
             InputStream = stream,
             CannedACL = S3CannedACL.Private
         };
