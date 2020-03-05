@@ -12,6 +12,12 @@ using UnityEngine.Events;
 public class PnlRecord : MonoBehaviour
 {
     [SerializeField]
+    GameObject watermarkCanvasObject;
+
+    [SerializeField]
+    Camera canvasCamera;
+
+    [SerializeField]
     Camera arCamera;
 
     [SerializeField]
@@ -192,7 +198,7 @@ public class PnlRecord : MonoBehaviour
             OnRecordComplete
         );
 
-        cameraInput = new CameraInput(videoRecorder, recordingClock, arCamera);
+        cameraInput = new CameraInput(videoRecorder, recordingClock, arCamera, canvasCamera);
         if (recordMicrophone)
         {
             StartMicrophone();
@@ -205,6 +211,7 @@ public class PnlRecord : MonoBehaviour
         InvokeRepeating("Countdown", 0, 1);
         Recording = true;
         OnRecordStarted?.Invoke();
+        watermarkCanvasObject.SetActive(true);
     }
 
     private void Update()
@@ -257,6 +264,7 @@ public class PnlRecord : MonoBehaviour
         btnToggleMode.interactable = true;
         Recording = false;
         OnRecordStopped?.Invoke();
+        watermarkCanvasObject.SetActive(false);
     }
 
     void StopMicrophone()

@@ -19,6 +19,9 @@ public class PnlFeed : MonoBehaviour
     [SerializeField]
     Button btnLeft;
 
+    [SerializeField]
+    GameObject GenericLoadingGO;
+
     public static ServerFileData feedData;
     public static string FeedJsonName = "FeedVideo.json";
 
@@ -71,6 +74,11 @@ public class PnlFeed : MonoBehaviour
     private void UpdateVideoURL(string url)
     {
         videoPlayer.url = url;
+    }
+
+    private void Update()
+    {
+        GenericLoadingGO?.SetActive(!videoPlayer.isPrepared);
     }
 }
 
