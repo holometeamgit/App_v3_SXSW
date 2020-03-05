@@ -543,7 +543,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3181961947608742104}
-        m_MethodName: ToggleRecord
+        m_MethodName: StartRecording
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -568,7 +568,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3181961947608742104}
-        m_MethodName: ToggleRecord
+        m_MethodName: StopRecording
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -800,6 +800,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ba23f9f41065434c862ea808db7963f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  watermarkCanvasObject: {fileID: 0}
+  canvasCamera: {fileID: 0}
   arCamera: {fileID: 0}
   imgRecordFill: {fileID: 4944948542688598597}
   imgFillBackground: {fileID: 3584672146791275324}

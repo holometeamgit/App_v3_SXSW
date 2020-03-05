@@ -172,7 +172,7 @@ public class PnlRecord : MonoBehaviour
         }
     }
 
-    void StartRecording()
+    public void StartRecording()
     {
         startRecordTime = Time.time;
         recordTime = 0;
@@ -245,7 +245,7 @@ public class PnlRecord : MonoBehaviour
 #endif
     }
 
-    void StopRecording()
+    public void StopRecording()
     {
         CancelInvoke("Countdown");
 
