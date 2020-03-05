@@ -31,6 +31,9 @@ public class PnlMainPage : MonoBehaviour
     [SerializeField]
     AnimatedTransition PnlGenericLoading;
 
+    [SerializeField]
+    PnlGenericError pnlGenericError;
+
     bool hasFetchedData;
     bool initiallaunch;
 
@@ -41,11 +44,14 @@ public class PnlMainPage : MonoBehaviour
             initiallaunch = true;
             return;
         }
+        FetchData();
+    }
 
+    private void FetchData()
+    {
         if (!hasFetchedData)
         {
             pnlFetchingData.Activate(FetchThumbnailData);
-            hasFetchedData = true;
         }
     }
 
@@ -78,6 +84,8 @@ public class PnlMainPage : MonoBehaviour
             thumbnailItem.UpdateThumbnailData(thumbnailDownloadManager.videoThumbnailUserJsonDatas[i].code, s);
             thumbnailItem.SetThumbnailPressAction(pnlVideoCode.OpenWithCode);
         }
+
+        hasFetchedData = true;
         StartCoroutine(RefreshLayoutGroup());
     }
 
@@ -103,5 +111,13 @@ public class PnlMainPage : MonoBehaviour
         yield return new WaitForEndOfFrame();
         scrollRect.verticalNormalizedPosition = 1;
         PnlGenericLoading.DoMenuTransition(false);
+    }
+
+    private void Update()
+    {
+        if (Application.internetReachability == NetworkReachability.NotReachable)
+        {
+            pnlGenericError.Activate("No Internet Access", "Please check internet connectivity", "Try Again", onBackPress: FetchData);
+        }
     }
 }
