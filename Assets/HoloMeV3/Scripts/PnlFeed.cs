@@ -22,12 +22,18 @@ public class PnlFeed : MonoBehaviour
     [SerializeField]
     GameObject GenericLoadingGO;
 
+    [SerializeField]
+    PnlGenericError pnlGenericError;
+
     public static ServerFileData feedData;
     public static string FeedJsonName = "FeedVideo.json";
 
     int incrementValue = -1;
 
     FeedVideosCollection feedVideosCollection;
+
+    bool feedDataRecieved;
+
     public void Activate()
     {
         gameObject.SetActive(true);
@@ -35,6 +41,8 @@ public class PnlFeed : MonoBehaviour
         s3Handler.DownloadGeneric(feedData.FileName, feedData, OnDataReturned);
         btnRight.onClick.AddListener(() => ChangeURLIndex(false));
         btnLeft.onClick.AddListener(() => ChangeURLIndex(true));
+
+        videoPlayer.errorReceived += (videoplayer, errorString) => pnlGenericError.Activate("Playback Error", "Please check internet connectivity", "Try Again", () => s3Handler.DownloadGeneric(feedData.FileName, feedData, OnDataReturned));
     }
 
     void OnDataReturned(bool success)
@@ -42,11 +50,16 @@ public class PnlFeed : MonoBehaviour
         if (success)
         {
             pnlLoading.GetComponent<AnimatedTransition>().DoMenuTransition(false);
-            feedVideosCollection = JsonUtility.FromJson<FeedVideosCollection>(JsonParser.ParseFileName(feedData.FileName));
-            ChangeURLIndex(false);
+            if (!feedDataRecieved)
+            {
+                feedVideosCollection = JsonUtility.FromJson<FeedVideosCollection>(JsonParser.ParseFileName(feedData.FileName));
+                ChangeURLIndex(false);
+                feedDataRecieved = true;
+            }
         }
         else
         {
+            pnlGenericError.Activate("Error", "Please check internet connectivity", "Try Again", () => s3Handler.DownloadGeneric(feedData.FileName, feedData, OnDataReturned));
             Debug.LogError("Feed json failed to download " + feedData.FileName);
         }
     }
@@ -79,6 +92,11 @@ public class PnlFeed : MonoBehaviour
     private void Update()
     {
         GenericLoadingGO?.SetActive(!videoPlayer.isPrepared);
+
+        if (Application.internetReachability == NetworkReachability.NotReachable)
+        {
+            pnlGenericError.Activate("No Internet Access", "Please check internet connectivity", "Try Again", () => s3Handler.DownloadGeneric(feedData.FileName, feedData, OnDataReturned));
+        }
     }
 }
 
