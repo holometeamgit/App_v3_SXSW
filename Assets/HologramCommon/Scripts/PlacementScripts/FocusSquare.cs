@@ -141,9 +141,10 @@ public class FocusSquare : PlacementHandler
 
     private float GetAlphaBasedOnDistance()
     {
-        var fadeValueUser = FadeBasedOnDistance(arCamera.transform.position, transparencyRangeUser);
-        var fadeValueHologram = FadeBasedOnDistance(hologramPlacedPosition, transparencyRangeHologram);
-        return Mathf.Min(fadeValueUser, fadeValueHologram);
+        //var fadeValueUser = FadeBasedOnDistance(arCamera.transform.position, transparencyRangeUser);
+        //var fadeValueHologram = FadeBasedOnDistance(hologramPlacedPosition, transparencyRangeHologram);
+        //return Mathf.Min(fadeValueUser, fadeValueHologram);
+        return FadeBasedOnDistance(hologramPlacedPosition, transparencyRangeHologram);
     }
 
     public void Hide()
