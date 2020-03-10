@@ -206,7 +206,7 @@ public class FocusSquare : PlacementHandler
     private void Update()
     {
         var hits = new List<ARRaycastHit>();
-        m_RaycastManager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), hits, TrackableType.All);
+        m_RaycastManager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), hits, TrackableType.Planes);
 
         SurfaceDetected = hits.Count > 0;
 
@@ -214,7 +214,7 @@ public class FocusSquare : PlacementHandler
         {
             if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)
                 ||
-                (forcePlace /*&& Vector3.Distance(arCamera.transform.position, hits[0].pose.position) > 0.5f)*/))
+                (forcePlace && Vector3.Distance(arCamera.transform.position, hits[0].pose.position) >= 1))
             {
                 forcePlace = false;
                 OnPlaced?.Invoke();
