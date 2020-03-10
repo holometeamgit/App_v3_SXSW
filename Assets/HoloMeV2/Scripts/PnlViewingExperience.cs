@@ -62,7 +62,7 @@ public class PnlViewingExperience : MonoBehaviour
 
     void OnEnable()
     {
-        scanAnimationItems.SetActive(false);
+        //scanAnimationItems.SetActive(false);
         if (permissionGranter.HasCameraAccess && !tutorialDisplayed)
         {
             RunTutorial();
@@ -79,30 +79,30 @@ public class PnlViewingExperience : MonoBehaviour
     {
         //scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         //ShowMessage("Scan the floor to start");
-       
+
         ShowScanAnimation(animationSpeed);
         tutorialState = TutorialState.MessageTapToPlace;
         arPlaneManager.enabled = true;
     }
 
-    IEnumerator StartScanAnimationLoop(float toggleTime)
-    {
-        while (true)
-        {
-            float delay = toggleTime;
+    //IEnumerator StartScanAnimationLoop(float toggleTime)
+    //{
+    //    while (true)
+    //    {
+    //        float delay = toggleTime;
 
-            if (scanAnimationItems.activeSelf)
-            {
-                delay = delay * 1.5f;
-                HideScanAnimation(animationSpeed);
-            }
-            else
-            {
-                ShowScanAnimation(animationSpeed);
-            }
-            yield return new WaitForSeconds(delay);
-        }
-    }
+    //        if (scanAnimationItems.activeSelf)
+    //        {
+    //            delay = delay * 1.5f;
+    //            HideScanAnimation(animationSpeed);
+    //        }
+    //        else
+    //        {
+    //            ShowScanAnimation(animationSpeed);
+    //        }
+    //        yield return new WaitForSeconds(delay);
+    //    }
+    //}
 
     private void ShowScanAnimation(float animationSpeed)
     {
