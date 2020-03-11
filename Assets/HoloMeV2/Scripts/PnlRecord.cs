@@ -160,17 +160,17 @@ public class PnlRecord : MonoBehaviour
         //print("RES = " + (int)((float)videoWidth * ratio));
     }
 
-    public void ToggleRecord()
-    {
-        if (Recording)
-        {
-            StopRecording();
-        }
-        else
-        {
-            StartRecording();
-        }
-    }
+    //public void ToggleRecord()
+    //{
+    //    if (Recording)
+    //    {
+    //        StopRecording();
+    //    }
+    //    else
+    //    {
+    //        StartRecording();
+    //    }
+    //}
 
     public void StartRecording()
     {
