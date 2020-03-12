@@ -10,13 +10,19 @@ public class PnlWelcome : MonoBehaviour
 
     const string PrefHasSeenWelcome = nameof(PrefHasSeenWelcome);
 
-    private void OnEnable()
+    public void CheckIfSeen()
     {
-        PlayerPrefs.DeleteAll();
+        //PlayerPrefs.DeleteAll();
         int HasSeen = PlayerPrefs.GetInt(PrefHasSeenWelcome, 0);
         if (HasSeen == 1)
         {
-            ShowNextPanel();
+            gameObject.GetComponent<AnimatedTransition>().enabled = false;
+            gameObject.SetActive(true);
+            Invoke(nameof(ShowNextPanel), .5f);
+        }
+        else
+        {
+            gameObject.SetActive(true);
         }
     }
 

@@ -22,6 +22,9 @@ public class AnimatedTransition : MonoBehaviour
     [SerializeField]
     UnityEvent OnShowTransitionComplete;
 
+    [SerializeField]
+    UnityEvent OnHideTransitionComplete;
+
     [Range(0, 255)]
     [SerializeField]
     int alphaFadeToValue = 100;
@@ -100,6 +103,7 @@ public class AnimatedTransition : MonoBehaviour
                 else
                 {
                     gameObject.SetActive(false);
+                    OnHideTransitionComplete?.Invoke();
                 }
             });
         }
