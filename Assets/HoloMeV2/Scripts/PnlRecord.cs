@@ -83,11 +83,11 @@ public class PnlRecord : MonoBehaviour
     private AudioInput audioInput;
     private Coroutine currentCoroutine;
 
-    const int RecordTimeLimit = 15;
+    //const int RecordTimeLimit = 15;
     int videoWidth;
     int videoHeight;
-    float startRecordTime;
-    int recordTime;
+    //float startRecordTime;
+    //int recordTime;
 
     string lastRecordingPath;
 
@@ -174,14 +174,14 @@ public class PnlRecord : MonoBehaviour
 
     public void StartRecording()
     {
-        startRecordTime = Time.time;
-        recordTime = 0;
+        //startRecordTime = Time.time;
+        //recordTime = 0;
 
-        if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete)
-        {
-            permissionGranter.RequestMicAccess();
-            return;
-        }
+        //if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete)
+        //{
+        //    permissionGranter.RequestMicAccess();
+        //    return;
+        //}
 
         if (!permissionGranter.MicAccessAvailable)
         {
@@ -208,29 +208,29 @@ public class PnlRecord : MonoBehaviour
         //imgFillBackground.enabled = true;
         //btnRecord.GetComponent<Image>().sprite = spriteStop;
         btnToggleMode.interactable = false;
-        InvokeRepeating("Countdown", 0, 1);
+        //InvokeRepeating("Countdown", 0, 1);
         Recording = true;
         OnRecordStarted?.Invoke();
         watermarkCanvasObject.SetActive(true);
     }
 
-    private void Update()
-    {
-        if (Recording)
-        {
-            float timeRecording = (Time.time - startRecordTime);
-            imgRecordFill.fillAmount = timeRecording / RecordTimeLimit;
-        }
-    }
+    //private void Update()
+    //{
+    //    if (Recording)
+    //    {
+    //        float timeRecording = (Time.time - startRecordTime);
+    //        imgRecordFill.fillAmount = timeRecording / RecordTimeLimit;
+    //    }
+    //}
 
-    private void Countdown()
-    {
-        recordTime += 1;
-        if (recordTime >= RecordTimeLimit)
-        {
-            StopRecording();
-        }
-    }
+    //private void Countdown()
+    //{
+    //    recordTime += 1;
+    //    if (recordTime >= RecordTimeLimit)
+    //    {
+    //        StopRecording();
+    //    }
+    //}
 
     void StartMicrophone()
     {
@@ -247,7 +247,7 @@ public class PnlRecord : MonoBehaviour
 
     public void StopRecording()
     {
-        CancelInvoke("Countdown");
+        //CancelInvoke("Countdown");
 
         if (recordMicrophone)
         {

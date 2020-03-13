@@ -29,10 +29,6 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
     {
-        if (!permissionGranter.MicRequestComplete)
-        {
-            return;
-        }
         // Start counting
         StartCoroutine(Countdown());
     }
@@ -49,8 +45,16 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         // First wait a short time to make sure it's not a tap
         yield return new WaitForSeconds(0.2f);
         if (!pressed) yield break;
+
+        if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete)
+        {
+            permissionGranter.RequestMicAccess();
+            yield break;
+        }
+
         // Start recording
         if (onTouchDown != null) onTouchDown.Invoke();
+
         // Animate the countdown
         float startTime = Time.time, ratio = 0f;
         while (pressed && (ratio = (Time.time - startTime) / MaxRecordingTime) < 1.0f)
