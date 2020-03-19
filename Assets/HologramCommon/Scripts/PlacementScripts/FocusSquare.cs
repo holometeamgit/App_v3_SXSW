@@ -199,7 +199,7 @@ public class FocusSquare : PlacementHandler
             return;
 
         var hits = new List<ARRaycastHit>();
-        m_RaycastManager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), hits, TrackableType.Planes);
+        m_RaycastManager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), hits, TrackableType.PlaneWithinPolygon);
 
         SurfaceDetected = hits.Count > 0;
 
