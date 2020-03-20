@@ -385,6 +385,9 @@ MonoBehaviour:
   OnShowTransitionComplete:
     m_PersistentCalls:
       m_Calls: []
+  OnHideTransitionComplete:
+    m_PersistentCalls:
+      m_Calls: []
   alphaFadeToValue: 100
 --- !u!222 &601453657696508327
 CanvasRenderer:
@@ -1595,6 +1598,7 @@ GameObject:
   - component: {fileID: 7357075477092243001}
   - component: {fileID: 784567243483988232}
   - component: {fileID: 6980365770577513555}
+  - component: {fileID: 4345541187517113621}
   m_Layer: 5
   m_Name: btnCancel
   m_TagString: Untagged
@@ -1712,6 +1716,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4345541187517113621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7103668920966379487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29baa791241404542a7796136d398dd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7736731755166268457
 GameObject:
   m_ObjectHideFlags: 0
