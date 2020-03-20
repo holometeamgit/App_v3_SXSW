@@ -152,12 +152,18 @@ public class PnlRecord : MonoBehaviour
 
     private void CorrectResolutionAspect()
     {
-        videoWidth = Screen.width / 2;
-        videoHeight = Screen.height / 2;
+        videoWidth = MakeEven(Screen.width / 2);
+        videoHeight = MakeEven(Screen.height / 2);
+        //print($"{videoWidth} x {videoHeight}");
         //videoWidth = 720;
         //videoHeight = (int)((float)videoWidth * ratio);
         //float ratio = (float)Screen.height / (float)Screen.width;
         //print("RES = " + (int)((float)videoWidth * ratio));
+    }
+
+    public int MakeEven(int value)
+    {
+        return value % 2 == 0 ? value : value - 1;
     }
 
     //public void ToggleRecord()
