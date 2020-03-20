@@ -62,7 +62,7 @@ public class PnlViewingExperience : MonoBehaviour
 
     void OnEnable()
     {
-        //scanAnimationItems.SetActive(false);
+        scanAnimationItems.SetActive(false);
         if (permissionGranter.HasCameraAccess && !tutorialDisplayed)
         {
             RunTutorial();
