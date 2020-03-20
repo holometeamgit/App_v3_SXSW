@@ -3,7 +3,6 @@ using UnityEngine;
 using DG.Tweening;
 using TMPro;
 using System.Collections;
-using UnityEngine.Events;
 
 public class PnlViewingExperience : MonoBehaviour
 {
@@ -19,11 +18,8 @@ public class PnlViewingExperience : MonoBehaviour
     [SerializeField]
     PnlCameraAccess pnlCameraAccess;
 
-    //[SerializeField]
-    //RectTransform messageRT;
-
     [SerializeField]
-    RectTransform scanMessageRT;
+    RectTransform messageRT;
 
     [SerializeField]
     HologramHandler hologramHandler;
@@ -41,20 +37,18 @@ public class PnlViewingExperience : MonoBehaviour
     LogoCanvas logoCanvas;
 
     [SerializeField]
+    FocusSquare focusSquare;
+
+    [SerializeField]
     PnlRecord pnlRecord;
 
-    [SerializeField]
-    UnityEvent OnSurfaceDetected;
-
-    [SerializeField]
-    GameObject focusSquare;
-
-    //Coroutine scanAnimationRoutine;
+    Coroutine scanAnimationRoutine;
 
     bool tutorialDisplayed;
+    bool messageActive;
 
     float messageAnimationSpeed = 0.25f;
-    float messageTime = 6;
+    float messageTime = 10;
     float animationSpeed = 0.25f;
 
     private enum TutorialState { MessageScan, MessageTapToPlace, WaitingForTap, TutorialComplete };
@@ -77,42 +71,36 @@ public class PnlViewingExperience : MonoBehaviour
 
     private void RunTutorial()
     {
-        //scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
-        //ShowMessage("Scan the floor to start");
-
-        ShowScanAnimation(animationSpeed);
+        scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
+        ShowMessage("Scan the floor to start");
         tutorialState = TutorialState.MessageTapToPlace;
         arPlaneManager.enabled = true;
     }
 
-    //IEnumerator StartScanAnimationLoop(float toggleTime)
-    //{
-    //    while (true)
-    //    {
-    //        float delay = toggleTime;
+    IEnumerator StartScanAnimationLoop(float toggleTime)
+    {
+        while (true)
+        {
+            float delay = toggleTime;
 
-    //        if (scanAnimationItems.activeSelf)
-    //        {
-    //            delay = delay * 1.5f;
-    //            HideScanAnimation(animationSpeed);
-    //        }
-    //        else
-    //        {
-    //            ShowScanAnimation(animationSpeed);
-    //        }
-    //        yield return new WaitForSeconds(delay);
-    //    }
-    //}
+            if (scanAnimationItems.activeSelf)
+            {
+                delay = delay / 2; //half time before reshowing
+                HideScanAnimation(animationSpeed);
+            }
+            else
+            {
+                ShowScanAnimation(animationSpeed);
+            }
+            yield return new WaitForSeconds(delay);
+        }
+    }
 
     private void ShowScanAnimation(float animationSpeed)
     {
         scanAnimationItems.transform.localScale = Vector3.zero;
         scanAnimationItems.SetActive(true);
         scanAnimationItems.transform.DOScale(Vector3.one, animationSpeed).SetDelay(0.5f);
-
-        scanMessageRT.localScale = Vector3.zero;
-        scanMessageRT.gameObject.SetActive(true);
-        scanMessageRT.DOScale(Vector3.one, animationSpeed).SetDelay(0.5f);
     }
 
     private void HideScanAnimation(float animationSpeed)
@@ -121,40 +109,18 @@ public class PnlViewingExperience : MonoBehaviour
         {
             scanAnimationItems.SetActive(false);
         });
-
-        scanMessageRT.DOScale(Vector3.zero, animationSpeed).OnComplete(() =>
-        {
-            scanMessageRT.gameObject.SetActive(false);
-        });
     }
 
     public void ShowTapToPlaceMessage()
     {
-        //if (tutorialState == TutorialState.MessageTapToPlace)
-        //{
-        //    StopCoroutine(scanAnimationRoutine);
-        //    HideScanAnimation(animationSpeed);
-        //    HideMessage();
-        //    ShowMessage("Tap screen to place", messageAnimationSpeed);
-        //    tutorialState = TutorialState.WaitingForTap;
-        //}
-    }
-
-    public void SkipTutorialStepOne()
-    {
-        OnSurfaceDetected?.Invoke();
-    }
-
-    public void SkipTutorialStepTwo()
-    {
-        //if (scanAnimationItems != null)
-        //{
-        //    StopCoroutine(scanAnimationRoutine);
-        //}
-        HideScanAnimation(animationSpeed);
-        //HideMessage();
-        StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
-        tutorialState = TutorialState.TutorialComplete;
+        if (tutorialState == TutorialState.MessageTapToPlace)
+        {
+            StopCoroutine(scanAnimationRoutine);
+            HideScanAnimation(animationSpeed);
+            HideMessage();
+            ShowMessage("Tap screen to place", messageAnimationSpeed);
+            tutorialState = TutorialState.WaitingForTap;
+        }
     }
 
     public void OnPlaced()
@@ -169,20 +135,25 @@ public class PnlViewingExperience : MonoBehaviour
     IEnumerator DelayStartRecordPanel(float delay)
     {
         yield return new WaitForSeconds(delay);
-        //HideMessage();
+        HideMessage();
         pnlRecord.gameObject.SetActive(true);
     }
 
-    //public void ShowMessage(string message, float delay = 0)
-    //{
-    //    messageRT.GetComponentInChildren<TextMeshProUGUI>().text = message;
-    //    messageRT.DOAnchorPosY(messageRT.rect.height, messageAnimationSpeed).SetDelay(delay);
-    //}
+    public void ShowMessage(string message, float delay = 0)
+    {
+        messageRT.localScale = Vector3.zero;
 
-    //public void HideMessage()
-    //{
-    //    messageRT.DOAnchorPosY(0, messageAnimationSpeed);
-    //}
+        messageRT.GetComponentInChildren<TextMeshProUGUI>().text = message;
+        //messageRT.DOAnchorPosY(messageRT.rect.height, messageAnimationSpeed).SetDelay(delay);
+        messageRT.DOScale(Vector3.one, animationSpeed).SetDelay(delay);
+
+    }
+
+    public void HideMessage()
+    {
+        //messageRT.DOAnchorPosY(0, messageAnimationSpeed);
+        messageRT.DOScale(Vector3.zero, animationSpeed).SetDelay(messageAnimationSpeed);
+    }
 
     public void ActivateSelf(string code, VideoJsonData videoJsonData)
     {
@@ -193,7 +164,7 @@ public class PnlViewingExperience : MonoBehaviour
         btnBurger.SetActive(true);
         logoCanvas.ActivateIfLogoAvailable(videoJsonData);
         hologramHandler.InitSession(code);
-        focusSquare.SetActive(true);
+        focusSquare.StartScanning = true;
         FadeInCanvas();
 
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing

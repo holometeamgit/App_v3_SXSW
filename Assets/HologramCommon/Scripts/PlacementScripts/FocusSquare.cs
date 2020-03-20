@@ -49,7 +49,7 @@ public class FocusSquare : PlacementHandler
 
     Transform lookTarget;
 
-    Vector3 hologramPlacedPosition;
+    Vector3 hologramPlacedPosition = new Vector3(100, 100, 100); //Start away from the user
 
     [SerializeField]
     UnityEvent OnSurfaceFound;
@@ -93,6 +93,8 @@ public class FocusSquare : PlacementHandler
             }
         }
     }
+
+    public bool StartScanning { get; set; }
 
     public void Awake()
     {
@@ -191,32 +193,23 @@ public class FocusSquare : PlacementHandler
         }
     }
 
-    bool forcePlace;
-    bool initialPlacementDone;
-    public void ForcePlace()
-    {
-        if (!initialPlacementDone)
-        {
-            forcePlace = true;
-            initialPlacementDone = true;
-            print("ForcePlace Set");
-        }
-    }
-
     private void Update()
     {
+        if (!StartScanning)
+            return;
+
         var hits = new List<ARRaycastHit>();
-        m_RaycastManager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), hits, TrackableType.Planes);
+        m_RaycastManager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), hits, TrackableType.PlaneWithinPolygon);
 
         SurfaceDetected = hits.Count > 0;
 
         if (SurfaceDetected)
         {
-            if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)
-                ||
-                (forcePlace && Vector3.Distance(arCamera.transform.position, hits[0].pose.position) >= 1))
+            if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+            //||
+            //(forcePlace && Vector3.Distance(arCamera.transform.position, hits[0].pose.position) >= 1))
             {
-                forcePlace = false;
+                //forcePlace = false;
                 OnPlaced?.Invoke();
                 OnPlaceDetected?.Invoke(hits[0].pose.position);
                 hologramPlacedPosition = quad.transform.position;
