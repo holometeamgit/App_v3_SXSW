@@ -107,7 +107,10 @@ public class PnlPostRecord : MonoBehaviour
 
     public void FadeToggleControls(bool show)
     {
-        safeAreaContent.DOFade(show ? 1 : 0, 0.5f);
+        if (show)
+            safeAreaContent.gameObject.SetActive(true);
+
+        safeAreaContent.DOFade(show ? 1 : 0, 0.5f).OnComplete(() => { if (!show) { safeAreaContent.gameObject.SetActive(false); } });
         safeAreaContent.interactable = show;
     }
 
