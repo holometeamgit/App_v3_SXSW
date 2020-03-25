@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Text.RegularExpressions;
 
 public class ThumbnailDownloadManager : MonoBehaviour
 {
@@ -46,7 +48,7 @@ public class ThumbnailDownloadManager : MonoBehaviour
 
     void DownloadThumbnailImageFiles()
     {
-        foreach (var data in s3Handler.thumbnailData)
+        foreach (var data in s3Handler.thumbnailData.OrderBy(x => (int.Parse(Regex.Match(x.Key, @"\d+").Value)))) //Sort by value in json file names
         {
             VideoThumbnailJsonData videoThumbnailJsonData = JsonParser.CreateFromJSON<VideoThumbnailJsonData>(JsonParser.ParseFileName(data.Value.FileName));
             allThumbnailData.Add(videoThumbnailJsonData);
