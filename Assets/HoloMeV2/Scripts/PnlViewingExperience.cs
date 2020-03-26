@@ -69,8 +69,11 @@ public class PnlViewingExperience : MonoBehaviour
         }
     }
 
-    private void RunTutorial()
+    public void RunTutorial()
     {
+        if (tutorialState == TutorialState.TutorialComplete)
+            return;
+
         scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         ShowMessage("Scan the floor to start");
         tutorialState = TutorialState.MessageTapToPlace;
