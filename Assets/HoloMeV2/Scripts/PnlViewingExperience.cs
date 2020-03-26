@@ -45,7 +45,6 @@ public class PnlViewingExperience : MonoBehaviour
     Coroutine scanAnimationRoutine;
 
     bool tutorialDisplayed;
-    bool messageActive;
 
     float messageAnimationSpeed = 0.25f;
     float messageTime = 10;
@@ -71,8 +70,14 @@ public class PnlViewingExperience : MonoBehaviour
 
     public void RunTutorial()
     {
+        if (!gameObject.activeSelf)
+            return;
+
         if (tutorialState == TutorialState.TutorialComplete)
             return;
+
+        if (scanAnimationRoutine != null)
+            StopCoroutine(scanAnimationRoutine); //Stop old routine is reactivating
 
         scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         ShowMessage("Scan the floor to start");

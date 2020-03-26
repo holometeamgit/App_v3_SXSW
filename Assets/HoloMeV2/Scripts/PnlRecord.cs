@@ -8,6 +8,7 @@ using NatShare;
 using System.Collections;
 using TMPro;
 using UnityEngine.Events;
+using System.IO;
 
 public class PnlRecord : MonoBehaviour
 {
@@ -72,6 +73,7 @@ public class PnlRecord : MonoBehaviour
     UnityEvent OnSnapshotEnded;
 
     public bool Recording { get; set; }
+    private bool recordLengthFailed;
 
     [Header("Microphone")]
     public bool recordMicrophone = true;
@@ -193,7 +195,7 @@ public class PnlRecord : MonoBehaviour
         {
             recordMicrophone = false;
         }
-
+        recordLengthFailed = false;
         recordingClock = new RealtimeClock();
         videoRecorder = new MP4Recorder(
             videoWidth,
@@ -251,6 +253,11 @@ public class PnlRecord : MonoBehaviour
 #endif
     }
 
+    public void RecordLengthFail()
+    {
+        recordLengthFailed = true;
+    }
+
     public void StopRecording()
     {
         //CancelInvoke("Countdown");
@@ -269,7 +276,6 @@ public class PnlRecord : MonoBehaviour
         //imgFillBackground.enabled = false;
         btnToggleMode.interactable = true;
         Recording = false;
-        OnRecordStopped?.Invoke();
         watermarkCanvasObject.SetActive(false);
     }
 
@@ -283,8 +289,16 @@ public class PnlRecord : MonoBehaviour
 
     void OnRecordComplete(string outputPath)
     {
-        lastRecordingPath = outputPath;
-        pnlPostRecord.ActivatePostVideo(outputPath);
+        if (recordLengthFailed)
+        {
+            File.Delete(outputPath);
+        }
+        else
+        {
+            OnRecordStopped?.Invoke();
+            lastRecordingPath = outputPath;
+            pnlPostRecord.ActivatePostVideo(outputPath);
+        }
     }
 
     void MakeScreenshot()

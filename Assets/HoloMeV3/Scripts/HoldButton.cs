@@ -1,17 +1,17 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-
     public Image countdown;
-    public UnityEvent onTouchDown, onTouchUp;
+    public UnityEvent onTouchDown, onTouchUp, onRecordTooShort;
     private bool pressed;
     private const float MaxRecordingTime = 15; // seconds
+    private const float MinRecordingTime = 3; // seconds
+    private const float AccidentTapTime = 0.2f;
 
     [SerializeField]
     PermissionGranter permissionGranter;
@@ -43,7 +43,7 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         pressed = true;
         // First wait a short time to make sure it's not a tap
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(AccidentTapTime);
         if (!pressed) yield break;
 
         if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete)
@@ -62,9 +62,14 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             countdown.fillAmount = ratio;
             yield return null;
         }
-        // Reset
+
         Reset();
-        // Stop recording
+
+        if ((Time.time - startTime) < (MinRecordingTime - AccidentTapTime))
+        {
+            onRecordTooShort?.Invoke();
+        }
+
         if (onTouchUp != null) onTouchUp.Invoke();
     }
 }
