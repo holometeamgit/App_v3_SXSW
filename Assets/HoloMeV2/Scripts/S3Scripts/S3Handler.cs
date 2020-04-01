@@ -42,7 +42,7 @@ public class S3Handler : MonoBehaviour
         }
 
 #if STAGING
-        S3BucketName = "dynamicvideoappstaging";
+        S3BucketName = "holomev3staging";
 #else
         S3BucketName = "holomev3";
 #endif
