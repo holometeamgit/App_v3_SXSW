@@ -3,6 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 using TMPro;
 using System.Collections;
+using UnityEngine.UI;
 
 public class PnlViewingExperience : MonoBehaviour
 {
@@ -44,6 +45,7 @@ public class PnlViewingExperience : MonoBehaviour
 
     Coroutine scanAnimationRoutine;
 
+    bool viewingExperienceInFocus;
     bool tutorialDisplayed;
 
     float messageAnimationSpeed = 0.25f;
@@ -179,6 +181,8 @@ public class PnlViewingExperience : MonoBehaviour
         {
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
         }
+
+        viewingExperienceInFocus = true;
     }
 
     void FadeInCanvas()
@@ -204,5 +208,18 @@ public class PnlViewingExperience : MonoBehaviour
     public void ResumeVideo()
     {
         hologramHandler.ResumeVideo();
+    }
+
+    public void SetOutOfFocus()
+    {
+        viewingExperienceInFocus = false;
+    }
+
+    void OnApplicationFocus(bool isFocused)
+    {
+        if (viewingExperienceInFocus && !isFocused)
+        {
+            btnBurger.GetComponent<Button>().onClick?.Invoke();
+        }
     }
 }
