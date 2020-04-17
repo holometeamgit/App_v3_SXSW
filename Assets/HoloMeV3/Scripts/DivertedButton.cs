@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ebf758784e270078ab8ad05c6f03d0a0786a0a9163e7f16030eff06018673901
-size 447
+﻿using UnityEngine;
+using UnityEngine.UI;
+
+[RequireComponent(typeof(Button))]
+public class DivertedButton : MonoBehaviour
+{
+    [SerializeField]
+    Button referenceButton;
+
+    void Awake()
+    {
+        var button = GetComponent<Button>();
+        if (button)
+            button.onClick.AddListener(() => referenceButton.onClick?.Invoke());
+        else
+            Debug.LogError("No button component was found");
+    }
+
+}
