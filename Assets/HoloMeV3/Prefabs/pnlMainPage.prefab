@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 6423371462070139334}
   - component: {fileID: 346014753581048468}
   m_Layer: 5
-  m_Name: pnlMainPage
+  m_Name: PnlMainPage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -215,6 +215,7 @@ MonoBehaviour:
   pnlVideoCode: {fileID: 0}
   scrollRect: {fileID: 530055629317847935}
   PnlGenericLoading: {fileID: 0}
+  pnlGenericError: {fileID: 0}
 --- !u!114 &346014753581048468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,6 +233,9 @@ MonoBehaviour:
   imgBackground: {fileID: 0}
   dir: 0
   OnShowTransitionComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  OnHideTransitionComplete:
     m_PersistentCalls:
       m_Calls: []
   alphaFadeToValue: 255
@@ -498,6 +502,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 1.05
       objectReference: {fileID: 0}
+    - target: {fileID: 2573404219608206543, guid: ab7ec2988e379cf49bdbbc738a5d5b1a,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 46
+      objectReference: {fileID: 0}
     - target: {fileID: 3057510308037226509, guid: ab7ec2988e379cf49bdbbc738a5d5b1a,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -556,7 +565,7 @@ PrefabInstance:
     - target: {fileID: 3318341023583249098, guid: ab7ec2988e379cf49bdbbc738a5d5b1a,
         type: 3}
       propertyPath: m_Name
-      value: pnlCodeBoxSpoof
+      value: subPnlCodeBoxSpoof
       objectReference: {fileID: 0}
     - target: {fileID: 3865644297180110471, guid: ab7ec2988e379cf49bdbbc738a5d5b1a,
         type: 3}
@@ -985,7 +994,7 @@ PrefabInstance:
     - target: {fileID: 1789504459953580963, guid: 7925cb69b5fe38c40a094be5d31c70d9,
         type: 3}
       propertyPath: m_Name
-      value: pnlUserContent
+      value: subPnlUserContent
       objectReference: {fileID: 0}
     - target: {fileID: 3059918132144757003, guid: 7925cb69b5fe38c40a094be5d31c70d9,
         type: 3}
@@ -1095,7 +1104,7 @@ PrefabInstance:
     - target: {fileID: 7978775419379489561, guid: 7925cb69b5fe38c40a094be5d31c70d9,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 719.36
+      value: 562
       objectReference: {fileID: 0}
     - target: {fileID: 7978775419379489561, guid: 7925cb69b5fe38c40a094be5d31c70d9,
         type: 3}
@@ -1200,7 +1209,7 @@ PrefabInstance:
     - target: {fileID: 4440970268962488324, guid: 57f02db67524ef64aafcfd9b7c035fe3,
         type: 3}
       propertyPath: m_Name
-      value: pnlShowcaseContent
+      value: subPnlShowcaseContent
       objectReference: {fileID: 0}
     - target: {fileID: 5219897994860619037, guid: 57f02db67524ef64aafcfd9b7c035fe3,
         type: 3}
@@ -1305,7 +1314,7 @@ PrefabInstance:
     - target: {fileID: 5462492262366556350, guid: 57f02db67524ef64aafcfd9b7c035fe3,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 719.36
+      value: 562
       objectReference: {fileID: 0}
     - target: {fileID: 5462492262366556350, guid: 57f02db67524ef64aafcfd9b7c035fe3,
         type: 3}
