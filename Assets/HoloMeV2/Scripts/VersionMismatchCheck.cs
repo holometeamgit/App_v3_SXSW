@@ -41,7 +41,7 @@ public class VersionMismatchCheck : MonoBehaviour
 
     void ShowMismatchMessage()
     {
-        pnlGenericError.Activate("New Update Available!", $"Please get the latest version to continue to use the app. {Environment.NewLine} V{currentVersion} - V{serverVersion}", "Open", LinkToStoreAndCloseApp);
+        pnlGenericError.ActivateSingleButton("New Update Available!", $"Please get the latest version to continue to use the app. {Environment.NewLine} V{currentVersion} - V{serverVersion}", "Open", LinkToStoreAndCloseApp);
     }
 
     void LinkToStoreAndCloseApp()

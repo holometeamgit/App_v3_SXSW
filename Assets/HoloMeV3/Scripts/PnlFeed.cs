@@ -42,7 +42,7 @@ public class PnlFeed : MonoBehaviour
         btnRight.onClick.AddListener(() => ChangeURLIndex(false));
         btnLeft.onClick.AddListener(() => ChangeURLIndex(true));
 
-        videoPlayer.errorReceived += (videoplayer, errorString) => pnlGenericError.Activate("Playback Error", "Please check internet connectivity", "Try Again", () => s3Handler.DownloadGeneric(feedData.FileName, feedData, OnDataReturned));
+        videoPlayer.errorReceived += (videoplayer, errorString) => pnlGenericError.ActivateSingleButton("Playback Error", "Please check internet connectivity", "Try Again", () => s3Handler.DownloadGeneric(feedData.FileName, feedData, OnDataReturned));
     }
 
     void OnDataReturned(bool success)
@@ -59,7 +59,7 @@ public class PnlFeed : MonoBehaviour
         }
         else
         {
-            pnlGenericError.Activate("Error", "Please check internet connectivity", "Try Again", () => s3Handler.DownloadGeneric(feedData.FileName, feedData, OnDataReturned));
+            pnlGenericError.ActivateSingleButton("Error", "Please check internet connectivity", "Try Again", () => s3Handler.DownloadGeneric(feedData.FileName, feedData, OnDataReturned));
             Debug.LogError("Feed json failed to download " + feedData.FileName);
         }
     }
@@ -95,7 +95,7 @@ public class PnlFeed : MonoBehaviour
 
         if (Application.internetReachability == NetworkReachability.NotReachable)
         {
-            pnlGenericError.Activate("No Internet Access", "Please check internet connectivity", "Try Again", () => s3Handler.DownloadGeneric(feedData.FileName, feedData, OnDataReturned));
+            pnlGenericError.ActivateSingleButton("No Internet Access", "Please check internet connectivity", "Try Again", () => s3Handler.DownloadGeneric(feedData.FileName, feedData, OnDataReturned));
         }
     }
 }

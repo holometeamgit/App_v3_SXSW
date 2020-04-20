@@ -118,13 +118,13 @@ public class PnlVideoCode : MonoBehaviour
     void ShowErrorVideoCodeDoesntExist()
     {
         //animatedTransition.DoMenuTransition(false);
-        pnlGenericError.Activate(message: "Video Code Not Found", onBackPress: () => gameObject.SetActive(true));
+        pnlGenericError.ActivateSingleButton(message: "Video Code Not Found", onBackPress: () => gameObject.SetActive(true));
     }
 
     void ShowErrorFilesMissing()
     {
         //animatedTransition.DoMenuTransition(false);
-        pnlGenericError.Activate(message: "Missing Related Files", onBackPress: () => gameObject.SetActive(true));
+        pnlGenericError.ActivateSingleButton(message: "Missing Related Files", onBackPress: () => gameObject.SetActive(true));
     }
 
     private void ActivateViewingExperience()

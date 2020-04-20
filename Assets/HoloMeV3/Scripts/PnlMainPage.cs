@@ -117,7 +117,7 @@ public class PnlMainPage : MonoBehaviour
     {
         if (Application.internetReachability == NetworkReachability.NotReachable)
         {
-            pnlGenericError.Activate("No Internet Access", "Please check internet connectivity", "Try Again", onBackPress: FetchData);
+            pnlGenericError.ActivateSingleButton("No Internet Access", "Please check internet connectivity", "Try Again", onBackPress: FetchData);
         }
     }
 }
