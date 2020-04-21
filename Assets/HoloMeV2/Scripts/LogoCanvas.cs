@@ -56,7 +56,7 @@ public class LogoCanvas : MonoBehaviour
     public void SetParent(Transform parent)
     {
         var OriginalScale = transform.localScale;
-        transform.parent = parent;
+        transform.SetParent(parent, true);
     }
 
     public void UpdateOffset(Vector3 position)

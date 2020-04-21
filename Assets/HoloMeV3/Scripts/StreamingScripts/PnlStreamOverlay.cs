@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using DG.Tweening;
 using TMPro;
+using NatShare;
 using UnityEngine.Events;
 
 public class PnlStreamOverlay : MonoBehaviour
@@ -50,4 +51,24 @@ public class PnlStreamOverlay : MonoBehaviour
         pnlGenericError.ActivateDoubleButton("End the live stream?", "Closing this page will end the live stream and disconnect your users.", onButtonOnePress: () => OnClose.Invoke(), onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
     }
 
+    public void ShareStream()
+    {
+        using (var payload = new SharePayload())
+        {
+            string appLink;
+            switch (Application.platform)
+            {
+                case RuntimePlatform.IPhonePlayer:
+                    appLink = "https://play.google.com/store/apps/details?id=com.HoloMe.Showreel&hl=en_GB";
+                    break;
+
+                case RuntimePlatform.Android:
+                default:
+                    appLink = "https://apps.apple.com/us/app/holome/id1454364021";
+                    break;
+            }
+
+            payload.AddText($"Check out my stream in the HoloMe App by typing in the channel {PnlChannelName.ChannelName} app {appLink}");
+        }
+    }
 }

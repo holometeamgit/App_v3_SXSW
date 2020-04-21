@@ -1195,6 +1195,7 @@ GameObject:
   - component: {fileID: 4318261316075285993}
   - component: {fileID: 5170496181593268544}
   - component: {fileID: 4861397115881830893}
+  - component: {fileID: 19685440513595010}
   m_Layer: 5
   m_Name: PnlChannelName
   m_TagString: Untagged
@@ -1294,11 +1295,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputChannelName: {fileID: 1194006195118156604}
-  txtInvalidNameWarning: {fileID: 4984116545493228682}
-  txtEnterChannelName: {fileID: 3853424518346926677}
+  incorrectInputAnimationToggle: {fileID: 19685440513595010}
   OnChannelNamePassed:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &19685440513595010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6619624755849511081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0e06030f75a19346a95145e23c1ed88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputField: {fileID: 1194006195118156604}
+  txtDefaultMessage: {fileID: 3853424518346926677}
+  txtErrorMessage: {fileID: 4984116545493228682}
 --- !u!1 &7590913761516611570
 GameObject:
   m_ObjectHideFlags: 0

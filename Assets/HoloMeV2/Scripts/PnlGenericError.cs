@@ -29,9 +29,9 @@ public class PnlGenericError : MonoBehaviour
 
     void SetupButton(Button button, string text, UnityAction action)
     {
+        button.gameObject.SetActive(true);
         button.GetComponentInChildren<TextMeshProUGUI>().text = text;
-
-        button.onClick.RemoveAllListeners();//Remember this doesn't effect editor actions
+        button.onClick.RemoveAllListeners(); //Remember this doesn't effect editor actions
         if (action != null)
         {
             button.onClick.AddListener(action);
@@ -42,6 +42,7 @@ public class PnlGenericError : MonoBehaviour
     {
         SetMessages(header, message);
         SetupButton(btnLeft, buttonText, onBackPress);
+        btnRight.gameObject.SetActive(false);
         gameObject.SetActive(true);
     }
 
@@ -52,4 +53,5 @@ public class PnlGenericError : MonoBehaviour
         SetupButton(btnRight, buttonTwoText, onButtonTwoPress);
         gameObject.SetActive(true);
     }
+
 }
