@@ -42,6 +42,7 @@ public class PnlStreamOverlay : MonoBehaviour
         toggleAudio.isOn = false;
         toggleVideo.isOn = false;
         txtCentreMessage.text = string.Empty;
+        EnableToggleControls(false);
     }
 
     public void OpenAsStreamer()
@@ -87,6 +88,31 @@ public class PnlStreamOverlay : MonoBehaviour
         }
     }
 
+    public void StartCountdown()
+    {
+        countdownRoutine = StartCoroutine(CountDown());
+    }
+
+    public void StopStream()
+    {
+        if (countdownRoutine != null)
+            StopCoroutine(countdownRoutine);
+
+        EnableToggleControls(false);
+    }
+
+    void StartStream()
+    {
+
+        EnableToggleControls(true);
+    }
+
+    private void EnableToggleControls(bool enable)
+    {
+        toggleAudio.interactable = enable;
+        toggleVideo.interactable = enable;
+    }
+
     public void ToggleAudio(bool mute)
     {
         TogglePauseStream();
@@ -109,22 +135,6 @@ public class PnlStreamOverlay : MonoBehaviour
         }
     }
 
-    public void StartCountdown()
-    {
-        countdownRoutine = StartCoroutine(CountDown());
-    }
-
-    public void StopStream()
-    {
-        if (countdownRoutine != null)
-            StopCoroutine(countdownRoutine);
-    }
-
-    void StartStream()
-    {
-
-    }
-
     IEnumerator CountDown()
     {
         countDown = 3;
@@ -143,6 +153,7 @@ public class PnlStreamOverlay : MonoBehaviour
     private void AnimatedCentreTextMessage(string message)
     {
         DOTween.Kill(tweenAnimationID);
+        txtCentreMessage.rectTransform.localScale = Vector3.one;
         txtCentreMessage.text = message;
         txtCentreMessage.color = new Color(txtCentreMessage.color.r, txtCentreMessage.color.g, txtCentreMessage.color.b, 1);
         txtCentreMessage.rectTransform.DOPunchScale(Vector3.one, .25f, 3).SetId(tweenAnimationID);
