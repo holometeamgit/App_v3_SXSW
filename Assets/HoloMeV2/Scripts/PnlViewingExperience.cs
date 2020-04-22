@@ -219,7 +219,7 @@ public class PnlViewingExperience : MonoBehaviour
     {
         if (viewingExperienceInFocus && !isFocused)
         {
-            btnBurger.GetComponent<Button>().onClick?.Invoke();
+            //btnBurger.GetComponent<Button>().onClick?.Invoke();
         }
     }
 }
