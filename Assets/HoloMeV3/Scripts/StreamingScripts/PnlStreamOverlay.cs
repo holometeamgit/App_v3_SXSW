@@ -47,12 +47,14 @@ public class PnlStreamOverlay : MonoBehaviour
 
     public void OpenAsStreamer()
     {
+        gameObject.SetActive(true);
         controlsPresenter.SetActive(true);
         controlsViewer.SetActive(false);
     }
 
     public void OpenAsViewer()
     {
+        gameObject.SetActive(true);
         controlsPresenter.SetActive(false);
         controlsViewer.SetActive(true);
     }
@@ -75,16 +77,19 @@ public class PnlStreamOverlay : MonoBehaviour
             switch (Application.platform)
             {
                 case RuntimePlatform.IPhonePlayer:
-                    appLink = "https://play.google.com/store/apps/details?id=com.HoloMe.Showreel&hl=en_GB";
+                    appLink = "https://tinyurl.com/HoloMeiOS";//"https://apps.apple.com/us/app/holome/id1454364021";
                     break;
 
                 case RuntimePlatform.Android:
+                    appLink = "https://tinyurl.com/HoloMeAndroid";//"https://play.google.com/store/apps/details?id=com.HoloMe.Showreel&hl=en_GB";
+                    break;
+
                 default:
-                    appLink = "https://apps.apple.com/us/app/holome/id1454364021";
+                    appLink = "https://tinyurl.com/HoloMeiOS - https://tinyurl.com/HoloMeAndroid";
                     break;
             }
 
-            payload.AddText($"Check out my stream in the HoloMe App by typing in the channel {PnlChannelName.ChannelName} app {appLink}");
+            payload.AddText($"Check out my stream in the HoloMe App using the channel {PnlChannelName.ChannelName} app {appLink}");
         }
     }
 
@@ -141,7 +146,7 @@ public class PnlStreamOverlay : MonoBehaviour
 
         while (countDown >= 0)
         {
-            AnimatedCentreTextMessage(countDown > 0 ? countDown.ToString() : "Now Live");
+            AnimatedCentreTextMessage(countDown > 0 ? countDown.ToString() : "ON AIR");
             AnimatedFadeOutMessage(.5f);
             countDown--;
             yield return new WaitForSeconds(1);
