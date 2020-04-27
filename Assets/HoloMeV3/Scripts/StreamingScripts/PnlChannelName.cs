@@ -15,7 +15,8 @@ public class PnlChannelName : MonoBehaviour
     [SerializeField]
     UnityEvent OnChannelNamePassed;
 
-    public static string ChannelName { get; private set; }
+    [SerializeField]
+    AgoraController agoraController;
 
     public void OnReadyPressed()
     {
@@ -26,7 +27,7 @@ public class PnlChannelName : MonoBehaviour
         }
         else
         {
-            ChannelName = inputChannelName.text;
+            agoraController.JoinOrCreateChannel(inputChannelName.text, true);
             OnChannelNamePassed?.Invoke();
         }
     }

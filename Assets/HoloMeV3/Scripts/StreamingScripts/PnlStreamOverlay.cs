@@ -30,6 +30,9 @@ public class PnlStreamOverlay : MonoBehaviour
     Toggle toggleVideo;
 
     [SerializeField]
+    BlurController blurController;
+
+    [SerializeField]
     UnityEvent OnClose;
 
     int countDown;
@@ -47,6 +50,7 @@ public class PnlStreamOverlay : MonoBehaviour
 
     public void OpenAsStreamer()
     {
+        blurController.RemoveBlur();
         gameObject.SetActive(true);
         controlsPresenter.SetActive(true);
         controlsViewer.SetActive(false);
@@ -54,6 +58,7 @@ public class PnlStreamOverlay : MonoBehaviour
 
     public void OpenAsViewer()
     {
+        blurController.RemoveBlur();
         gameObject.SetActive(true);
         controlsPresenter.SetActive(false);
         controlsViewer.SetActive(true);
@@ -89,7 +94,7 @@ public class PnlStreamOverlay : MonoBehaviour
                     break;
             }
 
-            payload.AddText($"Check out my stream in the HoloMe App using the channel {PnlChannelName.ChannelName} app {appLink}");
+            payload.AddText($"Check out my stream in the HoloMe App using the channel {AgoraController.ChannelName} app {appLink}");
         }
     }
 
@@ -108,7 +113,6 @@ public class PnlStreamOverlay : MonoBehaviour
 
     void StartStream()
     {
-
         EnableToggleControls(true);
     }
 

@@ -1,9 +1,7 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
-public class LogoCanvas : MonoBehaviour
+public class LogoCanvas : HologramChild
 {
     [SerializeField]
     Image spriteLogo;
@@ -53,13 +51,13 @@ public class LogoCanvas : MonoBehaviour
         return null;
     }
 
-    public void SetParent(Transform parent)
+    public override void SetParent(Transform parent)
     {
         var OriginalScale = transform.localScale;
         transform.SetParent(parent, true);
     }
 
-    public void UpdateOffset(Vector3 position)
+    public override void UpdateOffset(Vector3 position)
     {
         if (videoJsonDataRef != null)
         {

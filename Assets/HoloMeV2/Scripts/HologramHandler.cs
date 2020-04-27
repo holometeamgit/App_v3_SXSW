@@ -14,7 +14,7 @@ public class HologramHandler : MonoBehaviour
     ServerDataHandler serverDataHandler;
 
     [SerializeField]
-    LogoCanvas logoCanvas;
+    HologramChild[] hologramChildren;
 
     [SerializeField]
     AudioSource audioSource;
@@ -42,7 +42,10 @@ public class HologramHandler : MonoBehaviour
             holoMe.UseAudioSource(audioSource);
             holoMe.PlaceVideo(new Vector3(1000, 1000, 1000)); //This is the move the hologram out of the way to not effect the fade
             holoMe.EnableAmbientLighting();
-            logoCanvas.SetParent(holoMe.HologramTransform);
+            foreach (HologramChild hologramChild in hologramChildren)
+            {
+                hologramChild.SetParent(holoMe.HologramTransform);
+            }
         }
 
         videoCode = code;
@@ -66,7 +69,11 @@ public class HologramHandler : MonoBehaviour
             hasPlaced = true;
             PlayVideo();
         }
-        logoCanvas.UpdateOffset(position);
+        foreach (HologramChild hologramChild in hologramChildren)
+        {
+            hologramChild.UpdateOffset(position);
+        }
+
         holoMe.PlaceVideo(position);
     }
 

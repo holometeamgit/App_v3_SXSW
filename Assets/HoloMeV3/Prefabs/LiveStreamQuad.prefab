@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7510448206218213992}
   - component: {fileID: -706486868592677573}
   - component: {fileID: -5674742732123851672}
+  - component: {fileID: 621640419449716502}
   m_Layer: 0
   m_Name: LiveStreamQuad
   m_TagString: Untagged
@@ -106,12 +107,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbecd6195eb39d5458ad3c7062e039b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videoPlayer: {fileID: 0}
   videoMat: {fileID: 0}
-  matSnapshot: {fileID: 0}
   originalChroma: 0.2
   originalChromaT: 0.05
   redDetectionStength: 0
   greenDetectionStength: 75
   blueDetectionStength: 0
   regenerate: 0
+--- !u!114 &621640419449716502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2692848473373713202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b83dfd52c1b9a894a813baa2f5463ebd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
