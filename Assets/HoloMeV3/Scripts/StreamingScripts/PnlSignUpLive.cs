@@ -49,13 +49,13 @@ public class PnlSignUpLive : MonoBehaviour
         try
         {
             MailMessage mail = new MailMessage();
-            mail.From = new MailAddress("zuheb.javed@holo.me");
-            mail.To.Add("zuheb.javed@holo.me");
-            mail.Subject = "Holo Live Interest";
+            mail.From = new MailAddress("customer-success@holo.me");
+            mail.To.Add("customer-success@holo.me");
+            mail.Subject = "Holo Live Interest from " + inputEmail.text;
             mail.Body = "User Email: " + inputEmail.text;
             SmtpClient smtpServer = new SmtpClient("smtp.gmail.com");
             smtpServer.Port = 587;
-            smtpServer.Credentials = new System.Net.NetworkCredential("zuheb.javed@holo.me", "acddyakcoyhdujxi") as ICredentialsByHost;
+            smtpServer.Credentials = new System.Net.NetworkCredential("customer-success@holo.me", "kdudvzgzzpfuortr") as ICredentialsByHost;
             smtpServer.EnableSsl = true;
             ServicePointManager.ServerCertificateValidationCallback =
             delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
