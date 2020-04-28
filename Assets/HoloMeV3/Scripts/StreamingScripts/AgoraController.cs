@@ -12,7 +12,7 @@ public class AgoraController : MonoBehaviour
 
     IRtcEngine iRtcEngine;
 
-    public static string ChannelName { get; private set; }
+    public string ChannelName { get; set; }
 
     bool isChannelCreator;
     bool isLive;
@@ -41,13 +41,13 @@ public class AgoraController : MonoBehaviour
         liveStreamQuad.SetActive(false);
     }
 
-    public void JoinOrCreateChannel(string channelName, bool channelCreator)
+    public void JoinOrCreateChannel(bool channelCreator)
     {
         if (iRtcEngine == null)
             return;
 
         isChannelCreator = channelCreator;
-        ChannelName = channelName;
+        //ChannelName = channelName;
 
         iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
@@ -72,7 +72,7 @@ public class AgoraController : MonoBehaviour
         iRtcEngine.EnableVideoObserver();
 
         // join channel
-        iRtcEngine.JoinChannel(channelName, null, 0);
+        iRtcEngine.JoinChannel(ChannelName, null, 0);
 
         isLive = true;
 
@@ -134,7 +134,7 @@ public class AgoraController : MonoBehaviour
         }
 
         // create a GameObject and assign to this new user
-        VideoSurface videoSurface = MakeImageSurface(uid.ToString());
+        VideoSurface videoSurface = liveStreamQuad.GetComponent<VideoSurface>();
         if (!ReferenceEquals(videoSurface, null))
         {
             // configure videoSurface
@@ -146,44 +146,10 @@ public class AgoraController : MonoBehaviour
 
     }
 
-    public VideoSurface MakeImageSurface(string goName)
-    {
-        GameObject go = new GameObject();
-
-        if (go == null)
-        {
-            return null;
-        }
-
-        go.name = goName;
-
-        // to be renderered onto
-        //go.AddComponent<RawImage>();
-
-        // make the object draggable
-        //go.AddComponent<UIElementDragger>();
-        GameObject canvas = GameObject.Find("Canvas");
-        if (canvas != null)
-        {
-            go.transform.parent = canvas.transform;
-        }
-        // set up transform
-        go.transform.Rotate(0f, 0.0f, 180.0f);
-        //float xPos = Random.Range(Offset - Screen.width / 2f, Screen.width / 2f - Offset);
-        //float yPos = Random.Range(Offset, Screen.height / 2f - Offset);
-        //go.transform.localPosition = new Vector3(xPos, yPos, 0f);
-        go.transform.localScale = new Vector3(3f, 4f, 1f);
-
-        // configure videoSurface
-        VideoSurface videoSurface = go.AddComponent<VideoSurface>();
-        return videoSurface;
-    }
-
     public void OnStreamMessageRecieved(uint userId, int streamId, string data, int length)
     {
 
     }
-
 
     public void UnloadEngine()
     {
@@ -196,6 +162,14 @@ public class AgoraController : MonoBehaviour
         }
 
         isLive = false;
+    }
+
+    void SwitchCamera()
+    {
+        //This will require a screensized or raw image to place camera feed too via adding a videosurface
+        //to use 
+
+        iRtcEngine.SwitchCamera();
     }
 
     public void ToggleVideo(bool pauseVideo)

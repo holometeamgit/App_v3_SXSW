@@ -32,7 +32,7 @@ public class HologramHandler : MonoBehaviour
         placementHandler.OnPlaceDetected = PlayOnPlace;
     }
 
-    public void InitSession(string code)
+    public void InitSession()
     {
         //print($"Init Session Code = {code}");
 
@@ -47,7 +47,10 @@ public class HologramHandler : MonoBehaviour
                 hologramChild.SetParent(holoMe.HologramTransform);
             }
         }
+    }
 
+    public void PlayIfPlaced(string code)
+    {
         videoCode = code;
 
         if (Application.isEditor)
@@ -60,6 +63,8 @@ public class HologramHandler : MonoBehaviour
             PlayVideo();
         }
     }
+
+
 
     private void PlayOnPlace(Vector3 position)
     {

@@ -45,6 +45,7 @@ public class PnlViewingExperience : MonoBehaviour
 
     Coroutine scanAnimationRoutine;
 
+    bool activatedForStreaming;
     bool viewingExperienceInFocus;
     bool tutorialDisplayed;
 
@@ -135,7 +136,7 @@ public class PnlViewingExperience : MonoBehaviour
 
     public void OnPlaced()
     {
-        if (tutorialState == TutorialState.WaitingForTap)
+        if (tutorialState == TutorialState.WaitingForTap && !activatedForStreaming)
         {
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
             tutorialState = TutorialState.TutorialComplete;
@@ -165,15 +166,17 @@ public class PnlViewingExperience : MonoBehaviour
         messageRT.DOScale(Vector3.zero, animationSpeed).SetDelay(messageAnimationSpeed);
     }
 
-    public void ActivateSelf(string code, VideoJsonData videoJsonData)
+    public void ActivateForPreRecorded(string code, VideoJsonData videoJsonData)
     {
         //print($"PLAY CALLED - " + code);
+        activatedForStreaming = false;
         blurController.RemoveBlur();
         canvasGroup.alpha = 0;
         gameObject.SetActive(true);
         btnBurger.SetActive(true);
         logoCanvas.ActivateIfLogoAvailable(videoJsonData);
-        hologramHandler.InitSession(code);
+        hologramHandler.InitSession();
+        hologramHandler.PlayIfPlaced(code);
         focusSquare.StartScanning = true;
         FadeInCanvas();
 
@@ -181,6 +184,25 @@ public class PnlViewingExperience : MonoBehaviour
         {
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
         }
+
+        viewingExperienceInFocus = true;
+    }
+
+    public void ActivateForStreaming()
+    {
+        activatedForStreaming = true;
+        blurController.RemoveBlur();
+        canvasGroup.alpha = 0;
+        gameObject.SetActive(true);
+        btnBurger.SetActive(false); //Close button not required on this page
+        hologramHandler.InitSession();
+        focusSquare.StartScanning = true;
+        FadeInCanvas();
+
+        //if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
+        //{
+        //    StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
+        //}
 
         viewingExperienceInFocus = true;
     }

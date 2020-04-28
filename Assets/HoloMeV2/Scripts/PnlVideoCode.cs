@@ -131,7 +131,7 @@ public class PnlVideoCode : MonoBehaviour
     {
         animatedTransition.DoMenuTransition(false);
         var currentCode = validCode;
-        pnlViewingExperience.ActivateSelf(currentCode, videoJsonData);
+        pnlViewingExperience.ActivateForPreRecorded(currentCode, videoJsonData);
         pnlMainPage.GetComponent<AnimatedTransition>().DoMenuTransition(false);
     }
 

@@ -71,10 +71,6 @@ namespace agora_gaming_rtc
             }
             else
             {
-#if UNITY_EDITOR
-                // this only applies to Editor, in case of material is too dark
-                UpdateShader();
-#endif
                 _initialized = true;
             }
         }
@@ -353,19 +349,5 @@ namespace agora_gaming_rtc
         *if disabled, then no rendering happens
         */
         private bool mEnable = true;
-
-
-        /*
-        *    Updates Shader to unlit on Editor (some Editor version has the default material that can be too dark.
-        */
-        private void UpdateShader()
-        {
-
-            MeshRenderer mesh = GetComponent<MeshRenderer>();
-            if (mesh != null)
-            {
-                mesh.material = new Material(Shader.Find("Unlit/Texture"));
-            }
-        }
     }
 }

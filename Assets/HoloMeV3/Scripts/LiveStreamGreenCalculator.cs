@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Video;
 
 public class LiveStreamGreenCalculator : MonoBehaviour
 {
@@ -91,8 +90,6 @@ public class LiveStreamGreenCalculator : MonoBehaviour
         videoMat.SetColor("_KeyColor", AverageColorFromTexture(newText2d));
         videoMat.SetFloat("_DChroma", originalChroma);
         videoMat.SetFloat("_DChromaT", originalChromaT);
-
-        //videoPlayer.Play();
     }
 
     Color32 AverageColorFromTexture(Texture2D tex)

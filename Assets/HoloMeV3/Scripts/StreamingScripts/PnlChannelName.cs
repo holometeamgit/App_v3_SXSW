@@ -27,7 +27,7 @@ public class PnlChannelName : MonoBehaviour
         }
         else
         {
-            agoraController.JoinOrCreateChannel(inputChannelName.text, true);
+            agoraController.ChannelName = inputChannelName.text;
             OnChannelNamePassed?.Invoke();
         }
     }

@@ -33,6 +33,12 @@ public class PnlStreamOverlay : MonoBehaviour
     BlurController blurController;
 
     [SerializeField]
+    AgoraController agoraController;
+
+    [SerializeField]
+    PnlViewingExperience pnlViewingExperience;
+
+    [SerializeField]
     UnityEvent OnClose;
 
     int countDown;
@@ -62,6 +68,7 @@ public class PnlStreamOverlay : MonoBehaviour
         gameObject.SetActive(true);
         controlsPresenter.SetActive(false);
         controlsViewer.SetActive(true);
+        pnlViewingExperience.ActivateForStreaming();
     }
 
     public void FadePanel(bool show)
@@ -94,7 +101,7 @@ public class PnlStreamOverlay : MonoBehaviour
                     break;
             }
 
-            payload.AddText($"Check out my stream in the HoloMe App using the channel {AgoraController.ChannelName} app {appLink}");
+            payload.AddText($"Check out my stream in the HoloMe App using the channel {agoraController.ChannelName} app {appLink}");
         }
     }
 
@@ -109,10 +116,12 @@ public class PnlStreamOverlay : MonoBehaviour
             StopCoroutine(countdownRoutine);
 
         EnableToggleControls(false);
+        agoraController.Leave();
     }
 
     void StartStream()
     {
+        agoraController.JoinOrCreateChannel(true);
         EnableToggleControls(true);
     }
 
