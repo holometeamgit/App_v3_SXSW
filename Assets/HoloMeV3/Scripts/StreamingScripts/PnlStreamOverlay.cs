@@ -49,11 +49,15 @@ public class PnlStreamOverlay : MonoBehaviour
     PermissionGranter permissionGranter;
 
     [SerializeField]
-    UnityEvent OnClose;
+    UnityEvent OnCloseAsViewer;
+
+    [SerializeField]
+    UnityEvent OnCloseAsStreamer;
 
     int countDown;
     string tweenAnimationID = nameof(tweenAnimationID);
     Coroutine countdownRoutine;
+    bool isStreamer;
 
     private void OnEnable()
     {
@@ -80,6 +84,7 @@ public class PnlStreamOverlay : MonoBehaviour
 
     public void OpenAsStreamer()
     {
+        isStreamer = true;
         blurController.RemoveBlur();
         gameObject.SetActive(true);
         controlsPresenter.SetActive(true);
@@ -89,6 +94,7 @@ public class PnlStreamOverlay : MonoBehaviour
 
     public void OpenAsViewer()
     {
+        isStreamer = false;
         blurController.RemoveBlur();
         gameObject.SetActive(true);
         controlsPresenter.SetActive(false);
@@ -104,7 +110,10 @@ public class PnlStreamOverlay : MonoBehaviour
 
     public void ShowLeaveWarning()
     {
-        pnlGenericError.ActivateDoubleButton("End the live stream?", "Closing this page will end the live stream and disconnect your users.", onButtonOnePress: () => { OnClose.Invoke(); StopStream(); }, onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
+        if (isStreamer)
+            pnlGenericError.ActivateDoubleButton("End the live stream?", "Closing this page will end the live stream and disconnect your users.", onButtonOnePress: () => { OnCloseAsStreamer.Invoke(); StopStream(); }, onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
+        else
+            pnlGenericError.ActivateDoubleButton("Disconnect from live stream?", "Closing this page will disconnect you from the live stream", onButtonOnePress: () => { OnCloseAsViewer.Invoke(); StopStream(); }, onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
     }
 
     public void ShareStream()

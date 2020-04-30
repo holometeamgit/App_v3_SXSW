@@ -56,9 +56,6 @@ public class PnlVideoCode : MonoBehaviour
     [SerializeField]
     PnlPostRecord pnlPostRecord;
 
-    //[SerializeField]
-    //CanvasGroup imgSampleCodesCanvasGroup;
-
     [SerializeField]
     PnlMainPage pnlMainPage;
 
@@ -117,13 +114,11 @@ public class PnlVideoCode : MonoBehaviour
 
     void ShowErrorVideoCodeDoesntExist()
     {
-        //animatedTransition.DoMenuTransition(false);
         pnlGenericError.ActivateSingleButton(message: "Video Code Not Found", onBackPress: () => gameObject.SetActive(true));
     }
 
     void ShowErrorFilesMissing()
     {
-        //animatedTransition.DoMenuTransition(false);
         pnlGenericError.ActivateSingleButton(message: "Missing Related Files", onBackPress: () => gameObject.SetActive(true));
     }
 

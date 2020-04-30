@@ -51,6 +51,8 @@ public class HologramHandler : MonoBehaviour
 
     public void PlayIfPlaced(string code)
     {
+        HelperFunctions.DevLog("PLAY ON PLACE CALLED code =" + code);
+
         videoCode = code;
 
         if (Application.isEditor)
@@ -63,8 +65,6 @@ public class HologramHandler : MonoBehaviour
             PlayVideo();
         }
     }
-
-
 
     private void PlayOnPlace(Vector3 position)
     {
@@ -92,6 +92,11 @@ public class HologramHandler : MonoBehaviour
         {
             holoMe.PlayVideo(HelperFunctions.PersistentDir() + videoCode + ".mp4");
         }
+    }
+
+    public void TogglePreRecordedVideoRenderer(bool enable)
+    {
+        holoMe.HologramTransform.parent.GetComponent<MeshRenderer>().enabled = enable;
     }
 
     public void StopVideo()

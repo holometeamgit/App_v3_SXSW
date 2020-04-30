@@ -94,4 +94,10 @@ public class HelperFunctions
     {
         return new Color(r / 255f, g / 255f, b / 255f);
     }
+
+    public static void DevLog(string message)
+    {
+        if (Application.isEditor || Debug.isDebugBuild)
+            Debug.Log(message);
+    }
 }
