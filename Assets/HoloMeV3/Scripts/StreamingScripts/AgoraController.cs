@@ -32,7 +32,7 @@ public class AgoraController : MonoBehaviour
     {
         if (iRtcEngine != null)
         {
-            Debug.Log("Engine exists. Please unload it first!");
+            HelperFunctions.DevLog("Engine exists. Please unload it first!");
             return;
         }
 
@@ -88,8 +88,7 @@ public class AgoraController : MonoBehaviour
 
     private void OnUserOffline(uint uid, USER_OFFLINE_REASON reason)
     {
-        // remove video stream
-        Debug.Log("onUserOffline: uid = " + uid + " reason = " + reason);
+        HelperFunctions.DevLog("onUserOffline: uid = " + uid + " reason = " + reason);
 
         GameObject go = GameObject.Find(uid.ToString());
         if (!ReferenceEquals(go, null))
@@ -114,11 +113,17 @@ public class AgoraController : MonoBehaviour
         iRtcEngine.DisableVideoObserver();
         liveStreamQuad.SetActive(false);
         isLive = false;
+
+        //VideoSurface oldSurface = liveStreamQuad.GetComponent<VideoSurface>();
+        //if (oldSurface)
+        //{
+        //    Destroy(oldSurface);
+        //}
     }
 
     private void OnJoinChannelSuccess(string channelName, uint uid, int elapsed)
     {
-        Debug.Log("JoinChannelSuccessHandler: uid = " + uid);
+        HelperFunctions.DevLog("JoinChannelSuccessHandler: uid = " + uid);
     }
 
     void IncrementCount()
@@ -129,23 +134,20 @@ public class AgoraController : MonoBehaviour
 
     private void OnUserJoined(uint uid, int elapsed)
     {
-        Debug.Log("onUserJoined: uid = " + uid + " elapsed = " + elapsed);
+        HelperFunctions.DevLog("onUserJoined: uid = " + uid + " elapsed = " + elapsed);
 
         if (!isChannelCreator)
         {
-            videoSurfaceBroadcaster.SetForUser(uid);
-            videoSurfaceBroadcaster.SetEnable(true);
+            VideoSurface videoSurface = liveStreamQuad.GetComponent<VideoSurface>();
+            if (!videoSurface)
+            {
+                videoSurface = liveStreamQuad.AddComponent<VideoSurface>();
+            }
 
-            //// create a GameObject and assign to this new user
-            //VideoSurface videoSurface = liveStreamQuad.GetComponent<VideoSurface>();
-            //if (!ReferenceEquals(videoSurface, null))
-            //{
-            //    // configure videoSurface
-            //    videoSurface.SetForUser(uid);
-            //    videoSurface.SetEnable(true);
-            //    videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
-            //    videoSurface.SetGameFps(30);
-            //}
+            videoSurface.SetForUser(uid);
+            videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
+            videoSurface.SetGameFps(30);
+            videoSurface.SetEnable(true);
         }
     }
 
@@ -156,7 +158,7 @@ public class AgoraController : MonoBehaviour
 
     public void UnloadEngine()
     {
-        Debug.Log("calling unloadEngine");
+        HelperFunctions.DevLog("calling unloadEngine");
 
         if (iRtcEngine != null)
         {

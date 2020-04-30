@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
-using System.Collections;
-using DG.Tweening;
 
 public class PnlChannelName : MonoBehaviour
 {
