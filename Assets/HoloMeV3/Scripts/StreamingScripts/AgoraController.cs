@@ -1,4 +1,5 @@
 ﻿using agora_gaming_rtc;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -10,6 +11,9 @@ public class AgoraController : MonoBehaviour
     [SerializeField]
     GameObject liveStreamQuad;
 
+    [SerializeField]
+    VideoSurface videoSurfaceBroadcaster;
+
     IRtcEngine iRtcEngine;
 
     public string ChannelName { get; set; }
@@ -17,6 +21,7 @@ public class AgoraController : MonoBehaviour
     bool isChannelCreator;
     bool isLive;
     int userCount;
+    public Action<int> OnCountIncremented;
 
     public void Start()
     {
@@ -47,7 +52,6 @@ public class AgoraController : MonoBehaviour
             return;
 
         isChannelCreator = channelCreator;
-        //ChannelName = channelName;
 
         iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
@@ -63,7 +67,7 @@ public class AgoraController : MonoBehaviour
 
         // set callbacks (optional)
         iRtcEngine.OnJoinChannelSuccess = OnJoinChannelSuccess;
-        iRtcEngine.OnUserJoined = OnUserJoined;
+        iRtcEngine.OnUserJoined = OnUserJoined; //Only fired for broadcasters
         iRtcEngine.OnUserOffline = OnUserOffline;
 
         // enable video
@@ -90,7 +94,7 @@ public class AgoraController : MonoBehaviour
         GameObject go = GameObject.Find(uid.ToString());
         if (!ReferenceEquals(go, null))
         {
-            Object.Destroy(go);
+            Destroy(go);
         }
     }
 
@@ -98,7 +102,6 @@ public class AgoraController : MonoBehaviour
     {
         if (iRtcEngine == null)
             return;
-
 
         if (isChannelCreator)
         {
@@ -113,37 +116,37 @@ public class AgoraController : MonoBehaviour
         isLive = false;
     }
 
-
     private void OnJoinChannelSuccess(string channelName, uint uid, int elapsed)
     {
         Debug.Log("JoinChannelSuccessHandler: uid = " + uid);
+    }
+
+    void IncrementCount()
+    {
+        userCount++;
+        OnCountIncremented(userCount);
     }
 
     private void OnUserJoined(uint uid, int elapsed)
     {
         Debug.Log("onUserJoined: uid = " + uid + " elapsed = " + elapsed);
 
-        if (isChannelCreator)
-            userCount++;
-
-        // find a game object to render video stream from 'uid'
-        GameObject go = GameObject.Find(uid.ToString());
-        if (!ReferenceEquals(go, null))
+        if (!isChannelCreator)
         {
-            return; // reuse
-        }
+            videoSurfaceBroadcaster.SetForUser(uid);
+            videoSurfaceBroadcaster.SetEnable(true);
 
-        // create a GameObject and assign to this new user
-        VideoSurface videoSurface = liveStreamQuad.GetComponent<VideoSurface>();
-        if (!ReferenceEquals(videoSurface, null))
-        {
-            // configure videoSurface
-            videoSurface.SetForUser(uid);
-            videoSurface.SetEnable(true);
-            videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
-            videoSurface.SetGameFps(30);
+            //// create a GameObject and assign to this new user
+            //VideoSurface videoSurface = liveStreamQuad.GetComponent<VideoSurface>();
+            //if (!ReferenceEquals(videoSurface, null))
+            //{
+            //    // configure videoSurface
+            //    videoSurface.SetForUser(uid);
+            //    videoSurface.SetEnable(true);
+            //    videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
+            //    videoSurface.SetGameFps(30);
+            //}
         }
-
     }
 
     public void OnStreamMessageRecieved(uint userId, int streamId, string data, int length)
@@ -164,7 +167,7 @@ public class AgoraController : MonoBehaviour
         isLive = false;
     }
 
-    void SwitchCamera()
+    public void SwitchCamera()
     {
         //This will require a screensized or raw image to place camera feed too via adding a videosurface
         //to use 

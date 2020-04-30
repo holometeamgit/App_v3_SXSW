@@ -391,7 +391,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4109964728554131869}
-  - {fileID: 4386847457628005098}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -802,6 +801,7 @@ RectTransform:
   - {fileID: 7715496445698677463}
   - {fileID: 3855551745086019717}
   - {fileID: 4987441175689252142}
+  - {fileID: 4386847457628005098}
   m_Father: {fileID: 7158962503387924674}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -853,8 +853,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4780655128296850158}
-  m_Father: {fileID: 7158962503387924674}
-  m_RootOrder: 1
+  m_Father: {fileID: 4109964728554131869}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.025822211, y: 0.5311782}
   m_AnchorMax: {x: 0.9741778, y: 0.5763752}
@@ -939,4 +939,15 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4438759843297945493}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3406446260912435604}
+        m_MethodName: DoMenuTransition
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

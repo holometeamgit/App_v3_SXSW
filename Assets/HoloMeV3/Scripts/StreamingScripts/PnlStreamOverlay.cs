@@ -5,6 +5,7 @@ using NatShare;
 using UnityEngine.Events;
 using System.Collections;
 using UnityEngine.UI;
+using agora_gaming_rtc;
 
 public class PnlStreamOverlay : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class PnlStreamOverlay : MonoBehaviour
 
     [SerializeField]
     TextMeshProUGUI txtCentreMessage;
+
+    [SerializeField]
+    TextMeshProUGUI txtUserCount;
 
     [SerializeField]
     CanvasGroup canvasGroup;
@@ -39,6 +43,12 @@ public class PnlStreamOverlay : MonoBehaviour
     PnlViewingExperience pnlViewingExperience;
 
     [SerializeField]
+    RawImage CameraRenderImage;
+
+    [SerializeField]
+    PermissionGranter permissionGranter;
+
+    [SerializeField]
     UnityEvent OnClose;
 
     int countDown;
@@ -52,6 +62,20 @@ public class PnlStreamOverlay : MonoBehaviour
         toggleVideo.isOn = false;
         txtCentreMessage.text = string.Empty;
         EnableToggleControls(false);
+        RequestMicAccess();
+    }
+
+    private void RequestMicAccess()
+    {
+        if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete)
+        {
+            permissionGranter.RequestMicAccess();
+        }
+    }
+
+    private void Awake()
+    {
+        agoraController.OnCountIncremented += (x) => txtUserCount.text = x.ToString();
     }
 
     public void OpenAsStreamer()
@@ -60,6 +84,7 @@ public class PnlStreamOverlay : MonoBehaviour
         gameObject.SetActive(true);
         controlsPresenter.SetActive(true);
         controlsViewer.SetActive(false);
+        AddVideoSurface();
     }
 
     public void OpenAsViewer()
@@ -69,6 +94,7 @@ public class PnlStreamOverlay : MonoBehaviour
         controlsPresenter.SetActive(false);
         controlsViewer.SetActive(true);
         pnlViewingExperience.ActivateForStreaming();
+        agoraController.JoinOrCreateChannel(false);
     }
 
     public void FadePanel(bool show)
@@ -78,7 +104,7 @@ public class PnlStreamOverlay : MonoBehaviour
 
     public void ShowLeaveWarning()
     {
-        pnlGenericError.ActivateDoubleButton("End the live stream?", "Closing this page will end the live stream and disconnect your users.", onButtonOnePress: () => OnClose.Invoke(), onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
+        pnlGenericError.ActivateDoubleButton("End the live stream?", "Closing this page will end the live stream and disconnect your users.", onButtonOnePress: () => { OnClose.Invoke(); StopStream(); }, onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
     }
 
     public void ShareStream()
@@ -123,6 +149,18 @@ public class PnlStreamOverlay : MonoBehaviour
     {
         agoraController.JoinOrCreateChannel(true);
         EnableToggleControls(true);
+        //AddVideoSurface();
+    }
+
+    private void AddVideoSurface()
+    {
+        VideoSurface videoSurface = CameraRenderImage.GetComponent<VideoSurface>();
+        if (!videoSurface)
+        {
+            videoSurface = CameraRenderImage.gameObject.AddComponent<VideoSurface>();
+            videoSurface.EnableFilpTextureApply(true, true);
+            videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
+        }
     }
 
     private void EnableToggleControls(bool enable)
