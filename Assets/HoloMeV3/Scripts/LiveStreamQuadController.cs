@@ -6,10 +6,10 @@ public class LiveStreamQuadController : HologramChild
     {
         transform.SetParent(parent, false);
         transform.localPosition = Vector3.zero;
+        transform.Rotate(new Vector3(0, 180, 0));
     }
 
     public override void UpdateOffset(Vector3 position)
     {
-        //transform.localPosition = position;
     }
 }
