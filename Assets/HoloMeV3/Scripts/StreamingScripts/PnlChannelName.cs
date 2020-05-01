@@ -16,6 +16,11 @@ public class PnlChannelName : MonoBehaviour
     [SerializeField]
     AgoraController agoraController;
 
+    private void Awake()
+    {
+        inputChannelName.characterLimit = 30;
+    }
+
     public void OnReadyPressed()
     {
         //Any verification and validation should go here
@@ -25,7 +30,7 @@ public class PnlChannelName : MonoBehaviour
         }
         else
         {
-            agoraController.ChannelName = inputChannelName.text;
+            agoraController.ChannelName = inputChannelName.text.ToLower();
             OnChannelNamePassed?.Invoke();
         }
     }

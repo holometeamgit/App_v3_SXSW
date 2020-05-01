@@ -8,8 +8,8 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: LiveStreamMaterial
-  m_Shader: {fileID: 4800000, guid: fdac7e86eaeeb244ab8e9d8a62da139a, type: 3}
-  m_ShaderKeywords: USE_AMBIENT_LIGHTING _DESPILLANDREFLECTIONREMOVE_ON _ON_ON _SHOWMATTE_ON
+  m_Shader: {fileID: 4800000, guid: 83a85bb410daad54f8ab3f66e7748d68, type: 3}
+  m_ShaderKeywords: USE_AMBIENT_LIGHTING _DESPILLANDREFLECTIONREMOVE_ON _ON_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -58,8 +58,8 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
-    - _DChroma: 0
-    - _DChromaT: 1
+    - _DChroma: 0.2
+    - _DChromaT: 0.05
     - _DespillAndReflectionRemove: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -74,7 +74,7 @@ Material:
     - _On: 1
     - _Parallax: 0.02
     - _S: 0.22
-    - _ShowMatte: 1
+    - _ShowMatte: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -99,4 +99,4 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _KeyColor: {r: 1, g: 1, b: 1, a: 1}
+    - _KeyColor: {r: 0.5058824, g: 0.7372549, b: 0.6156863, a: 0}

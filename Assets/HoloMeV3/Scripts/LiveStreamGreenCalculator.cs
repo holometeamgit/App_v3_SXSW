@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class LiveStreamGreenCalculator : MonoBehaviour
 {
-    [SerializeField]
     Material videoMat;
 
     [SerializeField]
@@ -29,6 +28,11 @@ public class LiveStreamGreenCalculator : MonoBehaviour
 
     [SerializeField]
     bool regenerate;
+
+    private void Awake()
+    {
+        videoMat = GetComponent<MeshRenderer>().material;
+    }
 
     public void StartBackgroundRemoval()
     {
