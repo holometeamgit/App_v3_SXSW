@@ -30,7 +30,7 @@ public class LiveStreamGreenCalculator : MonoBehaviour
     [SerializeField]
     bool regenerate;
 
-    void Start()
+    public void StartBackgroundRemoval()
     {
         StartCoroutine(StartPicking(true));
     }

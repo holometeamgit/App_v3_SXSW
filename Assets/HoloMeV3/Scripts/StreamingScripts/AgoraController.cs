@@ -132,6 +132,8 @@ public class AgoraController : MonoBehaviour
         OnCountIncremented(userCount);
     }
 
+    uint uid;
+
     private void OnUserJoined(uint uid, int elapsed)
     {
         HelperFunctions.DevLog("onUserJoined: uid = " + uid + " elapsed = " + elapsed);
@@ -142,12 +144,16 @@ public class AgoraController : MonoBehaviour
             if (!videoSurface)
             {
                 videoSurface = liveStreamQuad.AddComponent<VideoSurface>();
+                this.uid = uid;
             }
 
-            videoSurface.SetForUser(uid);
+            videoSurface.SetForUser(this.uid);
             videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
+            videoSurface.EnableFilpTextureApply(true, true);
             videoSurface.SetGameFps(30);
             videoSurface.SetEnable(true);
+
+            //liveStreamQuad.GetComponent<LiveStreamGreenCalculator>().StartBackgroundRemoval();
         }
     }
 

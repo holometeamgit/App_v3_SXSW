@@ -30,4 +30,8 @@ public class PnlChannelName : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        inputChannelName.text = string.Empty;
+    }
 }

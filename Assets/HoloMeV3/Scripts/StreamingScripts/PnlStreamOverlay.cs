@@ -169,6 +169,8 @@ public class PnlStreamOverlay : MonoBehaviour
             videoSurface = CameraRenderImage.gameObject.AddComponent<VideoSurface>();
             videoSurface.EnableFilpTextureApply(true, true);
             videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
+            videoSurface.SetGameFps(30);
+            videoSurface.SetEnable(true);
         }
     }
 
