@@ -19,6 +19,8 @@ public class AgoraController : MonoBehaviour
     bool isLive;
     int userCount;
     public Action<int> OnCountIncremented;
+    public Action OnStreamerLeft;
+
     VideoSurface videoSurfaceRef;
 
     public void Start()
@@ -51,8 +53,6 @@ public class AgoraController : MonoBehaviour
 
         isChannelCreator = channelCreator;
 
-        ResetVideoSurface();
-
         iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
         if (isChannelCreator)
@@ -82,19 +82,14 @@ public class AgoraController : MonoBehaviour
 
         //int streamID = iRtcEngine.CreateDataStream(true, true);
         //iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
-        //iRtcEngine.OnStreamMessageError= ;
+        //iRtcEngine.OnStreamMessageError = ;
 
     }
 
-    private void OnUserOffline(uint uid, USER_OFFLINE_REASON reason)
+    private void OnUserOffline(uint uid, USER_OFFLINE_REASON reason) //Only called for host
     {
         HelperFunctions.DevLog("onUserOffline: uid = " + uid + " reason = " + reason);
-
-        GameObject go = GameObject.Find(uid.ToString());
-        if (!ReferenceEquals(go, null))
-        {
-            Destroy(go);
-        }
+        OnStreamerLeft?.Invoke();
     }
 
     public void Leave()
@@ -104,15 +99,15 @@ public class AgoraController : MonoBehaviour
 
         if (isChannelCreator)
         {
-            //iRtcEngine.SendStreamMessage(0, "CreatorLeft");
+            iRtcEngine.SendStreamMessage(0, "CreatorLeft");
         }
 
-        // leave channel
         iRtcEngine.LeaveChannel();
-        // deregister video frame observers in native-c code
         iRtcEngine.DisableVideoObserver();
         liveStreamQuad.SetActive(false);
         isLive = false;
+
+        ResetVideoSurface();
     }
 
     private void ResetVideoSurface()
@@ -142,6 +137,8 @@ public class AgoraController : MonoBehaviour
 
         if (!isChannelCreator)
         {
+            ResetVideoSurface();
+
             videoSurfaceRef = liveStreamQuad.GetComponent<VideoSurface>();
             if (!videoSurfaceRef)
             {
@@ -158,10 +155,10 @@ public class AgoraController : MonoBehaviour
         }
     }
 
-    public void OnStreamMessageRecieved(uint userId, int streamId, string data, int length)
-    {
-
-    }
+    //public void OnStreamMessageRecieved(uint userId, int streamId, string data, int length)
+    //{
+    //    OnStreamerLeft?.Invoke();
+    //}
 
     public void UnloadEngine()
     {

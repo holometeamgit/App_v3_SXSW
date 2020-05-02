@@ -68,6 +68,7 @@ public class PnlStreamOverlay : MonoBehaviour
     private void Awake()
     {
         agoraController.OnCountIncremented += (x) => txtUserCount.text = x.ToString();
+        agoraController.OnStreamerLeft += CloseAsViewer;
     }
 
     private void OnEnable()
@@ -124,7 +125,13 @@ public class PnlStreamOverlay : MonoBehaviour
         if (isStreamer)
             pnlGenericError.ActivateDoubleButton("End the live stream?", "Closing this page will end the live stream and disconnect your users.", onButtonOnePress: () => { OnCloseAsStreamer.Invoke(); StopStream(); }, onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
         else
-            pnlGenericError.ActivateDoubleButton("Disconnect from live stream?", "Closing this page will disconnect you from the live stream", onButtonOnePress: () => { OnCloseAsViewer.Invoke(); StopStream(); }, onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
+            pnlGenericError.ActivateDoubleButton("Disconnect from live stream?", "Closing this page will disconnect you from the live stream", onButtonOnePress: () => { CloseAsViewer(); }, onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
+    }
+
+    private void CloseAsViewer()
+    {
+        OnCloseAsViewer.Invoke();
+        StopStream();
     }
 
     public void ShareStream()
