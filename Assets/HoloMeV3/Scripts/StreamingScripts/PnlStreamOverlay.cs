@@ -34,6 +34,9 @@ public class PnlStreamOverlay : MonoBehaviour
     Toggle toggleVideo;
 
     [SerializeField]
+    Button btnFlipCamera;
+
+    [SerializeField]
     BlurController blurController;
 
     [SerializeField]
@@ -77,7 +80,7 @@ public class PnlStreamOverlay : MonoBehaviour
         toggleAudio.isOn = false;
         toggleVideo.isOn = false;
         txtCentreMessage.text = string.Empty;
-        EnableToggleControls(false);
+        EnableStreamControls(false);
         RequestMicAccess();
     }
 
@@ -102,6 +105,7 @@ public class PnlStreamOverlay : MonoBehaviour
         controlsPresenter.SetActive(true);
         controlsViewer.SetActive(false);
         ToggleARSessionObjects(false);
+        StartCountdown();
     }
 
     public void OpenAsViewer()
@@ -168,14 +172,14 @@ public class PnlStreamOverlay : MonoBehaviour
         if (countdownRoutine != null)
             StopCoroutine(countdownRoutine);
 
-        EnableToggleControls(false);
+        EnableStreamControls(false);
         agoraController.Leave();
     }
 
     void StartStream()
     {
         agoraController.JoinOrCreateChannel(true);
-        EnableToggleControls(true);
+        EnableStreamControls(true);
         AddVideoSurface();
     }
 
@@ -199,10 +203,11 @@ public class PnlStreamOverlay : MonoBehaviour
         CameraRenderImage.SizeToParent();
     }
 
-    private void EnableToggleControls(bool enable)
+    private void EnableStreamControls(bool enable)
     {
         toggleAudio.interactable = enable;
         toggleVideo.interactable = enable;
+        btnFlipCamera.interactable = enable;
     }
 
     public void ToggleAudio(bool mute)
@@ -229,7 +234,7 @@ public class PnlStreamOverlay : MonoBehaviour
 
     IEnumerator CountDown()
     {
-        countDown = 3;
+        countDown = 0;
 
         while (countDown >= 0)
         {
