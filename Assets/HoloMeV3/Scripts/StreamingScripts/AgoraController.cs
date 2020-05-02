@@ -11,9 +11,6 @@ public class AgoraController : MonoBehaviour
     [SerializeField]
     GameObject liveStreamQuad;
 
-    [SerializeField]
-    VideoSurface videoSurfaceBroadcaster;
-
     IRtcEngine iRtcEngine;
 
     public string ChannelName { get; set; }
@@ -22,6 +19,7 @@ public class AgoraController : MonoBehaviour
     bool isLive;
     int userCount;
     public Action<int> OnCountIncremented;
+    VideoSurface videoSurfaceRef;
 
     public void Start()
     {
@@ -52,6 +50,8 @@ public class AgoraController : MonoBehaviour
             return;
 
         isChannelCreator = channelCreator;
+
+        ResetVideoSurface();
 
         iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
@@ -113,12 +113,16 @@ public class AgoraController : MonoBehaviour
         iRtcEngine.DisableVideoObserver();
         liveStreamQuad.SetActive(false);
         isLive = false;
+    }
 
-        //VideoSurface oldSurface = liveStreamQuad.GetComponent<VideoSurface>();
-        //if (oldSurface)
-        //{
-        //    Destroy(oldSurface);
-        //}
+    private void ResetVideoSurface()
+    {
+        if (videoSurfaceRef)
+        {
+            Destroy(videoSurfaceRef);
+            liveStreamQuad.GetComponent<MeshRenderer>().material.mainTexture = null;
+            Resources.UnloadUnusedAssets();
+        }
     }
 
     private void OnJoinChannelSuccess(string channelName, uint uid, int elapsed)
@@ -132,26 +136,23 @@ public class AgoraController : MonoBehaviour
         OnCountIncremented(userCount);
     }
 
-    uint uid;
-
     private void OnUserJoined(uint uid, int elapsed)
     {
         HelperFunctions.DevLog("onUserJoined: uid = " + uid + " elapsed = " + elapsed);
 
         if (!isChannelCreator)
         {
-            VideoSurface videoSurface = liveStreamQuad.GetComponent<VideoSurface>();
-            if (!videoSurface)
+            videoSurfaceRef = liveStreamQuad.GetComponent<VideoSurface>();
+            if (!videoSurfaceRef)
             {
-                videoSurface = liveStreamQuad.AddComponent<VideoSurface>();
-                this.uid = uid;
+                videoSurfaceRef = liveStreamQuad.AddComponent<VideoSurface>();
             }
 
-            videoSurface.SetForUser(this.uid);
-            videoSurface.SetEnable(true);
-            videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
-            videoSurface.EnableFilpTextureApply(true, true);
-            videoSurface.SetGameFps(30);
+            videoSurfaceRef.SetForUser(uid);
+            videoSurfaceRef.SetEnable(true);
+            videoSurfaceRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
+            videoSurfaceRef.EnableFilpTextureApply(true, true);
+            videoSurfaceRef.SetGameFps(30);
 
             //liveStreamQuad.GetComponent<LiveStreamGreenCalculator>().StartBackgroundRemoval();
         }
