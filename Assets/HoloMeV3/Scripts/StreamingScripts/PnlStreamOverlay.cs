@@ -89,7 +89,6 @@ public class PnlStreamOverlay : MonoBehaviour
         gameObject.SetActive(true);
         controlsPresenter.SetActive(true);
         controlsViewer.SetActive(false);
-        AddVideoSurface();
     }
 
     public void OpenAsViewer()
@@ -158,7 +157,7 @@ public class PnlStreamOverlay : MonoBehaviour
     {
         agoraController.JoinOrCreateChannel(true);
         EnableToggleControls(true);
-        //AddVideoSurface();
+        AddVideoSurface();
     }
 
     private void AddVideoSurface()
@@ -172,6 +171,13 @@ public class PnlStreamOverlay : MonoBehaviour
             videoSurface.SetGameFps(30);
             videoSurface.SetEnable(true);
         }
+        StartCoroutine(Resize());
+    }
+
+    IEnumerator Resize()
+    {
+        yield return new WaitForSeconds(3);
+        CameraRenderImage.SizeToParent();
     }
 
     private void EnableToggleControls(bool enable)
@@ -229,5 +235,10 @@ public class PnlStreamOverlay : MonoBehaviour
     private void AnimatedFadeOutMessage(float delay = 0)
     {
         txtCentreMessage.DOFade(0, .5f).SetDelay(delay).SetId(tweenAnimationID);
+    }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
     }
 }

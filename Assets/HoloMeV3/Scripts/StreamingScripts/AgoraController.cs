@@ -148,10 +148,10 @@ public class AgoraController : MonoBehaviour
             }
 
             videoSurface.SetForUser(this.uid);
+            videoSurface.SetEnable(true);
             videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
             videoSurface.EnableFilpTextureApply(true, true);
             videoSurface.SetGameFps(30);
-            videoSurface.SetEnable(true);
 
             //liveStreamQuad.GetComponent<LiveStreamGreenCalculator>().StartBackgroundRemoval();
         }
