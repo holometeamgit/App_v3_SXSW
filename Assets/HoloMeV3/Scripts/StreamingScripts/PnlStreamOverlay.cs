@@ -49,6 +49,12 @@ public class PnlStreamOverlay : MonoBehaviour
     PermissionGranter permissionGranter;
 
     [SerializeField]
+    GameObject ArSessionOrigin;
+
+    [SerializeField]
+    GameObject ArSession;
+
+    [SerializeField]
     UnityEvent OnCloseAsViewer;
 
     [SerializeField]
@@ -58,6 +64,11 @@ public class PnlStreamOverlay : MonoBehaviour
     string tweenAnimationID = nameof(tweenAnimationID);
     Coroutine countdownRoutine;
     bool isStreamer;
+
+    private void Awake()
+    {
+        agoraController.OnCountIncremented += (x) => txtUserCount.text = x.ToString();
+    }
 
     private void OnEnable()
     {
@@ -77,18 +88,19 @@ public class PnlStreamOverlay : MonoBehaviour
         }
     }
 
-    private void Awake()
+    private void ToggleARSessionObjects(bool enable)
     {
-        agoraController.OnCountIncremented += (x) => txtUserCount.text = x.ToString();
+        ArSessionOrigin.SetActive(enable);
+        ArSession.SetActive(enable);
     }
 
     public void OpenAsStreamer()
     {
         isStreamer = true;
-        blurController.RemoveBlur();
         gameObject.SetActive(true);
         controlsPresenter.SetActive(true);
         controlsViewer.SetActive(false);
+        ToggleARSessionObjects(false);
     }
 
     public void OpenAsViewer()
@@ -240,5 +252,6 @@ public class PnlStreamOverlay : MonoBehaviour
     private void OnDisable()
     {
         StopAllCoroutines();
+        ToggleARSessionObjects(true);
     }
 }
