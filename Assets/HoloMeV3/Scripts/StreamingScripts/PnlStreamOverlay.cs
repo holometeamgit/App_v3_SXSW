@@ -46,16 +46,16 @@ public class PnlStreamOverlay : MonoBehaviour
     PnlViewingExperience pnlViewingExperience;
 
     [SerializeField]
-    RawImage CameraRenderImage;
+    RawImage cameraRenderImage;
 
     [SerializeField]
     PermissionGranter permissionGranter;
 
     [SerializeField]
-    GameObject ArSessionOrigin;
+    GameObject arSessionOrigin;
 
     [SerializeField]
-    GameObject ArSession;
+    GameObject arSession;
 
     [SerializeField]
     UnityEvent OnCloseAsViewer;
@@ -94,8 +94,8 @@ public class PnlStreamOverlay : MonoBehaviour
 
     private void ToggleARSessionObjects(bool enable)
     {
-        ArSessionOrigin.SetActive(enable);
-        ArSession.SetActive(enable);
+        arSessionOrigin.SetActive(enable);
+        arSession.SetActive(enable);
     }
 
     public void OpenAsStreamer()
@@ -105,6 +105,7 @@ public class PnlStreamOverlay : MonoBehaviour
         controlsPresenter.SetActive(true);
         controlsViewer.SetActive(false);
         ToggleARSessionObjects(false);
+        cameraRenderImage.transform.parent.gameObject.SetActive(true);
         StartCountdown();
     }
 
@@ -116,6 +117,7 @@ public class PnlStreamOverlay : MonoBehaviour
         controlsPresenter.SetActive(false);
         controlsViewer.SetActive(true);
         pnlViewingExperience.ActivateForStreaming();
+        cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
     }
 
@@ -185,10 +187,10 @@ public class PnlStreamOverlay : MonoBehaviour
 
     private void AddVideoSurface()
     {
-        VideoSurface videoSurface = CameraRenderImage.GetComponent<VideoSurface>();
+        VideoSurface videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
         if (!videoSurface)
         {
-            videoSurface = CameraRenderImage.gameObject.AddComponent<VideoSurface>();
+            videoSurface = cameraRenderImage.gameObject.AddComponent<VideoSurface>();
             videoSurface.EnableFilpTextureApply(true, true);
             videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
             videoSurface.SetGameFps(30);
@@ -200,7 +202,7 @@ public class PnlStreamOverlay : MonoBehaviour
     IEnumerator Resize()
     {
         yield return new WaitForSeconds(3);
-        CameraRenderImage.SizeToParent();
+        cameraRenderImage.SizeToParent();
     }
 
     private void EnableStreamControls(bool enable)

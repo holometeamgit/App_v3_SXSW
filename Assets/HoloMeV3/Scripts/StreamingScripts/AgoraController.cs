@@ -18,6 +18,7 @@ public class AgoraController : MonoBehaviour
     bool isChannelCreator;
     bool isLive;
     int userCount;
+    int streamID;
     public Action<int> OnCountIncremented;
     public Action OnStreamerLeft;
 
@@ -58,6 +59,14 @@ public class AgoraController : MonoBehaviour
         if (isChannelCreator)
         {
             iRtcEngine.SetClientRole(CLIENT_ROLE.BROADCASTER);
+            var encoderConfiguration = new VideoEncoderConfiguration();
+            encoderConfiguration.degradationPreference = DEGRADATION_PREFERENCE.MAINTAIN_BALANCED;
+            encoderConfiguration.minFrameRate = 15;
+            encoderConfiguration.frameRate = FRAME_RATE.FRAME_RATE_FPS_60;
+            encoderConfiguration.bitrate = 5000;
+            encoderConfiguration.dimensions = new VideoDimensions() { width = 720, height = 1280 };
+            encoderConfiguration.orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE;
+            iRtcEngine.SetVideoEncoderConfiguration(encoderConfiguration);
         }
         else
         {
@@ -80,13 +89,13 @@ public class AgoraController : MonoBehaviour
 
         isLive = true;
 
-        //int streamID = iRtcEngine.CreateDataStream(true, true);
-        //iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
+        streamID = iRtcEngine.CreateDataStream(true, true);
+        iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
         //iRtcEngine.OnStreamMessageError = ;
 
     }
 
-    private void OnUserOffline(uint uid, USER_OFFLINE_REASON reason) //Only called for host
+    void OnUserOffline(uint uid, USER_OFFLINE_REASON reason) //Only called for host
     {
         HelperFunctions.DevLog("onUserOffline: uid = " + uid + " reason = " + reason);
         OnStreamerLeft?.Invoke();
@@ -99,7 +108,7 @@ public class AgoraController : MonoBehaviour
 
         if (isChannelCreator)
         {
-            iRtcEngine.SendStreamMessage(0, "CreatorLeft");
+            //iRtcEngine.SendStreamMessage(streamID, "CreatorLeft");
         }
 
         iRtcEngine.LeaveChannel();
@@ -152,13 +161,22 @@ public class AgoraController : MonoBehaviour
             videoSurfaceRef.SetGameFps(30);
 
             //liveStreamQuad.GetComponent<LiveStreamGreenCalculator>().StartBackgroundRemoval();
+
+            //Invoke("VideoResolution", 3);
         }
     }
 
-    //public void OnStreamMessageRecieved(uint userId, int streamId, string data, int length)
-    //{
-    //    OnStreamerLeft?.Invoke();
-    //}
+    private void VideoResolution()
+    {
+        int width = liveStreamQuad.GetComponent<MeshRenderer>().material.mainTexture.width;
+        int height = liveStreamQuad.GetComponent<MeshRenderer>().material.mainTexture.height;
+        HelperFunctions.DevLog($"TextureSize = {width} x {height}");
+    }
+
+    public void OnStreamMessageRecieved(uint userId, int streamId, string data, int length)
+    {
+        HelperFunctions.DevLog($"Message recieved {data}");
+    }
 
     public void UnloadEngine()
     {
