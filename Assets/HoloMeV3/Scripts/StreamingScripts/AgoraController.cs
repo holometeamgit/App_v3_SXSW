@@ -19,6 +19,8 @@ public class AgoraController : MonoBehaviour
     bool isLive;
     int userCount;
     int streamID;
+    [HideInInspector]
+    public uint frameRate;
     public Action<int> OnCountIncremented;
     public Action OnStreamerLeft;
 
@@ -27,6 +29,7 @@ public class AgoraController : MonoBehaviour
     public void Start()
     {
         LoadEngine(appId);
+        frameRate = 30;
     }
 
     void LoadEngine(string appId)
@@ -62,8 +65,8 @@ public class AgoraController : MonoBehaviour
             var encoderConfiguration = new VideoEncoderConfiguration();
             encoderConfiguration.degradationPreference = DEGRADATION_PREFERENCE.MAINTAIN_BALANCED;
             encoderConfiguration.minFrameRate = 15;
-            encoderConfiguration.frameRate = FRAME_RATE.FRAME_RATE_FPS_60;
-            encoderConfiguration.bitrate = 5000;
+            encoderConfiguration.frameRate = FRAME_RATE.FRAME_RATE_FPS_30;
+            encoderConfiguration.bitrate = 2500;
             encoderConfiguration.dimensions = new VideoDimensions() { width = 720, height = 1280 };
             encoderConfiguration.orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE;
             iRtcEngine.SetVideoEncoderConfiguration(encoderConfiguration);
@@ -158,7 +161,7 @@ public class AgoraController : MonoBehaviour
             videoSurfaceRef.SetEnable(true);
             videoSurfaceRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
             videoSurfaceRef.EnableFilpTextureApply(true, true);
-            videoSurfaceRef.SetGameFps(30);
+            videoSurfaceRef.SetGameFps(frameRate);
 
             //liveStreamQuad.GetComponent<LiveStreamGreenCalculator>().StartBackgroundRemoval();
 
