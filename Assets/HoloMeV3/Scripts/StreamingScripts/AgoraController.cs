@@ -66,7 +66,7 @@ public class AgoraController : MonoBehaviour
             encoderConfiguration.degradationPreference = DEGRADATION_PREFERENCE.MAINTAIN_BALANCED;
             encoderConfiguration.minFrameRate = 15;
             encoderConfiguration.frameRate = FRAME_RATE.FRAME_RATE_FPS_30;
-            encoderConfiguration.bitrate = 2500;
+            encoderConfiguration.bitrate = 5000;
             encoderConfiguration.dimensions = new VideoDimensions() { width = 720, height = 1280 };
             encoderConfiguration.orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE;
             iRtcEngine.SetVideoEncoderConfiguration(encoderConfiguration);
@@ -81,6 +81,7 @@ public class AgoraController : MonoBehaviour
         iRtcEngine.OnJoinChannelSuccess = OnJoinChannelSuccess;
         iRtcEngine.OnUserJoined = OnUserJoined; //Only fired for broadcasters
         iRtcEngine.OnUserOffline = OnUserOffline;
+        iRtcEngine.EnableDualStreamMode(true);
 
         // enable video
         iRtcEngine.EnableVideo();
