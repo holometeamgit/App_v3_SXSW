@@ -93,8 +93,8 @@ public class AgoraController : MonoBehaviour
 
         isLive = true;
 
-        streamID = iRtcEngine.CreateDataStream(true, true);
-        iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
+        //streamID = iRtcEngine.CreateDataStream(true, true);
+        //iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
         //iRtcEngine.OnStreamMessageError = ;
 
     }
@@ -274,6 +274,39 @@ public class AgoraController : MonoBehaviour
             {
                 yield return new WaitForSeconds(5);
             }
+        }
+    }
+
+    bool dippedBelowPerformanceThreshold;
+    bool previousPerformanceState;
+
+    private void Update()
+    {
+        if (isLive)
+        {
+            var fps = (1.0 / Time.deltaTime);
+
+            if (fps < 25)
+            {
+                dippedBelowPerformanceThreshold = true;
+            }
+            else
+            {
+                dippedBelowPerformanceThreshold = false;
+            }
+
+            if (previousPerformanceState != dippedBelowPerformanceThreshold)
+            {
+                if (dippedBelowPerformanceThreshold)
+                {
+                    iRtcEngine.SetRemoteDefaultVideoStreamType(REMOTE_VIDEO_STREAM_TYPE.REMOTE_VIDEO_STREAM_LOW);
+                }
+                else
+                {
+                    iRtcEngine.SetRemoteDefaultVideoStreamType(REMOTE_VIDEO_STREAM_TYPE.REMOTE_VIDEO_STREAM_HIGH);
+                }
+            }
+            previousPerformanceState = dippedBelowPerformanceThreshold;
         }
     }
 }
