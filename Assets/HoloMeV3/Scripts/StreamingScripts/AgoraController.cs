@@ -66,7 +66,7 @@ public class AgoraController : MonoBehaviour
             encoderConfiguration.degradationPreference = DEGRADATION_PREFERENCE.MAINTAIN_BALANCED;
             encoderConfiguration.minFrameRate = 15;
             encoderConfiguration.frameRate = FRAME_RATE.FRAME_RATE_FPS_30;
-            encoderConfiguration.bitrate = 5000;
+            encoderConfiguration.bitrate = 3000;
             encoderConfiguration.dimensions = new VideoDimensions() { width = 720, height = 1280 };
             encoderConfiguration.orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE;
             iRtcEngine.SetVideoEncoderConfiguration(encoderConfiguration);
@@ -81,7 +81,7 @@ public class AgoraController : MonoBehaviour
         iRtcEngine.OnJoinChannelSuccess = OnJoinChannelSuccess;
         iRtcEngine.OnUserJoined = OnUserJoined; //Only fired for broadcasters
         iRtcEngine.OnUserOffline = OnUserOffline;
-        iRtcEngine.EnableDualStreamMode(true);
+        //iRtcEngine.EnableDualStreamMode(true);
 
         // enable video
         iRtcEngine.EnableVideo();
@@ -280,33 +280,33 @@ public class AgoraController : MonoBehaviour
     bool dippedBelowPerformanceThreshold;
     bool previousPerformanceState;
 
-    private void Update()
-    {
-        if (isLive)
-        {
-            var fps = (1.0 / Time.deltaTime);
+    //private void Update()
+    //{
+    //    if (isLive)
+    //    {
+    //        var fps = (1.0 / Time.deltaTime);
 
-            if (fps < 25)
-            {
-                dippedBelowPerformanceThreshold = true;
-            }
-            else
-            {
-                dippedBelowPerformanceThreshold = false;
-            }
+    //        if (fps < 25)
+    //        {
+    //            dippedBelowPerformanceThreshold = true;
+    //        }
+    //        else
+    //        {
+    //            dippedBelowPerformanceThreshold = false;
+    //        }
 
-            if (previousPerformanceState != dippedBelowPerformanceThreshold)
-            {
-                if (dippedBelowPerformanceThreshold)
-                {
-                    iRtcEngine.SetRemoteDefaultVideoStreamType(REMOTE_VIDEO_STREAM_TYPE.REMOTE_VIDEO_STREAM_LOW);
-                }
-                else
-                {
-                    iRtcEngine.SetRemoteDefaultVideoStreamType(REMOTE_VIDEO_STREAM_TYPE.REMOTE_VIDEO_STREAM_HIGH);
-                }
-            }
-            previousPerformanceState = dippedBelowPerformanceThreshold;
-        }
-    }
+    //        if (previousPerformanceState != dippedBelowPerformanceThreshold)
+    //        {
+    //            if (dippedBelowPerformanceThreshold)
+    //            {
+    //                iRtcEngine.SetRemoteDefaultVideoStreamType(REMOTE_VIDEO_STREAM_TYPE.REMOTE_VIDEO_STREAM_LOW);
+    //            }
+    //            else
+    //            {
+    //                iRtcEngine.SetRemoteDefaultVideoStreamType(REMOTE_VIDEO_STREAM_TYPE.REMOTE_VIDEO_STREAM_HIGH);
+    //            }
+    //        }
+    //        previousPerformanceState = dippedBelowPerformanceThreshold;
+    //    }
+    //}
 }
