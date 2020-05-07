@@ -240,7 +240,7 @@ Shader "HLM/Unlit/GreenscreenRemoval"
 #endif
 
                 fixed4 blendTextureColour = tex2D(_BlendTex, i.uv);
-                return fixed4(col.rgb, blendTextureColour.a);
+                return fixed4(col.rgb, col.a * blendTextureColour.a);
             }
             ENDCG
         }
