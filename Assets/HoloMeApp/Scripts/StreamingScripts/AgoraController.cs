@@ -23,6 +23,7 @@ public class AgoraController : MonoBehaviour
     public uint frameRate;
     public Action<int> OnCountIncremented;
     public Action OnStreamerLeft;
+    public Action OnCameraSwitched;
 
     VideoSurface videoSurfaceRef;
 
@@ -197,10 +198,9 @@ public class AgoraController : MonoBehaviour
 
     public void SwitchCamera()
     {
-        //This will require a screensized or raw image to place camera feed too via adding a videosurface
-        //to use 
-
-        iRtcEngine.SwitchCamera();
+        int result = iRtcEngine.SwitchCamera();
+        if (result == 0)
+            OnCameraSwitched?.Invoke();
     }
 
     public void ToggleVideo(bool pauseVideo)
@@ -277,8 +277,8 @@ public class AgoraController : MonoBehaviour
         }
     }
 
-    bool dippedBelowPerformanceThreshold;
-    bool previousPerformanceState;
+    //bool dippedBelowPerformanceThreshold;
+    //bool previousPerformanceState;
 
     //private void Update()
     //{

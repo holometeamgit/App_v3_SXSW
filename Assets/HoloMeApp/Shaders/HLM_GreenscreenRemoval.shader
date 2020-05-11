@@ -23,6 +23,8 @@ Shader "HLM/Unlit/GreenscreenRemoval"
         _maskContrastS("maskContrastS", Float) = 1.0
         _maskContrast ("maskContrast",  Float) = 0.75
 
+
+        [MaterialToggle] _UseBlendTex("UseBlendTex", Float) = 1.0
         _BlendTex("BlendTexture", 2D) = "white" {}
 
         [MaterialToggle] _DespillAndReflectionRemove("Despill And Reflection Remove", Float) = 1.0
@@ -76,6 +78,7 @@ Shader "HLM/Unlit/GreenscreenRemoval"
 
             sampler2D _BlendTex;
             float4 _BlendTex_ST;
+            float _UseBlendTex;
             
             float _On;
             float _ShowMatte;
@@ -237,9 +240,13 @@ Shader "HLM/Unlit/GreenscreenRemoval"
 #ifdef USE_AMBIENT_LIGHTING
 				   i.diff.rgb = clamp(i.diff.rgb, float3(0.25, 0.25, 0.25), float3(1.75, 1.75, 1.75));
 				   col.rgb *= i.diff;
-#endif
+#endif                   
+                   fixed4 blendTextureColour = tex2D(_BlendTex, i.uv);
+                   
+                   if (_UseBlendTex == 0) {
+                        blendTextureColour.a = 1;
+                   }
 
-                fixed4 blendTextureColour = tex2D(_BlendTex, i.uv);
                 return fixed4(col.rgb, col.a * blendTextureColour.a);
             }
             ENDCG

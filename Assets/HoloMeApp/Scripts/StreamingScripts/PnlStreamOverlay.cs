@@ -67,11 +67,22 @@ public class PnlStreamOverlay : MonoBehaviour
     string tweenAnimationID = nameof(tweenAnimationID);
     Coroutine countdownRoutine;
     bool isStreamer;
+    bool isUsingFrontCamera;
 
     private void Awake()
     {
         agoraController.OnCountIncremented += (x) => txtUserCount.text = x.ToString();
         agoraController.OnStreamerLeft += CloseAsViewer;
+        agoraController.OnCameraSwitched += () =>
+        {
+            isUsingFrontCamera = !isUsingFrontCamera;
+            var videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
+            if (videoSurface)
+            {
+                videoSurface.EnableFilpTextureApply(isUsingFrontCamera, true);
+            }
+        };
+        //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
     }
 
     private void OnEnable()
@@ -191,6 +202,7 @@ public class PnlStreamOverlay : MonoBehaviour
         if (!videoSurface)
         {
             videoSurface = cameraRenderImage.gameObject.AddComponent<VideoSurface>();
+            isUsingFrontCamera = true;
             videoSurface.EnableFilpTextureApply(true, true);
             videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
             videoSurface.SetGameFps(agoraController.frameRate);
