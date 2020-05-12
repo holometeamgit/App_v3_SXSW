@@ -16,17 +16,39 @@ public class PnlChannelName : MonoBehaviour
     [SerializeField]
     AgoraController agoraController;
 
+    [SerializeField]
+    AgoraRequests agoraRequests;
+
+    RequestChannelList requestChannelList;
+
     private void Awake()
     {
         inputChannelName.characterLimit = 30;
+        requestChannelList = new RequestChannelList();
+        requestChannelList.OnSuccessAction += OnChannelListOccupied;
     }
 
     public void OnReadyPressed()
     {
-        //Any verification and validation should go here
+        //Need to disable button interactability here while waiting for callback
+
         if (string.IsNullOrWhiteSpace(inputChannelName.text))
         {
-            incorrectInputAnimationToggle.StartIncorrectAnimation();
+            incorrectInputAnimationToggle.StartIncorrectAnimation(incorrectMessage: "Please Enter A Valid Name");
+        }
+        else
+        {
+            agoraRequests.RequestChannels(requestChannelList);
+        }
+    }
+
+    void OnChannelListOccupied()
+    {
+        bool doesChannelExist = requestChannelList.DoesChannelExist(inputChannelName.text);
+
+        if (doesChannelExist)
+        {
+            incorrectInputAnimationToggle.StartIncorrectAnimation(incorrectMessage: "Channel Already Exists!");
         }
         else
         {

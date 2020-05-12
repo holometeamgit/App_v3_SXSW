@@ -4466,8 +4466,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1146380144}
   - component: {fileID: 1146380145}
+  - component: {fileID: 1146380146}
   m_Layer: 0
-  m_Name: AgoraController
+  m_Name: AgoraControllers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4502,6 +4503,18 @@ MonoBehaviour:
   appId: de596f86fdde42e8a7f7a39b15ad3c82
   liveStreamQuad: {fileID: 839298373}
   frameRate: 0
+--- !u!114 &1146380146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1146380143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1444c001b3c59a7409f2e74a54e38990, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &1207878062 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2343915223514668375, guid: 076e229ad5822b145a148eb3d42f4097,
@@ -6108,6 +6121,11 @@ PrefabInstance:
       propertyPath: agoraController
       value: 
       objectReference: {fileID: 1146380145}
+    - target: {fileID: 4861397115881830893, guid: 5a57616edec0141458500bc4853a6106,
+        type: 3}
+      propertyPath: agoraRequests
+      value: 
+      objectReference: {fileID: 1146380146}
     - target: {fileID: 4919935145800434593, guid: 5a57616edec0141458500bc4853a6106,
         type: 3}
       propertyPath: m_textInfo.characterCount
