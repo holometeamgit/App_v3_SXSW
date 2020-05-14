@@ -1,7 +1,12 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "HLM/Unlit/GreenscreenRemoval"
 {
     Properties
     {
+		[MaterialToggle] _UseBlendTex("UseBlendTex", Float) = 1.0
+        _BlendTex("BlendTexture", 2D) = "white" {}
+	
         _MainTex ("Texture", 2D) = "white" {}
         
         [MaterialToggle] _On("On", Float) = 1.0
@@ -23,12 +28,8 @@ Shader "HLM/Unlit/GreenscreenRemoval"
         _maskContrastS("maskContrastS", Float) = 1.0
         _maskContrast ("maskContrast",  Float) = 0.75
 
-
-        [MaterialToggle] _UseBlendTex("UseBlendTex", Float) = 1.0
-        _BlendTex("BlendTexture", 2D) = "white" {}
-
         [MaterialToggle] _DespillAndReflectionRemove("Despill And Reflection Remove", Float) = 1.0
-
+        
         _rH1("rH1", Float) =  30
         _rH2("rH2", Float) = 150
         _rS ("rS",  Float) = 0.1
@@ -36,7 +37,7 @@ Shader "HLM/Unlit/GreenscreenRemoval"
 
         _srFactor("srFactor", Float) =  1.25
         _sgFactor("sgFactor", Float) =  0.97
-
+        [MaterialToggle] _AddEdgeAndRemoveSmallHoles("Add Edges and remove small holes", Float) = 1
         [Toggle(USE_AMBIENT_LIGHTING)] _UseAmbientLighting("Use ambient lighting", Float) = 1
     }
     
@@ -46,10 +47,11 @@ Shader "HLM/Unlit/GreenscreenRemoval"
         LOD 100
         
         ZWrite Off
-        Blend SrcAlpha OneMinusSrcAlpha 
-
+        
         Pass
         {
+            Blend SrcAlpha OneMinusSrcAlpha 
+
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -73,12 +75,12 @@ Shader "HLM/Unlit/GreenscreenRemoval"
                 fixed4 diff : COLOR0;
             };
 
-            sampler2D _MainTex;
-            float4 _MainTex_ST;
-
-            sampler2D _BlendTex;
+			sampler2D _BlendTex;
             float4 _BlendTex_ST;
             float _UseBlendTex;
+
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
             
             float _On;
             float _ShowMatte;
@@ -110,7 +112,43 @@ Shader "HLM/Unlit/GreenscreenRemoval"
 
             float _srFactor;
             float _sgFactor;
-
+            
+            float _AddEdgeAndRemoveSmallHoles;
+            
+            float4 MedianBlur(float r, float2 coord)
+            {
+                float stepX = _MainTex_TexelSize.x;
+                float stepY = _MainTex_TexelSize.y;
+                
+                float avgR = 0.0;
+                float avgG = 0.0;
+                float avgB = 0.0;
+                float avgA = 0.0;
+                
+                int count = 0;
+                
+                for (int i = -r; i <= r; i++)
+                {
+                    for (int j = -r; j <= r; j++)
+                    {
+                        float x = coord.x + stepX * float(i);
+                        float y = coord.y + stepY * float(j);
+                        if(x >= 0.0 && x <= 1.0 && y >= 0.0 && y <= 1.0)
+                        {
+                            float2 currC = float2(x, y);
+                            float4 color = tex2D(_MainTex, currC);
+                            
+                            avgR += color.r;
+                            avgG += color.g;
+                            avgB += color.b;
+                            count++;
+                        }
+                    }
+                }
+                
+                return float4(avgR/float(count), avgG/float(count), avgB/float(count), avgA/float(count));
+            }
+            
             float3 RGBtoHCV(float3 RGB) {
                 float4 P = (RGB.g < RGB.b) ? float4(RGB.bg, -1.0, 2.0/3.0) : float4(RGB.gb, 0.0, -1.0/3.0);
                 float4 Q = (RGB.r < P.x) ? float4(P.xyw, RGB.r) : float4(RGB.r, P.yzx);
@@ -133,14 +171,7 @@ Shader "HLM/Unlit/GreenscreenRemoval"
               return c.z * lerp(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
             }
 
-            v2f vert (appdata v)
-            {
-                v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                o.diff = _LightColor0;
-                return o;
-            }
+            
             
             float hsvDistance(float3 hsv, float ih1, float ih2, float is, float iv)
             {
@@ -168,16 +199,29 @@ Shader "HLM/Unlit/GreenscreenRemoval"
                 return hsv.r * 255 >= ih1 && hsv.r * 255 <= ih2 && hsv.g >= is && hsv.b >= iv;
             }
             
+            v2f vert (appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.diff = _LightColor0;
+                return o;
+            }
+            
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
-                
+                float4 blurRes = MedianBlur(3, i.uv);
                 if (_On == 0)
                 {
                     return col;
                 }
                 
-                float3 hsv = RGBtoHSV(col.rgb);
+                float3 inputColor = col;
+                if (_AddEdgeAndRemoveSmallHoles) {
+                    inputColor = blurRes.rgb;
+                }
+                float3 hsv = RGBtoHSV(blurRes.rgb);
                 
                 fixed4 up    = tex2D(_MainTex, i.uv + fixed2(0, _MainTex_TexelSize.y));
                 fixed4 down  = tex2D(_MainTex, i.uv - fixed2(0, _MainTex_TexelSize.y));
@@ -199,6 +243,7 @@ Shader "HLM/Unlit/GreenscreenRemoval"
                     float distanceD = hsvDistance(hsv_down, _H1, _H2, _S, _V);
                     
                     float d = 1  - distance;
+                    // float dm = (distanceL + distanceR + distanceU + distanceD) * 0.25;
                     
                     col.a = d * _maskContrast;
                     if (distance < _smallPolyhedron1)
@@ -220,6 +265,14 @@ Shader "HLM/Unlit/GreenscreenRemoval"
                     } else if (distance < _largePolyhedron) {
                         col.a = d * _maskContrastL;
                     }
+
+                    if (_AddEdgeAndRemoveSmallHoles) {
+                    if (!isHSVgood(hsv_up, _H1, _H2, _S, _V) || !isHSVgood(hsv_down, _H1, _H2, _S, _V) || 
+                        !isHSVgood(hsv_left, _H1, _H2, _S, _V) || !isHSVgood(hsv_right, _H1, _H2, _S, _V)) {
+                        //col.rgb *= 0.5;
+                        col.a = d * _maskContrastS;
+                        }
+                    }
                 }
                 
                 if (_ShowMatte != 0) {
@@ -227,27 +280,27 @@ Shader "HLM/Unlit/GreenscreenRemoval"
                 }
                 
                 if (_DespillAndReflectionRemove > 0.0) {
-                    distance = min(1.0 - hsvDistance(hsv, _rH1, _rH2, _rS, _rV), 1.0);
-                    if (isHSVgood(hsv, _rH1, _rH2, _rS, _rV)) {
-                        hsv.g = min(hsv.g * distance * _srFactor, hsv.g);
-                        col.rgb = hsv2rgb(hsv);                    
-                        col.rgb = float3(col.r, col.g * _sgFactor, col.b);
+                    float g = col.g;
+                    float r = col.r;
+                    float b = col.b;
+                    
+                    if (g > (b + 2 * r) / 3) {
+                        col.g = (b + 2 * r) / 3;
+                    } else {
+                        col.g = g;
                     }
                 }
-
-                //  TODO - add darkness on the edges and blur it a bit
-
+                
 #ifdef USE_AMBIENT_LIGHTING
 				   i.diff.rgb = clamp(i.diff.rgb, float3(0.25, 0.25, 0.25), float3(1.75, 1.75, 1.75));
 				   col.rgb *= i.diff;
-#endif                   
-                   fixed4 blendTextureColour = tex2D(_BlendTex, i.uv);
-                   
-                   if (_UseBlendTex == 0) {
-                        blendTextureColour.a = 1;
-                   }
+#endif
+				fixed4 blendTextureColour = tex2D(_BlendTex, i.uv);
+                if (_UseBlendTex == 0) {
+                    blendTextureColour.a = 1;
+                }
 
-                return fixed4(col.rgb, col.a * blendTextureColour.a);
+                return fixed4(col.rgb, col.a);
             }
             ENDCG
         }
