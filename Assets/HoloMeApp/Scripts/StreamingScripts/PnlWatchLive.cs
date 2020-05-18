@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using TMPro;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.Events;
 
-public class PnlChannelName : MonoBehaviour
+public class PnlWatchLive : MonoBehaviour
 {
     [SerializeField]
     TMP_InputField inputChannelName;
@@ -25,16 +25,16 @@ public class PnlChannelName : MonoBehaviour
     {
         inputChannelName.characterLimit = HelperFunctions.ChannelNameCharacterLimit;
         requestChannelList = new RequestChannelList();
+        requestChannelList.OnSuccessAction -= OnChannelListOccupied;
         requestChannelList.OnSuccessAction += OnChannelListOccupied;
     }
 
     public void OnReadyPressed()
     {
-        //Need to disable button interactability here while waiting for callback
-
+        //Any verification and validation should go here
         if (string.IsNullOrWhiteSpace(inputChannelName.text))
         {
-            incorrectInputAnimationToggle.StartIncorrectAnimation(incorrectMessage: "Please Enter A Valid Name");
+            incorrectInputAnimationToggle.StartIncorrectAnimation();
         }
         else
         {
@@ -48,12 +48,12 @@ public class PnlChannelName : MonoBehaviour
 
         if (doesChannelExist)
         {
-            incorrectInputAnimationToggle.StartIncorrectAnimation(incorrectMessage: "Channel Already Exists!");
+            agoraController.ChannelName = inputChannelName.text.ToLower();
+            OnChannelNamePassed?.Invoke();
         }
         else
         {
-            agoraController.ChannelName = inputChannelName.text.ToLower();
-            OnChannelNamePassed?.Invoke();
+            incorrectInputAnimationToggle.StartIncorrectAnimation(incorrectMessage: "Channel Doesn't Exist!");
         }
     }
 

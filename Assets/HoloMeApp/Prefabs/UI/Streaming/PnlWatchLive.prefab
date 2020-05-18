@@ -422,8 +422,8 @@ GameObject:
   - component: {fileID: 1146284219955978379}
   - component: {fileID: 4832876694056086744}
   - component: {fileID: 4556818838655672433}
-  - component: {fileID: 4575224508938497149}
   - component: {fileID: 7083173254491600128}
+  - component: {fileID: 5469022765886975399}
   m_Layer: 5
   m_Name: PnlWatchLive
   m_TagString: Untagged
@@ -511,24 +511,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   alphaFadeToValue: 255
---- !u!114 &4575224508938497149
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2531579147663868312}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 484be0ceda754764d879fe8dd139175f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputChannelName: {fileID: 5022409554890811362}
-  incorrectInputAnimationToggle: {fileID: 7083173254491600128}
-  OnChannelNamePassed:
-    m_PersistentCalls:
-      m_Calls: []
-  agoraController: {fileID: 0}
 --- !u!114 &7083173254491600128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -544,6 +526,25 @@ MonoBehaviour:
   inputField: {fileID: 5022409554890811362}
   txtDefaultMessage: {fileID: 5586228632853490532}
   txtErrorMessage: {fileID: 1560291725417684199}
+--- !u!114 &5469022765886975399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2531579147663868312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ea90b65d5ec4924fb2fd6e2e1dc1deb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputChannelName: {fileID: 5022409554890811362}
+  incorrectInputAnimationToggle: {fileID: 7083173254491600128}
+  OnChannelNamePassed:
+    m_PersistentCalls:
+      m_Calls: []
+  agoraController: {fileID: 0}
+  agoraRequests: {fileID: 0}
 --- !u!1 &2711758830812950762
 GameObject:
   m_ObjectHideFlags: 0
@@ -1664,7 +1665,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4575224508938497149}
+      - m_Target: {fileID: 5469022765886975399}
         m_MethodName: OnReadyPressed
         m_Mode: 1
         m_Arguments:

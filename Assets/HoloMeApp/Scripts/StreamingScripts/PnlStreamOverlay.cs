@@ -75,11 +75,11 @@ public class PnlStreamOverlay : MonoBehaviour
         agoraController.OnStreamerLeft += CloseAsViewer;
         agoraController.OnCameraSwitched += () =>
         {
-            isUsingFrontCamera = !isUsingFrontCamera;
             var videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
             if (videoSurface)
             {
-                videoSurface.EnableFilpTextureApply(isUsingFrontCamera, true);
+                isUsingFrontCamera = !isUsingFrontCamera;
+                videoSurface.EnableFilpTextureApplyTransform(!isUsingFrontCamera, false);
             }
         };
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
@@ -203,7 +203,8 @@ public class PnlStreamOverlay : MonoBehaviour
         {
             videoSurface = cameraRenderImage.gameObject.AddComponent<VideoSurface>();
             isUsingFrontCamera = true;
-            videoSurface.EnableFilpTextureApply(true, true);
+            videoSurface.EnableFilpTextureApplyTransform(true, true);
+            //videoSurface.EnableFilpTextureApply(true, true);
             videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
             videoSurface.SetGameFps(agoraController.frameRate);
             videoSurface.SetEnable(true);

@@ -73,6 +73,7 @@ namespace agora_gaming_rtc
             {
                 _initialized = true;
             }
+
         }
 
         // Update is called once per frame
@@ -112,8 +113,8 @@ namespace agora_gaming_rtc
                             // create Texture in the first time update data
                             nativeTexture = new Texture2D((int)defWidth, (int)defHeight, TextureFormat.RGBA32, false);
                             nativeTexture.LoadRawTextureData(data, (int)defWidth * (int)defHeight * 4);
-                            FlipTextureHorizontal(nativeTexture);
-                            FlipTextureVertically(nativeTexture);
+                            //FlipTextureHorizontal(nativeTexture);
+                            //FlipTextureVertically(nativeTexture);
                             ApplyTexture(nativeTexture);
                             nativeTexture.Apply();
                         }
@@ -139,8 +140,8 @@ namespace agora_gaming_rtc
                             *  if width and height don't change ,we only need to update data for texture, do not need to create Texture.
                             */
                             nativeTexture.LoadRawTextureData(data, (int)width * (int)height * 4);
-                            FlipTextureHorizontal(nativeTexture);
-                            FlipTextureVertically(nativeTexture);
+                            //FlipTextureHorizontal(nativeTexture);
+                            //FlipTextureVertically(nativeTexture);
                             nativeTexture.Apply();
                         }
                         else
@@ -152,8 +153,8 @@ namespace agora_gaming_rtc
                             defHeight = height;
                             nativeTexture.Resize(defWidth, defHeight);
                             nativeTexture.LoadRawTextureData(data, (int)width * (int)height * 4);
-                            FlipTextureHorizontal(nativeTexture);
-                            FlipTextureVertically(nativeTexture);
+                            //FlipTextureHorizontal(nativeTexture);
+                            //FlipTextureVertically(nativeTexture);
                             nativeTexture.Apply();
                         }
                     }
@@ -229,10 +230,34 @@ namespace agora_gaming_rtc
         * - true: Enable.
         * - false: (Default) Disable.
         */
-        public void EnableFilpTextureApply(bool enableFlipHorizontal, bool enableFlipVertical)
+        //public void EnableFilpTextureApply(bool enableFlipHorizontal, bool enableFlipVertical)
+        //{
+        //    _enableFlipHorizontal = enableFlipHorizontal;
+        //    _enableFlipVertical = enableFlipVertical;
+        //}
+
+
+        Vector3 defaultQuadScale;
+        public void EnableFilpTextureApplyTransform(bool flipHorizontal, bool flipVertical)
         {
-            _enableFlipHorizontal = enableFlipHorizontal;
-            _enableFlipVertical = enableFlipVertical;
+            if (defaultQuadScale == Vector3.zero)
+                defaultQuadScale = transform.localScale;
+
+            float newXScale;
+            float newYScale;
+
+            if (VideoSurfaceType == AgoraVideoSurfaceType.RawImage /*&& mRawImage != null*/)
+            {
+                newXScale = flipHorizontal ? -1 : 1;
+                newYScale = flipVertical ? -1 : 1;
+                mRawImage.uvRect = new Rect(Vector2.zero, new Vector2(newXScale, newYScale));
+            }
+            else
+            {
+                newXScale = flipHorizontal ? -defaultQuadScale.x : defaultQuadScale.x;//? -liveStreamQuad.transform.localScale.x : liveStreamQuad.transform.localScale.x;
+                newYScale = flipVertical ? -defaultQuadScale.y : defaultQuadScale.y;
+                transform.localScale = new Vector3(newXScale, newYScale, defaultQuadScale.z);
+            }
         }
 
         /** Set the video renderer type.

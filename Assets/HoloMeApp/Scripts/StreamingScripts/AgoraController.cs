@@ -162,7 +162,8 @@ public class AgoraController : MonoBehaviour
             videoSurfaceRef.SetForUser(uid);
             videoSurfaceRef.SetEnable(true);
             videoSurfaceRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
-            videoSurfaceRef.EnableFilpTextureApply(true, true);
+            videoSurfaceRef.EnableFilpTextureApplyTransform(true, true);
+            //videoSurfaceRef.EnableFilpTextureApply(true, true);
             videoSurfaceRef.SetGameFps(frameRate);
 
             //liveStreamQuad.GetComponent<LiveStreamGreenCalculator>().StartBackgroundRemoval();
@@ -170,6 +171,13 @@ public class AgoraController : MonoBehaviour
             //Invoke("VideoResolution", 3);
         }
     }
+
+    //public void FlipVideoQuad(bool flipHorizontal, bool flipVertical)
+    //{
+    //    float newXScale = flipHorizontal ? -2 : 2;//? -liveStreamQuad.transform.localScale.x : liveStreamQuad.transform.localScale.x;
+    //    float newYScale = flipVertical ? -3.4f : 3.4f;
+    //    liveStreamQuad.transform.localScale = new Vector3(newXScale, newYScale, liveStreamQuad.transform.localScale.z);
+    //}
 
     private void VideoResolution()
     {
