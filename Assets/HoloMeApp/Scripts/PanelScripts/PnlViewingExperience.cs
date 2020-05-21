@@ -139,18 +139,15 @@ public class PnlViewingExperience : MonoBehaviour
         if (tutorialState == TutorialState.WaitingForTap)
         {
             HideScanMessage();
-            if (!activatedForStreaming)
-            {
-                StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
-            }
+            StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, activatedForStreaming));
             tutorialState = TutorialState.TutorialComplete;
         }
     }
 
-    IEnumerator DelayStartRecordPanel(float delay)
+    IEnumerator DelayStartRecordPanel(float delay, bool streamPanel)
     {
         yield return new WaitForSeconds(delay);
-        pnlRecord.gameObject.SetActive(true);
+        pnlRecord.EnableRecordPanel(streamPanel);
     }
 
     public void ShowMessage(string message, float delay = 0)
@@ -186,7 +183,7 @@ public class PnlViewingExperience : MonoBehaviour
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
-            StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
+            StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, false));
         }
 
         viewingExperienceInFocus = true;
@@ -208,7 +205,7 @@ public class PnlViewingExperience : MonoBehaviour
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
-            //StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
+            StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, true));
         }
 
         viewingExperienceInFocus = true;

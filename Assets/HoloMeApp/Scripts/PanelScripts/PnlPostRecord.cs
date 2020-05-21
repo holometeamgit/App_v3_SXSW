@@ -138,7 +138,6 @@ public class PnlPostRecord : MonoBehaviour
         {
             using (var payload = new SharePayload())
             {
-                //payload.AddText(ShareMessage + Code);
                 payload.AddImage(screenShot);
             }
         }

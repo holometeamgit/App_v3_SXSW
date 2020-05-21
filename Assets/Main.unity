@@ -4250,6 +4250,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d18b6ad82f107f48b55d083afacd6f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!225 &872139622 stripped
+CanvasGroup:
+  m_CorrespondingSourceObject: {fileID: 7954498229266918851, guid: 076e229ad5822b145a148eb3d42f4097,
+    type: 3}
+  m_PrefabInstance: {fileID: 872139620}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &939067155 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8633381701856028257, guid: 3c7cfef5ad267924cbfdf5aa86f1eb73,
@@ -6537,7 +6543,7 @@ PrefabInstance:
     - target: {fileID: 3148085219349470593, guid: a2782c55ac552f341a82f158e784539c,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ShareVideo
+      value: Share
       objectReference: {fileID: 0}
     - target: {fileID: 3148085219349470593, guid: a2782c55ac552f341a82f158e784539c,
         type: 3}
@@ -7036,12 +7042,12 @@ PrefabInstance:
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: OnRecordStarted.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: OnRecordStopped.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
@@ -7114,7 +7120,7 @@ PrefabInstance:
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: OnRecordStopped.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
@@ -7124,7 +7130,7 @@ PrefabInstance:
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: OnSnapshotStarted.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
@@ -7134,7 +7140,7 @@ PrefabInstance:
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: OnSnapshotEnded.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
@@ -7150,17 +7156,17 @@ PrefabInstance:
         type: 3}
       propertyPath: OnRecordStopped.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1850197904}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: OnSnapshotStarted.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 872139622}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: OnSnapshotEnded.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1850197904}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: OnRecordStarted.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -7174,7 +7180,7 @@ PrefabInstance:
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: OnRecordStopped.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetActive
+      value: PauseExperience
       objectReference: {fileID: 0}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
@@ -7189,7 +7195,7 @@ PrefabInstance:
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: OnSnapshotStarted.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetActive
+      value: set_alpha
       objectReference: {fileID: 0}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
@@ -7199,7 +7205,7 @@ PrefabInstance:
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: OnSnapshotEnded.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetActive
+      value: PauseExperience
       objectReference: {fileID: 0}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
@@ -7214,12 +7220,12 @@ PrefabInstance:
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: OnRecordStopped.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: OnRecordStopped.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
@@ -7230,11 +7236,11 @@ PrefabInstance:
         type: 3}
       propertyPath: OnRecordStopped.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1850197904}
+      objectReference: {fileID: 1314277326}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: OnRecordStopped.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: PauseExperience
+      value: SetActive
       objectReference: {fileID: 0}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
@@ -7244,7 +7250,7 @@ PrefabInstance:
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: OnSnapshotEnded.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
@@ -7260,11 +7266,11 @@ PrefabInstance:
         type: 3}
       propertyPath: OnSnapshotEnded.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1850197904}
+      objectReference: {fileID: 872139622}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: OnSnapshotEnded.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: PauseExperience
+      value: set_alpha
       objectReference: {fileID: 0}
     - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
@@ -7310,6 +7316,11 @@ PrefabInstance:
         type: 3}
       propertyPath: OnRecordStopped.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3181961947608742104, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
+        type: 3}
+      propertyPath: OnSnapshotEnded.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_FloatArgument
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4371088341453880974, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}

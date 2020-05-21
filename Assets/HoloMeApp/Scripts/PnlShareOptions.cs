@@ -32,18 +32,21 @@ public class PnlShareOptions : MonoBehaviour
 
     private void ShareAsStory(bool isVideo)
     {
-        string path = PnlPostRecord.LastRecordingPath;
-        //print("ShareAsStory Called " + "Path is = " + path);
-        StoryContent content = new StoryContent(path, isVideo);
+        if (!string.IsNullOrEmpty(PnlPostRecord.LastRecordingPath))
+        {
+            //print("ShareAsStory Called " + "Path is = " + path);
+            StoryContent content = new StoryContent(PnlPostRecord.LastRecordingPath, isVideo);
 
-        //Add any extra data like sticker or caption text or target attachment url
-        //Sticker sticker = GetSticker();
-        //string attachmentURL = GetAttachmentURL();
 
-        //content.SetSticker(sticker);
-        //content.SetAttachmentUrl(attachmentURL);
+            //Add any extra data like sticker or caption text or target attachment url
+            //Sticker sticker = GetSticker();
+            //string attachmentURL = GetAttachmentURL();
 
-        InstagramKitManager.Share(content, OnShareComplete);
+            //content.SetSticker(sticker);
+            //content.SetAttachmentUrl(attachmentURL);
+
+            InstagramKitManager.Share(content, OnShareComplete);
+        }
 
         /* // Another way to pass the callback
         InstagramKitManager.Instance.Share(content, (bool success, string error) => 

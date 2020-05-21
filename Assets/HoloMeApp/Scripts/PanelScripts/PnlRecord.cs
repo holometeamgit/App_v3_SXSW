@@ -28,12 +28,6 @@ public class PnlRecord : MonoBehaviour
     Image imgFillBackground;
 
     [SerializeField]
-    Sprite spriteTakeSnapshot;
-
-    [SerializeField]
-    Sprite spriteStop;
-
-    [SerializeField]
     Sprite spriteRecord;
 
     [SerializeField]
@@ -88,8 +82,6 @@ public class PnlRecord : MonoBehaviour
     //const int RecordTimeLimit = 15;
     int videoWidth;
     int videoHeight;
-    //float startRecordTime;
-    //int recordTime;
 
     string lastRecordingPath;
 
@@ -142,8 +134,13 @@ public class PnlRecord : MonoBehaviour
         canvasGroup.alpha = 0;
     }
 
-    private void OnEnable()
+    public void EnableRecordPanel(bool streamOffset)
     {
+        int buttonOffset = streamOffset ? 210 : 0;
+        imgFillBackground.rectTransform.offsetMax = new Vector2(imgFillBackground.rectTransform.offsetMax.x, buttonOffset);
+        imgFillBackground.rectTransform.offsetMin = new Vector2(imgFillBackground.rectTransform.offsetMin.x, buttonOffset);
+
+        gameObject.SetActive(true);
         canvasGroup.DOFade(1, .5f);
     }
 
@@ -255,6 +252,8 @@ public class PnlRecord : MonoBehaviour
 
     public void RecordLengthFail()
     {
+        OnRecordStopped?.Invoke();
+        MakeScreenshot();
         recordLengthFailed = true;
     }
 
@@ -292,11 +291,13 @@ public class PnlRecord : MonoBehaviour
         if (recordLengthFailed)
         {
             File.Delete(outputPath);
+            OnRecordStopped?.Invoke();
+            MakeScreenshot();
         }
         else
         {
-            OnRecordStopped?.Invoke();
             lastRecordingPath = outputPath;
+            OnRecordStopped?.Invoke();
             pnlPostRecord.ActivatePostVideo(outputPath);
         }
     }
