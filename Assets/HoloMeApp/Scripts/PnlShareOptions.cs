@@ -19,7 +19,11 @@ public class PnlShareOptions : MonoBehaviour
     {
         gameObject.SetActive(true);
         btnInstagram.interactable = InstagramKitManager.IsAvailable();
+        //UploadToS3();
+    }
 
+    private void UploadToS3()
+    {
         if (!string.IsNullOrEmpty(PnlPostRecord.LastRecordingPath))
         {
             s3Handler.UploadFile(PnlPostRecord.LastRecordingPath, "Share_Upload_", "UserContent");
