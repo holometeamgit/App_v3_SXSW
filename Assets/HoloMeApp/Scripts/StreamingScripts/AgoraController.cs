@@ -94,9 +94,9 @@ public class AgoraController : MonoBehaviour
 
         isLive = true;
 
-        //streamID = iRtcEngine.CreateDataStream(true, true);
-        //iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
-        //iRtcEngine.OnStreamMessageError = ;
+        streamID = iRtcEngine.CreateDataStream(true, true);
+        iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
+        iRtcEngine.OnStreamMessageError = OnStreamMessageError;
 
     }
 
@@ -111,10 +111,10 @@ public class AgoraController : MonoBehaviour
         if (iRtcEngine == null)
             return;
 
-        if (isChannelCreator)
-        {
-            //iRtcEngine.SendStreamMessage(streamID, "CreatorLeft");
-        }
+        //if (isChannelCreator)
+        //{
+        //iRtcEngine.SendStreamMessage(streamID, "CreatorLeft");
+        //}
 
         iRtcEngine.LeaveChannel();
         iRtcEngine.DisableVideoObserver();
@@ -186,11 +186,6 @@ public class AgoraController : MonoBehaviour
         HelperFunctions.DevLog($"TextureSize = {width} x {height}");
     }
 
-    public void OnStreamMessageRecieved(uint userId, int streamId, string data, int length)
-    {
-        HelperFunctions.DevLog($"Message recieved {data}");
-    }
-
     public void UnloadEngine()
     {
         HelperFunctions.DevLog("calling unloadEngine");
@@ -206,9 +201,13 @@ public class AgoraController : MonoBehaviour
 
     public void SwitchCamera()
     {
-        int result = iRtcEngine.SwitchCamera();
-        if (result == 0)
-            OnCameraSwitched?.Invoke();
+
+        iRtcEngine.SendStreamMessage(streamID, "OYOY");
+        HelperFunctions.DevLog("Message Sent");
+
+        //int result = iRtcEngine.SwitchCamera();
+        //if (result == 0)
+        //    OnCameraSwitched?.Invoke();
     }
 
     public void ToggleVideo(bool pauseVideo)
@@ -257,6 +256,31 @@ public class AgoraController : MonoBehaviour
         }
         return ver;
     }
+
+    public void SendMessage(string message)
+    {
+        iRtcEngine.SendStreamMessage(streamID, message);
+    }
+    public void OnStreamMessageError(uint userId, int streamId, int code, int missed, int cached)
+    {
+        HelperFunctions.DevLog($"Stream message error! Code = {code}");
+    }
+
+
+    [SerializeField]
+    PnlStreamChat pnlStreamChat;
+    public void OnStreamMessageRecieved(uint userId, int streamId, string data, int length)
+    {
+        HelperFunctions.DevLog($"Message recieved {data}");
+        var output = JsonParser.CreateFromJSON<object>(data);
+
+        if (output is ChatMessageJsonData)
+        {
+            ChatMessageJsonData chatMessageJsonData = output as ChatMessageJsonData;
+            pnlStreamChat.ReceivedChatMessage(chatMessageJsonData);
+        }
+    }
+
 
     void OnApplicationPause(bool paused)
     {
