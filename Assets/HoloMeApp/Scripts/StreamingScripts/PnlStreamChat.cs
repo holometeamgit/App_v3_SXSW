@@ -3,8 +3,9 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
+using Crosstales.BWF.Util;
 
-public class PnlStreamChat : MonoBehaviour
+public class PnlStreamChat : AgoraMessageReceiver
 {
     [SerializeField]
     AgoraController agoraController;
@@ -29,6 +30,16 @@ public class PnlStreamChat : MonoBehaviour
     //[SerializeField]
     //UnityEvent OnMessageRecieved; //For displaying notifications
 
+    private void OnEnable()
+    {
+        agoraController.AddMessageReceiver(this);
+    }
+
+    private void OnDisable()
+    {
+        agoraController.RemoveMessageReceiver(this);
+    }
+
     public void SendChatMessage(string message)
     {
         ChatMessageJsonData chatMessageJsonData = new ChatMessageJsonData { userName = "Test", message = message };
@@ -37,12 +48,16 @@ public class PnlStreamChat : MonoBehaviour
 
         inputField.text = "";
         StartCoroutine(RefreshLayoutGroup());
-
     }
 
-    public void ReceivedChatMessage(ChatMessageJsonData chatMessageJsonData)
+    public override void ReceivedChatMessage(string data)
     {
-        CreateChatMessageGO(chatMessageJsonData);
+        AgoraStreamMessage agoraStreamMessage = JsonParser.CreateFromJSON<AgoraStreamMessage>(data);
+        if (agoraStreamMessage.requestID == AgoraMessageRequestIDs.IDChatMessage)
+        {
+            var chatMessageJsonData = JsonParser.CreateFromJSON<ChatMessageJsonData>(data);
+            CreateChatMessageGO(chatMessageJsonData);
+        }
     }
 
     private void CreateChatMessageGO(ChatMessageJsonData chatMessageJsonData)
@@ -51,7 +66,6 @@ public class PnlStreamChat : MonoBehaviour
         chatMessages.Add(newMessageGO);
         newMessageGO.transform.Find("txtUserName").GetComponent<TextMeshProUGUI>().text = chatMessageJsonData.userName;
         newMessageGO.transform.Find("txtMessage").GetComponent<TextMeshProUGUI>().text = chatMessageJsonData.message;
-
     }
 
     IEnumerator RefreshLayoutGroup()

@@ -266,18 +266,38 @@ public class AgoraController : MonoBehaviour
         HelperFunctions.DevLog($"Stream message error! Code = {code}");
     }
 
+    List<AgoraMessageReceiver> messageReceivers = new List<AgoraMessageReceiver>();
+    public void AddMessageReceiver(AgoraMessageReceiver agoraMessageReceiver)
+    {
+        if (!messageReceivers.Contains(agoraMessageReceiver))
+        {
+            messageReceivers.Add(agoraMessageReceiver);
+        }
+        else
+        {
+            Debug.LogError("Tried to add the same messageReceiver");
+        }
+    }
 
-    [SerializeField]
-    PnlStreamChat pnlStreamChat;
+    public void RemoveMessageReceiver(AgoraMessageReceiver agoraMessageReceiver)
+    {
+        if (messageReceivers.Contains(agoraMessageReceiver))
+        {
+            messageReceivers.Remove(agoraMessageReceiver);
+        }
+        else
+        {
+            Debug.LogError("Tried to remove messageReceiver but wasn't in colection");
+        }
+    }
+
     public void OnStreamMessageRecieved(uint userId, int streamId, string data, int length)
     {
         HelperFunctions.DevLog($"Message recieved {data}");
-        var output = JsonParser.CreateFromJSON<object>(data);
 
-        if (output is ChatMessageJsonData)
+        foreach (AgoraMessageReceiver agoraMessageReceiver in messageReceivers)
         {
-            ChatMessageJsonData chatMessageJsonData = output as ChatMessageJsonData;
-            pnlStreamChat.ReceivedChatMessage(chatMessageJsonData);
+            agoraMessageReceiver.ReceivedChatMessage(data);
         }
     }
 
