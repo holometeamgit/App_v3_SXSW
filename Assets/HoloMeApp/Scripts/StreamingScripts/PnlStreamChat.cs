@@ -52,7 +52,7 @@ public class PnlStreamChat : AgoraMessageReceiver
 
     public override void ReceivedChatMessage(string data)
     {
-        AgoraStreamMessage agoraStreamMessage = JsonParser.CreateFromJSON<AgoraStreamMessage>(data);
+        AgoraStreamMessageCommonType agoraStreamMessage = JsonParser.CreateFromJSON<AgoraStreamMessageCommonType>(data);
         if (agoraStreamMessage.requestID == AgoraMessageRequestIDs.IDChatMessage)
         {
             var chatMessageJsonData = JsonParser.CreateFromJSON<ChatMessageJsonData>(data);

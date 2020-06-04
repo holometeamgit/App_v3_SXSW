@@ -1,6 +1,7 @@
 ﻿using agora_gaming_rtc;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AgoraController : MonoBehaviour

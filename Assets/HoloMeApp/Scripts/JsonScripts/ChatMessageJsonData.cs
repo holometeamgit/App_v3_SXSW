@@ -1,7 +1,7 @@
 ﻿using System;
 
 [Serializable]
-public class ChatMessageJsonData : AgoraStreamMessage
+public class ChatMessageJsonData : AgoraStreamMessageCommonType
 {
     public ChatMessageJsonData()
     {
