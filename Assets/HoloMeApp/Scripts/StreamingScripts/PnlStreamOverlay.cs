@@ -79,7 +79,7 @@ public class PnlStreamOverlay : MonoBehaviour
             if (videoSurface)
             {
                 isUsingFrontCamera = !isUsingFrontCamera;
-                videoSurface.EnableFilpTextureApplyTransform(!isUsingFrontCamera, false);
+                videoSurface.EnableFlipTextureApplyTransform(!isUsingFrontCamera, false);
             }
         };
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
@@ -203,7 +203,7 @@ public class PnlStreamOverlay : MonoBehaviour
         {
             videoSurface = cameraRenderImage.gameObject.AddComponent<VideoSurface>();
             isUsingFrontCamera = true;
-            videoSurface.EnableFilpTextureApplyTransform(true, true);
+            videoSurface.EnableFlipTextureApplyTransform(true, true);
             //videoSurface.EnableFilpTextureApply(true, true);
             videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
             videoSurface.SetGameFps(agoraController.frameRate);

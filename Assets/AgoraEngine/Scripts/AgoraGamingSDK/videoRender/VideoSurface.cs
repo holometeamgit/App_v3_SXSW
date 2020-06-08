@@ -238,7 +238,7 @@ namespace agora_gaming_rtc
 
 
         Vector3 defaultQuadScale;
-        public void EnableFilpTextureApplyTransform(bool flipHorizontal, bool flipVertical)
+        public void EnableFlipTextureApplyTransform(bool flipHorizontal, bool flipVertical)
         {
             if (defaultQuadScale == Vector3.zero)
                 defaultQuadScale = transform.localScale;

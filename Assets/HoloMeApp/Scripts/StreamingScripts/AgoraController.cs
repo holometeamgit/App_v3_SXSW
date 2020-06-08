@@ -122,6 +122,8 @@ public class AgoraController : MonoBehaviour
         liveStreamQuad.SetActive(false);
         isLive = false;
 
+        OnStreamDisconnected();
+
         ResetVideoSurface();
     }
 
@@ -163,7 +165,7 @@ public class AgoraController : MonoBehaviour
             videoSurfaceRef.SetForUser(uid);
             videoSurfaceRef.SetEnable(true);
             videoSurfaceRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
-            videoSurfaceRef.EnableFilpTextureApplyTransform(true, true);
+            videoSurfaceRef.EnableFlipTextureApplyTransform(true, true);
             //videoSurfaceRef.EnableFilpTextureApply(true, true);
             videoSurfaceRef.SetGameFps(frameRate);
 
@@ -258,6 +260,8 @@ public class AgoraController : MonoBehaviour
         return ver;
     }
 
+    #region Messaging system
+
     public void SendMessage(string message)
     {
         iRtcEngine.SendStreamMessage(streamID, message);
@@ -302,6 +306,15 @@ public class AgoraController : MonoBehaviour
         }
     }
 
+    public void OnStreamDisconnected()
+    {
+        foreach (AgoraMessageReceiver agoraMessageReceiver in messageReceivers)
+        {
+            agoraMessageReceiver.OnDisconnected();
+        }
+    }
+
+    #endregion
 
     void OnApplicationPause(bool paused)
     {

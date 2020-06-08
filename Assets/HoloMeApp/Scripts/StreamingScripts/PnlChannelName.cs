@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
 using UnityEngine.Events;
+using Crosstales.BWF;
 
 public class PnlChannelName : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public class PnlChannelName : MonoBehaviour
     {
         //Need to disable button interactability here while waiting for callback
 
-        if (string.IsNullOrWhiteSpace(inputChannelName.text))
+        if (string.IsNullOrWhiteSpace(inputChannelName.text) && BWFManager.Contains(inputChannelName.text, Crosstales.BWF.Model.ManagerMask.BadWord))
         {
             incorrectInputAnimationToggle.StartIncorrectAnimation(incorrectMessage: "Please Enter A Valid Name");
         }

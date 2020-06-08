@@ -3,7 +3,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
-using Crosstales.BWF.Util;
+using Crosstales.BWF.Model;
+using Crosstales.BWF;
 
 public class PnlStreamChat : AgoraMessageReceiver
 {
@@ -26,23 +27,29 @@ public class PnlStreamChat : AgoraMessageReceiver
     VerticalLayoutGroup verticalLayoutGroup;
 
     List<GameObject> chatMessages = new List<GameObject>();
+    Stack<GameObject> chatMessagePool = new Stack<GameObject>();
 
     //[SerializeField]
     //UnityEvent OnMessageRecieved; //For displaying notifications
 
-    private void OnEnable()
+    private void Awake()
     {
         agoraController.AddMessageReceiver(this);
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         agoraController.RemoveMessageReceiver(this);
     }
 
     public void SendChatMessage(string message)
     {
-        ChatMessageJsonData chatMessageJsonData = new ChatMessageJsonData { userName = "Test", message = message };
+        bool rudeWordDetected = BWFManager.Contains(message, ManagerMask.Domain | ManagerMask.BadWord);
+        string censoredText = BWFManager.ReplaceAll(message, ManagerMask.Domain | ManagerMask.BadWord);
+
+        if (rudeWordDetected) print("Rude word detected new string = " + censoredText);
+
+        ChatMessageJsonData chatMessageJsonData = new ChatMessageJsonData { userName = "Username To Be Assigned", message = censoredText };
         CreateChatMessageGO(chatMessageJsonData);
         agoraController.SendMessage(JsonUtility.ToJson(chatMessageJsonData));
 
@@ -62,10 +69,36 @@ public class PnlStreamChat : AgoraMessageReceiver
 
     private void CreateChatMessageGO(ChatMessageJsonData chatMessageJsonData)
     {
-        GameObject newMessageGO = Instantiate(chatMessagePrefabRef, Content, false);
+        var newMessageGO = GetChatMessage();
         chatMessages.Add(newMessageGO);
         newMessageGO.transform.Find("txtUserName").GetComponent<TextMeshProUGUI>().text = chatMessageJsonData.userName;
         newMessageGO.transform.Find("txtMessage").GetComponent<TextMeshProUGUI>().text = chatMessageJsonData.message;
+    }
+
+    private GameObject GetChatMessage()
+    {
+        if (chatMessagePool.Count == 0)
+        {
+            return Instantiate(chatMessagePrefabRef, Content, false);
+        }
+        else
+        {
+            return chatMessagePool.Pop();
+        }
+    }
+
+    private void ReturnChatMessageToPool(GameObject message)
+    {
+        chatMessagePool.Push(message);
+        message.gameObject.SetActive(false);
+    }
+
+    public override void OnDisconnected()
+    {
+        for (int i = 0; i < Content.childCount; i++)
+        {
+            ReturnChatMessageToPool(Content.GetChild(i).gameObject);
+        }
     }
 
     IEnumerator RefreshLayoutGroup()
