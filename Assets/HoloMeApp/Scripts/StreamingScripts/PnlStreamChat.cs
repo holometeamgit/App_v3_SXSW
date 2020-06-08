@@ -42,6 +42,11 @@ public class PnlStreamChat : AgoraMessageReceiver
         agoraController.RemoveMessageReceiver(this);
     }
 
+    public void OnEnable()
+    {
+        StartRefreshLayoutRoutine();
+    }
+
     public void SendChatMessage(string message)
     {
         bool rudeWordDetected = BWFManager.Contains(message, ManagerMask.Domain | ManagerMask.BadWord);
@@ -54,7 +59,7 @@ public class PnlStreamChat : AgoraMessageReceiver
         agoraController.SendMessage(JsonUtility.ToJson(chatMessageJsonData));
 
         inputField.text = "";
-        StartCoroutine(RefreshLayoutGroup());
+        StartRefreshLayoutRoutine();
     }
 
     public override void ReceivedChatMessage(string data)
@@ -64,7 +69,7 @@ public class PnlStreamChat : AgoraMessageReceiver
         {
             var chatMessageJsonData = JsonParser.CreateFromJSON<ChatMessageJsonData>(data);
             CreateChatMessageGO(chatMessageJsonData);
-            StartCoroutine(RefreshLayoutGroup());
+            StartRefreshLayoutRoutine();
         }
     }
 
@@ -104,6 +109,15 @@ public class PnlStreamChat : AgoraMessageReceiver
         }
 
         GetComponent<AnimatedTransition>()?.DoMenuTransition(false);
+    }
+
+    void StartRefreshLayoutRoutine()
+    {
+        if (gameObject.activeSelf)
+        {
+            StopAllCoroutines();
+            StartCoroutine(RefreshLayoutGroup());
+        }
     }
 
     IEnumerator RefreshLayoutGroup()
