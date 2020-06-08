@@ -64,6 +64,7 @@ public class PnlStreamChat : AgoraMessageReceiver
         {
             var chatMessageJsonData = JsonParser.CreateFromJSON<ChatMessageJsonData>(data);
             CreateChatMessageGO(chatMessageJsonData);
+            StartCoroutine(RefreshLayoutGroup());
         }
     }
 
@@ -83,7 +84,9 @@ public class PnlStreamChat : AgoraMessageReceiver
         }
         else
         {
-            return chatMessagePool.Pop();
+            var returnObject = chatMessagePool.Pop();
+            returnObject.SetActive(true);
+            return returnObject;
         }
     }
 
@@ -99,6 +102,8 @@ public class PnlStreamChat : AgoraMessageReceiver
         {
             ReturnChatMessageToPool(Content.GetChild(i).gameObject);
         }
+
+        GetComponent<AnimatedTransition>()?.DoMenuTransition(false);
     }
 
     IEnumerator RefreshLayoutGroup()
