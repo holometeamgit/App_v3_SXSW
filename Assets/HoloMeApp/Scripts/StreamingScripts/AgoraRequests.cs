@@ -6,9 +6,9 @@ using UnityEngine.Networking;
 public class AgoraRequests : MonoBehaviour
 {
     const string baseURL = "https://api.agora.io/dev/";
-    const string customerID = "cca351a8559f4da688319b23865d5e78";
-    const string certificate = "52dd04cdb705400b97a5d9dec0a4cb51";
-    const string appId = "de596f86fdde42e8a7f7a39b15ad3c82";
+    const string customerID = "8bf4ed6d09574f1580767818f6c73200";
+    const string certificate = "bd8dfbe35d0e443cb43f2ed51b2fa3d3";
+    const string appId = AgoraController.AppId;
 
     public static string Base64Encode(string plainText)
     {

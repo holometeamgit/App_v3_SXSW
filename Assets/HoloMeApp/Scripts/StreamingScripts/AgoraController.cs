@@ -6,8 +6,7 @@ using UnityEngine;
 
 public class AgoraController : MonoBehaviour
 {
-    [SerializeField]
-    string appId = "de596f86fdde42e8a7f7a39b15ad3c82";
+    public const string AppId = "6f6b8da21bf744cb83e21a12c7497818";
 
     [SerializeField]
     GameObject liveStreamQuad;
@@ -30,7 +29,7 @@ public class AgoraController : MonoBehaviour
 
     public void Start()
     {
-        LoadEngine(appId);
+        LoadEngine(AppId);
         frameRate = 30;
     }
 
