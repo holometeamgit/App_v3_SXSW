@@ -126,6 +126,6 @@ public class PnlStreamChat : AgoraMessageReceiver
         yield return new WaitForEndOfFrame();
         verticalLayoutGroup.enabled = true;
         yield return new WaitForEndOfFrame();
-        scrollRect.verticalNormalizedPosition = 1;
+        scrollRect.verticalNormalizedPosition = 0;
     }
 }
