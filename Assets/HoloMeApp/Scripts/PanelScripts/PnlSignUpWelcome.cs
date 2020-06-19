@@ -9,7 +9,6 @@ public class PnlSignUpWelcome : MonoBehaviour
     [SerializeField] Switcher switcherToProfile;
     [SerializeField] Switcher switcherToLogIn;
     [SerializeField] Switcher switcherToSignUpEmail;
-    [SerializeField] AnimatedTransition animatedTransition;
 
 
     public void AppleSignUp() { }
@@ -24,17 +23,14 @@ public class PnlSignUpWelcome : MonoBehaviour
         if (!gameObject.activeInHierarchy)
             return;
         switcherToProfile.Switch();
-        animatedTransition.DoMenuTransition(false);
     }
 
     public void OpenLogInPanel() {
         switcherToLogIn.Switch();
-        animatedTransition.DoMenuTransition(false);
     }
 
     public void OpenSignUpEmail() {
         switcherToSignUpEmail.Switch();
-        animatedTransition.DoMenuTransition(false);
     }
 }
     
