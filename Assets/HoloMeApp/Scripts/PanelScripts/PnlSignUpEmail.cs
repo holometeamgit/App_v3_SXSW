@@ -16,10 +16,10 @@ public class PnlSignUpEmail : MonoBehaviour
 
     public void SignUp() {
         EmailSignUpJsonData emailSignUpJsonData = new EmailSignUpJsonData();
-        emailSignUpJsonData.email = inputFieldEmail.GetValue();
-        emailSignUpJsonData.username = inputFieldFullName.GetValue();
-        emailSignUpJsonData.password1 = inputFieldPassword.GetValue();
-        emailSignUpJsonData.password2 = inputFieldConfirmPassword.GetValue();
+        emailSignUpJsonData.email = inputFieldEmail.text;
+        emailSignUpJsonData.username = inputFieldFullName.text;
+        emailSignUpJsonData.password1 = inputFieldPassword.text;
+        emailSignUpJsonData.password2 = inputFieldConfirmPassword.text;
 
         emailAccountManager.SignUp(emailSignUpJsonData, SignUpCallBack, ErrorSignUpCallBack);
     }

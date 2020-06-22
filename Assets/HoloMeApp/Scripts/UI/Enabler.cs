@@ -1,15 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Enabler : MonoBehaviour
 {
     public List<GameObject> ObjectListActiveOnEnable;
     public List<GameObject> ObjectListDectiveOnEnable;
 
+    public UnityEvent OnEnableEvent;
     [Space]
     public List<GameObject> ObjectListActiveOnDisable;
     public List<GameObject> ObjectListDectiveOnDisable;
+
+    public UnityEvent OnDisableEvent;
 
     private void OnEnable() {
         foreach (var element in ObjectListActiveOnEnable)
@@ -17,6 +21,8 @@ public class Enabler : MonoBehaviour
 
         foreach (var element in ObjectListDectiveOnEnable)
             element.SetActive(false);
+
+        OnEnableEvent.Invoke();
     }
 
     private void OnDisable() {
@@ -25,5 +31,7 @@ public class Enabler : MonoBehaviour
 
         foreach (var element in ObjectListDectiveOnDisable)
             element.SetActive(false);
+
+        OnDisableEvent.Invoke();
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PnlLogInEmail : MonoBehaviour
 {
+    [SerializeField] AccountManager accountManager;
     [SerializeField] EmailAccountManager emailAccountManager;
     [SerializeField] InputFieldController inputFieldEmail;
     [SerializeField] InputFieldController inputFieldPassword;
@@ -12,14 +13,15 @@ public class PnlLogInEmail : MonoBehaviour
     public void LogIn() {
         EmailLogInJsonData emailLogInJsonData = new EmailLogInJsonData();
 
-        emailLogInJsonData.username = inputFieldEmail.GetValue();
-        emailLogInJsonData.password = inputFieldPassword.GetValue();
+        emailLogInJsonData.username = inputFieldEmail.text;
+        emailLogInJsonData.password = inputFieldPassword.text;
 
         emailAccountManager.LogIn(emailLogInJsonData, LogInCallBack, ErrorLogInCallBack);
     }
 
     private void LogInCallBack(long code, string body) {
         Debug.Log(code + " : " + body);
+        accountManager.SaveAccessToken(body);
         switcherToMainMenu.Switch();
     }
 

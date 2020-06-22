@@ -6,15 +6,21 @@ using TMPro;
 
 public class InputFieldController : MonoBehaviour
 {
+    public int characterLimit {
+        get { return inputField.characterLimit; }
+        set { inputField.characterLimit = value; }
+    }
+
+    public string text {
+        get { return inputField.text; }
+        set { inputField.text = value; }
+    }
+
     [SerializeField] TMP_InputField inputField;
 
     [SerializeField] TMP_Text warningMsgText;
     [SerializeField] GameObject warningMsgRect;
     [SerializeField] GameObject warningOutline;
-
-    public string GetValue() {
-        return inputField.text;
-    }
 
     public void ShowWarning(string warningMsg) {
         warningMsgText.text = warningMsg;

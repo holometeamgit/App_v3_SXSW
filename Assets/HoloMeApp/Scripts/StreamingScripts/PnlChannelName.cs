@@ -6,10 +6,7 @@ using Crosstales.BWF;
 public class PnlChannelName : MonoBehaviour
 {
     [SerializeField]
-    TMP_InputField inputChannelName;
-
-    [SerializeField]
-    IncorrectInputAnimationToggle incorrectInputAnimationToggle;
+    InputFieldController inputFieldController;
 
     [SerializeField]
     UnityEvent OnChannelNamePassed;
@@ -24,7 +21,7 @@ public class PnlChannelName : MonoBehaviour
 
     private void Awake()
     {
-        inputChannelName.characterLimit = HelperFunctions.ChannelNameCharacterLimit;
+        inputFieldController.characterLimit = HelperFunctions.ChannelNameCharacterLimit;
         requestChannelList = new RequestChannelList();
         requestChannelList.OnSuccessAction += OnChannelListOccupied;
     }
@@ -33,9 +30,9 @@ public class PnlChannelName : MonoBehaviour
     {
         //Need to disable button interactability here while waiting for callback
 
-        if (string.IsNullOrWhiteSpace(inputChannelName.text) && BWFManager.Contains(inputChannelName.text, Crosstales.BWF.Model.ManagerMask.BadWord))
+        if (string.IsNullOrWhiteSpace(inputFieldController.text) && BWFManager.Contains(inputFieldController.text, Crosstales.BWF.Model.ManagerMask.BadWord))
         {
-            incorrectInputAnimationToggle.StartIncorrectAnimation(incorrectMessage: "Please Enter A Valid Name");
+            inputFieldController.ShowWarning("Please Enter A Valid Name");
         }
         else
         {
@@ -45,21 +42,21 @@ public class PnlChannelName : MonoBehaviour
 
     void OnChannelListOccupied()
     {
-        bool doesChannelExist = requestChannelList.DoesChannelExist(inputChannelName.text);
+        bool doesChannelExist = requestChannelList.DoesChannelExist(inputFieldController.text);
 
         if (doesChannelExist)
         {
-            incorrectInputAnimationToggle.StartIncorrectAnimation(incorrectMessage: "Channel Already Exists!");
+            inputFieldController.ShowWarning("Channel Already Exists!");
         }
         else
         {
-            agoraController.ChannelName = inputChannelName.text.ToLower();
+            agoraController.ChannelName = inputFieldController.text.ToLower();
             OnChannelNamePassed?.Invoke();
         }
     }
 
     private void OnDisable()
     {
-        inputChannelName.text = string.Empty;
+        inputFieldController.text = string.Empty;
     }
 }

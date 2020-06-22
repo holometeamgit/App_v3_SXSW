@@ -5,10 +5,7 @@ using UnityEngine.Events;
 public class PnlWatchLive : MonoBehaviour
 {
     [SerializeField]
-    TMP_InputField inputChannelName;
-
-    [SerializeField]
-    IncorrectInputAnimationToggle incorrectInputAnimationToggle;
+    InputFieldController inputFieldController;
 
     [SerializeField]
     UnityEvent OnChannelNamePassed;
@@ -23,7 +20,7 @@ public class PnlWatchLive : MonoBehaviour
 
     private void Awake()
     {
-        inputChannelName.characterLimit = HelperFunctions.ChannelNameCharacterLimit;
+        inputFieldController.characterLimit = HelperFunctions.ChannelNameCharacterLimit;
         requestChannelList = new RequestChannelList();
         requestChannelList.OnSuccessAction -= OnChannelListOccupied;
         requestChannelList.OnSuccessAction += OnChannelListOccupied;
@@ -32,9 +29,9 @@ public class PnlWatchLive : MonoBehaviour
     public void OnReadyPressed()
     {
         //Any verification and validation should go here
-        if (string.IsNullOrWhiteSpace(inputChannelName.text))
+        if (string.IsNullOrWhiteSpace(inputFieldController.text))
         {
-            incorrectInputAnimationToggle.StartIncorrectAnimation();
+            inputFieldController.ShowWarning("Please enter a valid name");
         }
         else
         {
@@ -44,21 +41,21 @@ public class PnlWatchLive : MonoBehaviour
 
     void OnChannelListOccupied()
     {
-        bool doesChannelExist = requestChannelList.DoesChannelExist(inputChannelName.text);
+        bool doesChannelExist = requestChannelList.DoesChannelExist(inputFieldController.text);
 
         if (doesChannelExist)
         {
-            agoraController.ChannelName = inputChannelName.text.ToLower();
+            agoraController.ChannelName = inputFieldController.text.ToLower();
             OnChannelNamePassed?.Invoke();
         }
         else
         {
-            incorrectInputAnimationToggle.StartIncorrectAnimation(incorrectMessage: "Channel Doesn't Exist!");
+            inputFieldController.ShowWarning("Channel Doesn't Exist!");
         }
     }
 
     private void OnDisable()
     {
-        inputChannelName.text = string.Empty;
+        inputFieldController.text = string.Empty;
     }
 }

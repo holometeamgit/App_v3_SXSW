@@ -46,6 +46,7 @@ public class WebRequestHandler : MonoBehaviour
         switch (bodyType) {
         default: //only Json at this moment
             string bodyString = JsonUtility.ToJson(body);
+            Debug.Log("url " + url + "body " + bodyString);
             Debug.Log("Post data " + bodyString);
             bodyRaw = Encoding.UTF8.GetBytes(bodyString);
             break;
@@ -55,7 +56,7 @@ public class WebRequestHandler : MonoBehaviour
         request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
 
-        Debug.Log("url " + url);
+
         yield return request.SendWebRequest();
 
         if (request.isNetworkError || request.isHttpError) {
