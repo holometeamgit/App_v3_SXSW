@@ -18,12 +18,16 @@ public class PnlBroadcasterProfile : MonoBehaviour
     public void ShowMenu() {
         _menuProfileBurger.SetActive(!_isUser);
         _menuUserProfileBurger.SetActive(_isUser);
-
+        _menuBtn.gameObject.SetActive(false);
     }
 
     private void OnEnable() {
         _broadcasterUserProfile.SetActive(!_isUser);
         _broadcasterProfile.SetActive(_isUser);
         _menuBtn.gameObject.SetActive(true);
+    }
+
+    private void OnDisable() {
+        _menuBtn.gameObject.SetActive(false);
     }
 }
