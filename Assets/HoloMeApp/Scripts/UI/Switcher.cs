@@ -5,6 +5,8 @@ using UnityEngine.Events;
 
 public class Switcher : MonoBehaviour
 {
+    [SerializeField]
+    bool doOnlyWithActiveObject;
     [Tooltip("Activates all GameObject in switchOnList before deactivating switchOffList.")]
     [SerializeField] List<GameObject> switchOnList;
     [Tooltip("Deactivates all GameObject in switchOffList after activating switchOnList.")]
