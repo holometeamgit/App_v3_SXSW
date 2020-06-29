@@ -120,7 +120,8 @@ PlayerSettings:
     16:9: 1
     Others: 1
   bundleVersion: 5
-  preloadedAssets: []
+  preloadedAssets:
+  - {fileID: 4800000, guid: e7c77f6eaab324a819efdc13b8125a39, type: 3}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -683,8 +684,17 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
   scriptingDefineSymbols:
-    4: LIVE
-    7: LIVE
+    1: CT_BWF
+    4: LIVE;CT_BWF
+    7: LIVE;CT_BWF
+    13: CT_BWF
+    14: CT_BWF
+    19: CT_BWF
+    21: CT_BWF
+    25: CT_BWF
+    27: CT_BWF
+    28: CT_BWF
+    29: CT_BWF
   platformArchitecture:
     iPhone: 1
   scriptingBackend:
@@ -774,8 +784,8 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   cloudProjectId: e784a343-cc7a-4f93-8dc2-5d3c28abc7c7
   framebufferDepthMemorylessMode: 0
-  projectName: HoloMe
-  organizationId: zed67
+  projectName: HoloMeV3
+  organizationId: holome
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
