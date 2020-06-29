@@ -17,15 +17,18 @@ namespace LostNative.Toolkit.FluidUI
         public bool IsOn {
 
             set {
-                ResetPositionAtPivot();
-                optionASelected = value;
-                toggleSequenceAlive = false;
-                UpdateToggleLabel();
-                onValueChanged.Invoke(optionASelected);
-                Debug.Log(optionASelected);
+                if (!isInit) {
+                    Init(value);
+                } else {
+                    toggleSequenceAlive = false;
+                    targetIsOnValue = value;
+
+                    StartToggle(targetIsOnValue);
+                    toggleSequence.Complete();
+                }
             }
 
-            get { return optionASelected; }
+            get { return isOn; }
 
         }
 
@@ -70,29 +73,31 @@ namespace LostNative.Toolkit.FluidUI
         private Sequence toggleSequence;
 
         private bool toggleSequenceAlive;
-        private bool optionASelected;
-
+        private bool targetIsOnValue;
+        private bool isOn;
+        private bool isInit;
         public Toggle.ToggleEvent onValueChanged = new Toggle.ToggleEvent();
 
         private void Awake()
         {
-            Init(true);
+            if(!isInit)
+                Init(false);
         }
 
-        public void Init(bool initialOptionA)
+        public void Init(bool initialValue)
         {
             toggleSequenceAlive = false;
-
-            optionASelected = initialOptionA;
+            targetIsOnValue = initialValue;
 
             HandleSizing();
 
             HandleColors();
 
-            StartToggle(optionASelected);
+            StartToggle(targetIsOnValue);
 
             toggleSequence.Complete();
 
+            isInit = true;
         }
 
 
@@ -128,9 +133,9 @@ namespace LostNative.Toolkit.FluidUI
 
         private void UpdateToggleLabel()
         {
-            toggleLabel.text = optionASelected ? optionAText : optionBText;
+            toggleLabel.text = isOn ? optionAText : optionBText;
 
-            var color = optionASelected ? optionALabelColor : optionBLabelColor;
+            var color = isOn ? optionALabelColor : optionBLabelColor;
             foreach (var element in elementColors) {
                 element.color = color;
             }
@@ -157,7 +162,12 @@ namespace LostNative.Toolkit.FluidUI
 
         private void OnToggleSequenceComplete()
         {
-            IsOn = !optionASelected;
+            ResetPositionAtPivot();
+            isOn = targetIsOnValue;
+            toggleSequenceAlive = false;
+            UpdateToggleLabel();
+            onValueChanged.Invoke(isOn);
+            Debug.Log(isOn);
 
             /*ResetPositionAtPivot();
 
@@ -173,7 +183,7 @@ namespace LostNative.Toolkit.FluidUI
 
         private void ResetPositionAtPivot()
         {
-            if (optionASelected)
+            if (targetIsOnValue)
             {
                 toggleRectTransform.pivot = new Vector2(LeftPivot, toggleRectTransform.pivot.y);
                 toggleRectTransform.anchoredPosition = new Vector2(pivotResetPositionA, toggleRectTransform.anchoredPosition.y);
@@ -190,9 +200,11 @@ namespace LostNative.Toolkit.FluidUI
         {
             FinishCurrentToggle();
 
-            StartToggle(optionASelected);
+            targetIsOnValue = !isOn;
 
-            OnToggle?.Invoke(optionASelected);
+            StartToggle(targetIsOnValue);
+
+            OnToggle?.Invoke(targetIsOnValue);
         }
 
         protected void FinishCurrentToggle()

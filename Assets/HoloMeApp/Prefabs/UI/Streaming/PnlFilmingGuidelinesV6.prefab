@@ -112,6 +112,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -184,6 +185,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -207,6 +209,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3067649015923244149}
   - component: {fileID: 6221896442268616153}
+  - component: {fileID: 5216670275912066344}
   - component: {fileID: 7389813402279707939}
   m_Layer: 5
   m_Name: PnlFilmingGuidelinesV6
@@ -244,6 +247,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8831857282290951370}
   m_CullTransparentMesh: 0
+--- !u!114 &5216670275912066344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8831857282290951370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f97fcc8ea011947a3a0e3d37bd3a5e32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pnlChannelName: {fileID: 0}
+  btnConfirm: {fileID: 4892894713695682258}
 --- !u!114 &7389813402279707939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,13 +299,13 @@ PrefabInstance:
     - target: {fileID: 4538998117496035546, guid: 811a1ec2115d14f11aaa2563692a121a,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4538998117496035546, guid: 811a1ec2115d14f11aaa2563692a121a,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 7389813402279707939}
     - target: {fileID: 4538998117496035546, guid: 811a1ec2115d14f11aaa2563692a121a,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -732,10 +749,25 @@ PrefabInstance:
       propertyPath: m_textInfo.pageCount
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3304321586236413408, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
+        type: 3}
+      propertyPath: m_text
+      value: Confirm
+      objectReference: {fileID: 0}
+    - target: {fileID: 3304321586236413410, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
+        type: 3}
+      propertyPath: m_Name
+      value: txtContinue
+      objectReference: {fileID: 0}
     - target: {fileID: 3304321586932657352, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
         type: 3}
       propertyPath: m_Name
-      value: btnGoLive
+      value: btnConfirm
+      objectReference: {fileID: 0}
+    - target: {fileID: 3304321586932657352, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3304321586932657353, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
         type: 3}
@@ -865,7 +897,7 @@ PrefabInstance:
     - target: {fileID: 3304321586932657358, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3304321586932657358, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
         type: 3}
@@ -880,7 +912,7 @@ PrefabInstance:
     - target: {fileID: 3304321586932657358, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: DoMenuTransition
+      value: ConfirmFilmingGuidelines
       objectReference: {fileID: 0}
     - target: {fileID: 3304321586932657358, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
         type: 3}
@@ -890,7 +922,7 @@ PrefabInstance:
     - target: {fileID: 3304321586932657358, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3304321586932657358, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
         type: 3}
@@ -901,11 +933,11 @@ PrefabInstance:
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 7389813402279707939}
     - target: {fileID: 3304321586932657358, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: OpenAsStreamer
+      value: DoMenuTransition
       objectReference: {fileID: 0}
     - target: {fileID: 3304321586932657358, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
         type: 3}
@@ -914,6 +946,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aeb65bfd3ff144825a5ba2376ef3f54a, type: 3}
+--- !u!1 &4892894713695682258 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3304321586932657352, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
+    type: 3}
+  m_PrefabInstance: {fileID: 7943297683629871642}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &4892894713695682259 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3304321586932657353, guid: aeb65bfd3ff144825a5ba2376ef3f54a,

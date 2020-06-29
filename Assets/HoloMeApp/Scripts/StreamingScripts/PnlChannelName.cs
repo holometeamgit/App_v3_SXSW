@@ -17,6 +17,9 @@ public class PnlChannelName : MonoBehaviour
     [SerializeField]
     AgoraRequests agoraRequests;
 
+    [SerializeField]
+    GameObject btnContinue;
+
     RequestChannelList requestChannelList;
 
     private void Awake()
@@ -26,11 +29,20 @@ public class PnlChannelName : MonoBehaviour
         requestChannelList.OnSuccessAction += OnChannelListOccupied;
     }
 
+    public void ConfirmFilmingGuidelines() {
+        PlayerPrefs.SetInt("ConfirmFilmingGuidelines", 1);
+        CheckConfirmFilmingGuidelines();
+    }
+
+    public bool IsConfirmFilmingGuidelines() {
+        return PlayerPrefs.HasKey("ConfirmFilmingGuidelines") && PlayerPrefs.GetInt("ConfirmFilmingGuidelines") == 1;
+    }
+
     public void OnReadyPressed()
     {
         //Need to disable button interactability here while waiting for callback
 
-        if (string.IsNullOrWhiteSpace(inputFieldController.text) && BWFManager.Contains(inputFieldController.text, Crosstales.BWF.Model.ManagerMask.BadWord))
+        if (string.IsNullOrWhiteSpace(inputFieldController.text) || BWFManager.Contains(inputFieldController.text, Crosstales.BWF.Model.ManagerMask.BadWord))
         {
             inputFieldController.ShowWarning("Please Enter A Valid Name");
         }
@@ -53,6 +65,14 @@ public class PnlChannelName : MonoBehaviour
             agoraController.ChannelName = inputFieldController.text.ToLower();
             OnChannelNamePassed?.Invoke();
         }
+    }
+
+    private void CheckConfirmFilmingGuidelines() {
+        btnContinue.SetActive(IsConfirmFilmingGuidelines());
+    }
+
+    private void OnEnable() {
+        CheckConfirmFilmingGuidelines();
     }
 
     private void OnDisable()

@@ -117,7 +117,7 @@ public class PnlStreamOverlay : MonoBehaviour
         controlsViewer.SetActive(false);
         ToggleARSessionObjects(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
-        StartCountdown();
+        //StartCountdown();
     }
 
     public void OpenAsViewer()
@@ -140,9 +140,14 @@ public class PnlStreamOverlay : MonoBehaviour
     public void ShowLeaveWarning()
     {
         if (isStreamer)
-            pnlGenericError.ActivateDoubleButton("End the live stream?", "Closing this page will end the live stream and disconnect your users.", onButtonOnePress: () => { OnCloseAsStreamer.Invoke(); StopStream(); }, onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
+            pnlGenericError.ActivateDoubleButton("End the live stream?", "Closing this page will end the live stream and disconnect your users.", onButtonOnePress: () => { CloseAsStreamer(); }, onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
         else
             pnlGenericError.ActivateDoubleButton("Disconnect from live stream?", "Closing this page will disconnect you from the live stream", onButtonOnePress: () => { CloseAsViewer(); }, onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
+    }
+
+    public void CloseAsStreamer() {
+        OnCloseAsStreamer.Invoke();
+        StopStream();
     }
 
     private void CloseAsViewer()

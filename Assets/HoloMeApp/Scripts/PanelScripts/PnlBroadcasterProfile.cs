@@ -5,29 +5,30 @@ using UnityEngine.UI;
 
 public class PnlBroadcasterProfile : MonoBehaviour
 {
-    [SerializeField] bool _isUser; //TODO update after add user type definition
-    [SerializeField] GameObject _menuProfileBurger;
-    [SerializeField] GameObject _menuUserProfileBurger;
+    [SerializeField] AccountManager accountManager; 
+    [SerializeField] GameObject menuProfileBurger;
+    [SerializeField] GameObject menuUserProfileBurger;
     [Space]
-    [SerializeField] GameObject _broadcasterProfile;
-    [SerializeField] GameObject _broadcasterUserProfile;
+    [SerializeField] GameObject broadcasterProfile;
     [Space]
-    [SerializeField] Button _menuBtn;
+    [SerializeField] Button menuBtn;
          
 
     public void ShowMenu() {
-        _menuProfileBurger.SetActive(!_isUser);
-        _menuUserProfileBurger.SetActive(_isUser);
-        _menuBtn.gameObject.SetActive(false);
+        var accauntType = accountManager.GetAccountType();
+        menuProfileBurger.SetActive(accauntType == AccountManager.AccountType.Broadcater);
+        menuUserProfileBurger.SetActive(accauntType == AccountManager.AccountType.Subscriber);
+        menuBtn.gameObject.SetActive(false);
     }
 
     private void OnEnable() {
-        _broadcasterUserProfile.SetActive(!_isUser);
-        _broadcasterProfile.SetActive(_isUser);
-        _menuBtn.gameObject.SetActive(true);
+        menuProfileBurger.SetActive(false);
+        menuUserProfileBurger.SetActive(false);
+
+        menuBtn.gameObject.SetActive(true);
     }
 
     private void OnDisable() {
-        _menuBtn.gameObject.SetActive(false);
+        menuBtn.gameObject.SetActive(false);
     }
 }

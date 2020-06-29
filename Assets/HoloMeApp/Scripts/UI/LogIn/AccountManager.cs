@@ -4,11 +4,19 @@ using UnityEngine;
 
 public class AccountManager : MonoBehaviour
 {
+    public enum AccountType {
+        Broadcater,
+        Subscriber
+    }
+
     [SerializeField]
     string getNewAccessTokenAPI = "/token/refresh/";
 
     [SerializeField] WebRequestHandler webRequestHandler;
 
+    [SerializeField] private AccountType accountType;
+
+    #region public authorization
     public void SaveAccessToken(string serverAccessToken) {
         ServerAccessToken accessToken = JsonUtility.FromJson<ServerAccessToken>(serverAccessToken);
         FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), accessToken, FileAccountManager.ServerAccessToken);
@@ -36,6 +44,16 @@ public class AccountManager : MonoBehaviour
         PlayerPrefs.SetInt(nameof(PlayerPrefsKeys.LastTypeLoginPPKey), (int)logInType);
         PlayerPrefs.Save();
     }
+
+    #endregion
+
+    #region public account data
+
+    public AccountType GetAccountType() {
+        return accountType;
+    }
+
+    #endregion 
 
     private void RemoveAccessToken() {
         FileAccountManager.DeleteFile(FileAccountManager.ServerAccessToken);
