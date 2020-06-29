@@ -53,7 +53,7 @@ public class PnlViewingExperience : MonoBehaviour
     float messageTime = 10;
     float animationSpeed = 0.25f;
 
-    private enum TutorialState { MessageScan, MessageTapToPlace, WaitingForTap, TutorialComplete };
+    private enum TutorialState { MessageScan, MessageTapToPlace, WaitingForTap, WaitingForPinch, TutorialComplete };
     TutorialState tutorialState = TutorialState.MessageScan;
 
     void OnEnable()
@@ -129,14 +129,25 @@ public class PnlViewingExperience : MonoBehaviour
             StopCoroutine(scanAnimationRoutine);
             HideScanAnimation(animationSpeed);
             HideScanMessage();
-            ShowMessage("Tap screen to place", messageAnimationSpeed);
+            ShowMessage("Tap screen to place the person", messageAnimationSpeed);
             tutorialState = TutorialState.WaitingForTap;
+        }
+    }
+
+    // TODO доделать сообщение
+    public void ShowPinchToZoomMessage()
+    {
+        if (tutorialState == TutorialState.WaitingForTap)
+        {
+            HideScanMessage();
+            ShowMessage("Pinch to zoom this person", messageAnimationSpeed);
+            tutorialState = TutorialState.WaitingForPinch;
         }
     }
 
     public void OnPlaced()
     {
-        if (tutorialState == TutorialState.WaitingForTap)
+        if (tutorialState == TutorialState.WaitingForPinch)
         {
             HideScanMessage();
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, activatedForStreaming));
