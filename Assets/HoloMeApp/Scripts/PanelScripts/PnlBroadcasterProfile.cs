@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class PnlBroadcasterProfile : MonoBehaviour
 {
     [SerializeField] AccountManager accountManager; 
-    [SerializeField] GameObject menuProfileBurger;
-    [SerializeField] GameObject menuUserProfileBurger;
+    [SerializeField] AnimatedTransition menuProfileBurger;
+    [SerializeField] AnimatedTransition menuUserProfileBurger;
     [Space]
     [SerializeField] GameObject broadcasterProfile;
     [Space]
@@ -16,14 +16,14 @@ public class PnlBroadcasterProfile : MonoBehaviour
 
     public void ShowMenu() {
         var accauntType = accountManager.GetAccountType();
-        menuProfileBurger.SetActive(accauntType == AccountManager.AccountType.Broadcater);
-        menuUserProfileBurger.SetActive(accauntType == AccountManager.AccountType.Subscriber);
+        menuProfileBurger.DoMenuTransition(accauntType == AccountManager.AccountType.Broadcater);
+        menuUserProfileBurger.DoMenuTransition(accauntType == AccountManager.AccountType.Subscriber);
         menuBtn.gameObject.SetActive(false);
     }
 
     private void OnEnable() {
-        menuProfileBurger.SetActive(false);
-        menuUserProfileBurger.SetActive(false);
+        //menuProfileBurger.DoMenuTransition(false);
+        //menuUserProfileBurger.DoMenuTransition(false);
 
         menuBtn.gameObject.SetActive(true);
     }
