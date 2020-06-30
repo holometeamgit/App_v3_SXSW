@@ -46,6 +46,7 @@ public class HologramHandler : MonoBehaviour
             {
                 hologramChild.SetParent(holoMe.HologramTransform);
             }
+            holoMe.SetScale(0.75f);
         }
     }
 
