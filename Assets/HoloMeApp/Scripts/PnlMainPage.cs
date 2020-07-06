@@ -68,7 +68,7 @@ public class PnlMainPage : MonoBehaviour
         for (int i = 0; i < thumbnailDownloadManager.videoThumbnailShowcaseJsonDatas.Count; i++)
         {
             var newThumbnail = Instantiate(thumbnailPrefab, contentShowcaseThumbnails);
-            Sprite s = LoadSprite(HelperFunctions.PersistentDir() + thumbnailDownloadManager.videoThumbnailShowcaseJsonDatas[i].imageURL);
+            Texture s = LoadTexture(HelperFunctions.PersistentDir() + thumbnailDownloadManager.videoThumbnailShowcaseJsonDatas[i].imageURL);
 
             var thumbnailItem = newThumbnail.GetComponent<BtnThumbnailItem>();
             thumbnailItem.UpdateThumbnailData(thumbnailDownloadManager.videoThumbnailShowcaseJsonDatas[i].code, s);
@@ -78,7 +78,7 @@ public class PnlMainPage : MonoBehaviour
         for (int i = 0; i < thumbnailDownloadManager.videoThumbnailUserJsonDatas.Count; i++)
         {
             var newThumbnail = Instantiate(thumbnailPrefab, contentUserThumbnails);
-            Sprite s = LoadSprite(HelperFunctions.PersistentDir() + thumbnailDownloadManager.videoThumbnailUserJsonDatas[i].imageURL);
+            Texture s = LoadTexture(HelperFunctions.PersistentDir() + thumbnailDownloadManager.videoThumbnailUserJsonDatas[i].imageURL);
 
             var thumbnailItem = newThumbnail.GetComponent<BtnThumbnailItem>();
             thumbnailItem.UpdateThumbnailData(thumbnailDownloadManager.videoThumbnailUserJsonDatas[i].code, s);
@@ -89,16 +89,20 @@ public class PnlMainPage : MonoBehaviour
         StartCoroutine(RefreshLayoutGroup());
     }
 
-    private Sprite LoadSprite(string path)
+    private Sprite GetSprite(Texture2D texture)
     {
+        if (texture == null) return null;
+        Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+        return sprite;
+    }
+
+    private Texture2D LoadTexture(string path) {
         if (string.IsNullOrEmpty(path)) return null;
-        if (System.IO.File.Exists(path))
-        {
+        if (System.IO.File.Exists(path)) {
             byte[] bytes = System.IO.File.ReadAllBytes(path);
             Texture2D texture = new Texture2D(1, 1);
             texture.LoadImage(bytes);
-            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-            return sprite;
+            return texture;
         }
         return null;
     }

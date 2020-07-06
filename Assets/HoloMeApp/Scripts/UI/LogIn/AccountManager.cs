@@ -30,6 +30,8 @@ public class AccountManager : MonoBehaviour
             return;
         }
 
+        Debug.Log(accessToken.access);
+
         webRequestHandler.PostRequest(GetRequestRefreshTokenURL(),
             accessToken, WebRequestHandler.BodyType.JSON,
             responseCallBack, errorTypeCallBack);

@@ -39,7 +39,7 @@ public class WebRequestHandler : MonoBehaviour
         }
     }
 
-    IEnumerator PostRequesting<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate) {
+    IEnumerator PostRequesting<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
         byte[] bodyRaw;
         var request = new UnityWebRequest(url, "POST");
 
@@ -56,6 +56,8 @@ public class WebRequestHandler : MonoBehaviour
         request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
 
+        if (headerAccessToken != null)
+            request.SetRequestHeader("Authorization", headerAccessToken);
 
         yield return request.SendWebRequest();
 

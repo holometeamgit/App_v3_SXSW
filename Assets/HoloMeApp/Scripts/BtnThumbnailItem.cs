@@ -4,15 +4,18 @@ using UnityEngine.UI;
 
 public class BtnThumbnailItem : MonoBehaviour
 {
-    Image imgThumbnail;
+    [SerializeField]
+    RawImage imgThumbnail;
+
+    [SerializeField]
+    GameObject imgPastLifeGO;
+
+    [SerializeField]
+    GameObject imgLifeGO; 
+
+    [SerializeField]
     Button buttonComponent;
     string code;
-
-    private void Awake()
-    {
-        imgThumbnail = GetComponent<Image>();
-        buttonComponent = GetComponent<Button>();
-    }
 
     public void SetThumbnailPressAction(Action<string> OnPress)
     {
@@ -20,9 +23,9 @@ public class BtnThumbnailItem : MonoBehaviour
         buttonComponent.onClick.AddListener(() => OnPress?.Invoke(code));
     }
 
-    public void UpdateThumbnailData(string code, Sprite sprite)
+    public void UpdateThumbnailData(string code, Texture texture)
     {
-        imgThumbnail.sprite = sprite;
+        imgThumbnail.texture = texture;
         this.code = code;
-    }
+    }   
 }
