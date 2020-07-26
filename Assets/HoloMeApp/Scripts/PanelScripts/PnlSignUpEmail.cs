@@ -26,7 +26,6 @@ public class PnlSignUpEmail : MonoBehaviour
 
 
     private void SignUpCallBack(long code, string body) {
-        //accountManager.SaveAccessToken(body);
         Debug.Log(code + " : " + body);
         pnlEmailVerification.SetActionOnVerified(() => accountManager.SaveAccessToken(body));
         switcherToVerification.Switch();

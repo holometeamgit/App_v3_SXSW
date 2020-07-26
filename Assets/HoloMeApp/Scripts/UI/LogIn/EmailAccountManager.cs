@@ -47,7 +47,11 @@ public class EmailAccountManager : MonoBehaviour
     #region verification
     private void VerifyRequest(VerifyKeyJsonData verifyKeyJsonData, ResponseDelegate responseCallBack, ErrorTypeDelegate errorCallBack) {
         string url = GetRequestURL(verifyEmailAPI);
-        webRequestHandler.PostRequest(url, verifyKeyJsonData, WebRequestHandler.BodyType.JSON, responseCallBack, errorCallBack);
+        webRequestHandler.PostRequest(url, verifyKeyJsonData, WebRequestHandler.BodyType.JSON,
+            (code, body) => {
+                accountManager.SaveLastAutoType(LogInType.Email); responseCallBack.Invoke(code, body);
+            },
+            errorCallBack);
     }
 
     #endregion
@@ -55,7 +59,11 @@ public class EmailAccountManager : MonoBehaviour
     #region Log In
     private void LogInRequest(EmailLogInJsonData emailLogInJsonData, ResponseDelegate responseCallBack, ErrorTypeDelegate errorCallBack) {
         string url = GetRequestURL(logInAPI);
-        webRequestHandler.PostRequest(url, emailLogInJsonData, WebRequestHandler.BodyType.JSON, responseCallBack, errorCallBack);
+        webRequestHandler.PostRequest(url, emailLogInJsonData, WebRequestHandler.BodyType.JSON,
+            (code, body) => {
+                accountManager.SaveLastAutoType(LogInType.Email); responseCallBack.Invoke(code, body);
+            },
+            errorCallBack);
     }
 
     #endregion

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PnlHomeScreen : MonoBehaviour
 {
@@ -13,41 +14,93 @@ public class PnlHomeScreen : MonoBehaviour
     }
 
     [SerializeField]
-    PnlFetchingData pnlFetchingData;
+    AnimatedTransition PnlGenericLoading;
 
-    bool hasFetchedData;
+    [SerializeField]
+    HomeScreenLoader homeScreenLoader;
+
+    [SerializeField]
+    RectTransform contentShowcaseThumbnails;
+
+    [SerializeField]
+    RectTransform contentUserThumbnails;
+
+    [SerializeField]
+    GameObject thumbnailPrefab;
+
+    private List<GameObject> thumbnails;
+
     bool initiallaunch;
 
     void OnEnable() {
+        Clear();
         if (!initiallaunch) {
             initiallaunch = true;
+            homeScreenLoader.OnDataFetched.AddListener(DataFetched);
             return;
         }
-        FetchData();
+        homeScreenLoader.FetchData();
     }
 
-    private void FetchData() {
-        if (!hasFetchedData) {
-             pnlFetchingData.Activate(FetchThumbnailData);
+    private void AddThumbnail(RectTransform contentThumbnails, Texture texture, StreamJsonData.Data data, bool isLive) {
+        var newThumbnail = Instantiate(thumbnailPrefab, contentThumbnails);
+        Texture s = texture;
+
+        var thumbnailItem = newThumbnail.GetComponent<BtnThumbnailItem>();
+        thumbnailItem.UpdateThumbnailData(data.stream_s3_url, s);
+        thumbnailItem.SetLiveState(isLive);
+
+        DateTime dateTime;
+        if (DateTime.TryParse(data.end_date, out dateTime)) {
+            thumbnailItem.SetTimePeriod(dateTime);
         }
+
+        thumbnails.Add(newThumbnail);
     }
 
-    private void FetchThumbnailData() {
-   /*     PnlGenericLoading.DoMenuTransition(true);
-        thumbnailDownloadManager.OnThumbnailsDataDownloaded -= OnThumbnailsDownloaded;
-        thumbnailDownloadManager.OnThumbnailsDataDownloaded += OnThumbnailsDownloaded;
-        thumbnailDownloadManager.DownloadVideoThumbnails();*/
+    private void Clear() {
+        if (thumbnails == null)
+            thumbnails = new List<GameObject>();
+
+        foreach(var thumbnail in thumbnails) {
+            Destroy(thumbnail);
+        }
+
+        thumbnails.Clear();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    private void DataFetched() {
+        StartCoroutine(EdingFetchedData());
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    private IEnumerator EdingFetchedData() {
+
+        int showCaseAddedData = 0;
+
+        foreach (var data in homeScreenLoader.eventHomeScreenDataElement) {
+            showCaseAddedData++;
+            AddThumbnail(showCaseAddedData <= 2 ? contentShowcaseThumbnails : contentUserThumbnails
+                , data.texture, data.streamJsonData, true);
+            yield return null;
+        }
+
+        foreach (var data in homeScreenLoader.liveHomeScreenDataElement) {
+            showCaseAddedData++;
+            AddThumbnail(showCaseAddedData <= 2 ? contentShowcaseThumbnails : contentUserThumbnails
+                , data.texture, data.streamJsonData, true);
+            yield return null;
+        }
+
+        foreach (var data in homeScreenLoader.streamHomeScreenDataElement) {
+            showCaseAddedData++;
+            AddThumbnail(showCaseAddedData <= 2 ? contentShowcaseThumbnails : contentUserThumbnails
+                , data.texture, data.streamJsonData, false); 
+        }
+
+        yield return null;
+    }
+
+    private void OnDisable() {
+        StopAllCoroutines();
     }
 }

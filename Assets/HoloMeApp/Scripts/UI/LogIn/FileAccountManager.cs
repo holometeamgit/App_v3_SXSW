@@ -10,7 +10,7 @@ public class FileAccountManager : MonoBehaviour {
     #region save/load/remove function
 
     public static void SaveFile<T>(string key, T data, string fileName) {
-        Debug.Log("SaveFile " + key + " " + fileName);
+//        Debug.Log("SaveFile " + key + " " + fileName);
         Cryptography cryptography = new Cryptography(key);
         string encrypted = JsonUtility.ToJson(data);//cryptography.Encrypt(data); //TODO comeback to cryptography
 
@@ -21,13 +21,13 @@ public class FileAccountManager : MonoBehaviour {
     }
 
     public static T ReadFile<T>(string key, string fileName) {
-        Debug.Log("ReadFile " + key + " " + fileName);
+//        Debug.Log("ReadFile " + key + " " + fileName);
         T resultData = default;
 
         try {
             FileSave fileSave = new FileSave(FileFormat.Binary);
             string encrypted = fileSave.ReadFromFile<string>(Application.persistentDataPath + "/" + fileName, null);
-            Debug.Log("ReadFile result " + encrypted);
+  //          Debug.Log("ReadFile result " + encrypted);
             if (encrypted == null)
                 return resultData;
 

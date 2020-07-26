@@ -13,21 +13,27 @@ public class WebRequestHandler : MonoBehaviour
 
 
     public readonly string serverURLAuthAPI = "https://devholo.me/api-auth";
+    public readonly string serverURLMediaAPI = "https://devholo.me/api-media";
 
-    public void GetRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate) {
-        StartCoroutine(GetRequesting(url, responseDelegate, errorTypeDelegate));
+    public void GetRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
+        StartCoroutine(GetRequesting(url, responseDelegate, errorTypeDelegate, headerAccessToken));
     }
 
-    public void PostRequest<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate) {
-        StartCoroutine(PostRequesting(url, body, bodyType, responseDelegate, errorTypeDelegate));
+    public void PostRequest<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
+        StartCoroutine(PostRequesting(url, body, bodyType, responseDelegate, errorTypeDelegate, headerAccessToken));
     }
 
-    IEnumerator GetRequesting(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate) {
+    IEnumerator GetRequesting(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
 
         Debug.Log(url);
 
         using (UnityWebRequest request = UnityWebRequest.Get(url)) {
             request.certificateHandler = new CustomCertificateHandler();
+
+            if (headerAccessToken != null) {
+                request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
+                Debug.Log(request.GetRequestHeader("Authorization"));
+            }
 
             yield return request.SendWebRequest();
 
@@ -46,8 +52,8 @@ public class WebRequestHandler : MonoBehaviour
         switch (bodyType) {
         default: //only Json at this moment
             string bodyString = JsonUtility.ToJson(body);
-            Debug.Log("url " + url + "body " + bodyString);
-            Debug.Log("Post data " + bodyString);
+//            Debug.Log("url " + url + " body " + bodyString);
+//            Debug.Log("Post data " + bodyString);
             bodyRaw = Encoding.UTF8.GetBytes(bodyString);
             break;
         }
@@ -57,15 +63,15 @@ public class WebRequestHandler : MonoBehaviour
         request.SetRequestHeader("Content-Type", "application/json");
 
         if (headerAccessToken != null)
-            request.SetRequestHeader("Authorization", headerAccessToken);
+            request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
 
         yield return request.SendWebRequest();
 
         if (request.isNetworkError || request.isHttpError) {
-            Debug.Log(request.responseCode + " : " + request.error);
+//            Debug.Log(request.responseCode + " : " + request.error);
             errorTypeDelegate(request.responseCode, request.downloadHandler.text);
         } else {
-            Debug.Log(request.responseCode + " : " + request.downloadHandler.text);
+//            Debug.Log(request.responseCode + " : " + request.downloadHandler.text);
             responseDelegate(request.responseCode, request.downloadHandler.text);
         }
     }

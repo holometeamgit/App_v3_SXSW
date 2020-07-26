@@ -33,7 +33,7 @@ public class GridScalar : UIBehaviour {
         switch (FitBy) {
         case Fit.Horizontal:
             var paddingX = gridPadding.left + gridPadding.right;
-            Debug.Log("name " + parent.gameObject.name + " " + parent.rect.width);
+//            Debug.Log("name " + parent.gameObject.name + " " + parent.rect.width);
             var cellSize = Mathf.Round((parent.rect.width - paddingX - (grid.spacing.x * (grid.constraintCount - 1))) / grid.constraintCount);
             grid.cellSize = new Vector2(cellSize, grid.cellSize.y);
             break;

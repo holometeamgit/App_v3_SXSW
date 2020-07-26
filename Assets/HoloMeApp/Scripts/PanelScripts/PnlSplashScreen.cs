@@ -23,6 +23,7 @@ public class PnlSplashScreen : MonoBehaviour
     }
 
     private void TryGetNewRefreshTokenAndLogIn(long code, string body) {
+        Debug.Log("TryGetNewRefreshTokenAndLogIn");
         Debug.Log(code + " : " + body);
 
         //if the user has not logged in then send to the registration menu
@@ -40,6 +41,7 @@ public class PnlSplashScreen : MonoBehaviour
             break;
         case LogInType.Email:
             AuthorisationErrorCallBack(0, "the user needs to enter log in data himself");  //because we do not store the email and password of the user//TODO maybe try later save in android and ios
+
             break;
         case LogInType.Facebook:
             facebookAccountManager.LogInWithSavedAccessToken(LogInCallBack, AuthorisationErrorCallBack);
@@ -51,11 +53,13 @@ public class PnlSplashScreen : MonoBehaviour
     }
 
     private void AuthorisationErrorCallBack(long code, string body) {
-
+        Debug.Log("AuthorisationErrorCallBack " + code + " " + body);
         OnAuthorisationErrorEvent.Invoke();
     }
 
     private void LogInCallBack(long code, string body) {
+        Debug.Log("LogInCallBack");
+        
         OnLogInEvent.Invoke();
     }
 }
