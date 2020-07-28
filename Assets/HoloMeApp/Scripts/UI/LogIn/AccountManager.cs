@@ -43,12 +43,19 @@ public class AccountManager : MonoBehaviour
 
     public void SaveLastAutoType(LogInType logInType) {
         Debug.Log("SaveLastAutoType " + logInType.ToString());
-        PlayerPrefs.SetInt(nameof(PlayerPrefsKeys.LastTypeLoginPPKey), (int)logInType);
+        PlayerPrefs.SetInt(PlayerPrefsKeys.LastTypeLoginPPKey, (int)logInType);
         PlayerPrefs.Save();
     }
 
     public ServerAccessToken GetAccessToken() {
         return FileAccountManager.ReadFile<ServerAccessToken>(nameof(FileAccountManager.ServerAccessToken), FileAccountManager.ServerAccessToken);
+    }
+
+    public LogInType GetLoginType() {
+        if (!PlayerPrefs.HasKey(PlayerPrefsKeys.LastTypeLoginPPKey)) {
+            return LogInType.None;
+        }
+        return (LogInType)PlayerPrefs.GetInt(PlayerPrefsKeys.LastTypeLoginPPKey);
     }
 
     #endregion

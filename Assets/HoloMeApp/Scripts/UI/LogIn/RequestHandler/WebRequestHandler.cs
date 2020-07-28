@@ -52,8 +52,6 @@ public class WebRequestHandler : MonoBehaviour
         switch (bodyType) {
         default: //only Json at this moment
             string bodyString = JsonUtility.ToJson(body);
-//            Debug.Log("url " + url + " body " + bodyString);
-//            Debug.Log("Post data " + bodyString);
             bodyRaw = Encoding.UTF8.GetBytes(bodyString);
             break;
         }
