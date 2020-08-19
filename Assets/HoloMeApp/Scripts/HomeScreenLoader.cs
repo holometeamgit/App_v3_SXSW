@@ -11,14 +11,14 @@ using System;
 public class HomeScreenLoader : MonoBehaviour
 {
 
-    public class HomeScreenDataElement {
+    public class DataElement {
         public StreamJsonData.Data streamJsonData;
         public Texture texture;
     }
 
-    public List<HomeScreenDataElement> eventHomeScreenDataElement;
-    public List<HomeScreenDataElement> liveHomeScreenDataElement;
-    public List<HomeScreenDataElement> streamHomeScreenDataElement;
+    public List<DataElement> eventHomeScreenDataElement;
+    public List<DataElement> liveHomeScreenDataElement;
+    public List<DataElement> streamHomeScreenDataElement;
 
     [SerializeField]
     ThumbnailWebDownloadManager thumbnailWebDownloadManager;
@@ -55,23 +55,6 @@ public class HomeScreenLoader : MonoBehaviour
     public void FetchData() {
         ClearData();
         FetchEventStreamData();
-    }
-
-    private void ClearData() {
-        eventStreamJsonData = new List<StreamJsonData.Data>();
-        liveStreamJsonData = new List<StreamJsonData.Data>();
-        finishedStreamJsonData = new List<StreamJsonData.Data>();
-
-        currentEventPageNumber = 1;
-        currentLivePageNumber = 1;
-        currentFinishedPageNumber = 1;
-
-        countLoadedStreamData = 0;
-        countLoadedTextures = 0;
-
-        eventHomeScreenDataElement = new List<HomeScreenDataElement>();
-        liveHomeScreenDataElement = new List<HomeScreenDataElement>();
-        streamHomeScreenDataElement = new List<HomeScreenDataElement>();
     }
 
     private void FetchEventStreamData() {
@@ -172,7 +155,7 @@ public class HomeScreenLoader : MonoBehaviour
 
         countLoadedTextures++;
 
-        HomeScreenDataElement homeScreenDataElement = new HomeScreenDataElement();
+        DataElement homeScreenDataElement = new DataElement();
         homeScreenDataElement.streamJsonData = streamJsonData;
         homeScreenDataElement.texture = texture;
 
@@ -192,14 +175,20 @@ public class HomeScreenLoader : MonoBehaviour
             OnDataFetched.Invoke();
     }
 
-    void Start()
-    {
-        
-    }
+    private void ClearData() {
+        eventStreamJsonData = new List<StreamJsonData.Data>();
+        liveStreamJsonData = new List<StreamJsonData.Data>();
+        finishedStreamJsonData = new List<StreamJsonData.Data>();
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        currentEventPageNumber = 1;
+        currentLivePageNumber = 1;
+        currentFinishedPageNumber = 1;
+
+        countLoadedStreamData = 0;
+        countLoadedTextures = 0;
+
+        eventHomeScreenDataElement = new List<DataElement>();
+        liveHomeScreenDataElement = new List<DataElement>();
+        streamHomeScreenDataElement = new List<DataElement>();
     }
 }

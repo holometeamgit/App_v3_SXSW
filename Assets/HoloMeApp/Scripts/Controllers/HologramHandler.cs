@@ -69,6 +69,7 @@ public class HologramHandler : MonoBehaviour
 
     private void PlayOnPlace(Vector3 position)
     {
+        holoMe.StopVideo();
         //Debug.Log($"Play on Place called {videoCode}");
         if (!hasPlaced || Application.isEditor)
         {
@@ -91,7 +92,8 @@ public class HologramHandler : MonoBehaviour
         }
         else
         {
-            holoMe.PlayVideo(HelperFunctions.PersistentDir() + videoCode + ".mp4");
+            holoMe.PlayVideo(videoCode);
+            //            holoMe.PlayVideo(HelperFunctions.PersistentDir() + videoCode + ".mp4");
         }
     }
 

@@ -14,7 +14,9 @@ public class PnlHomeScreen : MonoBehaviour
     }
 
     [SerializeField]
-    AnimatedTransition PnlGenericLoading;
+    AnimatedTransition pnlGenericLoading;
+    [SerializeField]
+    PnlViewingExperience pnlViewingExperience;
 
     [SerializeField]
     HomeScreenLoader homeScreenLoader;
@@ -29,10 +31,15 @@ public class PnlHomeScreen : MonoBehaviour
     GameObject thumbnailPrefab;
 
     private List<GameObject> thumbnails;
+    private AnimatedTransition animatedTransition;
 
     bool initiallaunch;
 
     void OnEnable() {
+        if(animatedTransition == null) {
+            animatedTransition = GetComponent<AnimatedTransition>();
+        }
+
         Clear();
         if (!initiallaunch) {
             initiallaunch = true;
@@ -56,6 +63,11 @@ public class PnlHomeScreen : MonoBehaviour
         }
 
         thumbnails.Add(newThumbnail);
+
+        thumbnailItem.SetThumbnailPressAction(_ => {
+            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null);
+            animatedTransition.DoMenuTransition(false);
+            });
     }
 
     private void Clear() {
