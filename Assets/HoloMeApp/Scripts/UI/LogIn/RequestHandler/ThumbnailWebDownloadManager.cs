@@ -4,22 +4,15 @@ using UnityEngine;
 using System;
 public class ThumbnailWebDownloadManager : MonoBehaviour
 {
-    public enum Stage {
-        All,
-        Live,
-        Announced,
-        Finished
-    }
-
     public struct ThumbnailWebRequestStruct {
 
-        public Stage Stage;
+        public StreamJsonData.Data.Stage Stage;
         public string AccessToken;
         public int PageNumber;
         public int MaxPageSize;
         public string UserName;
 
-        public ThumbnailWebRequestStruct(Stage Stage, string AccessToken, int PageNumber, int MaxPageSize, string UserName) {
+        public ThumbnailWebRequestStruct(StreamJsonData.Data.Stage Stage, string AccessToken, int PageNumber, int MaxPageSize, string UserName) {
             this.Stage = Stage;
             this.AccessToken = AccessToken;
             this.PageNumber = PageNumber;
@@ -28,7 +21,7 @@ public class ThumbnailWebDownloadManager : MonoBehaviour
         }
     }
 
-    public delegate void StreamJsonDataDelegate(List<StreamJsonData.Data> streamJsonData, Stage stage);
+    public delegate void StreamJsonDataDelegate(List<StreamJsonData.Data> streamJsonData, StreamJsonData.Data.Stage stage);
 
     [SerializeField]
     WebRequestHandler webRequestHandler;
@@ -56,7 +49,7 @@ public class ThumbnailWebDownloadManager : MonoBehaviour
     thumbnailWebRequestStruct.AccessToken);
     }
 
-    private void LoadThumbnailsCallBack(string data, DateTime startLoadingDate, StreamJsonDataDelegate streamJsonDataDelegate, Stage stage) {
+    private void LoadThumbnailsCallBack(string data, DateTime startLoadingDate, StreamJsonDataDelegate streamJsonDataDelegate, StreamJsonData.Data.Stage stage) {
         try {
             if (startLoadingDate != startLoadingThubnailsDateTime)
                 return;
@@ -86,21 +79,9 @@ public class ThumbnailWebDownloadManager : MonoBehaviour
         return webRequestHandler.serverURLMediaAPI + getStreamAccessTokenAPI + "?"
             + pageStreamParameter + thumbnailWebRequestStruct.PageNumber +
             "&" + pageSize + thumbnailWebRequestStruct.MaxPageSize +
-        (thumbnailWebRequestStruct.Stage != Stage.All ? ("&" + statusStreamParameter + GetStatusValue(thumbnailWebRequestStruct.Stage)) : "") +
+        (thumbnailWebRequestStruct.Stage != StreamJsonData.Data.Stage.All ? ("&" + statusStreamParameter + StreamJsonData.Data.GetStatusValue(thumbnailWebRequestStruct.Stage)) : "") +
         (string.IsNullOrEmpty(thumbnailWebRequestStruct.UserName) ? "" : ("&" + this.userName + thumbnailWebRequestStruct.UserName));
     }
 
-    private string GetStatusValue(Stage stage) {
-        switch(stage) {
-        case Stage.Announced:
-            return "announced";
-        case Stage.Finished:
-            return "finished";
-        case Stage.Live:
-            return "live";
-        case Stage.All:
-        default:
-            return "";
-        }
-    }
+
 }

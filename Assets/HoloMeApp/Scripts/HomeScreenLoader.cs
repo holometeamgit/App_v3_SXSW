@@ -62,21 +62,21 @@ public class HomeScreenLoader : MonoBehaviour
         fetchStartDateTime = DateTime.Now;
 
         var thumbnailEventDataRequest = new ThumbnailWebDownloadManager.ThumbnailWebRequestStruct(
-            ThumbnailWebDownloadManager.Stage.Announced,
+            StreamJsonData.Data.Stage.Announced,
             accountManager.GetAccessToken().access,
             currentEventPageNumber,
             maxEventPageSize,
             "");
 
         var thumbnailLiveDataRequest = new ThumbnailWebDownloadManager.ThumbnailWebRequestStruct(
-            ThumbnailWebDownloadManager.Stage.Live,
+            StreamJsonData.Data.Stage.Live,
             accountManager.GetAccessToken().access,
             currentLivePageNumber,
             maxLivePageSize,
             "");
 
         var thumbnailFinishedDataRequest = new ThumbnailWebDownloadManager.ThumbnailWebRequestStruct(
-            ThumbnailWebDownloadManager.Stage.Finished,
+            StreamJsonData.Data.Stage.Finished,
             accountManager.GetAccessToken().access,
             currentFinishedPageNumber,
             maxFinishedPageSize,
@@ -91,8 +91,8 @@ public class HomeScreenLoader : MonoBehaviour
 
     }
 
-    private void FetchStreamDataCallBack(List<StreamJsonData.Data> streamJsonData, ThumbnailWebDownloadManager.Stage stage, DateTime fetchStart) {
-        if (stage == ThumbnailWebDownloadManager.Stage.All)
+    private void FetchStreamDataCallBack(List<StreamJsonData.Data> streamJsonData, StreamJsonData.Data.Stage stage, DateTime fetchStart) {
+        if (stage == StreamJsonData.Data.Stage.All)
             return;
 
         if (fetchStart != fetchStartDateTime)
@@ -102,20 +102,19 @@ public class HomeScreenLoader : MonoBehaviour
 
         if (streamJsonData.Count != 0)
             switch(stage) {
-            case ThumbnailWebDownloadManager.Stage.Announced:
+            case StreamJsonData.Data.Stage.Announced:
                 eventStreamJsonData.AddRange(streamJsonData);
                 break;
-            case ThumbnailWebDownloadManager.Stage.Live:
+            case StreamJsonData.Data.Stage.Live:
                 liveStreamJsonData.AddRange(streamJsonData);
                 break;
-            case ThumbnailWebDownloadManager.Stage.Finished:
+            case StreamJsonData.Data.Stage.Finished:
                 finishedStreamJsonData.AddRange(streamJsonData);
                 break;
             }
 
         if (countLoadedStreamData == compliteCountLoadedStreamData)
             FetchTextureData(fetchStart);
-
     }
 
     private void FetchTextureData(DateTime fetchStart) {
@@ -125,31 +124,31 @@ public class HomeScreenLoader : MonoBehaviour
 
         int waitingCount = eventStreamJsonData.Count + liveStreamJsonData.Count + finishedStreamJsonData.Count;
 
-        Debug.Log("event");
+//        Debug.Log("event");
         foreach (var data in eventStreamJsonData) {
             Debug.Log(data.preview_s3_url);
             mediaFileDataHandler.LoadImg(data.preview_s3_url,
-                (code, body, texture) => TextureDataFetchedCallBack(waitingCount, fetchStart, ThumbnailWebDownloadManager.Stage.Announced, data, texture),
+                (code, body, texture) => TextureDataFetchedCallBack(waitingCount, fetchStart, StreamJsonData.Data.Stage.Announced, data, texture),
                 ((code, body) => Debug.Log(body)));
         }
-        Debug.Log("live");
+//        Debug.Log("live");
         foreach (var data in liveStreamJsonData) {
             Debug.Log(data.preview_s3_url);
             mediaFileDataHandler.LoadImg(data.preview_s3_url,
-                (code, body, texture) => TextureDataFetchedCallBack(waitingCount, fetchStart, ThumbnailWebDownloadManager.Stage.Live, data, texture),
+                (code, body, texture) => TextureDataFetchedCallBack(waitingCount, fetchStart, StreamJsonData.Data.Stage.Live, data, texture),
                 ((code, body) => Debug.Log(body)));
         }
-        Debug.Log("stream");
+//        Debug.Log("stream");
         foreach (var data in finishedStreamJsonData) {
             Debug.Log(data.preview_s3_url);
             mediaFileDataHandler.LoadImg(data.preview_s3_url,
-                (code, body, texture) => TextureDataFetchedCallBack(waitingCount, fetchStart, ThumbnailWebDownloadManager.Stage.Finished, data, texture),
+                (code, body, texture) => TextureDataFetchedCallBack(waitingCount, fetchStart, StreamJsonData.Data.Stage.Finished, data, texture),
                 ((code, body) => Debug.Log(body)));
         }
 
     }
 
-    private void TextureDataFetchedCallBack(int waitingCount, DateTime fetchStart, ThumbnailWebDownloadManager.Stage stage, StreamJsonData.Data streamJsonData, Texture texture) {
+    private void TextureDataFetchedCallBack(int waitingCount, DateTime fetchStart, StreamJsonData.Data.Stage stage, StreamJsonData.Data streamJsonData, Texture texture) {
         if (fetchStart != fetchStartDateTime)
             return;
 
@@ -160,13 +159,13 @@ public class HomeScreenLoader : MonoBehaviour
         homeScreenDataElement.texture = texture;
 
         switch(stage) {
-        case ThumbnailWebDownloadManager.Stage.Announced:
+        case StreamJsonData.Data.Stage.Announced:
             eventHomeScreenDataElement.Add(homeScreenDataElement);
             break;
-        case ThumbnailWebDownloadManager.Stage.Finished:
+        case StreamJsonData.Data.Stage.Finished:
             streamHomeScreenDataElement.Add(homeScreenDataElement);
             break;
-        case ThumbnailWebDownloadManager.Stage.Live:
+        case StreamJsonData.Data.Stage.Live:
             liveHomeScreenDataElement.Add(homeScreenDataElement);
             break;
         }

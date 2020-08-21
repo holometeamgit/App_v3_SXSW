@@ -82,31 +82,31 @@ public class PnlHomeScreen : MonoBehaviour
     }
 
     private void DataFetched() {
-        StartCoroutine(EdingFetchedData());
+        StartCoroutine(AddingFetchedData());
     }
 
-    private IEnumerator EdingFetchedData() {
+    private IEnumerator AddingFetchedData() {
 
         int showCaseAddedData = 0;
 
         foreach (var data in homeScreenLoader.eventHomeScreenDataElement) {
             showCaseAddedData++;
-            AddThumbnail(showCaseAddedData <= 2 ? contentShowcaseThumbnails : contentUserThumbnails
-                , data.texture, data.streamJsonData, true);
+            AddThumbnail(showCaseAddedData <= 2 ? contentShowcaseThumbnails : contentUserThumbnails,
+                data.texture, data.streamJsonData, true);
             yield return null;
         }
 
         foreach (var data in homeScreenLoader.liveHomeScreenDataElement) {
             showCaseAddedData++;
-            AddThumbnail(showCaseAddedData <= 2 ? contentShowcaseThumbnails : contentUserThumbnails
-                , data.texture, data.streamJsonData, true);
+            AddThumbnail(showCaseAddedData <= 2 ? contentShowcaseThumbnails : contentUserThumbnails,
+                data.texture, data.streamJsonData, true);
             yield return null;
         }
 
         foreach (var data in homeScreenLoader.streamHomeScreenDataElement) {
             showCaseAddedData++;
-            AddThumbnail(showCaseAddedData <= 2 ? contentShowcaseThumbnails : contentUserThumbnails
-                , data.texture, data.streamJsonData, false); 
+            AddThumbnail(showCaseAddedData <= 2 ? contentShowcaseThumbnails : contentUserThumbnails,
+                data.texture, data.streamJsonData, false); 
         }
 
         yield return null;
