@@ -7,13 +7,16 @@ public class AgoraRTMChatController : MonoBehaviour
 {
     [SerializeField]
     private string token = "";
+    private string appId;
 
     public string userName = "temp1";
 
     private IRtmWrapper rtm;
     private IRtmChannel channel;
 
-    IEnumerator Initialize(string appId)
+    bool loggedIn;
+
+    IEnumerator DelayedInitialize()
     {
         while (RtmWrapper.Instance == null)
             yield return null;
@@ -31,21 +34,27 @@ public class AgoraRTMChatController : MonoBehaviour
             Debug.LogError("We need a username and appId to login");
             yield break;
         }
-
-        Debug.Log("Before calling rtm");
-        yield return new WaitForSeconds(5);
-        rtm.Login(appId, token, userName);
     }
 
-    public void Login(string appId)
+    public void Init(string appId)
     {
-        StartCoroutine(Initialize(appId));
+        this.appId = appId;
+        StartCoroutine(DelayedInitialize());
+    }
+
+    public void Login()
+    {
+        if (loggedIn)
+            return;
+        rtm.Login(appId, token, userName);
+        loggedIn = true;
     }
 
     public void Logout()
     {
         //SendMessageToChat(userName + " logged out of the rtm", Message.MessageType.info);
-        rtm.Logout();
+        if (loggedIn)
+            rtm.Logout();
     }
 
     public void JoinChannel(string channelName)
@@ -95,6 +104,8 @@ public class AgoraRTMChatController : MonoBehaviour
 
         //TODO: Use the userName param to specify the user name as currently it's compiles in msg string via PnlStreamChat SendChatMessage 
 
+        HelperFunctions.DevLog("Message received RTM");
+
         foreach (AgoraMessageReceiver agoraMessageReceiver in messageReceivers)
         {
             agoraMessageReceiver.ReceivedChatMessage(msg);
@@ -116,6 +127,7 @@ public class AgoraRTMChatController : MonoBehaviour
     public void SendMessageToChannel(string message)
     {
         channel.SendMessage(message);
+        HelperFunctions.DevLog("Message Sent");
         //rtm.SendChannelMessage(channelName, text);
     }
 
@@ -129,6 +141,7 @@ public class AgoraRTMChatController : MonoBehaviour
     {
         if (!messageReceivers.Contains(agoraMessageReceiver))
         {
+            HelperFunctions.DevLog("Message received");
             messageReceivers.Add(agoraMessageReceiver);
         }
         else
@@ -168,7 +181,6 @@ public class AgoraRTMChatController : MonoBehaviour
     }
 
     #endregion
-
 
     private void OnDestroy()
     {

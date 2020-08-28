@@ -35,7 +35,7 @@ public class AgoraController : MonoBehaviour
     {
         LoadEngine(appId);
         frameRate = 30;
-        agoraRTMChatController.Login(appId);
+        agoraRTMChatController.Init(appId);
     }
 
     void LoadEngine(string appId)
@@ -60,6 +60,8 @@ public class AgoraController : MonoBehaviour
     {
         if (iRtcEngine == null)
             return;
+
+        agoraRTMChatController.Login();
 
         isChannelCreator = channelCreator;
 
@@ -100,6 +102,7 @@ public class AgoraController : MonoBehaviour
         isLive = true;
 
         streamID = iRtcEngine.CreateDataStream(true, true);
+                
         //iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
         //iRtcEngine.OnStreamMessageError = OnStreamMessageError;
 
