@@ -12,6 +12,9 @@ public class AgoraController : MonoBehaviour
     [SerializeField]
     GameObject liveStreamQuad;
 
+    [SerializeField]
+    AgoraRTMChatController agoraRTMChatController;
+
     IRtcEngine iRtcEngine;
 
     public string ChannelName { get; set; }
@@ -32,6 +35,7 @@ public class AgoraController : MonoBehaviour
     {
         LoadEngine(appId);
         frameRate = 30;
+        agoraRTMChatController.Login(appId);
     }
 
     void LoadEngine(string appId)
@@ -96,8 +100,8 @@ public class AgoraController : MonoBehaviour
         isLive = true;
 
         streamID = iRtcEngine.CreateDataStream(true, true);
-        iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
-        iRtcEngine.OnStreamMessageError = OnStreamMessageError;
+        //iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
+        //iRtcEngine.OnStreamMessageError = OnStreamMessageError;
 
     }
 
@@ -122,9 +126,10 @@ public class AgoraController : MonoBehaviour
         liveStreamQuad.SetActive(false);
         isLive = false;
 
-        OnStreamDisconnected();
-
         ResetVideoSurface();
+
+        //OnStreamDisconnected();
+        agoraRTMChatController.LeaveChannel();
     }
 
     private void ResetVideoSurface()
@@ -140,6 +145,7 @@ public class AgoraController : MonoBehaviour
     private void OnJoinChannelSuccess(string channelName, uint uid, int elapsed)
     {
         HelperFunctions.DevLog("JoinChannelSuccessHandler: uid = " + uid);
+        agoraRTMChatController.JoinChannel(channelName);
     }
 
     void IncrementCount()
@@ -204,13 +210,9 @@ public class AgoraController : MonoBehaviour
 
     public void SwitchCamera()
     {
-
-        iRtcEngine.SendStreamMessage(streamID, "OYOY");
-        HelperFunctions.DevLog("Message Sent");
-
-        //int result = iRtcEngine.SwitchCamera();
-        //if (result == 0)
-        //    OnCameraSwitched?.Invoke();
+        int result = iRtcEngine.SwitchCamera();
+        if (result == 0)
+            OnCameraSwitched?.Invoke();
     }
 
     public void ToggleVideo(bool pauseVideo)
@@ -262,57 +264,57 @@ public class AgoraController : MonoBehaviour
 
     #region Messaging system
 
-    public void SendMessage(string message)
-    {
-        iRtcEngine.SendStreamMessage(streamID, message);
-    }
-    public void OnStreamMessageError(uint userId, int streamId, int code, int missed, int cached)
-    {
-        HelperFunctions.DevLog($"Stream message error! Code = {code}");
-    }
+    //public void SendMessage(string message)
+    //{
+    //    iRtcEngine.SendStreamMessage(streamID, message);
+    //}
+    //public void OnStreamMessageError(uint userId, int streamId, int code, int missed, int cached)
+    //{
+    //    HelperFunctions.DevLog($"Stream message error! Code = {code}");
+    //}
 
-    List<AgoraMessageReceiver> messageReceivers = new List<AgoraMessageReceiver>();
-    public void AddMessageReceiver(AgoraMessageReceiver agoraMessageReceiver)
-    {
-        if (!messageReceivers.Contains(agoraMessageReceiver))
-        {
-            messageReceivers.Add(agoraMessageReceiver);
-        }
-        else
-        {
-            Debug.LogError("Tried to add the same messageReceiver");
-        }
-    }
+    //List<AgoraMessageReceiver> messageReceivers = new List<AgoraMessageReceiver>();
+    //public void AddMessageReceiver(AgoraMessageReceiver agoraMessageReceiver)
+    //{
+    //    if (!messageReceivers.Contains(agoraMessageReceiver))
+    //    {
+    //        messageReceivers.Add(agoraMessageReceiver);
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("Tried to add the same messageReceiver");
+    //    }
+    //}
 
-    public void RemoveMessageReceiver(AgoraMessageReceiver agoraMessageReceiver)
-    {
-        if (messageReceivers.Contains(agoraMessageReceiver))
-        {
-            messageReceivers.Remove(agoraMessageReceiver);
-        }
-        else
-        {
-            Debug.LogError("Tried to remove messageReceiver but wasn't in colection");
-        }
-    }
+    //public void RemoveMessageReceiver(AgoraMessageReceiver agoraMessageReceiver)
+    //{
+    //    if (messageReceivers.Contains(agoraMessageReceiver))
+    //    {
+    //        messageReceivers.Remove(agoraMessageReceiver);
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("Tried to remove messageReceiver but wasn't in colection");
+    //    }
+    //}
 
-    public void OnStreamMessageRecieved(uint userId, int streamId, string data, int length)
-    {
-        HelperFunctions.DevLog($"Message recieved {data}");
+    //public void OnStreamMessageRecieved(uint userId, int streamId, string data, int length)
+    //{
+    //    HelperFunctions.DevLog($"Message recieved {data}");
 
-        foreach (AgoraMessageReceiver agoraMessageReceiver in messageReceivers)
-        {
-            agoraMessageReceiver.ReceivedChatMessage(data);
-        }
-    }
+    //    foreach (AgoraMessageReceiver agoraMessageReceiver in messageReceivers)
+    //    {
+    //        agoraMessageReceiver.ReceivedChatMessage(data);
+    //    }
+    //}
 
-    public void OnStreamDisconnected()
-    {
-        foreach (AgoraMessageReceiver agoraMessageReceiver in messageReceivers)
-        {
-            agoraMessageReceiver.OnDisconnected();
-        }
-    }
+    //public void OnStreamDisconnected()
+    //{
+    //    foreach (AgoraMessageReceiver agoraMessageReceiver in messageReceivers)
+    //    {
+    //        agoraMessageReceiver.OnDisconnected();
+    //    }
+    //}
 
     #endregion
 

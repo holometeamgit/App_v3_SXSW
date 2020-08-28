@@ -1341,6 +1341,11 @@ PrefabInstance:
       propertyPath: agoraController
       value: 
       objectReference: {fileID: 1146380145}
+    - target: {fileID: 1150368482564005139, guid: a23c4305df8ad57449a8dc822c91f562,
+        type: 3}
+      propertyPath: agoraRTMChatController
+      value: 
+      objectReference: {fileID: 1901570710}
     - target: {fileID: 1399760517488823181, guid: a23c4305df8ad57449a8dc822c91f562,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -4013,7 +4018,7 @@ PrefabInstance:
     - target: {fileID: 1009909825392088318, guid: 076e229ad5822b145a148eb3d42f4097,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.44995117
+      value: -0.44970703
       objectReference: {fileID: 0}
     - target: {fileID: 2343915223514668375, guid: 076e229ad5822b145a148eb3d42f4097,
         type: 3}
@@ -4503,7 +4508,7 @@ PrefabInstance:
     - target: {fileID: 7034928026378393698, guid: 076e229ad5822b145a148eb3d42f4097,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.00024414062
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7242023198077023591, guid: 076e229ad5822b145a148eb3d42f4097,
         type: 3}
@@ -4781,7 +4786,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1511041754}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1146380145
 MonoBehaviour:
@@ -4797,6 +4802,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   appId: de596f86fdde42e8a7f7a39b15ad3c82
   liveStreamQuad: {fileID: 839298373}
+  agoraRTMChatController: {fileID: 1901570710}
   frameRate: 0
 --- !u!114 &1146380146
 MonoBehaviour:
@@ -6511,6 +6517,7 @@ Transform:
   - {fileID: 1247021532}
   - {fileID: 1289764688}
   - {fileID: 1668135546}
+  - {fileID: 1901570708}
   - {fileID: 1146380144}
   - {fileID: 1692783276}
   - {fileID: 2100244893}
@@ -6941,7 +6948,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 8.56e-43, y: NaN, z: 8.58e-43, w: 8.0141825e+11}
+  m_BoundingSphereOverride: {x: 0, y: 1.7527e-41, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -8255,6 +8262,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3263f01ac474ec240998748e886da25e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1901570707
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1901570708}
+  - component: {fileID: 1901570709}
+  - component: {fileID: 1901570710}
+  m_Layer: 0
+  m_Name: AgoraRTMControllers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1901570708
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901570707}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1511041754}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1901570709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901570707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e686ae4afcd90d47a724ff3d41f4961, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1901570710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901570707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4816593cbf50c394ab8d2fb65d9c8522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  token: 
+  userName: temp1
 --- !u!1 &1932563613
 GameObject:
   m_ObjectHideFlags: 0
@@ -8307,6 +8372,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -10128,7 +10194,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1511041754}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2121508630 stripped
 MonoBehaviour:
@@ -10187,7 +10253,7 @@ PrefabInstance:
     - target: {fileID: 611722738044528419, guid: 65f27277595733c46b483fb8530a683a,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 611722738044528419, guid: 65f27277595733c46b483fb8530a683a,
         type: 3}
