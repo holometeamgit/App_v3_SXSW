@@ -116,7 +116,7 @@ namespace io.agora.rtm
         [MonoPInvokeCallback(typeof(RtmWrapperDll.OnCompletion))]
         public static void onMemberLeft(IntPtr channel, string uid)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
             {
                 var chId = ((RtmWrapperIOS)RtmWrapper.Instance).curChannel.GetId();
                 Debug.Log(uid + " left " + chId);
@@ -127,7 +127,7 @@ namespace io.agora.rtm
         [MonoPInvokeCallback(typeof(RtmWrapperDll.OnCompletion))]
         public static void onChannelMessageReceived(IntPtr channel, string msg, string uid)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
             {
                 Debug.Log(uid + " sent a message: " + msg);
                 RtmWrapper.Instance.OnMessageReceivedCallback(uid, msg);
@@ -214,7 +214,7 @@ namespace io.agora.rtm
         {
             if (errorCode == 0)
             {
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
                 {
                     RtmWrapper.Instance.LoggedIn = true;
                     RtmWrapper.Instance.OnLoginSuccessCallback();
@@ -238,7 +238,7 @@ namespace io.agora.rtm
         [MonoPInvokeCallback(typeof(RtmWrapperDll.OnMessageReceived))]
         public static void onMessageReceived(IntPtr kit, string msg, string peerId)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
             {
                 Debug.Log(peerId + " sent a message: " + msg);
                 RtmWrapper.Instance.OnMessageReceivedCallback(peerId, msg);
@@ -282,7 +282,7 @@ namespace io.agora.rtm
         {
             return CreateAndJoinChannel(channelName, (o) =>
             {
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
                 {
                     channels.Add(channelName);
                     Debug.Log("joined: " + channelName);
@@ -314,7 +314,7 @@ namespace io.agora.rtm
         [MonoPInvokeCallback(typeof(RtmWrapperDll.OnQueryStatus))]
         public static void QueryPeersOnlineStatusCallback(IntPtr peerOnlineStatus)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
             {
                 var pos = (PeerOnlineStatus)Marshal.PtrToStructure(peerOnlineStatus, typeof(PeerOnlineStatus));
                 Debug.Log("peer: " + pos.peerId + " -- " + pos.isOnline);
@@ -339,7 +339,7 @@ namespace io.agora.rtm
         [MonoPInvokeCallback(typeof(RtmWrapperDll.OnChannelMemberCount))]
         public static void ChannelMemberCountCallback(IntPtr channelMemberCounts, int count)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
             {
                 Debug.Log("channel member count callback: " + count);
                 if (count > 0)

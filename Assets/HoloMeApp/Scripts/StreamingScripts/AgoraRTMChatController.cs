@@ -33,6 +33,7 @@ public class AgoraRTMChatController : MonoBehaviour
         }
 
         Debug.Log("Before calling rtm");
+        yield return new WaitForSeconds(5);
         rtm.Login(appId, token, userName);
     }
 
@@ -56,7 +57,7 @@ public class AgoraRTMChatController : MonoBehaviour
 
         else
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
             {
                 channel = rtm.JoinChannel(channelName);
             });

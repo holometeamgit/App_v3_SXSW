@@ -24,7 +24,7 @@ using System;
 /// A thread-safe class which holds a queue with actions to execute on the next Update() method. It can be used to make calls to the main thread for
 /// things such as UI Manipulation in Unity. It was developed for use in combination with the Firebase Unity plugin, which uses separate threads for event handling
 /// </summary>
-public class UnityMainThreadDispatcher : MonoBehaviour {
+public class UnityMainThreadDispatcherRTM : MonoBehaviour {
 
 	private static readonly Queue<Action> _executionQueue = new Queue<Action>();
 
@@ -63,13 +63,13 @@ public class UnityMainThreadDispatcher : MonoBehaviour {
 	}
 
 
-	private static UnityMainThreadDispatcher _instance = null;
+	private static UnityMainThreadDispatcherRTM _instance = null;
 
 	public static bool Exists() {
 		return _instance != null;
 	}
 
-	public static UnityMainThreadDispatcher Instance() {
+	public static UnityMainThreadDispatcherRTM Instance() {
 		if (!Exists ()) {
 			throw new Exception ("UnityMainThreadDispatcher could not find the UnityMainThreadDispatcher object. Please ensure you have added the MainThreadExecutor Prefab to your scene.");
 		}
@@ -78,6 +78,8 @@ public class UnityMainThreadDispatcher : MonoBehaviour {
 
 
 	void Awake() {
+
+		print("CALLED");
 		if (_instance == null) {
 			_instance = this;
 			DontDestroyOnLoad(this.gameObject);

@@ -65,7 +65,7 @@ public class RtmWrapperWindows : IRtmWrapper
 
         var channel = RtmWrapperDll.createChannel(channelName,
             (mid, status) => { Debug.Log("message " + mid + " sent with status: " + status); },
-            () => { UnityMainThreadDispatcher.Instance().Enqueue(() => { channels.Add(channelName); Debug.Log("joined: " + channelName);  OnJoinSuccessCallback(); }); },
+            () => { UnityMainThreadDispatcherRTM.Instance().Enqueue(() => { channels.Add(channelName); Debug.Log("joined: " + channelName);  OnJoinSuccessCallback(); }); },
             (errorCode) => { Debug.Log("error joining channel: " + errorCode); },
             channelMessageCallback,
             leaveCallback,
@@ -126,7 +126,7 @@ public class RtmWrapperWindows : IRtmWrapper
     RtmWrapperDll.LoginSuccessHandler loginCallback;
     void LoginHandler()
     {
-        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
         {
             LoggedIn = true;
             OnLoginSuccessCallback();
@@ -138,7 +138,7 @@ public class RtmWrapperWindows : IRtmWrapper
     {
         Debug.Log(uid + " sent the following direct message: " + msg);
 
-        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
         {
             OnMessageReceivedCallback(uid, msg);
         });
@@ -149,7 +149,7 @@ public class RtmWrapperWindows : IRtmWrapper
     {
         Debug.Log(uid + " sent the following message: " + msg);
 
-        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
         {
             OnMessageReceivedCallback(uid, msg);
         });
@@ -163,7 +163,7 @@ public class RtmWrapperWindows : IRtmWrapper
         {
 
             Debug.Log(pos.onlineState == 0);
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
             {
                 OnQueryStatusReceivedCallback(requestId, pos, count, errorCode);
             });
@@ -189,7 +189,7 @@ public class RtmWrapperWindows : IRtmWrapper
             Debug.Log(cmc.channelId + ": " + cmc.count);
         }
 
-        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
         {
             OnChannelMemberCountReceivedCallback(requestId, channelMembers);
         });

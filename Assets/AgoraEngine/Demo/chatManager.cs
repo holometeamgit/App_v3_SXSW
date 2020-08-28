@@ -154,7 +154,7 @@ namespace io.agora.rtm.demo
 
             else
             {
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
                 {
                     channel = rtm.JoinChannel(channelName);
 

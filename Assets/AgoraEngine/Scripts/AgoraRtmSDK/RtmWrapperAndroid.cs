@@ -102,7 +102,7 @@ namespace io.agora.rtm
 
             public void onSuccess(AndroidJavaObject o)
             {
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
                 {
                     Debug.Log(owner + ": success!");
                 });
@@ -115,7 +115,7 @@ namespace io.agora.rtm
             {
                 int errorCode = o.Call<int>("getErrorCode");
 
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
                 {
                     Debug.Log(owner + ": failure: " + errorCode);
                 });
@@ -152,7 +152,7 @@ namespace io.agora.rtm
 
             public void onMessageReceived(AndroidJavaObject message, AndroidJavaObject member)
             {
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
                 {
                     var peerId = member.Call<string>("getUserId");
                     var msg = message.Call<string>("getText");
@@ -164,7 +164,7 @@ namespace io.agora.rtm
 
             public void onMemberJoined(AndroidJavaObject member)
             {
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
                 {
                     if (OnMemberChanged != null)
                         OnMemberChanged.Invoke(member.Call<string>("getUserId"), member.Call<string>("getChannelId"), true);
@@ -173,7 +173,7 @@ namespace io.agora.rtm
 
             public void onMemberLeft(AndroidJavaObject member)
             {
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
                 {
                     if (OnMemberChanged != null)
                         OnMemberChanged.Invoke(member.Call<string>("getUserId"), member.Call<string>("getChannelId"), false);
@@ -192,7 +192,7 @@ namespace io.agora.rtm
 
             public void onConnectionStateChanged(int state, int reason)
             {
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
                 {
                     Debug.Log("new connection - state: " + state + " -- reason: " + reason);
                 });
@@ -203,7 +203,7 @@ namespace io.agora.rtm
                 var msg = rtmMessage.Call<string>("getText");
                 Debug.Log(peerId + " sent the following direct message: " + msg);
 
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
                 {
                     if (OnMessageReceived != null)
                         OnMessageReceived.Invoke(peerId, msg);
@@ -321,7 +321,7 @@ namespace io.agora.rtm
         {
             rtmClient.Call("login", CreateAndroidStr(token), CreateAndroidStr(userName), new ResultListener("login", (o) =>
             {
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
                 {
                     LoggedIn = true;
                     OnLoginSuccessCallback();
@@ -557,7 +557,7 @@ namespace io.agora.rtm
         {
             return CreateAndJoinChannel(channelName, (o) =>
             {
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
                 {
                     channels.Add(channelName);
                     Debug.Log("joined: " + channelName);
@@ -613,7 +613,7 @@ namespace io.agora.rtm
             rtmClient.Call("queryPeersOnlineStatus", set, new ResultListener("queryPeersOnlineStatus",
                 (res) =>
                 {
-                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
                     {
                         Debug.Log("query peers success callback");
                         var javaClass = new AndroidJavaClass("java.lang.Class");
@@ -649,7 +649,7 @@ namespace io.agora.rtm
             rtmClient.Call("getChannelMemberCount", list, new ResultListener("getChannelMemberCount",
                 (res) =>
                 {
-                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    UnityMainThreadDispatcherRTM.Instance().Enqueue(() =>
                     {
 
                         var javaClass = new AndroidJavaClass("java.lang.Class");
