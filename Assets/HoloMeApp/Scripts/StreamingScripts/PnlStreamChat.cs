@@ -12,6 +12,9 @@ public class PnlStreamChat : AgoraMessageReceiver
     AgoraController agoraController;
 
     [SerializeField]
+    AgoraRTMChatController agoraRTMChatController;
+
+    [SerializeField]
     GameObject chatMessagePrefabRef;
 
     [SerializeField]
@@ -26,7 +29,6 @@ public class PnlStreamChat : AgoraMessageReceiver
     [SerializeField]
     VerticalLayoutGroup verticalLayoutGroup;
 
-    List<GameObject> chatMessages = new List<GameObject>();
     Stack<GameObject> chatMessagePool = new Stack<GameObject>();
 
     //[SerializeField]
@@ -34,12 +36,12 @@ public class PnlStreamChat : AgoraMessageReceiver
 
     private void Awake()
     {
-        agoraController.AddMessageReceiver(this);
+        agoraRTMChatController.AddMessageReceiver(this);
     }
 
     private void OnDestroy()
     {
-        agoraController.RemoveMessageReceiver(this);
+        agoraRTMChatController.RemoveMessageReceiver(this);
     }
 
     public void OnEnable()
@@ -52,11 +54,12 @@ public class PnlStreamChat : AgoraMessageReceiver
         bool rudeWordDetected = BWFManager.Contains(message, ManagerMask.Domain | ManagerMask.BadWord);
         string censoredText = BWFManager.ReplaceAll(message, ManagerMask.Domain | ManagerMask.BadWord);
 
-        if (rudeWordDetected) print("Rude word detected new string = " + censoredText);
+        if (rudeWordDetected)
+            HelperFunctions.DevLog("Rude word detected new string = " + censoredText);
 
-        ChatMessageJsonData chatMessageJsonData = new ChatMessageJsonData { userName = "Username To Be Assigned", message = censoredText };
+        ChatMessageJsonData chatMessageJsonData = new ChatMessageJsonData { userName = agoraRTMChatController.userName, message = censoredText };
         CreateChatMessageGO(chatMessageJsonData);
-        agoraController.SendMessage(JsonUtility.ToJson(chatMessageJsonData));
+        agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(chatMessageJsonData));
 
         inputField.text = "";
         StartRefreshLayoutRoutine();
@@ -76,7 +79,7 @@ public class PnlStreamChat : AgoraMessageReceiver
     private void CreateChatMessageGO(ChatMessageJsonData chatMessageJsonData)
     {
         var newMessageGO = GetChatMessage();
-        chatMessages.Add(newMessageGO);
+        //chatMessages.Add(newMessageGO);
         newMessageGO.transform.Find("txtUserName").GetComponent<TextMeshProUGUI>().text = chatMessageJsonData.userName;
         newMessageGO.transform.Find("txtMessage").GetComponent<TextMeshProUGUI>().text = chatMessageJsonData.message;
     }
