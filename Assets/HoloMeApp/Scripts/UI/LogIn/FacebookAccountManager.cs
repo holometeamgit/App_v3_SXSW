@@ -108,9 +108,10 @@ public class FacebookAccountManager : MonoBehaviour
        private void SuccessRequestAccessTokenCallBack(long code, string data) {
            switch (code) {
            case 200:
-               Debug.Log("Acceess token: \n" + data);
-               _accessToken = data; 
-               OnAuthorized.Invoke();
+                Debug.Log("Acceess token: \n" + data);
+                _accessToken = data;
+                SaveAccessTokens();
+            OnAuthorized.Invoke();
                break;
            }
        }
@@ -133,7 +134,7 @@ public class FacebookAccountManager : MonoBehaviour
        }
 
        private string GetRequestAccessTokenURL(string FBAccessToken) {
-           return webRequestHandler.serverURLAuthAPI + getAccessRefreshTokenAPI +
+           return webRequestHandler.ServerURLAuthAPI + getAccessRefreshTokenAPI +
                "?code=" + FBAccessToken +
                "&state" + GetStringPermissions();
        }

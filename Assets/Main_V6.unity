@@ -830,6 +830,7 @@ Transform:
   - {fileID: 1666895527}
   - {fileID: 1942015496}
   - {fileID: 1152883703}
+  - {fileID: 525544597}
   m_Father: {fileID: 1511041754}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -845,6 +846,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7eed44e116585482ca7ddafbcbef4f62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serverURLAPI: {fileID: 11400000, guid: f753fd22d1e1d4c97803fa60aadd51bd, type: 2}
 --- !u!1 &36049208
 GameObject:
   m_ObjectHideFlags: 0
@@ -19357,6 +19359,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 429496241}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &436065146 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1957541489382406277, guid: 2c3121407a8ec4665ab8cef329fb7f3c,
+    type: 3}
+  m_PrefabInstance: {fileID: 48904794}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2918203d509f4931a5a3102928c754f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &436096070
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23472,6 +23486,64 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 521474310}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &525544596
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 525544597}
+  - component: {fileID: 525544598}
+  m_Layer: 0
+  m_Name: UserWebManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &525544597
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525544596}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 35185072}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &525544598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525544596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0750600ded5304c54a39e6c934e78017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  webRequestHandler: {fileID: 35185073}
+  accountManager: {fileID: 921435837}
+  authorizationAPI: {fileID: 11400000, guid: 2a13ba28f9eb4462bb252fadc63d1424, type: 2}
+  UserInfoLoaded:
+    m_PersistentCalls:
+      m_Calls: []
+  UserInfoUploaded:
+    m_PersistentCalls:
+      m_Calls: []
+  UserAccountDeleted:
+    m_PersistentCalls:
+      m_Calls: []
+  UserAccountDisabled:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &525812184
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45445,9 +45517,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd29987a44504421c97ef8ce31995151, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  passwordChangeAPI: /password/change/
   webRequestHandler: {fileID: 35185073}
   accountManager: {fileID: 921435837}
+  authorizationAPI: {fileID: 11400000, guid: 2a13ba28f9eb4462bb252fadc63d1424, type: 2}
 --- !u!1001 &1156280648
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -52801,7 +52873,7 @@ PrefabInstance:
     - target: {fileID: 3304321586932657359, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ChooseUserName
+      value: ChooseUsername
       objectReference: {fileID: 0}
     - target: {fileID: 4708138833050811482, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
         type: 3}
@@ -80107,6 +80179,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c836f2fa853dc455f8760fa516e6980a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  userWebManager: {fileID: 525544598}
+  InputDataArea: {fileID: 2046581329}
+  userName: {fileID: 436065146}
   OnUsernameChoosed:
     m_PersistentCalls:
       m_Calls:

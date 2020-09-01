@@ -91,7 +91,7 @@ public class AccountManager : MonoBehaviour
     }
 
     private string GetRequestRefreshTokenURL() {
-        return webRequestHandler.serverURLAuthAPI + getNewAccessTokenAPI;
+        return webRequestHandler.ServerURLAuthAPI + getNewAccessTokenAPI;
     }
 
     private ServerAccessToken LoadAccessToken() {

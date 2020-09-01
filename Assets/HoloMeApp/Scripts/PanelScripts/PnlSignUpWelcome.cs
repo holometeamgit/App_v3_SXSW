@@ -16,7 +16,6 @@ public class PnlSignUpWelcome : MonoBehaviour
 
     public void FacebookSignUp() {
         facebookAccountManager.SignUp();
-        pnlProfile.SetActionOnSignUp(facebookAccountManager.SaveAccessTokens);
     }
 
     public void OpenProfilePanel() {

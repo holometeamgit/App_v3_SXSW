@@ -76,7 +76,7 @@ public class ThumbnailWebDownloadManager : MonoBehaviour
     private string GetRequestRefreshTokenURL(ThumbnailWebRequestStruct thumbnailWebRequestStruct) {
 
         //Debug.Log("GetRequestRefreshTokenURL " + thumbnailWebRequestStruct.UserName);
-        return webRequestHandler.serverURLMediaAPI + getStreamAccessTokenAPI + "?"
+        return webRequestHandler.ServerURLMediaAPI + getStreamAccessTokenAPI + "?"
             + pageStreamParameter + thumbnailWebRequestStruct.PageNumber +
             "&" + pageSize + thumbnailWebRequestStruct.MaxPageSize +
         (thumbnailWebRequestStruct.Stage != StreamJsonData.Data.Stage.All ? ("&" + statusStreamParameter + StreamJsonData.Data.GetStatusValue(thumbnailWebRequestStruct.Stage)) : "") +
