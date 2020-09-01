@@ -830,6 +830,7 @@ Transform:
   - {fileID: 1666895527}
   - {fileID: 1942015496}
   - {fileID: 1152883703}
+  - {fileID: 525544597}
   m_Father: {fileID: 1511041754}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -23472,6 +23473,64 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 521474310}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &525544596
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 525544597}
+  - component: {fileID: 525544598}
+  m_Layer: 0
+  m_Name: UserWebManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &525544597
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525544596}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 35185072}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &525544598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525544596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0750600ded5304c54a39e6c934e78017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  webRequestHandler: {fileID: 35185073}
+  accountManager: {fileID: 921435837}
+  authorizationAPI: {fileID: 11400000, guid: 2a13ba28f9eb4462bb252fadc63d1424, type: 2}
+  UserInfoUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+  UserInfoUploaded:
+    m_PersistentCalls:
+      m_Calls: []
+  UserAccountDeleted:
+    m_PersistentCalls:
+      m_Calls: []
+  UserAccountDisabled:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &525812184
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45445,9 +45504,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd29987a44504421c97ef8ce31995151, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  passwordChangeAPI: /password/change/
   webRequestHandler: {fileID: 35185073}
   accountManager: {fileID: 921435837}
+  authorizationAPI: {fileID: 11400000, guid: 2a13ba28f9eb4462bb252fadc63d1424, type: 2}
 --- !u!1001 &1156280648
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -84785,6 +84844,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   facebookAccountManager: {fileID: 1259991542}
   pnlProfile: {fileID: 2098687548}
+  userWebManager: {fileID: 0}
   switcherToProfile: {fileID: 1052548102}
   switcherToLogIn: {fileID: 1190754619}
   switcherToSignUpEmail: {fileID: 449946919}

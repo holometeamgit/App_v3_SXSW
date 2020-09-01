@@ -6,6 +6,7 @@ public class PnlSignUpWelcome : MonoBehaviour
 {
     [SerializeField] FacebookAccountManager facebookAccountManager;
     [SerializeField] PnlProfile pnlProfile;
+    [SerializeField] UserWebManager userWebManager;
     [SerializeField] Switcher switcherToProfile;
     [SerializeField] Switcher switcherToLogIn;
     [SerializeField] Switcher switcherToSignUpEmail;
@@ -22,6 +23,8 @@ public class PnlSignUpWelcome : MonoBehaviour
     public void OpenProfilePanel() {
         if (!gameObject.activeInHierarchy)
             return;
+
+
         switcherToProfile.Switch();
     }
 

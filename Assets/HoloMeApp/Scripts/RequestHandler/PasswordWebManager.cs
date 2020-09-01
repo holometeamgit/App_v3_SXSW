@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class PasswordWebManager : MonoBehaviour
 {
-
-    [SerializeField] string passwordChangeAPI = "/password/change/";
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] AccountManager accountManager;
+    [SerializeField] AuthorizationAPIScriptableObject authorizationAPI;
 
     public void ChangePassword(PasswordChangeJsonData passwordChangeJsonData, ResponseDelegate responseCallBack, ErrorTypeDelegate errorTypeCallBack) {
         webRequestHandler.PostRequest(GetRequestPasswordChangeURL(), passwordChangeJsonData, WebRequestHandler.BodyType.JSON,
@@ -15,7 +14,7 @@ public class PasswordWebManager : MonoBehaviour
     }
 
     private string GetRequestPasswordChangeURL() {
-        return webRequestHandler.serverURLAuthAPI + passwordChangeAPI;
+        return webRequestHandler.serverURLAuthAPI + authorizationAPI.ChangePassword;
     }
 
 
