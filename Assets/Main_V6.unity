@@ -846,6 +846,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7eed44e116585482ca7ddafbcbef4f62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serverURLAPI: {fileID: 11400000, guid: f753fd22d1e1d4c97803fa60aadd51bd, type: 2}
 --- !u!1 &36049208
 GameObject:
   m_ObjectHideFlags: 0
@@ -19358,6 +19359,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 429496241}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &436065146 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1957541489382406277, guid: 2c3121407a8ec4665ab8cef329fb7f3c,
+    type: 3}
+  m_PrefabInstance: {fileID: 48904794}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2918203d509f4931a5a3102928c754f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &436096070
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23519,7 +23532,7 @@ MonoBehaviour:
   webRequestHandler: {fileID: 35185073}
   accountManager: {fileID: 921435837}
   authorizationAPI: {fileID: 11400000, guid: 2a13ba28f9eb4462bb252fadc63d1424, type: 2}
-  UserInfoUpdated:
+  UserInfoLoaded:
     m_PersistentCalls:
       m_Calls: []
   UserInfoUploaded:
@@ -52860,7 +52873,7 @@ PrefabInstance:
     - target: {fileID: 3304321586932657359, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ChooseUserName
+      value: ChooseUsername
       objectReference: {fileID: 0}
     - target: {fileID: 4708138833050811482, guid: aeb65bfd3ff144825a5ba2376ef3f54a,
         type: 3}
@@ -80166,6 +80179,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c836f2fa853dc455f8760fa516e6980a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  userWebManager: {fileID: 525544598}
+  InputDataArea: {fileID: 2046581329}
+  userName: {fileID: 436065146}
   OnUsernameChoosed:
     m_PersistentCalls:
       m_Calls:
@@ -84844,7 +84860,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   facebookAccountManager: {fileID: 1259991542}
   pnlProfile: {fileID: 2098687548}
-  userWebManager: {fileID: 0}
   switcherToProfile: {fileID: 1052548102}
   switcherToLogIn: {fileID: 1190754619}
   switcherToSignUpEmail: {fileID: 449946919}
