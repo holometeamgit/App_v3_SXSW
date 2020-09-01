@@ -69,6 +69,6 @@ public class EmailAccountManager : MonoBehaviour
     #endregion
 
     private string GetRequestURL(string postfix) {
-        return webRequestHandler.serverURLAuthAPI + postfix;
+        return webRequestHandler.ServerURLAuthAPI + postfix;
     }
 }

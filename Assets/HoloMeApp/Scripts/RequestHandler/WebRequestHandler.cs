@@ -12,8 +12,10 @@ public class WebRequestHandler : MonoBehaviour
     }
 
 
-    public readonly string serverURLAuthAPI = "https://devholo.me/api-auth";
-    public readonly string serverURLMediaAPI = "https://devholo.me/api-media";
+    public string ServerURLAuthAPI { get { return serverURLAPI.ServerURLAuthAPI; } private set { } }
+    public string ServerURLMediaAPI { get { return serverURLAPI.ServerURLMediaAPI; } private set { } }
+
+    [SerializeField] ServerURLAPIScriptableObject serverURLAPI;
 
     public void GetRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
         StartCoroutine(GetRequesting(url, responseDelegate, errorTypeDelegate, headerAccessToken));

@@ -14,8 +14,6 @@ public class PasswordWebManager : MonoBehaviour
     }
 
     private string GetRequestPasswordChangeURL() {
-        return webRequestHandler.serverURLAuthAPI + authorizationAPI.ChangePassword;
+        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.ChangePassword;
     }
-
-
 }

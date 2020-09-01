@@ -15,7 +15,7 @@ public class UserWebManager : MonoBehaviour
     private UserJsonData userData;
 
     [HideInInspector]
-    public UnityEvent UserInfoUpdated;
+    public UnityEvent UserInfoLoaded;
     [HideInInspector]
     public UnityEvent UserInfoUploaded;
     [HideInInspector]
@@ -23,8 +23,11 @@ public class UserWebManager : MonoBehaviour
     [HideInInspector]
     public UnityEvent UserAccountDisabled;
 
-    public void UpdateUserInfo() {
-        webRequestHandler.GetRequest(GetRequestGetUserURL(), UpdateUserInfoCallBack,
+    public void LoadUserInfo() {
+        Debug.Log(GetRequestGetUserURL());
+        Debug.Log(accountManager.GetAccessToken().access);
+
+        webRequestHandler.GetRequest(GetRequestGetUserURL(), LoadUserInfoCallBack,
             ErrorMsgCallBack, accountManager.GetAccessToken().access);
     }
 
@@ -44,13 +47,28 @@ public class UserWebManager : MonoBehaviour
             ErrorMsgCallBack, accountManager.GetAccessToken().access);
     }
 
+    public string GetUsername() {
+        if (userData == null || string.IsNullOrEmpty(userData.username))
+            return null;
+        return userData.username;
+    }
+
+    public string SetUsername(string username) {
+        if (userData == null)
+            userData = new UserJsonData();
+        return userData.username;
+    }
+
     #region call back function
-    private void UpdateUserInfoCallBack(long code, string body) {
+    private void LoadUserInfoCallBack(long code, string body) {
         try {
             userData = JsonUtility.FromJson<UserJsonData>(body);
 
-            UserInfoUpdated.Invoke();
+            UserInfoLoaded.Invoke();
         } catch (System.Exception e) { }
+
+        if (userData == null)
+            userData = new UserJsonData();
     }
 
     private void UploadUserInfoCallBack(long code, string body) {
@@ -72,19 +90,19 @@ public class UserWebManager : MonoBehaviour
 
     #region url generation functions
     private string GetRequestGetUserURL() {
-        return webRequestHandler.serverURLAuthAPI + authorizationAPI.GetUser;
+        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.GetUser;
     }
 
     private string GetRequestPutUserURL() {
-        return webRequestHandler.serverURLAuthAPI + authorizationAPI.PutUser;
+        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.PutUser;
     }
 
     private string GetRequestDeleteUserURL() {
-        return webRequestHandler.serverURLAuthAPI + authorizationAPI.DeleteUser;
+        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.DeleteUser;
     }
 
     private string GetRequestDisableUserURL() {
-        return webRequestHandler.serverURLAuthAPI + authorizationAPI.DisableUser;
+        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.DisableUser;
     }
 
     #endregion
