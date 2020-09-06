@@ -70,10 +70,10 @@ public class AccountManager : MonoBehaviour
 
     public void SaveAccessToken(string serverAccessToken) {
         try {
-            Debug.Log("Try Save Access Token \n" + serverAccessToken);
+//            Debug.Log("Try Save Access Token \n" + serverAccessToken);
             ServerAccessToken accessToken = JsonUtility.FromJson<ServerAccessToken>(serverAccessToken);
             FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), accessToken, FileAccountManager.ServerAccessToken);
-            Debug.Log("Access Token Saved");
+//            Debug.Log("Access Token Saved");
         } catch (System.Exception e) { }
 
         

@@ -4,43 +4,71 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-//TODO update the functionality after it appears on the server
 public class PnlProfile : MonoBehaviour
 {
     [SerializeField] UserWebManager userWebManager;
     [SerializeField] GameObject InputDataArea;
-    [SerializeField] InputFieldController userName;
+    [SerializeField] InputFieldController userNameInputField;
+    [SerializeField] InputFieldController fullNameInputField;
+    [SerializeField] Switcher switchToMainMenu;
 
-    public UnityEvent OnUsernameChoosed;
+    [SerializeField] List<GameObject> backBtns;
 
     public void ChooseUsername() {
-        if (!string.IsNullOrEmpty(userName.text)) {
-            userWebManager.SetUsername(userName.name);
-
-            OnUsernameChoosed.Invoke();
-        }
+        userWebManager.UpdateUserData(userName: userNameInputField?.text ?? null, first_name: fullNameInputField?.text ?? null);
     }
 
-    private void UserInfoLoadedCallBack() {
-        userWebManager.UserInfoLoaded.RemoveListener(UserInfoLoadedCallBack);
-
-        InputDataArea.SetActive(true);
-    }
-
-    private void OnEnable() {
-        string userName = userWebManager.GetUsername();
-        if(userName != null) {
-            OnUsernameChoosed.Invoke();
-        }
-
-        userWebManager.UserInfoLoaded.RemoveListener(UserInfoLoadedCallBack);
-        userWebManager.UserInfoLoaded.AddListener(UserInfoLoadedCallBack);
+    private void Start() {
+        userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
+        userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
+        userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
         userWebManager.LoadUserInfo();
     }
 
+    private void UserInfoLoadedCallBack() {
+        if (!this.isActiveAndEnabled)
+            return;
+        if (userNameInputField != null)
+            userNameInputField.text = userNameInputField.text == "" ? userWebManager.GetUserName() ?? "" : userNameInputField.text;
 
+        if (fullNameInputField != null)
+            fullNameInputField.text = fullNameInputField.text == "" ? userWebManager.GetFullName() ?? "" : fullNameInputField.text;
+
+        if ((userWebManager.GetUserName() == null && userNameInputField != null) ||
+            userWebManager.GetFullName() == null && fullNameInputField != null) {
+            InputDataArea.SetActive(true);
+        } else {
+            switchToMainMenu.Switch();
+        }
+    }
+
+    private void UpdateUserDataCallBack() {
+        userWebManager.LoadUserInfo();
+        switchToMainMenu.Switch();
+    }
+
+    private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
+        if (!this.isActiveAndEnabled)
+            return;
+
+        if (badRequestData.username.Count > 0)
+            userNameInputField.ShowWarning(badRequestData.username[0]);
+
+        if (badRequestData.first_name.Count > 0)
+            fullNameInputField.ShowWarning(badRequestData.first_name[0]);
+
+        if (!string.IsNullOrEmpty(badRequestData.detail))
+            userNameInputField.ShowWarning(badRequestData.detail);
+    }
+
+    private void OnEnable() {
+        InputDataArea.SetActive(false);
+        userWebManager.LoadUserInfo();
+    }
 
     private void OnDisable() {
-        InputDataArea.SetActive(false);
+        foreach(var backBtn in backBtns) {
+            backBtn.SetActive(false);
+        }
     }
 }
