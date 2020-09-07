@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public class BadRequestUserUploadJsonData : MonoBehaviour
+[Serializable]
+public class BadRequestUserUploadJsonData
 {
     public List<string> username;
     public List<string> first_name;

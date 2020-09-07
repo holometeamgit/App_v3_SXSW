@@ -71,10 +71,16 @@ public class UserWebManager : MonoBehaviour
         return userData.first_name;
     }
 
-    public string GetUserName() {
+    public string GetUsername() {
         if (userData == null || string.IsNullOrEmpty(userData.username))
             return null;
         return userData.username;
+    }
+
+    public string GetBio() {
+        if (userData == null || userData.profile == null || string.IsNullOrEmpty(userData.profile.bio))
+            return null;
+        return userData.profile.bio;
     }
 
     public void LoadUserInfo(Action loadUserInfoCallBack) {
@@ -127,6 +133,7 @@ public class UserWebManager : MonoBehaviour
         Debug.Log("ErrorUploadUserInfoCallBack " + code + " " + body);
         try {
             BadRequestUserUploadJsonData badRequest = JsonUtility.FromJson<BadRequestUserUploadJsonData>(body);
+            Debug.Log("ErrorUploadUserInfoCallBack " + code + " " + body);
 
             OnErrorUserUploaded?.Invoke(badRequest);
         } catch (System.Exception e) { }

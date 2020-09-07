@@ -8,14 +8,14 @@ public class PnlProfile : MonoBehaviour
 {
     [SerializeField] UserWebManager userWebManager;
     [SerializeField] GameObject InputDataArea;
-    [SerializeField] InputFieldController userNameInputField;
+    [SerializeField] InputFieldController usernameInputField;
     [SerializeField] InputFieldController fullNameInputField;
     [SerializeField] Switcher switchToMainMenu;
 
     [SerializeField] List<GameObject> backBtns;
 
     public void ChooseUsername() {
-        userWebManager.UpdateUserData(userName: userNameInputField?.text ?? null, first_name: fullNameInputField?.text ?? null);
+        userWebManager.UpdateUserData(userName: usernameInputField?.text ?? null, first_name: fullNameInputField?.text ?? null);
     }
 
     private void Start() {
@@ -28,13 +28,13 @@ public class PnlProfile : MonoBehaviour
     private void UserInfoLoadedCallBack() {
         if (!this.isActiveAndEnabled)
             return;
-        if (userNameInputField != null)
-            userNameInputField.text = userNameInputField.text == "" ? userWebManager.GetUserName() ?? "" : userNameInputField.text;
+        if (usernameInputField != null)
+            usernameInputField.text = usernameInputField.text == "" ? userWebManager.GetUsername() ?? "" : usernameInputField.text;
 
         if (fullNameInputField != null)
             fullNameInputField.text = fullNameInputField.text == "" ? userWebManager.GetFullName() ?? "" : fullNameInputField.text;
 
-        if ((userWebManager.GetUserName() == null && userNameInputField != null) ||
+        if ((userWebManager.GetUsername() == null && usernameInputField != null) ||
             userWebManager.GetFullName() == null && fullNameInputField != null) {
             InputDataArea.SetActive(true);
         } else {
@@ -43,6 +43,8 @@ public class PnlProfile : MonoBehaviour
     }
 
     private void UpdateUserDataCallBack() {
+        if (!this.isActiveAndEnabled)
+            return;
         userWebManager.LoadUserInfo();
         switchToMainMenu.Switch();
     }
@@ -52,13 +54,13 @@ public class PnlProfile : MonoBehaviour
             return;
 
         if (badRequestData.username.Count > 0)
-            userNameInputField.ShowWarning(badRequestData.username[0]);
+            usernameInputField.ShowWarning(badRequestData.username[0]);
 
         if (badRequestData.first_name.Count > 0)
             fullNameInputField.ShowWarning(badRequestData.first_name[0]);
 
         if (!string.IsNullOrEmpty(badRequestData.detail))
-            userNameInputField.ShowWarning(badRequestData.detail);
+            usernameInputField.ShowWarning(badRequestData.detail);
     }
 
     private void OnEnable() {
