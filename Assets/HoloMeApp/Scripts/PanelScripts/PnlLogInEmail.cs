@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class PnlLogInEmail : MonoBehaviour
 {
-    [SerializeField] AccountManager accountManager;
     [SerializeField] EmailAccountManager emailAccountManager;
     [SerializeField] InputFieldController inputFieldEmail;
     [SerializeField] InputFieldController inputFieldPassword;
-    [SerializeField] Switcher switcherToMainMenu;
+    [SerializeField] Switcher switcherToProfile;
 
     public void LogIn() {
         EmailLogInJsonData emailLogInJsonData = new EmailLogInJsonData();
@@ -16,25 +15,30 @@ public class PnlLogInEmail : MonoBehaviour
         emailLogInJsonData.username = inputFieldEmail.text;
         emailLogInJsonData.password = inputFieldPassword.text;
 
-        emailAccountManager.LogIn(emailLogInJsonData, LogInCallBack, ErrorLogInCallBack);
+        emailAccountManager.LogIn(emailLogInJsonData);
     }
 
-    private void LogInCallBack(long code, string body) {
-        Debug.Log(code + " : " + body);
-        accountManager.SaveAccessToken(body);
-        switcherToMainMenu.Switch();
+    private void Start() {
+        emailAccountManager.OnLogIn += LogInCallBack;
+        emailAccountManager.OnErrorLogIn += ErrorLogInCallBack;
     }
 
-    private void ErrorLogInCallBack(long code, string body) {
-        Debug.Log(code + " : " + body);
-        BadRequestLogInEmailJsonData badRequestData = JsonUtility.FromJson<BadRequestLogInEmailJsonData>(body);
+    private void LogInCallBack() {
+        if (!this.isActiveAndEnabled)
+            return;
+        switcherToProfile.Switch();
+    }
+
+    private void ErrorLogInCallBack(BadRequestLogInEmailJsonData badRequestData) {
+        if (!this.isActiveAndEnabled)
+            return;
 
         if (badRequestData.username.Count > 0)
             inputFieldEmail.ShowWarning(badRequestData.username[0]);
-        //Debug.Log(badRequestData.username[0]);
+
         if (badRequestData.password.Count > 0)
             inputFieldPassword.ShowWarning(badRequestData.password[0]);
-        //Debug.Log(badRequestData.email[0]);
+
         if(!string.IsNullOrEmpty(badRequestData.detail))
             inputFieldEmail.ShowWarning(badRequestData.detail);
     }
