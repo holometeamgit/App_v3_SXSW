@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-public class ThumbnailWebDownloadManager : MonoBehaviour
-{
+public class ThumbnailWebDownloadManager : MonoBehaviour {
     public struct ThumbnailWebRequestStruct {
 
         public StreamJsonData.Data.Stage Stage;
@@ -62,11 +61,11 @@ public class ThumbnailWebDownloadManager : MonoBehaviour
         } catch (Exception e) { }
     }
 
-    void Start() {}
+    void Start() { }
 
     #region Data loading
     private void LoadData(StreamJsonData streamJsonData) {
-        foreach(var data in streamJsonData.results) {
+        foreach (var data in streamJsonData.results) {
 
         }
     }
@@ -74,13 +73,13 @@ public class ThumbnailWebDownloadManager : MonoBehaviour
     #endregion
 
     private string GetRequestRefreshTokenURL(ThumbnailWebRequestStruct thumbnailWebRequestStruct) {
-
-        //Debug.Log("GetRequestRefreshTokenURL " + thumbnailWebRequestStruct.UserName);
-        return webRequestHandler.ServerURLMediaAPI + getStreamAccessTokenAPI + "?"
+        string result = webRequestHandler.ServerURLMediaAPI + getStreamAccessTokenAPI + "?"
             + pageStreamParameter + thumbnailWebRequestStruct.PageNumber +
             "&" + pageSize + thumbnailWebRequestStruct.MaxPageSize +
         (thumbnailWebRequestStruct.Stage != StreamJsonData.Data.Stage.All ? ("&" + statusStreamParameter + StreamJsonData.Data.GetStatusValue(thumbnailWebRequestStruct.Stage)) : "") +
         (string.IsNullOrEmpty(thumbnailWebRequestStruct.UserName) ? "" : ("&" + this.userName + thumbnailWebRequestStruct.UserName));
+        Debug.Log(result);
+        return result;
     }
 
 

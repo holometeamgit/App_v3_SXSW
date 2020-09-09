@@ -36,11 +36,13 @@ public class BroadcasterScreenLoader : MonoBehaviour
     public UnityEvent OnDataFetched;
 
     public void FetchDataFromBeginning(string userName) {
+        Debug.Log("FetchDataFromBeginning " + userName);
         currentPageNumber = 0;
         FetchNextData(userName);
     }
 
     public void FetchNextData(string userName) {
+        fetchStartDateTime = DateTime.Now;
         ClearData();
         currentPageNumber++;
         FetchDataFromServer(userName);
@@ -61,8 +63,12 @@ public class BroadcasterScreenLoader : MonoBehaviour
     }
 
     private void FetchStreamDataCallBack(List<StreamJsonData.Data> streamJsonData, StreamJsonData.Data.Stage stage, DateTime fetchStart) {
-        if (stage == StreamJsonData.Data.Stage.All)
+        Debug.Log("FetchStreamDataCallBack " + streamJsonData.Count + " " + stage);
+        if (stage != StreamJsonData.Data.Stage.All)
             return;
+
+        Debug.Log(fetchStart);
+        Debug.Log(fetchStartDateTime);
 
         if (fetchStart != fetchStartDateTime)
             return;
@@ -72,6 +78,7 @@ public class BroadcasterScreenLoader : MonoBehaviour
     }
 
     private void FetchTextureData(DateTime fetchStart) {
+        Debug.Log("FetchTextureData");
 
         if (fetchStart != fetchStartDateTime)
             return;

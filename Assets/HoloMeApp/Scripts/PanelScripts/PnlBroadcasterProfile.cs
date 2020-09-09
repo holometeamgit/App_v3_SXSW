@@ -106,6 +106,7 @@ public class PnlBroadcasterProfile : MonoBehaviour
         thumbnails.Add(newThumbnail);
 
         thumbnailItem.SetThumbnailPressAction(_ => {
+            this.gameObject.SetActive(false);
             pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null);
         });
     }

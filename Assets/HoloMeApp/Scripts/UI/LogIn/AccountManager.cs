@@ -81,7 +81,7 @@ public class AccountManager : MonoBehaviour
 
     private void UpdateAccessToke(string onlyAccess, ServerAccessToken accessToken) {
         var access = JsonUtility.FromJson<ServerAccessToken>(onlyAccess);
-        Debug.Log("UpdateAccessToke " + access.access);
+        Debug.Log("UpdatedAccessToke " + access.access);
         accessToken.access = access.access;
         SaveAccessToken(JsonUtility.ToJson(accessToken));
     }

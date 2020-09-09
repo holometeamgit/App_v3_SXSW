@@ -14,14 +14,14 @@ public class UserWebManager : MonoBehaviour
     public Action OnUserInfoUploaded;
     public Action<BadRequestUserUploadJsonData> OnErrorUserUploaded;
 
+    public Action OnUserAccountDeleted;
+
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] AccountManager accountManager;
     [SerializeField] AuthorizationAPIScriptableObject authorizationAPI;
 
     private UserJsonData userData;
 
-    [HideInInspector]
-    public UnityEvent UserAccountDeleted;
     [HideInInspector]
     public UnityEvent UserAccountDisabled;
 
@@ -140,7 +140,8 @@ public class UserWebManager : MonoBehaviour
     }
 
     private void DeleteUserInfoCallBack(long code, string body) {
-        UserAccountDeleted.Invoke();
+        Debug.Log("DeleteUserInfoCallBack " + code + " " + body);
+        OnUserAccountDeleted?.Invoke();
     }
 
     private void DisableUserInfoCallBack(long code, string body) {
