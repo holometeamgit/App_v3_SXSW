@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using TMPro;
 using UnityEngine.Events;
 using Crosstales.BWF;
 
@@ -48,7 +47,7 @@ public class PnlChannelName : MonoBehaviour
         }
         else
         {
-            agoraRequests.RequestChannels(requestChannelList);
+            agoraRequests.MakeGetRequest(requestChannelList);
         }
     }
 

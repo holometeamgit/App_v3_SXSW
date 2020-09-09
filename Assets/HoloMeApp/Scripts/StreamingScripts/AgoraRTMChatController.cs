@@ -75,7 +75,8 @@ public class AgoraRTMChatController : MonoBehaviour
 
     public void LeaveChannel()
     {
-        rtm.LeaveChannel(channel);
+        if (loggedIn && rtm != null && channel != null)
+            rtm.LeaveChannel(channel);
         OnStreamDisconnected();
     }
 
