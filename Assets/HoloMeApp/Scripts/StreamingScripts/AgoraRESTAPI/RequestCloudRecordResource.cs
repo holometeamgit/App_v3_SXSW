@@ -51,10 +51,10 @@ public class RequestCloudRecordResource : RestRequest {
         public int streamTypes = 2;
         public int channelType = 0;
         public int videoStreamType = 0;
-        public TranscodingConfig transcodingConfig = new TranscodingConfig();
+        //public TranscodingConfig transcodingConfig = new TranscodingConfig();
         public List<string> subscribeVideoUids = new List<string> { "#allstream#" };
         public List<string> subscribeAudioUids = new List<string> { "#allstream#" };
-        public int subscribeUidGroup = 0;
+        //public int subscribeUidGroup = 0;
     }
 
     [Serializable]

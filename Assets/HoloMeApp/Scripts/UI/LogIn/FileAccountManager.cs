@@ -17,7 +17,7 @@ public class FileAccountManager : MonoBehaviour {
         FileSave fileSave = new FileSave(FileFormat.Binary);
         fileSave.WriteToFile(Application.persistentDataPath + "/" + fileName, encrypted);
 
-        Debug.Log(Application.persistentDataPath + "/" + fileName);
+//        Debug.Log(Application.persistentDataPath + "/" + fileName);
     }
 
     public static T ReadFile<T>(string key, string fileName) {

@@ -70,10 +70,10 @@ public class AccountManager : MonoBehaviour
 
     public void SaveAccessToken(string serverAccessToken) {
         try {
-            Debug.Log("Try Save Access Token \n" + serverAccessToken);
+//            Debug.Log("Try Save Access Token \n" + serverAccessToken);
             ServerAccessToken accessToken = JsonUtility.FromJson<ServerAccessToken>(serverAccessToken);
             FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), accessToken, FileAccountManager.ServerAccessToken);
-            Debug.Log("Access Token Saved");
+//            Debug.Log("Access Token Saved");
         } catch (System.Exception e) { }
 
         
@@ -81,7 +81,7 @@ public class AccountManager : MonoBehaviour
 
     private void UpdateAccessToke(string onlyAccess, ServerAccessToken accessToken) {
         var access = JsonUtility.FromJson<ServerAccessToken>(onlyAccess);
-        Debug.Log("UpdateAccessToke " + access.access);
+        Debug.Log("UpdatedAccessToke " + access.access);
         accessToken.access = access.access;
         SaveAccessToken(JsonUtility.ToJson(accessToken));
     }

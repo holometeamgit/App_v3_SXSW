@@ -6,22 +6,20 @@ using System;
 
 public class EmailAccountManager : MonoBehaviour
 {
+    public Action OnLogIn;
+    public Action<BadRequestLogInEmailJsonData> OnErrorLogIn;
+
     [SerializeField]
     AccountManager accountManager;
     [SerializeField]
     WebRequestHandler webRequestHandler;
+    [SerializeField]
+    AuthorizationAPIScriptableObject authorizationAPI;
 
-    [Header("API")]
-    [SerializeField]
-    string signUpAPI = "/signup/";
-    [SerializeField]
-    string verifyEmailAPI = "/signup/verify-email/";
-    [SerializeField]
-    string logInAPI = "/token/";
-
+    [HideInInspector]
     public UnityEvent OnSignUp;
+    [HideInInspector]
     public UnityEvent OnVerified;
-    public UnityEvent OnLogIn;
 
     public void SignUp(EmailSignUpJsonData emailSignUpJsonData, ResponseDelegate responseCallBack, ErrorTypeDelegate errorCallBack) {
         SignUpRequest(emailSignUpJsonData, responseCallBack, errorCallBack);
@@ -31,14 +29,17 @@ public class EmailAccountManager : MonoBehaviour
         VerifyRequest(verifyKeyJsonData, responseCallBack, errorCallBack);
     }
 
-    public void LogIn(EmailLogInJsonData emailLogInJsonData, ResponseDelegate responseCallBack, ErrorTypeDelegate errorCallBack) {
-        LogInRequest(emailLogInJsonData, responseCallBack, errorCallBack);
+    public void LogIn(EmailLogInJsonData emailLogInJsonData) {
+        LogInRequest(emailLogInJsonData);
+    }
+
+    private void Start() {
     }
 
     #region Sign Up
 
     private void SignUpRequest(EmailSignUpJsonData emailSignUpJsonData, ResponseDelegate responseCallBack, ErrorTypeDelegate errorCallBack) {
-        string url = GetRequestURL(signUpAPI);
+        string url = GetRequestURL(authorizationAPI.EmailSignUp);
         webRequestHandler.PostRequest(url, emailSignUpJsonData, WebRequestHandler.BodyType.JSON, responseCallBack, errorCallBack);
     }
 
@@ -46,7 +47,7 @@ public class EmailAccountManager : MonoBehaviour
 
     #region verification
     private void VerifyRequest(VerifyKeyJsonData verifyKeyJsonData, ResponseDelegate responseCallBack, ErrorTypeDelegate errorCallBack) {
-        string url = GetRequestURL(verifyEmailAPI);
+        string url = GetRequestURL(authorizationAPI.EmailVerification);
         webRequestHandler.PostRequest(url, verifyKeyJsonData, WebRequestHandler.BodyType.JSON,
             (code, body) => {
                 accountManager.SaveLastAutoType(LogInType.Email); responseCallBack.Invoke(code, body);
@@ -57,13 +58,23 @@ public class EmailAccountManager : MonoBehaviour
     #endregion
 
     #region Log In
-    private void LogInRequest(EmailLogInJsonData emailLogInJsonData, ResponseDelegate responseCallBack, ErrorTypeDelegate errorCallBack) {
-        string url = GetRequestURL(logInAPI);
+    private void LogInRequest(EmailLogInJsonData emailLogInJsonData) {
+        string url = GetRequestURL(authorizationAPI.EmailLogIn);
         webRequestHandler.PostRequest(url, emailLogInJsonData, WebRequestHandler.BodyType.JSON,
-            (code, body) => {
-                accountManager.SaveLastAutoType(LogInType.Email); responseCallBack.Invoke(code, body);
-            },
-            errorCallBack);
+            LogInCallBack,
+            ErrorLogInCallBack);
+    }
+
+    private void LogInCallBack(long code, string body) {
+        Debug.Log("Log In " + code + " : " + body);
+        accountManager.SaveLastAutoType(LogInType.Email);
+        accountManager.SaveAccessToken(body);
+        OnLogIn.Invoke();
+    }
+
+    private void ErrorLogInCallBack(long code, string body) {
+        BadRequestLogInEmailJsonData badRequestData = JsonUtility.FromJson<BadRequestLogInEmailJsonData>(body);
+        OnErrorLogIn?.Invoke(badRequestData);
     }
 
     #endregion

@@ -16,6 +16,11 @@ public class InputFieldController : MonoBehaviour
         set { inputField.text = value; }
     }
 
+    public bool interactable {
+        get { return inputField.interactable; }
+        set { inputField.interactable = value; }
+    }
+
     [SerializeField] TMP_InputField inputField;
 
     [SerializeField] TMP_Text warningMsgText;

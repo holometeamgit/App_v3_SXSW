@@ -2,8 +2,7 @@
 using UnityEngine.Events;
 using Crosstales.BWF;
 
-public class PnlChannelName : MonoBehaviour
-{
+public class PnlChannelName : MonoBehaviour {
     [SerializeField]
     InputFieldController inputFieldController;
 
@@ -19,13 +18,16 @@ public class PnlChannelName : MonoBehaviour
     [SerializeField]
     GameObject btnContinue;
 
-    RequestChannelList requestChannelList;
+    [SerializeField]
+    UserWebManager userWebManager;
 
-    private void Awake()
-    {
+    //RequestChannelList requestChannelList;
+
+    private void Awake() {
         inputFieldController.characterLimit = HelperFunctions.ChannelNameCharacterLimit;
-        requestChannelList = new RequestChannelList();
-        requestChannelList.OnSuccessAction += OnChannelListOccupied;
+        userWebManager = FindObjectOfType<UserWebManager>();
+        //requestChannelList = new RequestChannelList();
+        //requestChannelList.OnSuccessAction += OnChannelListOccupied;
     }
 
     public void ConfirmFilmingGuidelines() {
@@ -37,23 +39,18 @@ public class PnlChannelName : MonoBehaviour
         return PlayerPrefs.HasKey("ConfirmFilmingGuidelines") && PlayerPrefs.GetInt("ConfirmFilmingGuidelines") == 1;
     }
 
-    public void OnReadyPressed()
-    {
+    public void OnReadyPressed() {
         //Need to disable button interactability here while waiting for callback
 
-        if (string.IsNullOrWhiteSpace(inputFieldController.text) || BWFManager.Contains(inputFieldController.text, Crosstales.BWF.Model.ManagerMask.BadWord))
-        {
+        if (string.IsNullOrWhiteSpace(inputFieldController.text) || BWFManager.Contains(inputFieldController.text, Crosstales.BWF.Model.ManagerMask.BadWord)) {
             inputFieldController.ShowWarning("Please Enter A Valid Name");
-        }
-        else
-        {
+        } else {
             OnChannelListOccupied();
             //agoraRequests.MakeGetRequest(requestChannelList);
         }
     }
 
-    void OnChannelListOccupied()
-    {       
+    void OnChannelListOccupied() {
         //bool doesChannelExist = requestChannelList.DoesChannelExist(inputFieldController.text);
 
         //if (doesChannelExist)
@@ -62,8 +59,8 @@ public class PnlChannelName : MonoBehaviour
         //}
         //else
         //{
-            agoraController.ChannelName = inputFieldController.text.ToLower();
-            OnChannelNamePassed?.Invoke();
+        //agoraController.ChannelName = inputFieldController.text.ToLower();
+        OnChannelNamePassed?.Invoke();
         //}
     }
 
@@ -73,10 +70,12 @@ public class PnlChannelName : MonoBehaviour
 
     private void OnEnable() {
         CheckConfirmFilmingGuidelines();
+        inputFieldController.text = userWebManager.GetUsername();
+        agoraController.ChannelName = inputFieldController.text;
+        inputFieldController.interactable = false;
     }
 
-    private void OnDisable()
-    {
+    private void OnDisable() {
         inputFieldController.text = string.Empty;
     }
 }

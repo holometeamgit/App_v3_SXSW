@@ -82,7 +82,8 @@ public class PnlHomeScreen : MonoBehaviour
     }
 
     private void DataFetched() {
-        StartCoroutine(AddingFetchedData());
+        if(this.isActiveAndEnabled)
+            StartCoroutine(AddingFetchedData());
     }
 
     private IEnumerator AddingFetchedData() {

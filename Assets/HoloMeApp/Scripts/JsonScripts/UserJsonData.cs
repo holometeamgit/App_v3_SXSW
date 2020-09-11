@@ -11,7 +11,6 @@ public class UserJsonData
     public string email;
     public string first_name;
     public string last_name;
-    public bool is_creator;
     public ProfileJsonData profile;
 
     public UserJsonData() {
