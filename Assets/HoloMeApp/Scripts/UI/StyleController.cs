@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using System;
 
 public class StyleController : MonoBehaviour {
-    public UnityEvent OnStyleChanged;
+    public Action OnStyleChanged;
 
     [SerializeField]
     MainDataContainer mainDataContainer;
@@ -24,17 +25,27 @@ public class StyleController : MonoBehaviour {
     }
 
     public void UpdateStyle() {
-        mainDataContainer.Container.Remove(currentBeemMenuStyle.colorStyles);
-        mainDataContainer.Container.Remove(currentBeemMenuStyle.sprites);
+        if(currentBeemMenuStyle.ColorStyles != null)
+            foreach(var colorsStyle in currentBeemMenuStyle.ColorStyles)
+                mainDataContainer.Container.Remove(colorsStyle.Colors);
+
+        if (currentBeemMenuStyle.ColorStyles != null)
+            foreach (var spritesStyle in currentBeemMenuStyle.Sprites)
+                mainDataContainer.Container.Remove(spritesStyle.Sprites);
 
         index = (index + 1) % beemMenuStyles.Count;
         currentBeemMenuStyle = beemMenuStyles[index];
 
-        mainDataContainer.Container.Add(currentBeemMenuStyle.colorStyles);
-        mainDataContainer.Container.Add(currentBeemMenuStyle.sprites);
+        if (currentBeemMenuStyle.ColorStyles != null)
+            foreach (var colorsStyle in currentBeemMenuStyle.ColorStyles)
+                mainDataContainer.Container.Add(colorsStyle.Colors);
+
+        if (currentBeemMenuStyle.ColorStyles != null)
+            foreach (var spritesStyle in currentBeemMenuStyle.Sprites)
+                mainDataContainer.Container.Add(spritesStyle.Sprites);
 
         Debug.Log("Style Changed");
-        OnStyleChanged.Invoke();
+        OnStyleChanged?.Invoke();
     }
 
     private void Update() {

@@ -9,7 +9,7 @@ public class PnlSignUpEmail : MonoBehaviour
     [SerializeField] AccountManager accountManager;
     [SerializeField] PnlEmailVerification pnlEmailVerification;
     [SerializeField] Switcher switcherToVerification;
-    [SerializeField] InputFieldController inputFieldFullName;
+//    [SerializeField] InputFieldController inputFieldFullName;
     [SerializeField] InputFieldController inputFieldEmail;
     [SerializeField] InputFieldController inputFieldPassword;
     [SerializeField] InputFieldController inputFieldConfirmPassword;
@@ -17,13 +17,16 @@ public class PnlSignUpEmail : MonoBehaviour
     public void SignUp() {
         EmailSignUpJsonData emailSignUpJsonData = new EmailSignUpJsonData();
         emailSignUpJsonData.email = inputFieldEmail.text;
-        emailSignUpJsonData.username = inputFieldFullName.text;
+//        emailSignUpJsonData.username = inputFieldFullName.text;
         emailSignUpJsonData.password1 = inputFieldPassword.text;
         emailSignUpJsonData.password2 = inputFieldConfirmPassword.text;
 
         emailAccountManager.SignUp(emailSignUpJsonData, SignUpCallBack, ErrorSignUpCallBack);
     }
 
+    void Start() {
+        
+    }
 
     private void SignUpCallBack(long code, string body) {
         Debug.Log(code + " : " + body);
@@ -36,8 +39,8 @@ public class PnlSignUpEmail : MonoBehaviour
         BadRequestSignUpEmailJsonData badRequestData = JsonUtility.FromJson<BadRequestSignUpEmailJsonData>(body);
 
         Debug.Log(code + " : " + body);
-        if (badRequestData.username.Count > 0)
-            inputFieldFullName.ShowWarning(badRequestData.username[0]);
+//        if (badRequestData.username.Count > 0)
+//            inputFieldFullName.ShowWarning(badRequestData.username[0]);
         //Debug.Log(badRequestData.username[0]);
         if (badRequestData.email.Count > 0)
             inputFieldEmail.ShowWarning(badRequestData.email[0]);

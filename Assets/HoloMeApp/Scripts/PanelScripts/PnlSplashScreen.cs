@@ -58,7 +58,7 @@ public class PnlSplashScreen : MonoBehaviour
     private void AuthorisationErrorCallBack(long code, string body) {
         Debug.Log("AuthorisationErrorCallBack " + code + " " + body);
 
-        Invoke("ErrorAuthorisationCallBack", 2f);
+        Invoke("AuthorisationErrorInvoke", 2f);
     }
 
     public void AuthorisationErrorInvoke() {

@@ -4,23 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Image))]
-public class ImageStyleHandler : MonoBehaviour
-{
-    StyleController styleController;
-    MainDataContainer mainDataContainer;
+public class ImageStyleHandler : StyleHandler {
     Image image;
     [SerializeField] string spriteTag;
     [SerializeField] string colorTag;
-
-    private void Awake() {
-        image = GetComponent<Image>();
-
-        if (styleController == null)
-            styleController = FindObjectOfType<StyleController>();
-
-        if (mainDataContainer == null)
-            mainDataContainer = FindObjectOfType<MainDataContainer>();
-    }
 
     private void UpdateStyle() {
         if (!string.IsNullOrWhiteSpace(colorTag)) {
@@ -35,11 +22,13 @@ public class ImageStyleHandler : MonoBehaviour
     }
 
     private void OnEnable() {
-        styleController.OnStyleChanged.AddListener(UpdateStyle);
+        if (image == null)
+            image = GetComponent<Image>();
+        styleController.OnStyleChanged += UpdateStyle;
         UpdateStyle();
     }
 
     private void OnDisable() {
-        styleController.OnStyleChanged.RemoveListener(UpdateStyle);
+        styleController.OnStyleChanged -= UpdateStyle;
     }
 }
