@@ -47,23 +47,24 @@ public class PnlChannelName : MonoBehaviour
         }
         else
         {
-            agoraRequests.MakeGetRequest(requestChannelList);
+            OnChannelListOccupied();
+            //agoraRequests.MakeGetRequest(requestChannelList);
         }
     }
 
     void OnChannelListOccupied()
-    {
-        bool doesChannelExist = requestChannelList.DoesChannelExist(inputFieldController.text);
+    {       
+        //bool doesChannelExist = requestChannelList.DoesChannelExist(inputFieldController.text);
 
-        if (doesChannelExist)
-        {
-            inputFieldController.ShowWarning("Channel Already Exists!");
-        }
-        else
-        {
+        //if (doesChannelExist)
+        //{
+        //    inputFieldController.ShowWarning("Channel Already Exists!");
+        //}
+        //else
+        //{
             agoraController.ChannelName = inputFieldController.text.ToLower();
             OnChannelNamePassed?.Invoke();
-        }
+        //}
     }
 
     private void CheckConfirmFilmingGuidelines() {

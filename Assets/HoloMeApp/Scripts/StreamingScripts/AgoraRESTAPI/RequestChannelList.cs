@@ -5,7 +5,7 @@
 
     public RequestChannelList()
     {
-        requestString = "v1/channel/" + AgoraController.AppId;
+        requestString = "/v1/channel/" + AgoraController.AppId;
     }
 
     public override void OnSuccess(string result)

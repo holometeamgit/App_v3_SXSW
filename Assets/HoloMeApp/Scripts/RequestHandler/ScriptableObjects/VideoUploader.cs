@@ -11,12 +11,10 @@ public class VideoUploader : ScriptableObject {
     [Tooltip("Change Status, used to do things like end stream")]
     public string StreamStatus = "/stream/{id}/status/";
 
+    public string GetStreamToken = "/agora/token/";
+
     public string AgoraAcquireResourceID = $"/v1/apps/{AgoraController.AppId}/cloud_recording/acquire";
-
-    [Header("Start Cloud recording")]
-    [Tooltip("For Agora")]
-    public string AgoraStartCloudRecording = "/v1/apps/{appid}/cloud_recording/resourceid/{resourceid}/mode/{mode}/start";
-
+        
     public string AgoraStopCloudRecording = "/v1/apps/{appid}/cloud_recording/resourceid/{resourceid}/sid/{sid}/mode/{mode}/stop";
 
 }

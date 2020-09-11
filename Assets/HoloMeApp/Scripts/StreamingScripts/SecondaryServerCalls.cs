@@ -20,37 +20,80 @@ public class SecondaryServerCalls : MonoBehaviour {
     //[HideInInspector]
     //public UnityEvent OnStreamStarted;
 
+    TokenAgoraResponse tokenAgoraResponse;
+    RequestCloudRecordAcquire requestCloudRecordAcquire;
+    RequestCloudRecordResource requestCloudRecordResource;
+
+    string streamName;
+
     public void StartStream(string streamName, uint uid) {
-        print("ACQUIRE CALLED 1");
-        AgoraCloudAcquireRequest acquireData = new AgoraCloudAcquireRequest() { cname = streamName, uid = uid.ToString() };
 
-        webRequestHandler.PostRequest(videoUploader.AgoraAcquireResourceID, acquireData, WebRequestHandler.BodyType.JSON, (x, y) => { OnAcquireComplete(streamName, uid, y); webRequestHandler.LogCallback(x, y); },
-            webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
+        this.streamName = streamName;
 
-        print("ACQUIRE CALLED 2");
+        //Get token
+        // get agora token 
+        webRequestHandler.GetRequest(webRequestHandler.ServerURLAuthAPI + videoUploader.GetStreamToken, (x, y) => { AssignToken(x, y); webRequestHandler.LogCallback(x, y); },
+            (x, y) => webRequestHandler.ErrorLogCallback(x, "Agora Record Token" + y), accountManager.GetAccessToken().access);
 
-        StreamStartJsonData data = new StreamStartJsonData();
-        data.agora_channel = userWebManager.GetUsername();
-        data.agora_sid = "";
+        //Acquire
+
+        //Start cloud record
+
+        //Create stream
+
+        //Stream video
+
+
+        //StreamStartJsonData data = new StreamStartJsonData();
+        //data.agora_channel = userWebManager.GetUsername();
+        //data.agora_sid = "";
 
         //webRequestHandler.PostRequest(GetStartStreamURL(), data, WebRequestHandler.BodyType.JSON, webRequestHandler.LogCallback, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
     }
 
-    void OnAcquireComplete(string streamName, uint uid, string resultData) {
-        print("ACQUIRE COMPLETE");
-        var result = JsonUtility.FromJson<ResponseAcquire>(resultData);
+    void AssignToken(long code, string data) {
 
-        StartCloudRecordRequest startCloudRecordRequestData = new StartCloudRecordRequest();
-        startCloudRecordRequestData.cname = streamName;
-        startCloudRecordRequestData.uid = uid.ToString();
+        print("TOKEN IS BACK" + data);
+        tokenAgoraResponse = JsonUtility.FromJson<TokenAgoraResponse>(data);
+        if (tokenAgoraResponse != null)
+            StartAcquire();
+        else {
+            Debug.LogError("TOKEN PARSE FAILED");
+        }
+    }
+
+    void StartAcquire() {
+        //Acquire
+        HelperFunctions.DevLog("ACQUIRE CALLED");
+        requestCloudRecordAcquire = new RequestCloudRecordAcquire();
+        requestCloudRecordAcquire.AgoraCloudAcquireRequestData = new RequestCloudRecordAcquire.AgoraCloudAcquireRequest() { cname = streamName };
+        requestCloudRecordAcquire.OnSuccessAction += OnAcquireComplete;
+        requestCloudRecordAcquire.OnFailedAction = () => Debug.LogError("Cloud Record Acquire Error");
+        agoraRequests.MakePostRequest(requestCloudRecordAcquire, JsonUtility.ToJson(requestCloudRecordAcquire.AgoraCloudAcquireRequestData));
+    }
 
 
-        //webRequestHandler.PostRequest(, startCloudRecordRequestData, WebRequestHandler.BodyType.JSON, (x, y) => { OnStartRecordComplete(y); webRequestHandler.LogCallback(x, y); },
-        //    webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
+    void OnAcquireComplete() {
+        HelperFunctions.DevLog("ACQUIRE COMPLETE ID = " + requestCloudRecordAcquire.ResponseAcquiredata.resourceId);
+
+        requestCloudRecordResource = new RequestCloudRecordResource();
+        requestCloudRecordResource.OnSuccessAction += OnStartCloudRecordComplete;
+        requestCloudRecordResource.OnFailedAction = () => Debug.LogError("Cloud Record Start Error");
+        requestCloudRecordResource.AssignResourceId(requestCloudRecordAcquire.ResponseAcquiredata.resourceId);
+        requestCloudRecordResource.StartCloudRecordRequestData = new RequestCloudRecordResource.StartCloudRecordRequest();
+        requestCloudRecordResource.StartCloudRecordRequestData.uid = requestCloudRecordAcquire.AgoraCloudAcquireRequestData.uid;
+        requestCloudRecordResource.StartCloudRecordRequestData.cname = requestCloudRecordAcquire.AgoraCloudAcquireRequestData.cname; //"zed";//userWebManager.GetUsername();
+        requestCloudRecordResource.StartCloudRecordRequestData.clientRequest.token = tokenAgoraResponse.token;
+        agoraRequests.MakePostRequest(requestCloudRecordResource, JsonUtility.ToJson(requestCloudRecordResource.StartCloudRecordRequestData));
+
+        HelperFunctions.DevLog(JsonUtility.ToJson(requestCloudRecordResource.StartCloudRecordRequestData, true));
+
 
     }
 
-    void OnStartRecordComplete(string data) {
+    void OnStartCloudRecordComplete() {
+        HelperFunctions.DevLog($"Cloud recording started: sid = {requestCloudRecordResource.CloudRecordResponseData.sid}");
+
 
     }
 
