@@ -12,7 +12,7 @@ public class RequestCloudRecordResource : RestRequest {
     const string ModeMix = "mix";
 
     public void AssignResourceId(string id) {
-        requestString = $"/v1/apps/{AgoraController.AppId}/cloud_recording/resourceid/{id}/mode/{ModeIndividual}/start";
+        requestString = $"/v1/apps/{AgoraController.AppId}/cloud_recording/resourceid/{id}/mode/{ModeMix}/start";
     }
 
     public override void OnSuccess(string result) {
@@ -54,7 +54,7 @@ public class RequestCloudRecordResource : RestRequest {
         //public TranscodingConfig transcodingConfig = new TranscodingConfig();
         public List<string> subscribeVideoUids = new List<string> { "#allstream#" };
         public List<string> subscribeAudioUids = new List<string> { "#allstream#" };
-        //public int subscribeUidGroup = 0;
+        public int subscribeUidGroup = 0;
     }
 
     [Serializable]
@@ -69,7 +69,7 @@ public class RequestCloudRecordResource : RestRequest {
         public string bucket = "dev.agora";
         public string secretKey = "tFAwjZ1LNUrfXq7eoBlBC33j7qQWjn3KMdiwCSyO";
         public int vendor = 1;
-        public List<string> fileNamePrefix = new List<string>() { "mobile_app" };
+        public List<string> fileNamePrefix = new List<string>() { "beamapp" };
     }
 
     [Serializable]

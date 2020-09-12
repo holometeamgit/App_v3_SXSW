@@ -3,7 +3,6 @@ using System.Collections;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using VoxelBusters.InstagramKit.Common.Utility;
 
 public class AgoraRequests : MonoBehaviour {
     const string baseURL = "https://api.agora.io"; // "https://api.agora.io/dev";
