@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
+﻿using System;
+using UnityEngine;
+
 
 public class SecondaryServerCalls : MonoBehaviour {
     [SerializeField]
@@ -14,12 +15,12 @@ public class SecondaryServerCalls : MonoBehaviour {
     [SerializeField]
     AccountManager accountManager;
 
-    //[HideInInspector]
-    //public UnityEvent OnStreamStarted;
+    public Action<string> OnStreamStarted;
 
     TokenAgoraResponse tokenAgoraResponse;
     RequestCloudRecordAcquire requestCloudRecordAcquire;
     RequestCloudRecordResource requestCloudRecordResource;
+    StreamStartResponseJsonData streamStartResponseJsonData;
 
     string streamName;
 
@@ -36,16 +37,14 @@ public class SecondaryServerCalls : MonoBehaviour {
 
         //Start cloud record
 
-        //Create stream
+        //Create stream Valery's server
+
+        //Create stream Agora SDK
 
         //Stream video
 
 
-        //StreamStartJsonData data = new StreamStartJsonData();
-        //data.agora_channel = userWebManager.GetUsername();
-        //data.agora_sid = "";
 
-        //webRequestHandler.PostRequest(GetStartStreamURL(), data, WebRequestHandler.BodyType.JSON, webRequestHandler.LogCallback, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
     }
 
     void AssignToken(long code, string data) {
@@ -90,22 +89,40 @@ public class SecondaryServerCalls : MonoBehaviour {
 
     void OnStartCloudRecordComplete() {
         HelperFunctions.DevLog($"Cloud recording started: sid = {requestCloudRecordResource.CloudRecordResponseData.sid}");
+        CreateStreamSecondaryServer();
+    }
 
+    void CreateStreamSecondaryServer() {
+        StreamStartJsonData data = new StreamStartJsonData();
+        data.agora_sid = requestCloudRecordResource.CloudRecordResponseData.sid;
+        data.agora_channel = requestCloudRecordResource.StartCloudRecordRequestData.cname;
+        //data.title = "";
+        //data.description = "";
+        webRequestHandler.PostRequest(webRequestHandler.ServerURLAuthAPI + videoUploader.Stream, data, WebRequestHandler.BodyType.JSON, webRequestHandler.LogCallback, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
+    }
 
+    void CreateStreamSecondaryCallback(long code, string data) {
+        print("CREATE STREAM IS BACK" + data);
+        streamStartResponseJsonData = JsonUtility.FromJson<StreamStartResponseJsonData>(data);
+        if (streamStartResponseJsonData != null)
+            OnStreamStarted?.Invoke(tokenAgoraResponse.token);
+        else {
+            Debug.LogError("CREATE STREAM PARSE FAILED");
+        }
     }
 
     public void EndStream() {
+        StopStream();
+    }
+
+    void StopStream() {
         StreamStatusJsonData data = new StreamStatusJsonData();
         data.status = "finished";
-        webRequestHandler.PatchRequest(GetServerStatusURL(), data, WebRequestHandler.BodyType.JSON, webRequestHandler.LogCallback, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
+        webRequestHandler.PatchRequest(webRequestHandler.ServerURLAuthAPI + (videoUploader.StreamStatus.Replace("{id}", streamStartResponseJsonData.id.ToString())), data, WebRequestHandler.BodyType.JSON, webRequestHandler.LogCallback, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
     }
 
-    private string GetStartStreamURL() {
-        return webRequestHandler.ServerURLAuthAPI + videoUploader.Stream;
-    }
+    void StopCloudRecording() {
 
-    private string GetServerStatusURL() {
-        return webRequestHandler.ServerURLAuthAPI + videoUploader.StreamStatus;
     }
 
 }

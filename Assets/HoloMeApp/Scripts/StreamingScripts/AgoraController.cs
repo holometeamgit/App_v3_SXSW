@@ -35,6 +35,7 @@ public class AgoraController : MonoBehaviour {
         LoadEngine(AppId);
         frameRate = 30;
         agoraRTMChatController.Init(AppId);
+        secondaryServerCalls.OnStreamStarted += x => SecondaryServerCallsComplete(x, isChannelCreator);
     }
 
     void LoadEngine(string appId) {
@@ -56,10 +57,12 @@ public class AgoraController : MonoBehaviour {
     public void JoinOrCreateChannel(bool channelCreator) {
         if (iRtcEngine == null)
             return;
-
-        agoraRTMChatController.Login();
-
         isChannelCreator = channelCreator;
+        secondaryServerCalls.StartStream(ChannelName, 1);
+    }
+
+    public void SecondaryServerCallsComplete(string token, bool channelCreator) {
+        agoraRTMChatController.Login();
 
         iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
@@ -90,7 +93,9 @@ public class AgoraController : MonoBehaviour {
         iRtcEngine.EnableVideoObserver();
 
         // join channel
-        var result = iRtcEngine.JoinChannel(ChannelName, null, 0);
+        //var result = iRtcEngine.JoinChannel(ChannelName, null, 0);
+
+        var result = iRtcEngine.JoinChannelByKey(token, ChannelName, null, 0);
 
         if (result < 0) {
             Debug.LogError("Agora Stream Join Failed!");
@@ -106,7 +111,6 @@ public class AgoraController : MonoBehaviour {
 
         //iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
         //iRtcEngine.OnStreamMessageError = OnStreamMessageError;
-
     }
 
     void OnUserOffline(uint uid, USER_OFFLINE_REASON reason) //Only called for host
@@ -116,8 +120,13 @@ public class AgoraController : MonoBehaviour {
     }
 
     public void Leave() {
+
+
         if (iRtcEngine == null)
             return;
+
+        if (isLive)
+            secondaryServerCalls.EndStream();
 
         //if (isChannelCreator)
         //{
