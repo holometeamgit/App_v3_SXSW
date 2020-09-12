@@ -14,8 +14,6 @@ public class PnlHomeScreen : MonoBehaviour
     }
 
     [SerializeField]
-    AnimatedTransition pnlGenericLoading;
-    [SerializeField]
     PnlViewingExperience pnlViewingExperience;
 
     [SerializeField]
@@ -28,7 +26,14 @@ public class PnlHomeScreen : MonoBehaviour
     RectTransform contentUserThumbnails;
 
     [SerializeField]
+    GameObject thumbnailShowcasePrefab;
+
+    [SerializeField]
     GameObject thumbnailPrefab;
+
+    [SerializeField] int showcaseCount = 2;
+
+    [SerializeField] bool fetchDataOnFirstEnable; //TODO: this is needed before switching to beem, then everything will be deleted
 
     private List<GameObject> thumbnails;
     private AnimatedTransition animatedTransition;
@@ -44,13 +49,20 @@ public class PnlHomeScreen : MonoBehaviour
         if (!initiallaunch) {
             initiallaunch = true;
             homeScreenLoader.OnDataFetched.AddListener(DataFetched);
-            return;
+            if(!fetchDataOnFirstEnable)
+                return;
         }
         homeScreenLoader.FetchData();
     }
 
-    private void AddThumbnail(RectTransform contentThumbnails, Texture texture, StreamJsonData.Data data, bool isLive) {
-        var newThumbnail = Instantiate(thumbnailPrefab, contentThumbnails);
+    private void AddThumbnail(bool isShowcase, Texture texture, StreamJsonData.Data data, bool isLive) {
+
+        RectTransform contentThumbnails = isShowcase ? contentShowcaseThumbnails : contentUserThumbnails;
+        GameObject newThumbnail;
+        if (thumbnailShowcasePrefab == null)
+            newThumbnail = Instantiate(thumbnailPrefab, contentThumbnails);
+        else
+            newThumbnail = Instantiate(isShowcase ? thumbnailShowcasePrefab : thumbnailPrefab, contentThumbnails); //TODO: this (thumbnailShowcasePrefab ?? thumbnailPrefab) is needed before switching to beem, then everything will be deleted
         Texture s = texture;
 
         var thumbnailItem = newThumbnail.GetComponent<BtnThumbnailItem>();
@@ -92,21 +104,21 @@ public class PnlHomeScreen : MonoBehaviour
 
         foreach (var data in homeScreenLoader.eventHomeScreenDataElement) {
             showCaseAddedData++;
-            AddThumbnail(showCaseAddedData <= 2 ? contentShowcaseThumbnails : contentUserThumbnails,
+            AddThumbnail(showCaseAddedData <= showcaseCount,
                 data.texture, data.streamJsonData, true);
             yield return null;
         }
 
         foreach (var data in homeScreenLoader.liveHomeScreenDataElement) {
             showCaseAddedData++;
-            AddThumbnail(showCaseAddedData <= 2 ? contentShowcaseThumbnails : contentUserThumbnails,
+            AddThumbnail(showCaseAddedData <= showcaseCount,
                 data.texture, data.streamJsonData, true);
             yield return null;
         }
 
         foreach (var data in homeScreenLoader.streamHomeScreenDataElement) {
             showCaseAddedData++;
-            AddThumbnail(showCaseAddedData <= 2 ? contentShowcaseThumbnails : contentUserThumbnails,
+            AddThumbnail(showCaseAddedData <= showcaseCount,
                 data.texture, data.streamJsonData, false); 
         }
 

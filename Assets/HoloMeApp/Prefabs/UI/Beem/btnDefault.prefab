@@ -361,6 +361,7 @@ GameObject:
   - component: {fileID: 7202631213276189542}
   - component: {fileID: 7202631213276189538}
   - component: {fileID: 7202631213276189536}
+  - component: {fileID: 1764171360871568519}
   m_Layer: 5
   m_Name: btnDefault
   m_TagString: Untagged
@@ -440,8 +441,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: SignUp
+      - m_Target: {fileID: 1764171360871568519}
+        m_MethodName: Switch
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -451,3 +452,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1764171360871568519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7202631213276189543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6439298e7a369481d90dd373af950173, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  doOnlyWithActiveObject: 0
+  switchOnList: []
+  switchOffList: []
+  OnSwitch:
+    m_PersistentCalls:
+      m_Calls: []

@@ -21,6 +21,9 @@ public class BtnThumbnailItem : MonoBehaviour
     Button buttonComponent;
     string code;
 
+    [SerializeField]
+    AspectRatioFitterByMinSide aspectRatioFitterByMinSide;
+
     public void SetThumbnailPressAction(Action<string> OnPress)
     {
         buttonComponent.onClick.RemoveAllListeners();
@@ -31,6 +34,7 @@ public class BtnThumbnailItem : MonoBehaviour
     {
         imgThumbnail.texture = texture;
         this.code = code;
+        aspectRatioFitterByMinSide?.Refresh();
     }
 
     public void SetLiveState(bool value) {

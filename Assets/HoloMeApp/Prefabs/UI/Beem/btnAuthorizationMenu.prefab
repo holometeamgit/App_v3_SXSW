@@ -363,8 +363,9 @@ GameObject:
   - component: {fileID: 8696159234382718612}
   - component: {fileID: 8696159234382718613}
   - component: {fileID: 8696159234382718614}
+  - component: {fileID: 867973277793256378}
   m_Layer: 5
-  m_Name: btnContinueEmail
+  m_Name: btnAuthorizationMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -470,7 +471,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 867973277793256378}
         m_MethodName: Switch
         m_Mode: 1
         m_Arguments:
@@ -481,3 +482,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &867973277793256378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8696159234382718600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6439298e7a369481d90dd373af950173, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  doOnlyWithActiveObject: 0
+  switchOnList: []
+  switchOffList: []
+  OnSwitch:
+    m_PersistentCalls:
+      m_Calls: []
