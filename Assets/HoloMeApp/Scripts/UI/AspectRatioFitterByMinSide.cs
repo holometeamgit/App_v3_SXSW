@@ -7,6 +7,10 @@ public class AspectRatioFitterByMinSide : AspectRatioFitter
 {
     private RawImage rawImage;
 
+    public void Refresh() {
+        OnRectTransformDimensionsChange();
+    }
+
     protected override void OnRectTransformDimensionsChange() {
         aspectRatio = GetImgAspectRatio();
         base.OnRectTransformDimensionsChange();

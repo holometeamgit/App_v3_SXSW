@@ -23722,10 +23722,10 @@ RectTransform:
   m_Father: {fileID: 479640870}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 516, y: 0}
-  m_SizeDelta: {x: 1032, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &538530823
 MonoBehaviour:
@@ -29159,7 +29159,6 @@ MonoBehaviour:
   accountManager: {fileID: 921435837}
   pnlEmailVerification: {fileID: 326480647}
   switcherToVerification: {fileID: 1173419405}
-  inputFieldFullName: {fileID: 1754391928}
   inputFieldEmail: {fileID: 143193455}
   inputFieldPassword: {fileID: 1586302014}
   inputFieldConfirmPassword: {fileID: 1901799918}
@@ -44614,6 +44613,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   liveStreamQuad: {fileID: 839298373}
+  agoraRTMChatController: {fileID: 0}
   frameRate: 0
 --- !u!114 &1146380146
 MonoBehaviour:
@@ -58155,13 +58155,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54b494727e25748378ea65b0de594e6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pnlGenericLoading: {fileID: 999806590}
   pnlViewingExperience: {fileID: 4715128579803891304}
   homeScreenLoader: {fileID: 1519045073}
   contentShowcaseThumbnails: {fileID: 2866259777283753841}
   contentUserThumbnails: {fileID: 6216648046517880342}
+  thumbnailShowcasePrefab: {fileID: 0}
   thumbnailPrefab: {fileID: 8687993001838293678, guid: c104a5f925d474c9bafcfce5583ef2a2,
     type: 3}
+  showcaseCount: 2
+  fetchDataOnFirstEnable: 0
 --- !u!114 &1519045075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66699,18 +66701,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1754391926}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1754391928 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1957541489382406277, guid: 2c3121407a8ec4665ab8cef329fb7f3c,
-    type: 3}
-  m_PrefabInstance: {fileID: 1754391926}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2918203d509f4931a5a3102928c754f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1758184993
 GameObject:
   m_ObjectHideFlags: 0
@@ -81785,7 +81775,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 517.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1035, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &3009010369734008872
@@ -84030,7 +84020,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 517.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1035, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6423371461859352837 stripped

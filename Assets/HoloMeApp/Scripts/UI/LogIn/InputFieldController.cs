@@ -6,6 +6,8 @@ using TMPro;
 
 public class InputFieldController : MonoBehaviour
 {
+    public bool IsClearOnDisable = true;
+
     public int characterLimit {
         get { return inputField.characterLimit; }
         set { inputField.characterLimit = value; }
@@ -40,7 +42,8 @@ public class InputFieldController : MonoBehaviour
     }
 
     private void OnDisable() {
-        SetToDefaultState();
+        if(IsClearOnDisable)
+            SetToDefaultState();
     }
     //TODO remove after adding animation
     private IEnumerator UpdateLayout() {
