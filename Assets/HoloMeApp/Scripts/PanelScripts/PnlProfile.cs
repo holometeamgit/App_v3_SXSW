@@ -19,15 +19,10 @@ public class PnlProfile : MonoBehaviour
     }
 
     private void Start() {
-        userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
-        userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
-        userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
         userWebManager.LoadUserInfo();
     }
 
     private void UserInfoLoadedCallBack() {
-        if (!this.isActiveAndEnabled)
-            return;
         if (usernameInputField != null)
             usernameInputField.text = usernameInputField.text == "" ? userWebManager.GetUsername() ?? "" : usernameInputField.text;
 
@@ -43,15 +38,11 @@ public class PnlProfile : MonoBehaviour
     }
 
     private void UpdateUserDataCallBack() {
-        if (!this.isActiveAndEnabled)
-            return;
         userWebManager.LoadUserInfo();
         switchToMainMenu.Switch();
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
-        if (!this.isActiveAndEnabled)
-            return;
 
         if (badRequestData.username.Count > 0)
             usernameInputField.ShowWarning(badRequestData.username[0]);
@@ -64,12 +55,20 @@ public class PnlProfile : MonoBehaviour
     }
 
     private void OnEnable() {
+        userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
+        userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
+        userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
+
         InputDataArea.SetActive(false);
         userWebManager.LoadUserInfo();
     }
 
     private void OnDisable() {
-        foreach(var backBtn in backBtns) {
+        userWebManager.OnUserInfoLoaded -= UserInfoLoadedCallBack;
+        userWebManager.OnUserInfoUploaded -= UpdateUserDataCallBack;
+        userWebManager.OnErrorUserUploaded -= ErrorUpdateUserDataCallBack;
+
+        foreach (var backBtn in backBtns) {
             backBtn.SetActive(false);
         }
     }

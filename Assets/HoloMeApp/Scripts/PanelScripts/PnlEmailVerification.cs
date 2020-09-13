@@ -1,36 +1,94 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
-public class PnlEmailVerification : MonoBehaviour
-{
+public class PnlEmailVerification : MonoBehaviour {
     public delegate void SaveAccesseDelegate();
 
-    [SerializeField] EmailAccountManager emailAccountManager;
-    [SerializeField] InputFieldController inputFieldKey;
-    [SerializeField] Switcher switcherToMainMenu;
+    [SerializeField]
+    EmailAccountManager emailAccountManager;
+    [SerializeField]
+    PnlSignUpEmail pnlSignUpEmail;
+    [SerializeField]
+    InputFieldController inputFieldKey;
+    [SerializeField]
+    DeepLinkHandler deepLinkHandler;
+    [SerializeField]
+    Switcher switcherToMainMenu;
 
-    private SaveAccesseDelegate saveAccesseDelegate;
 
-    public void SetActionOnVerified(SaveAccesseDelegate saveAccesseDelegate) {
-        this.saveAccesseDelegate = saveAccesseDelegate;
-    }
+    [SerializeField]
+    GameObject ResendBtn;
+    [SerializeField]
+    TMP_Text txtVerificationInfo;
+    [SerializeField]
+    TMP_Text txtVerificationInfoResend;
+    [SerializeField]
+    TMP_Text txtEmail;
 
     public void Verify() {
-        VerifyKeyJsonData verifyKeyJsonData = new VerifyKeyJsonData();
-        verifyKeyJsonData.key = inputFieldKey.text;
-        emailAccountManager.Verify(verifyKeyJsonData, EmailVerificationCallBack, ErrorEmailVerificationCallBack);
+        if (inputFieldKey == null)
+            return;
+        Verify(inputFieldKey.text);
     }
 
-    private void EmailVerificationCallBack(long code, string body) {
-        //accountManager.SaveAccessToken(body);
-        Debug.Log(code + " : " + body);
-        saveAccesseDelegate.Invoke();
+    public void ResendVerification() {
+        pnlSignUpEmail?.SignUp();
+        EnableVerificationInfo();
+    }
+
+    private void Verify(string key) {
+        Debug.Log("Verify " + key);
+        VerifyKeyJsonData verifyKeyJsonData = new VerifyKeyJsonData(key);
+        emailAccountManager.Verify(verifyKeyJsonData);
+    }
+
+    private void EmailVerificationCallBack() {
+        pnlSignUpEmail?.ClearInputFieldData();
         switcherToMainMenu.Switch();
     }
 
-    private void ErrorEmailVerificationCallBack(long code, string body) {
-        Debug.Log(code + " : " + body);
-        inputFieldKey.ShowWarning("Verification code does not match");
+    private void ErrorEmailVerificationCallBack() {
+        inputFieldKey?.ShowWarning("Verification code does not match");
+        Debug.Log("Verification code does not match");
+
+        EnableVerificationInfoResend();
+    }
+
+    private void EnableVerificationInfo() {
+        txtVerificationInfo?.gameObject.SetActive(true);
+
+        ResendBtn?.gameObject.SetActive(false);
+        txtVerificationInfoResend?.gameObject.SetActive(false);
+
+    }
+
+    private void EnableVerificationInfoResend() {
+        txtVerificationInfo?.gameObject.SetActive(false);
+
+        ResendBtn?.gameObject.SetActive(true);
+        txtVerificationInfoResend?.gameObject.SetActive(true);
+
+        if (txtEmail != null)
+            txtEmail.text = emailAccountManager.GetLastSignUpEmail();
+    }
+
+    private void OnEnable() {
+        emailAccountManager.OnVerified += EmailVerificationCallBack;
+        emailAccountManager.OnErrorVerification += ErrorEmailVerificationCallBack;
+
+        EnableVerificationInfo();
+
+        if (deepLinkHandler != null) //todo: delete in beem vertion
+            deepLinkHandler.VerificationDeepLinkActivated += Verify;
+    }
+
+    private void OnDisable() {
+        emailAccountManager.OnVerified -= EmailVerificationCallBack;
+        emailAccountManager.OnErrorVerification -= ErrorEmailVerificationCallBack;
+
+        if (deepLinkHandler != null) //todo: delete in beem vertion
+            deepLinkHandler.VerificationDeepLinkActivated -= Verify;
     }
 }

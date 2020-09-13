@@ -13,9 +13,6 @@ public class PnlChangeBio : MonoBehaviour
     }
 
     private void Start() {
-        userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
-        userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
-        userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
         userWebManager.LoadUserInfo();
     }
 
@@ -27,14 +24,23 @@ public class PnlChangeBio : MonoBehaviour
     }
 
     private void UpdateUserDataCallBack() {
-        if (!this.isActiveAndEnabled)
-            return;
         switchToSetting.Switch();
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
-        if (!this.isActiveAndEnabled)
-            return;
         //TODO: Add after back will add this
+        bioInputField.ShowWarning("Incorrect symbols in bio");
+    }
+
+    private void OnEnable() {
+        userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
+        userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
+        userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
+    }
+
+    private void OnDisable() {
+        userWebManager.OnUserInfoLoaded -= UserInfoLoadedCallBack;
+        userWebManager.OnUserInfoUploaded -= UpdateUserDataCallBack;
+        userWebManager.OnErrorUserUploaded -= ErrorUpdateUserDataCallBack;
     }
 }

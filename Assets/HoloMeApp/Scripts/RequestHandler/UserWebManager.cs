@@ -83,6 +83,12 @@ public class UserWebManager : MonoBehaviour
         return userData.profile.bio;
     }
 
+    public bool IsBroadcaster() {
+        if (userData == null || userData.profile == null)
+            return false;
+        return userData.profile.is_creator;
+    }
+
     public void LoadUserInfo(Action loadUserInfoCallBack) {
         webRequestHandler.GetRequest(GetRequestGetUserURL(), (code, body) => loadUserInfoCallBack(),
             ErrorMsgCallBack, accountManager.GetAccessToken().access);
