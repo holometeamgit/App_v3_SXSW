@@ -369,6 +369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54b494727e25748378ea65b0de594e6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tymeToNextRefresh: 12
   pnlViewingExperience: {fileID: 0}
   homeScreenLoader: {fileID: 5589455037115023793}
   contentShowcaseThumbnails: {fileID: 5589455037243248382}
@@ -394,9 +395,9 @@ MonoBehaviour:
   thumbnailWebDownloadManager: {fileID: 0}
   mediaFileDataHandler: {fileID: 0}
   accountManager: {fileID: 0}
-  maxEventPageSize: 2
-  maxLivePageSize: 2
-  maxFinishedPageSize: 6
+  maxEventPageSize: 10
+  maxLivePageSize: 10
+  maxFinishedPageSize: 20
   OnDataFetched:
     m_PersistentCalls:
       m_Calls: []
