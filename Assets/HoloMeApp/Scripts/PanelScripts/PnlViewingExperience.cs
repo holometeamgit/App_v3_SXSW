@@ -85,7 +85,7 @@ public class PnlViewingExperience : MonoBehaviour
         scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         ShowMessage("Scan the floor to start");
         tutorialState = TutorialState.MessageTapToPlace;
-        arPlaneManager.enabled = true;
+        // arPlaneManager.enabled = true;
     }
 
     IEnumerator StartScanAnimationLoop(float toggleTime)

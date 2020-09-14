@@ -42,6 +42,8 @@ public class FocusSquare : PlacementHandler
     Material quadMat;
     GameObject quad;
 
+    public GameObject Quad => quad;
+    
     //[SerializeField]
     //bool stayOnAfterPlace;
 
@@ -53,11 +55,11 @@ public class FocusSquare : PlacementHandler
 
     Vector3 hologramPlacedPosition = new Vector3(100, 100, 100); //Start away from the user
 
-    [SerializeField]
-    UnityEvent OnSurfaceFound;
-
-    [SerializeField]
-    UnityEvent OnSurfaceLost;
+    // [SerializeField]
+    // UnityEvent OnSurfaceFound;
+    
+    // [SerializeField]
+    // UnityEvent OnSurfaceLost;
 
     [SerializeField]
     UnityEvent OnPlaced;
@@ -107,10 +109,10 @@ public class FocusSquare : PlacementHandler
     public bool StartScanning { get; set; }
 
     [Space(20)]
-    [SerializeField] private Transform _focusSquareV2Sprite;
-    [SerializeField] private Animator _focusSquareAnimator;
+    // [SerializeField] private Transform _focusSquareV2Sprite;
+    // [SerializeField] private Animator _focusSquareAnimator;
     [SerializeField] private Text _debugText;
-    [SerializeField] private SpriteRenderer _focusSquareRenderer;
+    // [SerializeField] private SpriteRenderer _focusSquareRenderer;
 
     private enum States 
     {
@@ -122,14 +124,14 @@ public class FocusSquare : PlacementHandler
 
     private States _currentState = States.HIDE;
     private float _currentDelay;
-    private float _delayBeforeRescan = 2.5f;
+    private float _delayBeforeRescan = 3.0f;
 
     [SerializeField] private Camera _camera;
 
     private bool _wasOnePinch;
     private bool _delayAfterPinch;
 
-    private ARPlaneManager _arPlaneManager;
+    // private ARPlaneManager _arPlaneManager;
 
     [SerializeField] private ARSessionOrigin _arSessionOrigin;
 
@@ -149,7 +151,7 @@ public class FocusSquare : PlacementHandler
         
         SwitchToState(States.SCAN);
 
-        _arPlaneManager = _arSessionOrigin.GetComponent<ARPlaneManager>(); 
+        // _arPlaneManager = _arSessionOrigin.GetComponent<ARPlaneManager>(); 
         //OnSurfaceLost?.Invoke();
     }
 
@@ -211,11 +213,11 @@ public class FocusSquare : PlacementHandler
             quadMat.color = new Color(1, 1, 1, GetAlphaBasedOnDistance());
 
             if (_currentState != States.HIDE && _currentState != States.PINCH) {
-              _focusSquareRenderer.color = new Color(1, 1, 1, GetAlphaBasedOnDistance());
+                // *** _focusSquareRenderer.color = new Color(1, 1, 1, GetAlphaBasedOnDistance());
             }
             else 
             {
-                _focusSquareRenderer.color = new Color(1, 1, 1, 1);
+                // *** _focusSquareRenderer.color = new Color(1, 1, 1, 1);
             }
         }
     }
@@ -248,7 +250,7 @@ public class FocusSquare : PlacementHandler
             return;
 
         var hits = new List<ARRaycastHit>();
-        m_RaycastManager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), hits, TrackableType.PlaneWithinBounds);
+        m_RaycastManager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), hits, TrackableType.Planes);
 
         SurfaceDetected = hits.Count > 0;
 
@@ -261,14 +263,16 @@ public class FocusSquare : PlacementHandler
                 //(forcePlace && Vector3.Distance(arCamera.transform.position, hits[0].pose.position) >= 1))
                 {
                     //forcePlace = false;
-                    OnPlaced?.Invoke();
-                    OnPlaceDetected?.Invoke(hits[0].pose.position);
+                    
+                    // OnPlaced?.Invoke();
+                    // OnPlaceDetected?.Invoke(hits[0].pose.position);
+                    
                     hologramPlacedPosition = quad.transform.position;
                     SwitchToState(States.PINCH);
                     
-                    _focusSquareV2Sprite.transform.position = quad.transform.position;
-                    _focusSquareV2Sprite.transform.rotation = quad.transform.rotation;
-                    _focusSquareV2Sprite.transform.localScale = quad.transform.localScale * 0.55f;
+                    // *** _focusSquareV2Sprite.transform.position = quad.transform.position;
+                    // *** _focusSquareV2Sprite.transform.rotation = quad.transform.rotation;
+                    // ***  _focusSquareV2Sprite.transform.localScale = quad.transform.localScale * 0.55f;
 
                     //print($"Positions camera = {arCamera.transform.position} Position for place {hits[0].pose.position}");
                 }
@@ -333,12 +337,12 @@ public class FocusSquare : PlacementHandler
 
     private void FocusSquareV2Update() 
     {
-        _focusSquareV2Sprite.transform.position = Vector3.Lerp(_focusSquareV2Sprite.transform.position, quad.transform.position, Time.deltaTime * 20.0f);
-        _focusSquareV2Sprite.transform.rotation = Quaternion.Slerp(_focusSquareV2Sprite.transform.rotation, quad.transform.rotation, Time.deltaTime * 20.0f);
-        _focusSquareV2Sprite.transform.localScale = quad.transform.localScale * 0.55f;
+        // *** _focusSquareV2Sprite.transform.position = Vector3.Lerp(_focusSquareV2Sprite.transform.position, quad.transform.position, Time.deltaTime * 20.0f);
+        // *** _focusSquareV2Sprite.transform.rotation = Quaternion.Slerp(_focusSquareV2Sprite.transform.rotation, quad.transform.rotation, Time.deltaTime * 20.0f);
+        // *** _focusSquareV2Sprite.transform.localScale = quad.transform.localScale * 0.55f;
     }
 
-    private void FocusSquareV2UpdateCenter()
+    /*** private void FocusSquareV2UpdateCenter()
     {
         Vector3 center = new Vector3(Screen.width/2, Screen.height/2 - 0.1f, 2.0f);
         _focusSquareV2Sprite.transform.position = Vector3.Lerp(_focusSquareV2Sprite.transform.position, _camera.ScreenToWorldPoint(center), Time.deltaTime * 20.0f);
@@ -352,7 +356,7 @@ public class FocusSquare : PlacementHandler
         var scale = _focusSquareV2Sprite.transform.localScale;
         _focusSquareV2Sprite.transform.localScale = new Vector3(-0.1f, -0.1f, -0.2f);
         //_focusSquareV2Sprite.transform.localEulerAngles = new Vector3(eulerAngles.x, eulerAngles.y, eulerAngles.z);
-    }
+    } ***/
 
     // TODO fix OnPinch?.Invoke(); 
     private void SwitchToState(States value) 
@@ -366,12 +370,14 @@ public class FocusSquare : PlacementHandler
                 // {
                 //     break;
                 // }
-                OnSurfaceLost?.Invoke();
+                
+                // **** OnSurfaceLost?.Invoke(); ****
+                
                 _currentState = value;
                 _debugText.text = _currentState.ToString();
-                _focusSquareAnimator.ResetTrigger("TapToPlace");
+                /*** _focusSquareAnimator.ResetTrigger("TapToPlace");
                 _focusSquareAnimator.ResetTrigger("PinchToZoom");
-                _focusSquareAnimator.SetTrigger("Scan");
+                _focusSquareAnimator.SetTrigger("Scan"); ***/
                 StopAllCoroutines();
                 StartCoroutine(FadeHideV2(false));
             break;
@@ -381,12 +387,13 @@ public class FocusSquare : PlacementHandler
                     break;
                 }
 
-                OnSurfaceFound?.Invoke();
+                // **** OnSurfaceFound?.Invoke(); ****
+                
                 _currentState = value;
                 _debugText.text = _currentState.ToString();
-                _focusSquareAnimator.ResetTrigger("PinchToZoom");
+                /*** _focusSquareAnimator.ResetTrigger("PinchToZoom");
                 _focusSquareAnimator.ResetTrigger("Scan");
-                _focusSquareAnimator.SetTrigger("TapToPlace");     
+                _focusSquareAnimator.SetTrigger("TapToPlace"); ***/    
             break;
             case States.PINCH:
                 if (_wasOnePinch) 
@@ -395,13 +402,13 @@ public class FocusSquare : PlacementHandler
                     break;
                 }
                 
-                TurnOffPlanes();
+                // TurnOffPlanes();
 
                 _currentState = value;
                 _debugText.text = _currentState.ToString();
-                _focusSquareAnimator.ResetTrigger("TapToPlace");
+                /*** _focusSquareAnimator.ResetTrigger("TapToPlace");
                 _focusSquareAnimator.ResetTrigger("Scan");
-                _focusSquareAnimator.SetTrigger("PinchToZoom");
+                _focusSquareAnimator.SetTrigger("PinchToZoom"); ***/
             break;
             case States.HIDE:
                 OnPinch?.Invoke();
@@ -417,10 +424,10 @@ public class FocusSquare : PlacementHandler
     IEnumerator FadeHideV2(bool hide)
     {
         inAnimation = true;
-        var quadMatCurrentColor = _focusSquareRenderer.material.GetColor("_Color");
-        while (hide ? quadMatCurrentColor.a > 0 : quadMatCurrentColor.a < GetAlphaBasedOnDistance())
+        // *** var quadMatCurrentColor = _focusSquareRenderer.material.GetColor("_Color");
+        // *** while (hide ? quadMatCurrentColor.a > 0 : quadMatCurrentColor.a < GetAlphaBasedOnDistance())
         {
-            _focusSquareRenderer.material.SetColor("_Color", new Color(quadMatCurrentColor.r, quadMatCurrentColor.g, quadMatCurrentColor.b, quadMatCurrentColor.a -= hide ? 0.05f : -0.05f));
+            // *** _focusSquareRenderer.material.SetColor("_Color", new Color(quadMatCurrentColor.r, quadMatCurrentColor.g, quadMatCurrentColor.b, quadMatCurrentColor.a -= hide ? 0.05f : -0.05f));
             yield return new WaitForSeconds(0.015f);
         }
         inAnimation = false;
@@ -431,13 +438,13 @@ public class FocusSquare : PlacementHandler
         StopAllCoroutines();
     }
 
-    private void TurnOffPlanes()
-    {
-        foreach (var plane in _arPlaneManager.trackables)
-        {
-            plane.gameObject.SetActive(false);
-        }
-
-        _arPlaneManager.enabled = false;
-    }
+    // private void TurnOffPlanes()
+    // {
+    //     foreach (var plane in _arPlaneManager.trackables)
+    //     {
+    //         plane.gameObject.SetActive(false);
+    //     }
+    //
+    //     _arPlaneManager.enabled = false;
+    // }
 }
