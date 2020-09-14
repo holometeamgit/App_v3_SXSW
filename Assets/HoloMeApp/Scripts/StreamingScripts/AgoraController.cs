@@ -22,7 +22,7 @@ public class AgoraController : MonoBehaviour {
     bool isChannelCreator;
     bool isLive;
     int userCount;
-    int streamID;
+    //int streamID;
     [HideInInspector]
     public uint frameRate;
     public Action<int> OnCountIncremented;
@@ -35,6 +35,7 @@ public class AgoraController : MonoBehaviour {
         LoadEngine(AppId);
         frameRate = 30;
         agoraRTMChatController.Init(AppId);
+        //agoraRTMChatController.OnLoginSuccess+= 
         secondaryServerCalls.OnStreamStarted += x => SecondaryServerCallsComplete(x, isChannelCreator);
     }
 
@@ -57,12 +58,13 @@ public class AgoraController : MonoBehaviour {
     public void JoinOrCreateChannel(bool channelCreator) {
         if (iRtcEngine == null)
             return;
+
         isChannelCreator = channelCreator;
-        secondaryServerCalls.StartStream(ChannelName, 1);
+        secondaryServerCalls.StartStream(ChannelName);
     }
 
     public void SecondaryServerCallsComplete(string token, bool channelCreator) {
-        agoraRTMChatController.Login();
+        agoraRTMChatController.Login(token);
 
         iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
@@ -107,7 +109,7 @@ public class AgoraController : MonoBehaviour {
 
         isLive = true;
 
-        streamID = iRtcEngine.CreateDataStream(true, true);
+        //streamID = iRtcEngine.CreateDataStream(true, true);
 
         //iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
         //iRtcEngine.OnStreamMessageError = OnStreamMessageError;
@@ -121,12 +123,8 @@ public class AgoraController : MonoBehaviour {
 
     public void Leave() {
 
-
         if (iRtcEngine == null)
             return;
-
-        if (isLive)
-            secondaryServerCalls.EndStream();
 
         //if (isChannelCreator)
         //{
@@ -142,6 +140,10 @@ public class AgoraController : MonoBehaviour {
 
         //OnStreamDisconnected();
         agoraRTMChatController.LeaveChannel();
+
+        if (isLive)
+            secondaryServerCalls.EndStream();
+
     }
 
     private void ResetVideoSurface() {
@@ -154,7 +156,7 @@ public class AgoraController : MonoBehaviour {
 
     private void OnJoinChannelSuccess(string channelName, uint uid, int elapsed) {
         HelperFunctions.DevLog("JoinChannelSuccessHandler: uid = " + uid);
-        secondaryServerCalls.StartStream(ChannelName, uid);
+        secondaryServerCalls.StartStream(ChannelName);
         agoraRTMChatController.JoinChannel(channelName);
     }
 

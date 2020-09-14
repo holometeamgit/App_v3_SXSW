@@ -13,8 +13,4 @@ public class VideoUploader : ScriptableObject {
 
     public string GetStreamToken = "/agora/token/";
 
-    public string AgoraAcquireResourceID = $"/v1/apps/{AgoraController.AppId}/cloud_recording/acquire";
-        
-    public string AgoraStopCloudRecording = "/v1/apps/{appid}/cloud_recording/resourceid/{resourceid}/sid/{sid}/mode/{mode}/stop";
-
 }

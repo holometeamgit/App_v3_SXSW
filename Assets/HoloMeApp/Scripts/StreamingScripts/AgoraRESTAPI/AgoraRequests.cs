@@ -39,28 +39,31 @@ public class AgoraRequests : MonoBehaviour {
         }
     }
 
-    IEnumerator PostRequest(string url, string body, Action<string> OnSuccess, Action OnFailed) {
+    IEnumerator PostRequest(string uri, string body, Action<string> OnSuccess, Action OnFailed) {
 
-        var request = new UnityWebRequest(url, "POST");
+        var webRequest = new UnityWebRequest(uri, "POST");
 
         byte[] bodyRaw = Encoding.UTF8.GetBytes(body);
 
-        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        webRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+        webRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
 
         string authorizationDetails = customerID + ":" + certificate;
         string encodedAuthDetails = Base64Encode(authorizationDetails);
 
-        request.SetRequestHeader("Authorization", "Basic " + encodedAuthDetails);
-        request.SetRequestHeader("Content-type", "application/json;charset=utf-8");
+        webRequest.SetRequestHeader("Authorization", "Basic " + encodedAuthDetails);
+        webRequest.SetRequestHeader("Content-type", "application/json;charset=utf-8");
 
-        yield return request.SendWebRequest();
+        yield return webRequest.SendWebRequest();
 
-        if (request.isNetworkError || request.isHttpError) {
-            Debug.Log(request.responseCode + " : " + request.error);
+        string[] pages = uri.Split('/');
+        int page = pages.Length - 1;
+
+        if (webRequest.isNetworkError || webRequest.isHttpError) {
+            HelperFunctions.DevLog(pages[page] + ": Error: " + webRequest.error);
             OnFailed?.Invoke();
         } else {
-            OnSuccess(request.downloadHandler.text);
+            OnSuccess(webRequest.downloadHandler.text);
         }
 
 
