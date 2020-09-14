@@ -15,7 +15,7 @@ public class DeepLinkHandler : MonoBehaviour {
         Uri uri = new Uri(uriStr);
         //example
         //beemholomedl://verification?code=string
-        //beemholomedl://passwordresetconfirm?uid=string&token=string?
+        //beemholomedl://passwordresetconfirm?uid=string&token=string
 
         Debug.Log(uriStr);
 
@@ -48,15 +48,18 @@ public class DeepLinkHandler : MonoBehaviour {
         string code = HttpUtility.ParseQueryString(uri.Query).Get("code");
 
         Debug.Log(code);
-        if (!string.IsNullOrWhiteSpace(code))
-            VerificationDeepLinkActivated?.Invoke(code);
+        //if (!string.IsNullOrWhiteSpace(code))
+        VerificationDeepLinkActivated?.Invoke(code);
     }
 
     private void GetPasswordResetConfirmParameters(Uri uri) {
+        Debug.Log("GetPasswordResetConfirmParameters " + uri.Host);
         string uid = HttpUtility.ParseQueryString(uri.Query).Get("uid");
         string token = HttpUtility.ParseQueryString(uri.Query).Get("token");
-        if (!string.IsNullOrWhiteSpace(uid) && !string.IsNullOrWhiteSpace(token))
-            PasswordResetConfirmDeepLinkActivated?.Invoke(uid, token);
+
+        Debug.Log("uid " + uid + " token " + token);
+        //if (!string.IsNullOrWhiteSpace(uid) && !string.IsNullOrWhiteSpace(token))
+        PasswordResetConfirmDeepLinkActivated?.Invoke(uid, token);
     }
 
 }

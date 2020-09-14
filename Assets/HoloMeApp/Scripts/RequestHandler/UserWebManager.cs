@@ -68,7 +68,19 @@ public class UserWebManager : MonoBehaviour
     public string GetFullName() {
         if (userData == null || string.IsNullOrEmpty(userData.first_name))
             return null;
+        return userData.first_name + userData.last_name;
+    }
+
+    public string GetFirstName() {
+        if (userData == null || string.IsNullOrEmpty(userData.first_name))
+            return null;
         return userData.first_name;
+    }
+
+    public string GetLastName() {
+        if (userData == null || string.IsNullOrEmpty(userData.first_name))
+            return null;
+        return userData.last_name;
     }
 
     public string GetUsername() {

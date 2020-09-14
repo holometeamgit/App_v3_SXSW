@@ -4,7 +4,6 @@ using UnityEngine;
 using TMPro;
 
 public class PnlEmailVerification : MonoBehaviour {
-    public delegate void SaveAccesseDelegate();
 
     [SerializeField]
     EmailAccountManager emailAccountManager;
@@ -69,14 +68,14 @@ public class PnlEmailVerification : MonoBehaviour {
 
         ResendBtn?.gameObject.SetActive(true);
         txtVerificationInfoResend?.gameObject.SetActive(true);
-
-        if (txtEmail != null)
-            txtEmail.text = emailAccountManager.GetLastSignUpEmail();
     }
 
     private void OnEnable() {
         emailAccountManager.OnVerified += EmailVerificationCallBack;
         emailAccountManager.OnErrorVerification += ErrorEmailVerificationCallBack;
+
+        if (txtEmail != null)
+            txtEmail.text = emailAccountManager.GetLastSignUpEmail();
 
         EnableVerificationInfo();
 

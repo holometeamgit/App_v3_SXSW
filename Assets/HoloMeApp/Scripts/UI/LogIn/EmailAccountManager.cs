@@ -15,6 +15,12 @@ public class EmailAccountManager : MonoBehaviour
     public Action OnVerified;
     public Action OnErrorVerification;
 
+    public Action OnStartResetPassword;
+    public Action<BadRequestStartResetPassword> OnErrorStartResetPassword;
+
+    public Action OnResetPassword;
+    public Action<BadRequestResetPassword> OnErrorResetPassword;
+
     [SerializeField]
     AccountManager accountManager;
     [SerializeField]
@@ -23,7 +29,6 @@ public class EmailAccountManager : MonoBehaviour
     AuthorizationAPIScriptableObject authorizationAPI;
 
     private string lastSignUpEmail;
-    private string signUpAccessToken;
 
     public void SignUp(EmailSignUpJsonData emailSignUpJsonData) {
         SignUpRequest(emailSignUpJsonData);
@@ -35,6 +40,14 @@ public class EmailAccountManager : MonoBehaviour
 
     public void LogIn(EmailLogInJsonData emailLogInJsonData) {
         LogInRequest(emailLogInJsonData);
+    }
+
+    public void StartResetPassword(ResetPasswordEmailJsonData resetPasswordEmailJsonData) {
+        StartResetPasswordRequest(resetPasswordEmailJsonData);
+    }
+
+    public void ResetPassword(ResetPasswordJsonData resetPasswordJsonData) {
+        ResetPasswordRequest(resetPasswordJsonData);
     }
 
     public string GetLastSignUpEmail() {
@@ -53,7 +66,6 @@ public class EmailAccountManager : MonoBehaviour
 
     private void SignUpCallBack(long code, string body) {
         Debug.Log("SignUpCallBack " + code + " " + body);
-        signUpAccessToken = body;
         OnSignUp?.Invoke();
     }
 
@@ -74,8 +86,7 @@ public class EmailAccountManager : MonoBehaviour
     }
 
     private void VerifedCallBack(long code, string body) {
-        accountManager.SaveAccessToken(signUpAccessToken);
-        signUpAccessToken = "";
+        accountManager.SaveAccessToken(body);
         accountManager.SaveLastAutoType(LogInType.Email);
         OnVerified?.Invoke();
     }
@@ -106,6 +117,43 @@ public class EmailAccountManager : MonoBehaviour
         OnErrorLogIn?.Invoke(badRequestData);
     }
 
+    #endregion
+
+    #region Reset Password
+    private void StartResetPasswordRequest(ResetPasswordEmailJsonData resetPasswordEmailJsonData) {
+        string url = GetRequestURL(authorizationAPI.ResetPassword);
+        webRequestHandler.PostRequest(url, resetPasswordEmailJsonData, WebRequestHandler.BodyType.JSON,
+            StartResetPasswordCallBack,
+            ErrorStartResetPasswordCallBack);
+    }
+
+    private void StartResetPasswordCallBack(long code, string body) {
+        Debug.Log("Start Reset Password " + code + " : " + body);
+        OnStartResetPassword?.Invoke();
+    }
+
+    private void ErrorStartResetPasswordCallBack(long code, string body) {
+        BadRequestStartResetPassword badRequestData = JsonUtility.FromJson<BadRequestStartResetPassword>(body);
+        OnErrorStartResetPassword?.Invoke(badRequestData);
+    }
+    #endregion
+
+    #region Reset Password verification
+    private void ResetPasswordRequest(ResetPasswordJsonData resetPasswordJsonData) {
+       string url = GetRequestURL(authorizationAPI.ResetPasswordConfirm);
+       webRequestHandler.PostRequest(url, resetPasswordJsonData, WebRequestHandler.BodyType.JSON,
+            ResetPasswordCallBack,
+            ErrorResetPasswordCallBack);
+    }
+
+    private void ResetPasswordCallBack(long code, string body) {
+        OnResetPassword?.Invoke();
+    }
+
+    private void ErrorResetPasswordCallBack(long code, string body) {
+        BadRequestResetPassword badRequestResetPassword = JsonUtility.FromJson<BadRequestResetPassword>(body);
+        OnErrorResetPassword?.Invoke(badRequestResetPassword);
+    }
     #endregion
 
     private string GetRequestURL(string postfix) {
