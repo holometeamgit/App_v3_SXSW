@@ -13,6 +13,8 @@ public class PnlHomeScreen : MonoBehaviour
         FourPlus
     }
 
+    [SerializeField] float tymeToNextRefresh = 12;
+
     [SerializeField]
     PnlViewingExperience pnlViewingExperience;
 
@@ -122,7 +124,10 @@ public class PnlHomeScreen : MonoBehaviour
                 data.texture, data.streamJsonData, false); 
         }
 
-        yield return null;
+        yield return new WaitForSeconds(tymeToNextRefresh);
+
+        Clear();
+        homeScreenLoader.FetchData();
     }
 
     private void OnDisable() {
