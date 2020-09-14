@@ -8,8 +8,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 
-public class HomeScreenLoader : MonoBehaviour
-{
+public class HomeScreenLoader : MonoBehaviour {
 
     public class DataElement {
         public StreamJsonData.Data streamJsonData;
@@ -101,16 +100,16 @@ public class HomeScreenLoader : MonoBehaviour
         countLoadedStreamData++;
 
         if (streamJsonData.Count != 0)
-            switch(stage) {
-            case StreamJsonData.Data.Stage.Announced:
-                eventStreamJsonData.AddRange(streamJsonData);
-                break;
-            case StreamJsonData.Data.Stage.Live:
-                liveStreamJsonData.AddRange(streamJsonData);
-                break;
-            case StreamJsonData.Data.Stage.Finished:
-                finishedStreamJsonData.AddRange(streamJsonData);
-                break;
+            switch (stage) {
+                case StreamJsonData.Data.Stage.Announced:
+                    eventStreamJsonData.AddRange(streamJsonData);
+                    break;
+                case StreamJsonData.Data.Stage.Live:
+                    liveStreamJsonData.AddRange(streamJsonData);
+                    break;
+                case StreamJsonData.Data.Stage.Finished:
+                    finishedStreamJsonData.AddRange(streamJsonData);
+                    break;
             }
 
         if (countLoadedStreamData == compliteCountLoadedStreamData)
@@ -124,22 +123,34 @@ public class HomeScreenLoader : MonoBehaviour
 
         int waitingCount = eventStreamJsonData.Count + liveStreamJsonData.Count + finishedStreamJsonData.Count;
 
-//        Debug.Log("event");
+        //Debug.Log("event");
         foreach (var data in eventStreamJsonData) {
+            if (string.IsNullOrWhiteSpace(data.preview_s3_key) || string.IsNullOrWhiteSpace(data.preview_s3_url)) {
+                waitingCount--;
+                continue;
+            }
             Debug.Log(data.preview_s3_url);
             mediaFileDataHandler.LoadImg(data.preview_s3_url,
                 (code, body, texture) => TextureDataFetchedCallBack(waitingCount, fetchStart, StreamJsonData.Data.Stage.Announced, data, texture),
                 ((code, body) => Debug.Log(body)));
         }
-//        Debug.Log("live");
+        //Debug.Log("live");
         foreach (var data in liveStreamJsonData) {
+            if (string.IsNullOrWhiteSpace(data.preview_s3_key) || string.IsNullOrWhiteSpace(data.preview_s3_url)) {
+                waitingCount--;
+                continue;
+            }
             Debug.Log(data.preview_s3_url);
             mediaFileDataHandler.LoadImg(data.preview_s3_url,
                 (code, body, texture) => TextureDataFetchedCallBack(waitingCount, fetchStart, StreamJsonData.Data.Stage.Live, data, texture),
                 ((code, body) => Debug.Log(body)));
         }
-//        Debug.Log("stream");
+        //Debug.Log("stream");
         foreach (var data in finishedStreamJsonData) {
+            if (string.IsNullOrWhiteSpace(data.preview_s3_key) || string.IsNullOrWhiteSpace(data.preview_s3_url)) {
+                waitingCount--;
+                continue;
+            }
             Debug.Log(data.preview_s3_url);
             mediaFileDataHandler.LoadImg(data.preview_s3_url,
                 (code, body, texture) => TextureDataFetchedCallBack(waitingCount, fetchStart, StreamJsonData.Data.Stage.Finished, data, texture),
@@ -158,16 +169,16 @@ public class HomeScreenLoader : MonoBehaviour
         homeScreenDataElement.streamJsonData = streamJsonData;
         homeScreenDataElement.texture = texture;
 
-        switch(stage) {
-        case StreamJsonData.Data.Stage.Announced:
-            eventHomeScreenDataElement.Add(homeScreenDataElement);
-            break;
-        case StreamJsonData.Data.Stage.Finished:
-            streamHomeScreenDataElement.Add(homeScreenDataElement);
-            break;
-        case StreamJsonData.Data.Stage.Live:
-            liveHomeScreenDataElement.Add(homeScreenDataElement);
-            break;
+        switch (stage) {
+            case StreamJsonData.Data.Stage.Announced:
+                eventHomeScreenDataElement.Add(homeScreenDataElement);
+                break;
+            case StreamJsonData.Data.Stage.Finished:
+                streamHomeScreenDataElement.Add(homeScreenDataElement);
+                break;
+            case StreamJsonData.Data.Stage.Live:
+                liveHomeScreenDataElement.Add(homeScreenDataElement);
+                break;
         }
 
         if (countLoadedTextures == waitingCount)
