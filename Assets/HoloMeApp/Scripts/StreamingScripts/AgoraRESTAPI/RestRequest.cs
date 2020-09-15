@@ -20,6 +20,7 @@ public abstract class RestRequest
 
     protected T OnResponseReturned<T>(string jsonText)
     {
+        HelperFunctions.DevLog("JSON Returned = " + jsonText);
         return JsonParser.CreateFromJSON<T>(jsonText);
     }
 

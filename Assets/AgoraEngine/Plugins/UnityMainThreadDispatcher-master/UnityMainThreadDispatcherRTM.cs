@@ -78,8 +78,7 @@ public class UnityMainThreadDispatcherRTM : MonoBehaviour {
 
 
 	void Awake() {
-
-		print("CALLED");
+				
 		if (_instance == null) {
 			_instance = this;
 			DontDestroyOnLoad(this.gameObject);
