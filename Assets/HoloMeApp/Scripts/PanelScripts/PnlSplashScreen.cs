@@ -19,7 +19,7 @@ public class PnlSplashScreen : MonoBehaviour
 
     private void TryLogin() {
         //try get new access token from server via refresh access token. If it doesn’t work, then try to get a new refresh token
-        Debug.Log("Last Login Type " + (LogInType)PlayerPrefs.GetInt(PlayerPrefsKeys.LastTypeLoginPPKey));
+//        Debug.Log("Last Login Type " + (LogInType)PlayerPrefs.GetInt(PlayerPrefsKeys.LastTypeLoginPPKey));
         accountManager.LogIn(LogInCallBack, TryGetNewRefreshTokenAndLogIn);
     }
 
@@ -70,7 +70,7 @@ public class PnlSplashScreen : MonoBehaviour
     }
 
     private void LogInIvoke() {
-        Debug.Log("LogInCallBack");
+//        Debug.Log("LogInCallBack");
 
         OnLogInEvent.Invoke();
     }

@@ -44,7 +44,7 @@ public class StyleController : MonoBehaviour {
             foreach (var spritesStyle in currentBeemMenuStyle.Sprites)
                 mainDataContainer.Container.Add(spritesStyle.Sprites);
 
-        Debug.Log("Style Changed");
+//        Debug.Log("Style Changed");
         OnStyleChanged?.Invoke();
     }
 

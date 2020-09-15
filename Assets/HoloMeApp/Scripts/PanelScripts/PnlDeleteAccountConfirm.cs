@@ -10,19 +10,22 @@ public class PnlDeleteAccountConfirm : MonoBehaviour
     public void DeleteAccount()
     {
         //TODO: update it later 
-        //userWebManager.DisableUserAccount();
-    }
-
-    private void Start()
-    {
-        userWebManager.OnUserAccountDeleted += UserAccountDeletedCallBack;
+        userWebManager.DeleteUserAccount();
     }
 
     private void UserAccountDeletedCallBack()
     {
-        if (!this.isActiveAndEnabled)
-            return;
-
+        Debug.Log("UserAccountDeletedCallBack");
         switchLogOut.Switch();
+    }
+
+    private void OnEnable() {
+        Debug.Log("sub UserAccountDeletedCallBack");
+        userWebManager.OnUserAccountDeleted += UserAccountDeletedCallBack;
+    }
+
+    private void OnDisable() {
+        Debug.Log("unsub UserAccountDeletedCallBack");
+        userWebManager.OnUserAccountDeleted -= UserAccountDeletedCallBack;
     }
 }

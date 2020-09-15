@@ -115,12 +115,10 @@ public class WebRequestHandler : MonoBehaviour {
 
         using (UnityWebRequest request = UnityWebRequest.Delete(url)) {
             request.certificateHandler = new CustomCertificateHandler();
+            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
 
-            if (headerAccessToken != null) {
+            if (headerAccessToken != null)
                 request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
-                Debug.Log("Bearer " + headerAccessToken);
-                Debug.Log(request.GetRequestHeader("Authorization"));
-            }
 
             yield return request.SendWebRequest();
 

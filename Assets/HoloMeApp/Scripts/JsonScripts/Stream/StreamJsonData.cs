@@ -7,8 +7,8 @@ using System;
 public class StreamJsonData
 {
     public int count;
-    public int next;
-    public int previous;
+    public string next;
+    public string previous;
     public List<Data> results;
 
     public StreamJsonData() {
@@ -28,17 +28,18 @@ public class StreamJsonData
         public int id;
         public string preview_s3_url;
         public string stream_s3_url;
+        public string user;
         public string status;
-        public int agora_id;
-        public string agora_chanel;
+        public string agora_sid;
+        public string agora_channel;
+        public string file_name_prefix;
         public string start_date;
         public string end_date;
         public int duration;
         public string preview_s3_key;
         public string stream_s3_key;
-        public string name;
+        public string title;
         public string description;
-        public int user;
 
 
         private const string announcedStr = "announced";

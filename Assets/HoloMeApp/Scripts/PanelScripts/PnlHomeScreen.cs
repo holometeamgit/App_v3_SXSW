@@ -68,7 +68,7 @@ public class PnlHomeScreen : MonoBehaviour
         Texture s = texture;
 
         var thumbnailItem = newThumbnail.GetComponent<BtnThumbnailItem>();
-        thumbnailItem.UpdateThumbnailData(data.stream_s3_url, s);
+        thumbnailItem.UpdateThumbnailData(data.stream_s3_url, s, data?.user);
         thumbnailItem.SetLiveState(isLive);
 
         DateTime dateTime;

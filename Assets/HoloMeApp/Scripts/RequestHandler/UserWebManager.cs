@@ -10,11 +10,13 @@ using System;
 public class UserWebManager : MonoBehaviour
 {
     public Action OnUserInfoLoaded;
+    public Action OnErrorUserInfoLoaded;
 
     public Action OnUserInfoUploaded;
     public Action<BadRequestUserUploadJsonData> OnErrorUserUploaded;
 
     public Action OnUserAccountDeleted;
+    public Action UserAccountDisabled;
 
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] AccountManager accountManager;
@@ -23,11 +25,13 @@ public class UserWebManager : MonoBehaviour
     private UserJsonData userData;
 
     [HideInInspector]
-    public UnityEvent UserAccountDisabled;
+
 
     public void LoadUserInfo() {
+        Debug.Log("LoadUserInfo");
+        Debug.Log(accountManager.GetAccessToken().access);
         webRequestHandler.GetRequest(GetRequestGetUserURL(), LoadUserInfoCallBack,
-            ErrorMsgCallBack, accountManager.GetAccessToken().access);
+            ErrorLoadUserInfoCallBack, accountManager.GetAccessToken().access);
     }
 
     public void UploadUserInfo() {
@@ -130,11 +134,10 @@ public class UserWebManager : MonoBehaviour
         UploadUserInfo();
     }
 
-    #region call back function
+    #region download user data
     private void LoadUserInfoCallBack(long code, string body) {
         try {
             userData = JsonUtility.FromJson<UserJsonData>(body);
-
             OnUserInfoLoaded?.Invoke();
         } catch (System.Exception e) { }
 
@@ -142,13 +145,17 @@ public class UserWebManager : MonoBehaviour
             userData = new UserJsonData();
     }
 
+    private void ErrorLoadUserInfoCallBack(long code, string body) {
+        OnErrorUserInfoLoaded?.Invoke();
+    }
+    #endregion
+
+    #region upload user
     private void UploadUserInfoCallBack(long code, string body) {
-        Debug.Log("UploadUserInfoCallBack");
         OnUserInfoUploaded?.Invoke();
     }
 
     private void ErrorUploadUserInfoCallBack(long code, string body) {
-        Debug.Log("ErrorUploadUserInfoCallBack " + code + " " + body);
         try {
             BadRequestUserUploadJsonData badRequest = JsonUtility.FromJson<BadRequestUserUploadJsonData>(body);
             Debug.Log("ErrorUploadUserInfoCallBack " + code + " " + body);
@@ -157,19 +164,23 @@ public class UserWebManager : MonoBehaviour
         } catch (System.Exception e) { }
     }
 
+    #endregion
+
+    #region delete and disable user
     private void DeleteUserInfoCallBack(long code, string body) {
         Debug.Log("DeleteUserInfoCallBack " + code + " " + body);
         OnUserAccountDeleted?.Invoke();
     }
 
     private void DisableUserInfoCallBack(long code, string body) {
-        UserAccountDisabled.Invoke();
+        UserAccountDisabled?.Invoke();
     }
+    #endregion
 
     private void ErrorMsgCallBack(long code, string body) {
         Debug.LogWarning(code + " " + body);
     }
-    #endregion
+ 
 
     #region url generation functions
     private string GetRequestGetUserURL() {
