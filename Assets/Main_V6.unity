@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748172, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -831,8 +831,9 @@ Transform:
   - {fileID: 1942015496}
   - {fileID: 1152883703}
   - {fileID: 525544597}
+  - {fileID: 1485548531}
   m_Father: {fileID: 1511041754}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &35185073
 MonoBehaviour:
@@ -14380,8 +14381,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   emailAccountManager: {fileID: 1695419670}
+  pnlSignUpEmail: {fileID: 0}
   inputFieldKey: {fileID: 53743043}
+  deepLinkHandler: {fileID: 0}
   switcherToMainMenu: {fileID: 784659314}
+  ResendBtn: {fileID: 0}
+  txtVerificationInfo: {fileID: 0}
+  txtVerificationInfoResend: {fileID: 0}
+  txtEmail: {fileID: 0}
 --- !u!1 &328721671
 GameObject:
   m_ObjectHideFlags: 0
@@ -36941,18 +36948,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 873880944}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &873880946 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1957541489382406277, guid: 2c3121407a8ec4665ab8cef329fb7f3c,
-    type: 3}
-  m_PrefabInstance: {fileID: 873880944}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2918203d509f4931a5a3102928c754f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &877964168
 GameObject:
   m_ObjectHideFlags: 0
@@ -38484,7 +38479,7 @@ Transform:
   - {fileID: 1695419669}
   - {fileID: 1259991541}
   m_Father: {fileID: 1511041754}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &921435837
 MonoBehaviour:
@@ -44644,7 +44639,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   liveStreamQuad: {fileID: 839298373}
-  agoraRTMChatController: {fileID: 0}
+  agoraRTMChatController: {fileID: 1399294100}
+  secondaryServerCalls: {fileID: 1485548532}
   frameRate: 0
 --- !u!114 &1146380146
 MonoBehaviour:
@@ -53715,6 +53711,76 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1392850487}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1399294096
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1399294097}
+  - component: {fileID: 1399294100}
+  - component: {fileID: 1399294099}
+  - component: {fileID: 1399294098}
+  m_Layer: 0
+  m_Name: AgoraRTMControllers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1399294097
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1399294096}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1511041754}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1399294098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1399294096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16173428f7358476fa784f899e396692, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1399294099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1399294096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e686ae4afcd90d47a724ff3d41f4961, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1399294100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1399294096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4816593cbf50c394ab8d2fb65d9c8522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  userWebManager: {fileID: 525544598}
 --- !u!328 &1399650276 stripped
 VideoPlayer:
   m_CorrespondingSourceObject: {fileID: 8694030323663013784, guid: 9d36c39931263184ab238697bd8bfcfc,
@@ -56923,6 +56989,53 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1485548530
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1485548531}
+  - component: {fileID: 1485548532}
+  m_Layer: 0
+  m_Name: SecondaryServerCalls
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1485548531
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1485548530}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 35185072}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1485548532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1485548530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db0668e25e2f0f249aaa218941ced659, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
+  webRequestHandler: {fileID: 35185073}
+  agoraRequests: {fileID: 1146380146}
+  accountManager: {fileID: 921435837}
 --- !u!1001 &1487614014
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -57870,6 +57983,7 @@ Transform:
   - {fileID: 1289764688}
   - {fileID: 1668135546}
   - {fileID: 1146380144}
+  - {fileID: 1399294097}
   - {fileID: 1692783276}
   - {fileID: 2100244893}
   - {fileID: 921435836}
@@ -58186,6 +58300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54b494727e25748378ea65b0de594e6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tymeToNextRefresh: 12
   pnlViewingExperience: {fileID: 4715128579803891304}
   homeScreenLoader: {fileID: 1519045073}
   contentShowcaseThumbnails: {fileID: 2866259777283753841}
@@ -63708,12 +63823,6 @@ MonoBehaviour:
   accountManager: {fileID: 921435837}
   webRequestHandler: {fileID: 35185073}
   authorizationAPI: {fileID: 11400000, guid: 2a13ba28f9eb4462bb252fadc63d1424, type: 2}
-  OnSignUp:
-    m_PersistentCalls:
-      m_Calls: []
-  OnVerified:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1001 &1695931156
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -77303,7 +77412,8 @@ MonoBehaviour:
   userWebManager: {fileID: 525544598}
   InputDataArea: {fileID: 2046581329}
   usernameInputField: {fileID: 436065146}
-  fullNameInputField: {fileID: 873880946}
+  firstnameInputField: {fileID: 0}
+  surnameInputField: {fileID: 0}
   switchToMainMenu: {fileID: 124535838}
   backBtns:
   - {fileID: 1876978664}
@@ -77350,7 +77460,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1511041754}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2100706676
 GameObject:
@@ -79543,6 +79653,11 @@ PrefabInstance:
       propertyPath: agoraController
       value: 
       objectReference: {fileID: 1146380145}
+    - target: {fileID: 909432327233622993, guid: 5f7ccf99015f442d6b3e2967a1e6208b,
+        type: 3}
+      propertyPath: agoraRTMChatController
+      value: 
+      objectReference: {fileID: 1399294100}
     - target: {fileID: 2140466442297781893, guid: 5f7ccf99015f442d6b3e2967a1e6208b,
         type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -83735,7 +83850,7 @@ PrefabInstance:
     - target: {fileID: 611722738044528419, guid: 65f27277595733c46b483fb8530a683a,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 611722738044528419, guid: 65f27277595733c46b483fb8530a683a,
         type: 3}

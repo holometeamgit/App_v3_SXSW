@@ -102,4 +102,9 @@ public class HelperFunctions
         if (Application.isEditor || Debug.isDebugBuild)
             Debug.Log(message);
     }
+
+    public static void DevLogError(string message) {
+        if (Application.isEditor || Debug.isDebugBuild)
+            Debug.LogError(message);
+    }
 }

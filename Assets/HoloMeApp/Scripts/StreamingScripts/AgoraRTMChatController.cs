@@ -6,10 +6,10 @@ using UnityEngine;
 public class AgoraRTMChatController : MonoBehaviour
 {
     [SerializeField]
-    private string token = "";
-    private string appId;
+    private UserWebManager userWebManager;
 
-    public string userName = "temp1";
+    private string appId;
+    public string UserName { get; private set; }
 
     private IRtmWrapper rtm;
     private IRtmChannel channel;
@@ -29,11 +29,11 @@ public class AgoraRTMChatController : MonoBehaviour
         rtm.OnChannelMemberCountReceived += Rtm_OnChannelMemberCountReceived;
         rtm.OnMemberChanged += Rtm_OnMemberChanged;
 
-        if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(appId))
-        {
-            Debug.LogError("We need a username and appId to login");
-            yield break;
-        }
+        //if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(appId))
+        //{
+        //    Debug.LogError("We need a username and appId to login");
+        //    yield break;
+        //}
     }
 
     public void Init(string appId)
@@ -42,11 +42,13 @@ public class AgoraRTMChatController : MonoBehaviour
         StartCoroutine(DelayedInitialize());
     }
 
-    public void Login()
+    public void Login(string token)
     {
+        UserName = userWebManager.GetUsername();
+
         if (loggedIn)
             return;
-        rtm.Login(appId, token, userName);
+        rtm.Login(appId, token, UserName);
         loggedIn = true;
     }
 
@@ -75,7 +77,8 @@ public class AgoraRTMChatController : MonoBehaviour
 
     public void LeaveChannel()
     {
-        rtm.LeaveChannel(channel);
+        if (loggedIn && rtm != null && channel != null)
+            rtm.LeaveChannel(channel);
         OnStreamDisconnected();
     }
 

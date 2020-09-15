@@ -35,7 +35,7 @@ public class PnlWatchLive : MonoBehaviour
         }
         else
         {
-            agoraRequests.RequestChannels(requestChannelList);
+            agoraRequests.MakeGetRequest(requestChannelList);
         }
     }
 
