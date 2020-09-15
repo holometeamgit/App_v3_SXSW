@@ -25,23 +25,18 @@ public class SecondaryServerCalls : MonoBehaviour {
     string streamName;
 
     public void StartStream(string streamName) {
-
         this.streamName = streamName;
-
-        //Get token
-        // get agora token 
         webRequestHandler.GetRequest(webRequestHandler.ServerURLAuthAPI + videoUploader.GetStreamToken, (x, y) => { AssignToken(x, y); webRequestHandler.LogCallback(x, y); },
             (x, y) => webRequestHandler.ErrorLogCallback(x, "Agora Record Token" + y), accountManager.GetAccessToken().access);
 
+        //Get agora token 
         //Acquire
-
         //Start cloud record
-
         //Create stream Valery's server
-
         //Create stream Agora SDK
-
         //Stream video
+        //Stop cloud
+        //Stop stream second server
     }
 
     void AssignToken(long code, string data) {
@@ -56,7 +51,6 @@ public class SecondaryServerCalls : MonoBehaviour {
     }
 
     void StartAcquire() {
-        //Acquire
         HelperFunctions.DevLog("ACQUIRE CALLED");
         requestCloudRecordAcquire = new RequestCloudRecordAcquire();
         requestCloudRecordAcquire.AgoraCloudAcquireRequestData = new RequestCloudRecordAcquire.AgoraCloudAcquireRequest() { cname = streamName };
@@ -67,8 +61,7 @@ public class SecondaryServerCalls : MonoBehaviour {
     }
 
     void OnAcquireComplete() {
-        HelperFunctions.DevLog("ACQUIRE COMPLETE  RESOURCE ID = " + requestCloudRecordAcquire.ResponseAcquiredata.resourceId);
-
+        HelperFunctions.DevLog("ACQUIRE COMPLETE  RESOURCE ID = " + JsonUtility.ToJson(requestCloudRecordAcquire.ResponseAcquiredata, true));
         requestCloudRecordResource = new RequestCloudRecordResource();
         requestCloudRecordResource.OnSuccessAction -= OnStartCloudRecordComplete;
         requestCloudRecordResource.OnSuccessAction += OnStartCloudRecordComplete;
@@ -76,10 +69,9 @@ public class SecondaryServerCalls : MonoBehaviour {
         requestCloudRecordResource.AssignResourceId(requestCloudRecordAcquire.ResponseAcquiredata.resourceId);
         requestCloudRecordResource.StartCloudRecordRequestData = new RequestCloudRecordResource.StartCloudRecordRequest();
         requestCloudRecordResource.StartCloudRecordRequestData.uid = requestCloudRecordAcquire.AgoraCloudAcquireRequestData.uid;
-        requestCloudRecordResource.StartCloudRecordRequestData.cname = requestCloudRecordAcquire.AgoraCloudAcquireRequestData.cname; //"zed";
+        requestCloudRecordResource.StartCloudRecordRequestData.cname = requestCloudRecordAcquire.AgoraCloudAcquireRequestData.cname;
         requestCloudRecordResource.StartCloudRecordRequestData.clientRequest.token = tokenAgoraResponse.token;
         agoraRequests.MakePostRequest(requestCloudRecordResource, JsonUtility.ToJson(requestCloudRecordResource.StartCloudRecordRequestData));
-
         HelperFunctions.DevLog(JsonUtility.ToJson(requestCloudRecordResource.StartCloudRecordRequestData, true));
     }
 
@@ -118,24 +110,25 @@ public class SecondaryServerCalls : MonoBehaviour {
         requestCloudRecordStop.OnSuccessAction -= StopCloudRecordingCallback;
         requestCloudRecordStop.OnSuccessAction += StopCloudRecordingCallback;
         requestCloudRecordStop.AssignRequestString(requestCloudRecordResource.RequestString, requestCloudRecordResource.CloudRecordResponseData.sid);
-        //requestCloudRecordStop.StartCloudRecordRequestData = requestCloudRecordResource.StartCloudRecordRequestData;
 
+        RequestCloudRecordStop.StopCloudRecordRequest payload = new RequestCloudRecordStop.StopCloudRecordRequest();
+        payload.uid = requestCloudRecordResource.StartCloudRecordRequestData.uid;
+        payload.cname = requestCloudRecordResource.StartCloudRecordRequestData.cname;
+        
         HelperFunctions.DevLog("STOPPING CLOUD RECORDING:" + requestCloudRecordStop.RequestString);
-        agoraRequests.MakePostRequest(requestCloudRecordStop, JsonUtility.ToJson(requestCloudRecordResource.StartCloudRecordRequestData));
+        HelperFunctions.DevLog("PAYLOAD: " + JsonUtility.ToJson(payload, true));
+        agoraRequests.MakePostRequest(requestCloudRecordStop, JsonUtility.ToJson(payload));
     }
 
     void StopCloudRecordingCallback() {
-
-        HelperFunctions.DevLog($"Cloud Recording Stopped: {requestCloudRecordStop.requestCloudRecordStopResponse.serverResponse.uploadingStatus}");
-
+        //HelperFunctions.DevLog($"Cloud Recording Stopped: {requestCloudRecordStop.requestCloudRecordStopResponse.serverResponse.uploadingStatus}");
         StopSecondaryServer();
     }
 
     void StopSecondaryServer() {
-        StreamStatusJsonData data = new StreamStatusJsonData();
-        data.status = "finished";
-
+        HelperFunctions.DevLog("STOPPING STREAM SECONDARY SERVER");
+        StreamStatusJsonData data = new StreamStatusJsonData { status = "finished" };
         HelperFunctions.DevLog(webRequestHandler.ServerURLMediaAPI + videoUploader.StreamStatus.Replace("{id}", streamStartResponseJsonData.id.ToString()));
-        webRequestHandler.PatchRequest(webRequestHandler.ServerURLMediaAPI + videoUploader.StreamStatus.Replace("{id}", streamStartResponseJsonData.id.ToString()), data, WebRequestHandler.BodyType.JSON, webRequestHandler.LogCallback, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
+        webRequestHandler.PatchRequest(webRequestHandler.ServerURLMediaAPI + videoUploader.StreamStatus.Replace("{id}", streamStartResponseJsonData.id.ToString()), data, WebRequestHandler.BodyType.JSON, (x, y) => { webRequestHandler.LogCallback(x, y); HelperFunctions.DevLog("STREAM STOPPED SECONDARY SERVER"); }, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
     }
 }

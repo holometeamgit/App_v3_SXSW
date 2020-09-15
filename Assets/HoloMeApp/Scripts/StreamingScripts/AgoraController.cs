@@ -126,6 +126,9 @@ public class AgoraController : MonoBehaviour {
         if (iRtcEngine == null)
             return;
 
+        if (!isLive)
+            return;
+
         //if (isChannelCreator)
         //{
         //iRtcEngine.SendStreamMessage(streamID, "CreatorLeft");
@@ -134,15 +137,13 @@ public class AgoraController : MonoBehaviour {
         iRtcEngine.LeaveChannel();
         iRtcEngine.DisableVideoObserver();
         liveStreamQuad.SetActive(false);
-        isLive = false;
-
+        secondaryServerCalls.EndStream();
+        agoraRTMChatController.LeaveChannel();
         ResetVideoSurface();
 
         //OnStreamDisconnected();
-        agoraRTMChatController.LeaveChannel();
 
-        if (isLive)
-            secondaryServerCalls.EndStream();
+        isLive = false;
 
     }
 
@@ -156,7 +157,7 @@ public class AgoraController : MonoBehaviour {
 
     private void OnJoinChannelSuccess(string channelName, uint uid, int elapsed) {
         HelperFunctions.DevLog("JoinChannelSuccessHandler: uid = " + uid);
-        secondaryServerCalls.StartStream(ChannelName);
+        //secondaryServerCalls.StartStream(ChannelName);
         agoraRTMChatController.JoinChannel(channelName);
     }
 
@@ -209,8 +210,6 @@ public class AgoraController : MonoBehaviour {
             IRtcEngine.Destroy();  // Place this call in ApplicationQuit
             iRtcEngine = null;
         }
-
-        isLive = false;
     }
 
     public void SwitchCamera() {

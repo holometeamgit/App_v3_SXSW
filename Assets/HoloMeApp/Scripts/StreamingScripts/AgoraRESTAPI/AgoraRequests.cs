@@ -29,13 +29,7 @@ public class AgoraRequests : MonoBehaviour {
             string[] pages = uri.Split('/');
             int page = pages.Length - 1;
 
-            if (webRequest.isNetworkError) {
-                HelperFunctions.DevLog(pages[page] + ": Error: " + webRequest.error);
-                OnFailed?.Invoke();
-            } else {
-                HelperFunctions.DevLog(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text + webRequest.responseCode);
-                OnSuccess?.Invoke(webRequest.downloadHandler.text);
-            }
+            HandleReturn(OnSuccess, OnFailed, webRequest, pages, page);
         }
     }
 
@@ -59,12 +53,7 @@ public class AgoraRequests : MonoBehaviour {
         string[] pages = uri.Split('/');
         int page = pages.Length - 1;
 
-        if (webRequest.isNetworkError || webRequest.isHttpError) {
-            HelperFunctions.DevLog(pages[page] + ": Error: " + webRequest.error);
-            OnFailed?.Invoke();
-        } else {
-            OnSuccess(webRequest.downloadHandler.text);
-        }
+        HandleReturn(OnSuccess, OnFailed, webRequest, pages, page);
 
 
         //using (UnityWebRequest webRequest = UnityWebRequest.Put(url, Encoding.UTF8.GetBytes(body))) {
@@ -88,6 +77,16 @@ public class AgoraRequests : MonoBehaviour {
         //        OnSuccess?.Invoke(webRequest.downloadHandler.text);
         //    }
         //}
+    }
+
+    private static void HandleReturn(Action<string> OnSuccess, Action OnFailed, UnityWebRequest webRequest, string[] pages, int page) {
+        if (webRequest.isNetworkError || webRequest.isHttpError) {
+            HelperFunctions.DevLog(pages[page] + ": ErrorCode :" + webRequest.responseCode + ": Error: " + webRequest.error + webRequest.downloadHandler.text);
+            OnFailed?.Invoke();
+        } else {
+            HelperFunctions.DevLog(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text + webRequest.responseCode);
+            OnSuccess(webRequest.downloadHandler.text);
+        }
     }
 
     public void MakeGetRequest(RestRequest restRequest) {
