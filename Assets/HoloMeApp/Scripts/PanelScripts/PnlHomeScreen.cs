@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 
-public class PnlHomeScreen : MonoBehaviour
-{
+public class PnlHomeScreen : MonoBehaviour {
     public enum HomeScreenPageType {
         Default,
         One,
@@ -18,6 +17,12 @@ public class PnlHomeScreen : MonoBehaviour
 
     [SerializeField]
     PnlViewingExperience pnlViewingExperience;
+
+    [SerializeField]
+    PnlStreamOverlay pnlStreamOverlay;
+
+    [SerializeField]
+    AgoraController agoraController;
 
     [SerializeField]
     HomeScreenLoader homeScreenLoader;
@@ -50,7 +55,7 @@ public class PnlHomeScreen : MonoBehaviour
         if (!initiallaunch) {
             initiallaunch = true;
             homeScreenLoader.OnDataFetched.AddListener(DataFetched);
-            if(!fetchDataOnFirstEnable)
+            if (!fetchDataOnFirstEnable)
                 return;
         }
         homeScreenLoader.FetchData();
@@ -77,17 +82,28 @@ public class PnlHomeScreen : MonoBehaviour
 
         thumbnails.Add(newThumbnail);
 
-        thumbnailItem.SetThumbnailPressAction(_ => {
-            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null);
-            OnThumbnailClick.Invoke(); //TODO rewrite this after Beem V1
-            });
+        switch (data.GetStatus()) {
+            case StreamJsonData.Data.Stage.Finished:
+                thumbnailItem.SetThumbnailPressAction(_ => {
+                    pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null);
+                    OnThumbnailClick.Invoke(); //TODO rewrite this after Beem V1
+                });
+                break;
+            case StreamJsonData.Data.Stage.Live:
+                thumbnailItem.SetThumbnailPressAction(_ => {
+                    agoraController.ChannelName = data.agora_channel;
+                    pnlStreamOverlay.OpenAsViewer();
+                    OnThumbnailClick.Invoke(); //TODO rewrite this after Beem V1
+                });
+                break;
+        }
     }
 
     private void Clear() {
         if (thumbnails == null)
             thumbnails = new List<GameObject>();
 
-        foreach(var thumbnail in thumbnails) {
+        foreach (var thumbnail in thumbnails) {
             Destroy(thumbnail);
         }
 
@@ -95,7 +111,7 @@ public class PnlHomeScreen : MonoBehaviour
     }
 
     private void DataFetched() {
-        if(this.isActiveAndEnabled)
+        if (this.isActiveAndEnabled)
             StartCoroutine(AddingFetchedData());
     }
 
@@ -120,7 +136,7 @@ public class PnlHomeScreen : MonoBehaviour
         foreach (var data in homeScreenLoader.streamHomeScreenDataElement) {
             showCaseAddedData++;
             AddThumbnail(showCaseAddedData <= showcaseCount,
-                data.texture, data.streamJsonData, false); 
+                data.texture, data.streamJsonData, false);
         }
 
         yield return new WaitForSeconds(tymeToNextRefresh);
