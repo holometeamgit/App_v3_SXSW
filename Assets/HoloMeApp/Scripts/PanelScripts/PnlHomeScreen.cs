@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using System;
 
 public class PnlHomeScreen : MonoBehaviour
@@ -37,15 +38,13 @@ public class PnlHomeScreen : MonoBehaviour
 
     [SerializeField] bool fetchDataOnFirstEnable; //TODO: this is needed before switching to beem, then everything will be deleted
 
+    [SerializeField] UnityEvent OnThumbnailClick;
+
     private List<GameObject> thumbnails;
-    private AnimatedTransition animatedTransition;
 
     bool initiallaunch;
 
     void OnEnable() {
-        if(animatedTransition == null) {
-            animatedTransition = GetComponent<AnimatedTransition>();
-        }
 
         Clear();
         if (!initiallaunch) {
@@ -80,7 +79,7 @@ public class PnlHomeScreen : MonoBehaviour
 
         thumbnailItem.SetThumbnailPressAction(_ => {
             pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null);
-            animatedTransition.DoMenuTransition(false);
+            OnThumbnailClick.Invoke(); //TODO rewrite this after Beem V1
             });
     }
 

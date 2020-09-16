@@ -51,7 +51,7 @@ public class StyleController : MonoBehaviour {
     private void Update() {
         if (Input.GetKeyDown(KeyCode.Space)) {
 
-            UpdateStyle();
+            //UpdateStyle();
         }
     }
 }
