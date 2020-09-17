@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
 using System;
 
@@ -138,6 +139,12 @@ public class PnlHomeScreen : MonoBehaviour {
             AddThumbnail(showCaseAddedData <= showcaseCount,
                 data.texture, data.streamJsonData, false);
         }
+
+        //TODO rewrite this
+        yield return new WaitForEndOfFrame();
+        contentShowcaseThumbnails.gameObject.GetComponent<VerticalLayoutGroup>().enabled = false;
+        yield return new WaitForEndOfFrame();
+        contentShowcaseThumbnails.gameObject.GetComponent<VerticalLayoutGroup>().enabled = true;
 
         yield return new WaitForSeconds(tymeToNextRefresh);
 

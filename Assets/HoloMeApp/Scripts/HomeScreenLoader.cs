@@ -48,6 +48,7 @@ public class HomeScreenLoader : MonoBehaviour {
     int countLoadedStreamData;
     int compliteCountLoadedStreamData = 3;
     int countLoadedTextures;
+    int waitingCount;
 
     public UnityEvent OnDataFetched;
 
@@ -121,7 +122,7 @@ public class HomeScreenLoader : MonoBehaviour {
         if (fetchStart != fetchStartDateTime)
             return;
 
-        int waitingCount = eventStreamJsonData.Count + liveStreamJsonData.Count + finishedStreamJsonData.Count;
+        waitingCount = eventStreamJsonData.Count + liveStreamJsonData.Count + finishedStreamJsonData.Count;
 
         //Debug.Log("event");
         foreach (var data in eventStreamJsonData) {
@@ -131,8 +132,8 @@ public class HomeScreenLoader : MonoBehaviour {
             }
             Debug.Log(data.preview_s3_url);
             mediaFileDataHandler.LoadImg(data.preview_s3_url,
-                (code, body, texture) => TextureDataFetchedCallBack(waitingCount, fetchStart, StreamJsonData.Data.Stage.Announced, data, texture),
-                ((code, body) => Debug.Log(body)));
+                (code, body, texture) => TextureDataFetchedCallBack(fetchStart, StreamJsonData.Data.Stage.Announced, data, texture),
+                (code, body) => ErrorTextureDataFetchedCallBack(fetchStart, code, body));
         }
         //Debug.Log("live");
         foreach (var data in liveStreamJsonData) {
@@ -142,8 +143,8 @@ public class HomeScreenLoader : MonoBehaviour {
             }
             Debug.Log(data.preview_s3_url);
             mediaFileDataHandler.LoadImg(data.preview_s3_url,
-                (code, body, texture) => TextureDataFetchedCallBack(waitingCount, fetchStart, StreamJsonData.Data.Stage.Live, data, texture),
-                ((code, body) => Debug.Log(body)));
+                (code, body, texture) => TextureDataFetchedCallBack(fetchStart, StreamJsonData.Data.Stage.Live, data, texture),
+                (code, body) => ErrorTextureDataFetchedCallBack(fetchStart, code, body));
         }
         //Debug.Log("stream");
         foreach (var data in finishedStreamJsonData) {
@@ -153,15 +154,17 @@ public class HomeScreenLoader : MonoBehaviour {
             }
             Debug.Log(data.preview_s3_url);
             mediaFileDataHandler.LoadImg(data.preview_s3_url,
-                (code, body, texture) => TextureDataFetchedCallBack(waitingCount, fetchStart, StreamJsonData.Data.Stage.Finished, data, texture),
-                ((code, body) => Debug.Log(body)));
+                (code, body, texture) => TextureDataFetchedCallBack(fetchStart, StreamJsonData.Data.Stage.Finished, data, texture),
+                (code, body) => ErrorTextureDataFetchedCallBack(fetchStart, code, body));
         }
 
     }
 
-    private void TextureDataFetchedCallBack(int waitingCount, DateTime fetchStart, StreamJsonData.Data.Stage stage, StreamJsonData.Data streamJsonData, Texture texture) {
+    private void TextureDataFetchedCallBack(DateTime fetchStart, StreamJsonData.Data.Stage stage, StreamJsonData.Data streamJsonData, Texture texture) {
         if (fetchStart != fetchStartDateTime)
             return;
+
+        Debug.Log("TextureDataFetchedCallBack " + countLoadedTextures);
 
         countLoadedTextures++;
 
@@ -180,6 +183,17 @@ public class HomeScreenLoader : MonoBehaviour {
                 liveHomeScreenDataElement.Add(homeScreenDataElement);
                 break;
         }
+
+        if (countLoadedTextures == waitingCount)
+            OnDataFetched.Invoke();
+    }
+
+    private void ErrorTextureDataFetchedCallBack(DateTime fetchStart, long code, string body) {
+        if (fetchStart != fetchStartDateTime)
+            return;
+        waitingCount--;
+
+        Debug.Log(body + " " + countLoadedTextures + " " + waitingCount);
 
         if (countLoadedTextures == waitingCount)
             OnDataFetched.Invoke();
