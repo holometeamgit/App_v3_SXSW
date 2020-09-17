@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 [Serializable]
 public class StreamStartJsonData {
@@ -29,4 +28,9 @@ public class StreamStartResponseJsonData {
 [Serializable]
 public class TokenAgoraResponse {
     public string token;
+}
+
+[Serializable]
+public class ThumbnailImageData {
+    public string image;
 }

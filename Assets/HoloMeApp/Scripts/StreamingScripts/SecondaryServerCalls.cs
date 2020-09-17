@@ -15,6 +15,7 @@ public class SecondaryServerCalls : MonoBehaviour {
     AccountManager accountManager;
 
     public Action<string> OnStreamStarted;
+    string streamName;
 
     TokenAgoraResponse tokenAgoraResponse;
     RequestCloudRecordAcquire requestCloudRecordAcquire;
@@ -22,7 +23,11 @@ public class SecondaryServerCalls : MonoBehaviour {
     StreamStartResponseJsonData streamStartResponseJsonData;
     RequestCloudRecordStop requestCloudRecordStop;
 
-    string streamName;
+    public void UploadPreviewImage(byte[] imageData) {
+        HelperFunctions.DevLog("UPLOADING PREVIEW IMAGE");
+        webRequestHandler.PostRequestMultipart(webRequestHandler.ServerURLMediaAPI + videoUploader.UploadPreview.Replace("{id}", streamStartResponseJsonData.id.ToString()), imageData,
+            WebRequestHandler.BodyType.JSON, webRequestHandler.LogCallback, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
+    }
 
     public void StartStream(string streamName) {
         this.streamName = streamName;
@@ -114,7 +119,7 @@ public class SecondaryServerCalls : MonoBehaviour {
         RequestCloudRecordStop.StopCloudRecordRequest payload = new RequestCloudRecordStop.StopCloudRecordRequest();
         payload.uid = requestCloudRecordResource.StartCloudRecordRequestData.uid;
         payload.cname = requestCloudRecordResource.StartCloudRecordRequestData.cname;
-        
+
         HelperFunctions.DevLog("STOPPING CLOUD RECORDING:" + requestCloudRecordStop.RequestString);
         HelperFunctions.DevLog("PAYLOAD: " + JsonUtility.ToJson(payload, true));
         agoraRequests.MakePostRequest(requestCloudRecordStop, JsonUtility.ToJson(payload));
@@ -127,7 +132,7 @@ public class SecondaryServerCalls : MonoBehaviour {
 
     void StopSecondaryServer() {
         HelperFunctions.DevLog("STOPPING STREAM SECONDARY SERVER");
-        StreamStatusJsonData data = new StreamStatusJsonData { status = "finished" };
+        StreamStatusJsonData data = new StreamStatusJsonData { status = "stop" };
         HelperFunctions.DevLog(webRequestHandler.ServerURLMediaAPI + videoUploader.StreamStatus.Replace("{id}", streamStartResponseJsonData.id.ToString()));
         webRequestHandler.PatchRequest(webRequestHandler.ServerURLMediaAPI + videoUploader.StreamStatus.Replace("{id}", streamStartResponseJsonData.id.ToString()), data, WebRequestHandler.BodyType.JSON, (x, y) => { webRequestHandler.LogCallback(x, y); HelperFunctions.DevLog("STREAM STOPPED SECONDARY SERVER"); }, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
     }
