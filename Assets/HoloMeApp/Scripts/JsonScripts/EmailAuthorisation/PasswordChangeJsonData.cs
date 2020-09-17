@@ -6,7 +6,6 @@ using System;
 [Serializable]
 public class PasswordChangeJsonData 
 {
-    public string old_password;
     public string new_password1;
     public string new_password2;
 }

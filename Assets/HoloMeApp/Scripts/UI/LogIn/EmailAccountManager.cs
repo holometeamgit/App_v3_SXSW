@@ -21,6 +21,9 @@ public class EmailAccountManager : MonoBehaviour
     public Action OnResetPassword;
     public Action<BadRequestResetPassword> OnErrorResetPassword;
 
+    public Action OnChangePassword;
+    public Action<BadRequestChangePassword> OnErrorChangePassword;
+
     [SerializeField]
     AccountManager accountManager;
     [SerializeField]
@@ -48,6 +51,10 @@ public class EmailAccountManager : MonoBehaviour
 
     public void ResetPassword(ResetPasswordJsonData resetPasswordJsonData) {
         ResetPasswordRequest(resetPasswordJsonData);
+    }
+
+    public void ChangePassword(PasswordChangeJsonData passwordChangeJsonData) {
+        ChangePasswordRequest(passwordChangeJsonData);
     }
 
     public string GetLastSignUpEmail() {
@@ -153,6 +160,25 @@ public class EmailAccountManager : MonoBehaviour
     private void ErrorResetPasswordCallBack(long code, string body) {
         BadRequestResetPassword badRequestResetPassword = JsonUtility.FromJson<BadRequestResetPassword>(body);
         OnErrorResetPassword?.Invoke(badRequestResetPassword);
+    }
+    #endregion
+
+    #region Change Password 
+    private void ChangePasswordRequest(PasswordChangeJsonData passwordChangeJsonData) {
+        string url = GetRequestURL(authorizationAPI.ChangePassword);
+        webRequestHandler.PostRequest(url, passwordChangeJsonData, WebRequestHandler.BodyType.JSON,
+             ChangePasswordCallBack,
+             ErrorChangePasswordCallBack,
+             accountManager.GetAccessToken().access);
+    }
+
+    private void ChangePasswordCallBack(long code, string body) {
+        OnChangePassword?.Invoke();
+    }
+
+    private void ErrorChangePasswordCallBack(long code, string body) {
+        BadRequestChangePassword badRequestChangePassword = JsonUtility.FromJson<BadRequestChangePassword>(body);
+        OnErrorChangePassword?.Invoke(badRequestChangePassword);
     }
     #endregion
 

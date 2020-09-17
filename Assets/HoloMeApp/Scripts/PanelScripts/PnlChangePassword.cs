@@ -6,37 +6,44 @@ using TMPro;
 
 public class PnlChangePassword : MonoBehaviour
 {
-    [SerializeField] InputFieldController currentPasswordInputField;
+    [SerializeField] EmailAccountManager emailAccountManager;
     [SerializeField] InputFieldController newPasswordInputField;
     [SerializeField] InputFieldController newPasswordRepeatInputField;
-
-    [SerializeField] PasswordWebManager passwordWebManager;
-
-    public UnityEvent OnChanged;
+    [SerializeField] Switcher switchToNectMenu;
 
     public void ChangePassword() {
         PasswordChangeJsonData passwordChangeJsonData = new PasswordChangeJsonData();
-        passwordChangeJsonData.old_password = currentPasswordInputField.text;
         passwordChangeJsonData.new_password1 = newPasswordInputField.text;
         passwordChangeJsonData.new_password2 = newPasswordRepeatInputField.text;
-        passwordWebManager.ChangePassword(passwordChangeJsonData, PasswordChanedCallBack, PasswordChanedErrorCallBack);
+
+        emailAccountManager.ChangePassword(passwordChangeJsonData);
     }
 
-    private void PasswordChanedCallBack(long code, string body) {
-        OnChanged.Invoke();
+    private void Start() {
+        emailAccountManager = emailAccountManager ?? FindObjectOfType<EmailAccountManager>();
     }
 
-    private void PasswordChanedErrorCallBack(long code, string body) {
+    private void OnChangePasswordCallBack() {
+        switchToNectMenu?.Switch();
+    }
 
-        Debug.Log(body);
-        try {
-            var passwordWarningChangeJsonData = JsonUtility.FromJson<PasswordWarningChangeJsonData>(body);
-            if (passwordWarningChangeJsonData.old_password.Count > 0)
-                currentPasswordInputField.ShowWarning(passwordWarningChangeJsonData.old_password[0]);
-            if (passwordWarningChangeJsonData.new_password1.Count > 0)
-                newPasswordInputField.ShowWarning(passwordWarningChangeJsonData.new_password1[0]);
-            if (passwordWarningChangeJsonData.new_password2.Count > 0)
-                newPasswordRepeatInputField.ShowWarning(passwordWarningChangeJsonData.new_password2[0]);
-        } catch (System.Exception e) { Debug.Log("Incorrect: " + body); }
+    private void OnErrorChangePasswordCallBack(BadRequestChangePassword badRequestChangePassword) {
+        if (!string.IsNullOrWhiteSpace(badRequestChangePassword.detail))
+            newPasswordInputField.ShowWarning(badRequestChangePassword.detail);
+
+        if (badRequestChangePassword.new_password1.Count > 0)
+            newPasswordInputField.ShowWarning(badRequestChangePassword.new_password1[0]);
+        if (badRequestChangePassword.new_password2.Count > 0)
+            newPasswordRepeatInputField.ShowWarning(badRequestChangePassword.new_password2[0]);
+    }
+
+    private void OnEnable() {
+        emailAccountManager.OnChangePassword += OnChangePasswordCallBack;
+        emailAccountManager.OnErrorChangePassword += OnErrorChangePasswordCallBack;
+    }
+
+    private void OnDisable() {
+        emailAccountManager.OnChangePassword -= OnChangePasswordCallBack;
+        emailAccountManager.OnErrorChangePassword -= OnErrorChangePasswordCallBack;
     }
 }

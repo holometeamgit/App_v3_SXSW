@@ -41,7 +41,7 @@ public class FileAccountManager : MonoBehaviour {
     }
 
     public static void DeleteFile(string fileName) {
-        Debug.Log("DeleteFile " + fileName);
+//        Debug.Log("DeleteFile " + fileName);
         FileSave fileSave = new FileSave(FileFormat.Binary);
         fileSave.DeleteFile(Application.persistentDataPath + "/" + fileName);
     }

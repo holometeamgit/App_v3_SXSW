@@ -12,6 +12,7 @@ public class PnlProfile : MonoBehaviour
     [SerializeField] InputFieldController firstnameInputField;
     [SerializeField] InputFieldController surnameInputField;
     [SerializeField] Switcher switchToMainMenu;
+    [SerializeField] Switcher switchLogOutToLogIn;
 
     [SerializeField] List<GameObject> backBtns;
 
@@ -26,6 +27,7 @@ public class PnlProfile : MonoBehaviour
     }
 
     private void UserInfoLoadedCallBack() {
+        Debug.Log(userWebManager.GetUsername());
         if (usernameInputField != null)
             usernameInputField.text = usernameInputField.text == "" ? userWebManager.GetUsername() ?? "" : usernameInputField.text;
 
@@ -40,12 +42,21 @@ public class PnlProfile : MonoBehaviour
             userWebManager.GetLastName() == null && surnameInputField != null) {
             InputDataArea.SetActive(true);
         } else {
-            switchToMainMenu.Switch();
+            SwitchToMainMenu();
         }
+    }
+
+    private void ErrorUserInfoLoadedCallBack() {
+        switchLogOutToLogIn?.Switch();
     }
 
     private void UpdateUserDataCallBack() {
         userWebManager.LoadUserInfo();
+        SwitchToMainMenu();
+    }
+
+    private void SwitchToMainMenu() {
+        ClearInputFieldData();
         switchToMainMenu.Switch();
     }
 
@@ -65,8 +76,15 @@ public class PnlProfile : MonoBehaviour
             usernameInputField.ShowWarning(badRequestData.detail);
     }
 
+    private void ClearInputFieldData() {
+        usernameInputField.text = "";
+        firstnameInputField.text = "";
+        surnameInputField.text = "";
+    }
+
     private void OnEnable() {
         userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
+        userWebManager.OnErrorUserInfoLoaded += ErrorUserInfoLoadedCallBack;
         userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
         userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
 
@@ -76,6 +94,7 @@ public class PnlProfile : MonoBehaviour
 
     private void OnDisable() {
         userWebManager.OnUserInfoLoaded -= UserInfoLoadedCallBack;
+        userWebManager.OnErrorUserInfoLoaded -= ErrorUserInfoLoadedCallBack;
         userWebManager.OnUserInfoUploaded -= UpdateUserDataCallBack;
         userWebManager.OnErrorUserUploaded -= ErrorUpdateUserDataCallBack;
 
