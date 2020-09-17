@@ -29,8 +29,3 @@ public class StreamStartResponseJsonData {
 public class TokenAgoraResponse {
     public string token;
 }
-
-[Serializable]
-public class ThumbnailImageData {
-    public string image;
-}
