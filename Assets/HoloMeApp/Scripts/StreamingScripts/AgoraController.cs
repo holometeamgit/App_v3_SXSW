@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AgoraController : MonoBehaviour {
     public const string AppId = "9f6b623b2365404ea78ab4b08d8059eb";//"6f6b8da21bf744cb83e21a12c7497818";
@@ -29,13 +30,17 @@ public class AgoraController : MonoBehaviour {
     public Action OnStreamerLeft;
     public Action OnCameraSwitched;
 
-    VideoSurface videoSurfaceRef;
+    [SerializeField]
+    RawImage videoSufaceStreamerRawTex;
+
+    VideoSurface videoSurfaceQuadRef;
+
+    Coroutine sendThumbnailRoutine;
 
     public void Start() {
         LoadEngine(AppId);
         frameRate = 30;
         agoraRTMChatController.Init(AppId);
-        //agoraRTMChatController.OnLoginSuccess+= 
         secondaryServerCalls.OnStreamStarted += x => SecondaryServerCallsComplete(x, isChannelCreator);
     }
 
@@ -107,6 +112,8 @@ public class AgoraController : MonoBehaviour {
 
         //print("JOINED");
 
+        sendThumbnailRoutine = StartCoroutine(SendThumbnailData());
+
         isLive = true;
 
         //streamID = iRtcEngine.CreateDataStream(true, true);
@@ -141,15 +148,29 @@ public class AgoraController : MonoBehaviour {
         agoraRTMChatController.LeaveChannel();
         ResetVideoSurface();
 
+        if (sendThumbnailRoutine != null)
+            StopCoroutine(sendThumbnailRoutine);
+
         //OnStreamDisconnected();
 
         isLive = false;
 
     }
 
+    IEnumerator SendThumbnailData() {
+        yield return new WaitForSeconds(5);
+
+        //RawImage raw = videoSurfaceRef.GetComponent<RawImage>();
+        byte[] data = ((Texture2D)videoSufaceStreamerRawTex.texture).EncodeToPNG();
+        //byte[] data = videoSufaceStreamerRawTex.NativeTexture.EncodeToPNG();
+        //string stringData = Convert.ToBase64String(data);
+        //secondaryServerCalls.UploadPreviewImage(stringData);
+        secondaryServerCalls.UploadPreviewImage(data);
+    }
+
     private void ResetVideoSurface() {
-        if (videoSurfaceRef) {
-            Destroy(videoSurfaceRef);
+        if (videoSurfaceQuadRef) {
+            Destroy(videoSurfaceQuadRef);
             liveStreamQuad.GetComponent<MeshRenderer>().material.mainTexture = null;
             Resources.UnloadUnusedAssets();
         }
@@ -172,17 +193,17 @@ public class AgoraController : MonoBehaviour {
         if (!isChannelCreator) {
             ResetVideoSurface();
 
-            videoSurfaceRef = liveStreamQuad.GetComponent<VideoSurface>();
-            if (!videoSurfaceRef) {
-                videoSurfaceRef = liveStreamQuad.AddComponent<VideoSurface>();
+            videoSurfaceQuadRef = liveStreamQuad.GetComponent<VideoSurface>();
+            if (!videoSurfaceQuadRef) {
+                videoSurfaceQuadRef = liveStreamQuad.AddComponent<VideoSurface>();
             }
 
-            videoSurfaceRef.SetForUser(uid);
-            videoSurfaceRef.SetEnable(true);
-            videoSurfaceRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
-            videoSurfaceRef.EnableFlipTextureApplyTransform(true, true);
+            videoSurfaceQuadRef.SetForUser(uid);
+            videoSurfaceQuadRef.SetEnable(true);
+            videoSurfaceQuadRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
+            videoSurfaceQuadRef.EnableFlipTextureApplyTransform(true, true);
             //videoSurfaceRef.EnableFilpTextureApply(true, true);
-            videoSurfaceRef.SetGameFps(frameRate);
+            videoSurfaceQuadRef.SetGameFps(frameRate);
 
             //liveStreamQuad.GetComponent<LiveStreamGreenCalculator>().StartBackgroundRemoval();
 

@@ -13,4 +13,6 @@ public class VideoUploader : ScriptableObject {
 
     public string GetStreamToken = "/agora/token/";
 
+    public string UploadPreview = "/stream/{id}/preview/";
+
 }

@@ -27,10 +27,10 @@ namespace agora_gaming_rtc
     /** The definition of VideoSurface. */
     public class VideoSurface : MonoBehaviour
     {
+        public Texture2D NativeTexture { get; private set; }
         private System.IntPtr data = Marshal.AllocHGlobal(1920 * 1080 * 4);
         private int defWidth = 0;
         private int defHeight = 0;
-        private Texture2D nativeTexture;
         private bool initRenderMode = false;
         private VideoRender videoRender = null;
         private uint gameFps = 4;
@@ -111,12 +111,12 @@ namespace agora_gaming_rtc
                         try
                         {
                             // create Texture in the first time update data
-                            nativeTexture = new Texture2D((int)defWidth, (int)defHeight, TextureFormat.RGBA32, false);
-                            nativeTexture.LoadRawTextureData(data, (int)defWidth * (int)defHeight * 4);
+                            NativeTexture = new Texture2D((int)defWidth, (int)defHeight, TextureFormat.RGBA32, false);
+                            NativeTexture.LoadRawTextureData(data, (int)defWidth * (int)defHeight * 4);
                             //FlipTextureHorizontal(nativeTexture);
                             //FlipTextureVertically(nativeTexture);
-                            ApplyTexture(nativeTexture);
-                            nativeTexture.Apply();
+                            ApplyTexture(NativeTexture);
+                            NativeTexture.Apply();
                         }
                         catch (System.Exception e)
                         {
@@ -139,10 +139,10 @@ namespace agora_gaming_rtc
                             /*
                             *  if width and height don't change ,we only need to update data for texture, do not need to create Texture.
                             */
-                            nativeTexture.LoadRawTextureData(data, (int)width * (int)height * 4);
+                            NativeTexture.LoadRawTextureData(data, (int)width * (int)height * 4);
                             //FlipTextureHorizontal(nativeTexture);
                             //FlipTextureVertically(nativeTexture);
-                            nativeTexture.Apply();
+                            NativeTexture.Apply();
                         }
                         else
                         {
@@ -151,11 +151,11 @@ namespace agora_gaming_rtc
                             */
                             defWidth = width;
                             defHeight = height;
-                            nativeTexture.Resize(defWidth, defHeight);
-                            nativeTexture.LoadRawTextureData(data, (int)width * (int)height * 4);
+                            NativeTexture.Resize(defWidth, defHeight);
+                            NativeTexture.LoadRawTextureData(data, (int)width * (int)height * 4);
                             //FlipTextureHorizontal(nativeTexture);
                             //FlipTextureVertically(nativeTexture);
-                            nativeTexture.Apply();
+                            NativeTexture.Apply();
                         }
                     }
                     catch (System.Exception e)
@@ -374,5 +374,6 @@ namespace agora_gaming_rtc
         *if disabled, then no rendering happens
         */
         private bool mEnable = true;
+       
     }
 }
