@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Events;
 using System;
 
-public class PnlHomeScreen : MonoBehaviour
-{
+public class PnlHomeScreen : MonoBehaviour {
     public enum HomeScreenPageType {
         Default,
         One,
@@ -13,8 +14,16 @@ public class PnlHomeScreen : MonoBehaviour
         FourPlus
     }
 
+    [SerializeField] float tymeToNextRefresh = 12;
+
     [SerializeField]
     PnlViewingExperience pnlViewingExperience;
+
+    [SerializeField]
+    PnlStreamOverlay pnlStreamOverlay;
+
+    [SerializeField]
+    AgoraController agoraController;
 
     [SerializeField]
     HomeScreenLoader homeScreenLoader;
@@ -35,21 +44,19 @@ public class PnlHomeScreen : MonoBehaviour
 
     [SerializeField] bool fetchDataOnFirstEnable; //TODO: this is needed before switching to beem, then everything will be deleted
 
+    [SerializeField] UnityEvent OnThumbnailClick;
+
     private List<GameObject> thumbnails;
-    private AnimatedTransition animatedTransition;
 
     bool initiallaunch;
 
     void OnEnable() {
-        if(animatedTransition == null) {
-            animatedTransition = GetComponent<AnimatedTransition>();
-        }
 
         Clear();
         if (!initiallaunch) {
             initiallaunch = true;
             homeScreenLoader.OnDataFetched.AddListener(DataFetched);
-            if(!fetchDataOnFirstEnable)
+            if (!fetchDataOnFirstEnable)
                 return;
         }
         homeScreenLoader.FetchData();
@@ -66,7 +73,7 @@ public class PnlHomeScreen : MonoBehaviour
         Texture s = texture;
 
         var thumbnailItem = newThumbnail.GetComponent<BtnThumbnailItem>();
-        thumbnailItem.UpdateThumbnailData(data.stream_s3_url, s);
+        thumbnailItem.UpdateThumbnailData(data.stream_s3_url, s, data?.user);
         thumbnailItem.SetLiveState(isLive);
 
         DateTime dateTime;
@@ -76,17 +83,28 @@ public class PnlHomeScreen : MonoBehaviour
 
         thumbnails.Add(newThumbnail);
 
-        thumbnailItem.SetThumbnailPressAction(_ => {
-            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null);
-            animatedTransition.DoMenuTransition(false);
-            });
+        switch (data.GetStatus()) {
+            case StreamJsonData.Data.Stage.Finished:
+                thumbnailItem.SetThumbnailPressAction(_ => {
+                    pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null);
+                    OnThumbnailClick.Invoke(); //TODO rewrite this after Beem V1
+                });
+                break;
+            case StreamJsonData.Data.Stage.Live:
+                thumbnailItem.SetThumbnailPressAction(_ => {
+                    agoraController.ChannelName = data.agora_channel;
+                    pnlStreamOverlay.OpenAsViewer();
+                    OnThumbnailClick.Invoke(); //TODO rewrite this after Beem V1
+                });
+                break;
+        }
     }
 
     private void Clear() {
         if (thumbnails == null)
             thumbnails = new List<GameObject>();
 
-        foreach(var thumbnail in thumbnails) {
+        foreach (var thumbnail in thumbnails) {
             Destroy(thumbnail);
         }
 
@@ -94,7 +112,7 @@ public class PnlHomeScreen : MonoBehaviour
     }
 
     private void DataFetched() {
-        if(this.isActiveAndEnabled)
+        if (this.isActiveAndEnabled)
             StartCoroutine(AddingFetchedData());
     }
 
@@ -119,10 +137,19 @@ public class PnlHomeScreen : MonoBehaviour
         foreach (var data in homeScreenLoader.streamHomeScreenDataElement) {
             showCaseAddedData++;
             AddThumbnail(showCaseAddedData <= showcaseCount,
-                data.texture, data.streamJsonData, false); 
+                data.texture, data.streamJsonData, false);
         }
 
-        yield return null;
+        //TODO rewrite this
+        yield return new WaitForEndOfFrame();
+        contentShowcaseThumbnails.gameObject.GetComponent<VerticalLayoutGroup>().enabled = false;
+        yield return new WaitForEndOfFrame();
+        contentShowcaseThumbnails.gameObject.GetComponent<VerticalLayoutGroup>().enabled = true;
+
+        yield return new WaitForSeconds(tymeToNextRefresh);
+
+        Clear();
+        homeScreenLoader.FetchData();
     }
 
     private void OnDisable() {

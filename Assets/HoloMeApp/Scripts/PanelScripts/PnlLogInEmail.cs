@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PnlLogInEmail : MonoBehaviour
-{
+public class PnlLogInEmail : MonoBehaviour {
     [SerializeField] EmailAccountManager emailAccountManager;
     [SerializeField] InputFieldController inputFieldEmail;
     [SerializeField] InputFieldController inputFieldPassword;
@@ -15,12 +14,10 @@ public class PnlLogInEmail : MonoBehaviour
         emailLogInJsonData.username = inputFieldEmail.text;
         emailLogInJsonData.password = inputFieldPassword.text;
 
-        emailAccountManager.LogIn(emailLogInJsonData);
-    }
-
-    private void Start() {
-        emailAccountManager.OnLogIn += LogInCallBack;
-        emailAccountManager.OnErrorLogIn += ErrorLogInCallBack;
+        if (string.IsNullOrWhiteSpace(inputFieldEmail.text) || string.IsNullOrWhiteSpace(inputFieldPassword.text))
+            InitWarningMsg();
+        else
+            emailAccountManager.LogIn(emailLogInJsonData);
     }
 
     private void LogInCallBack() {
@@ -39,7 +36,29 @@ public class PnlLogInEmail : MonoBehaviour
         if (badRequestData.password.Count > 0)
             inputFieldPassword.ShowWarning(badRequestData.password[0]);
 
-        if(!string.IsNullOrEmpty(badRequestData.detail))
-            inputFieldEmail.ShowWarning(badRequestData.detail);
+        if (!string.IsNullOrEmpty(badRequestData.detail))
+            //inputFieldEmail.ShowWarning(badRequestData.detail);
+            inputFieldPassword.ShowWarning("Incorrect password");
+    }
+
+    private void InitWarningMsg() {
+        BadRequestLogInEmailJsonData badRequestLogInEmailJsonData = new BadRequestLogInEmailJsonData();
+        if (string.IsNullOrWhiteSpace(inputFieldEmail.text))
+            badRequestLogInEmailJsonData.username.Insert(0,"Required");
+
+        if (string.IsNullOrWhiteSpace(inputFieldPassword.text))
+            badRequestLogInEmailJsonData.password.Insert(0,"Required");
+
+        ErrorLogInCallBack(badRequestLogInEmailJsonData);
+    }
+
+    private void OnEnable() {
+        emailAccountManager.OnLogIn += LogInCallBack;
+        emailAccountManager.OnErrorLogIn += ErrorLogInCallBack;
+    }
+
+    private void OnDisable() {
+        emailAccountManager.OnLogIn -= LogInCallBack;
+        emailAccountManager.OnErrorLogIn -= ErrorLogInCallBack;
     }
 }

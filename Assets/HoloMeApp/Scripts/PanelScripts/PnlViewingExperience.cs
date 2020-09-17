@@ -20,9 +20,6 @@ public class PnlViewingExperience : MonoBehaviour
     PnlCameraAccess pnlCameraAccess;
 
     [SerializeField]
-    RectTransform scanMessageRT;
-
-    [SerializeField]
     HologramHandler hologramHandler;
 
     [SerializeField]
@@ -42,6 +39,22 @@ public class PnlViewingExperience : MonoBehaviour
 
     [SerializeField]
     PnlRecord pnlRecord;
+
+    [Header("")]
+    [SerializeField]
+    RectTransform scanMessageRT;
+
+    [TextArea]
+    [SerializeField]
+    string scaneEnviromentStr = "Scan the floor in front of you by moving your phone slowly from side to side";
+
+    [TextArea]
+    [SerializeField]
+    string pinchToZoomStr = "Pinch to zoom the hologram. Drag to move it around your environment";
+
+    [TextArea]
+    [SerializeField]
+    string tapToPlaceStr = "To see your chosen performer, tap the white circle when it appears on the floor";
 
     Coroutine scanAnimationRoutine;
 
@@ -83,7 +96,7 @@ public class PnlViewingExperience : MonoBehaviour
             StopCoroutine(scanAnimationRoutine); //Stop old routine is reactivating
 
         scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
-        ShowMessage("Scan the floor to start");
+        ShowMessage(scaneEnviromentStr);
         tutorialState = TutorialState.MessageTapToPlace;
         // arPlaneManager.enabled = true;
     }
@@ -129,7 +142,7 @@ public class PnlViewingExperience : MonoBehaviour
             StopCoroutine(scanAnimationRoutine);
             HideScanAnimation(animationSpeed);
             HideScanMessage();
-            ShowMessage("Tap screen to place the person", messageAnimationSpeed);
+            ShowMessage(tapToPlaceStr, messageAnimationSpeed);
             tutorialState = TutorialState.WaitingForTap;
         }
     }
@@ -140,7 +153,7 @@ public class PnlViewingExperience : MonoBehaviour
         if (tutorialState == TutorialState.WaitingForTap)
         {
             HideScanMessage();
-            ShowMessage("Pinch to zoom this person", messageAnimationSpeed);
+            ShowMessage(pinchToZoomStr, messageAnimationSpeed);
             tutorialState = TutorialState.WaitingForPinch;
         }
     }

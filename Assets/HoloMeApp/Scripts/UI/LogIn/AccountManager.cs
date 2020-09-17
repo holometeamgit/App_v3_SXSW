@@ -42,7 +42,7 @@ public class AccountManager : MonoBehaviour
     }
 
     public void SaveLastAutoType(LogInType logInType) {
-        Debug.Log("SaveLastAutoType " + logInType.ToString());
+//        Debug.Log("SaveLastAutoType " + logInType.ToString());
         PlayerPrefs.SetInt(PlayerPrefsKeys.LastTypeLoginPPKey, (int)logInType);
         PlayerPrefs.Save();
     }

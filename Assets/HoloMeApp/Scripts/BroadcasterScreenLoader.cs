@@ -86,6 +86,10 @@ public class BroadcasterScreenLoader : MonoBehaviour
         int waitingCount = streamJsonDataList.Count;
 
         foreach (var data in streamJsonDataList) {
+            if (string.IsNullOrWhiteSpace(data.preview_s3_key) || string.IsNullOrWhiteSpace(data.preview_s3_url)) {
+                waitingCount--;
+                continue;
+            }
             Debug.Log(data.preview_s3_url);
             mediaFileDataHandler.LoadImg(data.preview_s3_url,
                 (code, body, texture) => TextureDataFetchedCallBack(waitingCount, fetchStart, data, texture),

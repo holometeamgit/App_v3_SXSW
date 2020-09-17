@@ -13,33 +13,34 @@ public class PnlChangeUsername : MonoBehaviour
     }
 
     private void Start() {
-        userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
-        userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
-        userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
         userWebManager.LoadUserInfo();
     }
 
     private void UserInfoLoadedCallBack() {
-        if (!this.isActiveAndEnabled)
-            return;
-
         usernameInputField.text = usernameInputField.text == "" ? userWebManager.GetUsername() ?? "" : usernameInputField.text;
     }
 
     private void UpdateUserDataCallBack() {
-        if (!this.isActiveAndEnabled)
-            return;
         switchToSetting.Switch();
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
-        if (!this.isActiveAndEnabled)
-            return;
-
         if (badRequestData.username.Count > 0)
             usernameInputField.ShowWarning(badRequestData.username[0]);
 
         if (!string.IsNullOrEmpty(badRequestData.detail))
             usernameInputField.ShowWarning(badRequestData.detail);
+    }
+
+    private void OnEnable() {
+        userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
+        userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
+        userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
+    }
+
+    private void OnDisable() {
+        userWebManager.OnUserInfoLoaded -= UserInfoLoadedCallBack;
+        userWebManager.OnUserInfoUploaded -= UpdateUserDataCallBack;
+        userWebManager.OnErrorUserUploaded -= ErrorUpdateUserDataCallBack;
     }
 }

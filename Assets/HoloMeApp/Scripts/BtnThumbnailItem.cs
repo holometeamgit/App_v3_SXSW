@@ -15,7 +15,13 @@ public class BtnThumbnailItem : MonoBehaviour
     TMP_Text textPastLifeGO;
 
     [SerializeField]
-    GameObject imgLifeGO; 
+    GameObject imgLifeGO;
+
+    [SerializeField]
+    TMP_Text txtPerformerName;
+
+    [SerializeField]
+    TMP_Text txtStateThumbnaul;
 
     [SerializeField]
     Button buttonComponent;
@@ -24,22 +30,31 @@ public class BtnThumbnailItem : MonoBehaviour
     [SerializeField]
     AspectRatioFitterByMinSide aspectRatioFitterByMinSide;
 
+    private string liveStageText = "Live show";
+    private string pastLiveStageText = "Past broadcast";
+
     public void SetThumbnailPressAction(Action<string> OnPress)
     {
         buttonComponent.onClick.RemoveAllListeners();
         buttonComponent.onClick.AddListener(() => OnPress?.Invoke(code));
     }
 
-    public void UpdateThumbnailData(string code, Texture texture)
+    public void UpdateThumbnailData(string code, Texture texture, string username = null)
     {
         imgThumbnail.texture = texture;
         this.code = code;
+        if (txtPerformerName != null && username != null)
+            txtPerformerName.text = username;
         aspectRatioFitterByMinSide?.Refresh();
     }
 
+    //TODO in Beem v2 Add new type
     public void SetLiveState(bool value) {
         imgLifeGO.SetActive(value);
         imgPastLifeGO.SetActive(!value);
+
+        if(txtStateThumbnaul != null)
+            txtStateThumbnaul.text = value ? liveStageText : pastLiveStageText;
     }
 
     public void SetTimePeriod(DateTime streamDateTime) {
