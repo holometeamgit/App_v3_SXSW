@@ -28,6 +28,10 @@ public class WebRequestHandler : MonoBehaviour {
         StartCoroutine(PostRequesting(url, body, bodyType, responseDelegate, errorTypeDelegate, headerAccessToken));
     }
 
+    public void PostRequestMultipart(string url, byte[] body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
+        StartCoroutine(PostRequestingMultiPart(url, body, bodyType, responseDelegate, errorTypeDelegate, headerAccessToken));
+    }
+
     public void PutRequest<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
         StartCoroutine(PutRequesting(url, body, bodyType, responseDelegate, errorTypeDelegate, headerAccessToken));
     }
@@ -55,6 +59,65 @@ public class WebRequestHandler : MonoBehaviour {
             } else {
                 responseDelegate(request.responseCode, request.downloadHandler.text);
             }
+        }
+    }
+
+    //IEnumerator PostRequestingMultiPart(string url, byte[] myData, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
+    //    {
+
+    //        using (UnityWebRequest webRequest = UnityWebRequest.Put(url, myData)) {
+    //            webRequest.method = "POST";
+    //            webRequest.SetRequestHeader("Content-Type", "multipart/form-data");
+    //            if (headerAccessToken != null)
+    //                webRequest.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
+
+    //            yield return webRequest.Send();
+
+    //            if (webRequest.isNetworkError || webRequest.isHttpError) {
+    //                HelperFunctions.DevLog("ErrorCode :" + webRequest.responseCode + ": Error: " + webRequest.error + webRequest.downloadHandler.text);
+    //                errorTypeDelegate(webRequest.responseCode, webRequest.downloadHandler.text);
+    //            } else {
+    //                Debug.Log("Upload complete!");
+    //                responseDelegate(webRequest.responseCode, webRequest.downloadHandler.text);
+    //            }
+    //        }
+    //    }
+    //}
+
+    IEnumerator PostRequestingMultiPart(string url, byte[] myData, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
+        // read a file and add it to the form
+        List<IMultipartFormSection> form = new List<IMultipartFormSection> { new MultipartFormFileSection("image", myData, "VideoThumbnail.png", "image") };
+        // generate a boundary then convert the form to byte[]
+        byte[] boundary = UnityWebRequest.GenerateBoundary();
+        byte[] formSections = UnityWebRequest.SerializeFormSections(form, boundary);
+        // my termination string consisting of CRLF--{boundary}--
+        byte[] terminate = Encoding.UTF8.GetBytes(String.Concat("\r\n--", Encoding.UTF8.GetString(boundary), "--"));
+        // Make my complete body from the two byte arrays
+        byte[] body = new byte[formSections.Length + terminate.Length];
+        Buffer.BlockCopy(formSections, 0, body, 0, formSections.Length);
+        Buffer.BlockCopy(terminate, 0, body, formSections.Length, terminate.Length);
+        // Set the content type - NO QUOTES around the boundary
+        string contentType = String.Concat("multipart/form-data; boundary=", Encoding.UTF8.GetString(boundary));
+        // Make my request object and add the raw body. Set anything else you need here
+        UnityWebRequest wr = new UnityWebRequest(url, "POST");
+        UploadHandler uploader = new UploadHandlerRaw(body);
+        uploader.contentType = contentType;
+        wr.uploadHandler = uploader;
+
+        //wr.SetRequestHeader("Content-Type", "multipart/form-data");
+        //wr.SetRequestHeader("Content-Type", "application/json");
+
+        if (headerAccessToken != null)
+            wr.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
+
+        yield return wr.SendWebRequest();
+
+        if (wr.isNetworkError || wr.isHttpError) {
+            //            Debug.Log(request.responseCode + " : " + request.error);
+            errorTypeDelegate(wr.responseCode, wr.error);
+        } else {
+            //            Debug.Log(request.responseCode + " : " + request.downloadHandler.text);
+            responseDelegate(wr.responseCode, wr.error);
         }
     }
 
