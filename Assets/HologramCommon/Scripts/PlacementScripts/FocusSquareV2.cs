@@ -14,6 +14,7 @@ public class FocusSquareV2 : PlacementHandler
         TAP_FIRST,    // tap to place after scanning
         LOADING,      // is video still loading
         PINCH,        // Pich to zoom or drag to replace
+        DELAY_AFTER_PINCH, // Short delay after pinch
         HIDE 
     }
 
@@ -33,8 +34,12 @@ public class FocusSquareV2 : PlacementHandler
     [SerializeField]
     [Range(0, 10)]
     [Tooltip("This is the unit distance before the square becomes transparent as it gets closer to the hologram")]
-    private float transparencyRangeHologram = 1f;
+    private float transparencyRangeHologram = 1f;  // TODO - add bigger distance
     
+    [SerializeField]
+    private float _delayAfterPinch = 2.0f;
+    private float _currentDelayAfterPinch = 0.0f;
+
     // Remove it and add normal stuff
     [SerializeField] private FocusSquare _focusSquare;
     [SerializeField] private Transform _focusSquareV2Sprite;
@@ -75,6 +80,10 @@ public class FocusSquareV2 : PlacementHandler
                 _focusSquareRenderer.color = new Color(1, 1, 1, 1.0f);
                 _pnlViewingExperience.ShowPinchToZoomMessage();
                 PinchToZoomAnimation();
+                _currentState = value;
+                break;
+            case States.DELAY_AFTER_PINCH:
+                _currentDelayAfterPinch = 0.0f;
                 _currentState = value;
                 break;
             case States.HIDE:
@@ -130,10 +139,21 @@ public class FocusSquareV2 : PlacementHandler
                 }
                 break;
             case States.PINCH:
+                // TODO add delay after pinch
                 if (Input.touchCount > 1) 
                 {
-                    SwitchToState(States.HIDE);
+                    SwitchToState(States.DELAY_AFTER_PINCH);
                 }
+                break;
+            case States.DELAY_AFTER_PINCH:
+                HandleDistanceFade();
+                if (_currentDelayAfterPinch < _delayAfterPinch)
+                {
+                    _currentDelayAfterPinch += Time.deltaTime;
+                    break;
+                }
+                _currentDelayAfterPinch = 0.0f;
+                SwitchToState(States.HIDE);
                 break;
             case States.HIDE:
                 TransformUpdate();
@@ -157,7 +177,7 @@ public class FocusSquareV2 : PlacementHandler
 
     private void HandleDistanceFade()
     {
-        _focusSquareRenderer.color = new Color(1, 1, 1, GetAlphaBasedOnDistance());
+        _focusSquareRenderer.color = Color.Lerp(_focusSquareRenderer.color, new Color(1, 1, 1, GetAlphaBasedOnDistance()), Time.deltaTime * 5.0f);
     }
 
     private float GetAlphaBasedOnDistance()
