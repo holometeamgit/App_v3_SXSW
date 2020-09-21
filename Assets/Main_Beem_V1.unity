@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.5748171, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5399,6 +5399,7 @@ MonoBehaviour:
   _arPlaneManager: {fileID: 780547052}
   _focusSquareAnimator: {fileID: 1005114710}
   transparencyRangeHologram: 1
+  _delayAfterPinch: 2
   _focusSquare: {fileID: 5503923335667453288}
   _focusSquareV2Sprite: {fileID: 1005114712}
   _pnlViewingExperience: {fileID: 4715128579803891304}
@@ -5814,6 +5815,7 @@ MonoBehaviour:
   agoraRTMChatController: {fileID: 1399294100}
   secondaryServerCalls: {fileID: 1485548532}
   frameRate: 0
+  videoSufaceStreamerRawTex: {fileID: 0}
 --- !u!114 &1146380146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17395,6 +17397,11 @@ PrefabInstance:
       propertyPath: agoraController
       value: 
       objectReference: {fileID: 1146380145}
+    - target: {fileID: 5589455037115023794, guid: 3e2c1214a13fc4a6b80f6e9de6d0ccd7,
+        type: 3}
+      propertyPath: tymeToNextRefresh
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 5589455037115023804, guid: 3e2c1214a13fc4a6b80f6e9de6d0ccd7,
         type: 3}
       propertyPath: m_Name

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System;
+using System.Linq;
 
 public class PnlHomeScreen : MonoBehaviour {
     public enum HomeScreenPageType {
@@ -14,7 +15,7 @@ public class PnlHomeScreen : MonoBehaviour {
         FourPlus
     }
 
-    [SerializeField] float tymeToNextRefresh = 12;
+    [SerializeField] float tymeToNextRefresh = 60;
 
     [SerializeField]
     PnlViewingExperience pnlViewingExperience;
@@ -120,21 +121,47 @@ public class PnlHomeScreen : MonoBehaviour {
 
         int showCaseAddedData = 0;
 
-        foreach (var data in homeScreenLoader.eventHomeScreenDataElement) {
-            showCaseAddedData++;
-            AddThumbnail(showCaseAddedData <= showcaseCount,
-                data.texture, data.streamJsonData, true);
-            yield return null;
-        }
-
-        foreach (var data in homeScreenLoader.liveHomeScreenDataElement) {
-            showCaseAddedData++;
-            AddThumbnail(showCaseAddedData <= showcaseCount,
-                data.texture, data.streamJsonData, true);
-            yield return null;
-        }
+        #region for testing time beem 1
 
         foreach (var data in homeScreenLoader.streamHomeScreenDataElement) {
+            Debug.Log(data.streamJsonData.stream_s3_url);
+            if (data.streamJsonData.stream_s3_url.Contains("00000010_BEEM_Jan_intro_holo_7113.mp4") || data.streamJsonData.file_name_prefix.Contains("Welcome_Jan")) {
+                showCaseAddedData++;
+                AddThumbnail(showCaseAddedData <= showcaseCount,
+                    data.texture, data.streamJsonData, false);
+
+                homeScreenLoader.streamHomeScreenDataElement.Remove(data);
+                break;
+            }
+        }
+
+        #endregion
+
+
+        IEnumerable<HomeScreenLoader.DataElement> events =
+            homeScreenLoader.eventHomeScreenDataElement.OrderBy(thumbnail => DateTime.Parse(thumbnail.streamJsonData.start_date));
+
+        foreach (var data in events) {
+            showCaseAddedData++;
+            AddThumbnail(showCaseAddedData <= showcaseCount,
+                data.texture, data.streamJsonData, true);
+            yield return null;
+        }
+
+        IEnumerable<HomeScreenLoader.DataElement> lifes =
+            homeScreenLoader.liveHomeScreenDataElement.OrderByDescending(thumbnail => DateTime.Parse(thumbnail.streamJsonData.start_date));
+
+        foreach (var data in lifes) {
+            showCaseAddedData++;
+            AddThumbnail(showCaseAddedData <= showcaseCount,
+                data.texture, data.streamJsonData, true);
+            yield return null;
+        }
+
+        IEnumerable<HomeScreenLoader.DataElement> finisheds =
+            homeScreenLoader.streamHomeScreenDataElement.OrderByDescending(thumbnail => DateTime.Parse(thumbnail.streamJsonData.start_date));
+
+        foreach (var data in finisheds) {
             showCaseAddedData++;
             AddThumbnail(showCaseAddedData <= showcaseCount,
                 data.texture, data.streamJsonData, false);
