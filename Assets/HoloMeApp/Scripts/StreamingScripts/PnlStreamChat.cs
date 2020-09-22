@@ -57,9 +57,14 @@ public class PnlStreamChat : AgoraMessageReceiver
         if (rudeWordDetected)
             HelperFunctions.DevLog("Rude word detected new string = " + censoredText);
 
+        if (!agoraController.IsLive)
+            censoredText = "Channel must be live to post comments";
+
         ChatMessageJsonData chatMessageJsonData = new ChatMessageJsonData { userName = agoraRTMChatController.UserName, message = censoredText };
         CreateChatMessageGO(chatMessageJsonData);
-        agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(chatMessageJsonData));
+
+        if (agoraController.IsLive)
+            agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(chatMessageJsonData));
 
         inputField.text = "";
         StartRefreshLayoutRoutine();
