@@ -7,8 +7,7 @@ using System.Collections;
 using UnityEngine.UI;
 using agora_gaming_rtc;
 
-public class PnlStreamOverlay : MonoBehaviour
-{
+public class PnlStreamOverlay : MonoBehaviour {
     [SerializeField]
     GameObject controlsPresenter;
 
@@ -43,6 +42,9 @@ public class PnlStreamOverlay : MonoBehaviour
     AgoraController agoraController;
 
     [SerializeField]
+    UserWebManager userWebManager;
+
+    [SerializeField]
     PnlViewingExperience pnlViewingExperience;
 
     [SerializeField]
@@ -69,15 +71,12 @@ public class PnlStreamOverlay : MonoBehaviour
     bool isStreamer;
     bool isUsingFrontCamera;
 
-    private void Awake()
-    {
+    private void Awake() {
         agoraController.OnCountIncremented += (x) => txtUserCount.text = x.ToString();
         agoraController.OnStreamerLeft += CloseAsViewer;
-        agoraController.OnCameraSwitched += () =>
-        {
+        agoraController.OnCameraSwitched += () => {
             var videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
-            if (videoSurface)
-            {
+            if (videoSurface) {
                 isUsingFrontCamera = !isUsingFrontCamera;
                 videoSurface.EnableFlipTextureApplyTransform(!isUsingFrontCamera, false);
             }
@@ -85,8 +84,7 @@ public class PnlStreamOverlay : MonoBehaviour
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
     }
 
-    private void OnEnable()
-    {
+    private void OnEnable() {
         FadePanel(true);
         toggleAudio.isOn = false;
         toggleVideo.isOn = false;
@@ -95,22 +93,19 @@ public class PnlStreamOverlay : MonoBehaviour
         RequestMicAccess();
     }
 
-    private void RequestMicAccess()
-    {
-        if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete)
-        {
+    private void RequestMicAccess() {
+        if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete) {
             permissionGranter.RequestMicAccess();
         }
     }
 
-    private void ToggleARSessionObjects(bool enable)
-    {
+    private void ToggleARSessionObjects(bool enable) {
         arSessionOrigin.SetActive(enable);
         arSession.SetActive(enable);
     }
 
-    public void OpenAsStreamer()
-    {
+    public void OpenAsStreamer() {
+        agoraController.ChannelName = userWebManager.GetUsername();
         isStreamer = true;
         gameObject.SetActive(true);
         controlsPresenter.SetActive(true);
@@ -120,8 +115,7 @@ public class PnlStreamOverlay : MonoBehaviour
         //StartCountdown();
     }
 
-    public void OpenAsViewer()
-    {
+    public void OpenAsViewer() {
         isStreamer = false;
         blurController.RemoveBlur();
         gameObject.SetActive(true);
@@ -132,13 +126,11 @@ public class PnlStreamOverlay : MonoBehaviour
         agoraController.JoinOrCreateChannel(false);
     }
 
-    public void FadePanel(bool show)
-    {
+    public void FadePanel(bool show) {
         canvasGroup.DOFade(show ? 1 : 0, 0.5f).OnComplete(() => { if (!show) { gameObject.SetActive(false); } });
     }
 
-    public void ShowLeaveWarning()
-    {
+    public void ShowLeaveWarning() {
         if (isStreamer)
             pnlGenericError.ActivateDoubleButton("End the live stream?", "Closing this page will end the live stream and disconnect your users.", onButtonOnePress: () => { CloseAsStreamer(); }, onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
         else
@@ -150,19 +142,15 @@ public class PnlStreamOverlay : MonoBehaviour
         StopStream();
     }
 
-    private void CloseAsViewer()
-    {
+    private void CloseAsViewer() {
         OnCloseAsViewer.Invoke();
         StopStream();
     }
 
-    public void ShareStream()
-    {
-        using (var payload = new SharePayload())
-        {
+    public void ShareStream() {
+        using (var payload = new SharePayload()) {
             string appLink;
-            switch (Application.platform)
-            {
+            switch (Application.platform) {
                 case RuntimePlatform.IPhonePlayer:
                     appLink = "https://tinyurl.com/HoloMeiOS";//"https://apps.apple.com/us/app/holome/id1454364021";
                     break;
@@ -180,13 +168,11 @@ public class PnlStreamOverlay : MonoBehaviour
         }
     }
 
-    public void StartCountdown()
-    {
+    public void StartCountdown() {
         countdownRoutine = StartCoroutine(CountDown());
     }
 
-    public void StopStream()
-    {
+    public void StopStream() {
         if (countdownRoutine != null)
             StopCoroutine(countdownRoutine);
 
@@ -194,18 +180,15 @@ public class PnlStreamOverlay : MonoBehaviour
         agoraController.Leave();
     }
 
-    void StartStream()
-    {
+    void StartStream() {
         agoraController.JoinOrCreateChannel(true);
         EnableStreamControls(true);
         AddVideoSurface();
     }
 
-    private void AddVideoSurface()
-    {
+    private void AddVideoSurface() {
         VideoSurface videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
-        if (!videoSurface)
-        {
+        if (!videoSurface) {
             videoSurface = cameraRenderImage.gameObject.AddComponent<VideoSurface>();
             isUsingFrontCamera = true;
             videoSurface.EnableFlipTextureApplyTransform(true, true);
@@ -217,47 +200,37 @@ public class PnlStreamOverlay : MonoBehaviour
         StartCoroutine(Resize());
     }
 
-    IEnumerator Resize()
-    {
+    IEnumerator Resize() {
         yield return new WaitForSeconds(3);
         cameraRenderImage.SizeToParent();
     }
 
-    private void EnableStreamControls(bool enable)
-    {
+    private void EnableStreamControls(bool enable) {
         toggleAudio.interactable = enable;
         toggleVideo.interactable = enable;
         btnFlipCamera.interactable = enable;
     }
 
-    public void ToggleAudio(bool mute)
-    {
+    public void ToggleAudio(bool mute) {
         TogglePauseStream();
     }
 
-    public void ToggleVideo(bool hideVideo)
-    {
+    public void ToggleVideo(bool hideVideo) {
         TogglePauseStream();
     }
 
-    void TogglePauseStream()
-    {
-        if (toggleVideo.isOn && toggleAudio.isOn)
-        {
+    void TogglePauseStream() {
+        if (toggleVideo.isOn && toggleAudio.isOn) {
             AnimatedCentreTextMessage("Stream Paused");
-        }
-        else
-        {
+        } else {
             AnimatedFadeOutMessage();
         }
     }
 
-    IEnumerator CountDown()
-    {
+    IEnumerator CountDown() {
         countDown = 0;
 
-        while (countDown >= 0)
-        {
+        while (countDown >= 0) {
             AnimatedCentreTextMessage(countDown > 0 ? countDown.ToString() : "ON AIR");
             AnimatedFadeOutMessage(.5f);
             countDown--;
@@ -267,8 +240,7 @@ public class PnlStreamOverlay : MonoBehaviour
         StartStream();
     }
 
-    private void AnimatedCentreTextMessage(string message)
-    {
+    private void AnimatedCentreTextMessage(string message) {
         DOTween.Kill(tweenAnimationID);
         txtCentreMessage.rectTransform.localScale = Vector3.one;
         txtCentreMessage.text = message;
@@ -276,13 +248,11 @@ public class PnlStreamOverlay : MonoBehaviour
         txtCentreMessage.rectTransform.DOPunchScale(Vector3.one, .25f, 3).SetId(tweenAnimationID);
     }
 
-    private void AnimatedFadeOutMessage(float delay = 0)
-    {
+    private void AnimatedFadeOutMessage(float delay = 0) {
         txtCentreMessage.DOFade(0, .5f).SetDelay(delay).SetId(tweenAnimationID);
     }
 
-    private void OnDisable()
-    {
+    private void OnDisable() {
         StopAllCoroutines();
         ToggleARSessionObjects(true);
     }

@@ -19,9 +19,9 @@ public class AgoraController : MonoBehaviour {
     IRtcEngine iRtcEngine;
 
     public string ChannelName { get; set; }
+    public bool IsLive { get; private set; }
 
     bool isChannelCreator;
-    bool isLive;
     int userCount;
     //int streamID;
     [HideInInspector]
@@ -114,7 +114,7 @@ public class AgoraController : MonoBehaviour {
 
         sendThumbnailRoutine = StartCoroutine(SendThumbnailData());
 
-        isLive = true;
+        IsLive = true;
 
         //streamID = iRtcEngine.CreateDataStream(true, true);
 
@@ -133,7 +133,7 @@ public class AgoraController : MonoBehaviour {
         if (iRtcEngine == null)
             return;
 
-        if (!isLive)
+        if (!IsLive)
             return;
 
         //if (isChannelCreator)
@@ -153,7 +153,7 @@ public class AgoraController : MonoBehaviour {
 
         //OnStreamDisconnected();
 
-        isLive = false;
+        IsLive = false;
 
     }
 
@@ -341,7 +341,7 @@ public class AgoraController : MonoBehaviour {
 
     IEnumerator UpdateUsers() {
         if (isChannelCreator) {
-            while (isLive) {
+            while (IsLive) {
                 yield return new WaitForSeconds(5);
             }
         }

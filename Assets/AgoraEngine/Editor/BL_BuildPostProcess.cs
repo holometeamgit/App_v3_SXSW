@@ -72,7 +72,7 @@ public class BL_BuildPostProcess
         PlistElementDict rootDic = plist.root;
         var cameraPermission = "NSCameraUsageDescription";
         var micPermission = "NSMicrophoneUsageDescription";
-        rootDic.SetString(cameraPermission, "Video need to use camera");
+        rootDic.SetString(cameraPermission, "Required for augmented reality support.");//"Video need to use camera");
         rootDic.SetString(micPermission, "Voice call need to user mic");
         File.WriteAllText(pListPath, plist.WriteToString());
     }
