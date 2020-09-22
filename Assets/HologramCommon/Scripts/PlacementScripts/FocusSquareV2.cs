@@ -9,6 +9,7 @@ public class FocusSquareV2 : PlacementHandler
 {
     private enum States
     {
+        NOT_RUNNUNG,  // Use not at AR scene
         VIDEO_LAUNCH, // user in video launch menu 
         SCANNING,     // scanning for tracking
         TAP_FIRST,    // tap to place after scanning
@@ -44,16 +45,23 @@ public class FocusSquareV2 : PlacementHandler
     [SerializeField] private FocusSquare _focusSquare;
     [SerializeField] private Transform _focusSquareV2Sprite;
     [SerializeField] private PnlViewingExperience _pnlViewingExperience;
-    
+
+    [SerializeField] private GameObject _btnCloseViewingExperience;
+    [SerializeField] private GameObject _btnCloseStreamOverlay;
     private void OnEnable()
     {
-        SwitchToState(States.VIDEO_LAUNCH);
+        SwitchToState(States.NOT_RUNNUNG);
     }
 
     private void SwitchToState(States value)
     {
         switch (value)
         {
+            case States.NOT_RUNNUNG:
+                TurnPlanes(false);
+                _focusSquareV2Sprite.transform.position = new Vector3(100, 100, 100);
+                _currentState = value;
+                break;
             case States.VIDEO_LAUNCH:
                 TurnPlanes(true);
                 _currentState = value;
@@ -97,6 +105,12 @@ public class FocusSquareV2 : PlacementHandler
     {
         switch (_currentState)
         {
+            case States.NOT_RUNNUNG:
+                if (IsOneOfButtonsCloseActive())
+                {
+                    SwitchToState(States.VIDEO_LAUNCH);
+                }
+                break;
             case States.VIDEO_LAUNCH:
                 TransformUpdate();
                 if (VideoLoading)
@@ -106,7 +120,12 @@ public class FocusSquareV2 : PlacementHandler
                 break;
             case States.SCANNING:
                 TransformUpdate();
-                
+
+                if (IsAllButtonsCloseNotActive())
+                {
+                    SwitchToState(States.NOT_RUNNUNG);
+                }
+
                 if (SurfaceDetected()) 
                 {
                     SwitchToState(States.TAP_FIRST);
@@ -130,7 +149,11 @@ public class FocusSquareV2 : PlacementHandler
                         SwitchToState(States.LOADING); // TODO - check it
                     }
                 }
-                
+
+                if (IsAllButtonsCloseNotActive())
+                {
+                    SwitchToState(States.NOT_RUNNUNG);
+                }
                 break;
             case States.LOADING:
                 //if (!VideoLoading) 
@@ -143,6 +166,11 @@ public class FocusSquareV2 : PlacementHandler
                 if (Input.touchCount > 1) 
                 {
                     SwitchToState(States.DELAY_AFTER_PINCH);
+                }
+
+                if (IsAllButtonsCloseNotActive())
+                {
+                    SwitchToState(States.HIDE);
                 }
                 break;
             case States.DELAY_AFTER_PINCH:
@@ -163,6 +191,7 @@ public class FocusSquareV2 : PlacementHandler
                 {
                     TapToPlace();
                 }
+
                 break;
         }
     }
@@ -246,22 +275,35 @@ public class FocusSquareV2 : PlacementHandler
         _focusSquareAnimator.ResetTrigger("PinchToZoom");
         _focusSquareAnimator.SetTrigger("Scan");
     }
-    
-    // private void OnGUI()
-    // {
-    //     GUILayout.Space(400);
-    //     GUILayout.Box(_currentState.ToString());
-    //     GUILayout.Space(20);
-    //     
-    //     if (GUILayout.Button("Video Loaded"))
-    //     {
-    //         VideoLoading = false;
-    //     }
-    //     
-    //     GUILayout.Space(20);
-    //     if (GUILayout.Button("Video Loading"))
-    //     {
-    //         VideoLoading = true;
-    //     }
-    // }
+
+    private bool IsOneOfButtonsCloseActive()
+    {
+        return _btnCloseViewingExperience.activeInHierarchy ||
+               _btnCloseStreamOverlay.activeInHierarchy;
+    }
+
+    private bool IsAllButtonsCloseNotActive()
+    {
+        return !_btnCloseViewingExperience.activeInHierarchy &&
+               !_btnCloseStreamOverlay.activeInHierarchy;
+    }
+
+    //private void OnGUI()
+    //{
+        //GUILayout.Space(400);
+        //GUILayout.Box(_currentState.ToString());
+        //GUILayout.Space(20);
+        // GUILayout.Box(_btnClose.activeInHierarchy.ToString());
+        //     
+        //     if (GUILayout.Button("Video Loaded"))
+        //     {
+        //         VideoLoading = false;
+        //     }
+        //     
+        //     GUILayout.Space(20);
+        //     if (GUILayout.Button("Video Loading"))
+        //     {
+        //         VideoLoading = true;
+        //     }
+    //}
 }

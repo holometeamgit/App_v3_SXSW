@@ -20,7 +20,7 @@ public class PnlTutorial : MonoBehaviour
     Transform imageParent;
 
     [SerializeField]
-    ARPlaneManager planeManager;
+    //ARPlaneManager planeManager;
 
     int tutorialStepIndex = -1;
 
@@ -33,7 +33,7 @@ public class PnlTutorial : MonoBehaviour
         btnOK.onClick.AddListener(() => StartCoroutine(FadeClose()));
         canvasGroup = GetComponent<CanvasGroup>();
 
-        planeManager.enabled = false;
+        //planeManager.enabled = false;
     }
 
     private void OnEnable()
@@ -70,7 +70,7 @@ public class PnlTutorial : MonoBehaviour
 
         if (tutorialStepIndex == 0)
         {
-            planeManager.enabled = true;
+            // planeManager.enabled = true;
         }
 
         if (tutorialStepIndex + 1 == messages.Length)
