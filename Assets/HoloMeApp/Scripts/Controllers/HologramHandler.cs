@@ -111,7 +111,7 @@ public class HologramHandler : MonoBehaviour
     {
         holoMe.PauseVideo();
     }
-
+    
     public void ResumeVideo()
     {
         holoMe.ResumeVideo();

@@ -74,7 +74,7 @@ public class PnlViewingExperience : MonoBehaviour
         scanAnimationItems.SetActive(false);
         if (permissionGranter.HasCameraAccess && !tutorialDisplayed)
         {
-            RunTutorial();
+            //RunTutorial();
             tutorialDisplayed = true;
         }
         else
