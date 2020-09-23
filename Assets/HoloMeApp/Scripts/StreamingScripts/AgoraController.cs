@@ -1,6 +1,7 @@
 ﻿using agora_gaming_rtc;
 using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -159,12 +160,12 @@ public class AgoraController : MonoBehaviour {
 
     IEnumerator SendThumbnailData() {
         yield return new WaitForSeconds(5);
-
-        //RawImage raw = videoSurfaceRef.GetComponent<RawImage>();
-        byte[] data = ((Texture2D)videoSufaceStreamerRawTex.texture).EncodeToPNG();
-        //byte[] data = videoSufaceStreamerRawTex.NativeTexture.EncodeToPNG();
-        //string stringData = Convert.ToBase64String(data);
-        //secondaryServerCalls.UploadPreviewImage(stringData);
+        Texture2D originalSnapShot = (Texture2D)videoSufaceStreamerRawTex.texture;
+        Color[] pixels = originalSnapShot.GetPixels();
+        Array.Reverse(pixels);
+        Texture2D flippedTexture = new Texture2D(originalSnapShot.width, originalSnapShot.height);
+        flippedTexture.SetPixels(pixels);
+        byte[] data = flippedTexture.EncodeToPNG();
         secondaryServerCalls.UploadPreviewImage(data);
     }
 
