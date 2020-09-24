@@ -1,7 +1,6 @@
 ﻿using agora_gaming_rtc;
 using System;
 using System.Collections;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,8 +20,8 @@ public class AgoraController : MonoBehaviour {
 
     public string ChannelName { get; set; }
     public bool IsLive { get; private set; }
+    public bool IsChannelCreator { get; private set; }
 
-    bool isChannelCreator;
     int userCount;
     //int streamID;
     [HideInInspector]
@@ -33,16 +32,14 @@ public class AgoraController : MonoBehaviour {
 
     [SerializeField]
     RawImage videoSufaceStreamerRawTex;
-
     VideoSurface videoSurfaceQuadRef;
-
     Coroutine sendThumbnailRoutine;
 
     public void Start() {
         LoadEngine(AppId);
         frameRate = 30;
         agoraRTMChatController.Init(AppId);
-        secondaryServerCalls.OnStreamStarted += x => SecondaryServerCallsComplete(x, isChannelCreator);
+        secondaryServerCalls.OnStreamStarted += x => SecondaryServerCallsComplete(x);
     }
 
     void LoadEngine(string appId) {
@@ -65,16 +62,19 @@ public class AgoraController : MonoBehaviour {
         if (iRtcEngine == null)
             return;
 
-        isChannelCreator = channelCreator;
-        secondaryServerCalls.StartStream(ChannelName);
+        IsChannelCreator = channelCreator;
+        if (channelCreator)
+            secondaryServerCalls.StartStream(ChannelName);
+        else
+            SecondaryServerCallsComplete();
     }
 
-    public void SecondaryServerCallsComplete(string token, bool channelCreator) {
+    public void SecondaryServerCallsComplete(string token = "") {
         agoraRTMChatController.Login(token);
 
         iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
-        if (isChannelCreator) {
+        if (IsChannelCreator) {
             iRtcEngine.SetClientRole(CLIENT_ROLE.BROADCASTER);
             var encoderConfiguration = new VideoEncoderConfiguration();
             encoderConfiguration.degradationPreference = DEGRADATION_PREFERENCE.MAINTAIN_BALANCED;
@@ -191,7 +191,7 @@ public class AgoraController : MonoBehaviour {
     private void OnUserJoined(uint uid, int elapsed) {
         HelperFunctions.DevLog("onUserJoined: uid = " + uid + " elapsed = " + elapsed);
 
-        if (!isChannelCreator) {
+        if (!IsChannelCreator) {
             ResetVideoSurface();
 
             videoSurfaceQuadRef = liveStreamQuad.GetComponent<VideoSurface>();
@@ -341,7 +341,7 @@ public class AgoraController : MonoBehaviour {
     }
 
     IEnumerator UpdateUsers() {
-        if (isChannelCreator) {
+        if (IsChannelCreator) {
             while (IsLive) {
                 yield return new WaitForSeconds(5);
             }
