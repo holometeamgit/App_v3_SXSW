@@ -45,6 +45,10 @@ public class PnlHomeScreen : MonoBehaviour {
 
     [SerializeField] bool fetchDataOnFirstEnable; //TODO: this is needed before switching to beem, then everything will be deleted
 
+    [SerializeField] ScrollRect scrollRect;
+    private float lastScrollPosition = 1;
+    private bool firstLoading = true;
+
     [SerializeField] UnityEvent OnThumbnailClick;
 
     private List<GameObject> thumbnails;
@@ -53,7 +57,7 @@ public class PnlHomeScreen : MonoBehaviour {
 
     void OnEnable() {
 
-        Clear();
+        //Clear();
         if (!initiallaunch) {
             initiallaunch = true;
             homeScreenLoader.OnDataFetched.AddListener(DataFetched);
@@ -78,7 +82,7 @@ public class PnlHomeScreen : MonoBehaviour {
         thumbnailItem.SetLiveState(isLive);
 
         DateTime dateTime;
-        if (DateTime.TryParse(data.end_date, out dateTime)) {
+        if (DateTime.TryParse(data.start_date, out dateTime)) { //
             thumbnailItem.SetTimePeriod(dateTime);
         }
 
@@ -117,7 +121,16 @@ public class PnlHomeScreen : MonoBehaviour {
             StartCoroutine(AddingFetchedData());
     }
 
+
     private IEnumerator AddingFetchedData() {
+
+        if (firstLoading) {
+            lastScrollPosition = 1;
+            firstLoading = false;
+        } else
+            lastScrollPosition = scrollRect.verticalNormalizedPosition;
+
+        Clear();
 
         int showCaseAddedData = 0;
 
@@ -125,7 +138,7 @@ public class PnlHomeScreen : MonoBehaviour {
 
         foreach (var data in homeScreenLoader.streamHomeScreenDataElement) {
             Debug.Log(data.streamJsonData.stream_s3_url);
-            if (data.streamJsonData.stream_s3_url.Contains("00000010_BEEM_Jan_intro_holo_7113.mp4") || data.streamJsonData.file_name_prefix.Contains("Welcome_Jan")) {
+            if (data.streamJsonData.stream_s3_url.Contains("00000010_BEEM_Jan_intro_holo_7113") || data.streamJsonData.file_name_prefix.Contains("Welcome_Jan")) {
                 showCaseAddedData++;
                 AddThumbnail(showCaseAddedData <= showcaseCount,
                     data.texture, data.streamJsonData, false);
@@ -173,9 +186,11 @@ public class PnlHomeScreen : MonoBehaviour {
         yield return new WaitForEndOfFrame();
         contentShowcaseThumbnails.gameObject.GetComponent<VerticalLayoutGroup>().enabled = true;
 
+        scrollRect.verticalNormalizedPosition = lastScrollPosition;
+        Debug.Log(lastScrollPosition);
+
         yield return new WaitForSeconds(tymeToNextRefresh);
 
-        Clear();
         homeScreenLoader.FetchData();
     }
 
