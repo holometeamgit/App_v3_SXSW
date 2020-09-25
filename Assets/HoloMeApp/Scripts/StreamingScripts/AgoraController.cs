@@ -65,8 +65,19 @@ public class AgoraController : MonoBehaviour {
         IsChannelCreator = channelCreator;
         if (channelCreator)
             secondaryServerCalls.StartStream(ChannelName);
-        else
-            SecondaryServerCallsComplete();
+        else {
+            GetAgoraToken();
+            //SecondaryServerCallsComplete();
+        }
+    }
+
+    void GetAgoraToken() {
+        secondaryServerCalls.GetAgoraToken(OnAgoraTokenReturned);
+    }
+    TokenAgoraResponse tokenAgoraResponse;
+    void OnAgoraTokenReturned(long code, string data) {
+        tokenAgoraResponse = JsonUtility.FromJson<TokenAgoraResponse>(data);
+        SecondaryServerCallsComplete(tokenAgoraResponse.token);
     }
 
     public void SecondaryServerCallsComplete(string token = "") {
@@ -103,7 +114,7 @@ public class AgoraController : MonoBehaviour {
         // join channel
         //var result = iRtcEngine.JoinChannel(ChannelName, null, 0);
 
-        var result = iRtcEngine.JoinChannelByKey(token, ChannelName, null, 0);
+        var result = iRtcEngine.JoinChannelByKey(token, ChannelName, null, IsChannelCreator ? 1u : 0);
 
         if (result < 0) {
             Debug.LogError("Agora Stream Join Failed!");
@@ -113,7 +124,7 @@ public class AgoraController : MonoBehaviour {
 
         //print("JOINED");
 
-        if(IsChannelCreator)
+        if (IsChannelCreator)
             sendThumbnailRoutine = StartCoroutine(SendThumbnailData());
 
         IsLive = true;
@@ -145,10 +156,10 @@ public class AgoraController : MonoBehaviour {
 
         if (sendThumbnailRoutine != null)
             StopCoroutine(sendThumbnailRoutine);
-  
+
         liveStreamQuad.SetActive(false);
-        
-        if(IsChannelCreator)
+
+        if (IsChannelCreator)
             secondaryServerCalls.EndStream();
 
         iRtcEngine.LeaveChannel();

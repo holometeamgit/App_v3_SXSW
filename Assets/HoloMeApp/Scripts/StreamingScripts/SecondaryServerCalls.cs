@@ -31,9 +31,8 @@ public class SecondaryServerCalls : MonoBehaviour {
 
     public void StartStream(string streamName) {
         this.streamName = streamName;
-        webRequestHandler.GetRequest(webRequestHandler.ServerURLAuthAPI + videoUploader.GetStreamToken, (x, y) => { AssignToken(x, y); webRequestHandler.LogCallback(x, y); },
-            (x, y) => webRequestHandler.ErrorLogCallback(x, "Agora Record Token" + y), accountManager.GetAccessToken().access);
-
+        GetAgoraToken(AssignToken);
+        
         //Get agora token 
         //Acquire
         //Start cloud record
@@ -43,6 +42,14 @@ public class SecondaryServerCalls : MonoBehaviour {
         //Stop cloud
         //Stop stream second server
     }
+
+    public void GetAgoraToken(ResponseDelegate callback) {
+        //webRequestHandler.GetRequest(webRequestHandler.ServerURLAuthAPI + videoUploader.GetStreamToken, (x, y) => { AssignToken(x, y); webRequestHandler.LogCallback(x, y); },
+        //    (x, y) => webRequestHandler.ErrorLogCallback(x, "Agora Record Token" + y), accountManager.GetAccessToken().access);
+        webRequestHandler.GetRequest(webRequestHandler.ServerURLAuthAPI + videoUploader.GetStreamToken, (x, y) => { callback(x,y); webRequestHandler.LogCallback(x, y); },
+            (x, y) => webRequestHandler.ErrorLogCallback(x, "Agora Record Token" + y), accountManager.GetAccessToken().access);
+    }
+
 
     void AssignToken(long code, string data) {
 
