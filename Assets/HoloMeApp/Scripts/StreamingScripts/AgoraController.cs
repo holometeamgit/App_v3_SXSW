@@ -143,20 +143,22 @@ public class AgoraController : MonoBehaviour {
         //iRtcEngine.SendStreamMessage(streamID, "CreatorLeft");
         //}
 
-        iRtcEngine.LeaveChannel();
-        iRtcEngine.DisableVideoObserver();
-        liveStreamQuad.SetActive(false);
-        secondaryServerCalls.EndStream();
-        agoraRTMChatController.LeaveChannel();
-        ResetVideoSurface();
-
         if (sendThumbnailRoutine != null)
             StopCoroutine(sendThumbnailRoutine);
+  
+        liveStreamQuad.SetActive(false);
+        
+        if(IsChannelCreator)
+            secondaryServerCalls.EndStream();
+
+        iRtcEngine.LeaveChannel();
+        iRtcEngine.DisableVideoObserver();
+        agoraRTMChatController.LeaveChannel();
+        ResetVideoSurface();
 
         //OnStreamDisconnected();
 
         IsLive = false;
-
     }
 
     IEnumerator SendThumbnailData() {
