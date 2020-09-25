@@ -113,7 +113,8 @@ public class AgoraController : MonoBehaviour {
 
         //print("JOINED");
 
-        sendThumbnailRoutine = StartCoroutine(SendThumbnailData());
+        if(IsChannelCreator)
+            sendThumbnailRoutine = StartCoroutine(SendThumbnailData());
 
         IsLive = true;
 
