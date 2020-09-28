@@ -16,6 +16,7 @@ public class AgoraController : MonoBehaviour {
     [SerializeField]
     SecondaryServerCalls secondaryServerCalls;
 
+    TokenAgoraResponse tokenAgoraResponse;
     IRtcEngine iRtcEngine;
 
     public string ChannelName { get; set; }
@@ -74,9 +75,10 @@ public class AgoraController : MonoBehaviour {
     void GetAgoraToken() {
         secondaryServerCalls.GetAgoraToken(OnAgoraTokenReturned);
     }
-    TokenAgoraResponse tokenAgoraResponse;
+
     void OnAgoraTokenReturned(long code, string data) {
         tokenAgoraResponse = JsonUtility.FromJson<TokenAgoraResponse>(data);
+        HelperFunctions.DevLog("Viewer Token Returned: " + tokenAgoraResponse);
         SecondaryServerCallsComplete(tokenAgoraResponse.token);
     }
 
@@ -104,6 +106,16 @@ public class AgoraController : MonoBehaviour {
         iRtcEngine.OnJoinChannelSuccess = OnJoinChannelSuccess;
         iRtcEngine.OnUserJoined = OnUserJoined; //Only fired for broadcasters
         iRtcEngine.OnUserOffline = OnUserOffline;
+        iRtcEngine.OnWarning += (int warn, string msg) => {
+            string description = IRtcEngine.GetErrorDescription(warn);
+            string warningMessage = string.Format("Agora onWarning callback {0} {1} {2}", warn, msg, description);
+            Debug.Log(warningMessage);
+        };
+        iRtcEngine.OnError += (int error, string msg) => {
+            string description = IRtcEngine.GetErrorDescription(error);
+            string errorMessage = string.Format("Agora onError callback {0} {1} {2}", error, msg, description);
+            Debug.Log(errorMessage);
+        };
         //iRtcEngine.EnableDualStreamMode(true);
 
         // enable video
