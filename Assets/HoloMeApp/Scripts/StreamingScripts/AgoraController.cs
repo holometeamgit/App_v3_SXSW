@@ -82,7 +82,7 @@ public class AgoraController : MonoBehaviour {
         SecondaryServerCallsComplete(tokenAgoraResponse.token);
     }
 
-    public void SecondaryServerCallsComplete(string token = "") {
+    public void SecondaryServerCallsComplete(string token) {
         agoraRTMChatController.Login(token);
 
         iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
@@ -114,7 +114,7 @@ public class AgoraController : MonoBehaviour {
         iRtcEngine.OnError += (int error, string msg) => {
             string description = IRtcEngine.GetErrorDescription(error);
             string errorMessage = string.Format("Agora onError callback {0} {1} {2}", error, msg, description);
-            Debug.Log(errorMessage);
+            Debug.LogError(errorMessage);
         };
         //iRtcEngine.EnableDualStreamMode(true);
 
