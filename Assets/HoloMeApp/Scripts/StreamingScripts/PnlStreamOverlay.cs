@@ -201,6 +201,9 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     IEnumerator Resize() {
+        while (!agoraController.IsLive) {
+            yield return null;
+        }
         yield return new WaitForSeconds(3);
         cameraRenderImage.SizeToParent();
     }
