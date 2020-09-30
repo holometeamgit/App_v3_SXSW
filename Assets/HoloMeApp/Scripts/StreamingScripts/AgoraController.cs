@@ -68,12 +68,11 @@ public class AgoraController : MonoBehaviour {
             secondaryServerCalls.StartStream(ChannelName);
         else {
             GetAgoraToken();
-            //SecondaryServerCallsComplete();
         }
     }
 
     void GetAgoraToken() {
-        secondaryServerCalls.GetAgoraToken(OnAgoraTokenReturned);
+        secondaryServerCalls.GetAgoraToken(OnAgoraTokenReturned, ChannelName);
     }
 
     void OnAgoraTokenReturned(long code, string data) {
