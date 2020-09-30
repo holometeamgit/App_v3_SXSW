@@ -122,6 +122,7 @@ public class AgoraRTMChatController : MonoBehaviour
 
     public void Rtm_OnLoginSuccess()
     {
+        HelperFunctions.DevLog("RTM Logged into chat");
         //SendMessageToChat(userName + " logged into the rtm", Message.MessageType.info);
     }
 

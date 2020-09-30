@@ -16,7 +16,9 @@ public class AgoraController : MonoBehaviour {
     [SerializeField]
     SecondaryServerCalls secondaryServerCalls;
 
-    TokenAgoraResponse tokenAgoraResponse;
+    TokenAgoraResponse tokenAgoraResponseChannel;
+    TokenAgoraResponse tokenAgoraResponseRTM;
+
     IRtcEngine iRtcEngine;
 
     public string ChannelName { get; set; }
@@ -40,7 +42,7 @@ public class AgoraController : MonoBehaviour {
         LoadEngine(AppId);
         frameRate = 30;
         agoraRTMChatController.Init(AppId);
-        secondaryServerCalls.OnStreamStarted += x => SecondaryServerCallsComplete(x);
+        secondaryServerCalls.OnStreamStarted += (x,y) => SecondaryServerCallsComplete(x,y);
     }
 
     void LoadEngine(string appId) {
@@ -67,22 +69,34 @@ public class AgoraController : MonoBehaviour {
         if (channelCreator)
             secondaryServerCalls.StartStream(ChannelName);
         else {
-            GetAgoraToken();
+            GetViewerAgoraToken();
         }
     }
 
-    void GetAgoraToken() {
-        secondaryServerCalls.GetAgoraToken(OnAgoraTokenReturned, ChannelName);
+    void GetViewerAgoraToken() {
+        HelperFunctions.DevLog("Getting Agora Viewer Token For Channel Name " + ChannelName);
+        secondaryServerCalls.GetAgoraToken(OnViewerAgoraTokenReturned, ChannelName);
     }
 
-    void OnAgoraTokenReturned(long code, string data) {
-        tokenAgoraResponse = JsonUtility.FromJson<TokenAgoraResponse>(data);
-        HelperFunctions.DevLog("Viewer Token Returned: " + tokenAgoraResponse);
-        SecondaryServerCallsComplete(tokenAgoraResponse.token);
+    void OnViewerAgoraTokenReturned(long code, string data) {
+        tokenAgoraResponseChannel = JsonUtility.FromJson<TokenAgoraResponse>(data);
+        HelperFunctions.DevLog("Viewer Token Returned: " + tokenAgoraResponseChannel.token);
+        GetRTMLoginToken();
     }
 
-    public void SecondaryServerCallsComplete(string token) {
-        agoraRTMChatController.Login(token);
+    void GetRTMLoginToken() {
+        HelperFunctions.DevLog("Getting Agora RTM Token");
+        secondaryServerCalls.GetAgoraToken(OnRTMAgoraTokenReturned);
+    }
+
+    void OnRTMAgoraTokenReturned(long code, string data) {
+        tokenAgoraResponseRTM = JsonUtility.FromJson<TokenAgoraResponse>(data);
+        HelperFunctions.DevLog("RTM Token Returned: " + tokenAgoraResponseRTM.token);
+        SecondaryServerCallsComplete(tokenAgoraResponseChannel.token, tokenAgoraResponseRTM.token);
+    }
+
+    public void SecondaryServerCallsComplete( string viewerBroadcasterToken, string rtmToken) {
+        agoraRTMChatController.Login(rtmToken);
 
         iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
@@ -125,7 +139,7 @@ public class AgoraController : MonoBehaviour {
         // join channel
         //var result = iRtcEngine.JoinChannel(ChannelName, null, 0);
 
-        var result = iRtcEngine.JoinChannelByKey(token, ChannelName, null, IsChannelCreator ? 1u : 0);
+        var result = iRtcEngine.JoinChannelByKey(viewerBroadcasterToken, ChannelName, null, IsChannelCreator ? 1u : 0);
 
         if (result < 0) {
             Debug.LogError("Agora Stream Join Failed!");
