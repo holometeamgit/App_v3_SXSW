@@ -27,7 +27,6 @@ public class PnlProfile : MonoBehaviour
     }
 
     private void UserInfoLoadedCallBack() {
-        Debug.Log(userWebManager.GetUsername());
         if (usernameInputField != null)
             usernameInputField.text = usernameInputField.text == "" ? userWebManager.GetUsername() ?? "" : usernameInputField.text;
 

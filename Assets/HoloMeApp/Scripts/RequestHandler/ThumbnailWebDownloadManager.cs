@@ -2,84 +2,122 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Runtime;
+
 public class ThumbnailWebDownloadManager : MonoBehaviour {
+
     public struct ThumbnailWebRequestStruct {
 
         public StreamJsonData.Data.Stage Stage;
-        public string AccessToken;
         public int PageNumber;
         public int MaxPageSize;
-        public string UserName;
+        public ThumbnailsFilter Filter;
 
-        public ThumbnailWebRequestStruct(StreamJsonData.Data.Stage Stage, string AccessToken, int PageNumber, int MaxPageSize, string UserName) {
-            this.Stage = Stage;
-            this.AccessToken = AccessToken;
-            this.PageNumber = PageNumber;
-            this.MaxPageSize = MaxPageSize;
-            this.UserName = UserName;
+        public ThumbnailWebRequestStruct(StreamJsonData.Data.Stage stage, int pageNumber, int maxPageSize, ThumbnailsFilter filter) {
+            Stage = stage;
+            PageNumber = pageNumber;
+            MaxPageSize = maxPageSize;
+            Filter = filter;
         }
     }
 
-    public delegate void StreamJsonDataDelegate(List<StreamJsonData.Data> streamJsonData, StreamJsonData.Data.Stage stage);
+    public AccountManager accountManager;
+
+    public Action<StreamJsonData, LoadingKey> OnStreamJsonDataLoaded;
+    public Action<long, string, LoadingKey> OnErrorStreamJsonDataLoaded;
+
+    public Action<int, LoadingKey> OnCountThumbnailsLoaded;
+    public Action<long, string, LoadingKey> OnErrorCountThumbnailsLoaded;
 
     [SerializeField]
     WebRequestHandler webRequestHandler;
-    [SerializeField] string getStreamAccessTokenAPI;
 
-    private string pageStreamParameter = "page=";
+    [SerializeField]
+    VideoUploader videoUploader;
 
-    private string statusStreamParameter = "status=";
+    private string pageStreamParameter = "page";
 
-    private string pageSize = "page_size=";
+    private string statusStreamParameter = "status";
 
-    private string userName = "username=";
-    //private int
+    private string pageSize = "page_size";
 
-    //the key to load data from one request time
-    private DateTime startLoadingThubnailsDateTime;
-
-    public void LoadThubnails(ThumbnailWebRequestStruct thumbnailWebRequestStruct, DateTime startLoadingDateTime, StreamJsonDataDelegate streamJsonData) {
-
-        startLoadingThubnailsDateTime = startLoadingDateTime;
-
+    public void DownloadThumbnails(ThumbnailWebRequestStruct thumbnailWebRequestStruct, LoadingKey loadingKey) {
         webRequestHandler.GetRequest(GetRequestRefreshTokenURL(thumbnailWebRequestStruct),
-        (code, body) => { LoadThumbnailsCallBack(body, startLoadingDateTime, streamJsonData, thumbnailWebRequestStruct.Stage); },
-        (code, body) => { Debug.Log(code + " " + body); /*TODO show warning somewhere */},
-    thumbnailWebRequestStruct.AccessToken);
+        (code, body) => { DownloadThumbnailsCallBack(body, loadingKey); },
+        (code, body) => { DownloadErrorThumbnailsCallBack(code, body, loadingKey); },
+        accountManager.GetAccessToken().access);
     }
 
-    private void LoadThumbnailsCallBack(string data, DateTime startLoadingDate, StreamJsonDataDelegate streamJsonDataDelegate, StreamJsonData.Data.Stage stage) {
-        try {
-            if (startLoadingDate != startLoadingThubnailsDateTime)
-                return;
-            StreamJsonData streamJsonData = JsonUtility.FromJson<StreamJsonData>(data);
-
-            if (streamJsonData == null)
-                return;
-
-            streamJsonDataDelegate.Invoke(streamJsonData.results, stage);
-        } catch (Exception e) { }
+    public void GetCountThumbnails(ThumbnailWebRequestStruct thumbnailWebRequestStruct, LoadingKey loadingKey) {
+        webRequestHandler.GetRequest(GetRequestRefreshTokenURL(thumbnailWebRequestStruct),
+        (code, body) => { GetCountThumbnailsCallBack(body, loadingKey); },
+        (code, body) => { ErrorGetCountThumbnailsCallBack(code, body, loadingKey); },
+        accountManager.GetAccessToken().access);
     }
 
-    void Start() { }
+    #region DownloadThumbnailsCallBack
+    private void DownloadThumbnailsCallBack(string data, LoadingKey loadingKey) {
+        StreamJsonData streamJsonData = GetStreamJsonData(data);
+        if (streamJsonData == null)
+            return;
 
-    #region Data loading
-    private void LoadData(StreamJsonData streamJsonData) {
-        foreach (var data in streamJsonData.results) {
-
-        }
+        OnStreamJsonDataLoaded?.Invoke(streamJsonData, loadingKey);
     }
 
+    private void DownloadErrorThumbnailsCallBack(long code, string body, LoadingKey loadingKey) {
+        OnErrorStreamJsonDataLoaded.Invoke(code, body, loadingKey);
+    }
     #endregion
 
+    #region GetCountThumbnailsCallBack
+    private void GetCountThumbnailsCallBack(string data, LoadingKey loadingKey) {
+        StreamJsonData streamJsonData = GetStreamJsonData(data);
+        if (streamJsonData == null)
+            return;
+
+        OnCountThumbnailsLoaded?.Invoke(streamJsonData.count, loadingKey);
+    }
+
+    private void ErrorGetCountThumbnailsCallBack(long code, string body, LoadingKey loadingKey) {
+        OnErrorCountThumbnailsLoaded.Invoke(code, body, loadingKey);
+    }
+    #endregion
+
+    private StreamJsonData GetStreamJsonData(string data) {
+        try {
+            StreamJsonData streamJsonData = JsonUtility.FromJson<StreamJsonData>(data);
+            return streamJsonData;
+        } catch (Exception e) { return null; }
+    }
+
     private string GetRequestRefreshTokenURL(ThumbnailWebRequestStruct thumbnailWebRequestStruct) {
-        string result = webRequestHandler.ServerURLMediaAPI + getStreamAccessTokenAPI + "?"
-            + pageStreamParameter + thumbnailWebRequestStruct.PageNumber +
-            "&" + pageSize + thumbnailWebRequestStruct.MaxPageSize +
-        (thumbnailWebRequestStruct.Stage != StreamJsonData.Data.Stage.All ? ("&" + statusStreamParameter + StreamJsonData.Data.GetStatusValue(thumbnailWebRequestStruct.Stage)) : "") +
-        (string.IsNullOrEmpty(thumbnailWebRequestStruct.UserName) ? "" : ("&" + this.userName + thumbnailWebRequestStruct.UserName));
-        Debug.Log(result);
-        return result;
+        /*     string result = webRequestHandler.ServerURLMediaAPI + videoUploader.Stream + "?"
+                 + pageStreamParameter + "=" + thumbnailWebRequestStruct.PageNumber +
+                 "&" + pageSize + "=" + thumbnailWebRequestStruct.MaxPageSize +
+             (thumbnailWebRequestStruct.Stage != StreamJsonData.Data.Stage.All ? ("&" + statusStreamParameter + "=" + StreamJsonData.Data.GetStatusValue(thumbnailWebRequestStruct.Stage)) : "") +
+             ((thumbnailWebRequestStruct.Filter == null || thumbnailWebRequestStruct.Filter.IsEmpty()) ? "" : ("&" + thumbnailWebRequestStruct.Filter.GetParametersString()));
+             Debug.Log(result);*/
+
+        var builder = new UriBuilder(webRequestHandler.ServerURLMediaAPI + videoUploader.Stream);
+        builder.Port = -1;
+        var query = HttpUtility.ParseQueryString(builder.Query);
+
+        //page number
+        query[pageStreamParameter] = thumbnailWebRequestStruct.PageNumber.ToString();
+        //page size
+        query[pageSize] = thumbnailWebRequestStruct.MaxPageSize.ToString();
+        //status
+        if (thumbnailWebRequestStruct.Stage != StreamJsonData.Data.Stage.All)
+            query[statusStreamParameter] = StreamJsonData.Data.GetStatusValue(thumbnailWebRequestStruct.Stage);
+        //user name
+        if (thumbnailWebRequestStruct.Filter != null && !thumbnailWebRequestStruct.Filter.IsEmpty()) {
+            foreach (var param in thumbnailWebRequestStruct.Filter.GetParameters())
+                query[param.Key] = param.Value;
+        }
+
+        builder.Query = query.ToString();
+        Debug.Log(builder.ToString());
+        return builder.ToString();
     }
 
 

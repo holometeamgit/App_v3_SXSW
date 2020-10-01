@@ -1,8 +1,6 @@
 ﻿/* needed to download data for the home page
  * 
  */
-
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -21,6 +19,8 @@ public class HomeScreenLoader : MonoBehaviour {
 
     [SerializeField]
     ThumbnailWebDownloadManager thumbnailWebDownloadManager;
+
+    [SerializeField] ThumbnailPriorityScriptableObject thumbnailPriority;
 
     [SerializeField]
     MediaFileDataHandler mediaFileDataHandler;
@@ -53,15 +53,17 @@ public class HomeScreenLoader : MonoBehaviour {
     public UnityEvent OnDataFetched;
 
     public void FetchData() {
-        ClearData();
-        FetchEventStreamData();
+        ThumbnailsData thumbnailsData = new ThumbnailsData(thumbnailPriority.ThumbnailPriority, thumbnailWebDownloadManager);
+        thumbnailsData.RefreshData();
+        //ClearData();
+        //FetchEventStreamData();
     }
 
     private void FetchEventStreamData() {
 
         fetchStartDateTime = DateTime.Now;
 
-        var thumbnailEventDataRequest = new ThumbnailWebDownloadManager.ThumbnailWebRequestStruct(
+/*        var thumbnailEventDataRequest = new ThumbnailWebDownloadManager.ThumbnailWebRequestStruct(
             StreamJsonData.Data.Stage.Announced,
             accountManager.GetAccessToken().access,
             currentEventPageNumber,
@@ -88,7 +90,7 @@ public class HomeScreenLoader : MonoBehaviour {
         thumbnailWebDownloadManager.LoadThubnails(thumbnailLiveDataRequest, fetchStartDateTime, (streamJsonData, stage) => FetchStreamDataCallBack(streamJsonData, stage, fetchStartDateTime));
         //request Finished thumbnails
         thumbnailWebDownloadManager.LoadThubnails(thumbnailFinishedDataRequest, fetchStartDateTime, (streamJsonData, stage) => FetchStreamDataCallBack(streamJsonData, stage, fetchStartDateTime));
-
+*/
     }
 
     private void FetchStreamDataCallBack(List<StreamJsonData.Data> streamJsonData, StreamJsonData.Data.Stage stage, DateTime fetchStart) {
