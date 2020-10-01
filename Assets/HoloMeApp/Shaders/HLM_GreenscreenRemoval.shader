@@ -46,6 +46,7 @@ Shader "HLM/Unlit/GreenscreenRemoval"
         Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" "LightMode" = "ForwardBase"}
         LOD 100
         
+        Cull Off
         ZWrite Off
         
         Pass
