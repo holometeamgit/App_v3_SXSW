@@ -16,7 +16,7 @@ public class StreamJsonData
     }
 
     [Serializable]
-    public class Data {
+    public class Data : IEquatable<Data> , IComparable<Data> {
 
         public enum Stage {
             All,
@@ -25,7 +25,7 @@ public class StreamJsonData
             Finished
         }
 
-        public int id;
+        public long id;
         public string preview_s3_url;
         public string stream_s3_url;
         public string user;
@@ -35,7 +35,7 @@ public class StreamJsonData
         public string file_name_prefix;
         public string start_date;
         public string end_date;
-        public int duration;
+        public long duration;
         public string preview_s3_key;
         public string stream_s3_key;
         public string title;
@@ -71,6 +71,14 @@ public class StreamJsonData
             default:
                 return "All";
             }
+        }
+
+        public bool Equals(Data other) {
+            throw new NotImplementedException();
+        }
+
+        int IComparable<Data>.CompareTo(Data other) {
+            throw new NotImplementedException();
         }
     }
 
