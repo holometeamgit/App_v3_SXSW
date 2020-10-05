@@ -35,7 +35,7 @@ public class FocusSquareV2 : PlacementHandler
     [SerializeField]
     [Range(0, 10)]
     [Tooltip("This is the unit distance before the square becomes transparent as it gets closer to the hologram")]
-    private float transparencyRangeHologram = 1f;  // TODO - add bigger distance
+    private float transparencyRangeHologram = 1f;
     
     [SerializeField]
     private float _delayAfterPinch = 2.0f;
@@ -48,6 +48,18 @@ public class FocusSquareV2 : PlacementHandler
 
     [SerializeField] private GameObject _btnCloseViewingExperience;
     [SerializeField] private GameObject _btnCloseStreamOverlay;
+
+    [Space(20)]
+    [SerializeField] private ARSessionOrigin _arSessionOrigin;
+    
+    private float _H;
+    private float _D;
+    [SerializeField] private float _D_max = 3.0f;
+    private float _x;
+
+    private Vector3 _raycastOrigin;
+    private Vector3 _raycastDirection;
+
     private void OnEnable()
     {
         SwitchToState(States.NOT_RUNNUNG);
@@ -133,6 +145,7 @@ public class FocusSquareV2 : PlacementHandler
                 break;
             case States.TAP_FIRST:
                 TransformUpdate();
+
                 if (VideoQuadPlacing) 
                 {
                     SwitchToState(States.LOADING);
@@ -184,13 +197,13 @@ public class FocusSquareV2 : PlacementHandler
                 SwitchToState(States.HIDE);
                 break;
             case States.HIDE:
-                TransformUpdate();
-                HandleDistanceFade();
-
                 if (SurfaceDetected())
                 {
                     TapToPlace();
                 }
+
+                TransformUpdate();
+                HandleDistanceFade();
 
                 break;
         }
@@ -199,14 +212,36 @@ public class FocusSquareV2 : PlacementHandler
     private bool SurfaceDetected() 
     {
         _hits = new List<ARRaycastHit>();
-        m_RaycastManager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), _hits, TrackableType.Planes);
-        
+        var ray = _arSessionOrigin.camera.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
+        m_RaycastManager.Raycast(ray, _hits, TrackableType.Planes);
+
+        _raycastOrigin = ray.origin;
+        _raycastDirection = ray.direction;
+
         return _hits.Count > 0 && _arPlaneManager.trackables.count > 0;
     }
 
     private void HandleDistanceFade()
     {
-        _focusSquareRenderer.color = Color.Lerp(_focusSquareRenderer.color, new Color(1, 1, 1, GetAlphaBasedOnDistance()), Time.deltaTime * 5.0f);
+        if (_D <= _D_max)
+        {
+            _focusSquareRenderer.color = Color.Lerp(_focusSquareRenderer.color, new Color(1, 1, 1, GetAlphaBasedOnDistance()), Time.deltaTime * 5.0f);
+            return;
+        }
+       
+        _focusSquareRenderer.color = Color.Lerp(_focusSquareRenderer.color, new Color(1, 1, 1, 1 / (_D - _D_max + 1)), Time.deltaTime * 5.0f);
+    }
+
+    private void HandleMaxDistanceFade()
+    {
+        if (_D > _D_max)
+        {
+            _focusSquareRenderer.color = Color.Lerp(_focusSquareRenderer.color, new Color(1, 1, 1, 1 / (_D - _D_max + 1)), Time.deltaTime * 5.0f);
+        }
+        else
+        {
+            _focusSquareRenderer.color = Color.Lerp(_focusSquareRenderer.color, new Color(1, 1, 1, 1), Time.deltaTime * 5.0f);
+        }
     }
 
     private float GetAlphaBasedOnDistance()
@@ -221,9 +256,47 @@ public class FocusSquareV2 : PlacementHandler
     
     private void TransformUpdate() 
     {
-        _focusSquareV2Sprite.transform.position = Vector3.Lerp(_focusSquareV2Sprite.transform.position, _focusSquare.Quad.transform.position, Time.deltaTime * 20.0f);
+        _H = -1;
+        _D = -1;
+
+        _focusSquareV2Sprite.transform.position = Vector3.Lerp(_focusSquareV2Sprite.transform.position, _focusSquare.Quad.transform.position, Time.deltaTime * 25.0f);
         _focusSquareV2Sprite.transform.rotation = Quaternion.Slerp(_focusSquareV2Sprite.transform.rotation, _focusSquare.Quad.transform.rotation, Time.deltaTime * 20.0f);
         _focusSquareV2Sprite.transform.localScale = _focusSquare.Quad.transform.localScale * 0.55f;
+
+        if (_hits != null && _hits.Count > 0)
+        {
+            _D = _hits[0].distance;
+            var plane = _arPlaneManager.GetPlane(_hits[0].trackableId);
+            if (plane != null)
+            {
+                _H = plane.infinitePlane.GetDistanceToPoint(_arSessionOrigin.camera.transform.position);
+            }
+        }
+
+        HandleMaxDistanceFade();
+
+        if (_D < 0 || _H < 0)
+        {
+            return;
+        }
+
+        if (_D >= _D_max && _D_max > _H)
+        {
+            _x = _H * (1.0f - Mathf.Sqrt((_D_max * _D_max - _H * _H) / (_D * _D - _H * _H)));
+            var ray = new Ray(_raycastOrigin - new Vector3(0, _x, 0), _raycastDirection);
+
+            List<ARRaycastHit> hits = new List<ARRaycastHit>();
+            m_RaycastManager.Raycast(ray, hits, TrackableType.Planes);
+            if (hits != null && hits.Count > 0)
+            {
+                _focusSquareV2Sprite.transform.position = Vector3.Lerp(_focusSquareV2Sprite.transform.position, hits[0].pose.position, Time.deltaTime * 40.0f);
+                return;
+            }
+        }
+        else
+        {
+            _x = -1;
+        }
     }
     
     private static Vector3 GetZeroYVector(Vector3 vector)
@@ -236,9 +309,12 @@ public class FocusSquareV2 : PlacementHandler
         if (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Ended &&
             !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
         {
-            OnPlaceDetected?.Invoke(_hits[0].pose.position);
-            _hologramPlacedPosition = _hits[0].pose.position;
-            
+            //OnPlaceDetected?.Invoke(_hits[0].pose.position);
+            //_hologramPlacedPosition = _hits[0].pose.position;
+
+            OnPlaceDetected?.Invoke(_focusSquareV2Sprite.transform.position);
+            _hologramPlacedPosition = _focusSquareV2Sprite.transform.position;
+
             return true;
         }
 
@@ -249,10 +325,14 @@ public class FocusSquareV2 : PlacementHandler
     {
         foreach (var plane in _arPlaneManager.trackables)
         {
-            plane.gameObject.SetActive(value);
+            var arPlaneMeshVisualizer = plane.GetComponent<ARPlaneMeshVisualizer>();
+            if (arPlaneMeshVisualizer != null)
+            {
+                arPlaneMeshVisualizer.enabled = value;
+            }
         }
 
-        _arPlaneManager.enabled = value;
+        //_arPlaneManager.enabled = value;
     }
 
     private void TapToPlaceAnimation()
@@ -291,7 +371,13 @@ public class FocusSquareV2 : PlacementHandler
     //private void OnGUI()
     //{
         //GUILayout.Space(400);
-        //GUILayout.Box(_currentState.ToString());
+        //GUILayout.Box("_D: " + _D.ToString());
+        //GUILayout.Box("_H: " + _H.ToString());
+        //GUILayout.Box("_x: " + _x.ToString());
+
+        //GUILayout.Box("_currentState: " + _currentState.ToString());
+        //_planePrefab.GetComponent<Renderer>().sharedMaterial.SetFloat("_AlphaFactor", GUILayout.HorizontalSlider(10 / Time.time, 0, 1));
+
         //GUILayout.Space(20);
         // GUILayout.Box(_btnClose.activeInHierarchy.ToString());
         //     
