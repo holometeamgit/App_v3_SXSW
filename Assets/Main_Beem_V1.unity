@@ -2067,7 +2067,7 @@ Transform:
   m_GameObject: {fileID: 1005114709}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 100, y: 100, z: 100}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 12
@@ -2112,7 +2112,6 @@ MonoBehaviour:
   _focusSquareAnimator: {fileID: 1005114710}
   transparencyRangeHologram: 1
   _delayAfterPinch: 2
-  _focusSquare: {fileID: 5503923335667453288}
   _focusSquareV2Sprite: {fileID: 1005114712}
   _pnlViewingExperience: {fileID: 4715128579803891304}
   _btnCloseViewingExperience: {fileID: 251015953}
@@ -5986,7 +5985,7 @@ PrefabInstance:
         type: 3}
       propertyPath: focusSquare
       value: 
-      objectReference: {fileID: 5503923335667453288}
+      objectReference: {fileID: 0}
     - target: {fileID: 4783958707309481190, guid: 604c9bb78e3af46b4aef4ea76027f8b0,
         type: 3}
       propertyPath: pnlRecord
@@ -10181,20 +10180,14 @@ PrefabInstance:
       propertyPath: OnPinch.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 65f27277595733c46b483fb8530a683a, type: 3}
---- !u!114 &5503923335667453288 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
-    type: 3}
-  m_PrefabInstance: {fileID: 5503923335667453287}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1077115540}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d0e6e66099456f45a6750443a6e2362, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &5584207185651801251 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5637997252317064142, guid: 5fb056e3ebab94fae838452a52f777c0,
