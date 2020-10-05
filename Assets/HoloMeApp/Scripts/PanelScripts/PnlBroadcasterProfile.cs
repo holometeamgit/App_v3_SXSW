@@ -98,10 +98,7 @@ public class PnlBroadcasterProfile : MonoBehaviour
         thumbnailItem.UpdateThumbnailData(data.stream_s3_url, s);
         thumbnailItem.SetLiveState(isLive);
 
-        DateTime dateTime;
-        if (DateTime.TryParse(data.end_date, out dateTime)) {
-            thumbnailItem.SetTimePeriod(dateTime);
-        }
+        thumbnailItem.SetTimePeriod(data.EndDate);
 
         thumbnails.Add(newThumbnail);
 

@@ -65,7 +65,7 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
     }
 
     private void DownloadErrorThumbnailsCallBack(long code, string body, LoadingKey loadingKey) {
-        OnErrorStreamJsonDataLoaded.Invoke(code, body, loadingKey);
+        OnErrorStreamJsonDataLoaded?.Invoke(code, body, loadingKey);
     }
     #endregion
 

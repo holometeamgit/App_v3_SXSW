@@ -59,6 +59,10 @@ public class HomeScreenLoader : MonoBehaviour {
         //FetchEventStreamData();
     }
 
+    void Start() {
+        
+    }
+
     private void FetchEventStreamData() {
 
         fetchStartDateTime = DateTime.Now;

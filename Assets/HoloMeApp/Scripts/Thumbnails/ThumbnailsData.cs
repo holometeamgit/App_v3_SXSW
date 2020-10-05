@@ -4,23 +4,28 @@ using UnityEngine;
 
 public class ThumbnailsData {
 
-    
+    public Action OnAllDataLoaded;
+    public ThumbnailsDataContainer thumbnailsDataContainer;
 
     private ThumbnailWebDownloadManager thumbnailWebDownloadManager;
     private ThumbnailsFilter thumbnailsFilter;
     private ThumbnailPriority thumbnailPriority;
     private int currentPriority;
 
-    //    private int pagesCount;
-    private int pageSize = 4;
+    private int pageSize = 8;
     private int currentPage;
 
     private LoadingKey currentLoadingKey;
 
-    public ThumbnailsData(ThumbnailPriority thumbnailPriority, ThumbnailWebDownloadManager thumbnailWebDownloadManager, ThumbnailsFilter thumbnailsFilter = null) {
+    public ThumbnailsData(ThumbnailPriority thumbnailPriority,
+        ThumbnailWebDownloadManager thumbnailWebDownloadManager,
+        ThumbnailsFilter thumbnailsFilter = null, int pageSize = 10) {
         this.thumbnailPriority = thumbnailPriority;
         this.thumbnailWebDownloadManager = thumbnailWebDownloadManager;
         this.thumbnailsFilter = thumbnailsFilter;
+        this.pageSize = pageSize;
+
+        thumbnailsDataContainer = new ThumbnailsDataContainer();
 
         thumbnailWebDownloadManager.OnCountThumbnailsLoaded += PageCountCallBack;
         thumbnailWebDownloadManager.OnErrorCountThumbnailsLoaded += ErrorPageCountCallBack;
@@ -32,14 +37,23 @@ public class ThumbnailsData {
     public void RefreshData() {
         currentLoadingKey = new LoadingKey(this);
         currentPriority = 0;
-
+        thumbnailsDataContainer.Refresh();
         GetPageCount();
     }
 
     public void GetNextPage() {
-        //проверить равна ли уже текущая страница нулю, если да,
-        //то перейти к новому приоритету и попытаться запросить новое количество страниниц для текущего приортитета
-        //если приоритеты закончились, то сообщить об окончании возможности грузить дальше
+        currentLoadingKey = new LoadingKey(this);
+
+        if (currentPage >= 0)
+            GetThumbnailsOnCurrentPage();
+        else {
+            currentPriority++;
+            if (thumbnailPriority.Stages.Count <= currentPriority) {
+                OnAllDataLoaded?.Invoke();
+                return;
+            }
+            GetPageCount();
+        }
     }
 
     #region page count and continue get thumbnails 
@@ -86,7 +100,8 @@ public class ThumbnailsData {
         if (loadingKey != currentLoadingKey)
             return;
 
-
+        thumbnailsDataContainer.AddListStreamJsonData(streamJsonData);
+        currentPage--;
     }
 
     private void ErrorGetThumbnailsOnCurrentPageCallBack(long code, string body, LoadingKey loadingKey) {
@@ -94,8 +109,6 @@ public class ThumbnailsData {
             return;
         Debug.Log(code + " " + body);
     }
-
-
 
     #endregion
 

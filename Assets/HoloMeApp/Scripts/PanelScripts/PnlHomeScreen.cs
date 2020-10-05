@@ -81,10 +81,7 @@ public class PnlHomeScreen : MonoBehaviour {
         thumbnailItem.UpdateThumbnailData(data.stream_s3_url, s, data?.user);
         thumbnailItem.SetLiveState(isLive);
 
-        DateTime dateTime;
-        if (DateTime.TryParse(data.start_date, out dateTime)) { //
-            thumbnailItem.SetTimePeriod(dateTime);
-        }
+        thumbnailItem.SetTimePeriod(data.EndDate);
 
         thumbnails.Add(newThumbnail);
 
@@ -152,7 +149,7 @@ public class PnlHomeScreen : MonoBehaviour {
 
 
         IEnumerable<HomeScreenLoader.DataElement> events =
-            homeScreenLoader.eventHomeScreenDataElement.OrderBy(thumbnail => DateTime.Parse(thumbnail.streamJsonData.start_date));
+            homeScreenLoader.eventHomeScreenDataElement.OrderBy(thumbnail => thumbnail.streamJsonData.StartDate);
 
         foreach (var data in events) {
             showCaseAddedData++;
@@ -162,7 +159,7 @@ public class PnlHomeScreen : MonoBehaviour {
         }
 
         IEnumerable<HomeScreenLoader.DataElement> lifes =
-            homeScreenLoader.liveHomeScreenDataElement.OrderByDescending(thumbnail => DateTime.Parse(thumbnail.streamJsonData.start_date));
+            homeScreenLoader.liveHomeScreenDataElement.OrderByDescending(thumbnail => thumbnail.streamJsonData.StartDate);
 
         foreach (var data in lifes) {
             showCaseAddedData++;
@@ -172,7 +169,7 @@ public class PnlHomeScreen : MonoBehaviour {
         }
 
         IEnumerable<HomeScreenLoader.DataElement> finisheds =
-            homeScreenLoader.streamHomeScreenDataElement.OrderByDescending(thumbnail => DateTime.Parse(thumbnail.streamJsonData.start_date));
+            homeScreenLoader.streamHomeScreenDataElement.OrderByDescending(thumbnail => thumbnail.streamJsonData.EndDate);
 
         foreach (var data in finisheds) {
             showCaseAddedData++;

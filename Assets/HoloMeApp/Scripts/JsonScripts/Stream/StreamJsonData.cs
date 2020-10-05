@@ -16,7 +16,7 @@ public class StreamJsonData
     }
 
     [Serializable]
-    public class Data : IEquatable<Data> , IComparable<Data> {
+    public class Data {
 
         public enum Stage {
             All,
@@ -41,6 +41,30 @@ public class StreamJsonData
         public string title;
         public string description;
 
+        public DateTime StartDate {
+            get {
+                if (startDate != new DateTime())
+                    return startDate;
+
+                if (!DateTime.TryParse(start_date, out startDate))
+                    startDate = new DateTime();
+                return startDate;
+            }
+        }
+
+        public DateTime EndDate {
+            get {
+                if (endDate != new DateTime())
+                    return endDate;
+
+                if (!DateTime.TryParse(end_date, out endDate))
+                    endDate = new DateTime();
+                return endDate;
+            }
+        }
+
+        private DateTime startDate;
+        private DateTime endDate;
 
         private const string announcedStr = "announced";
         private const string finishedStr = "finished";
@@ -71,14 +95,6 @@ public class StreamJsonData
             default:
                 return "All";
             }
-        }
-
-        public bool Equals(Data other) {
-            throw new NotImplementedException();
-        }
-
-        int IComparable<Data>.CompareTo(Data other) {
-            throw new NotImplementedException();
         }
     }
 
