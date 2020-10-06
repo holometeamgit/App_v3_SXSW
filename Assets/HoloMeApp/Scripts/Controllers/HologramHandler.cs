@@ -42,6 +42,7 @@ public class HologramHandler : MonoBehaviour
         if (!holoMe.Initialized)
         {
             VideoPlayerUnity videoPlayer = new VideoPlayerUnity();
+            //videoPlayer.OnPrepared += ()=> Debug.Log("PREPARED!");
             holoMe.Init(cameraTransform, videoPlayer, audioSource);
             holoMe.PlaceVideo(new Vector3(1000, 1000, 1000)); //This is the move the hologram out of the way to not effect the fade
             holoMe.EnableAmbientLighting();

@@ -10,8 +10,15 @@ public class VideoPlayerUnity : IVideoPlayer {
     AudioSource targetAudioSource;
     string url;
 
+    public Action OnPrepared;
+
     public void AddToPlaybackQuad(GameObject ARQuad) {
         videoPlayer = ARQuad.AddComponent<VideoPlayer>();
+        videoPlayer.prepareCompleted += VideoPlayerPrepareCompleted;
+    }
+
+    private void VideoPlayerPrepareCompleted(VideoPlayer source) {
+        OnPrepared.Invoke();
     }
 
     public void SetDefaults(AudioSource targetAudioSource = null) {
