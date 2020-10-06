@@ -7,12 +7,7 @@ namespace HoloMeSDK {
         public bool IsPlaying => videoPlayer.IsPlaying();
         public bool IsPaused => videoPlayer.IsPaused();
 
-        bool initialized;
-        public bool Initialized
-        {
-            get => initialized;
-            private set => initialized = value;
-        }
+        public bool Initialized { get; private set; }
 
         float positionOffset;
         public float PositionOffset
@@ -53,7 +48,7 @@ namespace HoloMeSDK {
         IVideoPlayer videoPlayer;
 
         //Negative required for correct orientation
-        readonly Vector3 DefaultScale = new Vector3(-1.2f, 2.4f, 1);
+        readonly Vector3 DefaultScale = new Vector3(-1.2f, 2.04f, 1);
 
         /// <summary>
         /// Call this to begin using the system
@@ -61,7 +56,7 @@ namespace HoloMeSDK {
         /// <param name="hologramTarget">This is the target the hologram will face it could be a camera or any other item</param>
         public void Init(Transform hologramTarget, IVideoPlayer videoPlayer, AudioSource targetAudioSource = null)
         {
-            if (!initialized)
+            if (!Initialized)
             {
                 parentGameObject = new GameObject("HoloMeParent");
                 scaleByPinch = parentGameObject.AddComponent<ScaleByPinch>();
@@ -138,11 +133,11 @@ namespace HoloMeSDK {
 
         bool LogNotInitializedWarning()
         {
-            if (!initialized)
+            if (!Initialized)
             {
                 Debug.LogWarning("HoloMe wasn't initialised, call Init() before using");
             }
-            return !initialized;
+            return !Initialized;
         }
 
         void OnVideoPlayerError()
