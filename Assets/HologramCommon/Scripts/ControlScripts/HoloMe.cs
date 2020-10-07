@@ -54,7 +54,7 @@ namespace HoloMeSDK {
         /// Call this to begin using the system
         /// </summary>
         /// <param name="hologramTarget">This is the target the hologram will face it could be a camera or any other item</param>
-        public void Init(Transform hologramTarget, IVideoPlayer videoPlayer, AudioSource targetAudioSource = null)
+        public void Init(Transform hologramTarget, IVideoPlayer videoPlayer, AudioSource targetAudioSource = null, Material customMaterial = null)
         {
             if (!Initialized)
             {
@@ -67,7 +67,7 @@ namespace HoloMeSDK {
                 this.videoPlayer.AddToPlaybackQuad(quad);
                 this.videoPlayer.SetDefaults(targetAudioSource);
              
-                //this.videoPlayer.SetOnReadyEvent(PlayOnPrepared);
+                this.videoPlayer.SetOnReadyEvent(PlayOnPrepared);
                 this.videoPlayer.SetOnErrorEvent(OnVideoPlayerError);
 
                 quad.name = "VideoQuad";
@@ -76,8 +76,13 @@ namespace HoloMeSDK {
                 hologramVisibilityActions = quad.AddComponent<HologramVisibilityActions>();
                 lookRotationOneAxis = quad.AddComponent<LookRotationOneAxis>();
                 quad.GetComponent<MeshCollider>().enabled = false;
-                quad.GetComponent<Renderer>().material.shader = Shader.Find("Unlit/HoloMe");
-                quad.GetComponent<Renderer>().material.SetFloat("_useAlphaFromMask", 1);
+
+                if (customMaterial) {
+                    quad.GetComponent<Renderer>().material = customMaterial;
+                } else {
+                    quad.GetComponent<Renderer>().material.shader = Shader.Find("Unlit/HoloMe");
+                    quad.GetComponent<Renderer>().material.SetFloat("_useAlphaFromMask", 1);
+                }
 
                 transparencyHandler = quad.AddComponent<TransparencyHandler>();
                 transparencyHandler.HologramMat = quad.GetComponent<MeshRenderer>().material;
@@ -321,7 +326,7 @@ namespace HoloMeSDK {
             //    videoPlayer.Prepare();
             //}
 
-            PlayOnPrepared();
+            videoPlayer.Prepare();
         }
 
         void PlayOnPrepared()

@@ -18,7 +18,7 @@ public class VideoPlayerUnity : IVideoPlayer {
     }
 
     private void VideoPlayerPrepareCompleted(VideoPlayer source) {
-        OnPrepared.Invoke();
+        OnPrepared?.Invoke();
     }
 
     public void SetDefaults(AudioSource targetAudioSource = null) {

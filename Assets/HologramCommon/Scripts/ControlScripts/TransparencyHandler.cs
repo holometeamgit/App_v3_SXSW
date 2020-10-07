@@ -17,7 +17,7 @@ namespace HoloMeSDK
 
         public Transform FadeTarget { private get; set; }
 
-        public Material HologramMat { private get; set; }
+        public Material HologramMat;// { private get; set; }
 
         const string ShaderKey = "_t";
 
