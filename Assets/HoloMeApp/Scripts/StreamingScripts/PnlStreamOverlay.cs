@@ -216,10 +216,12 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void ToggleAudio(bool mute) {
         TogglePauseStream();
+        agoraController.ToggleAudio(mute);
     }
 
     public void ToggleVideo(bool hideVideo) {
         TogglePauseStream();
+        agoraController.ToggleVideo(hideVideo);
     }
 
     void TogglePauseStream() {
