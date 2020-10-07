@@ -41,11 +41,11 @@ public class HologramHandler : MonoBehaviour
 
         if (!holoMe.Initialized)
         {
-            holoMe.Init(cameraTransform);
-            holoMe.UseAudioSource(audioSource);
+            VideoPlayerUnity videoPlayer = new VideoPlayerUnity();
+            //videoPlayer.OnPrepared += ()=> Debug.Log("PREPARED!");
+            holoMe.Init(cameraTransform, videoPlayer, audioSource, liveStreamMat);
             holoMe.PlaceVideo(new Vector3(1000, 1000, 1000)); //This is the move the hologram out of the way to not effect the fade
             holoMe.EnableAmbientLighting();
-            holoMe.HologramTransform.parent.GetComponent<MeshRenderer>().material = liveStreamMat;
             foreach (HologramChild hologramChild in hologramChildren)
             {
                 hologramChild.SetParent(holoMe.HologramTransform);
