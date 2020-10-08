@@ -51,6 +51,11 @@ public class PnlStreamChat : AgoraMessageReceiver
 
     public void SendChatMessage(string message)
     {
+        if (string.IsNullOrWhiteSpace(message)) {
+            inputField.text = string.Empty;
+            return;
+        }
+        
         bool rudeWordDetected = BWFManager.Contains(message, ManagerMask.Domain | ManagerMask.BadWord);
         string censoredText = BWFManager.ReplaceAll(message, ManagerMask.Domain | ManagerMask.BadWord);
 
