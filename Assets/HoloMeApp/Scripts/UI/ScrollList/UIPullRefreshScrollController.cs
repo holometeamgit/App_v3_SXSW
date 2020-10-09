@@ -6,9 +6,11 @@ using UnityEngine.UI;
 public class UIPullRefreshScrollController : MonoBehaviour
 {
     public Action OnRefresh;
+    public Action OnReachedBottom;
 
     [SerializeField] private UIRefreshableScroll scrollRect;
     [SerializeField] private float distanceRequiredRefresh = 200;
+    [SerializeField] private float distanceReachedBottom = -200;
     private float initialPosition;      
     private float progress;
     private Vector2 stopPosition;
