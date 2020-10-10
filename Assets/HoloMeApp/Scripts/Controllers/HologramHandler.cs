@@ -63,7 +63,7 @@ public class HologramHandler : MonoBehaviour
         if (Application.isEditor)
         {
             Debug.LogWarning($"{nameof(PlayOnPlace)} Called Editor Mode");
-            PlayOnPlace(new Vector3(0, 0, -10));
+            PlayOnPlace(new Vector3(0, -.5f, 2.5f));
         }
         else if (hasPlaced)
         {
