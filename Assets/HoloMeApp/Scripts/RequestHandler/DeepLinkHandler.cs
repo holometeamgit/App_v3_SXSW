@@ -29,16 +29,20 @@ public class DeepLinkHandler : MonoBehaviour {
         }
     }
 
-    private void Awake() {
+    private void Start() {
         if (Instance == null) {
             Instance = this;
             Application.deepLinkActivated += OnDeepLinkActivated;
-            if (!string.IsNullOrEmpty(Application.absoluteURL)) {
-                OnDeepLinkActivated(Application.absoluteURL);
-            } 
+            CheckStartDeepLink();
             DontDestroyOnLoad(gameObject);
         } else {
             Destroy(gameObject);
+        }
+    }
+
+    private void CheckStartDeepLink() {
+        if (!string.IsNullOrEmpty(Application.absoluteURL)) {
+            OnDeepLinkActivated(Application.absoluteURL);
         }
     }
 

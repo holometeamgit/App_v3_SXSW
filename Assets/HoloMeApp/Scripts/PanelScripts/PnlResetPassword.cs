@@ -42,7 +42,7 @@ public class PnlResetPassword : MonoBehaviour
         emailAccountManager.ResetPassword(resetPasswordJsonData);
     }
 
-    private void AddVerificationData(string uid, string token) {
+    public void AddVerificationData(string uid, string token) {
         Debug.Log("Verify " + uid + " token " + token);
         this.uid = uid;
         this.token = token;
