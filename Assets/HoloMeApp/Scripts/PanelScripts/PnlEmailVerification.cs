@@ -37,7 +37,7 @@ public class PnlEmailVerification : MonoBehaviour {
         EnableVerificationInfo();
     }
 
-    private void Verify(string key) {
+    public void Verify(string key) {
         Debug.Log("Verify " + key);
         VerifyKeyJsonData verifyKeyJsonData = new VerifyKeyJsonData(key);
         emailAccountManager.Verify(verifyKeyJsonData);
