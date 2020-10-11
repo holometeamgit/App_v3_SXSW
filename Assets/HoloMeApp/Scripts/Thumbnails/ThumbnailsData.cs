@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ThumbnailsData {
 
-    public Action OnAllDataLoaded;
+    public Action OnAllDataLoaded; //all data from the server has been downloaded
     public ThumbnailsDataContainer thumbnailsDataContainer;
 
     private ThumbnailWebDownloadManager thumbnailWebDownloadManager;

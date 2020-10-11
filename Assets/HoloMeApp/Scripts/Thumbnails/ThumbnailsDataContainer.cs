@@ -6,19 +6,20 @@ using System;
 public class ThumbnailsDataContainer {
     public Action<long> OnStreamUpdated;
     public Action<long> OnStreamRemoved;
+    public Action OnDataUpdated;
 
     Dictionary<long, StreamJsonData.Data> streamDataDictionary;
-    StreamJsonData streamData;
+    List<StreamJsonData.Data> streamData;
 
     private int lastPaginationAddedPosition;
-    private int lastAddedPosition = 0; //need for need to understand that you need to delete the data below the pagination
+    private int lastAddedPosition = 0; //need for understand that you need to delete the data below the pagination
     private int countAddedStreamData = 0;
 
     StreamDataEqualityComparer streamDataEqualityComparer;
 
     public ThumbnailsDataContainer() {
         streamDataDictionary = new Dictionary<long, StreamJsonData.Data>();
-        streamData = new StreamJsonData();
+        streamData = new List<StreamJsonData.Data>();
 
         streamDataEqualityComparer = new StreamDataEqualityComparer();
     }
@@ -37,6 +38,8 @@ public class ThumbnailsDataContainer {
 
         if (newStreamData == null || newStreamData.results.Count == 0)
             RemoveTail();
+
+        OnDataUpdated?.Invoke();
     }
 
     private void AddStreamJsonData(StreamJsonData.Data data) {
@@ -45,7 +48,7 @@ public class ThumbnailsDataContainer {
         countAddedStreamData++;
 
         //add or update data
-        streamData.results.Insert(index, data);
+        streamData.Insert(index, data);
         StreamJsonData.Data prevStreamData = null;
         if (streamDataDictionary.ContainsKey(data.id)) {
             prevStreamData = streamDataDictionary[data.id];
@@ -70,12 +73,12 @@ public class ThumbnailsDataContainer {
         Debug.Log("data.start_date " + data.user + " " + data.StartDate + " " + data.EndDate);
 
         //TODO optimize if necessary using binary search
-        for (int i = 0; i < streamData.results.Count; i++) {
-            if (data.StartDate > streamData.results[i].StartDate)
+        for (int i = 0; i < streamData.Count; i++) {
+            if (data.StartDate > streamData[i].StartDate)
                 return i;
         }
 
-        return streamData.results.Count;
+        return streamData.Count;
     }
 
     private void RemoveIrrelevantData(int to) {
@@ -88,15 +91,15 @@ public class ThumbnailsDataContainer {
         }
 
         List<long> idRemovedStreamData = new List<long>();
-        int removeCount = streamData.results.Count - 1 - lastAddedPosition - 1;
+        int removeCount = streamData.Count - 1 - lastAddedPosition - 1;
 
         for (int i = lastPaginationAddedPosition + 1; i < to; i++) {
-            Debug.Log("Remove" + streamData.results[i].StartDate);
-            streamDataDictionary.Remove(streamData.results[i].id);
-            idRemovedStreamData.Add(streamData.results[i].id);
+            Debug.Log("Remove" + streamData[i].StartDate);
+            streamDataDictionary.Remove(streamData[i].id);
+            idRemovedStreamData.Add(streamData[i].id);
         }
 
-        streamData.results.RemoveRange(lastPaginationAddedPosition + 1, removeCount);
+        streamData.RemoveRange(lastPaginationAddedPosition + 1, removeCount);
 
         lastPaginationAddedPosition++;
 
@@ -106,17 +109,17 @@ public class ThumbnailsDataContainer {
 
     private void RemoveTail() {
         List<long> idRemovedStreamData = new List<long>();
-        int removeCount = streamData.results.Count - countAddedStreamData;
+        int removeCount = streamData.Count - countAddedStreamData;
         if (removeCount <= 0)
             return;
 
-        for (int i = countAddedStreamData; i < streamData.results.Count; i++) {
-            Debug.Log("Remove tail" + streamData.results[i].StartDate);
-            streamDataDictionary.Remove(streamData.results[i].id);
-            idRemovedStreamData.Add(streamData.results[i].id);
+        for (int i = countAddedStreamData; i < streamData.Count; i++) {
+            Debug.Log("Remove tail" + streamData[i].StartDate);
+            streamDataDictionary.Remove(streamData[i].id);
+            idRemovedStreamData.Add(streamData[i].id);
         }
 
-        streamData.results.RemoveRange(countAddedStreamData, removeCount);
+        streamData.RemoveRange(countAddedStreamData, removeCount);
 
 
         foreach (var id in idRemovedStreamData)
