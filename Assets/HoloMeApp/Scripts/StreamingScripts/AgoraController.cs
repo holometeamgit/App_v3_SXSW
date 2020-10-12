@@ -38,11 +38,13 @@ public class AgoraController : MonoBehaviour {
     VideoSurface videoSurfaceQuadRef;
     Coroutine sendThumbnailRoutine;
 
+    static Vector3 defaultLiveStreamQuadScale;
+
     public void Start() {
         LoadEngine(AppId);
         frameRate = 30;
         agoraRTMChatController.Init(AppId);
-        secondaryServerCalls.OnStreamStarted += (x,y) => SecondaryServerCallsComplete(x,y);
+        secondaryServerCalls.OnStreamStarted += (x, y) => SecondaryServerCallsComplete(x, y);
     }
 
     void LoadEngine(string appId) {
@@ -95,7 +97,7 @@ public class AgoraController : MonoBehaviour {
         SecondaryServerCallsComplete(tokenAgoraResponseChannel.token, tokenAgoraResponseRTM.token);
     }
 
-    public void SecondaryServerCallsComplete( string viewerBroadcasterToken, string rtmToken) {
+    public void SecondaryServerCallsComplete(string viewerBroadcasterToken, string rtmToken) {
         agoraRTMChatController.Login(rtmToken);
 
         iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
@@ -226,12 +228,17 @@ public class AgoraController : MonoBehaviour {
         userCount++;
         OnCountIncremented(userCount);
     }
-
+    
     private void OnUserJoined(uint uid, int elapsed) {
         HelperFunctions.DevLog("onUserJoined: uid = " + uid + " elapsed = " + elapsed);
 
         if (!IsChannelCreator) {
             ResetVideoSurface();
+
+            if (defaultLiveStreamQuadScale == Vector3.zero) {
+                //print("SETTING DEFAULT QUAD SCALE");
+                defaultLiveStreamQuadScale = liveStreamQuad.transform.localScale;
+            }
 
             videoSurfaceQuadRef = liveStreamQuad.GetComponent<VideoSurface>();
             if (!videoSurfaceQuadRef) {
@@ -241,7 +248,7 @@ public class AgoraController : MonoBehaviour {
             videoSurfaceQuadRef.SetForUser(uid);
             videoSurfaceQuadRef.SetEnable(true);
             videoSurfaceQuadRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
-            videoSurfaceQuadRef.EnableFlipTextureApplyTransform(true, true);
+            videoSurfaceQuadRef.EnableFlipTextureApplyTransform(true, true, defaultLiveStreamQuadScale);
             //videoSurfaceRef.EnableFilpTextureApply(true, true);
             videoSurfaceQuadRef.SetGameFps(frameRate);
 

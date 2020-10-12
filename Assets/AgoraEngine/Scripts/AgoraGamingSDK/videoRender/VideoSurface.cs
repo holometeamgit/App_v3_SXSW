@@ -236,13 +236,10 @@ namespace agora_gaming_rtc
         //    _enableFlipVertical = enableFlipVertical;
         //}
 
-
-        Vector3 defaultQuadScale;
-        public void EnableFlipTextureApplyTransform(bool flipHorizontal, bool flipVertical)
+        public void EnableFlipTextureApplyTransform(bool flipHorizontal, bool flipVertical, Vector3 defaultQuadScale)
         {
-            if (defaultQuadScale == Vector3.zero)
-                defaultQuadScale = transform.localScale;
-
+            //print($"{nameof(EnableFlipTextureApplyTransform)} horze= { flipHorizontal} vert= { flipVertical}");
+            
             float newXScale;
             float newYScale;
 
