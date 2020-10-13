@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ObfuscatorOptions
   m_EditorClassIdentifier: 
   classes: 1
-  methods: 1
+  methods: 0
   parameters: 1
   fields: 1
   properties: 1
@@ -23,12 +23,12 @@ MonoBehaviour:
   searchForUnityReflectionMethods: 1
   obfuscateLiterals: 1
   stripLiteralEscapeCharacters: 1
-  obfuscateMarkerInDecimal: 97
+  obfuscateMarkerInDecimal: 103
   RSAKeyLength: 1024
   addFakeCode: 1
   minFalseMethodsPerClass: 10
   maxFalseMethodsPerClass: 150
-  unicodeStartInDecimal: 177
+  unicodeStartInDecimal: 339
   numberOfCharacters: 2
   createNameTranslationFile: 0
   nameTranslationFile: nameTranslation.txt
@@ -215,8 +215,8 @@ MonoBehaviour:
   inheritBeebyteAttributes: 0
   treatScriptableObjectsAsSerializable: 1
   deriveNamesFromCryptoHash: 1
-  sha1seed: DmaZ5T6kbwQNkeJayvRZAUzM
-  numberOfDifferentCharactersAsPowerOfTwo: 2
+  sha1seed: KcclAN4hXRWDze4Y4B6HM3fc
+  numberOfDifferentCharactersAsPowerOfTwo: 3
   numberOfHashBitsToUse: 6
   allowCopyingOfAllAttributesInFakeCode: 0
   allowCopyingOfBeebyteAttributesInFakeCode: 1
@@ -233,7 +233,7 @@ MonoBehaviour:
   - OnStop_
   - OnFailStart_
   - OnFailStop_
-  skipEnums: 0
+  skipEnums: 1
   maxInstructionsForCloning: 2000
   preserveNamespaces: 0
   obfuscateMonoBehaviourClassNames: 0
@@ -268,7 +268,7 @@ MonoBehaviour:
   equivalentAttributesForSkip: []
   equivalentAttributesForSkipRename:
   - Newtonsoft.Json.JsonPropertyAttribute
-  includeCompilationPipelineAssemblies: 1
+  includeCompilationPipelineAssemblies: 0
   assemblies:
   - Assembly-CSharp.dll
   compiledAssemblies: []
