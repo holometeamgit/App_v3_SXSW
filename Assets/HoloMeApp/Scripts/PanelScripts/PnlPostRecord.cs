@@ -46,6 +46,17 @@ public class PnlPostRecord : MonoBehaviour
     public string Code { private get; set; }
     const string ShareMessage = "Experience this hologram yourself using the HoloMe app by entering code ";
 
+    VideoPlayer videoPlayer;
+    VideoPlayer VideoPlayer {
+        get {
+
+            if (!videoPlayer) {
+                videoPlayer = imgPreview.GetComponent<VideoPlayer>();
+            }
+            return videoPlayer;
+        }
+    }
+
     private void Start()
     {
         //btnShare.onClick.AddListener(Share);
@@ -56,20 +67,23 @@ public class PnlPostRecord : MonoBehaviour
 
     public void ActivatePostVideo(string lastRecordPath)
     {
+        HelperFunctions.DevLog("Post record video activate called");
         screenshotWasTaken = false;
         btnPreview.gameObject.SetActive(true);
 
         imgPreview.texture = renderTexture;
 
-        var videoPlayer = imgPreview.GetComponent<VideoPlayer>();
-        videoPlayer.url = lastRecordPath;
-        videoPlayer.Play();
+        VideoPlayer.enabled = true;
+        VideoPlayer.url = lastRecordPath;
+        VideoPlayer.Play();
 
         Activate(null, lastRecordPath);
     }
 
     public void ActivatePostScreenshot(Sprite sprite, Texture2D screenshotTexture, string lastRecordPath)
     {
+        HelperFunctions.DevLog("Post record screenshot activate called");
+        VideoPlayer.enabled = false;
         screenshotWasTaken = true;
         screenShot = screenshotTexture;
         btnPreview.gameObject.SetActive(false);

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.5748171, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -256,7 +256,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 8.56e-43, y: NaN, z: 8.58e-43, w: 8.0141825e+11}
+  m_BoundingSphereOverride: {x: 0, y: 1.9282e-41, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -5435,11 +5435,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 631348511808514195, guid: 5fc651944d75047dc94c6d0464defe9d,
-        type: 3}
-      propertyPath: m_TargetAudioSources.Array.data[0]
-      value: 
-      objectReference: {fileID: 1735340510}
     - target: {fileID: 824163853672112211, guid: 5fc651944d75047dc94c6d0464defe9d,
         type: 3}
       propertyPath: m_IsActive
@@ -5539,6 +5534,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3953866876207924681, guid: 5fc651944d75047dc94c6d0464defe9d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3953866876207924681, guid: 5fc651944d75047dc94c6d0464defe9d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 6990894294779532943}
+    - target: {fileID: 3953866876207924681, guid: 5fc651944d75047dc94c6d0464defe9d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Share
+      objectReference: {fileID: 0}
+    - target: {fileID: 3953866876207924681, guid: 5fc651944d75047dc94c6d0464defe9d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_BoolArgument
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4507631777984884431, guid: 5fc651944d75047dc94c6d0464defe9d,
         type: 3}
@@ -6001,11 +6016,6 @@ PrefabInstance:
       propertyPath: pnlRecord
       value: 
       objectReference: {fileID: 2096206854}
-    - target: {fileID: 4783958707309481190, guid: 604c9bb78e3af46b4aef4ea76027f8b0,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5122551894856548018, guid: 604c9bb78e3af46b4aef4ea76027f8b0,
         type: 3}
       propertyPath: m_Name
@@ -6144,7 +6154,7 @@ PrefabInstance:
     - target: {fileID: 6935859171347483932, guid: 604c9bb78e3af46b4aef4ea76027f8b0,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: PauseExperience
+      value: StopExperience
       objectReference: {fileID: 0}
     - target: {fileID: 6935859171347483932, guid: 604c9bb78e3af46b4aef4ea76027f8b0,
         type: 3}
@@ -8202,7 +8212,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 164165630475402145}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2516359726858345706}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 621436e3907fda640956e0c097e91e30, type: 3}
@@ -8390,26 +8400,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 6511805454453755403}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2516359726858345706 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2354498682435266379, guid: 5fc651944d75047dc94c6d0464defe9d,
-    type: 3}
-  m_PrefabInstance: {fileID: 164165630475402145}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2516359726858345707
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2516359726858345706}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb7aead3b2e5245e791835a092b2c25a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteTag: 
-  colorTag: BackgroundTransparenceColor
 --- !u!224 &2742009253598094224 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7481394804356456797, guid: 504192d1b3b6647adaedbc65ca7220ed,
@@ -12735,7 +12725,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 164165630475402145}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2516359726858345706}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a3e1de61ef6044243aca8fb6440cf210, type: 3}
