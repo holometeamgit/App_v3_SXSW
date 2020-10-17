@@ -51,13 +51,18 @@ public class PnlStreamChat : AgoraMessageReceiver
 
     public void SendChatMessage(string message)
     {
+        if (string.IsNullOrWhiteSpace(message)) {
+            inputField.text = string.Empty;
+            return;
+        }
+        
         bool rudeWordDetected = BWFManager.Contains(message, ManagerMask.Domain | ManagerMask.BadWord);
         string censoredText = BWFManager.ReplaceAll(message, ManagerMask.Domain | ManagerMask.BadWord);
 
         if (rudeWordDetected)
             HelperFunctions.DevLog("Rude word detected new string = " + censoredText);
 
-        if (!agoraController.IsLive)
+        if (!agoraController.IsLive && agoraController.IsChannelCreator)
             censoredText = "Channel must be live to post comments";
 
         ChatMessageJsonData chatMessageJsonData = new ChatMessageJsonData { userName = agoraRTMChatController.UserName, message = censoredText };

@@ -14,7 +14,7 @@ public class SecondaryServerCalls : MonoBehaviour {
     [SerializeField]
     AccountManager accountManager;
 
-    public Action<string> OnStreamStarted;
+    public Action<string, string> OnStreamStarted;
     string streamName;
 
     TokenAgoraResponse tokenAgoraResponse;
@@ -31,8 +31,7 @@ public class SecondaryServerCalls : MonoBehaviour {
 
     public void StartStream(string streamName) {
         this.streamName = streamName;
-        webRequestHandler.GetRequest(webRequestHandler.ServerURLAuthAPI + videoUploader.GetStreamToken, (x, y) => { AssignToken(x, y); webRequestHandler.LogCallback(x, y); },
-            (x, y) => webRequestHandler.ErrorLogCallback(x, "Agora Record Token" + y), accountManager.GetAccessToken().access);
+        GetAgoraToken(AssignToken);
 
         //Get agora token 
         //Acquire
@@ -42,6 +41,12 @@ public class SecondaryServerCalls : MonoBehaviour {
         //Stream video
         //Stop cloud
         //Stop stream second server
+    }
+
+    public void GetAgoraToken(ResponseDelegate callback, string channelName = "") {
+        string channelParam = channelName == "" ? channelName : $"?channel={channelName}";
+        webRequestHandler.GetRequest(webRequestHandler.ServerURLAuthAPI + videoUploader.GetStreamToken + channelParam, (x, y) => { callback(x, y); webRequestHandler.LogCallback(x, y); },
+            (x, y) => webRequestHandler.ErrorLogCallback(x, "Agora Record Token" + y), accountManager.GetAccessToken().access);
     }
 
     void AssignToken(long code, string data) {
@@ -100,7 +105,7 @@ public class SecondaryServerCalls : MonoBehaviour {
         print("CREATE STREAM IS BACK" + data);
         streamStartResponseJsonData = JsonUtility.FromJson<StreamStartResponseJsonData>(data);
         if (streamStartResponseJsonData != null)
-            OnStreamStarted?.Invoke(tokenAgoraResponse.token);
+            OnStreamStarted?.Invoke(tokenAgoraResponse.token, tokenAgoraResponse.token);
         else {
             Debug.LogError("CREATE STREAM PARSE FAILED");
         }

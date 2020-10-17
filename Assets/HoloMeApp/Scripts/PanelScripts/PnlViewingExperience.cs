@@ -35,9 +35,6 @@ public class PnlViewingExperience : MonoBehaviour
     LogoCanvas logoCanvas;
 
     [SerializeField]
-    FocusSquare focusSquare;
-
-    [SerializeField]
     PnlRecord pnlRecord;
 
     [Header("")]
@@ -201,7 +198,6 @@ public class PnlViewingExperience : MonoBehaviour
         hologramHandler.InitSession();
         hologramHandler.PlayIfPlaced(code);
         hologramHandler.TogglePreRecordedVideoRenderer(true);
-        focusSquare.StartScanning = true;
         FadeInCanvas();
 
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
@@ -222,7 +218,6 @@ public class PnlViewingExperience : MonoBehaviour
         btnBurger.SetActive(false); //Close button not required on this page
         hologramHandler.InitSession();
         hologramHandler.TogglePreRecordedVideoRenderer(false);
-        focusSquare.StartScanning = true;
         FadeInCanvas();
         StopExperience();
 

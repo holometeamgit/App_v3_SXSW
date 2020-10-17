@@ -41,11 +41,11 @@ public class HologramHandler : MonoBehaviour
 
         if (!holoMe.Initialized)
         {
-            holoMe.Init(cameraTransform);
-            holoMe.UseAudioSource(audioSource);
+            VideoPlayerUnity videoPlayer = new VideoPlayerUnity();
+            //videoPlayer.OnPrepared += ()=> Debug.Log("PREPARED!");
+            holoMe.Init(cameraTransform, videoPlayer, audioSource, liveStreamMat);
             holoMe.PlaceVideo(new Vector3(1000, 1000, 1000)); //This is the move the hologram out of the way to not effect the fade
             holoMe.EnableAmbientLighting();
-            holoMe.HologramTransform.parent.GetComponent<MeshRenderer>().material = liveStreamMat;
             foreach (HologramChild hologramChild in hologramChildren)
             {
                 hologramChild.SetParent(holoMe.HologramTransform);
@@ -63,7 +63,7 @@ public class HologramHandler : MonoBehaviour
         if (Application.isEditor)
         {
             Debug.LogWarning($"{nameof(PlayOnPlace)} Called Editor Mode");
-            PlayOnPlace(new Vector3(0, 0, -10));
+            PlayOnPlace(new Vector3(0, -.5f, 2.5f));
         }
         else if (hasPlaced)
         {
@@ -73,7 +73,6 @@ public class HologramHandler : MonoBehaviour
 
     private void PlayOnPlace(Vector3 position)
     {
-        holoMe.StopVideo();
         //Debug.Log($"Play on Place called {videoCode}");
         if (!hasPlaced || Application.isEditor)
         {
@@ -113,7 +112,8 @@ public class HologramHandler : MonoBehaviour
 
     public void PauseVideo()
     {
-        holoMe.PauseVideo();
+        holoMe.StopVideo();
+        //holoMe.PauseVideo();
     }
     
     public void ResumeVideo()

@@ -4,9 +4,11 @@ Shader "HLM/Unlit/GreenscreenRemoval"
 {
     Properties
     {
+        _t("Transparency", Float) = 1
+
 		[MaterialToggle] _UseBlendTex("UseBlendTex", Float) = 1.0
         _BlendTex("BlendTexture", 2D) = "white" {}
-	
+	    
         _MainTex ("Texture", 2D) = "white" {}
         
         [MaterialToggle] _On("On", Float) = 1.0
@@ -46,6 +48,7 @@ Shader "HLM/Unlit/GreenscreenRemoval"
         Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" "LightMode" = "ForwardBase"}
         LOD 100
         
+        Cull Off
         ZWrite Off
         
         Pass
@@ -114,6 +117,8 @@ Shader "HLM/Unlit/GreenscreenRemoval"
             float _sgFactor;
             
             float _AddEdgeAndRemoveSmallHoles;
+
+            float _t;
             
             float4 MedianBlur(float r, float2 coord)
             {
@@ -300,7 +305,7 @@ Shader "HLM/Unlit/GreenscreenRemoval"
                     blendTextureColour.a = 1;
                 }
 
-                return fixed4(col.rgb, col.a);
+                return fixed4(col.rgb, col.a * _t);
             }
             ENDCG
         }
