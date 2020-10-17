@@ -45,14 +45,14 @@ public class StreamJsonData
             get {
                 if (startDate != new DateTime())
                     return startDate;
-
+                //Debug.Log("GET start_date " + start_date);
                 if (!DateTime.TryParse(start_date, out startDate))
                     startDate = new DateTime();
                 return startDate;
             }
         }
 
-        public DateTime EndDate {
+ /*       public DateTime EndDate {
             get {
                 if (endDate != new DateTime())
                     return endDate;
@@ -61,10 +61,10 @@ public class StreamJsonData
                     endDate = new DateTime();
                 return endDate;
             }
-        }
+        }*/
 
         private DateTime startDate;
-        private DateTime endDate;
+ //       private DateTime endDate;
 
         private const string announcedStr = "announced";
         private const string finishedStr = "finished";

@@ -4,6 +4,8 @@ using UnityEngine;
 using System;
 
 public class UIThumbnailsController : MonoBehaviour {
+    public Action OnUpdated;
+
     [SerializeField] MediaFileDataHandler mediaFileDataHandler;
     [SerializeField] GameObject btnThumbnailPrefab;
     [SerializeField] Transform content;
@@ -22,15 +24,20 @@ public class UIThumbnailsController : MonoBehaviour {
     }
 
     public void UpdateData() {
-        PrepareBtnThumbnails();//приготовил кнопки
-        PrepareThumbnailElement();//приготовил данные
+        PrepareBtnThumbnails();
+        PrepareThumbnailElement();
 
-        //подготовил быстрое обращение
-        for (int i = 0; i < dataList.Count; i++) {
-            btnThumbnailItemsDictionary[dataList[i].id] = btnThumbnailItems[i];
-        }
+        Debug.Log("dataList " + dataList.Count);
 
-        //для каждой кнопки теперь нужно обновить данные TODO
+
+//        Debug.Log("btnThumbnailItems " + btnThumbnailItems.Count);
+//        Debug.Log("thumbnailElementsDictionary " + thumbnailElementsDictionary.Count);
+
+
+        UpdateBtnData();
+
+//        Debug.Log("btnThumbnailItemsDictionary " + btnThumbnailItemsDictionary.Count);
+
     }
 
     public void UpdateThumbnailElement(long id) {
@@ -45,6 +52,7 @@ public class UIThumbnailsController : MonoBehaviour {
         thumbnailElementsDictionary = new Dictionary<long, ThumbnailElement>();
         btnThumbnailItemsDictionary = new Dictionary<long, BtnThumbnailItemV2>();
         btnThumbnailItems = new List<BtnThumbnailItemV2>();
+        streamDataEqualityComparer = new StreamDataEqualityComparer();
     }
 
     private void PrepareBtnThumbnails() {
@@ -58,7 +66,7 @@ public class UIThumbnailsController : MonoBehaviour {
             for (int i = 0; i < btnThumbnailItems.Count; i++) {
                 btnThumbnailItems[i].Activate();
             }
-            for (int i = 0; i < quantityDifference; i++) {
+            for (int i = 0; i < -quantityDifference; i++) {
                 GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
                 BtnThumbnailItemV2 btnThumbnailItem = btnThumbnailItemsGO.GetComponent<BtnThumbnailItemV2>();
                 btnThumbnailItems.Add(btnThumbnailItem);
@@ -67,14 +75,30 @@ public class UIThumbnailsController : MonoBehaviour {
     }
 
     private void PrepareThumbnailElement() {
+//        Debug.Log("dataList.Count " + dataList.Count);
         foreach (var thumbnailData in dataList) {
             if (thumbnailElementsDictionary.ContainsKey(thumbnailData.id)) {
                 ThumbnailElement thumbnailElement = thumbnailElementsDictionary[thumbnailData.id];
                 if (thumbnailElement.Data == thumbnailData || streamDataEqualityComparer.Equals(thumbnailElement.Data, thumbnailData))
                     continue;
             }
+//            Debug.Log("thumbnailData " + thumbnailData.id + " " + thumbnailData.preview_s3_url);
             thumbnailElementsDictionary[thumbnailData.id] = new ThumbnailElement(thumbnailData, mediaFileDataHandler);
         }
+    }
+
+    private void UpdateBtnData() {
+        for (int i = 0; i < dataList.Count; i++) {
+            btnThumbnailItemsDictionary[dataList[i].id] = btnThumbnailItems[i];
+            btnThumbnailItems[i].AddData(thumbnailElementsDictionary[dataList[i].id]);
+        }
+        OnUpdated?.Invoke();
+        //StartCoroutine(InvokeOnUpdate());
+    }
+
+    IEnumerator InvokeOnUpdate() {
+        yield return new WaitForSeconds(3) ;
+        OnUpdated?.Invoke();
     }
 
     //у нас есть отсортированный список данных dThu и нужен список отсортированных thu и есть просто список thuObj
@@ -91,31 +115,4 @@ public class UIThumbnailsController : MonoBehaviour {
     //мы знаем в нашем списке thumbnail и какие удалились, что они обновились и нужно пробежавшить по списку.
     //  Если обновились, то в элемент из thu добавляются данные из dThu, но текстура удаляется,
     //  если она не совпадает (это должен быть метод в thuElement, который сам умеет обновлять свои данные)
-}
-
-public class ThumbnailElement {
-    public long Id { get; }
-    public StreamJsonData.Data Data { get; }
-    public Texture texture;
-
-    public Action<Texture> OnTextureLoaded;
-    public Action OnErrorTextureLoaded;
-
-    public ThumbnailElement(StreamJsonData.Data data, MediaFileDataHandler mediaFileDataHandler) {
-        Data = data;
-        Id = data.id;
-
-        mediaFileDataHandler.LoadImg(Data.preview_s3_url,
-                                     FetchTexture,
-                                     ErrorFetchTexture);
-    }
-
-    private void FetchTexture(long code, string body, Texture texture) {
-        this.texture = texture;
-        OnTextureLoaded?.Invoke(texture);
-    }
-    private void ErrorFetchTexture(long code, string body) {
-        OnErrorTextureLoaded?.Invoke();
-    }
-
 }

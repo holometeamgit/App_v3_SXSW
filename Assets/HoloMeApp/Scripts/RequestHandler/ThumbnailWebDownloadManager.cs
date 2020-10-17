@@ -91,12 +91,6 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
     }
 
     private string GetRequestRefreshTokenURL(ThumbnailWebRequestStruct thumbnailWebRequestStruct) {
-        /*     string result = webRequestHandler.ServerURLMediaAPI + videoUploader.Stream + "?"
-                 + pageStreamParameter + "=" + thumbnailWebRequestStruct.PageNumber +
-                 "&" + pageSize + "=" + thumbnailWebRequestStruct.MaxPageSize +
-             (thumbnailWebRequestStruct.Stage != StreamJsonData.Data.Stage.All ? ("&" + statusStreamParameter + "=" + StreamJsonData.Data.GetStatusValue(thumbnailWebRequestStruct.Stage)) : "") +
-             ((thumbnailWebRequestStruct.Filter == null || thumbnailWebRequestStruct.Filter.IsEmpty()) ? "" : ("&" + thumbnailWebRequestStruct.Filter.GetParametersString()));
-             Debug.Log(result);*/
 
         var builder = new UriBuilder(webRequestHandler.ServerURLMediaAPI + videoUploader.Stream);
         builder.Port = -1;

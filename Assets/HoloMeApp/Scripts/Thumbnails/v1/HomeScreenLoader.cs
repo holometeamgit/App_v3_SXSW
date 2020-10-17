@@ -50,11 +50,15 @@ public class HomeScreenLoader : MonoBehaviour {
     int countLoadedTextures;
     int waitingCount;
 
+    private ThumbnailsDataContainer thumbnailsDataContainer;
+
     public UnityEvent OnDataFetched;
 
     public void FetchData() {
-        ThumbnailsData thumbnailsData = new ThumbnailsData(thumbnailPriority.ThumbnailPriority, thumbnailWebDownloadManager);
-        thumbnailsData.RefreshData();
+        if (thumbnailsDataContainer == null)
+            thumbnailsDataContainer = new ThumbnailsDataContainer();
+        ThumbnailsDataFetcher thumbnailsDataFetcher = new ThumbnailsDataFetcher(thumbnailPriority.ThumbnailPriority, thumbnailWebDownloadManager, thumbnailsDataContainer);
+        thumbnailsDataFetcher.RefreshData();
         //ClearData();
         //FetchEventStreamData();
     }

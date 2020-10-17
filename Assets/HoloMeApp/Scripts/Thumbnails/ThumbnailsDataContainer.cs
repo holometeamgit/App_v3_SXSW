@@ -24,6 +24,10 @@ public class ThumbnailsDataContainer {
         streamDataEqualityComparer = new StreamDataEqualityComparer();
     }
 
+    public List<StreamJsonData.Data> GetDataList() {
+        return streamData;
+    }
+
     public void Refresh() {
         countAddedStreamData = 0;
     }
@@ -44,7 +48,7 @@ public class ThumbnailsDataContainer {
 
     private void AddStreamJsonData(StreamJsonData.Data data) {
         int index = FindAddingPosition(data); 
-        Debug.Log(index);
+        Debug.Log("add to index " + index);
         countAddedStreamData++;
 
         //add or update data
@@ -70,7 +74,7 @@ public class ThumbnailsDataContainer {
     }
 
     private int FindAddingPosition(StreamJsonData.Data data) {
-        Debug.Log("data.start_date " + data.user + " " + data.StartDate + " " + data.EndDate);
+        Debug.Log(data.id + " " + data.user + " " + data.status + " " + data.StartDate);// + " " + data.EndDate);
 
         //TODO optimize if necessary using binary search
         for (int i = 0; i < streamData.Count; i++) {

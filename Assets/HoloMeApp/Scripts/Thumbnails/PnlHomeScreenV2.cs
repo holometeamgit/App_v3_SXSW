@@ -9,24 +9,60 @@ public class PnlHomeScreenV2 : MonoBehaviour
     [SerializeField] UIPullRefreshScrollController pullRefreshController;
     [SerializeField] ThumbnailPriorityScriptableObject thumbnailPriority;
     [SerializeField] ThumbnailWebDownloadManager thumbnailWebDownloadManager;
+    [SerializeField] UIThumbnailsController uiThumbnailsController;
 
     [Space]
     [SerializeField] int pageSize = 10;
 
-    private ThumbnailsData thumbnailsData;
+    private ThumbnailsDataFetcher thumbnailsDataFetcher;
+    private ThumbnailsDataContainer thumbnailsDataContainer;
+
+    bool dataLoaded;
+    bool initialized;
 
     private void Awake() {
-        thumbnailsData = new ThumbnailsData(thumbnailPriority.ThumbnailPriority, thumbnailWebDownloadManager, pageSize: 10);
         pullRefreshController.OnRefresh += RefreshItems;
+        pullRefreshController.OnReachedBottom += GetNextPage;
+
+        thumbnailsDataContainer = new ThumbnailsDataContainer();
+
+        thumbnailsDataContainer.OnDataUpdated += DataUpdateCallBack;
+
+        thumbnailsDataFetcher = new ThumbnailsDataFetcher(thumbnailPriority.ThumbnailPriority, thumbnailWebDownloadManager, thumbnailsDataContainer, pageSize: pageSize );
+        uiThumbnailsController.SetStreamJsonData(thumbnailsDataContainer.GetDataList());
+
+        thumbnailsDataFetcher.OnAllDataLoaded += AllDataLoaded;
+
+        uiThumbnailsController.OnUpdated += UIUpdated;
+    }
+
+    private void DataUpdateCallBack() {
+        initialized = true;
+        uiThumbnailsController.UpdateData();
+    }
+
+    private void UIUpdated() {
+        pullRefreshController.EndRefreshing();
     }
 
     private void RefreshItems() {
-        FetchData();
+        Debug.Log("RefreshItems");
+        dataLoaded = false;
+        pullRefreshController.StopBottomRefreshing = false;
+        thumbnailsDataFetcher.RefreshData();
     }
 
-    public void FetchData() {
-        thumbnailsData.RefreshData();
-        //ClearData();
-        //FetchEventStreamData();
+    private void GetNextPage() {
+        if (!initialized)
+            RefreshItems();
+        else
+            if (!dataLoaded)
+                thumbnailsDataFetcher.GetNextPage();
+    }
+
+    private void AllDataLoaded() {
+        Debug.Log(" AllDataLoaded Data loaded");
+        dataLoaded = true;
+        pullRefreshController.StopBottomRefreshing = true;
     }
 }

@@ -2,30 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ThumbnailsData {
+public class ThumbnailsDataFetcher {
 
     public Action OnAllDataLoaded; //all data from the server has been downloaded
-    public ThumbnailsDataContainer thumbnailsDataContainer;
+    public Action OnErrorGetCountThumbnails;
+    public Action OnErrorGetThumbnails;
 
     private ThumbnailWebDownloadManager thumbnailWebDownloadManager;
     private ThumbnailsFilter thumbnailsFilter;
     private ThumbnailPriority thumbnailPriority;
+    private ThumbnailsDataContainer thumbnailsDataContainer;
     private int currentPriority;
 
     private int pageSize = 8;
-    private int currentPage;
+    private int currentPage = 1;
 
     private LoadingKey currentLoadingKey;
 
-    public ThumbnailsData(ThumbnailPriority thumbnailPriority,
-        ThumbnailWebDownloadManager thumbnailWebDownloadManager,
+    public ThumbnailsDataFetcher(ThumbnailPriority thumbnailPriority,
+        ThumbnailWebDownloadManager downloadManager,
+        ThumbnailsDataContainer thumbnailsDataContainer,
         ThumbnailsFilter thumbnailsFilter = null, int pageSize = 10) {
         this.thumbnailPriority = thumbnailPriority;
-        this.thumbnailWebDownloadManager = thumbnailWebDownloadManager;
+        thumbnailWebDownloadManager = downloadManager;
         this.thumbnailsFilter = thumbnailsFilter;
         this.pageSize = pageSize;
 
-        thumbnailsDataContainer = new ThumbnailsDataContainer();
+        this.thumbnailsDataContainer = thumbnailsDataContainer;
 
         thumbnailWebDownloadManager.OnCountThumbnailsLoaded += PageCountCallBack;
         thumbnailWebDownloadManager.OnErrorCountThumbnailsLoaded += ErrorPageCountCallBack;
@@ -44,7 +47,7 @@ public class ThumbnailsData {
     public void GetNextPage() {
         currentLoadingKey = new LoadingKey(this);
 
-        if (currentPage >= 0)
+        if (currentPage >= 1)
             GetThumbnailsOnCurrentPage();
         else {
             currentPriority++;
@@ -70,10 +73,11 @@ public class ThumbnailsData {
     }
 
     private void PageCountCallBack(int count, LoadingKey loadingKey) {
+//        Debug.Log("PageCountCallBack " + loadingKey.ToString());
         if (loadingKey != currentLoadingKey)
             return;
 
-        currentPage = Mathf.CeilToInt((float)count / pageSize);
+        currentPage = Mathf.Max(Mathf.CeilToInt((float)count / pageSize), 1);
         Debug.Log("currentPage = " + currentPage + " count = " + count);
 
         GetThumbnailsOnCurrentPage();
@@ -83,6 +87,7 @@ public class ThumbnailsData {
         if (loadingKey != currentLoadingKey)
             return;
         Debug.Log(code + " " + body);
+        OnErrorGetCountThumbnails?.Invoke();
     }
 
     #endregion
@@ -97,6 +102,7 @@ public class ThumbnailsData {
     }
 
     private void GetThumbnailsOnCurrentPageCallBack(StreamJsonData streamJsonData, LoadingKey loadingKey) {
+//        Debug.Log("GetThumbnailsOnCurrentPageCallBack " + loadingKey.ToString());
         if (loadingKey != currentLoadingKey)
             return;
 
@@ -108,11 +114,12 @@ public class ThumbnailsData {
         if (loadingKey != currentLoadingKey)
             return;
         Debug.Log(code + " " + body);
+        OnErrorGetThumbnails?.Invoke();
     }
 
     #endregion
 
-    ~ThumbnailsData() {
+    ~ThumbnailsDataFetcher() {
         thumbnailWebDownloadManager.OnCountThumbnailsLoaded -= PageCountCallBack;
         thumbnailWebDownloadManager.OnErrorCountThumbnailsLoaded -= ErrorPageCountCallBack;
 

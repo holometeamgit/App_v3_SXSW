@@ -8,6 +8,8 @@ public class UIPullRefreshScrollController : MonoBehaviour
     public Action OnRefresh;
     public Action OnReachedBottom;
 
+    public bool StopBottomRefreshing { get; set; }
+
     [SerializeField] private UIRefreshableScroll scrollRect;
     [SerializeField] private float distanceRequiredRefresh = 200;
     [SerializeField] private float distanceReachedBottom = 700;
@@ -21,15 +23,22 @@ public class UIPullRefreshScrollController : MonoBehaviour
     private bool isRefreshing;
 
     private bool isBottomRefreshing;
-    RectTransform scrollRectTransform; 
+
+RectTransform scrollRectTransform; 
 
     public void EndRefreshing() {
+        RefreshLayout();
         isPulled = false;
         isRefreshing = false;
         isBottomRefreshing = false;
         bottomLoadingInfo.SetActive(false);
         topLoadingInfo.SetActive(true);
         Debug.Log("EndRefreshing");
+    }
+
+    private void RefreshLayout() {
+        Debug.Log("RefreshLayout");
+        LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
     }
 
     private void Start() {
@@ -82,7 +91,7 @@ public class UIPullRefreshScrollController : MonoBehaviour
 
         if (isPulled && !scrollRect.Dragging) {
             isRefreshing = true;
-            Debug.Log("OnPull");
+            Debug.Log("OnRefresh");
             OnRefresh?.Invoke();
         }
 
@@ -90,18 +99,20 @@ public class UIPullRefreshScrollController : MonoBehaviour
     }
 
     private void OnBottomPull(Vector2 normalizedPosition) {
-        if (isPulled || isRefreshing || isBottomRefreshing) {
+        if (isPulled || isRefreshing || isBottomRefreshing || StopBottomRefreshing) {
             return;
         }
+
+//        Debug.Log("GetBottomAnchoredPosition " + GetBottomAnchoredPosition());
 
         if (GetBottomAnchoredPosition() > distanceReachedBottom)
             return;
 
         isBottomRefreshing = true;
+        Debug.Log("OnBottomPull");
         OnReachedBottom?.Invoke();
         bottomLoadingInfo.SetActive(true);
         topLoadingInfo.SetActive(false);
-        Debug.Log("OnBottomPull");
     }
 
     private float GetContentAnchoredPosition() {

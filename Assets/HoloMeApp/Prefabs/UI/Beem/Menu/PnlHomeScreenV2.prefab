@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8812161544630570540}
   m_Layer: 5
-  m_Name: spaceRefresh
+  m_Name: spaceTopRefresh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,10 +67,10 @@ RectTransform:
   m_Father: {fileID: 9113670926745020095}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 562.5, y: -1237}
-  m_SizeDelta: {x: 1125, y: 198}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -849.34}
+  m_SizeDelta: {x: 0, y: 198}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &4322197236604217382
 GameObject:
@@ -633,17 +633,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 45
-    m_Right: 45
-    m_Top: 33
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 336, y: 717.34}
-  m_Spacing: {x: 12, y: 65}
+  m_CellSize: {x: 1125, y: 2001}
+  m_Spacing: {x: 0, y: 48}
   m_Constraint: 1
-  m_ConstraintCount: 3
+  m_ConstraintCount: 1
 --- !u!114 &9113670926264715631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -783,6 +783,7 @@ MonoBehaviour:
   scrollRect: {fileID: 9113670925800669937}
   distanceRequiredRefresh: 200
   distanceReachedBottom: -200
+  topLoadingInfo: {fileID: 2402091650506127487}
   bottomLoadingInfo: {fileID: 2530265846578583014}
   withStartRefresh: 1
 --- !u!1 &9113670926633950868
@@ -798,6 +799,7 @@ GameObject:
   - component: {fileID: 9113670926633950873}
   - component: {fileID: 9113670926633950872}
   - component: {fileID: 630276742}
+  - component: {fileID: 7367794044440984482}
   m_Layer: 5
   m_Name: PnlHomeScreenV2
   m_TagString: Untagged
@@ -911,7 +913,24 @@ MonoBehaviour:
   pullRefreshController: {fileID: 304454058}
   thumbnailPriority: {fileID: 11400000, guid: ebc66424c49d24998a045a244ae6f9b8, type: 2}
   thumbnailWebDownloadManager: {fileID: 0}
+  uiThumbnailsController: {fileID: 7367794044440984482}
   pageSize: 10
+--- !u!114 &7367794044440984482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9113670926633950868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814b8263dc45b405ba6722815ccc1e2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mediaFileDataHandler: {fileID: 0}
+  btnThumbnailPrefab: {fileID: 5930518935170032174, guid: 85ed017adca5b4bf49cfacd38a2ed092,
+    type: 3}
+  content: {fileID: 9113670926264715628}
 --- !u!1 &9113670926745020094
 GameObject:
   m_ObjectHideFlags: 0
@@ -1019,7 +1038,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &9113670926745391574
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1034,10 +1053,10 @@ RectTransform:
   m_Father: {fileID: 9113670926745020095}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 1138}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 562.5, y: -569}
+  m_SizeDelta: {x: 1125, y: 1138}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9113670926745391578
 CanvasRenderer:
