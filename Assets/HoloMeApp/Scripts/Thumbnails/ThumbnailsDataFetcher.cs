@@ -5,6 +5,7 @@ using UnityEngine;
 public class ThumbnailsDataFetcher {
 
     public Action OnAllDataLoaded; //all data from the server has been downloaded
+    public Action OnDataUpdated;
     public Action OnErrorGetCountThumbnails;
     public Action OnErrorGetThumbnails;
 
@@ -21,20 +22,25 @@ public class ThumbnailsDataFetcher {
 
     public ThumbnailsDataFetcher(ThumbnailPriority thumbnailPriority,
         ThumbnailWebDownloadManager downloadManager,
-        ThumbnailsDataContainer thumbnailsDataContainer,
         ThumbnailsFilter thumbnailsFilter = null, int pageSize = 10) {
         this.thumbnailPriority = thumbnailPriority;
         thumbnailWebDownloadManager = downloadManager;
         this.thumbnailsFilter = thumbnailsFilter;
         this.pageSize = pageSize;
 
-        this.thumbnailsDataContainer = thumbnailsDataContainer;
+        thumbnailsDataContainer = new ThumbnailsDataContainer();
+
+        thumbnailsDataContainer.OnDataUpdated += DataUpdatedCallBack;
 
         thumbnailWebDownloadManager.OnCountThumbnailsLoaded += PageCountCallBack;
         thumbnailWebDownloadManager.OnErrorCountThumbnailsLoaded += ErrorPageCountCallBack;
 
         thumbnailWebDownloadManager.OnStreamJsonDataLoaded += GetThumbnailsOnCurrentPageCallBack;
         thumbnailWebDownloadManager.OnErrorStreamJsonDataLoaded += ErrorGetThumbnailsOnCurrentPageCallBack;
+    }
+
+    public List<StreamJsonData.Data> GetDataList() {
+        return thumbnailsDataContainer.GetDataList();
     }
 
     public void RefreshData() {
@@ -57,6 +63,11 @@ public class ThumbnailsDataFetcher {
             }
             GetPageCount();
         }
+    }
+
+    private void DataUpdatedCallBack() {
+//        Debug.Log("DataUpdatedCallBack");
+        OnDataUpdated?.Invoke();
     }
 
     #region page count and continue get thumbnails 

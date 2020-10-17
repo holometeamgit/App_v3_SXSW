@@ -607,8 +607,8 @@ RectTransform:
   m_Father: {fileID: 9113670926745020095}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 562.5, y: 0}
   m_SizeDelta: {x: 1125, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -782,8 +782,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scrollRect: {fileID: 9113670925800669937}
   distanceRequiredRefresh: 200
-  distanceReachedBottom: -200
-  topLoadingInfo: {fileID: 2402091650506127487}
+  distanceReachedBottom: 700
+  topLoadingInfo: {fileID: 4322197236604217382}
   bottomLoadingInfo: {fileID: 2530265846578583014}
   withStartRefresh: 1
 --- !u!1 &9113670926633950868
@@ -795,8 +795,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9113670926633950869}
-  - component: {fileID: 9113670926633950874}
-  - component: {fileID: 9113670926633950873}
   - component: {fileID: 9113670926633950872}
   - component: {fileID: 630276742}
   - component: {fileID: 7367794044440984482}
@@ -828,68 +826,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &9113670926633950874
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9113670926633950868}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54b494727e25748378ea65b0de594e6f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tymeToNextRefresh: 12
-  pnlViewingExperience: {fileID: 0}
-  pnlStreamOverlay: {fileID: 0}
-  agoraController: {fileID: 0}
-  homeScreenLoader: {fileID: 9113670926633950873}
-  contentShowcaseThumbnails: {fileID: 9113670926745391574}
-  contentUserThumbnails: {fileID: 9113670926264715628}
-  thumbnailShowcasePrefab: {fileID: 1212577596832801519, guid: 78f0548ea79e643c09a36f4a0870350f,
-    type: 3}
-  thumbnailPrefab: {fileID: 4537155585479337138, guid: efd6b93637ee9482389df4243c41ec9c,
-    type: 3}
-  showcaseCount: 1
-  fetchDataOnFirstEnable: 1
-  scrollRect: {fileID: 9113670925800669937}
-  OnThumbnailClick:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &9113670926633950873
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9113670926633950868}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b3a014a7bf2d34bc6b48a7e74213efe6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  thumbnailWebDownloadManager: {fileID: 0}
-  thumbnailPriority: {fileID: 11400000, guid: ebc66424c49d24998a045a244ae6f9b8, type: 2}
-  mediaFileDataHandler: {fileID: 0}
-  accountManager: {fileID: 0}
-  maxEventPageSize: 10
-  maxLivePageSize: 20
-  maxFinishedPageSize: 50
-  OnDataFetched:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!222 &9113670926633950872
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -911,10 +847,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pullRefreshController: {fileID: 304454058}
-  thumbnailPriority: {fileID: 11400000, guid: ebc66424c49d24998a045a244ae6f9b8, type: 2}
-  thumbnailWebDownloadManager: {fileID: 0}
   uiThumbnailsController: {fileID: 7367794044440984482}
-  pageSize: 10
+  thumbnailPriority: {fileID: 11400000, guid: 8e45331e8b9584caca4e019af2417910, type: 2}
+  thumbnailWebDownloadManager: {fileID: 0}
+  pageSize: 2
 --- !u!114 &7367794044440984482
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -27,25 +27,30 @@ public class UIThumbnailsController : MonoBehaviour {
         PrepareBtnThumbnails();
         PrepareThumbnailElement();
 
-        Debug.Log("dataList " + dataList.Count);
+        //        Debug.Log("dataList " + dataList.Count);
 
 
-//        Debug.Log("btnThumbnailItems " + btnThumbnailItems.Count);
-//        Debug.Log("thumbnailElementsDictionary " + thumbnailElementsDictionary.Count);
+        //        Debug.Log("btnThumbnailItems " + btnThumbnailItems.Count);
+        //        Debug.Log("thumbnailElementsDictionary " + thumbnailElementsDictionary.Count);
 
 
         UpdateBtnData();
 
-//        Debug.Log("btnThumbnailItemsDictionary " + btnThumbnailItemsDictionary.Count);
+        //        Debug.Log("btnThumbnailItemsDictionary " + btnThumbnailItemsDictionary.Count);
 
     }
 
-    public void UpdateThumbnailElement(long id) {
+    public void RemoveUnnecessary() {
+        List<long> removingListID = new List<long>();
 
-    }
+        foreach (var thumbnailElement in thumbnailElementsDictionary) {
+            if (dataList.Contains(thumbnailElement.Value.Data))
+                removingListID.Add(thumbnailElement.Value.Data.id);
+        }
 
-    public void RemoveThumbnailElement(long id) {
-
+        foreach (var id in removingListID) {
+            thumbnailElementsDictionary.Remove(id);
+        }
     }
 
     private void Awake() {
@@ -58,31 +63,32 @@ public class UIThumbnailsController : MonoBehaviour {
     private void PrepareBtnThumbnails() {
         int quantityDifference = btnThumbnailItems.Count - dataList.Count;
 
-        if (quantityDifference > 0) {
-            for (int i = dataList.Count; i < btnThumbnailItems.Count; i++) {
-                btnThumbnailItems[i].Deactivate();
-            }
-        } else {
-            for (int i = 0; i < btnThumbnailItems.Count; i++) {
-                btnThumbnailItems[i].Activate();
-            }
-            for (int i = 0; i < -quantityDifference; i++) {
-                GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
-                BtnThumbnailItemV2 btnThumbnailItem = btnThumbnailItemsGO.GetComponent<BtnThumbnailItemV2>();
-                btnThumbnailItems.Add(btnThumbnailItem);
-            }
+        Debug.Log("quantityDifference " + quantityDifference);
+
+        for (int i = 0; i < -quantityDifference; i++) {
+            GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
+            BtnThumbnailItemV2 btnThumbnailItem = btnThumbnailItemsGO.GetComponent<BtnThumbnailItemV2>();
+            btnThumbnailItems.Add(btnThumbnailItem);
         }
+        for (int i = 0; i < btnThumbnailItems.Count; i++) {
+            btnThumbnailItems[i].Activate();
+            Debug.Log("btnThumbnailItems[i].Activate " + i);
+        }
+        for (int i = dataList.Count; i < btnThumbnailItems.Count; i++) {
+            btnThumbnailItems[i].Deactivate();
+        }
+
     }
 
     private void PrepareThumbnailElement() {
-//        Debug.Log("dataList.Count " + dataList.Count);
+        //        Debug.Log("dataList.Count " + dataList.Count);
         foreach (var thumbnailData in dataList) {
             if (thumbnailElementsDictionary.ContainsKey(thumbnailData.id)) {
                 ThumbnailElement thumbnailElement = thumbnailElementsDictionary[thumbnailData.id];
                 if (thumbnailElement.Data == thumbnailData || streamDataEqualityComparer.Equals(thumbnailElement.Data, thumbnailData))
                     continue;
             }
-//            Debug.Log("thumbnailData " + thumbnailData.id + " " + thumbnailData.preview_s3_url);
+            Debug.Log("thumbnailData " + thumbnailData.id + " " + thumbnailData.preview_s3_url);
             thumbnailElementsDictionary[thumbnailData.id] = new ThumbnailElement(thumbnailData, mediaFileDataHandler);
         }
     }
@@ -94,11 +100,6 @@ public class UIThumbnailsController : MonoBehaviour {
         }
         OnUpdated?.Invoke();
         //StartCoroutine(InvokeOnUpdate());
-    }
-
-    IEnumerator InvokeOnUpdate() {
-        yield return new WaitForSeconds(3) ;
-        OnUpdated?.Invoke();
     }
 
     //у нас есть отсортированный список данных dThu и нужен список отсортированных thu и есть просто список thuObj

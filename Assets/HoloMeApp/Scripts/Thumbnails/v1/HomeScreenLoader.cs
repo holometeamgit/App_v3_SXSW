@@ -57,7 +57,7 @@ public class HomeScreenLoader : MonoBehaviour {
     public void FetchData() {
         if (thumbnailsDataContainer == null)
             thumbnailsDataContainer = new ThumbnailsDataContainer();
-        ThumbnailsDataFetcher thumbnailsDataFetcher = new ThumbnailsDataFetcher(thumbnailPriority.ThumbnailPriority, thumbnailWebDownloadManager, thumbnailsDataContainer);
+        ThumbnailsDataFetcher thumbnailsDataFetcher = new ThumbnailsDataFetcher(thumbnailPriority.ThumbnailPriority, thumbnailWebDownloadManager);
         thumbnailsDataFetcher.RefreshData();
         //ClearData();
         //FetchEventStreamData();

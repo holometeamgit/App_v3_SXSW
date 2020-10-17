@@ -26,19 +26,25 @@ public class UIPullRefreshScrollController : MonoBehaviour
 
 RectTransform scrollRectTransform; 
 
+    public void RefreshLayout() {
+        LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
+    }
+
     public void EndRefreshing() {
-        RefreshLayout();
+        scrollRect.enabled = true;
         isPulled = false;
         isRefreshing = false;
         isBottomRefreshing = false;
         bottomLoadingInfo.SetActive(false);
         topLoadingInfo.SetActive(true);
+        RefreshElementsPosiotion();
         Debug.Log("EndRefreshing");
     }
 
-    private void RefreshLayout() {
-        Debug.Log("RefreshLayout");
-        LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
+    private void RefreshElementsPosiotion() {
+        //        Debug.Log("RefreshLayout");
+        //scrollRect.Rebuild(CanvasUpdate.Layout);
+        scrollRect.onValueChanged.Invoke(scrollRect.normalizedPosition);
     }
 
     private void Start() {
@@ -91,7 +97,9 @@ RectTransform scrollRectTransform;
 
         if (isPulled && !scrollRect.Dragging) {
             isRefreshing = true;
+            scrollRect.enabled = false;
             Debug.Log("OnRefresh");
+            isBottomRefreshing = true;
             OnRefresh?.Invoke();
         }
 
@@ -103,16 +111,16 @@ RectTransform scrollRectTransform;
             return;
         }
 
-//        Debug.Log("GetBottomAnchoredPosition " + GetBottomAnchoredPosition());
-
         if (GetBottomAnchoredPosition() > distanceReachedBottom)
             return;
 
+        Debug.Log("GetBottomAnchoredPosition " + GetBottomAnchoredPosition());
+
         isBottomRefreshing = true;
-        Debug.Log("OnBottomPull");
-        OnReachedBottom?.Invoke();
         bottomLoadingInfo.SetActive(true);
         topLoadingInfo.SetActive(false);
+        Debug.Log("OnBottomPull");
+        OnReachedBottom?.Invoke();
     }
 
     private float GetContentAnchoredPosition() {
@@ -121,5 +129,9 @@ RectTransform scrollRectTransform;
 
     private float GetBottomAnchoredPosition() {
         return scrollRect.content.sizeDelta.y - scrollRect.content.anchoredPosition.y - scrollRectTransform.rect.height;
+    }
+
+    private void OnEnable() {
+        scrollRect.enabled = true;
     }
 }
