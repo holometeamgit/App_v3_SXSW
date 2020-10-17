@@ -134,11 +134,11 @@ public class PnlRecord : MonoBehaviour
         canvasGroup.alpha = 0;
     }
 
-    public void EnableRecordPanel(bool streamOffset)
+    public void EnableRecordPanel(bool streamOffset = false)
     {
-        int buttonOffset = streamOffset ? 210 : 0;
-        imgFillBackground.rectTransform.offsetMax = new Vector2(imgFillBackground.rectTransform.offsetMax.x, buttonOffset);
-        imgFillBackground.rectTransform.offsetMin = new Vector2(imgFillBackground.rectTransform.offsetMin.x, buttonOffset);
+        //int buttonOffset = streamOffset ? 210 : 0;
+        //imgFillBackground.rectTransform.offsetMax = new Vector2(imgFillBackground.rectTransform.offsetMax.x, buttonOffset);
+        //imgFillBackground.rectTransform.offsetMin = new Vector2(imgFillBackground.rectTransform.offsetMin.x, buttonOffset);
 
         gameObject.SetActive(true);
         canvasGroup.DOFade(1, .5f);

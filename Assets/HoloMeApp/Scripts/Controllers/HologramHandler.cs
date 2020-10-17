@@ -87,6 +87,10 @@ public class HologramHandler : MonoBehaviour
         holoMe.PlaceVideo(position);
     }
 
+    public void PlayDirect() {
+        PlayVideo();
+    }
+
     private void PlayVideo()
     {
         if (holoMe.IsPaused)
@@ -112,8 +116,7 @@ public class HologramHandler : MonoBehaviour
 
     public void PauseVideo()
     {
-        holoMe.StopVideo();
-        //holoMe.PauseVideo();
+        holoMe.PauseVideo();
     }
     
     public void ResumeVideo()
