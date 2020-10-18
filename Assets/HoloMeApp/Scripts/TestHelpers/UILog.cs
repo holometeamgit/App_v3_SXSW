@@ -25,8 +25,8 @@ public class UILog : MonoBehaviour {
 
     void OnEnable() {
         if (Debug.isDebugBuild) {
-            canvasLog.SetActive(true);
-            Application.logMessageReceived += HandleLog;
+  //          canvasLog.SetActive(true);
+  //          Application.logMessageReceived += HandleLog;
         }
     }
 
