@@ -26,18 +26,11 @@ public class UIThumbnailsController : MonoBehaviour {
     public void UpdateData() {
         PrepareBtnThumbnails();
         PrepareThumbnailElement();
-
         //        Debug.Log("dataList " + dataList.Count);
-
-
         //        Debug.Log("btnThumbnailItems " + btnThumbnailItems.Count);
         //        Debug.Log("thumbnailElementsDictionary " + thumbnailElementsDictionary.Count);
-
-
         UpdateBtnData();
-
         //        Debug.Log("btnThumbnailItemsDictionary " + btnThumbnailItemsDictionary.Count);
-
     }
 
     public void RemoveUnnecessary() {

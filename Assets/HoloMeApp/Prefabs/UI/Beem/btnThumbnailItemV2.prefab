@@ -834,7 +834,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5930518934182915735}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 9006325791932761029}
+        m_MethodName: TryPlay
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &9006325791932761029
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -853,6 +864,8 @@ MonoBehaviour:
   imgPurchaseIcon: {fileID: 2992810890598757528}
   txtPerformerName: {fileID: 5930518934589730980}
   txtDate: {fileID: 5930518934672581703}
+  thumbnailsPurchaseStateScriptableObject: {fileID: 11400000, guid: 209bc7077bde941c7a75a00671e39b39,
+    type: 2}
 --- !u!1 &5930518935652879195
 GameObject:
   m_ObjectHideFlags: 0

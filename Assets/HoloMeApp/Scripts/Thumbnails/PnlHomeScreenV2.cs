@@ -10,6 +10,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
     [SerializeField] UIThumbnailsController uiThumbnailsController;
     [SerializeField] ThumbnailPriorityScriptableObject thumbnailPriority;
     [SerializeField] ThumbnailWebDownloadManager thumbnailWebDownloadManager;
+    [SerializeField] ThumbnailsPurchaser thumbnailsPurchaser;
 
 
     [Space]
@@ -33,6 +34,8 @@ public class PnlHomeScreenV2 : MonoBehaviour
 
         uiThumbnailsController.OnUpdated += UIUpdated;
         uiThumbnailsController.SetStreamJsonData(thumbnailsDataFetcher.GetDataList());
+
+        thumbnailsPurchaser.SetStreamJsonData(thumbnailsDataFetcher.GetDataList());
     }
 
     private void DataUpdateCallBack() {
