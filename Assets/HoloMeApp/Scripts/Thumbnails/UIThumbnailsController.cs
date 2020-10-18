@@ -5,8 +5,12 @@ using System;
 
 public class UIThumbnailsController : MonoBehaviour {
     public Action OnUpdated;
+    public Action OnPlay;
 
     [SerializeField] MediaFileDataHandler mediaFileDataHandler;
+    [SerializeField] PnlViewingExperience pnlViewingExperience;
+    [SerializeField] AgoraController agoraController;
+    [SerializeField] PnlStreamOverlay pnlStreamOverlay;
     [SerializeField] GameObject btnThumbnailPrefab;
     [SerializeField] Transform content;
 
@@ -56,7 +60,7 @@ public class UIThumbnailsController : MonoBehaviour {
     private void PrepareBtnThumbnails() {
         int quantityDifference = btnThumbnailItems.Count - dataList.Count;
 
-//        Debug.Log("quantityDifference " + quantityDifference);
+        //        Debug.Log("quantityDifference " + quantityDifference);
 
         for (int i = 0; i < -quantityDifference; i++) {
             GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
@@ -65,7 +69,7 @@ public class UIThumbnailsController : MonoBehaviour {
         }
         for (int i = 0; i < btnThumbnailItems.Count; i++) {
             btnThumbnailItems[i].Activate();
-//            Debug.Log("btnThumbnailItems[i].Activate " + i);
+            //            Debug.Log("btnThumbnailItems[i].Activate " + i);
         }
         for (int i = dataList.Count; i < btnThumbnailItems.Count; i++) {
             btnThumbnailItems[i].Deactivate();
@@ -90,9 +94,24 @@ public class UIThumbnailsController : MonoBehaviour {
         for (int i = 0; i < dataList.Count; i++) {
             btnThumbnailItemsDictionary[dataList[i].id] = btnThumbnailItems[i];
             btnThumbnailItems[i].AddData(thumbnailElementsDictionary[dataList[i].id]);
+            btnThumbnailItems[i].SetThumbnailPressAction(Play);
         }
         OnUpdated?.Invoke();
         //StartCoroutine(InvokeOnUpdate());
+    }
+
+    private void Play(StreamJsonData.Data.Stage stage, string url) {
+        switch (stage) {
+            case StreamJsonData.Data.Stage.Finished:
+                pnlViewingExperience.ActivateForPreRecorded(url, null);
+                OnPlay?.Invoke();
+                break;
+            case StreamJsonData.Data.Stage.Live:
+                agoraController.ChannelName = url;
+                pnlStreamOverlay.OpenAsViewer();
+                OnPlay?.Invoke();
+                break;
+        }
     }
 
     //у нас есть отсортированный список данных dThu и нужен список отсортированных thu и есть просто список thuObj

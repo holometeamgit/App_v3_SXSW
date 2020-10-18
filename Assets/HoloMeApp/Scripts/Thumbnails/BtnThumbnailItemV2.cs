@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class BtnThumbnailItemV2 : MonoBehaviour
 {
@@ -10,25 +11,38 @@ public class BtnThumbnailItemV2 : MonoBehaviour
     [SerializeField] AspectRatioFitterByMinSide aspectRatioFitter;
     [SerializeField] Texture defaultTexture;
     [SerializeField] Image imgPurchaseIcon;
+    [SerializeField] Image imgLive;
 
-    [SerializeField]
-    TMP_Text txtPerformerName;
-
-    [SerializeField]
-    TMP_Text txtDate;
+    [SerializeField] TMP_Text txtPerformerName;
+    [SerializeField] TMP_Text txtDate;
 
     [SerializeField] ThumbnailsPurchaseStateScriptableObject thumbnailsPurchaseStateScriptableObject;
 
     ThumbnailElement thumbnailElement;
 
+    Action<StreamJsonData.Data.Stage, string> OnPlay;
+
     //TODO обновление 3-х статусов
     //статус после покупки обновляется только когда мы отправили информацию о покупке,
     //потом запросили у сервера и только после этого повторного запроса мы обновляем на UI об покупке 
 
+    public void SetThumbnailPressAction(Action<StreamJsonData.Data.Stage, string> OnPlay) {
+        this.OnPlay = null;
+        this.OnPlay += OnPlay;
+    }
+
     public void TryPlay() {
-        if(thumbnailElement.Data.product_type != null && !string.IsNullOrWhiteSpace(thumbnailElement.Data.product_type.product_id)) {
+        if(thumbnailElement.Data.product_type != null && !string.IsNullOrWhiteSpace(thumbnailElement.Data.product_type.product_id)) { // TODO add check if purchased
             Debug.Log("Try Buy " + thumbnailElement.Data.product_type.name);
             FindObjectOfType<IAPController>().BuyTicket(thumbnailElement.Data.product_type.product_id);
+        } else {
+            if (thumbnailElement.Data.StartDate > DateTime.Now)
+                return;
+
+            if (!string.IsNullOrWhiteSpace(thumbnailElement.Data.stream_s3_url))
+                OnPlay?.Invoke(StreamJsonData.Data.Stage.Finished, thumbnailElement.Data.stream_s3_url);
+            else if (!string.IsNullOrWhiteSpace(thumbnailElement.Data.agora_channel) && thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live)
+                OnPlay?.Invoke(StreamJsonData.Data.Stage.Live, thumbnailElement.Data.agora_channel);
         }
     }
 
@@ -42,6 +56,8 @@ public class BtnThumbnailItemV2 : MonoBehaviour
 
         thumbnailElement.OnTextureLoaded += UpdateTexture;
         thumbnailElement.OnErrorTextureLoaded += ErrorLoadTexture;
+
+        imgLive.gameObject.SetActive(thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live);
 
         UpdateData();
     }

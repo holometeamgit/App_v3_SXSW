@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class PnlHomeScreenV2 : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class PnlHomeScreenV2 : MonoBehaviour
     bool dataLoaded;
     bool initialized;
 
+    public UnityEvent OnPlay;
+
     private void Awake() {
         pullRefreshController.OnRefresh += RefreshItems;
         pullRefreshController.OnReachedBottom += GetNextPage;
@@ -34,6 +37,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
 
         uiThumbnailsController.OnUpdated += UIUpdated;
         uiThumbnailsController.SetStreamJsonData(thumbnailsDataFetcher.GetDataList());
+        uiThumbnailsController.OnPlay += OnPlayCallBack;
 
         thumbnailsPurchaser.SetStreamJsonData(thumbnailsDataFetcher.GetDataList());
     }
@@ -75,6 +79,10 @@ public class PnlHomeScreenV2 : MonoBehaviour
     private void OnDisable() {
         StopAllCoroutines();
         pullRefreshController.EndRefreshing();
+    }
+
+    private void OnPlayCallBack() {
+        OnPlay.Invoke();
     }
 
     IEnumerator EndingUIUpdate() {

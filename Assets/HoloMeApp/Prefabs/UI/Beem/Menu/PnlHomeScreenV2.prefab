@@ -852,7 +852,21 @@ MonoBehaviour:
   thumbnailPriority: {fileID: 11400000, guid: 8e45331e8b9584caca4e019af2417910, type: 2}
   thumbnailWebDownloadManager: {fileID: 0}
   thumbnailsPurchaser: {fileID: 8645516507535674388}
-  pageSize: 2
+  pageSize: 4
+  OnPlay:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &7367794044440984482
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -866,6 +880,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mediaFileDataHandler: {fileID: 0}
+  pnlViewingExperience: {fileID: 0}
+  agoraController: {fileID: 0}
+  pnlStreamOverlay: {fileID: 0}
   btnThumbnailPrefab: {fileID: 5930518935170032174, guid: 85ed017adca5b4bf49cfacd38a2ed092,
     type: 3}
   content: {fileID: 9113670926264715628}
