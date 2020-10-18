@@ -28,8 +28,6 @@ public class UserWebManager : MonoBehaviour
 
 
     public void LoadUserInfo() {
-        Debug.Log("LoadUserInfo");
-        Debug.Log(accountManager.GetAccessToken().access);
         webRequestHandler.GetRequest(GetRequestGetUserURL(), LoadUserInfoCallBack,
             ErrorLoadUserInfoCallBack, accountManager.GetAccessToken().access);
     }

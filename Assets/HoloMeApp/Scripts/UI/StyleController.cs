@@ -48,10 +48,10 @@ public class StyleController : MonoBehaviour {
         OnStyleChanged?.Invoke();
     }
 
-    private void Update() {
+/*    private void Update() {
         if (Input.GetKeyDown(KeyCode.Space)) {
 
             //UpdateStyle();
         }
-    }
+    }*/
 }

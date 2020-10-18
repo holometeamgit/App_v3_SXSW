@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿//TODO will rewrite
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -27,7 +28,7 @@ public class BroadcasterScreenLoader : MonoBehaviour
     int currentPageNumber;
 
     //timestamp of the request
-    DateTime fetchStartDateTime;
+    LoadingKey currentLoadingKey;
 
     private List<StreamJsonData.Data> streamJsonDataList;
 
@@ -42,7 +43,6 @@ public class BroadcasterScreenLoader : MonoBehaviour
     }
 
     public void FetchNextData(string userName) {
-        fetchStartDateTime = DateTime.Now;
         ClearData();
         currentPageNumber++;
         FetchDataFromServer(userName);
@@ -51,36 +51,31 @@ public class BroadcasterScreenLoader : MonoBehaviour
     private void FetchDataFromServer(string userName) {
         var thumbnailWebRequestStruct = new ThumbnailWebDownloadManager.ThumbnailWebRequestStruct(
             StreamJsonData.Data.Stage.All,
-            accountManager.GetAccessToken().access,
             currentPageNumber,
             maxPageSize,
-            userName
+            null
             );
-
+        currentLoadingKey = new LoadingKey(this);
         Debug.Log("FetchDataFromServer");
-        thumbnailWebDownloadManager.LoadThubnails(thumbnailWebRequestStruct, fetchStartDateTime,
-            (streamJsonData, stage) => FetchStreamDataCallBack(streamJsonData, stage, fetchStartDateTime));
+        thumbnailWebDownloadManager.DownloadThumbnails(thumbnailWebRequestStruct, currentLoadingKey);
     }
 
-    private void FetchStreamDataCallBack(List<StreamJsonData.Data> streamJsonData, StreamJsonData.Data.Stage stage, DateTime fetchStart) {
+    private void FetchStreamDataCallBack(List<StreamJsonData.Data> streamJsonData, StreamJsonData.Data.Stage stage, LoadingKey loadingKey) {
         Debug.Log("FetchStreamDataCallBack " + streamJsonData.Count + " " + stage);
         if (stage != StreamJsonData.Data.Stage.All)
             return;
 
-        Debug.Log(fetchStart);
-        Debug.Log(fetchStartDateTime);
-
-        if (fetchStart != fetchStartDateTime)
+        if (loadingKey != currentLoadingKey)
             return;
 
         streamJsonDataList.AddRange(streamJsonData);
-        FetchTextureData(fetchStart);
+        FetchTextureData(loadingKey);
     }
 
-    private void FetchTextureData(DateTime fetchStart) {
+    private void FetchTextureData(LoadingKey loadingKey) {
         Debug.Log("FetchTextureData");
 
-        if (fetchStart != fetchStartDateTime)
+        if (loadingKey != currentLoadingKey)
             return;
 
         int waitingCount = streamJsonDataList.Count;
@@ -92,14 +87,14 @@ public class BroadcasterScreenLoader : MonoBehaviour
             }
             Debug.Log(data.preview_s3_url);
             mediaFileDataHandler.LoadImg(data.preview_s3_url,
-                (code, body, texture) => TextureDataFetchedCallBack(waitingCount, fetchStart, data, texture),
+                (code, body, texture) => TextureDataFetchedCallBack(waitingCount, loadingKey, data, texture),
                 ((code, body) => Debug.Log(body)));
         }
         
     }
 
-    private void TextureDataFetchedCallBack(int waitingCount, DateTime fetchStart, StreamJsonData.Data streamJsonData, Texture texture) {
-        if (fetchStart != fetchStartDateTime)
+    private void TextureDataFetchedCallBack(int waitingCount, LoadingKey loadingKey, StreamJsonData.Data streamJsonData, Texture texture) {
+        if (loadingKey != currentLoadingKey)
             return;
 
         countLoadedTextures++;

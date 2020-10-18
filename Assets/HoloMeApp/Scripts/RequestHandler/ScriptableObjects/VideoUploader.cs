@@ -2,7 +2,7 @@
 
 [HelpURL("https://devholo.me/docs/auth/?urls.primaryName=Video%20Uploader#/")]
 [CreateAssetMenu(fileName = "VideoUploaderAPI", menuName = "Data/API/VideoUploaderAPI")]
-public class VideoUploader : ScriptableObject {
+public class VideoUploader : ScriptableObject { //TODO rename class this StreamAPIScriptableObject
     [Header("Stream")]
     [Tooltip("get raw videos and processing statuses")]
     public string Stream = "/stream/";
