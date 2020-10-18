@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -12,10 +13,14 @@ public class UIPullRefreshScrollController : MonoBehaviour
 
     [SerializeField] private UIRefreshableScroll scrollRect;
     [SerializeField] private float distanceRequiredRefresh = 200;
+    [SerializeField] private float distanceAutoRefresh = 200;
     [SerializeField] private float distanceReachedBottom = 700;
     [SerializeField] private GameObject topLoadingInfo;
     [SerializeField] private GameObject bottomLoadingInfo;
     [SerializeField] bool withStartRefresh;
+
+    [SerializeField] private float autoRefreshCooldown = 12;
+    float stepAutoRefreshCooldown = 1;
     private float initialPosition;      
     private float progress;
     private Vector2 stopPosition;
@@ -24,7 +29,7 @@ public class UIPullRefreshScrollController : MonoBehaviour
 
     private bool isBottomRefreshing;
 
-RectTransform scrollRectTransform; 
+    RectTransform scrollRectTransform; 
 
     public void RefreshLayout() {
         LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
@@ -42,8 +47,6 @@ RectTransform scrollRectTransform;
     }
 
     private void RefreshElementsPosiotion() {
-        //        Debug.Log("RefreshLayout");
-        //scrollRect.Rebuild(CanvasUpdate.Layout);
         scrollRect.onValueChanged.Invoke(scrollRect.normalizedPosition);
     }
 
@@ -81,7 +84,7 @@ RectTransform scrollRectTransform;
             isRefreshing = false;
         }
 
-        if (isPulled && scrollRect.Dragging || isBottomRefreshing) {
+        if (IsOnPullBusy()) {
             return;
         }
 
@@ -131,7 +134,35 @@ RectTransform scrollRectTransform;
         return scrollRect.content.sizeDelta.y - scrollRect.content.anchoredPosition.y - scrollRectTransform.rect.height;
     }
 
+    private bool IsOnPullBusy() {
+        return isPulled && scrollRect.Dragging || isBottomRefreshing;
+    }
+
+    private void OnDisable() {
+        StopAllCoroutines();
+    }
+
     private void OnEnable() {
         scrollRect.enabled = true;
+        StartCoroutine(Autorefreshing());
+    }
+
+    IEnumerator Autorefreshing() {
+        float timeСountertime = autoRefreshCooldown; 
+        while (true) {
+            yield return new WaitForSeconds(stepAutoRefreshCooldown);
+            if (scrollRect.content.anchoredPosition.y > distanceAutoRefresh ||
+                IsOnPullBusy()) {
+                timeСountertime = autoRefreshCooldown;
+            }
+
+            timeСountertime -= stepAutoRefreshCooldown;
+
+            if(timeСountertime < 0) {
+                timeСountertime = autoRefreshCooldown;
+
+                OnRefresh?.Invoke();
+            }
+        }
     }
 }

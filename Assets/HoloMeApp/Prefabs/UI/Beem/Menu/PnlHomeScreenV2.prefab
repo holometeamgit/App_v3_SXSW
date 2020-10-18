@@ -607,8 +607,8 @@ RectTransform:
   m_Father: {fileID: 9113670926745020095}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 562.5, y: 0}
   m_SizeDelta: {x: 1125, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -782,10 +782,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scrollRect: {fileID: 9113670925800669937}
   distanceRequiredRefresh: 200
+  distanceAutoRefresh: 200
   distanceReachedBottom: 700
   topLoadingInfo: {fileID: 4322197236604217382}
   bottomLoadingInfo: {fileID: 2530265846578583014}
   withStartRefresh: 1
+  autoRefreshCooldown: 12
 --- !u!1 &9113670926633950868
 GameObject:
   m_ObjectHideFlags: 0
@@ -849,7 +851,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pullRefreshController: {fileID: 304454058}
   uiThumbnailsController: {fileID: 7367794044440984482}
-  thumbnailPriority: {fileID: 11400000, guid: 8e45331e8b9584caca4e019af2417910, type: 2}
+  thumbnailPriority: {fileID: 11400000, guid: ebc66424c49d24998a045a244ae6f9b8, type: 2}
   thumbnailWebDownloadManager: {fileID: 0}
   thumbnailsPurchaser: {fileID: 8645516507535674388}
   pageSize: 4

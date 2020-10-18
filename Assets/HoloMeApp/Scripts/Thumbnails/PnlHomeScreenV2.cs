@@ -87,7 +87,8 @@ public class PnlHomeScreenV2 : MonoBehaviour
 
     IEnumerator EndingUIUpdate() {
         pullRefreshController.RefreshLayout();
-        yield return new WaitForSeconds(2);
+        yield return null;
+        //yield return new WaitForSeconds(0.1f);
         Debug.Log("IEnumerator EndingUIUpdate");
         pullRefreshController.EndRefreshing();
     }
