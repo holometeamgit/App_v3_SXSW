@@ -38,7 +38,7 @@ public class ThumbnailsDataContainer {
 
     private void AddStreamJsonData(StreamJsonData.Data data) {
 
-        Debug.Log(data.id + " " + data.user + " ");
+//        Debug.Log(data.id + " " + data.user + " ");
 
         if (streamDataDictionary.ContainsKey(data.id)) {
             StreamJsonData.Data prevStreamData = streamDataDictionary[data.id];

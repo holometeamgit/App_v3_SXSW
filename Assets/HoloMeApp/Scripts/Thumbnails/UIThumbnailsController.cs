@@ -56,7 +56,7 @@ public class UIThumbnailsController : MonoBehaviour {
     private void PrepareBtnThumbnails() {
         int quantityDifference = btnThumbnailItems.Count - dataList.Count;
 
-        Debug.Log("quantityDifference " + quantityDifference);
+//        Debug.Log("quantityDifference " + quantityDifference);
 
         for (int i = 0; i < -quantityDifference; i++) {
             GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
@@ -65,7 +65,7 @@ public class UIThumbnailsController : MonoBehaviour {
         }
         for (int i = 0; i < btnThumbnailItems.Count; i++) {
             btnThumbnailItems[i].Activate();
-            Debug.Log("btnThumbnailItems[i].Activate " + i);
+//            Debug.Log("btnThumbnailItems[i].Activate " + i);
         }
         for (int i = dataList.Count; i < btnThumbnailItems.Count; i++) {
             btnThumbnailItems[i].Deactivate();

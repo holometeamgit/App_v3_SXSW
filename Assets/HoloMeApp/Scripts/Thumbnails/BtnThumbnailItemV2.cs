@@ -97,7 +97,9 @@ public class BtnThumbnailItemV2 : MonoBehaviour
     }
 
     private void OnDestroy() {
-        FindObjectOfType<IAPController>().OnPurchaseHandler -= UpdateProductData;
+        IAPController iAPController = FindObjectOfType<IAPController>();
+        if(iAPController != null)
+            iAPController.OnPurchaseHandler -= UpdateProductData;
     }
 
 }
