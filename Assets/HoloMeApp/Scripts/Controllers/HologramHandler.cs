@@ -28,11 +28,20 @@ public class HologramHandler : MonoBehaviour
 
     bool hasPlaced;
 
-    void Start()
+    private void Start()
     {
-        holoMe = new HoloMe();
-        holoMe.LoopVideo = true;
+        holoMe = new HoloMe
+        {
+            LoopVideo = true
+        };
+        
         placementHandler.OnPlaceDetected = PlayOnPlace;
+
+        var focusSquareV2 = placementHandler as FocusSquareV2;
+        if (focusSquareV2 != null)
+        {
+            focusSquareV2.HoloMe = holoMe;
+        }
     }
 
     public void InitSession()
