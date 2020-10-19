@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using HoloMeSDK;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.XR.ARFoundation;
@@ -19,7 +21,16 @@ public class FocusSquareV2 : PlacementHandler
         HIDE 
     }
 
+    private enum FocusAnimationStates
+    {
+        TAP,
+        PINCH,
+        LOADING
+    }
+
     private States _currentState;
+    private FocusAnimationStates _focusAnimationState;
+    
     private List<ARRaycastHit> _hits;
     private Vector3 _hologramPlacedPosition = new Vector3(100, 100, 100);
     
@@ -59,6 +70,12 @@ public class FocusSquareV2 : PlacementHandler
     private Vector3 _raycastOrigin;
     private Vector3 _raycastDirection;
 
+    public HoloMe HoloMe
+    {
+        private get;
+        set;
+    }
+
     private void OnEnable()
     {
         SwitchToState(States.NOT_RUNNUNG);
@@ -93,7 +110,7 @@ public class FocusSquareV2 : PlacementHandler
             case States.LOADING:
                 _focusSquareRenderer.color = new Color(1, 1, 1, 1.0f);
                 TurnPlanes(false);
-                // LoadignAnimation();
+                LoadignAnimation();
                 _currentState = value;
                 break;
             case States.PINCH:
@@ -171,7 +188,8 @@ public class FocusSquareV2 : PlacementHandler
                 }
                 break;
             case States.LOADING:
-                //if (!VideoLoading) 
+                // if (!VideoLoading) 
+                if (HoloMe != null && HoloMe.IsPrepared)
                 {
                     SwitchToState(States.PINCH);
                 }
@@ -199,16 +217,43 @@ public class FocusSquareV2 : PlacementHandler
                 SwitchToState(States.HIDE);
                 break;
             case States.HIDE:
-                if (SurfaceDetected())
-                {
-                    TapToPlace();
-                }
-
-                TransformUpdate();
-                HandleDistanceFade();
-
+                HideState();
                 break;
         }
+    }
+
+    private void HideState()
+    {
+        switch (_focusAnimationState)
+        {
+            case FocusAnimationStates.TAP:
+            {
+                HandleDistanceFade();
+                if (!HoloMe.IsPrepared)
+                {
+                    LoadignAnimation();
+                }
+
+                break;
+            }
+            case FocusAnimationStates.LOADING:
+            {
+                if (HoloMe.IsPrepared)
+                {
+                    TapToPlaceAnimation();
+                }
+
+                break;
+            }
+        }
+
+        if (SurfaceDetected())
+        {
+            TapToPlace();
+        }
+
+        TransformUpdate();
+       
     }
 
     private bool SurfaceDetected() 
@@ -330,6 +375,8 @@ public class FocusSquareV2 : PlacementHandler
 
     private void TapToPlaceAnimation()
     {
+        _focusAnimationState = FocusAnimationStates.TAP;
+        
         _focusSquareAnimator.ResetTrigger("PinchToZoom");
         _focusSquareAnimator.ResetTrigger("Scan");
         _focusSquareAnimator.SetTrigger("TapToPlace"); 
@@ -337,6 +384,8 @@ public class FocusSquareV2 : PlacementHandler
     
     private void PinchToZoomAnimation()
     {
+        _focusAnimationState = FocusAnimationStates.PINCH;
+        
         _focusSquareAnimator.ResetTrigger("TapToPlace");
         _focusSquareAnimator.ResetTrigger("Scan");
         _focusSquareAnimator.SetTrigger("PinchToZoom");
@@ -344,6 +393,8 @@ public class FocusSquareV2 : PlacementHandler
     
     private void LoadignAnimation()
     {
+        _focusAnimationState = FocusAnimationStates.LOADING;
+        
         _focusSquareAnimator.ResetTrigger("TapToPlace");
         _focusSquareAnimator.ResetTrigger("PinchToZoom");
         _focusSquareAnimator.SetTrigger("Scan");
@@ -367,28 +418,28 @@ public class FocusSquareV2 : PlacementHandler
         _focusSquareV2Sprite.transform.rotation = Quaternion.Slerp(_focusSquareV2Sprite.transform.rotation, Quaternion.LookRotation(cameraForwardBearing), Time.deltaTime * 15f);
     }
 
-    //private void OnGUI()
-    //{
-    //    GUILayout.Space(400);
-    //    GUILayout.Box("_D: " + _D.ToString());
-    //    GUILayout.Box("_H: " + _H.ToString());
-    //    GUILayout.Box("_x: " + _x.ToString());
-
-    //    GUILayout.Box("_currentState: " + _currentState.ToString());
-        //_planePrefab.GetComponent<Renderer>().sharedMaterial.SetFloat("_AlphaFactor", GUILayout.HorizontalSlider(10 / Time.time, 0, 1));
-
-        //GUILayout.Space(20);
-        // GUILayout.Box(_btnClose.activeInHierarchy.ToString());
-        //     
-        //     if (GUILayout.Button("Video Loaded"))
-        //     {
-        //         VideoLoading = false;
-        //     }
-        //     
-        //     GUILayout.Space(20);
-        //     if (GUILayout.Button("Video Loading"))
-        //     {
-        //         VideoLoading = true;
-        //     }
-    //}
+    // private void OnGUI()
+    // {
+    //     GUILayout.Space(400);
+    //     // GUILayout.Box("_D: " + _D.ToString());
+    //     // GUILayout.Box("_H: " + _H.ToString());
+    //     // GUILayout.Box("_x: " + _x.ToString());
+    //
+    //     GUILayout.Box("_currentState: " + _currentState.ToString());
+    //     //_planePrefab.GetComponent<Renderer>().sharedMaterial.SetFloat("_AlphaFactor", GUILayout.HorizontalSlider(10 / Time.time, 0, 1));
+    //
+    //     // GUILayout.Space(20);
+    //     //GUILayout.Box(_btnClose.activeInHierarchy.ToString());
+    //          
+    //          // if (GUILayout.Button("Video Loaded"))
+    //          // {
+    //          //     VideoLoading = false;
+    //          // }
+    //          //
+    //          // GUILayout.Space(20);
+    //          // if (GUILayout.Button("Video Loading"))
+    //          // {
+    //          //     VideoLoading = true;
+    //          // }
+    // }
 }
