@@ -10,6 +10,7 @@ public class UIThumbnailsController : MonoBehaviour {
     [SerializeField] MediaFileDataHandler mediaFileDataHandler;
     [SerializeField] PnlViewingExperience pnlViewingExperience;
     [SerializeField] AgoraController agoraController;
+    [SerializeField] ThumbnailsPurchaser thumbnailsPurchaser;
     [SerializeField] PnlStreamOverlay pnlStreamOverlay;
     [SerializeField] GameObject btnThumbnailPrefab;
     [SerializeField] Transform content;
@@ -30,11 +31,7 @@ public class UIThumbnailsController : MonoBehaviour {
     public void UpdateData() {
         PrepareBtnThumbnails();
         PrepareThumbnailElement();
-        //        Debug.Log("dataList " + dataList.Count);
-        //        Debug.Log("btnThumbnailItems " + btnThumbnailItems.Count);
-        //        Debug.Log("thumbnailElementsDictionary " + thumbnailElementsDictionary.Count);
         UpdateBtnData();
-        //        Debug.Log("btnThumbnailItemsDictionary " + btnThumbnailItemsDictionary.Count);
     }
 
     public void RemoveUnnecessary() {
@@ -57,10 +54,9 @@ public class UIThumbnailsController : MonoBehaviour {
         streamDataEqualityComparer = new StreamDataEqualityComparer();
     }
 
+    #region Prepare thumbnails
     private void PrepareBtnThumbnails() {
         int quantityDifference = btnThumbnailItems.Count - dataList.Count;
-
-        //        Debug.Log("quantityDifference " + quantityDifference);
 
         for (int i = 0; i < -quantityDifference; i++) {
             GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
@@ -69,7 +65,6 @@ public class UIThumbnailsController : MonoBehaviour {
         }
         for (int i = 0; i < btnThumbnailItems.Count; i++) {
             btnThumbnailItems[i].Activate();
-            //            Debug.Log("btnThumbnailItems[i].Activate " + i);
         }
         for (int i = dataList.Count; i < btnThumbnailItems.Count; i++) {
             btnThumbnailItems[i].Deactivate();
@@ -78,7 +73,6 @@ public class UIThumbnailsController : MonoBehaviour {
     }
 
     private void PrepareThumbnailElement() {
-        //        Debug.Log("dataList.Count " + dataList.Count);
         foreach (var thumbnailData in dataList) {
             if (thumbnailElementsDictionary.ContainsKey(thumbnailData.id)) {
                 ThumbnailElement thumbnailElement = thumbnailElementsDictionary[thumbnailData.id];
@@ -94,10 +88,31 @@ public class UIThumbnailsController : MonoBehaviour {
         for (int i = 0; i < dataList.Count; i++) {
             btnThumbnailItemsDictionary[dataList[i].id] = btnThumbnailItems[i];
             btnThumbnailItems[i].AddData(thumbnailElementsDictionary[dataList[i].id]);
-            btnThumbnailItems[i].SetThumbnailPressAction(Play);
+            btnThumbnailItems[i].SetPressPlayAction(Play);
         }
         OnUpdated?.Invoke();
-        //StartCoroutine(InvokeOnUpdate());
+    }
+
+    #endregion
+
+    private void TryPlay() {
+/*
+        if (!thumbnailElement.Data.is_bought && thumbnailElement.Data.product_type != null &&
+            !string.IsNullOrWhiteSpace(thumbnailElement.Data.product_type.product_id)) {
+            thumbnailsPurchaser.Purchase(thumbnailElement.Data.product_type.product_id);
+        } else {
+            if (DateTime.Now < thumbnailElement.Data.StartDate)
+                PlayTeaser();
+            else
+                Play();
+        }*/
+    }
+
+    private void Play(StreamJsonData.Data data) {
+/*        if (!string.IsNullOrWhiteSpace(thumbnailElement.Data.stream_s3_url))
+            OnPlay?.Invoke(StreamJsonData.Data.Stage.Finished, thumbnailElement.Data.stream_s3_url);
+        else if (!string.IsNullOrWhiteSpace(thumbnailElement.Data.agora_channel) && thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live)
+            OnPlay?.Invoke(StreamJsonData.Data.Stage.Live, thumbnailElement.Data.agora_channel);*/
     }
 
     private void Play(StreamJsonData.Data.Stage stage, string url) {
@@ -114,18 +129,8 @@ public class UIThumbnailsController : MonoBehaviour {
         }
     }
 
-    //у нас есть отсортированный список данных dThu и нужен список отсортированных thu и есть просто список thuObj
-    //элемент из thu это не только сухие данные, но и текстура 
-    //получаем новый список данных  dThu - это тот же, что и раньше, но мы слушаем событие обновления (создать событие в ThumbnailsDataContainer, что данные все необходимые загрузились)
-    //проверяем размер  списка thuObj и для этого размера создаём нужное колличество нам thumbnials или включаем отключённые, если не хватает. если много, то отключаем лишние 
-    //идёи подряд по списку данных сухие, если есть в thu, то ставим на пазицию нужную, если нет , то добавляем в промежуточную нужную позицию новый элемент и запускаем процесс загрузки
-    //назначаем подряд thuObj свой элемент из thu. Элементы сами смотрят в хватает нужных данных или нет. Если нет, то грузаят заново сами. Проверяют при каждой активации
-
-
-    //по ThumbnailsDataContainer {
-    //public Action<long> OnStreamUpdated;
-    //public Action<long> OnStreamRemoved;
-    //мы знаем в нашем списке thumbnail и какие удалились, что они обновились и нужно пробежавшить по списку.
-    //  Если обновились, то в элемент из thu добавляются данные из dThu, но текстура удаляется,
-    //  если она не совпадает (это должен быть метод в thuElement, который сам умеет обновлять свои данные)
+    private void PlayTeaser() {
+/*        if (!string.IsNullOrWhiteSpace(thumbnailElement.Data.teaser))
+            OnPlay?.Invoke(StreamJsonData.Data.Stage.Finished, thumbnailElement.Data.teaser);*/
+    }
 }

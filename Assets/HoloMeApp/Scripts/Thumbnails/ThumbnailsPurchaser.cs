@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Purchasing;
 
-public class ThumbnailsPurchaser : MonoBehaviour
-{
+public class ThumbnailsPurchaser : MonoBehaviour {
     [SerializeField] IAPController iapController;
-    List<StreamJsonData.Data> dataList;
+    [SerializeField] WebRequestHandler webRequestHandler;
+    [SerializeField] PurchaseAPIScriptableObject purchaseAPISO;
 
-    public void SetStreamJsonData(List<StreamJsonData.Data> data) {
-        dataList = data;
+    public void Purchase(string productID) {
+        iapController.BuyTicket(productID);
     }
 
     private void Awake() {
@@ -17,14 +17,23 @@ public class ThumbnailsPurchaser : MonoBehaviour
         iapController.OnPurchaseFailedHandler += OnPurchaseFail;
     }
 
+
+
+    //TODO обновление 3-х статусов
+    //статус после покупки обновляется только когда мы отправили информацию о покупке,
+    //потом запросили у сервера и только после этого повторного запроса мы обновляем на UI об покупке 
     private void OnPurchaseCallBack(Product product) {
-        foreach(var data in dataList) {
-            if (data.product_type != null && data.product_type.product_id == product.definition.id) //TODO it might be better to make another comparison
-                Debug.Log("TODO Update UI");
-        }
+        //product.definition.id /// не понятно id продукта отправлять или thumbnail? 
+        //webRequestHandler.PostRequest();
+
+        Debug.Log(product.definition.storeSpecificId);
     }
 
     private void OnPurchaseFail() {
 
+    }
+
+    private string GetRequestRefreshTokenURL(string thumbnailID) {
+        return "";
     }
 }

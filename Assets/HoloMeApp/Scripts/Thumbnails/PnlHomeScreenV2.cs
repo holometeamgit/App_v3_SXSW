@@ -38,8 +38,6 @@ public class PnlHomeScreenV2 : MonoBehaviour
         uiThumbnailsController.OnUpdated += UIUpdated;
         uiThumbnailsController.SetStreamJsonData(thumbnailsDataFetcher.GetDataList());
         uiThumbnailsController.OnPlay += OnPlayCallBack;
-
-        thumbnailsPurchaser.SetStreamJsonData(thumbnailsDataFetcher.GetDataList());
     }
 
     private void DataUpdateCallBack() {

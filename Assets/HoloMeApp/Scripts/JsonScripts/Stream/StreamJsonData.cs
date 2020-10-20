@@ -27,7 +27,10 @@ public class StreamJsonData {
         public long id;
         public string preview_s3_url;
         public string stream_s3_url;
+        public string teaser;
         public string user;
+        public string paid_type;
+        public bool is_bought;
         public ProductType product_type;
         public string status;
         public string agora_sid;
