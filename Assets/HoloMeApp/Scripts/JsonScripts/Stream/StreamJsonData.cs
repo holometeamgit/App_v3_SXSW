@@ -44,6 +44,26 @@ public class StreamJsonData {
         public string title;
         public string description;
 
+        public bool IsStarted {
+            get { return DateTime.Now >= StartDate; }
+        }
+
+        public bool HasTeaser {
+            get { return !string.IsNullOrWhiteSpace(teaser); }
+        }
+
+        public bool HasStreamUrl {
+            get { return !string.IsNullOrWhiteSpace(stream_s3_url); }
+        }
+
+        public bool HasAgoraChannel {
+            get { return !string.IsNullOrWhiteSpace(agora_channel); }
+        }
+
+        public bool HasProduct {
+            get { return !string.IsNullOrWhiteSpace(product_type.product_id); }
+        }
+
         public DateTime StartDate {
             get {
                 if (startDate != new DateTime())

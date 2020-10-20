@@ -11,7 +11,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
     [SerializeField] UIThumbnailsController uiThumbnailsController;
     [SerializeField] ThumbnailPriorityScriptableObject thumbnailPriority;
     [SerializeField] ThumbnailWebDownloadManager thumbnailWebDownloadManager;
-    [SerializeField] ThumbnailsPurchaser thumbnailsPurchaser;
+    [SerializeField] PnlEventPurchaser pnlEventPurchaser;
 
 
     [Space]
@@ -79,8 +79,10 @@ public class PnlHomeScreenV2 : MonoBehaviour
         pullRefreshController.EndRefreshing();
     }
 
-    private void OnPlayCallBack() {
+    private void OnPlayCallBack(StreamJsonData.Data data) {
         OnPlay.Invoke();
+        pnlEventPurchaser.Show(data);
+        //TODO подписаться на то что купили, если купили, то обновить данные для кокретно thu через uithucontroller
     }
 
     IEnumerator EndingUIUpdate() {

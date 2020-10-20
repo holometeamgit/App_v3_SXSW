@@ -27,7 +27,7 @@ public class BtnThumbnailItemV2 : MonoBehaviour
         this.OnClick += OnClick;
     }
 
-    public void TryPlay() {
+    public void Click() {
         OnClick?.Invoke(thumbnailElement.Data);
     }
 
@@ -62,30 +62,21 @@ public class BtnThumbnailItemV2 : MonoBehaviour
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(rawImage.GetComponent<RectTransform>());
 
+        //text 'Watch the teaser now' 'Event coming soon' 'Watch now!'
         txtPerformerName.text = thumbnailElement.Data.user;
         txtDate.text = thumbnailElement.Data.StartDate.ToString("dd MMM yyyy") ;
-        if(System.DateTime.Now < thumbnailElement.Data.StartDate) {
-            txtDate.text = txtDate.text + " • On sale now";
-        }
-
-        if (thumbnailElement.Data.product_type != null && !string.IsNullOrWhiteSpace(thumbnailElement.Data.product_type.product_id)) {
-            imgPurchaseIcon.sprite = thumbnailsPurchaseStateSO.ThumbnailIcons[(int)PurchaseState.Paid];
+        if(!thumbnailElement.Data.is_bought && thumbnailElement.Data.HasTeaser) {
+            txtDate.text = txtDate.text + " • Watch the teaser now";
+        } else if(thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
+            txtDate.text = txtDate.text + " • Watch now!";
         } else {
-            imgPurchaseIcon.sprite = thumbnailsPurchaseStateSO.ThumbnailIcons[(int)PurchaseState.NeedPay];
+            txtDate.text = txtDate.text + " • Event coming soon";
         }
-    }
 
-    //TODO maybe remove
-    #region update data 
-    private void UpdateProductData(UnityEngine.Purchasing.Product product) {
-        if (thumbnailElement.Data.product_type != null && thumbnailElement.Data.product_type.product_id == product.definition.id)
-            SetPlayable();
+        //icon don't show if we have not teaser before event or we have not eny data
+        imgPurchaseIcon.gameObject.SetActive(thumbnailElement.Data.HasTeaser ||
+            (thumbnailElement.Data.IsStarted && (thumbnailElement.Data.HasStreamUrl || thumbnailElement.Data.HasAgoraChannel)));
     }
-
-    private void SetPlayable() {
-        imgPurchaseIcon.sprite = thumbnailsPurchaseStateSO.ThumbnailIcons[(int)PurchaseState.Free];
-    }
-    #endregion
 
     private void UpdateTexture(Texture texture) {
         rawImage.texture = thumbnailElement.texture ?? defaultTexture;

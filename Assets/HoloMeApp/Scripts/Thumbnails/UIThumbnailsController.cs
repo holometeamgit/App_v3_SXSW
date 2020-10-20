@@ -5,12 +5,11 @@ using System;
 
 public class UIThumbnailsController : MonoBehaviour {
     public Action OnUpdated;
-    public Action OnPlay;
+    public Action<StreamJsonData.Data> OnPlay;
 
     [SerializeField] MediaFileDataHandler mediaFileDataHandler;
     [SerializeField] PnlViewingExperience pnlViewingExperience;
     [SerializeField] AgoraController agoraController;
-    [SerializeField] ThumbnailsPurchaser thumbnailsPurchaser;
     [SerializeField] PnlStreamOverlay pnlStreamOverlay;
     [SerializeField] GameObject btnThumbnailPrefab;
     [SerializeField] Transform content;
@@ -95,42 +94,27 @@ public class UIThumbnailsController : MonoBehaviour {
 
     #endregion
 
-    private void TryPlay() {
-/*
-        if (!thumbnailElement.Data.is_bought && thumbnailElement.Data.product_type != null &&
-            !string.IsNullOrWhiteSpace(thumbnailElement.Data.product_type.product_id)) {
-            thumbnailsPurchaser.Purchase(thumbnailElement.Data.product_type.product_id);
-        } else {
-            if (DateTime.Now < thumbnailElement.Data.StartDate)
-                PlayTeaser();
-            else
-                Play();
-        }*/
-    }
-
     private void Play(StreamJsonData.Data data) {
-/*        if (!string.IsNullOrWhiteSpace(thumbnailElement.Data.stream_s3_url))
-            OnPlay?.Invoke(StreamJsonData.Data.Stage.Finished, thumbnailElement.Data.stream_s3_url);
-        else if (!string.IsNullOrWhiteSpace(thumbnailElement.Data.agora_channel) && thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live)
-            OnPlay?.Invoke(StreamJsonData.Data.Stage.Live, thumbnailElement.Data.agora_channel);*/
-    }
-
-    private void Play(StreamJsonData.Data.Stage stage, string url) {
-        switch (stage) {
-            case StreamJsonData.Data.Stage.Finished:
-                pnlViewingExperience.ActivateForPreRecorded(url, null);
-                OnPlay?.Invoke();
-                break;
-            case StreamJsonData.Data.Stage.Live:
-                agoraController.ChannelName = url;
-                pnlStreamOverlay.OpenAsViewer();
-                OnPlay?.Invoke();
-                break;
+        if(data.is_bought && data.IsStarted) {
+            PlayStream(data);
+        } else if(data.HasTeaser) {
+            PlayTeaser(data);
         }
     }
 
-    private void PlayTeaser() {
-/*        if (!string.IsNullOrWhiteSpace(thumbnailElement.Data.teaser))
-            OnPlay?.Invoke(StreamJsonData.Data.Stage.Finished, thumbnailElement.Data.teaser);*/
+    private void PlayStream(StreamJsonData.Data data) {
+        if(data.HasStreamUrl) {
+            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null);
+            OnPlay?.Invoke(data);
+        } else if(data.HasAgoraChannel) {
+            agoraController.ChannelName = data.agora_channel;
+            pnlStreamOverlay.OpenAsViewer();
+            OnPlay?.Invoke(data);
+        }
+    }
+
+    private void PlayTeaser(StreamJsonData.Data data) {
+        pnlViewingExperience.ActivateForPreRecorded(data.teaser, null);
+        OnPlay?.Invoke(data);
     }
 }
