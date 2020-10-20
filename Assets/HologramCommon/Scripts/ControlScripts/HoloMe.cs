@@ -333,6 +333,8 @@ namespace HoloMeSDK {
         {
             //Debug.Log("PLAYING!!!!!!!!!");
             videoPlayer.Play();
+
+            //Debug.Log("Clip Length = " + videoPlayer.GetClipLength());
             transparencyHandler.MakeTransparent(false);
         }
 

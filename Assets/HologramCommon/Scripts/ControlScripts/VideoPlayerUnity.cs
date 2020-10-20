@@ -89,4 +89,8 @@ public class VideoPlayerUnity : IVideoPlayer {
     public void Stop() {
         videoPlayer.Stop();
     }
+
+    public double GetClipLength() {
+        return videoPlayer.length;
+    }
 }

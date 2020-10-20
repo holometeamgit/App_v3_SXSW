@@ -19,5 +19,6 @@ namespace HoloMeSDK {
         void SetAutoPlay(bool autoPlay);
         void SetOnReadyEvent(Action OnReady);
         void SetOnErrorEvent(Action OnError);
+        double GetClipLength();
     }
 }

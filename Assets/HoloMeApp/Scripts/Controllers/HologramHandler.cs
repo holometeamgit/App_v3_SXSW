@@ -22,11 +22,15 @@ public class HologramHandler : MonoBehaviour
     [SerializeField]
     Material liveStreamMat;
 
+    string hologramViewDwellTimer = nameof(hologramViewDwellTimer);
+  
     HoloMe holoMe;
 
     string videoCode;
 
     bool hasPlaced;
+
+    VideoPlayerUnity videoPlayer;
 
     void Start()
     {
@@ -41,7 +45,7 @@ public class HologramHandler : MonoBehaviour
 
         if (!holoMe.Initialized)
         {
-            VideoPlayerUnity videoPlayer = new VideoPlayerUnity();
+            videoPlayer = new VideoPlayerUnity();
             //videoPlayer.OnPrepared += ()=> Debug.Log("PREPARED!");
             holoMe.Init(cameraTransform, videoPlayer, audioSource, liveStreamMat);
             holoMe.PlaceVideo(new Vector3(1000, 1000, 1000)); //This is the move the hologram out of the way to not effect the fade
@@ -100,6 +104,7 @@ public class HologramHandler : MonoBehaviour
         else
         {
             holoMe.PlayVideo(videoCode);
+            AnalyticsController.Instance.StartTimer(hologramViewDwellTimer, "Hologram View Time");
             //            holoMe.PlayVideo(HelperFunctions.PersistentDir() + videoCode + ".mp4");
         }
     }
@@ -111,16 +116,20 @@ public class HologramHandler : MonoBehaviour
 
     public void StopVideo()
     {
+        print("Percentage Watched = %" + ((float)AnalyticsController.Instance.GetElapsedTime(hologramViewDwellTimer) / videoPlayer.GetClipLength()) * 100 );
+        AnalyticsController.Instance.StopTimer(hologramViewDwellTimer);
         holoMe.StopVideo();
     }
 
     public void PauseVideo()
     {
+        AnalyticsController.Instance.PauseTimer(hologramViewDwellTimer);
         holoMe.PauseVideo();
     }
     
     public void ResumeVideo()
     {
+        AnalyticsController.Instance.ResumeTimer(hologramViewDwellTimer);
         holoMe.ResumeVideo();
     }
 }
