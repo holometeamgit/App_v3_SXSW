@@ -44,6 +44,7 @@ public class PnlEmailVerification : MonoBehaviour {
     }
 
     private void EmailVerificationCallBack() {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete);
         pnlSignUpEmail?.ClearInputFieldData();
         switcherToMainMenu.Switch();
     }
