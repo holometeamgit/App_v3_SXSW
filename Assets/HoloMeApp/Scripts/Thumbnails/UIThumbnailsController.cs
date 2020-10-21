@@ -45,6 +45,10 @@ public class UIThumbnailsController : MonoBehaviour {
         foreach (var id in removingListID) {
             thumbnailElementsDictionary.Remove(id);
         }
+
+        for (int i = dataList.Count; i < btnThumbnailItems.Count; i++) {
+            btnThumbnailItems[i].Deactivate();
+        }
     }
 
     private void Awake() {
@@ -67,6 +71,8 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].Activate();
         }
         for (int i = dataList.Count; i < btnThumbnailItems.Count; i++) {
+            if (i <= 1) 
+                continue;
             btnThumbnailItems[i].Deactivate();
         }
 
