@@ -109,6 +109,7 @@ public class PnlPostRecord : MonoBehaviour
 
     public void Share()
     {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareVideoPressed);
         if (screenshotWasTaken)
         {
             ShareScreenshot();
@@ -133,6 +134,7 @@ public class PnlPostRecord : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(lastRecordingPath))
         {
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyVideoShared);
             using (var payload = new SharePayload())
             {
                 //payload.AddText(ShareMessage + Code);
@@ -150,6 +152,7 @@ public class PnlPostRecord : MonoBehaviour
     {
         if (screenShot != null)
         {
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySnapshotShared);
             using (var payload = new SharePayload())
             {
                 payload.AddImage(screenShot);

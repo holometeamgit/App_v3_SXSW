@@ -154,23 +154,31 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void ShareStream() {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareHologramPressed);
+
         using (var payload = new SharePayload()) {
+            string appName = "Beem";
+            string iosLink = "https://apps.apple.com/us/app/beem/id1532446771?ign-mpt=uo%3D2";
+            string androidLink = "https://play.google.com/store/apps/details?id=com.HoloMe.Beem";
             string appLink;
             switch (Application.platform) {
                 case RuntimePlatform.IPhonePlayer:
-                    appLink = "https://tinyurl.com/HoloMeiOS";//"https://apps.apple.com/us/app/holome/id1454364021";
+                    appLink = iosLink;
+                    appName = "Beem+";
                     break;
 
                 case RuntimePlatform.Android:
-                    appLink = "https://tinyurl.com/HoloMeAndroid";//"https://play.google.com/store/apps/details?id=com.HoloMe.Showreel&hl=en_GB";
+                    appLink = androidLink;
+                    appName = "Beem";
                     break;
 
                 default:
-                    appLink = "https://tinyurl.com/HoloMeiOS - https://tinyurl.com/HoloMeAndroid";
+                    appLink = iosLink + " - " + androidLink;
                     break;
             }
 
-            payload.AddText($"Check out my stream in the HoloMe App using the channel {agoraController.ChannelName} app {appLink}");
+            string message = $"Click the link below to download the {appName} app which lets you experience human holograms using augmented reality: ";
+            payload.AddText(message + appLink);
         }
     }
 

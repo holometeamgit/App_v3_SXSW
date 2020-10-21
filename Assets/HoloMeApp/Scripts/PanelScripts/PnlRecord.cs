@@ -31,6 +31,9 @@ public class PnlRecord : MonoBehaviour
     Sprite spriteRecord;
 
     [SerializeField]
+    Button btnShare;
+
+    [SerializeField]
     Button btnToggleMode;
 
     //[SerializeField]
@@ -134,11 +137,13 @@ public class PnlRecord : MonoBehaviour
         canvasGroup.alpha = 0;
     }
 
-    public void EnableRecordPanel(bool streamOffset = false)
+    public void EnableRecordPanel(bool openForStream = false)
     {
         //int buttonOffset = streamOffset ? 210 : 0;
         //imgFillBackground.rectTransform.offsetMax = new Vector2(imgFillBackground.rectTransform.offsetMax.x, buttonOffset);
         //imgFillBackground.rectTransform.offsetMin = new Vector2(imgFillBackground.rectTransform.offsetMin.x, buttonOffset);
+
+        btnShare.gameObject.SetActive(openForStream? false : true);
 
         gameObject.SetActive(true);
         canvasGroup.DOFade(1, .5f);
