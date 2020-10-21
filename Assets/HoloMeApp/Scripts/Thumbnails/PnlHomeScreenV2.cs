@@ -38,6 +38,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
         uiThumbnailsController.OnUpdated += UIUpdated;
         uiThumbnailsController.SetStreamJsonData(thumbnailsDataFetcher.GetDataList());
         uiThumbnailsController.OnPlay += OnPlayCallBack;
+        uiThumbnailsController.OnNeedPurchase += OnNeedPurchaseCallBack;
     }
 
     private void DataUpdateCallBack() {
@@ -79,10 +80,14 @@ public class PnlHomeScreenV2 : MonoBehaviour
         pullRefreshController.EndRefreshing();
     }
 
-    private void OnPlayCallBack(StreamJsonData.Data data) {
-        OnPlay.Invoke();
+    private void OnNeedPurchaseCallBack(StreamJsonData.Data data) {
+        Debug.Log("Home page OnClickCallBack");
         pnlEventPurchaser.Show(data);
-        //TODO подписаться на то что купили, если купили, то обновить данные для кокретно thu через uithucontroller
+    }
+
+    private void OnPlayCallBack(StreamJsonData.Data data) {
+        Debug.Log("Home page OnPlayCallBack");
+        OnPlay.Invoke();
     }
 
     IEnumerator EndingUIUpdate() {

@@ -22,7 +22,7 @@ public class BtnThumbnailItemV2 : MonoBehaviour
 
     Action<StreamJsonData.Data> OnClick;
 
-    public void SetPressPlayAction(Action<StreamJsonData.Data> OnPlay) {
+    public void SetPressClickAction(Action<StreamJsonData.Data> OnClick) {
         this.OnClick = null;
         this.OnClick += OnClick;
     }
@@ -35,12 +35,17 @@ public class BtnThumbnailItemV2 : MonoBehaviour
         if (thumbnailElement != null) {
             thumbnailElement.OnTextureLoaded -= UpdateTexture;
             thumbnailElement.OnErrorTextureLoaded -= ErrorLoadTexture;
+            thumbnailElement.Data.OnDataUpdated -= UpdateData;
         }
 
         thumbnailElement = element;
 
+        //thumbnailElement.Data.is_bought = false;
+        //thumbnailElement.Data.teaser_link = thumbnailElement.Data.stream_s3_url;
+
         thumbnailElement.OnTextureLoaded += UpdateTexture;
         thumbnailElement.OnErrorTextureLoaded += ErrorLoadTexture;
+        thumbnailElement.Data.OnDataUpdated += UpdateData;
 
         imgLive.gameObject.SetActive(thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live);
 
@@ -58,6 +63,7 @@ public class BtnThumbnailItemV2 : MonoBehaviour
 
     //TODO если премя до, то одна надпись, если куплено и если будет, если нет тизера, то не показывать плей видео
     private void UpdateData() {
+        Debug.Log(name + " UpdateData");
         UpdateTexture(thumbnailElement.texture);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(rawImage.GetComponent<RectTransform>());
@@ -86,5 +92,13 @@ public class BtnThumbnailItemV2 : MonoBehaviour
 
     private void ErrorLoadTexture() {
 
+    }
+
+    private void OnDestroy() {
+        if (thumbnailElement != null) {
+            thumbnailElement.OnTextureLoaded -= UpdateTexture;
+            thumbnailElement.OnErrorTextureLoaded -= ErrorLoadTexture;
+            thumbnailElement.Data.OnDataUpdated -= UpdateData;
+        }
     }
 }

@@ -5,6 +5,7 @@ using System;
 
 public class UIThumbnailsController : MonoBehaviour {
     public Action OnUpdated;
+    public Action<StreamJsonData.Data> OnNeedPurchase;
     public Action<StreamJsonData.Data> OnPlay;
 
     [SerializeField] MediaFileDataHandler mediaFileDataHandler;
@@ -87,12 +88,19 @@ public class UIThumbnailsController : MonoBehaviour {
         for (int i = 0; i < dataList.Count; i++) {
             btnThumbnailItemsDictionary[dataList[i].id] = btnThumbnailItems[i];
             btnThumbnailItems[i].AddData(thumbnailElementsDictionary[dataList[i].id]);
-            btnThumbnailItems[i].SetPressPlayAction(Play);
+            btnThumbnailItems[i].SetPressClickAction(ClickCallBack);
         }
         OnUpdated?.Invoke();
     }
 
     #endregion
+
+    private void ClickCallBack(StreamJsonData.Data data) {
+        Debug.Log(name + " ClickCallBack");
+        if(!data.is_bought)
+            OnNeedPurchase?.Invoke(data);
+        Play(data);
+    }
 
     private void Play(StreamJsonData.Data data) {
         if(data.is_bought && data.IsStarted) {
@@ -114,7 +122,7 @@ public class UIThumbnailsController : MonoBehaviour {
     }
 
     private void PlayTeaser(StreamJsonData.Data data) {
-        pnlViewingExperience.ActivateForPreRecorded(data.teaser, null);
+        pnlViewingExperience.ActivateForPreRecorded(data.teaser_link, null);
         OnPlay?.Invoke(data);
     }
 }
