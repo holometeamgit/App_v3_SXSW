@@ -4,9 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Purchasing;
 using TMPro;
+using System;
 
 public class PnlEventPurchaser : MonoBehaviour
 {
+    public Action OnPurchased;
+
     [SerializeField] IAPController iapController;
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] PurchaseAPIScriptableObject purchaseAPISO;
@@ -40,8 +43,9 @@ public class PnlEventPurchaser : MonoBehaviour
         txtDateOnSale.text = data.StartDate.ToString("dd MMM") + (data.is_bought ? "" : " • On sale now") ;
         if (!data.is_bought) {
             imageIcon.sprite = LockSprites[0];
-            txtDatePeriod.text = data.StartDate.ToString("H:m") + (data.HasEndTime ? "" : " - " + data.EndDate.ToString("H:m"));
+            txtDatePeriod.text = data.StartDate.ToString("H:mm") + (data.HasEndTime ? "" : " - " + data.EndDate.ToString("H:mm"));
         } else {
+            imageIcon.sprite = LockSprites[1];
             txtDatePeriod.text = "This show will be viewable on " + data.StartDate.ToString("d MMMM");
         }
     }
@@ -93,10 +97,12 @@ public class PnlEventPurchaser : MonoBehaviour
 
     private void OnServerBillingSent() {
         Debug.Log("OnServerBillingSent");
+        OnPurchased?.Invoke();
     }
 
     private void OnServerErrorBillingSent(long code, string body) {
         Debug.Log("OnServerErrorBillingSent " + code + " " + body);
+        OnPurchased?.Invoke();
     }
 
     private string GetRequestRefreshTokenURL() {

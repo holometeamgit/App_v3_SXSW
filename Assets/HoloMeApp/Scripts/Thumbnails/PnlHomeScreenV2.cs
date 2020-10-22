@@ -39,6 +39,8 @@ public class PnlHomeScreenV2 : MonoBehaviour
         uiThumbnailsController.SetStreamJsonData(thumbnailsDataFetcher.GetDataList());
         uiThumbnailsController.OnPlay += OnPlayCallBack;
         uiThumbnailsController.OnNeedPurchase += OnNeedPurchaseCallBack;
+
+        pnlEventPurchaser.OnPurchased += RefreshItems;
     }
 
     private void DataUpdateCallBack() {
@@ -48,7 +50,8 @@ public class PnlHomeScreenV2 : MonoBehaviour
     }
 
     private void UIUpdated() {
-        StartCoroutine(EndingUIUpdate());
+        pullRefreshController.RefreshLayout();
+        Invoke("EndingUIUpdate", 0.05f);
     }
 
     private void RefreshItems() {
@@ -90,10 +93,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
         OnPlay.Invoke();
     }
 
-    IEnumerator EndingUIUpdate() {
-        pullRefreshController.RefreshLayout();
-        yield return null;
-        //yield return new WaitForSeconds(0.1f);
+    private void EndingUIUpdate() {
         Debug.Log("IEnumerator EndingUIUpdate");
         pullRefreshController.EndRefreshing();
     }
