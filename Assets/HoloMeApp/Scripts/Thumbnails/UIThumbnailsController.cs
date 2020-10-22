@@ -103,7 +103,7 @@ public class UIThumbnailsController : MonoBehaviour {
 
     private void ClickCallBack(StreamJsonData.Data data) {
         Debug.Log(name + " ClickCallBack");
-        if(!data.is_bought)
+        if(!data.is_bought || data.is_bought && !data.IsStarted && data.HasProduct)
             OnNeedPurchase?.Invoke(data);
         Play(data);
     }
