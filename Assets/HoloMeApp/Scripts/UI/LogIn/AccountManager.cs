@@ -19,7 +19,6 @@ public class AccountManager : MonoBehaviour
     #region public authorization
 
     public void LogIn(ResponseDelegate responseCallBack, ErrorTypeDelegate errorTypeCallBack) {
-        Debug.Log("AccountManager LogIn");
         ServerAccessToken accessToken = LoadAccessToken();
 
         if(accessToken == null) {
@@ -27,7 +26,7 @@ public class AccountManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("LogIn " + accessToken.refresh + "\n\n" + accessToken.access);
+//        Debug.Log("LogIn " + accessToken.refresh + "\n\n" + accessToken.access);
 
         webRequestHandler.PostRequest(GetRequestRefreshTokenURL(),
             accessToken, WebRequestHandler.BodyType.JSON,
@@ -36,13 +35,11 @@ public class AccountManager : MonoBehaviour
     }
 
     public void LogOut() {
-        Debug.Log("LogOut");
         RemoveAccessToken();
         SaveLastAutoType(LogInType.None);
     }
 
     public void SaveLastAutoType(LogInType logInType) {
-//        Debug.Log("SaveLastAutoType " + logInType.ToString());
         PlayerPrefs.SetInt(PlayerPrefsKeys.LastTypeLoginPPKey, (int)logInType);
         PlayerPrefs.Save();
     }
@@ -81,7 +78,7 @@ public class AccountManager : MonoBehaviour
 
     private void UpdateAccessToke(string onlyAccess, ServerAccessToken accessToken) {
         var access = JsonUtility.FromJson<ServerAccessToken>(onlyAccess);
-        Debug.Log("UpdatedAccessToke " + access.access);
+//        Debug.Log("UpdatedAccessToke " + access.access);
         accessToken.access = access.access;
         SaveAccessToken(JsonUtility.ToJson(accessToken));
     }

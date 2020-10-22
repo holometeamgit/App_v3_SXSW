@@ -6,7 +6,8 @@ namespace HoloMeSDK {
     {        
         public bool IsPlaying => videoPlayer.IsPlaying();
         public bool IsPaused => videoPlayer.IsPaused();
-
+        public bool IsPrepared => videoPlayer.IsPrepared();
+        
         public bool Initialized { get; private set; }
 
         float positionOffset;

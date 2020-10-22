@@ -41,14 +41,11 @@ public class WebRequestHandler : MonoBehaviour {
 
     IEnumerator GetRequesting(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
 
-        Debug.Log(url);
-
         using (UnityWebRequest request = UnityWebRequest.Get(url)) {
             request.certificateHandler = new CustomCertificateHandler();
 
             if (headerAccessToken != null) {
                 request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
-                Debug.Log(request.GetRequestHeader("Authorization"));
             }
 
             yield return request.SendWebRequest();
