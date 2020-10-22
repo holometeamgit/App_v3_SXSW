@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using HoloMeSDK;
+using System.Linq;
 
 [DisallowMultipleComponent]
 public class HologramHandler : MonoBehaviour
@@ -26,7 +27,10 @@ public class HologramHandler : MonoBehaviour
   
     HoloMe holoMe;
 
-    string videoCode;
+    string videoURL;
+
+    public string GetVideoFileName { get { return videoURL.Split('/').Last(); } }
+
 
     bool hasPlaced;
 
@@ -55,14 +59,15 @@ public class HologramHandler : MonoBehaviour
                 hologramChild.SetParent(holoMe.HologramTransform);
             }
             holoMe.SetScale(0.75f);
+            videoPlayer.SetOnReadyEvent(() => AnalyticsController.Instance.StartTimer(hologramViewDwellTimer, $"{AnalyticKeys.KeyHologramViewPercentage} ({GetVideoFileName})"));
         }
     }
 
-    public void PlayIfPlaced(string code)
+    public void PlayIfPlaced(string url)
     {
-        HelperFunctions.DevLog("PLAY ON PLACE CALLED code =" + code);
-
-        videoCode = code;
+        HelperFunctions.DevLog("PLAY ON PLACE CALLED code =" + url);
+        
+        videoURL = url;
 
         if (Application.isEditor)
         {
@@ -91,10 +96,6 @@ public class HologramHandler : MonoBehaviour
         holoMe.PlaceVideo(position);
     }
 
-    public void PlayDirect() {
-        PlayVideo();
-    }
-
     private void PlayVideo()
     {
         if (holoMe.IsPaused)
@@ -103,9 +104,8 @@ public class HologramHandler : MonoBehaviour
         }
         else
         {
-            holoMe.PlayVideo(videoCode);
-            AnalyticsController.Instance.StartTimer(hologramViewDwellTimer, "Hologram View Time");
-            //            holoMe.PlayVideo(HelperFunctions.PersistentDir() + videoCode + ".mp4");
+            holoMe.PlayVideo(videoURL);
+            //holoMe.PlayVideo(HelperFunctions.PersistentDir() + videoCode + ".mp4");
         }
     }
 
@@ -116,8 +116,10 @@ public class HologramHandler : MonoBehaviour
 
     public void StopVideo()
     {
-        print("Percentage Watched = %" + ((float)AnalyticsController.Instance.GetElapsedTime(hologramViewDwellTimer) / videoPlayer.GetClipLength()) * 100 );
-        AnalyticsController.Instance.StopTimer(hologramViewDwellTimer);
+        float percentageViewed =  Mathf.Round( Mathf.Clamp((float)(((float)AnalyticsController.Instance.GetElapsedTime(hologramViewDwellTimer) / videoPlayer.GetClipLength()) * 100), 0, 100));
+        print("Clip Length " + videoPlayer.GetClipLength());
+        print("Percentage Watched = " + percentageViewed + "%");
+        AnalyticsController.Instance.StopTimer(hologramViewDwellTimer, percentageViewed);
         holoMe.StopVideo();
     }
 

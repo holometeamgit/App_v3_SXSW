@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class AnalyticsSessionLengthTracker : MonoBehaviour {
     const string sessionLength = nameof(sessionLength);
 
-    private void Awake() {
+    private void Start() {
         DontDestroyOnLoad(this);
-        AnalyticsController.Instance.StartTimer(sessionLength, "Session Length");
+        AnalyticsController.Instance.StartTimer(sessionLength, AnalyticKeys.KeySessionLength);
     }
 
     private void OnApplicationQuit() {

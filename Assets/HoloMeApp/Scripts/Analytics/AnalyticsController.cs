@@ -4,7 +4,6 @@ using UnityEngine.Analytics;
 
 public class AnalyticsController : MonoBehaviour {
     public static AnalyticsController Instance { get; private set; }
-
     Dictionary<string, AnalyticsDwellTracker> dwellTimers = new Dictionary<string, AnalyticsDwellTracker>();
 
     private void Awake() {
@@ -23,6 +22,7 @@ public class AnalyticsController : MonoBehaviour {
             return;
         }
 
+        HelperFunctions.DevLog($"Custom Event Sent {eventName}");
         Analytics.CustomEvent(eventName);
     }
 
@@ -48,13 +48,31 @@ public class AnalyticsController : MonoBehaviour {
         }
 
         var timer = dwellTimers[timerName];
-        var time = new Dictionary<string, object>();
-        time.Add(dwellTimers[timerName].name, timer.Timer);
-        Analytics.CustomEvent(timerName, time);
-        dwellTimers.Remove(timerName);
+        RemoveTimer(timer, timerName, timer.name, timer.Timer);
+    }
 
-        HelperFunctions.DevLog($"Dwell timer {timerName} stopped. Time tracked = {timer.Timer}");
-        Destroy(timer);
+    public void StopTimer(string timerName, float customTime) {
+        if (!dwellTimers.ContainsKey(timerName)) {
+            Debug.LogError("Timer didn't exist in collection " + timerName);
+            return;
+        }
+
+        var timer = dwellTimers[timerName];
+        RemoveTimer(timer, timerName, timer.name, customTime);
+    }
+
+    /// <param name="timerDictonaryKey">Required to remove timer</param>
+    /// <param name="timerName">Name to be shown in analytics</param>
+    /// <param name="elapsedTime">Time specified</param>
+    private void RemoveTimer(AnalyticsDwellTracker dwellTimercomponent, string timerDictonaryKey, string timerName, float elapsedTime) {
+
+        var time = new Dictionary<string, object>();
+        time.Add(timerName, elapsedTime);
+        Analytics.CustomEvent(timerName, time);
+        dwellTimers.Remove(timerDictonaryKey);
+
+        HelperFunctions.DevLog($"Dwell timer {timerName} stopped. Time tracked = {elapsedTime}");
+        Destroy(dwellTimercomponent);
     }
 
     public int GetElapsedTime(string timerName) {

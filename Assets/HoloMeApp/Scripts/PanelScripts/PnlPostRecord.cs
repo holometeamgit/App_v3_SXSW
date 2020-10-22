@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using NatShare;
-using System.Collections;
 using DG.Tweening;
 using UnityEngine.Video;
 
@@ -38,6 +37,9 @@ public class PnlPostRecord : MonoBehaviour
 
     [SerializeField]
     GameObject pnlGenericError;
+
+    [SerializeField]
+    HologramHandler hologramHandler;
 
     static string lastRecordingPath;
     public static string LastRecordingPath { get { return lastRecordingPath; } }
@@ -109,7 +111,7 @@ public class PnlPostRecord : MonoBehaviour
 
     public void Share()
     {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareVideoPressed);
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareVideoPressed + " " + hologramHandler.GetVideoFileName);
         if (screenshotWasTaken)
         {
             ShareScreenshot();
@@ -134,7 +136,7 @@ public class PnlPostRecord : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(lastRecordingPath))
         {
-            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyVideoShared);
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyVideoShared + " " + hologramHandler.GetVideoFileName);
             using (var payload = new SharePayload())
             {
                 //payload.AddText(ShareMessage + Code);
@@ -152,7 +154,7 @@ public class PnlPostRecord : MonoBehaviour
     {
         if (screenShot != null)
         {
-            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySnapshotShared);
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySnapshotShared + " " + hologramHandler.GetVideoFileName);
             using (var payload = new SharePayload())
             {
                 payload.AddImage(screenShot);
