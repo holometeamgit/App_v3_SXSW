@@ -5,6 +5,7 @@ using System;
 
 [Serializable]
 public class StreamJsonData {
+
     public int count;
     public string next;
     public string previous;
@@ -16,6 +17,7 @@ public class StreamJsonData {
 
     [Serializable]
     public class Data {
+        public Action OnDataUpdated;
 
         public enum Stage {
             All,
@@ -27,7 +29,10 @@ public class StreamJsonData {
         public long id;
         public string preview_s3_url;
         public string stream_s3_url;
+        public string teaser_s3_url;
         public string user;
+        public string paid_type;
+        public bool is_bought;
         public ProductType product_type;
         public string status;
         public string agora_sid;
@@ -41,6 +46,30 @@ public class StreamJsonData {
         public string title;
         public string description;
 
+        public bool IsStarted {
+            get { return DateTime.Now >= StartDate; }
+        }
+
+        public bool HasTeaser {
+            get { return !string.IsNullOrWhiteSpace(teaser_s3_url); }
+        }
+
+        public bool HasStreamUrl {
+            get { return !string.IsNullOrWhiteSpace(stream_s3_url); }
+        }
+
+        public bool HasAgoraChannel {
+            get { return !string.IsNullOrWhiteSpace(agora_channel); }
+        }
+
+        public bool HasProduct {
+            get { return !string.IsNullOrWhiteSpace(product_type.product_id); }
+        }
+
+        public bool HasEndTime {
+            get { return !string.IsNullOrWhiteSpace(end_date); }
+        }
+
         public DateTime StartDate {
             get {
                 if (startDate != new DateTime())
@@ -52,7 +81,19 @@ public class StreamJsonData {
             }
         }
 
+        public DateTime EndDate {
+            get {
+                if (endDate != new DateTime())
+                    return endDate;
+                //Debug.Log("GET start_date " + start_date);
+                if (!DateTime.TryParse(end_date, out endDate))
+                    endDate = new DateTime();
+                return endDate;
+            }
+        }
+
         private DateTime startDate;
+        private DateTime endDate;
 
         private const string announcedStr = "announced";
         private const string finishedStr = "finished";

@@ -15,6 +15,10 @@ public class Enabler : MonoBehaviour
 
     public UnityEvent OnDisableEvent;
 
+    [Space]
+    public float timeDelay;
+    public UnityEvent OnDelayEvent;
+
     private void OnEnable() {
         foreach (var element in ObjectListActiveOnEnable)
             element.SetActive(true);
@@ -23,6 +27,8 @@ public class Enabler : MonoBehaviour
             element.SetActive(false);
 
         OnEnableEvent.Invoke();
+
+        StartCoroutine(InvokeEvent());
     }
 
     private void OnDisable() {
@@ -33,5 +39,13 @@ public class Enabler : MonoBehaviour
             element.SetActive(false);
 
         OnDisableEvent.Invoke();
+
+        StopAllCoroutines();
+    }
+
+    IEnumerator InvokeEvent() {
+        yield return new WaitForSeconds(timeDelay);
+
+        OnDelayEvent.Invoke();
     }
 }

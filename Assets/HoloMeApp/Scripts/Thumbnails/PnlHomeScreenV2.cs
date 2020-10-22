@@ -11,7 +11,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
     [SerializeField] UIThumbnailsController uiThumbnailsController;
     [SerializeField] ThumbnailPriorityScriptableObject thumbnailPriority;
     [SerializeField] ThumbnailWebDownloadManager thumbnailWebDownloadManager;
-    [SerializeField] ThumbnailsPurchaser thumbnailsPurchaser;
+    [SerializeField] PnlEventPurchaser pnlEventPurchaser;
 
 
     [Space]
@@ -38,8 +38,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
         uiThumbnailsController.OnUpdated += UIUpdated;
         uiThumbnailsController.SetStreamJsonData(thumbnailsDataFetcher.GetDataList());
         uiThumbnailsController.OnPlay += OnPlayCallBack;
-
-        thumbnailsPurchaser.SetStreamJsonData(thumbnailsDataFetcher.GetDataList());
+        uiThumbnailsController.OnNeedPurchase += OnNeedPurchaseCallBack;
     }
 
     private void DataUpdateCallBack() {
@@ -81,7 +80,13 @@ public class PnlHomeScreenV2 : MonoBehaviour
         pullRefreshController.EndRefreshing();
     }
 
-    private void OnPlayCallBack() {
+    private void OnNeedPurchaseCallBack(StreamJsonData.Data data) {
+        Debug.Log("Home page OnClickCallBack");
+        pnlEventPurchaser.Show(data);
+    }
+
+    private void OnPlayCallBack(StreamJsonData.Data data) {
+        Debug.Log("Home page OnPlayCallBack");
         OnPlay.Invoke();
     }
 

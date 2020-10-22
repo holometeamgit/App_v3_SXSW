@@ -16,46 +16,36 @@ public class BtnThumbnailItemV2 : MonoBehaviour
     [SerializeField] TMP_Text txtPerformerName;
     [SerializeField] TMP_Text txtDate;
 
-    [SerializeField] ThumbnailsPurchaseStateScriptableObject thumbnailsPurchaseStateScriptableObject;
+    [SerializeField] ThumbnailsPurchaseStateScriptableObject thumbnailsPurchaseStateSO;
 
     ThumbnailElement thumbnailElement;
 
-    Action<StreamJsonData.Data.Stage, string> OnPlay;
+    Action<StreamJsonData.Data> OnClick;
 
-    //TODO обновление 3-х статусов
-    //статус после покупки обновляется только когда мы отправили информацию о покупке,
-    //потом запросили у сервера и только после этого повторного запроса мы обновляем на UI об покупке 
-
-    public void SetThumbnailPressAction(Action<StreamJsonData.Data.Stage, string> OnPlay) {
-        this.OnPlay = null;
-        this.OnPlay += OnPlay;
+    public void SetPressClickAction(Action<StreamJsonData.Data> OnClick) {
+        this.OnClick = null;
+        this.OnClick += OnClick;
     }
 
-    public void TryPlay() {
-        if(thumbnailElement.Data.product_type != null && !string.IsNullOrWhiteSpace(thumbnailElement.Data.product_type.product_id)) { // TODO add check if purchased
-            Debug.Log("Try Buy " + thumbnailElement.Data.product_type.name);
-            FindObjectOfType<IAPController>().BuyTicket(thumbnailElement.Data.product_type.product_id);
-        } else {
-            if (thumbnailElement.Data.StartDate > DateTime.Now)
-                return;
-
-            if (!string.IsNullOrWhiteSpace(thumbnailElement.Data.stream_s3_url))
-                OnPlay?.Invoke(StreamJsonData.Data.Stage.Finished, thumbnailElement.Data.stream_s3_url);
-            else if (!string.IsNullOrWhiteSpace(thumbnailElement.Data.agora_channel) && thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live)
-                OnPlay?.Invoke(StreamJsonData.Data.Stage.Live, thumbnailElement.Data.agora_channel);
-        }
+    public void Click() {
+        OnClick?.Invoke(thumbnailElement.Data);
     }
 
     public void AddData(ThumbnailElement element) {
         if (thumbnailElement != null) {
             thumbnailElement.OnTextureLoaded -= UpdateTexture;
             thumbnailElement.OnErrorTextureLoaded -= ErrorLoadTexture;
+            thumbnailElement.Data.OnDataUpdated -= UpdateData;
         }
 
         thumbnailElement = element;
 
+        //thumbnailElement.Data.is_bought = false;
+        //thumbnailElement.Data.teaser_link = thumbnailElement.Data.stream_s3_url;
+
         thumbnailElement.OnTextureLoaded += UpdateTexture;
         thumbnailElement.OnErrorTextureLoaded += ErrorLoadTexture;
+        thumbnailElement.Data.OnDataUpdated += UpdateData;
 
         imgLive.gameObject.SetActive(thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live);
 
@@ -71,35 +61,27 @@ public class BtnThumbnailItemV2 : MonoBehaviour
         gameObject.SetActive(true);
     }
 
-    private void Awake() {
-        FindObjectOfType<IAPController>().OnPurchaseHandler += UpdateProductData;
-    }
-
-    private void UpdateProductData(UnityEngine.Purchasing.Product product) {
-        if (thumbnailElement.Data.product_type != null && thumbnailElement.Data.product_type.product_id == product.definition.id)
-            SetPlayable();
-    }
-
-    private void SetPlayable() {
-        imgPurchaseIcon.sprite = thumbnailsPurchaseStateScriptableObject.ThumbnailIcons[2];
-    }
-
+    //TODO если премя до, то одна надпись, если куплено и если будет, если нет тизера, то не показывать плей видео
     private void UpdateData() {
+        Debug.Log(name + " UpdateData");
         UpdateTexture(thumbnailElement.texture);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(rawImage.GetComponent<RectTransform>());
 
+        //text 'Watch the teaser now' 'Event coming soon' 'Watch now!'
         txtPerformerName.text = thumbnailElement.Data.user;
         txtDate.text = thumbnailElement.Data.StartDate.ToString("dd MMM yyyy") ;
-        if(System.DateTime.Now < thumbnailElement.Data.StartDate) {//TODO specify when this inscription should be here
-            txtDate.text = txtDate.text + " • On sale now";
+        if(!thumbnailElement.Data.is_bought && thumbnailElement.Data.HasTeaser) {
+            txtDate.text = txtDate.text + " • Watch the teaser now";
+        } else if(thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
+            txtDate.text = txtDate.text + " • Watch now!";
+        } else {
+            txtDate.text = txtDate.text + " • Event coming soon";
         }
 
-        if (thumbnailElement.Data.product_type != null && !string.IsNullOrWhiteSpace(thumbnailElement.Data.product_type.product_id)) {
-            imgPurchaseIcon.sprite = thumbnailsPurchaseStateScriptableObject.ThumbnailIcons[0];
-        } else {
-            imgPurchaseIcon.sprite = thumbnailsPurchaseStateScriptableObject.ThumbnailIcons[2];
-        }
+        //icon don't show if we have not teaser before event or we have not eny data
+        imgPurchaseIcon.gameObject.SetActive(thumbnailElement.Data.HasTeaser ||
+            (thumbnailElement.Data.IsStarted && (thumbnailElement.Data.HasStreamUrl || thumbnailElement.Data.HasAgoraChannel)));
     }
 
     private void UpdateTexture(Texture texture) {
@@ -113,9 +95,10 @@ public class BtnThumbnailItemV2 : MonoBehaviour
     }
 
     private void OnDestroy() {
-        IAPController iAPController = FindObjectOfType<IAPController>();
-        if(iAPController != null)
-            iAPController.OnPurchaseHandler -= UpdateProductData;
+        if (thumbnailElement != null) {
+            thumbnailElement.OnTextureLoaded -= UpdateTexture;
+            thumbnailElement.OnErrorTextureLoaded -= ErrorLoadTexture;
+            thumbnailElement.Data.OnDataUpdated -= UpdateData;
+        }
     }
-
 }
