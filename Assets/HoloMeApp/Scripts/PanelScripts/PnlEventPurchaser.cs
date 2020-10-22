@@ -11,6 +11,7 @@ public class PnlEventPurchaser : MonoBehaviour
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] PurchaseAPIScriptableObject purchaseAPISO;
     [SerializeField] List<Sprite> LockSprites;
+    [SerializeField] AccountManager accountManager;
 
     [Space]
     [SerializeField] GameObject btnBuyTicket;
@@ -74,14 +75,15 @@ public class PnlEventPurchaser : MonoBehaviour
         Show(data);
 
         StreamBillingJsonData streamBillingJsonData = new StreamBillingJsonData();
-        streamBillingJsonData.bill.hash = product.definition.storeSpecificId;
+        streamBillingJsonData.bill.hash = product.receipt;
 
-        Debug.Log("OnPurchaseCallBack " + product.definition.storeSpecificId);
+        Debug.Log("OnPurchaseCallBack " + product.receipt);
+        Debug.Log(GetRequestRefreshTokenURL()) ;
 
         webRequestHandler.PostRequest(GetRequestRefreshTokenURL(),
            streamBillingJsonData, WebRequestHandler.BodyType.JSON,
            (code, body) => OnServerBillingSent(),
-           (code, body) => OnServerErrorBillingSent());
+           (code, body) => OnServerErrorBillingSent(code, body), accountManager.GetAccessToken().access);
     }
 
     private void OnPurchaseFailCallBack() {
@@ -93,8 +95,8 @@ public class PnlEventPurchaser : MonoBehaviour
         Debug.Log("OnServerBillingSent");
     }
 
-    private void OnServerErrorBillingSent() {
-        Debug.Log("OnServerErrorBillingSent");
+    private void OnServerErrorBillingSent(long code, string body) {
+        Debug.Log("OnServerErrorBillingSent " + code + " " + body);
     }
 
     private string GetRequestRefreshTokenURL() {

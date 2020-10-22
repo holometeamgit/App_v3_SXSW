@@ -29,7 +29,7 @@ public class StreamJsonData {
         public long id;
         public string preview_s3_url;
         public string stream_s3_url;
-        public string teaser_link;
+        public string teaser_s3_url;
         public string user;
         public string paid_type;
         public bool is_bought;
@@ -51,7 +51,7 @@ public class StreamJsonData {
         }
 
         public bool HasTeaser {
-            get { return !string.IsNullOrWhiteSpace(teaser_link); }
+            get { return !string.IsNullOrWhiteSpace(teaser_s3_url); }
         }
 
         public bool HasStreamUrl {

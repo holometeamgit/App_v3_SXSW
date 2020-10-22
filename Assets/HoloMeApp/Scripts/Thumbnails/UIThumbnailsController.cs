@@ -128,7 +128,7 @@ public class UIThumbnailsController : MonoBehaviour {
     }
 
     private void PlayTeaser(StreamJsonData.Data data) {
-        pnlViewingExperience.ActivateForPreRecorded(data.teaser_link, null);
+        pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, null);
         OnPlay?.Invoke(data);
     }
 }
