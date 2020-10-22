@@ -32,7 +32,7 @@ public class AnalyticsController : MonoBehaviour {
             return; //dwellTimers[timerName];
         }
         var dwellTimer = gameObject.AddComponent<AnalyticsDwellTracker>();
-        dwellTimer.name = timerName;
+        dwellTimer.trackerName = timerName;
         dwellTimer.StartTimer();
         dwellTimers.Add(timerKey, dwellTimer);
 
@@ -48,7 +48,7 @@ public class AnalyticsController : MonoBehaviour {
         }
 
         var timer = dwellTimers[timerName];
-        RemoveTimer(timer, timerName, timer.name, timer.Timer);
+        RemoveTimer(timer, timerName, timer.trackerName, timer.Timer);
     }
 
     public void StopTimer(string timerName, float customTime) {
@@ -58,7 +58,7 @@ public class AnalyticsController : MonoBehaviour {
         }
 
         var timer = dwellTimers[timerName];
-        RemoveTimer(timer, timerName, timer.name, customTime);
+        RemoveTimer(timer, timerName, timer.trackerName, customTime);
     }
 
     /// <param name="timerDictonaryKey">Required to remove timer</param>

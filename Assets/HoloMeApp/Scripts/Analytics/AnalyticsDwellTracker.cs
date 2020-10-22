@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 public class AnalyticsDwellTracker : MonoBehaviour {
-    string trackerName;
+    public string trackerName;
     public int Timer { get; private set; }
 
     public void StartTimer() {
