@@ -28,6 +28,7 @@ public class StreamJsonData {
 
         public long id;
         public string preview_s3_url;
+        public string preview_teaser_s3_url;
         public string stream_s3_url;
         public string teaser_s3_url;
         public string user;
@@ -52,6 +53,10 @@ public class StreamJsonData {
 
         public bool HasTeaser {
             get { return !string.IsNullOrWhiteSpace(teaser_s3_url); }
+        }
+
+        public bool HasTeaserPreview {
+            get { return !string.IsNullOrWhiteSpace(preview_teaser_s3_url); }
         }
 
         public bool HasStreamUrl {
@@ -97,6 +102,7 @@ public class StreamJsonData {
 
         private const string announcedStr = "announced";
         private const string finishedStr = "finished";
+        private const string scheduledStr = "scheduled";
         private const string lifeStr = "live";
 
         public Stage GetStatus() {
@@ -104,6 +110,7 @@ public class StreamJsonData {
                 case announcedStr:
                     return Stage.Announced;
                 case finishedStr:
+                case scheduledStr:
                     return Stage.Finished;
                 case lifeStr:
                     return Stage.Live;

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Purchasing;
 using TMPro;
 using System;
+using NatShare;
 
 public class PnlEventPurchaser : MonoBehaviour
 {
@@ -56,8 +57,43 @@ public class PnlEventPurchaser : MonoBehaviour
     public void Purchase() {
         //TODO v3 Check if it is already purchased first to receive a request from the server.
         //Then try to buy. After the purchase, he will make sure to make sure that they have written to the server.
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed);
         purchaseWaitingScreen.gameObject.SetActive(true);
         iapController.BuyTicket(data.product_type.product_id);
+    }
+
+    public void ShareStream() {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
+
+        using (var payload = new SharePayload()) {
+            string appName = "Beem";
+            string iosLink = "https://apps.apple.com/us/app/beem/id1532446771?ign-mpt=uo%3D2";
+            string androidLink = "https://play.google.com/store/apps/details?id=com.HoloMe.Beem";
+            string appLink;
+            switch (Application.platform) {
+                case RuntimePlatform.IPhonePlayer:
+                    appLink = iosLink;
+                    appName = "Beem+";
+                    break;
+
+                case RuntimePlatform.Android:
+                    appLink = androidLink;
+                    appName = "Beem";
+                    break;
+
+                default:
+                    appLink = iosLink + " - " + androidLink;
+                    break;
+            }
+
+            string message = $"Click the link below to download the {appName} app which lets you experience human holograms using augmented reality: ";
+            payload.AddText(message + appLink);
+        }
+    }
+
+    public void Cancel() {
+        if(!data.is_bought)
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseCancelled);
     }
 
     private void Awake() {
@@ -65,14 +101,9 @@ public class PnlEventPurchaser : MonoBehaviour
         iapController.OnPurchaseFailedHandler += OnPurchaseFailCallBack;
     }
 
-
-    //TODO обновление cтатуса
-    //статус сохраняем в playerpref и отправляем запрос на сервер, если сервер ответил, то скачиваем конкретный thu заново и обновляем данные.
-    //если прервалось то до скачивани домашней страцы в первую очередь отпрвяем все покупки на сервер и ждём подтврждение по каждой,после чистим данные
-    //при покупке ждать ответа от магазина, пользователь ничего не может нажать!
-
     private void OnPurchaseCallBack(Product product) {
-        //webRequestHandler.PostRequest();
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful);
+
         data.is_bought = true;
         data.OnDataUpdated.Invoke();
 
@@ -91,6 +122,7 @@ public class PnlEventPurchaser : MonoBehaviour
     }
 
     private void OnPurchaseFailCallBack() {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseFailed);
         Debug.Log("OnPurchaseFailCallBack");
         Show(data);
     }
