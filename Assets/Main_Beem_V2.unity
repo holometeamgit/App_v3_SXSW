@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.5748171, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -333,7 +333,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 8.694e-42, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 2.3509887e-38, w: 0}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -3893,6 +3893,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 219420117443889806}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1316960598 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 716668698703532917, guid: de650753e65ede242ba1d0f342eea0f8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1799453189606390511}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f4d69d3fb9cda445859ea9428911b63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1339238541
 GameObject:
   m_ObjectHideFlags: 0
@@ -14133,6 +14145,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
         type: 3}
+      propertyPath: OnCloseAsStreamer.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+        type: 3}
       propertyPath: pnlGenericError
       value: 
       objectReference: {fileID: 1433686949785020132}
@@ -14171,6 +14188,31 @@ PrefabInstance:
       propertyPath: arSession
       value: 
       objectReference: {fileID: 1445487951}
+    - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+        type: 3}
+      propertyPath: OnCloseAsStreamer.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+        type: 3}
+      propertyPath: OnCloseAsStreamer.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+        type: 3}
+      propertyPath: OnCloseAsStreamer.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1316960598}
+    - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+        type: 3}
+      propertyPath: OnCloseAsStreamer.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: OnDisconnected
+      objectReference: {fileID: 0}
+    - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+        type: 3}
+      propertyPath: OnCloseAsStreamer.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3546616512609274447, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.size
