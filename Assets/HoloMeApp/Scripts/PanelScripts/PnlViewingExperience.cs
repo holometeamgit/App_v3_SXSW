@@ -47,7 +47,7 @@ public class PnlViewingExperience : MonoBehaviour
 
     [TextArea]
     [SerializeField]
-    string pinchToZoomStr = "Pinch to zoom the hologram";
+    string pinchToZoomStr = "Pinch to resize the hologram";
 
     [TextArea]
     [SerializeField]
