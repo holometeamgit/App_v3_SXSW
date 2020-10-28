@@ -17,7 +17,8 @@ public class MediaFileDataHandler : MonoBehaviour
         if (request.isNetworkError || request.isHttpError) {
             errorTypeDelegate(request.responseCode, request.downloadHandler.text);
         } else {
-            Texture texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+            Texture texture = DownloadHandlerTexture.GetContent(request);
+            //Texture texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
             responseDelegate.Invoke(request.responseCode, request.downloadHandler.text, texture);
         }
     }

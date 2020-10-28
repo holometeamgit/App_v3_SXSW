@@ -42,7 +42,7 @@ public class UIPullRefreshScrollController : MonoBehaviour
         bottomLoadingInfo.SetActive(false);
         topLoadingInfo.SetActive(true);
         RefreshElementsPosiotion();
-        Debug.Log("EndRefreshing");
+//        Debug.Log("EndRefreshing");
     }
 
     private void RefreshElementsPosiotion() {
@@ -116,12 +116,12 @@ public class UIPullRefreshScrollController : MonoBehaviour
         if (GetBottomAnchoredPosition() > distanceReachedBottom)
             return;
 
-        Debug.Log("GetBottomAnchoredPosition " + GetBottomAnchoredPosition());
+//        Debug.Log("GetBottomAnchoredPosition " + GetBottomAnchoredPosition());
 
         isBottomRefreshing = true;
         bottomLoadingInfo.SetActive(true);
         topLoadingInfo.SetActive(false);
-        Debug.Log("OnBottomPull");
+//        Debug.Log("OnBottomPull");
         OnReachedBottom?.Invoke();
     }
 
@@ -159,6 +159,11 @@ public class UIPullRefreshScrollController : MonoBehaviour
 
             if(timeСountertime < 0) {
                 timeСountertime = autoRefreshCooldown;
+
+                isRefreshing = true;
+                scrollRect.enabled = false;
+//                Debug.Log("OnRefresh");
+                isBottomRefreshing = true;
 
                 OnRefresh?.Invoke();
             }

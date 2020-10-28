@@ -32,6 +32,9 @@ public class BtnThumbnailItemV2 : MonoBehaviour
     }
 
     public void AddData(ThumbnailElement element) {
+
+        Debug.Log("element " + (thumbnailElement == element));
+
         if (thumbnailElement != null) {
             thumbnailElement.OnTextureLoaded -= UpdateTexture;
             thumbnailElement.OnErrorTextureLoaded -= UpdateTexture;
@@ -53,7 +56,7 @@ public class BtnThumbnailItemV2 : MonoBehaviour
     }
 
     public void Deactivate() {
-        rawImage.texture = defaultTexture;
+        //rawImage.texture = defaultTexture;
         gameObject.SetActive(false);
 
         txtDate.text = "";
@@ -65,7 +68,7 @@ public class BtnThumbnailItemV2 : MonoBehaviour
 
     //TODO если премя до, то одна надпись, если куплено и если будет, если нет тизера, то не показывать плей видео
     private void UpdateData() {
-        Debug.Log(name + " UpdateData");
+//        Debug.Log(name + " UpdateData");
         UpdateTexture();
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(rawImage.GetComponent<RectTransform>());
@@ -88,10 +91,13 @@ public class BtnThumbnailItemV2 : MonoBehaviour
 
     private void UpdateTexture() {
         if (!thumbnailElement.Data.is_bought) {
+            Debug.Log("is not bought ");
             rawImage.texture = thumbnailElement.teaserTexture ?? thumbnailElement.texture ?? defaultTexture;
         } else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
             rawImage.texture = thumbnailElement.texture ?? defaultTexture;
+            Debug.Log("is bought and started ");
         } else {
+            Debug.Log("is bought and not started ");
             rawImage.texture = thumbnailElement.teaserTexture ?? thumbnailElement.texture ?? defaultTexture;
         }
 

@@ -89,7 +89,7 @@ public class ThumbnailsDataFetcher {
             return;
 
         currentPage = Mathf.Max(Mathf.CeilToInt((float)count / pageSize), 1);
-        Debug.Log("currentPage = " + currentPage + " count = " + count);
+//        Debug.Log("currentPage = " + currentPage + " count = " + count);
 
         GetThumbnailsOnCurrentPage();
     }

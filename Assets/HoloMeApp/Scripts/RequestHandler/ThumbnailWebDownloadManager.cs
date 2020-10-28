@@ -110,7 +110,7 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
         }
 
         builder.Query = query.ToString();
-        Debug.Log(builder.ToString());
+//        Debug.Log(builder.ToString());
         return builder.ToString();
     }
 

@@ -45,6 +45,10 @@ public class ThumbnailsDataContainer {
 
             if (!streamDataEqualityComparer.Equals(prevStreamData, data))
                 streamData.Remove(prevStreamData);
+            else {
+                streamData.Add(prevStreamData);
+                return;
+            }
         }
 
 

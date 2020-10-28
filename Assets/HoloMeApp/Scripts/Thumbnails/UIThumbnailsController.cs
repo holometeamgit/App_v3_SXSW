@@ -35,13 +35,15 @@ public class UIThumbnailsController : MonoBehaviour {
     }
 
     public void RemoveUnnecessary() {
+        Debug.Log("RemoveUnnecessary");
         List<long> removingListID = new List<long>();
 
         foreach (var thumbnailElement in thumbnailElementsDictionary) {
-            if (dataList.Contains(thumbnailElement.Value.Data))
+            if (!dataList.Contains(thumbnailElement.Value.Data))
                 removingListID.Add(thumbnailElement.Value.Data.id);
         }
 
+        Debug.Log("RemoveUnnecessary count " + removingListID.Count);
         foreach (var id in removingListID) {
             thumbnailElementsDictionary.Remove(id);
         }
@@ -79,6 +81,7 @@ public class UIThumbnailsController : MonoBehaviour {
     }
 
     private void PrepareThumbnailElement() {
+        Debug.Log("PrepareThumbnailElement " + dataList.Count);
         foreach (var thumbnailData in dataList) {
             if (thumbnailElementsDictionary.ContainsKey(thumbnailData.id)) {
                 ThumbnailElement thumbnailElement = thumbnailElementsDictionary[thumbnailData.id];
