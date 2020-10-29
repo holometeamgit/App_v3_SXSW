@@ -78,7 +78,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
     }
 
     private void AllDataLoaded() {
-//        Debug.Log(" AllDataLoaded Data loaded");
+        Debug.Log(" AllDataLoaded Data loaded");
         dataLoaded = true;
         pullRefreshController.StopBottomRefreshing = true;
         pullRefreshController.EndRefreshing();

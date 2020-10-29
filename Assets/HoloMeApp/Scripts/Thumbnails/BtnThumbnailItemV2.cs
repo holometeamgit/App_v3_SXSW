@@ -33,7 +33,7 @@ public class BtnThumbnailItemV2 : MonoBehaviour
 
     public void AddData(ThumbnailElement element) {
 
-        Debug.Log("element " + (thumbnailElement == element));
+//        Debug.Log("element " + (thumbnailElement == element));
 
         if (thumbnailElement != null) {
             thumbnailElement.OnTextureLoaded -= UpdateTexture;
@@ -91,13 +91,13 @@ public class BtnThumbnailItemV2 : MonoBehaviour
 
     private void UpdateTexture() {
         if (!thumbnailElement.Data.is_bought) {
-            Debug.Log("is not bought ");
+//            Debug.Log("is not bought ");
             rawImage.texture = thumbnailElement.teaserTexture ?? thumbnailElement.texture ?? defaultTexture;
         } else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
             rawImage.texture = thumbnailElement.texture ?? defaultTexture;
-            Debug.Log("is bought and started ");
+//            Debug.Log("is bought and started ");
         } else {
-            Debug.Log("is bought and not started ");
+//            Debug.Log("is bought and not started ");
             rawImage.texture = thumbnailElement.teaserTexture ?? thumbnailElement.texture ?? defaultTexture;
         }
 

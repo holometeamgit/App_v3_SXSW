@@ -38,6 +38,8 @@ public class UIThumbnailsController : MonoBehaviour {
         Debug.Log("RemoveUnnecessary");
         List<long> removingListID = new List<long>();
 
+        Debug.Log("dataList count " + dataList.Count + " thumbnailElementsDictionary count " + thumbnailElementsDictionary.Count);
+
         foreach (var thumbnailElement in thumbnailElementsDictionary) {
             if (!dataList.Contains(thumbnailElement.Value.Data))
                 removingListID.Add(thumbnailElement.Value.Data.id);
@@ -64,6 +66,8 @@ public class UIThumbnailsController : MonoBehaviour {
     private void PrepareBtnThumbnails() {
         int quantityDifference = btnThumbnailItems.Count - dataList.Count;
 
+        Debug.Log("PrepareBtnThumbnails quantityDifference " + quantityDifference);
+
         for (int i = 0; i < -quantityDifference; i++) {
             GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
             BtnThumbnailItemV2 btnThumbnailItem = btnThumbnailItemsGO.GetComponent<BtnThumbnailItemV2>();
@@ -72,8 +76,10 @@ public class UIThumbnailsController : MonoBehaviour {
         for (int i = 0; i < btnThumbnailItems.Count; i++) {
             btnThumbnailItems[i].Activate();
         }
-        for (int i = dataList.Count; i < btnThumbnailItems.Count; i++) {
-            if (i <= 1) 
+        if (dataList.Count == btnThumbnailItems.Count)
+            return;
+        for (int i = dataList.Count - 1; i < btnThumbnailItems.Count; i++) {
+            if (i <= 0) 
                 continue;
             btnThumbnailItems[i].Deactivate();
         }

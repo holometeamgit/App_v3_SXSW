@@ -117,8 +117,12 @@ public class ThumbnailsDataFetcher {
         if (loadingKey != currentLoadingKey)
             return;
 
-        thumbnailsDataContainer.AddListStreamJsonData(streamJsonData);
         currentPage--;
+
+        if (streamJsonData == null || streamJsonData.results.Count == 0)
+            GetNextPage();
+        else
+            thumbnailsDataContainer.AddListStreamJsonData(streamJsonData);
     }
 
     private void ErrorGetThumbnailsOnCurrentPageCallBack(long code, string body, LoadingKey loadingKey) {
