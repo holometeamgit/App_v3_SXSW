@@ -7,15 +7,12 @@ using TMPro;
 using System;
 using NatShare;
 
-public class PnlEventPurchaser : MonoBehaviour
-{
+public class PnlEventPurchaser : MonoBehaviour {
     public Action OnPurchased;
 
     [SerializeField] IAPController iapController;
-    [SerializeField] WebRequestHandler webRequestHandler;
-    [SerializeField] PurchaseAPIScriptableObject purchaseAPISO;
     [SerializeField] List<Sprite> LockSprites;
-    [SerializeField] AccountManager accountManager;
+    [SerializeField] PurchasesSaver purchasesSaver;
 
     [Space]
     [SerializeField] GameObject btnBuyTicket;
@@ -41,7 +38,7 @@ public class PnlEventPurchaser : MonoBehaviour
         purchaseWaitingScreen.gameObject.SetActive(false);
 
         txtName.text = data.user;
-        txtDateOnSale.text = data.StartDate.ToString("dd MMM") + (data.is_bought ? "" : " • On sale now") ;
+        txtDateOnSale.text = data.StartDate.ToString("dd MMM") + (data.is_bought ? "" : " • On sale now");
         if (!data.is_bought) {
             imageIcon.sprite = LockSprites[0];
             txtDatePeriod.text = data.StartDate.ToString("H:mm") + (data.HasEndTime ? "" : " - " + data.EndDate.ToString("H:mm"));
@@ -92,7 +89,7 @@ public class PnlEventPurchaser : MonoBehaviour
     }
 
     public void Cancel() {
-        if(!data.is_bought)
+        if (!data.is_bought)
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseCancelled);
     }
 
@@ -113,12 +110,8 @@ public class PnlEventPurchaser : MonoBehaviour
         streamBillingJsonData.bill.hash = product.receipt;
 
         Debug.Log("OnPurchaseCallBack " + product.receipt);
-        Debug.Log(GetRequestRefreshTokenURL()) ;
+        purchasesSaver.PostData(streamBillingJsonData, OnPurchaseServerCallBack);
 
-        webRequestHandler.PostRequest(GetRequestRefreshTokenURL(),
-           streamBillingJsonData, WebRequestHandler.BodyType.JSON,
-           (code, body) => OnServerBillingSent(),
-           (code, body) => OnServerErrorBillingSent(code, body), accountManager.GetAccessToken().access);
     }
 
     private void OnPurchaseFailCallBack() {
@@ -127,19 +120,106 @@ public class PnlEventPurchaser : MonoBehaviour
         Show(data);
     }
 
-    private void OnServerBillingSent() {
-        Debug.Log("OnServerBillingSent");
+    private void OnPurchaseServerCallBack() {
         OnPurchased?.Invoke();
-    }
-
-    private void OnServerErrorBillingSent(long code, string body) {
-        Debug.Log("OnServerErrorBillingSent " + code + " " + body);
-        OnPurchased?.Invoke();
-    }
-
-    private string GetRequestRefreshTokenURL() {
-        return webRequestHandler.ServerURLMediaAPI + purchaseAPISO.SendPurchaseHash.Replace("{id}", data.id.ToString());
     }
 
     #endregion
+}
+
+public class PurchasesSaver : MonoBehaviour {
+
+    //проблема если пользователь зашёл под другим когда отправляли повторно для другого пользователя и в этот момент пришёл ответ от сервера
+    //значит нужно хранить имя кто отправляет, а потом писать если не отправилось то уникальное имя...
+
+    [SerializeField] UserWebManager userWebManager;
+    [SerializeField] WebRequestHandler webRequestHandler;
+    [SerializeField] PurchaseAPIScriptableObject purchaseAPISO;
+    [SerializeField] AccountManager accountManager;
+
+    public void PostData(long dataId, StreamBillingJsonData streamBillingJsonData, Action OnPurchaseCallBackAfterTrySend) {
+    webRequestHandler.PostRequest(GetRequestRefreshTokenURL(dataId),
+       streamBillingJsonData, WebRequestHandler.BodyType.JSON,
+       (code, body) => { OnServerBillingSent(string UniqName); OnPurchaseCallBackAfterTrySend.Invoke(); },
+       (code, body) => OnServerErrorBillingSent(dataId, streamBillingJsonData), accountManager.GetAccessToken().access);
+    }
+
+    private void Awake() {
+
+    }
+
+    private void SaveData(PurchaseSaveElement purchaseSaveElement) {
+        PurchaseSaveData purchaseSaveData;
+        if (PlayerPrefs.HasKey(userWebManager.GetUnituniqueName()))
+            purchaseSaveData = JsonUtility.FromJson<PurchaseSaveData>(PlayerPrefs.GetString(userWebManager.GetUnituniqueName()));
+        else
+            purchaseSaveData = new PurchaseSaveData();
+
+
+        purchaseSaveData.Add(purchaseSaveElement);
+
+        PlayerPrefs.SetString(userWebManager.GetUnituniqueName(), JsonUtility.ToJson(purchaseSaveData));
+    }
+
+    private List<PurchaseSaveElement> GetData() {
+        if (!PlayerPrefs.HasKey(userWebManager.GetUnituniqueName()))
+            return null;
+
+        PurchaseSaveData purchaseSaveData = JsonUtility.FromJson<PurchaseSaveData>(PlayerPrefs.GetString(userWebManager.GetUnituniqueName()));
+
+        return purchaseSaveData.purchaseSaveElements;
+    }
+
+    private void OnServerBillingSent(string UniqName) {
+        Debug.Log("OnServerBillingSent");
+    }
+
+    private void OnServerErrorBillingSent(string UniqName, long dataId,StreamBillingJsonData streamBillingJsonData) {
+        Debug.Log("OnServerErrorBillingSent");
+
+        PurchaseSaveElement purchaseSaveElement = new PurchaseSaveElement(dataId, streamBillingJsonData);
+        SaveData(purchaseSaveElement);
+    }
+
+    private string GetRequestRefreshTokenURL(long id) {
+        return webRequestHandler.ServerURLMediaAPI + purchaseAPISO.SendPurchaseHash.Replace("{id}", id.ToString());
+    }
+}
+
+[Serializable]
+public class PurchaseSaveData {
+    public List<PurchaseSaveElement> purchaseSaveElements;
+
+    public PurchaseSaveData() {
+        purchaseSaveElements = new List<PurchaseSaveElement>();
+    }
+
+    public void Add(PurchaseSaveElement purchaseSaveElement) {
+        RemoveElement(purchaseSaveElement.id);
+        purchaseSaveElements.Add(purchaseSaveElement);
+    }
+
+    public void RemoveElement(long id) {
+        foreach (var element in purchaseSaveElements) {
+            if (element.id == id) {
+                purchaseSaveElements.Remove(element);
+                break;
+            }
+        }
+    }
+}
+
+[Serializable]
+public class PurchaseSaveElement {
+    public long id;
+    public StreamBillingJsonData streamBillingJsonData;
+
+    public PurchaseSaveElement () {
+        streamBillingJsonData = new StreamBillingJsonData();
+    }
+
+    public PurchaseSaveElement(long id , StreamBillingJsonData streamBillingJsonData) {
+        this.id = id;
+        this.streamBillingJsonData = streamBillingJsonData;
+    }
 }
