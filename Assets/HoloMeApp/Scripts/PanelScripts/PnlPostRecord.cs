@@ -111,7 +111,7 @@ public class PnlPostRecord : MonoBehaviour
 
     public void Share()
     {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareVideoPressed + " " + hologramHandler.GetVideoFileName);
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareVideoPressed, "Video name", hologramHandler.GetVideoFileName);
         if (screenshotWasTaken)
         {
             ShareScreenshot();
@@ -136,7 +136,7 @@ public class PnlPostRecord : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(lastRecordingPath))
         {
-            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyVideoShared + " " + hologramHandler.GetVideoFileName);
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyVideoShared, "Video name", hologramHandler.GetVideoFileName);
             using (var payload = new SharePayload())
             {
                 //payload.AddText(ShareMessage + Code);
@@ -154,7 +154,7 @@ public class PnlPostRecord : MonoBehaviour
     {
         if (screenShot != null)
         {
-            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySnapshotShared + " " + hologramHandler.GetVideoFileName);
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySnapshotShared, "Video name", hologramHandler.GetVideoFileName);
             using (var payload = new SharePayload())
             {
                 payload.AddImage(screenShot);

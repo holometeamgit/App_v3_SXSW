@@ -26,6 +26,20 @@ public class AnalyticsController : MonoBehaviour {
         Analytics.CustomEvent(eventName);
     }
 
+    public void SendCustomEvent(string eventName, string dataName, object data)
+    {
+        if (string.IsNullOrWhiteSpace(eventName))
+        {
+            Debug.LogError("Custom event name wasn't specified");
+            return;
+        }
+        var dataContainer = new Dictionary<string, object>();
+        dataContainer.Add(dataName, data);
+
+        HelperFunctions.DevLog($"Custom Event Sent {eventName} with data {dataName} {data}");
+        Analytics.CustomEvent(eventName, dataContainer);
+    }
+
     public void StartTimer(string timerKey, string timerName) {
         if (dwellTimers.ContainsKey(timerKey)) {
             Debug.LogError("Timer already exists in collection " + timerKey);
