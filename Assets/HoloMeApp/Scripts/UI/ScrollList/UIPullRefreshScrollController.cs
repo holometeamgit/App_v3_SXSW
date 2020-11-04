@@ -56,8 +56,9 @@ public class UIPullRefreshScrollController : MonoBehaviour
         scrollRect.onValueChanged.AddListener(OnBottomPull);
         scrollRectTransform = scrollRect.gameObject.GetComponent<RectTransform>();
 
-        if (withStartRefresh)
-            scrollRect.content.anchoredPosition += Vector2.down * distanceRequiredRefresh;
+        if (withStartRefresh) {
+            Refresh();
+        }
     }
 
     private void LateUpdate() {
@@ -98,11 +99,7 @@ public class UIPullRefreshScrollController : MonoBehaviour
         }
 
         if (isPulled && !scrollRect.Dragging) {
-            isRefreshing = true;
-            scrollRect.enabled = false;
-            Debug.Log("OnRefresh");
-            isBottomRefreshing = true;
-            OnRefresh?.Invoke();
+            Refresh();
         }
 
         progress = 0f;
@@ -137,6 +134,14 @@ public class UIPullRefreshScrollController : MonoBehaviour
         return isPulled && scrollRect.Dragging || isBottomRefreshing;
     }
 
+    private void Refresh() {
+        isRefreshing = true;
+        scrollRect.enabled = false;
+        isBottomRefreshing = true;
+
+        OnRefresh?.Invoke();
+    }
+
     private void OnDisable() {
         StopAllCoroutines();
     }
@@ -160,12 +165,7 @@ public class UIPullRefreshScrollController : MonoBehaviour
             if(timeСountertime < 0) {
                 timeСountertime = autoRefreshCooldown;
 
-                isRefreshing = true;
-                scrollRect.enabled = false;
-//                Debug.Log("OnRefresh");
-                isBottomRefreshing = true;
-
-                OnRefresh?.Invoke();
+                Refresh();
             }
         }
     }

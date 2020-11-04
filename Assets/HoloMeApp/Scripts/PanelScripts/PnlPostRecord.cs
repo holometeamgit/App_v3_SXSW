@@ -46,8 +46,7 @@ public class PnlPostRecord : MonoBehaviour
     private Texture2D screenShot;
     private bool screenshotWasTaken;
     public string Code { private get; set; }
-    const string ShareMessage = "Experience this hologram yourself using the HoloMe app by entering code ";
-
+    
     VideoPlayer videoPlayer;
     VideoPlayer VideoPlayer {
         get {
