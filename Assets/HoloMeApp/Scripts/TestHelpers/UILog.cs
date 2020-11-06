@@ -46,8 +46,8 @@ public class UILog : MonoBehaviour {
         foreach (string mylog in myLogQueue) {
             myLog += mylog;
         }
-
-        text.text = myLog;
+        if(text != null)
+            text.text = myLog;
     }
 
 }

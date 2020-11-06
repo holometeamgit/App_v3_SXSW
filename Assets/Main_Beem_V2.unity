@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.5748171, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2582,6 +2582,53 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1011696628
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1011696629}
+  - component: {fileID: 1011696630}
+  m_Layer: 0
+  m_Name: PurchasesSaveManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1011696629
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1011696628}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1428521454}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1011696630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1011696628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9566792b028f44d13b2f2cc2c3634af9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  userWebManager: {fileID: 525544598}
+  webRequestHandler: {fileID: 35185073}
+  purchaseAPISO: {fileID: 11400000, guid: fe37b0db6ef3c48d2ad410f4fc4856a0, type: 2}
+  accountManager: {fileID: 921435837}
 --- !u!1 &1018772839 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2239058847417712221, guid: 36de4c0918e13430b86c5f1b45bf8df9,
@@ -3942,7 +3989,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1011696629}
   m_Father: {fileID: 1511041754}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -12420,6 +12468,16 @@ PrefabInstance:
       propertyPath: accountManager
       value: 
       objectReference: {fileID: 921435837}
+    - target: {fileID: 2456222320065645424, guid: 64bce957571b34894bf9fda2856deccf,
+        type: 3}
+      propertyPath: purchasesSaver
+      value: 
+      objectReference: {fileID: 1011696630}
+    - target: {fileID: 2456222320065645424, guid: 64bce957571b34894bf9fda2856deccf,
+        type: 3}
+      propertyPath: purchasesSaveManager
+      value: 
+      objectReference: {fileID: 1011696630}
     - target: {fileID: 2456222320065645425, guid: 64bce957571b34894bf9fda2856deccf,
         type: 3}
       propertyPath: OnDelayEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target

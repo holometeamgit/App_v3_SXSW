@@ -12,7 +12,7 @@ public class PnlEventPurchaser : MonoBehaviour {
 
     [SerializeField] IAPController iapController;
     [SerializeField] List<Sprite> LockSprites;
-    [SerializeField] PurchasesSaver purchasesSaver;
+    [SerializeField] PurchasesSaveManager purchasesSaveManager;
 
     [Space]
     [SerializeField] GameObject btnBuyTicket;
@@ -48,12 +48,9 @@ public class PnlEventPurchaser : MonoBehaviour {
         }
     }
 
-    //TODO v3 move region  to not monobehaviour sctript
-
     #region Purchase
     public void Purchase() {
-        //TODO v3 Check if it is already purchased first to receive a request from the server.
-        //Then try to buy. After the purchase, he will make sure to make sure that they have written to the server.
+
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed);
         purchaseWaitingScreen.gameObject.SetActive(true);
         iapController.BuyTicket(data.product_type.product_id);
@@ -110,8 +107,8 @@ public class PnlEventPurchaser : MonoBehaviour {
         streamBillingJsonData.bill.hash = product.receipt;
 
         Debug.Log("OnPurchaseCallBack " + product.receipt);
-        purchasesSaver.PostData(streamBillingJsonData, OnPurchaseServerCallBack);
-
+        purchasesSaveManager.SendToServer(data.id, streamBillingJsonData);
+        OnPurchased?.Invoke();
     }
 
     private void OnPurchaseFailCallBack() {
@@ -120,106 +117,5 @@ public class PnlEventPurchaser : MonoBehaviour {
         Show(data);
     }
 
-    private void OnPurchaseServerCallBack() {
-        OnPurchased?.Invoke();
-    }
-
     #endregion
-}
-
-public class PurchasesSaver : MonoBehaviour {
-
-    //проблема если пользователь зашёл под другим когда отправляли повторно для другого пользователя и в этот момент пришёл ответ от сервера
-    //значит нужно хранить имя кто отправляет, а потом писать если не отправилось то уникальное имя...
-
-    [SerializeField] UserWebManager userWebManager;
-    [SerializeField] WebRequestHandler webRequestHandler;
-    [SerializeField] PurchaseAPIScriptableObject purchaseAPISO;
-    [SerializeField] AccountManager accountManager;
-
-    public void PostData(long dataId, StreamBillingJsonData streamBillingJsonData, Action OnPurchaseCallBackAfterTrySend) {
-    webRequestHandler.PostRequest(GetRequestRefreshTokenURL(dataId),
-       streamBillingJsonData, WebRequestHandler.BodyType.JSON,
-       (code, body) => { OnServerBillingSent(string UniqName); OnPurchaseCallBackAfterTrySend.Invoke(); },
-       (code, body) => OnServerErrorBillingSent(dataId, streamBillingJsonData), accountManager.GetAccessToken().access);
-    }
-
-    private void Awake() {
-
-    }
-
-    private void SaveData(PurchaseSaveElement purchaseSaveElement) {
-        PurchaseSaveData purchaseSaveData;
-        if (PlayerPrefs.HasKey(userWebManager.GetUnituniqueName()))
-            purchaseSaveData = JsonUtility.FromJson<PurchaseSaveData>(PlayerPrefs.GetString(userWebManager.GetUnituniqueName()));
-        else
-            purchaseSaveData = new PurchaseSaveData();
-
-
-        purchaseSaveData.Add(purchaseSaveElement);
-
-        PlayerPrefs.SetString(userWebManager.GetUnituniqueName(), JsonUtility.ToJson(purchaseSaveData));
-    }
-
-    private List<PurchaseSaveElement> GetData() {
-        if (!PlayerPrefs.HasKey(userWebManager.GetUnituniqueName()))
-            return null;
-
-        PurchaseSaveData purchaseSaveData = JsonUtility.FromJson<PurchaseSaveData>(PlayerPrefs.GetString(userWebManager.GetUnituniqueName()));
-
-        return purchaseSaveData.purchaseSaveElements;
-    }
-
-    private void OnServerBillingSent(string UniqName) {
-        Debug.Log("OnServerBillingSent");
-    }
-
-    private void OnServerErrorBillingSent(string UniqName, long dataId,StreamBillingJsonData streamBillingJsonData) {
-        Debug.Log("OnServerErrorBillingSent");
-
-        PurchaseSaveElement purchaseSaveElement = new PurchaseSaveElement(dataId, streamBillingJsonData);
-        SaveData(purchaseSaveElement);
-    }
-
-    private string GetRequestRefreshTokenURL(long id) {
-        return webRequestHandler.ServerURLMediaAPI + purchaseAPISO.SendPurchaseHash.Replace("{id}", id.ToString());
-    }
-}
-
-[Serializable]
-public class PurchaseSaveData {
-    public List<PurchaseSaveElement> purchaseSaveElements;
-
-    public PurchaseSaveData() {
-        purchaseSaveElements = new List<PurchaseSaveElement>();
-    }
-
-    public void Add(PurchaseSaveElement purchaseSaveElement) {
-        RemoveElement(purchaseSaveElement.id);
-        purchaseSaveElements.Add(purchaseSaveElement);
-    }
-
-    public void RemoveElement(long id) {
-        foreach (var element in purchaseSaveElements) {
-            if (element.id == id) {
-                purchaseSaveElements.Remove(element);
-                break;
-            }
-        }
-    }
-}
-
-[Serializable]
-public class PurchaseSaveElement {
-    public long id;
-    public StreamBillingJsonData streamBillingJsonData;
-
-    public PurchaseSaveElement () {
-        streamBillingJsonData = new StreamBillingJsonData();
-    }
-
-    public PurchaseSaveElement(long id , StreamBillingJsonData streamBillingJsonData) {
-        this.id = id;
-        this.streamBillingJsonData = streamBillingJsonData;
-    }
 }
