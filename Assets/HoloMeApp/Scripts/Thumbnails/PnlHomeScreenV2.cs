@@ -29,6 +29,9 @@ public class PnlHomeScreenV2 : MonoBehaviour
 
     public UnityEvent OnPlay;
 
+    public UnityEvent OnRefresh;//TODO temp before v3
+    public UnityEvent OnAllDataLoaded;//TODO temp before v3
+
     private void Awake() {
         pullRefreshController.OnRefresh += RefreshItems;
         pullRefreshController.OnReachedBottom += GetNextPage;
@@ -66,6 +69,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
         dataLoaded = false;
         //pullRefreshController.StopBottomRefreshing = false;
         thumbnailsDataFetcher.RefreshData();
+        OnRefresh.Invoke();
     }
 
     private void GetNextPage() {
@@ -83,6 +87,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
         pullRefreshController.StopBottomRefreshing = true;
         pullRefreshController.EndRefreshing();
         uiThumbnailsController.RemoveUnnecessary();
+        OnAllDataLoaded.Invoke();//temp
     }
 
     private void OnDisable() {
