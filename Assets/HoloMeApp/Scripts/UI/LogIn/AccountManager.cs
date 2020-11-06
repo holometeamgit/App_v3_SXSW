@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class AccountManager : MonoBehaviour
 {
+    public Action OnSaveAccessToken;
+
     public enum AccountType {
         Broadcater,
         Subscriber
@@ -73,7 +76,7 @@ public class AccountManager : MonoBehaviour
 //            Debug.Log("Access Token Saved");
         } catch (System.Exception e) { }
 
-        
+        OnSaveAccessToken?.Invoke();
     }
 
     private void UpdateAccessToke(string onlyAccess, ServerAccessToken accessToken) {

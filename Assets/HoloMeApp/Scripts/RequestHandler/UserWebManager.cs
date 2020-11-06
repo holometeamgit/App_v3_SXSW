@@ -67,10 +67,14 @@ public class UserWebManager : MonoBehaviour
             bio, profile_picture_s3_url));
     }
 
+    public string GetUnituniqueName() {
+        return GetEmail();
+    }
+
     public string GetFullName() {
         if (userData == null || string.IsNullOrEmpty(userData.first_name))
             return null;
-        return userData.first_name + userData.last_name;
+        return userData.first_name + " " + userData.last_name;
     }
 
     public string GetFirstName() {
@@ -106,6 +110,12 @@ public class UserWebManager : MonoBehaviour
     public void LoadUserInfo(Action loadUserInfoCallBack) {
         webRequestHandler.GetRequest(GetRequestGetUserURL(), (code, body) => loadUserInfoCallBack(),
             ErrorMsgCallBack, accountManager.GetAccessToken().access);
+    }
+
+    private string GetEmail() {
+        if (userData == null || string.IsNullOrEmpty(userData.email))
+            return null;
+        return userData.email;
     }
 
     private void UpdateUserDataAfterLoadUserInfo(string userName, string email,

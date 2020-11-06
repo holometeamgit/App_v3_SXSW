@@ -7,15 +7,12 @@ using TMPro;
 using System;
 using NatShare;
 
-public class PnlEventPurchaser : MonoBehaviour
-{
+public class PnlEventPurchaser : MonoBehaviour {
     public Action OnPurchased;
 
     [SerializeField] IAPController iapController;
-    [SerializeField] WebRequestHandler webRequestHandler;
-    [SerializeField] PurchaseAPIScriptableObject purchaseAPISO;
     [SerializeField] List<Sprite> LockSprites;
-    [SerializeField] AccountManager accountManager;
+    [SerializeField] PurchasesSaveManager purchasesSaveManager;
 
     [Space]
     [SerializeField] GameObject btnBuyTicket;
@@ -41,7 +38,7 @@ public class PnlEventPurchaser : MonoBehaviour
         purchaseWaitingScreen.gameObject.SetActive(false);
 
         txtName.text = data.user;
-        txtDateOnSale.text = data.StartDate.ToString("dd MMM") + (data.is_bought ? "" : " • On sale now") ;
+        txtDateOnSale.text = data.StartDate.ToString("dd MMM") + (data.is_bought ? "" : " • On sale now");
         if (!data.is_bought) {
             imageIcon.sprite = LockSprites[0];
             txtDatePeriod.text = data.StartDate.ToString("H:mm") + (data.HasEndTime ? "" : " - " + data.EndDate.ToString("H:mm"));
@@ -51,12 +48,9 @@ public class PnlEventPurchaser : MonoBehaviour
         }
     }
 
-    //TODO v3 move region  to not monobehaviour sctript
-
     #region Purchase
     public void Purchase() {
-        //TODO v3 Check if it is already purchased first to receive a request from the server.
-        //Then try to buy. After the purchase, he will make sure to make sure that they have written to the server.
+
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed);
         purchaseWaitingScreen.gameObject.SetActive(true);
         iapController.BuyTicket(data.product_type.product_id);
@@ -92,7 +86,7 @@ public class PnlEventPurchaser : MonoBehaviour
     }
 
     public void Cancel() {
-        if(!data.is_bought)
+        if (!data.is_bought)
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseCancelled);
     }
 
@@ -113,32 +107,14 @@ public class PnlEventPurchaser : MonoBehaviour
         streamBillingJsonData.bill.hash = product.receipt;
 
         Debug.Log("OnPurchaseCallBack " + product.receipt);
-        Debug.Log(GetRequestRefreshTokenURL()) ;
-
-        webRequestHandler.PostRequest(GetRequestRefreshTokenURL(),
-           streamBillingJsonData, WebRequestHandler.BodyType.JSON,
-           (code, body) => OnServerBillingSent(),
-           (code, body) => OnServerErrorBillingSent(code, body), accountManager.GetAccessToken().access);
+        purchasesSaveManager.SendToServer(data.id, streamBillingJsonData);
+        OnPurchased?.Invoke();
     }
 
     private void OnPurchaseFailCallBack() {
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseFailed);
         Debug.Log("OnPurchaseFailCallBack");
         Show(data);
-    }
-
-    private void OnServerBillingSent() {
-        Debug.Log("OnServerBillingSent");
-        OnPurchased?.Invoke();
-    }
-
-    private void OnServerErrorBillingSent(long code, string body) {
-        Debug.Log("OnServerErrorBillingSent " + code + " " + body);
-        OnPurchased?.Invoke();
-    }
-
-    private string GetRequestRefreshTokenURL() {
-        return webRequestHandler.ServerURLMediaAPI + purchaseAPISO.SendPurchaseHash.Replace("{id}", data.id.ToString());
     }
 
     #endregion
