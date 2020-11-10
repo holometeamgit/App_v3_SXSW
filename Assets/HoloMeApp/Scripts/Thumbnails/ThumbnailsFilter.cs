@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿/*
+ * contains parameters for request from the server
+ */
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;

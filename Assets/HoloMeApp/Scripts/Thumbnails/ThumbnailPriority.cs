@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿/*
+ * contains the priority of the data that is requested from the server
+ */
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;

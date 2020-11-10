@@ -21,9 +21,10 @@ public class StreamJsonData {
 
         public enum Stage {
             All,
+            Pin,
             Live,
-            Announced,
-            Finished
+            PastLivestream,
+            Prerecorded
         }
 
         public long id;
@@ -99,21 +100,22 @@ public class StreamJsonData {
 
         private DateTime startDate;
         private DateTime endDate;
-
-        private const string announcedStr = "announced";
-        private const string finishedStr = "finished";
-        private const string scheduledStr = "scheduled";
-        private const string lifeStr = "live";
+        private const string pinAll = "All";
+        private const string pinStr = "Pin";
+        private const string lifeStr = "Live";
+        private const string pastLivestreamStr = "Past Livestream";
+        private const string prerecordedStr = "Prerecorded";
 
         public Stage GetStatus() {
             switch (status) {
-                case announcedStr:
-                    return Stage.Announced;
-                case finishedStr:
-                case scheduledStr:
-                    return Stage.Finished;
+                case pinStr:
+                    return Stage.Pin;
                 case lifeStr:
                     return Stage.Live;
+                case pastLivestreamStr:
+                    return Stage.PastLivestream;
+                case prerecordedStr:
+                    return Stage.Prerecorded;
                 default:
                     return Stage.All;
             }
@@ -121,15 +123,16 @@ public class StreamJsonData {
 
         public static string GetStatusValue(Stage stage) {
             switch (stage) {
-                case StreamJsonData.Data.Stage.Announced:
-                    return announcedStr;
-                case StreamJsonData.Data.Stage.Finished:
-                    return finishedStr;
+                case StreamJsonData.Data.Stage.Pin:
+                    return pinStr;
                 case StreamJsonData.Data.Stage.Live:
                     return lifeStr;
-                case StreamJsonData.Data.Stage.All:
+                case StreamJsonData.Data.Stage.PastLivestream:
+                    return pastLivestreamStr;
+                case StreamJsonData.Data.Stage.Prerecorded:
+                    return prerecordedStr;
                 default:
-                    return "All";
+                    return pinAll;
             }
         }
     }

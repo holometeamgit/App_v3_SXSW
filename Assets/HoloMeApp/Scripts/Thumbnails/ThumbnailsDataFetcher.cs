@@ -10,7 +10,7 @@ public class ThumbnailsDataFetcher {
     public Action OnErrorGetThumbnails;
 
     private ThumbnailWebDownloadManager thumbnailWebDownloadManager;
-    private ThumbnailsFilter thumbnailsFilter;
+    private ThumbnailsFilter thumbnailsFilter; //parame
     private ThumbnailPriority thumbnailPriority;
     private ThumbnailsDataContainer thumbnailsDataContainer;
     private int currentPriority;
@@ -28,7 +28,7 @@ public class ThumbnailsDataFetcher {
         this.thumbnailsFilter = thumbnailsFilter;
         this.pageSize = pageSize;
 
-        thumbnailsDataContainer = new ThumbnailsDataContainer();
+        thumbnailsDataContainer = new ThumbnailsDataContainer(this.thumbnailPriority);
 
         thumbnailsDataContainer.OnDataUpdated += DataUpdatedCallBack;
 
