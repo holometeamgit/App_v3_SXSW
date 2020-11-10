@@ -100,11 +100,11 @@ public class StreamJsonData {
 
         private DateTime startDate;
         private DateTime endDate;
-        private const string pinAll = "All";
-        private const string pinStr = "Pin";
-        private const string lifeStr = "Live";
-        private const string pastLivestreamStr = "Past Livestream";
-        private const string prerecordedStr = "Prerecorded";
+        private const string pinAll = "all";
+        private const string pinStr = "pin";
+        private const string lifeStr = "live";
+        private const string pastLivestreamStr = "past livestream";
+        private const string prerecordedStr = "prerecorded";
 
         public Stage GetStatus() {
             switch (status) {
