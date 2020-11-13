@@ -41,16 +41,16 @@ public class PnlViewingExperience : MonoBehaviour
     [SerializeField]
     RectTransform scanMessageRT;
 
-    [TextArea]
-    [SerializeField]
+//    [TextArea]
+//    [SerializeField]
     string scaneEnviromentStr = "Scan the floor in front of you by moving your phone slowly from side to side";
 
-    [TextArea]
-    [SerializeField]
+//    [TextArea]
+//    [SerializeField]
     string pinchToZoomStr = "Pinch to resize the hologram";
 
-    [TextArea]
-    [SerializeField]
+//    [TextArea]
+//    [SerializeField]
     string tapToPlaceStr = "To see your chosen performer, tap the white circle when it appears on the floor";
 
     Coroutine scanAnimationRoutine;
