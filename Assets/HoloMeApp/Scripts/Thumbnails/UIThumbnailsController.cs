@@ -127,7 +127,7 @@ public class UIThumbnailsController : MonoBehaviour {
 
     private void PlayStream(StreamJsonData.Data data) {
         if(data.HasStreamUrl) {
-            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null);
+            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null,false);
             OnPlay?.Invoke(data);
         } else if(data.HasAgoraChannel) {
             agoraController.ChannelName = data.agora_channel;
@@ -137,7 +137,7 @@ public class UIThumbnailsController : MonoBehaviour {
     }
 
     private void PlayTeaser(StreamJsonData.Data data) {
-        pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, null);
+        pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, null, data.HasTeaser);
         OnPlay?.Invoke(data);
     }
 }
