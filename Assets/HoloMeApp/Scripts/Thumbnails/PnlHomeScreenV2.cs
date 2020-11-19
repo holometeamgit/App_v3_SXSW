@@ -6,6 +6,7 @@ using UnityEngine.Events;
 
 public class PnlHomeScreenV2 : MonoBehaviour
 {
+    [SerializeField] ScrollRect scrollRect;
     //Pull refresh
     [SerializeField] UIPullRefreshScrollController pullRefreshController;
     //controller uithumbnails 
@@ -31,6 +32,9 @@ public class PnlHomeScreenV2 : MonoBehaviour
     public UnityEvent OnRefresh;
     public UnityEvent OnAllDataLoaded;
 
+    public void SetDefaultState() {
+        scrollRect.verticalNormalizedPosition = 1;
+    }
 
     private void Awake() {
         pullRefreshController.OnRefresh += RefreshItems;
