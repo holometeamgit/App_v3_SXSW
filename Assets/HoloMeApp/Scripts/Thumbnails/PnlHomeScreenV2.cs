@@ -17,7 +17,6 @@ public class PnlHomeScreenV2 : MonoBehaviour
     //puchase pnl
     [SerializeField] PnlEventPurchaser pnlEventPurchaser;
 
-
     [Space]
     [SerializeField] int pageSize = 10;
 
@@ -29,8 +28,9 @@ public class PnlHomeScreenV2 : MonoBehaviour
 
     public UnityEvent OnPlay;
 
-    public UnityEvent OnRefresh;//TODO temp before v3
-    public UnityEvent OnAllDataLoaded;//TODO temp before v3
+    public UnityEvent OnRefresh;
+    public UnityEvent OnAllDataLoaded;
+
 
     private void Awake() {
         pullRefreshController.OnRefresh += RefreshItems;
@@ -108,5 +108,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
     private void EndingUIUpdate() {
 //        Debug.Log("IEnumerator EndingUIUpdate");
         pullRefreshController.EndRefreshing();
+        pullRefreshController.RefreshLayout();
+        pullRefreshController.RefreshLayout();
     }
 }
