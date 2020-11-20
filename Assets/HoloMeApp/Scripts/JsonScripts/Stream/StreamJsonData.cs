@@ -103,7 +103,7 @@ public class StreamJsonData {
         private const string pinAll = "all";
         private const string pinStr = "pin";
         private const string lifeStr = "live";
-        private const string pastLivestreamStr = "past livestream";
+        private const string pastLivestreamStr = "past_live";
         private const string prerecordedStr = "prerecorded";
 
         public Stage GetStatus() {

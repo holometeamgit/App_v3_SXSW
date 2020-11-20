@@ -11,14 +11,15 @@ public class UIThumbnailsController : MonoBehaviour {
     [SerializeField] MediaFileDataHandler mediaFileDataHandler;
     [SerializeField] PnlViewingExperience pnlViewingExperience;
     [SerializeField] AgoraController agoraController;
+    [SerializeField] ShareManager shareManager;
     [SerializeField] PnlStreamOverlay pnlStreamOverlay;
     [SerializeField] GameObject btnThumbnailPrefab;
     [SerializeField] Transform content;
 
     Dictionary<long, ThumbnailElement> thumbnailElementsDictionary;
 
-    Dictionary<long, BtnThumbnailItemV2> btnThumbnailItemsDictionary;
-    List<BtnThumbnailItemV2> btnThumbnailItems;
+    Dictionary<long, UIThumbnail> btnThumbnailItemsDictionary;
+    List<UIThumbnail> btnThumbnailItems;
 
     List<StreamJsonData.Data> dataList;
 
@@ -57,8 +58,8 @@ public class UIThumbnailsController : MonoBehaviour {
 
     private void Awake() {
         thumbnailElementsDictionary = new Dictionary<long, ThumbnailElement>();
-        btnThumbnailItemsDictionary = new Dictionary<long, BtnThumbnailItemV2>();
-        btnThumbnailItems = new List<BtnThumbnailItemV2>();
+        btnThumbnailItemsDictionary = new Dictionary<long, UIThumbnail>();
+        btnThumbnailItems = new List<UIThumbnail>();
         streamDataEqualityComparer = new StreamDataEqualityComparer();
     }
 
@@ -70,7 +71,7 @@ public class UIThumbnailsController : MonoBehaviour {
 
         for (int i = 0; i < -quantityDifference; i++) {
             GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
-            BtnThumbnailItemV2 btnThumbnailItem = btnThumbnailItemsGO.GetComponent<BtnThumbnailItemV2>();
+            UIThumbnail btnThumbnailItem = btnThumbnailItemsGO.GetComponent<UIThumbnail>();
             btnThumbnailItems.Add(btnThumbnailItem);
         }
         for (int i = 0; i < btnThumbnailItems.Count; i++) {
@@ -103,18 +104,19 @@ public class UIThumbnailsController : MonoBehaviour {
         for (int i = 0; i < dataList.Count; i++) {
             btnThumbnailItemsDictionary[dataList[i].id] = btnThumbnailItems[i];
             btnThumbnailItems[i].AddData(thumbnailElementsDictionary[dataList[i].id]);
-            btnThumbnailItems[i].SetPressClickAction(ClickCallBack);
+            btnThumbnailItems[i].SetPlayAction(Play);
+            btnThumbnailItems[i].SetTeaserPlayAction(PlayTeaser);
+            btnThumbnailItems[i].SetBuyAction(Buy);
+            btnThumbnailItems[i].SetShareAction((_) => shareManager.ShareStream());
         }
         OnUpdated?.Invoke();
     }
 
     #endregion
 
-    private void ClickCallBack(StreamJsonData.Data data) {
-        Debug.Log(name + " ClickCallBack");
-        if(!data.is_bought || data.is_bought && !data.IsStarted && data.HasProduct)
-            OnNeedPurchase?.Invoke(data);
-        Play(data);
+    private void Buy(StreamJsonData.Data data) {
+        //if(!data.is_bought || data.is_bought && !data.IsStarted && data.HasProduct)
+        OnNeedPurchase?.Invoke(data);
     }
 
     private void Play(StreamJsonData.Data data) {

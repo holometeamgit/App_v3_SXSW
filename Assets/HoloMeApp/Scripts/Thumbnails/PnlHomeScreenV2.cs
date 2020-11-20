@@ -6,6 +6,7 @@ using UnityEngine.Events;
 
 public class PnlHomeScreenV2 : MonoBehaviour
 {
+    [SerializeField] ScrollRect scrollRect;
     //Pull refresh
     [SerializeField] UIPullRefreshScrollController pullRefreshController;
     //controller uithumbnails 
@@ -16,7 +17,6 @@ public class PnlHomeScreenV2 : MonoBehaviour
     [SerializeField] ThumbnailWebDownloadManager thumbnailWebDownloadManager;
     //puchase pnl
     [SerializeField] PnlEventPurchaser pnlEventPurchaser;
-
 
     [Space]
     [SerializeField] int pageSize = 10;
@@ -29,8 +29,12 @@ public class PnlHomeScreenV2 : MonoBehaviour
 
     public UnityEvent OnPlay;
 
-    public UnityEvent OnRefresh;//TODO temp before v3
-    public UnityEvent OnAllDataLoaded;//TODO temp before v3
+    public UnityEvent OnRefresh;
+    public UnityEvent OnAllDataLoaded;
+
+    public void SetDefaultState() {
+        scrollRect.verticalNormalizedPosition = 1;
+    }
 
     private void Awake() {
         pullRefreshController.OnRefresh += RefreshItems;
@@ -108,5 +112,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
     private void EndingUIUpdate() {
 //        Debug.Log("IEnumerator EndingUIUpdate");
         pullRefreshController.EndRefreshing();
+        pullRefreshController.RefreshLayout();
+        pullRefreshController.RefreshLayout();
     }
 }
