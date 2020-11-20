@@ -902,6 +902,7 @@ GameObject:
   - component: {fileID: 250168742}
   - component: {fileID: 250168744}
   - component: {fileID: 250168743}
+  - component: {fileID: 250168745}
   m_Layer: 0
   m_Name: AnalyticsTracker
   m_TagString: Untagged
@@ -947,6 +948,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 915b695b94efb544193d82b1b554973a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cleverTapUnity: {fileID: 250168745}
+--- !u!114 &250168745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 250168741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8dfd7e12ca49465e94f60ff2dd51e17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CLEVERTAP_ACCOUNT_ID: 65R-W6K-KW6Z
+  CLEVERTAP_ACCOUNT_TOKEN: 360-256
+  CLEVERTAP_ACCOUNT_REGION: 
+  CLEVERTAP_DEBUG_LEVEL: 0
+  CLEVERTAP_ENABLE_PERSONALIZATION: 1
 --- !u!1 &251015953 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9131335257026221797, guid: 604c9bb78e3af46b4aef4ea76027f8b0,
@@ -1191,7 +1210,8 @@ PrefabInstance:
       propertyPath: lookTarget
       value: 
       objectReference: {fileID: 1000972066}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8775185929848215638, guid: 318df17122b16714c81419166e023409, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 318df17122b16714c81419166e023409, type: 3}
 --- !u!114 &294683146 stripped
 MonoBehaviour:

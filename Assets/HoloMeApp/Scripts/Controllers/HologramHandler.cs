@@ -114,6 +114,7 @@ public class HologramHandler : MonoBehaviour
         {
             holoMe.PlayVideo(videoURL);
             //holoMe.PlayVideo(HelperFunctions.PersistentDir() + videoCode + ".mp4");
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPerformanceLoaded, AnalyticParameters.ParamVideoName, GetVideoFileName);
         }
     }
 
@@ -128,6 +129,7 @@ public class HologramHandler : MonoBehaviour
         print("Clip Length " + videoPlayer.GetClipLength());
         print("Percentage Watched = " + percentageViewed + "%");
         AnalyticsController.Instance.StopTimer(hologramViewDwellTimer, percentageViewed);
+        AnalyticsController.Instance.SendCustomEvent(percentageViewed >=99 ? AnalyticKeys.KeyPerformanceEnded: AnalyticKeys.KeyPerformanceNotEnded, AnalyticParameters.ParamVideoName, GetVideoFileName);
         holoMe.StopVideo();
     }
 

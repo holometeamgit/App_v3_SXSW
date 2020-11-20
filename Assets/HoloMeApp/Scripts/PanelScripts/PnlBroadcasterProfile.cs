@@ -35,7 +35,7 @@ public class PnlBroadcasterProfile : MonoBehaviour
 
     public void ShowMenu() {
         var accauntType = accountManager.GetAccountType();
-        menuProfileBurger.DoMenuTransition(accauntType == AccountManager.AccountType.Broadcater);
+        menuProfileBurger.DoMenuTransition(accauntType == AccountManager.AccountType.Broadcaster);
         menuUserProfileBurger.DoMenuTransition(accauntType == AccountManager.AccountType.Subscriber);
         menuBtn.gameObject.SetActive(false);
     }

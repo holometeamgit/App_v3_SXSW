@@ -5,7 +5,7 @@ using UnityEngine;
 public class AccountManager : MonoBehaviour
 {
     public enum AccountType {
-        Broadcater,
+        Broadcaster,
         Subscriber
     }
 

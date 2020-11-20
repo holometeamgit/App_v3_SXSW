@@ -69,6 +69,8 @@ public class EmailAccountManager : MonoBehaviour
         webRequestHandler.PostRequest(url, emailSignUpJsonData, WebRequestHandler.BodyType.JSON,
             SignUpCallBack,
             ErrorSignUpCallBack);
+
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyUserSignup, AnalyticParameters.ParamUserType, AnalyticParameters.ParamViewer); //TODO: update this to take account tye into account if users can register as broadcasters in the future
     }
 
     private void SignUpCallBack(long code, string body) {
@@ -116,6 +118,7 @@ public class EmailAccountManager : MonoBehaviour
         Debug.Log("Log In " + code + " : " + body);
         accountManager.SaveLastAutoType(LogInType.Email);
         accountManager.SaveAccessToken(body);
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin, AnalyticParameters.ParamUserType , accountManager.GetAccountType() == AccountManager.AccountType.Subscriber ? AnalyticParameters.ParamViewer:AnalyticParameters.ParamBroadcaster ); // Using keys in case enum changes names in future
         OnLogIn?.Invoke();
     }
 
