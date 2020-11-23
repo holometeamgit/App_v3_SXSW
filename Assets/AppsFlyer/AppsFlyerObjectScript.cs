@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using AppsFlyerSDK;
+using System;
 
 // This class is intended to be used the the AppsFlyerObject.prefab
 
@@ -64,7 +65,12 @@ public class AppsFlyerObjectScript : MonoBehaviour , IAppsFlyerConversionData
             HelperFunctions.DevLog("AppsFlyer SendCustomEvent data = " + (string)data);
             Dictionary<string, string> dataToSend = new Dictionary<string, string>();
             dataToSend.Add(dataName, (string)data);
-            AppsFlyer.sendEvent(eventName, dataToSend);
+
+            try { 
+                AppsFlyer.sendEvent(eventName, dataToSend);
+            }catch (Exception e){
+                Debug.LogError("AppsFlyer Event record failed: " + e.ToString());
+            }
         }        
     }
 }

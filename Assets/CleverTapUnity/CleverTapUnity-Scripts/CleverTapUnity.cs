@@ -200,7 +200,11 @@ public class CleverTapUnity : MonoBehaviour
     #region Stub Functions
     public void SendCustomEvent(string eventName, Dictionary<string, object> data)
     {
-        CleverTapBinding.RecordEvent(eventName, data);
+        try{
+            CleverTapBinding.RecordEvent(eventName, data);
+        }catch(Exception e){
+            Debug.LogError("CleverTap Event record failed: "+ e.ToString());
+        }
     }
 
     public void SendCustomEvent(string eventName)

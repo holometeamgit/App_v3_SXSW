@@ -14,6 +14,12 @@
 
     public const string KeyUserSignup = "userSignup";
     public const string KeyUserLogin = "userLogin";
+
+    public const string KeyPurchasePressed = "purchasePressed";
+    public const string KeyPurchaseSuccessful = "purchaseSuccessful";
+    public const string KeyPurchaseFailed = "purchaseFailed";
+    public const string KeyPurchaseCancelled = "purchaseCancelled";
+    public const string KeyShareEventPressed = "shareEventPressed";
 }
 
 public class AnalyticParameters{
