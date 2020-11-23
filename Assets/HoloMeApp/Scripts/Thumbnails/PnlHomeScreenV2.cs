@@ -6,23 +6,35 @@ using UnityEngine.Events;
 
 public class PnlHomeScreenV2 : MonoBehaviour
 {
-
+    [SerializeField] ScrollRect scrollRect;
+    //Pull refresh
     [SerializeField] UIPullRefreshScrollController pullRefreshController;
+    //controller uithumbnails 
     [SerializeField] UIThumbnailsController uiThumbnailsController;
+    //filter for downloadable thumbnails 
     [SerializeField] ThumbnailPriorityScriptableObject thumbnailPriority;
+    //ThumbnailWebDownloadManager need for data fetcher  
     [SerializeField] ThumbnailWebDownloadManager thumbnailWebDownloadManager;
+    //puchase pnl
     [SerializeField] PnlEventPurchaser pnlEventPurchaser;
-
 
     [Space]
     [SerializeField] int pageSize = 10;
 
+    //ThumbnailsDataFetcher take json pages with thumbnails 
     private ThumbnailsDataFetcher thumbnailsDataFetcher;
 
     bool dataLoaded;
     bool initialized;
 
     public UnityEvent OnPlay;
+
+    public UnityEvent OnRefresh;
+    public UnityEvent OnAllDataLoaded;
+
+    public void SetDefaultState() {
+        scrollRect.verticalNormalizedPosition = 1;
+    }
 
     private void Awake() {
         pullRefreshController.OnRefresh += RefreshItems;
@@ -36,6 +48,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
         thumbnailsDataFetcher.OnDataUpdated += DataUpdateCallBack;
 
         uiThumbnailsController.OnUpdated += UIUpdated;
+        //add ref to data list from fetcher for ui Thumbnails Controller
         uiThumbnailsController.SetStreamJsonData(thumbnailsDataFetcher.GetDataList());
         uiThumbnailsController.OnPlay += OnPlayCallBack;
         uiThumbnailsController.OnNeedPurchase += OnNeedPurchaseCallBack;
@@ -55,10 +68,12 @@ public class PnlHomeScreenV2 : MonoBehaviour
     }
 
     private void RefreshItems() {
-        Debug.Log("RefreshItems");
+        Resources.UnloadUnusedAssets();
+//        Debug.Log("RefreshItems");
         dataLoaded = false;
         //pullRefreshController.StopBottomRefreshing = false;
         thumbnailsDataFetcher.RefreshData();
+        OnRefresh.Invoke();
     }
 
     private void GetNextPage() {
@@ -76,6 +91,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
         pullRefreshController.StopBottomRefreshing = true;
         pullRefreshController.EndRefreshing();
         uiThumbnailsController.RemoveUnnecessary();
+        OnAllDataLoaded.Invoke();//temp
     }
 
     private void OnDisable() {
@@ -94,7 +110,9 @@ public class PnlHomeScreenV2 : MonoBehaviour
     }
 
     private void EndingUIUpdate() {
-        Debug.Log("IEnumerator EndingUIUpdate");
+//        Debug.Log("IEnumerator EndingUIUpdate");
         pullRefreshController.EndRefreshing();
+        pullRefreshController.RefreshLayout();
+        pullRefreshController.RefreshLayout();
     }
 }

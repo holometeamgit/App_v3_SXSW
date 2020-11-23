@@ -97,7 +97,7 @@ public class PnlVideoCode : MonoBehaviour
                 serverDataHandler.DownloadOrPlayLocalVideo(videoJsonData.videoCode);
                 break;
             case DataDownloadState.DownloadingVideo:
-                ActivateViewingExperience();
+                //ActivateViewingExperience();
                 break;
         }
     }
@@ -122,13 +122,13 @@ public class PnlVideoCode : MonoBehaviour
         pnlGenericError.ActivateSingleButton(message: "Missing Related Files", onBackPress: () => gameObject.SetActive(true));
     }
 
-    private void ActivateViewingExperience()
-    {
-        animatedTransition.DoMenuTransition(false);
-        var currentCode = validCode;
-        pnlViewingExperience.ActivateForPreRecorded(currentCode, videoJsonData);
-        pnlMainPage.GetComponent<AnimatedTransition>().DoMenuTransition(false);
-    }
+    //private void ActivateViewingExperience()
+    //{
+    //    animatedTransition.DoMenuTransition(false);
+    //    var currentCode = validCode;
+    //    pnlViewingExperience.ActivateForPreRecorded(currentCode, videoJsonData);
+    //    pnlMainPage.GetComponent<AnimatedTransition>().DoMenuTransition(false);
+    //}
 
     private void DisplayDownloadFailedMessage()
     {

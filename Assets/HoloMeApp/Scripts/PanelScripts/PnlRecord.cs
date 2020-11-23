@@ -61,6 +61,15 @@ public class PnlRecord : MonoBehaviour
     CanvasGroup canvasGroup;
 
     [SerializeField]
+    RectTransform rectTeaser;
+
+    [SerializeField]
+    RectTransform rectNormal;
+
+    [SerializeField]
+    Button btnBuyTickets;
+
+    [SerializeField]
     UnityEvent OnRecordStarted;
     [SerializeField]
     UnityEvent OnRecordStopped;
@@ -137,16 +146,25 @@ public class PnlRecord : MonoBehaviour
         canvasGroup.alpha = 0;
     }
 
-    public void EnableRecordPanel(bool openForStream = false)
+    public void EnableRecordPanel(bool isTeaser, bool openForStream = false)
     {
         //int buttonOffset = streamOffset ? 210 : 0;
         //imgFillBackground.rectTransform.offsetMax = new Vector2(imgFillBackground.rectTransform.offsetMax.x, buttonOffset);
         //imgFillBackground.rectTransform.offsetMin = new Vector2(imgFillBackground.rectTransform.offsetMin.x, buttonOffset);
 
-        btnShare.gameObject.SetActive(openForStream? false : true);
+        btnBuyTickets.gameObject.SetActive(isTeaser);
+        AssignRectTransform(imgFillBackground.rectTransform, isTeaser ? rectTeaser : rectNormal);
+        btnShare.gameObject.SetActive(openForStream || isTeaser ? false : true);
 
         gameObject.SetActive(true);
         canvasGroup.DOFade(1, .5f);
+    }
+
+    private void AssignRectTransform(RectTransform transformToAssign, RectTransform reference)
+    {
+        transformToAssign.anchoredPosition = reference.anchoredPosition;
+        transformToAssign.anchorMax = reference.anchorMax;
+        transformToAssign.anchorMin = reference.anchorMin;
     }
 
     private void OnDisable()

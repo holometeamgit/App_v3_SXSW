@@ -42,7 +42,7 @@ public class UIPullRefreshScrollController : MonoBehaviour
         bottomLoadingInfo.SetActive(false);
         topLoadingInfo.SetActive(true);
         RefreshElementsPosiotion();
-        Debug.Log("EndRefreshing");
+//        Debug.Log("EndRefreshing");
     }
 
     private void RefreshElementsPosiotion() {
@@ -56,8 +56,9 @@ public class UIPullRefreshScrollController : MonoBehaviour
         scrollRect.onValueChanged.AddListener(OnBottomPull);
         scrollRectTransform = scrollRect.gameObject.GetComponent<RectTransform>();
 
-        if (withStartRefresh)
-            scrollRect.content.anchoredPosition += Vector2.down * distanceRequiredRefresh;
+        if (withStartRefresh) {
+            Refresh();
+        }
     }
 
     private void LateUpdate() {
@@ -98,11 +99,7 @@ public class UIPullRefreshScrollController : MonoBehaviour
         }
 
         if (isPulled && !scrollRect.Dragging) {
-            isRefreshing = true;
-            scrollRect.enabled = false;
-            Debug.Log("OnRefresh");
-            isBottomRefreshing = true;
-            OnRefresh?.Invoke();
+            Refresh();
         }
 
         progress = 0f;
@@ -116,12 +113,12 @@ public class UIPullRefreshScrollController : MonoBehaviour
         if (GetBottomAnchoredPosition() > distanceReachedBottom)
             return;
 
-        Debug.Log("GetBottomAnchoredPosition " + GetBottomAnchoredPosition());
+//        Debug.Log("GetBottomAnchoredPosition " + GetBottomAnchoredPosition());
 
         isBottomRefreshing = true;
         bottomLoadingInfo.SetActive(true);
         topLoadingInfo.SetActive(false);
-        Debug.Log("OnBottomPull");
+//        Debug.Log("OnBottomPull");
         OnReachedBottom?.Invoke();
     }
 
@@ -135,6 +132,14 @@ public class UIPullRefreshScrollController : MonoBehaviour
 
     private bool IsOnPullBusy() {
         return isPulled && scrollRect.Dragging || isBottomRefreshing;
+    }
+
+    private void Refresh() {
+        isRefreshing = true;
+        scrollRect.enabled = false;
+        isBottomRefreshing = true;
+
+        OnRefresh?.Invoke();
     }
 
     private void OnDisable() {
@@ -160,7 +165,7 @@ public class UIPullRefreshScrollController : MonoBehaviour
             if(timeСountertime < 0) {
                 timeСountertime = autoRefreshCooldown;
 
-                OnRefresh?.Invoke();
+                Refresh();
             }
         }
     }

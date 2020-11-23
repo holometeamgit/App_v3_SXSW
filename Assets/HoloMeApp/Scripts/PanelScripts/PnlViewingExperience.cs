@@ -41,21 +41,25 @@ public class PnlViewingExperience : MonoBehaviour
     [SerializeField]
     RectTransform scanMessageRT;
 
-    [TextArea]
-    [SerializeField]
+//    [TextArea]
+//    [SerializeField]
     string scaneEnviromentStr = "Scan the floor in front of you by moving your phone slowly from side to side";
 
-    [TextArea]
-    [SerializeField]
-    string pinchToZoomStr = "Pinch to zoom the hologram. Drag to move it around your environment";
+//    [TextArea]
+//    [SerializeField]
+    string pinchToZoomStr = "Pinch to resize the hologram";
 
-    [TextArea]
-    [SerializeField]
+//    [TextArea]
+//    [SerializeField]
     string tapToPlaceStr = "To see your chosen performer, tap the white circle when it appears on the floor";
 
     Coroutine scanAnimationRoutine;
 
+    [SerializeField]
+    bool skipTutorial;
+
     bool activatedForStreaming;
+    bool isTeaser;
     bool viewingExperienceInFocus;
     bool tutorialDisplayed;
 
@@ -92,9 +96,17 @@ public class PnlViewingExperience : MonoBehaviour
         if (scanAnimationRoutine != null)
             StopCoroutine(scanAnimationRoutine); //Stop old routine is reactivating
 
+        if (Application.isEditor && skipTutorial)
+        {
+            tutorialState = TutorialState.WaitingForPinch;
+            OnPlaced();
+            return;
+        }
+
         scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         ShowMessage(scaneEnviromentStr);
         tutorialState = TutorialState.MessageTapToPlace;
+
         // arPlaneManager.enabled = true;
     }
 
@@ -168,7 +180,7 @@ public class PnlViewingExperience : MonoBehaviour
     IEnumerator DelayStartRecordPanel(float delay, bool streamPanel)
     {
         yield return new WaitForSeconds(delay);
-        pnlRecord.EnableRecordPanel(streamPanel);
+        pnlRecord.EnableRecordPanel(isTeaser, streamPanel);
     }
 
     public void ShowMessage(string message, float delay = 0)
@@ -186,9 +198,10 @@ public class PnlViewingExperience : MonoBehaviour
         scanMessageRT.DOScale(Vector3.zero, animationSpeed).SetDelay(messageAnimationSpeed);
     }
 
-    public void ActivateForPreRecorded(string code, VideoJsonData videoJsonData)
+    public void ActivateForPreRecorded(string code, VideoJsonData videoJsonData, bool isTeaser)
     {
         //print($"PLAY CALLED - " + code);
+        this.isTeaser = isTeaser;
         activatedForStreaming = false;
         blurController.RemoveBlur();
         canvasGroup.alpha = 0;

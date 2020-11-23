@@ -83,20 +83,21 @@ public class PnlBroadcasterProfile : MonoBehaviour
             showCaseAddedData++;
             AddThumbnail(contentUserThumbnails,
                 data.texture,
-                data.streamJsonData, data.streamJsonData.GetStatus() != StreamJsonData.Data.Stage.Finished);
+                data.streamJsonData, data.streamJsonData.GetStatus());
             yield return null;
         }
 
         yield return null;
     }
 
-    private void AddThumbnail(RectTransform contentThumbnails, Texture texture, StreamJsonData.Data data, bool isLive) {
+    private void AddThumbnail(RectTransform contentThumbnails, Texture texture, StreamJsonData.Data data, StreamJsonData.Data.Stage stage) {
         var newThumbnail = Instantiate(thumbnailPrefab, contentThumbnails);
         Texture s = texture;
 
         var thumbnailItem = newThumbnail.GetComponent<BtnThumbnailItem>();
         thumbnailItem.UpdateThumbnailData(data.stream_s3_url, s);
-        thumbnailItem.SetLiveState(isLive);
+
+        thumbnailItem.SetLiveState(stage == StreamJsonData.Data.Stage.Live);
 
         thumbnailItem.SetTimePeriod(data.StartDate);
 
@@ -104,7 +105,7 @@ public class PnlBroadcasterProfile : MonoBehaviour
 
         thumbnailItem.SetThumbnailPressAction(_ => {
             this.gameObject.SetActive(false);
-            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null);
+            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null, false);
         });
     }
 }
