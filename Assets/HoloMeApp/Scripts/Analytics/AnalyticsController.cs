@@ -5,12 +5,13 @@ using UnityEngine.Analytics;
 public class AnalyticsController : MonoBehaviour {
     public static AnalyticsController Instance { get; private set; }
     
-
     Dictionary<string, AnalyticsDwellTracker> dwellTimers = new Dictionary<string, AnalyticsDwellTracker>();
 
     [SerializeField]
     CleverTapUnity  cleverTapUnity;
-    public CleverTapUnity CleverTapUnity { get => cleverTapUnity; }
+
+    [SerializeField]
+    AppsFlyerObjectScript appsFlyerObjectScript;
 
     private void Awake() {
         if (Instance == null) {
@@ -30,7 +31,7 @@ public class AnalyticsController : MonoBehaviour {
 
         HelperFunctions.DevLog($"Custom Event Sent {eventName}");
         Analytics.CustomEvent(eventName);
-        CleverTapUnity.SendCustomEvent(eventName);
+        cleverTapUnity.SendCustomEvent(eventName);
     }
 
     public void SendCustomEvent(string eventName, string dataName, object data)
@@ -45,7 +46,8 @@ public class AnalyticsController : MonoBehaviour {
 
         HelperFunctions.DevLog($"Custom Event Sent {eventName} with data {dataName} {data}");
         Analytics.CustomEvent(eventName, dataContainer);
-        CleverTapUnity.SendCustomEvent(eventName, dataContainer);
+        cleverTapUnity.SendCustomEvent(eventName, dataContainer);
+        appsFlyerObjectScript.SendCustomEvent(eventName, dataName, data);
     }
 
     public void StartTimer(string timerKey, string timerName) {

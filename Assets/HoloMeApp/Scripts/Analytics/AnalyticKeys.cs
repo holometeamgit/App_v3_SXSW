@@ -19,6 +19,6 @@
 public class AnalyticParameters{
     public const string ParamVideoName = "videoName";
     public const string ParamUserType = "userType";
-    public const string ParamViewer= "viewer";
+    public const string ParamViewer = "viewer";
     public const string ParamBroadcaster = "broadcaster";
 }

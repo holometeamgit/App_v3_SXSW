@@ -23,6 +23,8 @@ public class PnlLogInEmail : MonoBehaviour {
     private void LogInCallBack() {
         if (!this.isActiveAndEnabled)
             return;
+
+        //AnalyticsController.Instance.CleverTapUnity.LoggedIn(inputFieldEmail.text);
         switcherToProfile.Switch();
     }
 
