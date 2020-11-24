@@ -8,15 +8,22 @@ public class SignUpStartVerificationHandler : MonoBehaviour
     [SerializeField] PnlEmailVerification pnlEmailVerification;
     [SerializeField] DeepLinkHandler deepLinkHandler;
 
-    [SerializeField] UnityEvent OnStartResetPassword;
+    [SerializeField] UnityEvent OnStartVerification;
 
     private void Awake() {
-        deepLinkHandler.VerificationDeepLinkActivated += VerificationDeepLinkActivated;
+
     }
 
     public void VerificationDeepLinkActivated(string key) {
-        pnlEmailVerification.gameObject.SetActive(true);
-        deepLinkHandler.VerificationDeepLinkActivated -= VerificationDeepLinkActivated;
+        OnStartVerification.Invoke();
         pnlEmailVerification.Verify(key);
+    }
+
+    private void OnEnable() {
+        deepLinkHandler.VerificationDeepLinkActivated += VerificationDeepLinkActivated;
+    }
+
+    private void OnDisable() {
+        deepLinkHandler.VerificationDeepLinkActivated -= VerificationDeepLinkActivated;
     }
 }

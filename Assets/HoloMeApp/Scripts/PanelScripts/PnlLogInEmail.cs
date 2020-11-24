@@ -33,6 +33,16 @@ public class PnlLogInEmail : MonoBehaviour {
         if (badRequestData.username.Count > 0)
             inputFieldEmail.ShowWarning(badRequestData.username[0]);
 
+        if (badRequestData.non_field_errors.Count > 0) {
+            if (badRequestData.non_field_errors[0] != "E-mail is not verified.")
+                inputFieldEmail.ShowWarning(badRequestData.non_field_errors[0]);
+            else {
+                inputFieldEmail.ShowWarning("E-mail is not verified. We had sent a verification email");
+                //ResendVerifyJsonData resendVerifyJsonData = new ResendVerifyJsonData(inputFieldEmail.text);
+                //emailAccountManager.ResendVerification(resendVerifyJsonData);
+            }
+        }
+
         if (badRequestData.password.Count > 0)
             inputFieldPassword.ShowWarning(badRequestData.password[0]);
 
@@ -41,8 +51,24 @@ public class PnlLogInEmail : MonoBehaviour {
             inputFieldPassword.ShowWarning("Incorrect password");
     }
 
+    private void ResendVerificationCallBack() {
+        if (!this.isActiveAndEnabled)
+            return;
+
+        inputFieldEmail.ShowWarning("E-mail is not verified. We have sent a verification email");
+    }
+
+    private void ErrorResendVerificationCallBack(BadRequestResendVerificationJsonData badRequestData) {
+        if (!this.isActiveAndEnabled)
+            return;
+
+        if (badRequestData.email.Count > 0)
+            inputFieldEmail.ShowWarning(badRequestData.email[0]);
+    }
+
     private void InitWarningMsg() {
         BadRequestLogInEmailJsonData badRequestLogInEmailJsonData = new BadRequestLogInEmailJsonData();
+        Debug.Log(inputFieldEmail.text);
         if (string.IsNullOrWhiteSpace(inputFieldEmail.text))
             badRequestLogInEmailJsonData.username.Insert(0,"Required");
 
@@ -55,10 +81,14 @@ public class PnlLogInEmail : MonoBehaviour {
     private void OnEnable() {
         emailAccountManager.OnLogIn += LogInCallBack;
         emailAccountManager.OnErrorLogIn += ErrorLogInCallBack;
+        emailAccountManager.OnResendVerification += ResendVerificationCallBack;
+        emailAccountManager.OnErrorResendVerification += ErrorResendVerificationCallBack;
     }
 
     private void OnDisable() {
         emailAccountManager.OnLogIn -= LogInCallBack;
         emailAccountManager.OnErrorLogIn -= ErrorLogInCallBack;
+        emailAccountManager.OnResendVerification -= ResendVerificationCallBack;
+        emailAccountManager.OnErrorResendVerification -= ErrorResendVerificationCallBack;
     }
 }

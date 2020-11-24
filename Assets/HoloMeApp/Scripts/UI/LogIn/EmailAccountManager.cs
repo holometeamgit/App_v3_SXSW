@@ -9,6 +9,9 @@ public class EmailAccountManager : MonoBehaviour
     public Action OnSignUp;
     public Action<BadRequestSignUpEmailJsonData> OnErrorSignUp;
 
+    public Action OnResendVerification;
+    public Action<BadRequestResendVerificationJsonData> OnErrorResendVerification;
+
     public Action OnLogIn;
     public Action<BadRequestLogInEmailJsonData> OnErrorLogIn;
 
@@ -41,6 +44,11 @@ public class EmailAccountManager : MonoBehaviour
         VerifyRequest(verifyKeyJsonData);
     }
 
+    public void ResendVerification(ResendVerifyJsonData resendVerifyJsonData) {
+        Debug.Log(resendVerifyJsonData.email);
+        ResentVerificationRequest(resendVerifyJsonData);
+    }
+
     public void LogIn(EmailLogInJsonData emailLogInJsonData) {
         LogInRequest(emailLogInJsonData);
     }
@@ -61,8 +69,8 @@ public class EmailAccountManager : MonoBehaviour
         return lastSignUpEmail;
     }
 
-    #region Sign Up
 
+    #region Sign Up 
     private void SignUpRequest(EmailSignUpJsonData emailSignUpJsonData) {
         string url = GetRequestURL(authorizationAPI.EmailSignUp);
         lastSignUpEmail = emailSignUpJsonData.email;
@@ -80,6 +88,28 @@ public class EmailAccountManager : MonoBehaviour
         BadRequestSignUpEmailJsonData badRequestData = JsonUtility.FromJson<BadRequestSignUpEmailJsonData>(body);
         Debug.Log("ErrorSignUpCallBack " + code + " " + body);
         OnErrorSignUp?.Invoke(badRequestData);
+    }
+    #endregion
+
+    #region Resend Verification
+
+    private void ResentVerificationRequest(ResendVerifyJsonData resendVerifyJsonData) {
+        string url = GetRequestURL(authorizationAPI.ResendVerification);
+        lastSignUpEmail = resendVerifyJsonData.email;
+        webRequestHandler.PostRequest(url, resendVerifyJsonData, WebRequestHandler.BodyType.JSON,
+            ResentVerificationCallBack,
+            ErrorResentVerificationBack);
+    }
+
+    private void ResentVerificationCallBack(long code, string body) {
+        Debug.Log("ResentVerificationCallBack " + code + " " + body);
+        OnResendVerification?.Invoke();
+    }
+
+    private void ErrorResentVerificationBack(long code, string body) {
+        Debug.Log("ErrorResentVerificationBack " + code + " " + body);
+        BadRequestResendVerificationJsonData badRequestData = JsonUtility.FromJson<BadRequestResendVerificationJsonData>(body);
+        OnErrorResendVerification?.Invoke(badRequestData);
     }
 
     #endregion
@@ -120,6 +150,7 @@ public class EmailAccountManager : MonoBehaviour
     }
 
     private void ErrorLogInCallBack(long code, string body) {
+        Debug.Log(body);
         BadRequestLogInEmailJsonData badRequestData = JsonUtility.FromJson<BadRequestLogInEmailJsonData>(body);
         OnErrorLogIn?.Invoke(badRequestData);
     }
