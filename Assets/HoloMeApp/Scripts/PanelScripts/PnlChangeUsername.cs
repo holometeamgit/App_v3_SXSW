@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PnlChangeUsername : MonoBehaviour
 {
+    [SerializeField] PnlGenericError pnlGenericError;
     [SerializeField] UserWebManager userWebManager;
     [SerializeField] InputFieldController usernameInputField;
     [SerializeField] Switcher switchToSetting;
@@ -21,12 +22,12 @@ public class PnlChangeUsername : MonoBehaviour
     }
 
     private void UpdateUserDataCallBack() {
-        switchToSetting.Switch();
+        pnlGenericError.ActivateSingleButton(" ", "Username has been successfully updated", "Continue", () => switchToSetting.Switch());
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
-        if (badRequestData.username.Count > 0)
-            usernameInputField.ShowWarning(badRequestData.username[0]);
+        if (!string.IsNullOrEmpty(badRequestData.username))
+            usernameInputField.ShowWarning(badRequestData.username);
 
         if (!string.IsNullOrEmpty(badRequestData.detail))
             usernameInputField.ShowWarning(badRequestData.detail);

@@ -95,7 +95,6 @@ public class UIThumbnailsController : MonoBehaviour {
                 if (thumbnailElement.Data == thumbnailData || streamDataEqualityComparer.Equals(thumbnailElement.Data, thumbnailData))
                     continue;
             }
-            Debug.Log("thumbnailData " + thumbnailData.id + " " + thumbnailData.preview_s3_url);
             thumbnailElementsDictionary[thumbnailData.id] = new ThumbnailElement(thumbnailData, mediaFileDataHandler);
         }
     }

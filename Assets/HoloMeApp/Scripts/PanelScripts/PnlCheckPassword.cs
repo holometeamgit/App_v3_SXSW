@@ -33,7 +33,10 @@ public class PnlCheckPassword : MonoBehaviour
         if (badRequestData.password.Count > 0)
             inputFieldPassword.ShowWarning(badRequestData.password[0]);
 
-        if (!string.IsNullOrEmpty(badRequestData.detail))
+        else if (!string.IsNullOrEmpty(badRequestData.detail))
+            inputFieldPassword.ShowWarning("Incorrect password");
+
+        else
             inputFieldPassword.ShowWarning("Incorrect password");
     }
 

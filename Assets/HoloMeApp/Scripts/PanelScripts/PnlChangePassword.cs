@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
 
-public class PnlChangePassword : MonoBehaviour
-{
+public class PnlChangePassword : MonoBehaviour {
+    [SerializeField] PnlGenericError pnlGenericError;
     [SerializeField] EmailAccountManager emailAccountManager;
     [SerializeField] InputFieldController newPasswordInputField;
     [SerializeField] InputFieldController newPasswordRepeatInputField;
-    [SerializeField] Switcher switchToNectMenu;
+    [SerializeField] Switcher switchToNextMenu;
 
     public void ChangePassword() {
         PasswordChangeJsonData passwordChangeJsonData = new PasswordChangeJsonData();
@@ -24,7 +24,7 @@ public class PnlChangePassword : MonoBehaviour
     }
 
     private void OnChangePasswordCallBack() {
-        switchToNectMenu?.Switch();
+        pnlGenericError.ActivateSingleButton(" ", "Password has been successfully updated", "Continue", () => switchToNextMenu.Switch());
     }
 
     private void OnErrorChangePasswordCallBack(BadRequestChangePassword badRequestChangePassword) {

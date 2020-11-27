@@ -165,8 +165,8 @@ public class UserWebManager : MonoBehaviour
 
     private void ErrorUploadUserInfoCallBack(long code, string body) {
         try {
-            BadRequestUserUploadJsonData badRequest = JsonUtility.FromJson<BadRequestUserUploadJsonData>(body);
             Debug.Log("ErrorUploadUserInfoCallBack " + code + " " + body);
+            BadRequestUserUploadJsonData badRequest = JsonUtility.FromJson<BadRequestUserUploadJsonData>(body);
 
             OnErrorUserUploaded?.Invoke(badRequest);
         } catch (System.Exception e) { }

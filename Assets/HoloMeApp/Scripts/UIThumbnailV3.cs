@@ -103,7 +103,11 @@ public class UIThumbnailV3 : UIThumbnail {
     }
 
     private void UpdateData() {
-        imgLive.gameObject.SetActive(thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live);
+        UpdateTexture();
+
+        bool isLive = thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live;
+        imgLive.gameObject.SetActive(isLive);
+        txtTime.gameObject.SetActive(!isLive);
 
         txtDate.text = thumbnailElement.Data.StartDate.ToString("ddd, d MMM");
         txtTime.text = thumbnailElement.Data.StartDate.ToString("hh tt");
@@ -145,6 +149,7 @@ public class UIThumbnailV3 : UIThumbnail {
     }
 
     private void UpdateTexture() {
+
         if (!thumbnailElement.Data.is_bought) {
             rawImage.texture = thumbnailElement.teaserTexture ?? thumbnailElement.texture ?? defaultTexture;
         } else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {

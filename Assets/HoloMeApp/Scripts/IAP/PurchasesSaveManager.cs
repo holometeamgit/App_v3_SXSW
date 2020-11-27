@@ -20,7 +20,7 @@ public class PurchasesSaveManager : MonoBehaviour {
     }
 
     private void CheckSubmittedData() {
-        Debug.Log("CheckSubmittedData");
+//        Debug.Log("CheckSubmittedData");
 
         if (isSending)
             return;
@@ -34,7 +34,7 @@ public class PurchasesSaveManager : MonoBehaviour {
 
         PurchaseSaveJsonData purchaseSaveJsonData = JsonUtility.FromJson<PurchaseSaveJsonData>(PlayerPrefs.GetString(uniqName));
 
-        Debug.Log("purchaseSaveElements count = " + purchaseSaveJsonData.purchaseSaveElements.Count);
+//        Debug.Log("purchaseSaveElements count = " + purchaseSaveJsonData.purchaseSaveElements.Count);
 
         if (purchaseSaveJsonData.purchaseSaveElements.Count > 0) {
             isSending = true;

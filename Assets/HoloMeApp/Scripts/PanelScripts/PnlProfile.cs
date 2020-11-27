@@ -61,8 +61,8 @@ public class PnlProfile : MonoBehaviour
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
 
-        if (badRequestData.username.Count > 0)
-            usernameInputField.ShowWarning(badRequestData.username[0]);
+        if (!string.IsNullOrEmpty(badRequestData.username))
+            usernameInputField.ShowWarning(badRequestData.username);
 
         if (badRequestData.first_name.Count > 0)
             firstnameInputField.ShowWarning(badRequestData.first_name[0]);
