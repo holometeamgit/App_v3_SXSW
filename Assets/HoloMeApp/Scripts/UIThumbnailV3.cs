@@ -74,6 +74,10 @@ public class UIThumbnailV3 : UIThumbnail {
 
     public override void PlayTeaser() {
         OnTeaserClick?.Invoke(thumbnailElement.Data);
+
+        //TODO just for V3 buy when start play teaser
+        if(!thumbnailElement.Data.is_bought)
+            Buy();
     }
 
     public override void Buy() {
