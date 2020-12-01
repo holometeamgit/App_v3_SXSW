@@ -47,6 +47,27 @@ public class AgoraController : MonoBehaviour {
         secondaryServerCalls.OnStreamStarted += (x, y) => SecondaryServerCallsComplete(x, y);
     }
 
+    public void StartPreview()
+    {        
+        if (iRtcEngine.EnableVideo() == 0){             
+            if (iRtcEngine.StartPreview() == 0){
+                HelperFunctions.DevLog("Agora Preview Started");
+            }
+            else{
+                HelperFunctions.DevLog("Agora Preview Failed");
+            }
+        }
+    }
+
+    public void StopPreview()
+    {
+        iRtcEngine.DisableVideo();
+        if( iRtcEngine.StopPreview() == 0)
+        {
+            HelperFunctions.DevLog("Agora Preview Stopped");
+        }        
+    }
+        
     void LoadEngine(string appId) {
         if (iRtcEngine != null) {
             HelperFunctions.DevLog("Engine exists. Please unload it first!");
