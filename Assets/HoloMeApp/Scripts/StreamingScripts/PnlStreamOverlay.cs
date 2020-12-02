@@ -88,6 +88,8 @@ public class PnlStreamOverlay : MonoBehaviour {
             }
         };
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
+
+        AddVideoSurface();
     }
 
     private void OnEnable() {
@@ -119,8 +121,8 @@ public class PnlStreamOverlay : MonoBehaviour {
         ToggleARSessionObjects(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
         //StartCountdown();
-        AddVideoSurface();
         agoraController.StartPreview();
+        StartCoroutine(Resize());
     }
 
     public void OpenAsViewer() {
@@ -213,14 +215,13 @@ public class PnlStreamOverlay : MonoBehaviour {
             videoSurface.SetGameFps(agoraController.frameRate);
             videoSurface.SetEnable(true);
         }
-        //StartCoroutine(Resize());
     }
 
     IEnumerator Resize() {
-        while (!agoraController.IsLive) {
+        while (!agoraController.VideoIsReady || cameraRenderImage.texture == null) {
             yield return null;
         }
-        yield return new WaitForSeconds(3);
+        //yield return new WaitForSeconds(3);
         cameraRenderImage.SizeToParent();
     }
 

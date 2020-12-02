@@ -24,6 +24,7 @@ public class AgoraController : MonoBehaviour {
     public string ChannelName { get; set; }
     public bool IsLive { get; private set; }
     public bool IsChannelCreator { get; private set; }
+    public bool VideoIsReady { get; private set; }
 
     int userCount;
 
@@ -70,10 +71,16 @@ public class AgoraController : MonoBehaviour {
         iRtcEngine.SetVideoEncoderConfiguration(encoderConfiguration);
     }
             
+    void OnPreviewReady(uint i, bool b)
+    {
+        HelperFunctions.DevLog("REMOTE USER CHANGED VIDEO SETTINGS");
+    }
+
     public void StartPreview()
     {
-        //iRtcEngine.OnUserEnableVideo  = ; 
+        //iRtcEngine.OnUserEnableVideo  += OnPreviewReady; TODO: this may be used to show a custom videoDisabled image for remote users only
         //iRtcEngine.EnableLocalVideo(true);
+
         if (iRtcEngine.EnableVideo() == 0)
         {
             if (iRtcEngine.EnableVideoObserver() == 0)
@@ -81,6 +88,7 @@ public class AgoraController : MonoBehaviour {
                 if (iRtcEngine.StartPreview() == 0)
                 {
                     HelperFunctions.DevLog("Agora Preview Started");
+                    VideoIsReady = true;
                 }
                 else
                 {
@@ -93,10 +101,12 @@ public class AgoraController : MonoBehaviour {
     public void StopPreview()
     {
         iRtcEngine.DisableVideo();
+        iRtcEngine.DisableVideoObserver();
         if( iRtcEngine.StopPreview() == 0)
         {
             HelperFunctions.DevLog("Agora Preview Stopped");
         }        
+        ResetVideoQuadSurface();
     }
         
     void LoadEngine(string appId) {
@@ -155,23 +165,14 @@ public class AgoraController : MonoBehaviour {
         iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
         if (IsChannelCreator) {
-            iRtcEngine.SetClientRole(CLIENT_ROLE.BROADCASTER);
-                  } else {
-            liveStreamQuad.SetActive(true);
-            iRtcEngine.SetClientRole(CLIENT_ROLE.AUDIENCE);
+                iRtcEngine.SetClientRole(CLIENT_ROLE.BROADCASTER);
+        } else {
+                liveStreamQuad.SetActive(true);
+                iRtcEngine.SetClientRole(CLIENT_ROLE.AUDIENCE);
         }
-
-      
+              
         //iRtcEngine.EnableDualStreamMode(true);
-
-        // enable video
-        iRtcEngine.EnableVideo();
-        // allow camera output callback
-        iRtcEngine.EnableVideoObserver();
-
-        // join channel
-        //var result = iRtcEngine.JoinChannel(ChannelName, null, 0);
-
+               
         var result = iRtcEngine.JoinChannelByKey(viewerBroadcasterToken, ChannelName, null, IsChannelCreator ? 1u : 0);
 
         if (result < 0) {
@@ -221,10 +222,7 @@ public class AgoraController : MonoBehaviour {
             secondaryServerCalls.EndStream();
 
         iRtcEngine.LeaveChannel();
-        iRtcEngine.DisableVideoObserver();
         agoraRTMChatController.LeaveChannel();
-        ResetVideoSurface();
-
         //OnStreamDisconnected();
 
         IsLive = false;
@@ -241,7 +239,7 @@ public class AgoraController : MonoBehaviour {
         secondaryServerCalls.UploadPreviewImage(data);
     }
 
-    private void ResetVideoSurface() {
+    private void ResetVideoQuadSurface() {
         if (videoSurfaceQuadRef) {
             Destroy(videoSurfaceQuadRef);
             liveStreamQuad.GetComponent<MeshRenderer>().material.mainTexture = null;
@@ -251,7 +249,6 @@ public class AgoraController : MonoBehaviour {
 
     private void OnJoinChannelSuccess(string channelName, uint uid, int elapsed) {
         HelperFunctions.DevLog("JoinChannelSuccessHandler: uid = " + uid);
-        //secondaryServerCalls.StartStream(ChannelName);
         agoraRTMChatController.JoinChannel(channelName);
     }
 
@@ -264,7 +261,7 @@ public class AgoraController : MonoBehaviour {
         HelperFunctions.DevLog("onUserJoined: uid = " + uid + " elapsed = " + elapsed);
 
         if (!IsChannelCreator) {
-            ResetVideoSurface();
+            ResetVideoQuadSurface();
 
             if (defaultLiveStreamQuadScale == Vector3.zero) {
                 //print("SETTING DEFAULT QUAD SCALE");
