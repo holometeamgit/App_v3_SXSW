@@ -26,7 +26,7 @@ public class AgoraController : MonoBehaviour {
     public bool IsChannelCreator { get; private set; }
 
     int userCount;
-    //int streamID;
+
     [HideInInspector]
     public uint frameRate;
     public Action<int> OnCountIncremented;
@@ -45,20 +45,51 @@ public class AgoraController : MonoBehaviour {
         frameRate = 30;
         agoraRTMChatController.Init(AppId);
         secondaryServerCalls.OnStreamStarted += (x, y) => SecondaryServerCallsComplete(x, y);
-    }
+                
+        iRtcEngine.OnJoinChannelSuccess = OnJoinChannelSuccess;
+        iRtcEngine.OnUserJoined = OnUserJoined; //Only fired for broadcasters
+        iRtcEngine.OnUserOffline = OnUserOffline;
+        iRtcEngine.OnWarning += (int warn, string msg) => {
+            string description = IRtcEngine.GetErrorDescription(warn);
+            string warningMessage = string.Format("Agora onWarning callback {0} {1} {2}", warn, msg, description);
+            HelperFunctions.DevLog(warningMessage);
+        };
+        iRtcEngine.OnError += (int error, string msg) => {
+            string description = IRtcEngine.GetErrorDescription(error);
+            string errorMessage = string.Format("Agora onError callback {0} {1} {2}", error, msg, description);
+            HelperFunctions.DevLogError(errorMessage);
+        };
 
+        var encoderConfiguration = new VideoEncoderConfiguration();
+        encoderConfiguration.degradationPreference = DEGRADATION_PREFERENCE.MAINTAIN_BALANCED;
+        encoderConfiguration.minFrameRate = 15;
+        encoderConfiguration.frameRate = FRAME_RATE.FRAME_RATE_FPS_30;
+        encoderConfiguration.bitrate = 3000;
+        encoderConfiguration.dimensions = new VideoDimensions() { width = 720, height = 1280 };
+        encoderConfiguration.orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE;
+        iRtcEngine.SetVideoEncoderConfiguration(encoderConfiguration);
+    }
+            
     public void StartPreview()
-    {        
-        if (iRtcEngine.EnableVideo() == 0){             
-            if (iRtcEngine.StartPreview() == 0){
-                HelperFunctions.DevLog("Agora Preview Started");
-            }
-            else{
-                HelperFunctions.DevLog("Agora Preview Failed");
+    {
+        //iRtcEngine.OnUserEnableVideo  = ; 
+        //iRtcEngine.EnableLocalVideo(true);
+        if (iRtcEngine.EnableVideo() == 0)
+        {
+            if (iRtcEngine.EnableVideoObserver() == 0)
+            {
+                if (iRtcEngine.StartPreview() == 0)
+                {
+                    HelperFunctions.DevLog("Agora Preview Started");
+                }
+                else
+                {
+                    HelperFunctions.DevLog("Agora Preview Failed");
+                }
             }
         }
     }
-
+    
     public void StopPreview()
     {
         iRtcEngine.DisableVideo();
@@ -125,33 +156,12 @@ public class AgoraController : MonoBehaviour {
 
         if (IsChannelCreator) {
             iRtcEngine.SetClientRole(CLIENT_ROLE.BROADCASTER);
-            var encoderConfiguration = new VideoEncoderConfiguration();
-            encoderConfiguration.degradationPreference = DEGRADATION_PREFERENCE.MAINTAIN_BALANCED;
-            encoderConfiguration.minFrameRate = 15;
-            encoderConfiguration.frameRate = FRAME_RATE.FRAME_RATE_FPS_30;
-            encoderConfiguration.bitrate = 3000;
-            encoderConfiguration.dimensions = new VideoDimensions() { width = 720, height = 1280 };
-            encoderConfiguration.orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE;
-            iRtcEngine.SetVideoEncoderConfiguration(encoderConfiguration);
-        } else {
+                  } else {
             liveStreamQuad.SetActive(true);
             iRtcEngine.SetClientRole(CLIENT_ROLE.AUDIENCE);
         }
 
-        // set callbacks (optional)
-        iRtcEngine.OnJoinChannelSuccess = OnJoinChannelSuccess;
-        iRtcEngine.OnUserJoined = OnUserJoined; //Only fired for broadcasters
-        iRtcEngine.OnUserOffline = OnUserOffline;
-        iRtcEngine.OnWarning += (int warn, string msg) => {
-            string description = IRtcEngine.GetErrorDescription(warn);
-            string warningMessage = string.Format("Agora onWarning callback {0} {1} {2}", warn, msg, description);
-            Debug.Log(warningMessage);
-        };
-        iRtcEngine.OnError += (int error, string msg) => {
-            string description = IRtcEngine.GetErrorDescription(error);
-            string errorMessage = string.Format("Agora onError callback {0} {1} {2}", error, msg, description);
-            Debug.LogError(errorMessage);
-        };
+      
         //iRtcEngine.EnableDualStreamMode(true);
 
         // enable video

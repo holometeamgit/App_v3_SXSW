@@ -213,7 +213,7 @@ public class PnlStreamOverlay : MonoBehaviour {
             videoSurface.SetGameFps(agoraController.frameRate);
             videoSurface.SetEnable(true);
         }
-        StartCoroutine(Resize());
+        //StartCoroutine(Resize());
     }
 
     IEnumerator Resize() {
