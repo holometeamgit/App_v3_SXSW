@@ -47,8 +47,10 @@ public class InputFieldController : MonoBehaviour
     }
 
     private void OnDisable() {
-        if(IsClearOnDisable)
+        if (IsClearOnDisable) {
             SetToDefaultState();
+            text = "";
+        }
     }
     //TODO remove after adding animation
     private IEnumerator UpdateLayout() {

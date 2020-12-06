@@ -39,6 +39,9 @@ public class PnlResetPassword : MonoBehaviour {
     }
 
     public void ResetPassword() {
+        if (!LocalDataVerification())
+            return;
+
         ResetPasswordJsonData resetPasswordJsonData =
             new ResetPasswordJsonData(passwordInputField.text, confirmPasswordInputField.text, uid, token);
         emailAccountManager.ResetPassword(resetPasswordJsonData);
@@ -70,15 +73,12 @@ public class PnlResetPassword : MonoBehaviour {
     }
 
     private void ResetPasswordCallBack() {
+        resetPasswordEnterEmail.ClearData();
         pnlGenericError.ActivateSingleButton(" ", "Password has been successfully updated", "Continue", () => switcherToResetPassword.Switch());
     }
 
     private void ErrorResetPasswordCallBack(BadRequestResetPassword badRequestResetPassword) {
         bool hasMsg = false;
-        if (badRequestResetPassword.new_password1.Count > 0) {
-            passwordInputField.ShowWarning(badRequestResetPassword.new_password1[0]);
-            hasMsg = true;
-        }
         if (badRequestResetPassword.uid.Count > 0) {
             passwordInputField.ShowWarning("Outdated confirmation code in your email");//badRequestResetPassword.uid[0]); //Outdated confirmation code in your email
             EnableVerificationInfoResend();
@@ -89,6 +89,10 @@ public class PnlResetPassword : MonoBehaviour {
             EnableVerificationInfoResend();
             hasMsg = true;
         }
+        if (badRequestResetPassword.new_password1.Count > 0) {
+            passwordInputField.ShowWarning(badRequestResetPassword.new_password1[0]);
+            hasMsg = true;
+        }
         if (badRequestResetPassword.new_password2.Count > 0) {
             hasMsg = true;
             confirmPasswordInputField.ShowWarning(badRequestResetPassword.new_password2[0]);
@@ -96,6 +100,16 @@ public class PnlResetPassword : MonoBehaviour {
 
         if (!hasMsg)
             passwordInputField.ShowWarning("Server Error");
+    }
+
+    private bool LocalDataVerification() {
+        if (string.IsNullOrWhiteSpace(passwordInputField.text))
+            passwordInputField.ShowWarning("Field must be completed");
+        if (string.IsNullOrWhiteSpace(confirmPasswordInputField.text))
+            confirmPasswordInputField.ShowWarning("Field must be completed");
+
+        return !string.IsNullOrWhiteSpace(passwordInputField.text) &&
+            !string.IsNullOrWhiteSpace(confirmPasswordInputField.text);
     }
 
     private void OnEnable() {
