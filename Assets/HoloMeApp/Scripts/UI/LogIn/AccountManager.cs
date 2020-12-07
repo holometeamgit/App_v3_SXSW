@@ -13,7 +13,7 @@ public class AccountManager : MonoBehaviour
     }
 
     [SerializeField]
-    string getNewAccessTokenAPI = "/token/refresh/";
+    AuthorizationAPIScriptableObject authorizationAPI;
 
     [SerializeField] WebRequestHandler webRequestHandler;
 
@@ -91,7 +91,7 @@ public class AccountManager : MonoBehaviour
     }
 
     private string GetRequestRefreshTokenURL() {
-        return webRequestHandler.ServerURLAuthAPI + getNewAccessTokenAPI;
+        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.RefreshToken;
     }
 
     private ServerAccessToken LoadAccessToken() {
