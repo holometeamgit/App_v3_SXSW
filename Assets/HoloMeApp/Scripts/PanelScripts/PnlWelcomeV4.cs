@@ -19,7 +19,7 @@ public class PnlWelcomeV4 : MonoBehaviour
     [SerializeField] GameObject LogInFBGO;
 
     private void OnEnable() {
-        webRequestHandler.GetRequest("https://devholo.me/oauth/providers/", EnableFB, (key, body) => { }, null);
+        webRequestHandler.GetRequest(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, null);
     }
 
     private void EnableFB(long key, string body) {

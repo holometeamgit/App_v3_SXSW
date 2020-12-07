@@ -12,6 +12,7 @@ public class WebRequestHandler : MonoBehaviour {
 
     public string ServerURLAuthAPI { get { return serverURLAPI.ServerURLAuthAPI; } private set { } }
     public string ServerURLMediaAPI { get { return serverURLAPI.ServerURLMediaAPI; } private set { } }
+    public string ServerProvidersAPI { get { return serverURLAPI.ServerProvidersAPI; } private set { } }
 
     [SerializeField] ServerURLAPIScriptableObject serverURLAPI;
 

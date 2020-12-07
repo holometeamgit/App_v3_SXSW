@@ -14,15 +14,15 @@ public class PnlLogInEmail : MonoBehaviour {
         emailLogInJsonData.username = inputFieldEmail.text;
         emailLogInJsonData.password = inputFieldPassword.text;
 
-        if (string.IsNullOrWhiteSpace(inputFieldEmail.text) || string.IsNullOrWhiteSpace(inputFieldPassword.text))
-            InitWarningMsg();
-        else
+        if(LocalDataVerification())
             emailAccountManager.LogIn(emailLogInJsonData);
     }
 
     private void LogInCallBack() {
         if (!this.isActiveAndEnabled)
             return;
+
+        ClearData();
         switcherToProfile.Switch();
     }
 
@@ -66,16 +66,21 @@ public class PnlLogInEmail : MonoBehaviour {
             inputFieldEmail.ShowWarning(badRequestData.email[0]);
     }
 
-    private void InitWarningMsg() {
-        BadRequestLogInEmailJsonData badRequestLogInEmailJsonData = new BadRequestLogInEmailJsonData();
-        Debug.Log(inputFieldEmail.text);
+    private void ClearData() {
+        inputFieldEmail.SetToDefaultState();
+        inputFieldEmail.text = "";
+        inputFieldPassword.SetToDefaultState();
+        inputFieldPassword.text = "";
+    }
+
+    private bool LocalDataVerification() {
         if (string.IsNullOrWhiteSpace(inputFieldEmail.text))
-            badRequestLogInEmailJsonData.username.Insert(0,"Required");
-
+            inputFieldEmail.ShowWarning("Field must be completed");
         if (string.IsNullOrWhiteSpace(inputFieldPassword.text))
-            badRequestLogInEmailJsonData.password.Insert(0,"Required");
+            inputFieldPassword.ShowWarning("Field must be completed");
 
-        ErrorLogInCallBack(badRequestLogInEmailJsonData);
+        return !string.IsNullOrWhiteSpace(inputFieldEmail.text) &&
+            !string.IsNullOrWhiteSpace(inputFieldPassword.text);
     }
 
     private void OnEnable() {
