@@ -70,14 +70,21 @@ public class FocusSquareV2 : PlacementHandler
     private Vector3 _raycastOrigin;
     private Vector3 _raycastDirection;
 
+    [Space(20)] 
+    [SerializeField] private string _arPlanesLayerMaskName = "ARPlanes";
+    private int _arPlanesLayerMask;
+    
     public HoloMe HoloMe
     {
         private get;
         set;
     }
 
+    private bool _launchFirstTime = true;
+    
     private void OnEnable()
     {
+        _arPlanesLayerMask = LayerMask.NameToLayer(_arPlanesLayerMaskName);
         SwitchToState(States.NOT_RUNNUNG);
     }
 
@@ -92,8 +99,13 @@ public class FocusSquareV2 : PlacementHandler
                 _currentState = value;
                 break;
             case States.VIDEO_LAUNCH:
-                TurnPlanes(true);
+                if (_launchFirstTime)
+                {
+                    TurnPlanes(true);
+                }
+                
                 _currentState = value;
+                //_launchFirstTime = false;
                 break;
             case States.SCANNING:
                 TapToPlaceAnimation();
@@ -109,6 +121,7 @@ public class FocusSquareV2 : PlacementHandler
                 break;
             case States.LOADING:
                 _focusSquareRenderer.color = new Color(1, 1, 1, 1.0f);
+                _pnlViewingExperience.HideScanMessage();
                 TurnPlanes(false);
                 LoadignAnimation();
                 _currentState = value;
@@ -143,6 +156,13 @@ public class FocusSquareV2 : PlacementHandler
                 break;
             case States.VIDEO_LAUNCH:
                 TransformUpdate();
+
+                if (!_launchFirstTime && VideoQuadPlacing)
+                {
+                    SwitchToState(States.LOADING);
+                    break;
+                }
+
                 if (VideoLoading)
                 {
                     SwitchToState(States.SCANNING);
@@ -191,12 +211,12 @@ public class FocusSquareV2 : PlacementHandler
                 // if (!VideoLoading) 
                 if (HoloMe != null && HoloMe.IsPrepared)
                 {
-                    SwitchToState(States.PINCH);
+                    SwitchToState(_launchFirstTime ? States.PINCH : States.HIDE);
                 }
                 break;
             case States.PINCH:
                 // TODO add delay after pinch
-                if (Input.touchCount > 1) 
+                if (Input.touchCount > 0) 
                 {
                     SwitchToState(States.DELAY_AFTER_PINCH);
                 }
@@ -205,16 +225,33 @@ public class FocusSquareV2 : PlacementHandler
                 {
                     SwitchToState(States.HIDE);
                 }
+                
+                if (SurfaceDetected())
+                {
+                    TapToPlace();
+                }
+
+                TransformUpdate();
                 break;
             case States.DELAY_AFTER_PINCH:
                 HandleDistanceFade();
+                
+                if (SurfaceDetected())
+                {
+                    TapToPlace();
+                }
+
+                TransformUpdate();
+                
                 if (_currentDelayAfterPinch < _delayAfterPinch)
                 {
                     _currentDelayAfterPinch += Time.deltaTime;
                     break;
                 }
                 _currentDelayAfterPinch = 0.0f;
+                _launchFirstTime = false;
                 SwitchToState(States.HIDE);
+                
                 break;
             case States.HIDE:
                 HideState();
@@ -253,7 +290,6 @@ public class FocusSquareV2 : PlacementHandler
         }
 
         TransformUpdate();
-       
     }
 
     private bool SurfaceDetected() 
@@ -267,15 +303,23 @@ public class FocusSquareV2 : PlacementHandler
 
         return _hits.Count > 0 && _arPlaneManager.trackables.count > 0;
     }
+    
+    private float _angle;
+    [SerializeField] private float _maxAngle = 10;
+    private Vector3 _upWorldDirection;
 
     private void HandleDistanceFade()
     {
+        var targetDir = _hologramPlacedPosition + _upWorldDirection * 1.02f - _arSessionOrigin.camera.transform.forward;
+        _angle = Vector3.Angle(targetDir, _arSessionOrigin.camera.transform.position);
+        
+        // TODO - think about angle and what the fuck is going on here?
         if (_D <= _D_max)
         {
             _focusSquareRenderer.color = Color.Lerp(_focusSquareRenderer.color, new Color(1, 1, 1, GetAlphaBasedOnDistance()), Time.deltaTime * 5.0f);
             return;
         }
-       
+        
         _focusSquareRenderer.color = Color.Lerp(_focusSquareRenderer.color, new Color(1, 1, 1, 1 / (_D - _D_max + 1)), Time.deltaTime * 5.0f);
     }
 
@@ -349,6 +393,7 @@ public class FocusSquareV2 : PlacementHandler
             //_hologramPlacedPosition = _hits[0].pose.position;
 
             OnPlaceDetected?.Invoke(_focusSquareV2Sprite.transform.position);
+            _upWorldDirection = _focusSquareV2Sprite.transform.forward;
             _hologramPlacedPosition = _focusSquareV2Sprite.transform.position;
 
             TurnPlanes(false);
@@ -361,14 +406,18 @@ public class FocusSquareV2 : PlacementHandler
     
     private void TurnPlanes(bool value)
     {
-        foreach (var plane in _arPlaneManager.trackables)
-        {
-            var arPlaneMeshVisualizer = plane.GetComponent<ARPlaneMeshVisualizer>();
-            if (arPlaneMeshVisualizer != null)
-            {
-                arPlaneMeshVisualizer.enabled = value;
-            }
-        }
+        // foreach (var plane in _arPlaneManager.trackables)
+        // {
+        //     var arPlaneMeshVisualizer = plane.GetComponent<ARPlaneMeshVisualizer>();
+        //     if (arPlaneMeshVisualizer != null)
+        //     {
+        //         arPlaneMeshVisualizer.enabled = value;
+        //     }
+        // }
+
+        var oldMask = _arSessionOrigin.camera.cullingMask;
+        var newMask = value ? oldMask | (1 << _arPlanesLayerMask) : oldMask & ~(1 << _arPlanesLayerMask);
+        _arSessionOrigin.camera.cullingMask = newMask;
 
         //_arPlaneManager.enabled = value;
     }
@@ -418,12 +467,12 @@ public class FocusSquareV2 : PlacementHandler
         _focusSquareV2Sprite.transform.rotation = Quaternion.Slerp(_focusSquareV2Sprite.transform.rotation, Quaternion.LookRotation(cameraForwardBearing), Time.deltaTime * 15f);
     }
 
-    // private void OnGUI()
-    // {
-    //     GUILayout.Space(400);
-    //     // GUILayout.Box("_D: " + _D.ToString());
-    //     // GUILayout.Box("_H: " + _H.ToString());
-    //     // GUILayout.Box("_x: " + _x.ToString());
+     private void OnGUI()
+     { 
+         //     GUILayout.Space(400);
+    //      GUILayout.Box("_angle: " + _angle);
+    //      GUILayout.Box("_camera angles: " + _arSessionOrigin.camera.transform.eulerAngles.ToString());
+    // //     // GUILayout.Box("_x: " + _x.ToString());
     //
     //     GUILayout.Box("_currentState: " + _currentState.ToString());
     //     //_planePrefab.GetComponent<Renderer>().sharedMaterial.SetFloat("_AlphaFactor", GUILayout.HorizontalSlider(10 / Time.time, 0, 1));
@@ -436,10 +485,20 @@ public class FocusSquareV2 : PlacementHandler
     //          //     VideoLoading = false;
     //          // }
     //          //
-    //          // GUILayout.Space(20);
-    //          // if (GUILayout.Button("Video Loading"))
-    //          // {
-    //          //     VideoLoading = true;
-    //          // }
-    // }
+    //     GUILayout.Space(20);
+        // if (GUILayout.Button("Video Loading"))
+        // {
+        //     VideoLoading = true;
+        // }
+        // if (GUILayout.Button("On"))
+        // {
+        //     TurnPlanes(true);
+        // }
+        //
+        // GUILayout.Space(20);
+        // if (GUILayout.Button("Off"))
+        // {
+        //     TurnPlanes(false);
+        // }
+     }
 }
