@@ -52,6 +52,11 @@ public class FocusSquareV2 : PlacementHandler
     private float _delayAfterPinch = 2.0f;
     private float _currentDelayAfterPinch = 0.0f;
 
+    [SerializeField]
+    private float _delayAfterLoading = 2.5f;
+    private float _currentDelayAfterLoading = 0.0f;
+
+    
     // Remove it and add normal stuff
     [SerializeField] private Transform _focusSquareV2Sprite;
     [SerializeField] private PnlViewingExperience _pnlViewingExperience;
@@ -209,10 +214,28 @@ public class FocusSquareV2 : PlacementHandler
                 break;
             case States.LOADING:
                 // if (!VideoLoading) 
+                
+                if (SurfaceDetected())
+                {
+                    TapToPlace();
+                }
+
+                TransformUpdate();
+                
                 if (HoloMe != null && HoloMe.IsPrepared)
                 {
                     SwitchToState(_launchFirstTime ? States.PINCH : States.HIDE);
+                    break;
                 }
+                
+                if (_currentDelayAfterLoading < _delayAfterLoading)
+                {
+                    _currentDelayAfterLoading += Time.deltaTime;
+                    break;
+                }
+
+                _currentDelayAfterLoading = 0.0f;
+                SwitchToState(_launchFirstTime ? States.PINCH : States.HIDE);
                 break;
             case States.PINCH:
                 // TODO add delay after pinch
