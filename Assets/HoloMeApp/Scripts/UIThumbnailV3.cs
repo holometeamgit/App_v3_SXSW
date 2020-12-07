@@ -54,12 +54,30 @@ public class UIThumbnailV3 : UIThumbnail {
         this.OnShareClick += OnShareClick;
     }
 
+    public override void ThumbnailClick() {
+        base.ThumbnailClick();
+
+        if (thumbnailElement.Data.is_bought && thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live) {
+            Play();
+        } else if (!thumbnailElement.Data.is_bought && thumbnailElement.Data.HasTeaser) {
+            PlayTeaser();
+        } else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
+            Play();
+        } else if (!thumbnailElement.Data.is_bought && !thumbnailElement.Data.HasTeaser) {
+            Buy();
+        }
+    }
+
     public override void Play() {
         OnPlayClick?.Invoke(thumbnailElement.Data);
     }
 
     public override void PlayTeaser() {
         OnTeaserClick?.Invoke(thumbnailElement.Data);
+
+        //TODO just for V3 buy when start play teaser
+        if(!thumbnailElement.Data.is_bought)
+            Buy();
     }
 
     public override void Buy() {

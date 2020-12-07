@@ -13,7 +13,7 @@ public class FacebookAccountManager : MonoBehaviour
 
     [Space]
     [SerializeField]
-    string getAccessRefreshTokenAPI = "/social-auth/complete/facebook/";
+    AuthorizationAPIScriptableObject authorizationAPI;
     [SerializeField]
     List<string> permissions = new List<string>() { "public_profile", "email" };
 
@@ -134,7 +134,7 @@ public class FacebookAccountManager : MonoBehaviour
        }
 
        private string GetRequestAccessTokenURL(string FBAccessToken) {
-           return webRequestHandler.ServerURLAuthAPI + getAccessRefreshTokenAPI +
+           return webRequestHandler.ServerURLAuthAPI + authorizationAPI.FacebookCompliteLogIn +
                "?code=" + FBAccessToken +
                "&state" + GetStringPermissions();
        }

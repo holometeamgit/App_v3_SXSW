@@ -12,6 +12,9 @@ public class PnlChangePassword : MonoBehaviour {
     [SerializeField] Switcher switchToNextMenu;
 
     public void ChangePassword() {
+        if (!LocalDataVerification())
+            return;
+
         PasswordChangeJsonData passwordChangeJsonData = new PasswordChangeJsonData();
         passwordChangeJsonData.new_password1 = newPasswordInputField.text;
         passwordChangeJsonData.new_password2 = newPasswordRepeatInputField.text;
@@ -21,6 +24,8 @@ public class PnlChangePassword : MonoBehaviour {
 
     private void Start() {
         emailAccountManager = emailAccountManager ?? FindObjectOfType<EmailAccountManager>();
+        newPasswordInputField.IsClearOnDisable = true;
+        newPasswordRepeatInputField.IsClearOnDisable = true;
     }
 
     private void OnChangePasswordCallBack() {
@@ -35,6 +40,16 @@ public class PnlChangePassword : MonoBehaviour {
             newPasswordInputField.ShowWarning(badRequestChangePassword.new_password1[0]);
         if (badRequestChangePassword.new_password2.Count > 0)
             newPasswordRepeatInputField.ShowWarning(badRequestChangePassword.new_password2[0]);
+    }
+
+    private bool LocalDataVerification() {
+        if (string.IsNullOrWhiteSpace(newPasswordInputField.text))
+            newPasswordInputField.ShowWarning("Field must be completed");
+        if (string.IsNullOrWhiteSpace(newPasswordRepeatInputField.text))
+            newPasswordRepeatInputField.ShowWarning("Field must be completed");
+
+        return !string.IsNullOrWhiteSpace(newPasswordInputField.text) &&
+            !string.IsNullOrWhiteSpace(newPasswordRepeatInputField.text);
     }
 
     private void OnEnable() {

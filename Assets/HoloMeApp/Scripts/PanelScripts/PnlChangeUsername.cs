@@ -10,7 +10,8 @@ public class PnlChangeUsername : MonoBehaviour
     [SerializeField] Switcher switchToSetting;
 
     public void ChangeUsername() {
-        userWebManager.UpdateUserData(userName: usernameInputField?.text ?? null);
+        if(LocalDataVerification())
+            userWebManager.UpdateUserData(userName: usernameInputField?.text ?? null);
     }
 
     private void Start() {
@@ -26,11 +27,22 @@ public class PnlChangeUsername : MonoBehaviour
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
-        if (!string.IsNullOrEmpty(badRequestData.username))
-            usernameInputField.ShowWarning(badRequestData.username);
+        if (!string.IsNullOrEmpty(badRequestData.username)) {
+            if (badRequestData.username.Contains("is exist"))
+                usernameInputField.ShowWarning("Username already exists, please choose another");
+            else
+                usernameInputField.ShowWarning(badRequestData.username);
+        }
 
         if (!string.IsNullOrEmpty(badRequestData.detail))
             usernameInputField.ShowWarning(badRequestData.detail);
+    }
+
+    private bool LocalDataVerification() {
+        if (string.IsNullOrWhiteSpace(usernameInputField.text))
+            usernameInputField.ShowWarning("Field must be completed");
+
+        return !string.IsNullOrWhiteSpace(usernameInputField.text);
     }
 
     private void OnEnable() {

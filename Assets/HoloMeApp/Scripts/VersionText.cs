@@ -10,8 +10,8 @@ public class VersionText : MonoBehaviour
     {
         txtVersion.text = "V" + Application.version;
 
-#if STAGING
-        txtVersion.text = "Staging " + txtVersion.text;
+#if DEV
+        txtVersion.text = "Dev " + txtVersion.text;
 #endif
     }
 }

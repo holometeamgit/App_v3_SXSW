@@ -10,10 +10,12 @@ public class PnlCheckPassword : MonoBehaviour
     [SerializeField] Switcher SwitchToNextMenu;
 
     public void CheckPassword() {
-        if (string.IsNullOrWhiteSpace(inputFieldPassword.text))
-            InitWarningMsg();
-        else
-        userWebManager.LoadUserInfo();
+        if(LocalDataVerification())
+            userWebManager.LoadUserInfo();
+    }
+
+    private void Start() {
+        inputFieldPassword.IsClearOnDisable = true;
     }
 
     private void CheckAccess() {
@@ -40,13 +42,11 @@ public class PnlCheckPassword : MonoBehaviour
             inputFieldPassword.ShowWarning("Incorrect password");
     }
 
-    private void InitWarningMsg() {
-        BadRequestLogInEmailJsonData badRequestLogInEmailJsonData = new BadRequestLogInEmailJsonData();
-
+    private bool LocalDataVerification() {
         if (string.IsNullOrWhiteSpace(inputFieldPassword.text))
-            badRequestLogInEmailJsonData.password.Insert(0, "Required");
+            inputFieldPassword.ShowWarning("Field must be completed");
 
-        ErrorLogInCallBack(badRequestLogInEmailJsonData);
+        return !string.IsNullOrWhiteSpace(inputFieldPassword.text);
     }
 
     private void OnEnable() {
@@ -54,7 +54,6 @@ public class PnlCheckPassword : MonoBehaviour
         emailAccountManager.OnErrorLogIn += ErrorLogInCallBack;
 
         userWebManager.OnUserInfoLoaded += CheckAccess;
-        inputFieldPassword.text = "";
     }
 
     private void OnDisable() {
@@ -62,7 +61,6 @@ public class PnlCheckPassword : MonoBehaviour
         emailAccountManager.OnErrorLogIn -= ErrorLogInCallBack;
 
         userWebManager.OnUserInfoLoaded -= CheckAccess;
-        inputFieldPassword.text = "";
     }
 
 }

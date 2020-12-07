@@ -5,7 +5,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class AgoraController : MonoBehaviour {
-    public const string AppId = "9f6b623b2365404ea78ab4b08d8059eb";//"6f6b8da21bf744cb83e21a12c7497818";
+
+#if DEV
+    public const string AppId = "9f6b623b2365404ea78ab4b08d8059eb";
+#else
+    public const string AppId = "fa326d8119c84b739d398604931a3c8b";
+#endif
 
     [SerializeField]
     GameObject liveStreamQuad;
@@ -47,6 +52,27 @@ public class AgoraController : MonoBehaviour {
         secondaryServerCalls.OnStreamStarted += (x, y) => SecondaryServerCallsComplete(x, y);
     }
 
+    public void StartPreview()
+    {        
+        if (iRtcEngine.EnableVideo() == 0){             
+            if (iRtcEngine.StartPreview() == 0){
+                HelperFunctions.DevLog("Agora Preview Started");
+            }
+            else{
+                HelperFunctions.DevLog("Agora Preview Failed");
+            }
+        }
+    }
+
+    public void StopPreview()
+    {
+        iRtcEngine.DisableVideo();
+        if( iRtcEngine.StopPreview() == 0)
+        {
+            HelperFunctions.DevLog("Agora Preview Stopped");
+        }        
+    }
+        
     void LoadEngine(string appId) {
         if (iRtcEngine != null) {
             HelperFunctions.DevLog("Engine exists. Please unload it first!");

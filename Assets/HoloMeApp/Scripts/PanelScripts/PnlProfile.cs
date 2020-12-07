@@ -17,7 +17,8 @@ public class PnlProfile : MonoBehaviour
     [SerializeField] List<GameObject> backBtns;
 
     public void ChooseUsername() {
-        userWebManager.UpdateUserData(userName: usernameInputField?.text ?? null,
+        if(LocalDataVerification())
+            userWebManager.UpdateUserData(userName: usernameInputField?.text ?? null,
             first_name: firstnameInputField?.text ?? null,
             last_name: surnameInputField?.text ?? null);
     }
@@ -27,14 +28,9 @@ public class PnlProfile : MonoBehaviour
     }
 
     private void UserInfoLoadedCallBack() {
-        if (usernameInputField != null)
-            usernameInputField.text = usernameInputField.text == "" ? userWebManager.GetUsername() ?? "" : usernameInputField.text;
-
-        if (firstnameInputField != null)
-            firstnameInputField.text = firstnameInputField.text == "" ? userWebManager.GetFirstName() ?? "" : firstnameInputField.text;
-
-        if (surnameInputField != null)
-            surnameInputField.text = surnameInputField.text == "" ? userWebManager.GetLastName() ?? "" : surnameInputField.text;
+        usernameInputField.text = usernameInputField.text == "" ? userWebManager.GetUsername() ?? "" : usernameInputField.text;
+        firstnameInputField.text = firstnameInputField.text == "" ? userWebManager.GetFirstName() ?? "" : firstnameInputField.text;
+        surnameInputField.text = surnameInputField.text == "" ? userWebManager.GetLastName() ?? "" : surnameInputField.text;
 
         if ((userWebManager.GetUsername() == null && usernameInputField != null) ||
             userWebManager.GetFirstName() == null && firstnameInputField != null ||
@@ -61,8 +57,12 @@ public class PnlProfile : MonoBehaviour
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
 
-        if (!string.IsNullOrEmpty(badRequestData.username))
-            usernameInputField.ShowWarning(badRequestData.username);
+        if (!string.IsNullOrEmpty(badRequestData.username)) {
+            if(badRequestData.username.Contains("is exist"))
+                usernameInputField.ShowWarning("Username already exists, please choose another");
+            else
+                usernameInputField.ShowWarning(badRequestData.username);
+        }
 
         if (badRequestData.first_name.Count > 0)
             firstnameInputField.ShowWarning(badRequestData.first_name[0]);
@@ -79,6 +79,19 @@ public class PnlProfile : MonoBehaviour
         usernameInputField.text = "";
         firstnameInputField.text = "";
         surnameInputField.text = "";
+    }
+
+    private bool LocalDataVerification() {
+        if (string.IsNullOrWhiteSpace(usernameInputField.text))
+            usernameInputField.ShowWarning("Field must be completed");
+        if (string.IsNullOrWhiteSpace(firstnameInputField.text))
+            firstnameInputField.ShowWarning("Field must be completed");
+        if (string.IsNullOrWhiteSpace(surnameInputField.text))
+            surnameInputField.ShowWarning("Field must be completed");
+
+        return !string.IsNullOrWhiteSpace(usernameInputField.text) &&
+            !string.IsNullOrWhiteSpace(firstnameInputField.text) &&
+            !string.IsNullOrWhiteSpace(surnameInputField.text);
     }
 
     private void OnEnable() {
