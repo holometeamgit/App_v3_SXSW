@@ -7,7 +7,7 @@ public class ActivateIfStaging : MonoBehaviour
 
     private void Awake()
     {
-#if STAGING
+#if DEV
         objectToActivate.SetActive(true);
 #else
         objectToActivate.SetActive(false);

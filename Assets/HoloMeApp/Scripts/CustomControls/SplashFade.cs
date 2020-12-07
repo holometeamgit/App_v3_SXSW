@@ -23,7 +23,7 @@ public class SplashFade : MonoBehaviour
     {
         SetDrawOrderLast();
 
-#if STAGING
+#if DEV
         txtStaging.SetActive(true);
 #else
         txtStaging.SetActive(false);

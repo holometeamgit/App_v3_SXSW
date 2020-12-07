@@ -16,13 +16,30 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
 
     public string ServerURLAuthAPI {
         get {
-            return Debug.isDebugBuild ? DevServerURLAuth : ProdServerURLAuth; }
+#if DEV
+            return DevServerURLAuth;
+#else
+            return ProdServerURLAuth;
+#endif              
+        }
     }
-    public string ServerURLMediaAPI { 
-        get {return Debug.isDebugBuild? DevServerURLMedia : ProdServerURLMedia; }
+    public string ServerURLMediaAPI {
+        get {
+#if DEV
+            return DevServerURLMedia;
+#else
+            return ProdServerURLMedia;
+#endif
+        }
     }
 
     public string ServerProvidersAPI {
-        get { return Debug.isDebugBuild ? DevServerProviders : ProdServerProviders; }
+        get {
+#if DEV
+            return DevServerProviders;
+#else
+            return ProdServerProviders;
+#endif
+        }
     }
 }

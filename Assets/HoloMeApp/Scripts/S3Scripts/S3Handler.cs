@@ -41,7 +41,7 @@ public class S3Handler : MonoBehaviour
             print(Application.persistentDataPath);
         }
 
-#if STAGING
+#if DEV
         S3BucketName = "holomev3staging";
 #else
         S3BucketName = "holomev3";

@@ -5,7 +5,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class AgoraController : MonoBehaviour {
-    public const string AppId = "9f6b623b2365404ea78ab4b08d8059eb";//"6f6b8da21bf744cb83e21a12c7497818";
+
+#if DEV
+    public const string AppId = "9f6b623b2365404ea78ab4b08d8059eb";
+#else
+    public const string AppId = "fa326d8119c84b739d398604931a3c8b";
+#endif
 
     [SerializeField]
     GameObject liveStreamQuad;
