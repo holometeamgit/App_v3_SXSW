@@ -2291,7 +2291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96d26ba35ccfe4528a4404925c57618f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  getNewAccessTokenAPI: /token/refresh/
+  authorizationAPI: {fileID: 11400000, guid: 2a13ba28f9eb4462bb252fadc63d1424, type: 2}
   webRequestHandler: {fileID: 35185073}
   accountType: 0
 --- !u!1 &927424776
@@ -3627,7 +3627,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   accountManager: {fileID: 921435837}
   webRequestHandler: {fileID: 35185073}
-  getAccessRefreshTokenAPI: /social-auth/complete/facebook/
+  authorizationAPI: {fileID: 11400000, guid: 2a13ba28f9eb4462bb252fadc63d1424, type: 2}
   permissions:
   - public_profile
   - email
