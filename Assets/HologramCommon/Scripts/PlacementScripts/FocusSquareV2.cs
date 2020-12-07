@@ -80,6 +80,8 @@ public class FocusSquareV2 : PlacementHandler
         set;
     }
 
+    private bool _launchFirstTime = true;
+    
     private void OnEnable()
     {
         _arPlanesLayerMask = LayerMask.NameToLayer(_arPlanesLayerMaskName);
@@ -97,8 +99,13 @@ public class FocusSquareV2 : PlacementHandler
                 _currentState = value;
                 break;
             case States.VIDEO_LAUNCH:
-                TurnPlanes(true);
+                if (_launchFirstTime)
+                {
+                    TurnPlanes(true);
+                }
+                
                 _currentState = value;
+                //_launchFirstTime = false;
                 break;
             case States.SCANNING:
                 TapToPlaceAnimation();
@@ -149,6 +156,13 @@ public class FocusSquareV2 : PlacementHandler
                 break;
             case States.VIDEO_LAUNCH:
                 TransformUpdate();
+
+                if (!_launchFirstTime && VideoQuadPlacing)
+                {
+                    SwitchToState(States.LOADING);
+                    break;
+                }
+
                 if (VideoLoading)
                 {
                     SwitchToState(States.SCANNING);
@@ -197,7 +211,7 @@ public class FocusSquareV2 : PlacementHandler
                 // if (!VideoLoading) 
                 if (HoloMe != null && HoloMe.IsPrepared)
                 {
-                    SwitchToState(States.PINCH);
+                    SwitchToState(_launchFirstTime ? States.PINCH : States.HIDE);
                 }
                 break;
             case States.PINCH:
@@ -235,6 +249,7 @@ public class FocusSquareV2 : PlacementHandler
                     break;
                 }
                 _currentDelayAfterPinch = 0.0f;
+                _launchFirstTime = false;
                 SwitchToState(States.HIDE);
                 
                 break;
@@ -453,13 +468,13 @@ public class FocusSquareV2 : PlacementHandler
     }
 
      private void OnGUI()
-     {
-          GUILayout.Space(400);
+     { 
+         //     GUILayout.Space(400);
     //      GUILayout.Box("_angle: " + _angle);
     //      GUILayout.Box("_camera angles: " + _arSessionOrigin.camera.transform.eulerAngles.ToString());
     // //     // GUILayout.Box("_x: " + _x.ToString());
     //
-         GUILayout.Box("_currentState: " + _currentState.ToString());
+    //     GUILayout.Box("_currentState: " + _currentState.ToString());
     //     //_planePrefab.GetComponent<Renderer>().sharedMaterial.SetFloat("_AlphaFactor", GUILayout.HorizontalSlider(10 / Time.time, 0, 1));
     //
     //     // GUILayout.Space(20);
