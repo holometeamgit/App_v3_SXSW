@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.5748171, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2053,12 +2053,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 631881963}
   m_CullTransparentMesh: 0
---- !u!1 &718313086 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6400552176675235871, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
-    type: 3}
-  m_PrefabInstance: {fileID: 6511805454453755403}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &780547047
 GameObject:
   m_ObjectHideFlags: 0
@@ -5362,6 +5356,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4470903965318166595, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.00024414062
+      objectReference: {fileID: 0}
     - target: {fileID: 4657025938435069232, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5466,11 +5465,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4898526100673487001, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 266.69922
       objectReference: {fileID: 0}
     - target: {fileID: 6787993944389252017, guid: dfba448e8ac81a84b9ac0b8cd09e5213,
         type: 3}
@@ -9255,6 +9249,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8058592054823488573, guid: de650753e65ede242ba1d0f342eea0f8,
         type: 3}
+      propertyPath: ObjectListDectiveOnEnable.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8058592054823488573, guid: de650753e65ede242ba1d0f342eea0f8,
+        type: 3}
+      propertyPath: ObjectListActiveOnDisable.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8058592054823488573, guid: de650753e65ede242ba1d0f342eea0f8,
+        type: 3}
       propertyPath: ObjectListActiveOnEnable.Array.data[0]
       value: 
       objectReference: {fileID: 6511805454453755404}
@@ -9267,12 +9271,12 @@ PrefabInstance:
         type: 3}
       propertyPath: ObjectListDectiveOnEnable.Array.data[1]
       value: 
-      objectReference: {fileID: 718313086}
+      objectReference: {fileID: 0}
     - target: {fileID: 8058592054823488573, guid: de650753e65ede242ba1d0f342eea0f8,
         type: 3}
       propertyPath: ObjectListActiveOnDisable.Array.data[0]
       value: 
-      objectReference: {fileID: 718313086}
+      objectReference: {fileID: 1043566812}
     - target: {fileID: 8058592054823488573, guid: de650753e65ede242ba1d0f342eea0f8,
         type: 3}
       propertyPath: ObjectListActiveOnDisable.Array.data[1]
@@ -13629,6 +13633,11 @@ PrefabInstance:
       propertyPath: OnCloseAsStreamer.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+        type: 3}
+      propertyPath: shareManager
+      value: 
+      objectReference: {fileID: 1187210775}
     - target: {fileID: 3546616512609274447, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.size
@@ -13663,6 +13672,11 @@ PrefabInstance:
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4323316326629661965, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.00024414062
       objectReference: {fileID: 0}
     - target: {fileID: 4350744698250950263, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
         type: 3}

@@ -103,6 +103,8 @@ public class PnlViewingExperience : MonoBehaviour
             return;
         }
 
+        hologramHandler.SetOnPlacementUIHelperFinished(()=> StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, activatedForStreaming)));
+
         scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         ShowMessage(scaneEnviromentStr);
         tutorialState = TutorialState.MessageTapToPlace;
@@ -172,7 +174,7 @@ public class PnlViewingExperience : MonoBehaviour
         if (tutorialState == TutorialState.WaitingForPinch)
         {
             HideScanMessage();
-            StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, activatedForStreaming));
+            //StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, activatedForStreaming));
             tutorialState = TutorialState.TutorialComplete;
         }
     }

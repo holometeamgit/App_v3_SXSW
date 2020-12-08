@@ -78,7 +78,8 @@ public class FocusSquareV2 : PlacementHandler
     [Space(20)] 
     [SerializeField] private string _arPlanesLayerMaskName = "ARPlanes";
     private int _arPlanesLayerMask;
-    
+
+    public event Action OnPlacementUIHelperFinished;
     public HoloMe HoloMe
     {
         private get;
@@ -143,6 +144,12 @@ public class FocusSquareV2 : PlacementHandler
                 _currentState = value;
                 break;
             case States.HIDE:
+                if (_isHideStateReachFirstTime)
+                {
+                    _isHideStateReachFirstTime = false;
+                    OnPlacementUIHelperFinished?.Invoke();
+                }
+
                 TapToPlaceAnimation();
                 _currentState = value;
                 break;
@@ -238,7 +245,6 @@ public class FocusSquareV2 : PlacementHandler
                 SwitchToState(_launchFirstTime ? States.PINCH : States.HIDE);
                 break;
             case States.PINCH:
-                // TODO add delay after pinch
                 if (Input.touchCount > 0) 
                 {
                     SwitchToState(States.DELAY_AFTER_PINCH);
@@ -282,6 +288,8 @@ public class FocusSquareV2 : PlacementHandler
         }
     }
 
+    private bool _isHideStateReachFirstTime = true;
+    
     private void HideState()
     {
         switch (_focusAnimationState)

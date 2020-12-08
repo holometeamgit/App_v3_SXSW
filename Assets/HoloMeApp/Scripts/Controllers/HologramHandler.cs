@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using HoloMeSDK;
 using System.Linq;
+using System;
 
 [DisallowMultipleComponent]
 public class HologramHandler : MonoBehaviour
@@ -141,5 +142,11 @@ public class HologramHandler : MonoBehaviour
     {
         AnalyticsController.Instance.ResumeTimer(hologramViewDwellTimer);
         holoMe.ResumeVideo();
+    }
+
+    public void SetOnPlacementUIHelperFinished(Action action)
+    {
+        var focusSquareV2 = placementHandler as FocusSquareV2;
+        focusSquareV2.OnPlacementUIHelperFinished += action;
     }
 }
