@@ -6,7 +6,6 @@ using AppleAuth.Native;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections.Generic;
-using UnityEngine.SignInWithApple;
 
 public class AppleAccountManager : MonoBehaviour {
     [SerializeField]
@@ -17,8 +16,6 @@ public class AppleAccountManager : MonoBehaviour {
     [Space]
     [SerializeField]
     AuthorizationAPIScriptableObject authorizationAPI;
-
-    [SerializeField] SignInWithApple signInWithApple;
 
     private IAppleAuthManager appleAuthManager;
 
@@ -94,26 +91,6 @@ public class AppleAccountManager : MonoBehaviour {
                 var authorizationErrorCode = error.GetAuthorizationErrorCode();
                 Debug.LogWarning("Quick Login Failed " + authorizationErrorCode.ToString() + " " + error.ToString());
             });
-    }
-
-    //second plugin
-    private void OnLogin(SignInWithApple.CallbackArgs args) {
-        if (args.error != null) {
-            Debug.Log("Errors occurred: " + args.error);
-            return;
-        }
-
-        UserInfo userInfo = args.userInfo;
-
-        // Save the userId so we can use it later for other operations.
-        var userId = userInfo.userId;
-
-        // Print out information about the user who logged in.
-        Debug.Log(
-            string.Format("Display Name: {0}\nEmail: {1}\nUser ID: {2}\nID Token: {3}", userInfo.displayName ?? "",
-                userInfo.email ?? "", userInfo.userId ?? "", userInfo.idToken ?? ""));
-
-        GetServerAccessToken(userInfo.idToken, SuccessRequestAccessTokenCallBack, ErrorRequestAccessTokenCallBack);
     }
     
     void Awake() {
