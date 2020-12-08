@@ -58,9 +58,6 @@ public class PnlProfile : MonoBehaviour
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
 
         if (!string.IsNullOrEmpty(badRequestData.username)) {
-            if(badRequestData.username.Contains("is exist"))
-                usernameInputField.ShowWarning("Username already exists, please choose another");
-            else
                 usernameInputField.ShowWarning(badRequestData.username);
         }
 
@@ -83,15 +80,18 @@ public class PnlProfile : MonoBehaviour
 
     private bool LocalDataVerification() {
         if (string.IsNullOrWhiteSpace(usernameInputField.text))
-            usernameInputField.ShowWarning("Field must be completed");
+            usernameInputField.ShowWarning("This field is compulsory");
+        else if (usernameInputField.text.Length > 20)
+            usernameInputField.ShowWarning("Username must be 20 characters or less");
         if (string.IsNullOrWhiteSpace(firstnameInputField.text))
-            firstnameInputField.ShowWarning("Field must be completed");
+            firstnameInputField.ShowWarning("This field is compulsory");
         if (string.IsNullOrWhiteSpace(surnameInputField.text))
-            surnameInputField.ShowWarning("Field must be completed");
+            surnameInputField.ShowWarning("This field is compulsory");
 
         return !string.IsNullOrWhiteSpace(usernameInputField.text) &&
             !string.IsNullOrWhiteSpace(firstnameInputField.text) &&
-            !string.IsNullOrWhiteSpace(surnameInputField.text);
+            !string.IsNullOrWhiteSpace(surnameInputField.text) &&
+            usernameInputField.text.Length <= 20;
     }
 
     private void OnEnable() {

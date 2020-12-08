@@ -38,15 +38,17 @@ public class PnlChangePassword : MonoBehaviour {
 
         if (badRequestChangePassword.new_password1.Count > 0)
             newPasswordInputField.ShowWarning(badRequestChangePassword.new_password1[0]);
-        if (badRequestChangePassword.new_password2.Count > 0)
+        if (badRequestChangePassword.new_password2.Count > 0) {
             newPasswordRepeatInputField.ShowWarning(badRequestChangePassword.new_password2[0]);
+            Debug.Log(badRequestChangePassword.new_password2[0]);
+        }
     }
 
     private bool LocalDataVerification() {
         if (string.IsNullOrWhiteSpace(newPasswordInputField.text))
-            newPasswordInputField.ShowWarning("Field must be completed");
+            newPasswordInputField.ShowWarning("This field is compulsory");
         if (string.IsNullOrWhiteSpace(newPasswordRepeatInputField.text))
-            newPasswordRepeatInputField.ShowWarning("Field must be completed");
+            newPasswordRepeatInputField.ShowWarning("This field is compulsory");
 
         return !string.IsNullOrWhiteSpace(newPasswordInputField.text) &&
             !string.IsNullOrWhiteSpace(newPasswordRepeatInputField.text);

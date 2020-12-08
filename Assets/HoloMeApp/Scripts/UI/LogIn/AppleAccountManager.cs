@@ -6,6 +6,7 @@ using AppleAuth.Native;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections.Generic;
+using UnityEngine.SignInWithApple;
 
 public class AppleAccountManager : MonoBehaviour {
     [SerializeField]
@@ -16,6 +17,8 @@ public class AppleAccountManager : MonoBehaviour {
     [Space]
     [SerializeField]
     AuthorizationAPIScriptableObject authorizationAPI;
+
+    [SerializeField] SignInWithApple signInWithApple;
 
     private IAppleAuthManager appleAuthManager;
 
@@ -29,7 +32,11 @@ public class AppleAccountManager : MonoBehaviour {
 
         if (!AppleAuthManager.IsCurrentPlatformSupported)
             return;
-        this.SignInWithApple();
+        // this.SignInWithApple();
+
+        AttemptQuickLogin();
+        //second plugin
+        //signInWithApple.Login(OnLogin);
     }
 
     public bool IsCurrentPlatformSupported() {
@@ -48,8 +55,39 @@ public class AppleAccountManager : MonoBehaviour {
             credential => {
                 // If it's an Apple credential, save the user ID, for later logins
                 var appleIdCredential = credential as IAppleIDCredential;
-                if (appleIdCredential != null)
-                    GetServerAccessToken(credential.User, SuccessRequestAccessTokenCallBack, ErrorRequestAccessTokenCallBack);
+                if (appleIdCredential == null)
+                    return;
+
+                Debug.Log("All info");
+
+                Debug.Log("AuthorizationCode " + appleIdCredential.AuthorizationCode);
+                Debug.Log("AuthorizationCode " + appleIdCredential.AuthorizationCode.Length);
+
+                try {
+                    Debug.Log(System.Text.Encoding.UTF8.GetString(appleIdCredential.AuthorizationCode));
+                } catch (System.Exception ex) { }
+
+                try {
+                    Debug.Log(System.Convert.ToBase64String(appleIdCredential.AuthorizationCode));
+                } catch (System.Exception ex) { }
+
+                /* Debug.Log("AuthorizedScopes " + appleIdCredential.AuthorizedScopes.ToString());
+                 Debug.Log("Email " + appleIdCredential.Email);
+                 Debug.Log("FullName " + appleIdCredential.FullName.FamilyName);
+                 Debug.Log("IdentityToken " + appleIdCredential.IdentityToken.ToString());
+                 Debug.Log("RealUserStatus " + appleIdCredential.RealUserStatus);
+                 Debug.Log("State " + appleIdCredential.State);
+                 Debug.Log("User " + appleIdCredential.User);
+
+                 Debug.Log("AuthorizationCode " + appleIdCredential.AuthorizationCode.ToString());
+                 Debug.Log("AuthorizedScopes " + appleIdCredential.AuthorizedScopes.ToString());
+                 Debug.Log("Email " + appleIdCredential.Email);
+                 Debug.Log("FullName " + appleIdCredential.FullName.FamilyName);
+                 Debug.Log("IdentityToken " + appleIdCredential.IdentityToken.ToString());
+                 Debug.Log("RealUserStatus " + appleIdCredential.RealUserStatus);
+                 Debug.Log("State " + appleIdCredential.State);
+                 Debug.Log("User " + appleIdCredential.User);*/
+                GetServerAccessToken(credential.User, SuccessRequestAccessTokenCallBack, ErrorRequestAccessTokenCallBack);
             },
             error => {
                 // If Quick Login fails, we should show the normal sign in with apple menu, to allow for a normal Sign In with apple
@@ -58,6 +96,26 @@ public class AppleAccountManager : MonoBehaviour {
             });
     }
 
+    //second plugin
+    private void OnLogin(SignInWithApple.CallbackArgs args) {
+        if (args.error != null) {
+            Debug.Log("Errors occurred: " + args.error);
+            return;
+        }
+
+        UserInfo userInfo = args.userInfo;
+
+        // Save the userId so we can use it later for other operations.
+        var userId = userInfo.userId;
+
+        // Print out information about the user who logged in.
+        Debug.Log(
+            string.Format("Display Name: {0}\nEmail: {1}\nUser ID: {2}\nID Token: {3}", userInfo.displayName ?? "",
+                userInfo.email ?? "", userInfo.userId ?? "", userInfo.idToken ?? ""));
+
+        GetServerAccessToken(userInfo.idToken, SuccessRequestAccessTokenCallBack, ErrorRequestAccessTokenCallBack);
+    }
+    
     void Awake() {
         Init();
     }
@@ -98,17 +156,7 @@ public class AppleAccountManager : MonoBehaviour {
             loginArgs,
             credential => {
                 var appleIdCredential = credential as IAppleIDCredential;
-                Debug.Log("All info");
-
-          /*      Debug.Log("AuthorizationCode " + appleIdCredential.AuthorizationCode.ToString());
-                Debug.Log("AuthorizedScopes " + appleIdCredential.AuthorizedScopes.ToString());
-                Debug.Log("Email " + appleIdCredential.Email);
-                Debug.Log("FullName " + appleIdCredential.FullName.FamilyName);
-                Debug.Log("IdentityToken " + appleIdCredential.IdentityToken.ToString());
-                Debug.Log("RealUserStatus " + appleIdCredential.RealUserStatus);
-                Debug.Log("State " + appleIdCredential.State);*/
-                Debug.Log("User " + appleIdCredential.User);
-                GetServerAccessToken(credential.User, SuccessRequestAccessTokenCallBack, ErrorRequestAccessTokenCallBack);
+                AttemptQuickLogin();
             },
             error => {
                 var authorizationErrorCode = error.GetAuthorizationErrorCode();

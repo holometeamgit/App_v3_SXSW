@@ -104,9 +104,9 @@ public class PnlResetPassword : MonoBehaviour {
 
     private bool LocalDataVerification() {
         if (string.IsNullOrWhiteSpace(passwordInputField.text))
-            passwordInputField.ShowWarning("Field must be completed");
+            passwordInputField.ShowWarning("This field is compulsory");
         if (string.IsNullOrWhiteSpace(confirmPasswordInputField.text))
-            confirmPasswordInputField.ShowWarning("Field must be completed");
+            confirmPasswordInputField.ShowWarning("This field is compulsory");
 
         return !string.IsNullOrWhiteSpace(passwordInputField.text) &&
             !string.IsNullOrWhiteSpace(confirmPasswordInputField.text);

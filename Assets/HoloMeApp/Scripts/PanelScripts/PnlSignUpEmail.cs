@@ -47,11 +47,11 @@ public class PnlSignUpEmail : MonoBehaviour {
 
     private bool LocalDataVerification() {
         if (string.IsNullOrWhiteSpace(inputFieldEmail.text))
-            inputFieldEmail.ShowWarning("Field must be completed");
+            inputFieldEmail.ShowWarning("This field is compulsory");
         if (string.IsNullOrWhiteSpace(inputFieldPassword.text))
-            inputFieldPassword.ShowWarning("Field must be completed");
+            inputFieldPassword.ShowWarning("This field is compulsory");
         if (string.IsNullOrWhiteSpace(inputFieldConfirmPassword.text))
-            inputFieldConfirmPassword.ShowWarning("Field must be completed");
+            inputFieldConfirmPassword.ShowWarning("This field is compulsory");
 
         return !string.IsNullOrWhiteSpace(inputFieldEmail.text) &&
             !string.IsNullOrWhiteSpace(inputFieldPassword.text) &&

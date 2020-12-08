@@ -7,6 +7,7 @@ using TMPro;
 public class InputFieldController : MonoBehaviour
 {
     public bool IsClearOnDisable = true;
+    public bool IsLowercase;
 
     public int characterLimit {
         get { return inputField.characterLimit; }
@@ -31,10 +32,12 @@ public class InputFieldController : MonoBehaviour
 
     private void Awake() {
         inputField.shouldHideMobileInput = true;
+        if (IsLowercase)
+            inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
     }
 
     public void ShowWarning(string warningMsg) {
-        warningMsgText.text = warningMsg;
+        warningMsgText.text = OverrideMsg(warningMsg);
         warningMsgRect.SetActive(true);
         warningOutline.SetActive(true);
         StartCoroutine(UpdateLayout());
@@ -48,6 +51,37 @@ public class InputFieldController : MonoBehaviour
     public void SetPasswordContentType(bool value) {
         inputField.contentType = value ? TMP_InputField.ContentType.Standard : TMP_InputField.ContentType.Password;
         inputField.ForceLabelUpdate();
+    }
+
+    private string OverrideMsg(string msg) {
+        //sign up
+        Debug.Log("OverrideMsg " +  msg);
+        if (msg.Contains("is exist")) 
+            return "Username already exists";
+
+        if (msg.Contains("A user is already registered with this e-mail address."))
+            return "Email is already in use";
+
+        if (msg.Contains("Enter a valid email address"))
+            return "Enter a valid email address";
+
+        //password
+        if (msg.Contains("This password is too short. It must contain at least 8 characters") ||
+            msg.Contains("This password is too common") ||
+            msg.Contains("This password is entirely numeric") ||
+            msg.Contains("The password is too similar to the username"))
+            return "Password must contain letters, numbers \nand be at least 8 characters";
+
+        if (msg.Contains("The two password fields didn’t match"))
+            return "Passwords do not match";
+
+        if (msg.Contains("Wrong password"))
+            return "Password is incorrect";
+
+        if (msg.Contains("Account wasn't found"))
+            return "Account wasn't found";
+
+        return msg;
     }
 
     private void OnDisable() {
