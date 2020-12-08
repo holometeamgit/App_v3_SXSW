@@ -353,7 +353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b6ab64ca54514b3ea1c7bc4320a556d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colorTag: TextColor
+  colorTag: BackgroundColor
 --- !u!1 &2900974825048719941
 GameObject:
   m_ObjectHideFlags: 0
@@ -782,14 +782,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5131543686934771378}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -892,6 +892,7 @@ GameObject:
   - component: {fileID: 3106155538284791354}
   - component: {fileID: 2394521664592405940}
   - component: {fileID: 7267949403181563800}
+  - component: {fileID: 1202658468782484312}
   m_Layer: 5
   m_Name: btnCloseBackground
   m_TagString: Untagged
@@ -1010,6 +1011,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1202658468782484312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5993944464287879214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb7aead3b2e5245e791835a092b2c25a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteTag: 
+  colorTag: BtnMenuBarColor
 --- !u!1 &8058592054823488572
 GameObject:
   m_ObjectHideFlags: 0
@@ -1072,7 +1087,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   postAnimationActiveButtons: []
   rectToMove: {fileID: 4892066425356289020}
-  imgBackground: {fileID: 2394521664592405940}
+  imgBackground: {fileID: 4341802597731157543}
   dir: 2
   OnShowTransitionComplete:
     m_PersistentCalls:
@@ -1080,7 +1095,7 @@ MonoBehaviour:
   OnHideTransitionComplete:
     m_PersistentCalls:
       m_Calls: []
-  alphaFadeToValue: 50
+  alphaFadeToValue: 255
 --- !u!114 &716668698703532917
 MonoBehaviour:
   m_ObjectHideFlags: 0

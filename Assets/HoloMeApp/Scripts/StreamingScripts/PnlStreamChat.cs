@@ -47,7 +47,7 @@ public class PnlStreamChat : AgoraMessageReceiver
     public void OnEnable()
     {
         StartRefreshLayoutRoutine();
-        inputField.ActivateInputField();
+        //inputField.ActivateInputField();
     }
 
     public void SendChatMessage(string message)
