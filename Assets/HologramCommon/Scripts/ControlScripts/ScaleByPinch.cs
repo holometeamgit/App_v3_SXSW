@@ -7,8 +7,8 @@ namespace HoloMeSDK
         [SerializeField] private float _min = 0.5f;
         [SerializeField] private float _max = 1.8f;
 
-        private const float ZoomInFactor = 1.01f;
-        private const float ZoomOutFactor = 0.99f;
+        private const float ZoomInFactor = 1.02f;
+        private const float ZoomOutFactor = 0.98f;
 
         public void SetMinScale(float minScale)
         {
