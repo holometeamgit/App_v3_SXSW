@@ -72,7 +72,7 @@ public class InputFieldController : MonoBehaviour
             msg.Contains("The password is too similar to the username"))
             return "Password must contain letters, numbers \nand be at least 8 characters";
 
-        if (msg.Contains("The two password fields didn’t match"))
+        if (msg.Contains("The two password fields didn’t match") || msg.Contains("The two password fields didn't match"))
             return "Passwords do not match";
 
         if (msg.Contains("Wrong password"))
