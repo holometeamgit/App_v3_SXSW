@@ -246,8 +246,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.6}
-  m_AnchoredPosition: {x: 0, y: 341}
-  m_SizeDelta: {x: -95, y: 44}
+  m_AnchoredPosition: {x: 0, y: 235.59961}
+  m_SizeDelta: {x: -95, y: -61.399994}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &8071998732051790141
 MonoBehaviour:
@@ -522,6 +522,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8071998732051790140}
     m_Modifications:
+    - target: {fileID: 5793784605176413492, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
+        type: 3}
+      propertyPath: m_firstOverflowCharacterIndex
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5793784605176413492, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5793784605799738163, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.size
@@ -882,6 +892,11 @@ PrefabInstance:
       propertyPath: m_text
       value: Delete account
       objectReference: {fileID: 0}
+    - target: {fileID: 5793784605176413492, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
+        type: 3}
+      propertyPath: m_firstOverflowCharacterIndex
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 5793784605799738163, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.size
@@ -1091,6 +1106,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_text
       value: Change password
+      objectReference: {fileID: 0}
+    - target: {fileID: 5793784605176413492, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
+        type: 3}
+      propertyPath: m_firstOverflowCharacterIndex
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 5793784605799738163, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
         type: 3}
@@ -1520,17 +1540,17 @@ PrefabInstance:
     - target: {fileID: 5793784605799738164, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 515
       objectReference: {fileID: 0}
     - target: {fileID: 5793784605799738164, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -198.48001
       objectReference: {fileID: 0}
     - target: {fileID: 5793784605799738164, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 1030
       objectReference: {fileID: 0}
     - target: {fileID: 5793784605799738164, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
         type: 3}
@@ -1545,7 +1565,7 @@ PrefabInstance:
     - target: {fileID: 5793784605799738164, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5793784605799738164, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
         type: 3}
@@ -1555,7 +1575,7 @@ PrefabInstance:
     - target: {fileID: 5793784605799738164, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5793784605799738164, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
         type: 3}
@@ -1572,6 +1592,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: btnChangeBio
       objectReference: {fileID: 0}
+    - target: {fileID: 5793784605799738165, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8392044413312258508, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
         type: 3}
       propertyPath: m_Material
@@ -1585,7 +1610,7 @@ PrefabInstance:
     - target: {fileID: 8392044413312258508, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8392044413312258508, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
         type: 3}

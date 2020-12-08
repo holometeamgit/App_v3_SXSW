@@ -40,7 +40,7 @@ public class ResetPasswordEnterEmail : MonoBehaviour
 
     private bool LocalDataVerification() {
         if (string.IsNullOrWhiteSpace(emailInputField.text))
-            emailInputField.ShowWarning("Field must be completed");
+            emailInputField.ShowWarning("This field is compulsory");
 
         return !string.IsNullOrWhiteSpace(emailInputField.text);
     }

@@ -44,7 +44,7 @@ public class PnlCheckPassword : MonoBehaviour
 
     private bool LocalDataVerification() {
         if (string.IsNullOrWhiteSpace(inputFieldPassword.text))
-            inputFieldPassword.ShowWarning("Field must be completed");
+            inputFieldPassword.ShowWarning("This field is compulsory");
 
         return !string.IsNullOrWhiteSpace(inputFieldPassword.text);
     }

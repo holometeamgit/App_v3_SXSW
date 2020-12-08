@@ -7,6 +7,7 @@ public class PnlSplashScreen : MonoBehaviour
 {
     [SerializeField] AccountManager accountManager;
     [SerializeField] FacebookAccountManager facebookAccountManager;
+    [SerializeField] AppleAccountManager appleAccountManager;
     [SerializeField] EmailAccountManager emailAccountManager;
 
     public UnityEvent OnLogInEvent;
@@ -40,7 +41,7 @@ public class PnlSplashScreen : MonoBehaviour
             AuthorisationErrorCallBack(0, "Not authorized");
             break;
         case LogInType.Apple:
-            AuthorisationErrorCallBack(0, "it has not yet been implemented"); //TODO update after it will add to the server
+            appleAccountManager.AttemptQuickLogin();
             break;
         case LogInType.Email:
             AuthorisationErrorCallBack(0, "the user needs to enter log in data himself");  //because we do not store the email and password of the user//TODO maybe try later save in android and ios

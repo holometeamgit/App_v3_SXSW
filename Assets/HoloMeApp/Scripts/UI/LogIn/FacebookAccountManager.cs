@@ -92,10 +92,9 @@ public class FacebookAccountManager : MonoBehaviour
     #region Facebook Sign Up
     private void AuthCallback(ILoginResult result) {
         if (FB.IsLoggedIn) {
-            var aToken = Facebook.Unity.AccessToken.CurrentAccessToken;
+            _FBAccessToken = Facebook.Unity.AccessToken.CurrentAccessToken;
             Debug.Log("Facebook Sign Up");
-            _FBAccessToken = aToken;
-            GetServerAccessToken(aToken, SuccessRequestAccessTokenCallBack, ErrorRequestAccessTokenCallBack);
+            GetServerAccessToken(_FBAccessToken, SuccessRequestAccessTokenCallBack, ErrorRequestAccessTokenCallBack);
         } else {
             Debug.Log("User cancelled login");
         }

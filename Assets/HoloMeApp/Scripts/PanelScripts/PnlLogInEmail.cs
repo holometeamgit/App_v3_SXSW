@@ -35,7 +35,11 @@ public class PnlLogInEmail : MonoBehaviour {
 
         if (badRequestData.non_field_errors.Count > 0) {
             if (badRequestData.non_field_errors[0] != "E-mail is not verified.")
-                inputFieldEmail.ShowWarning(badRequestData.non_field_errors[0]);
+                if(badRequestData.non_field_errors[0].Contains("Account wasn't found"))
+                    inputFieldEmail.ShowWarning(badRequestData.non_field_errors[0]);
+                else 
+                    inputFieldPassword.ShowWarning(badRequestData.non_field_errors[0]);
+
             else {
                 inputFieldEmail.ShowWarning("E-mail is not verified. We had sent a verification email");
                 //ResendVerifyJsonData resendVerifyJsonData = new ResendVerifyJsonData(inputFieldEmail.text);
@@ -75,9 +79,9 @@ public class PnlLogInEmail : MonoBehaviour {
 
     private bool LocalDataVerification() {
         if (string.IsNullOrWhiteSpace(inputFieldEmail.text))
-            inputFieldEmail.ShowWarning("Field must be completed");
+            inputFieldEmail.ShowWarning("This field is compulsory");
         if (string.IsNullOrWhiteSpace(inputFieldPassword.text))
-            inputFieldPassword.ShowWarning("Field must be completed");
+            inputFieldPassword.ShowWarning("This field is compulsory");
 
         return !string.IsNullOrWhiteSpace(inputFieldEmail.text) &&
             !string.IsNullOrWhiteSpace(inputFieldPassword.text);
