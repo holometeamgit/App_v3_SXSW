@@ -17,9 +17,14 @@ public class PnlWelcomeV4 : MonoBehaviour
 
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] GameObject LogInFBGO;
+    [Space]
+    [SerializeField] AppleAccountManager AppleAccountManager;
+    [SerializeField] GameObject LogInAppleGO;
 
     private void OnEnable() {
         webRequestHandler.GetRequest(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, null);
+
+        LogInAppleGO.SetActive(AppleAccountManager.IsCurrentPlatformSupported());
     }
 
     private void EnableFB(long key, string body) {

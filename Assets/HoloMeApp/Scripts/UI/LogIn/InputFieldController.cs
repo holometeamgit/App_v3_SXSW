@@ -29,6 +29,10 @@ public class InputFieldController : MonoBehaviour
     [SerializeField] GameObject warningMsgRect;
     [SerializeField] GameObject warningOutline;
 
+    private void Awake() {
+        inputField.shouldHideMobileInput = true;
+    }
+
     public void ShowWarning(string warningMsg) {
         warningMsgText.text = warningMsg;
         warningMsgRect.SetActive(true);
