@@ -21,7 +21,12 @@ public abstract class RestRequest
     protected T OnResponseReturned<T>(string jsonText)
     {
         HelperFunctions.DevLog("JSON Returned = " + jsonText);
-        return JsonParser.CreateFromJSON<T>(jsonText);
+        var returnType =  JsonParser.CreateFromJSON<T>(jsonText);
+
+        if (returnType == null)
+            HelperFunctions.DevLogError("ReturnType couldn't be parsed");
+
+        return returnType;
     }
 
 }

@@ -5,7 +5,7 @@ public class RequestUserList : RestRequest
 {
     public GetUserListRequestResponse GetUserListResponseData { get; private set; }
 
-    public string ChannelName { set { requestString = $"/v1/channel/user/{AgoraController.AppId}/{value}"; } }
+    public string ChannelName { set { requestString = $"/dev/v1/channel/user/{AgoraController.AppId}/{value}"; } }
 
     public override void OnSuccess(string result)
     {
@@ -19,15 +19,16 @@ public class GetUserListRequestData
 {
     public bool channelExist;
     public int mode;
-    public int total;
-    public List<string> users;
+    public List<string> broadcasters = new List<string>();
+    public List<string> audience = new List<string>();
+    //public string audienceTotal; this doesn't parse for some reason
 }
 
 [Serializable]
 public class GetUserListRequestResponse
 {
     public bool success;
-    public GetUserListRequestData data;
+    public GetUserListRequestData data = new GetUserListRequestData();
 }
 
 

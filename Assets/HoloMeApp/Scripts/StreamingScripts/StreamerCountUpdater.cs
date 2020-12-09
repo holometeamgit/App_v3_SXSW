@@ -14,17 +14,29 @@ public class StreamerCountUpdater : MonoBehaviour
 
     bool waitingForResponse;
 
+    Coroutine updateRoutine;
+
     public void StartCheck(string channelName)
     {
         if (requestUserList == null)
         {
             requestUserList = new RequestUserList();
             requestUserList.OnSuccessAction += UpdateCountText;
+            requestUserList.OnFailedAction += () => waitingForResponse = false;
         }
 
         requestUserList.ChannelName = channelName;
-        StartCoroutine(UpdateCountRoutine());
+        StopCheck();
+        updateRoutine = StartCoroutine(UpdateCountRoutine());
         HelperFunctions.DevLog("Getting user count routine started");
+    }
+
+    public void StopCheck()
+    {
+        if (updateRoutine != null)
+            StopCoroutine(updateRoutine);
+
+        txtCount.text = "0";
     }
 
     IEnumerator UpdateCountRoutine()
@@ -32,7 +44,7 @@ public class StreamerCountUpdater : MonoBehaviour
         while (true)
         {
             UpdateCount();
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(30);
         }
     }
 
@@ -48,10 +60,14 @@ public class StreamerCountUpdater : MonoBehaviour
 
     void UpdateCountText()
     {
-        HelperFunctions.DevLog("Got user count back");
         var responseData = requestUserList.GetUserListResponseData;
-        txtCount.text = responseData.data.users.Count.ToString();
+        //if (responseData == null)
+        //    Debug.LogError("response was null");
+        //if (responseData.data == null)
+        //    Debug.LogError("data was null");
+        txtCount.text = responseData?.data?.audience?.Count.ToString() ?? "0";
         waitingForResponse = false;
+        HelperFunctions.DevLog("Got user count back");
     }
 
 }
