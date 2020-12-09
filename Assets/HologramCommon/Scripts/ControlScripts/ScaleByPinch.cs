@@ -4,10 +4,10 @@ namespace HoloMeSDK
 {
     public class ScaleByPinch : HoloMono
     {
-        [SerializeField] private float _min = 0.5f;
-        [SerializeField] private float _max = 1.8f;
+        [SerializeField] private float _min = 0.35f;
+        [SerializeField] private float _max = 1.95f;
 
-        private const float ZoomInFactor = 1.02f;
+        private const float ZoomInFactor  = 1.02f;
         private const float ZoomOutFactor = 0.98f;
 
         public void SetMinScale(float minScale)
