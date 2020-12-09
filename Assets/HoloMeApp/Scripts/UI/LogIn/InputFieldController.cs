@@ -31,7 +31,7 @@ public class InputFieldController : MonoBehaviour
     [SerializeField] GameObject warningOutline;
 
     private void Awake() {
-        inputField.shouldHideMobileInput = true;
+        //inputField.shouldHideMobileInput = true;
         inputField.onEndEdit.AddListener(UpdateLayout);
         if (IsLowercase)
             inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());

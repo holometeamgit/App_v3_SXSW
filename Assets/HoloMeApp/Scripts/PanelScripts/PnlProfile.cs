@@ -11,6 +11,7 @@ public class PnlProfile : MonoBehaviour
     [SerializeField] InputFieldController usernameInputField;
     [SerializeField] InputFieldController firstnameInputField;
     [SerializeField] InputFieldController surnameInputField;
+    [SerializeField] int userNameLimit;
     [SerializeField] Switcher switchToMainMenu;
     [SerializeField] Switcher switchLogOutToLogIn;
 
@@ -24,6 +25,7 @@ public class PnlProfile : MonoBehaviour
     }
 
     private void Start() {
+        usernameInputField.characterLimit = userNameLimit;
         userWebManager.LoadUserInfo();
     }
 
