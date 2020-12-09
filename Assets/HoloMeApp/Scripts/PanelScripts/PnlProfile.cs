@@ -11,6 +11,7 @@ public class PnlProfile : MonoBehaviour
     [SerializeField] InputFieldController usernameInputField;
     [SerializeField] InputFieldController firstnameInputField;
     [SerializeField] InputFieldController surnameInputField;
+    [SerializeField] int userNameLimit;
     [SerializeField] Switcher switchToMainMenu;
     [SerializeField] Switcher switchLogOutToLogIn;
 
@@ -24,6 +25,7 @@ public class PnlProfile : MonoBehaviour
     }
 
     private void Start() {
+        usernameInputField.characterLimit = userNameLimit;
         userWebManager.LoadUserInfo();
     }
 
@@ -58,7 +60,7 @@ public class PnlProfile : MonoBehaviour
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
 
         if (!string.IsNullOrEmpty(badRequestData.username)) {
-                usernameInputField.ShowWarning(badRequestData.username);
+            usernameInputField.ShowWarning(badRequestData.username);
         }
 
         if (badRequestData.first_name.Count > 0)
@@ -70,6 +72,13 @@ public class PnlProfile : MonoBehaviour
 
         if (!string.IsNullOrEmpty(badRequestData.detail))
             usernameInputField.ShowWarning(badRequestData.detail);
+
+        if(string.IsNullOrEmpty(badRequestData.username) &&
+            badRequestData.first_name.Count == 0 &&
+            badRequestData.last_name.Count == 0 &&
+            string.IsNullOrEmpty(badRequestData.detail)) {
+            usernameInputField.ShowWarning("Server Error " + badRequestData.code.ToString());
+        }
     }
 
     private void ClearInputFieldData() {

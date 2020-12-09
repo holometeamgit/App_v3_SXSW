@@ -164,12 +164,17 @@ public class UserWebManager : MonoBehaviour
     }
 
     private void ErrorUploadUserInfoCallBack(long code, string body) {
+        BadRequestUserUploadJsonData badRequest;
         try {
             Debug.Log("ErrorUploadUserInfoCallBack " + code + " " + body);
-            BadRequestUserUploadJsonData badRequest = JsonUtility.FromJson<BadRequestUserUploadJsonData>(body);
+            badRequest = JsonUtility.FromJson<BadRequestUserUploadJsonData>(body);
 
             OnErrorUserUploaded?.Invoke(badRequest);
-        } catch (System.Exception e) { }
+        } catch (System.Exception) {
+            badRequest = new BadRequestUserUploadJsonData();
+            badRequest.code = code;
+            badRequest.errorMsg = body;
+        }
     }
 
     #endregion

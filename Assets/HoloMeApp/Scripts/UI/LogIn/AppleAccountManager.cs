@@ -29,9 +29,9 @@ public class AppleAccountManager : MonoBehaviour {
 
         if (!AppleAuthManager.IsCurrentPlatformSupported)
             return;
-        // this.SignInWithApple();
+            SignInWithApple();
 
-        AttemptQuickLogin();
+        //AttemptQuickLogin();
         //second plugin
         //signInWithApple.Login(OnLogin);
     }
@@ -60,31 +60,18 @@ public class AppleAccountManager : MonoBehaviour {
                 Debug.Log("AuthorizationCode " + appleIdCredential.AuthorizationCode);
                 Debug.Log("AuthorizationCode " + appleIdCredential.AuthorizationCode.Length);
 
-                try {
-                    Debug.Log(System.Text.Encoding.UTF8.GetString(appleIdCredential.AuthorizationCode));
-                } catch (System.Exception ex) { }
+                string code = System.Text.Encoding.UTF8.GetString(
+                        appleIdCredential.AuthorizationCode,
+                        0,
+                        appleIdCredential.AuthorizationCode.Length);
 
                 try {
-                    Debug.Log(System.Convert.ToBase64String(appleIdCredential.AuthorizationCode));
+                    Debug.Log(code);
                 } catch (System.Exception ex) { }
 
-                /* Debug.Log("AuthorizedScopes " + appleIdCredential.AuthorizedScopes.ToString());
-                 Debug.Log("Email " + appleIdCredential.Email);
-                 Debug.Log("FullName " + appleIdCredential.FullName.FamilyName);
-                 Debug.Log("IdentityToken " + appleIdCredential.IdentityToken.ToString());
-                 Debug.Log("RealUserStatus " + appleIdCredential.RealUserStatus);
-                 Debug.Log("State " + appleIdCredential.State);
-                 Debug.Log("User " + appleIdCredential.User);
+                GUIUtility.systemCopyBuffer = code;
 
-                 Debug.Log("AuthorizationCode " + appleIdCredential.AuthorizationCode.ToString());
-                 Debug.Log("AuthorizedScopes " + appleIdCredential.AuthorizedScopes.ToString());
-                 Debug.Log("Email " + appleIdCredential.Email);
-                 Debug.Log("FullName " + appleIdCredential.FullName.FamilyName);
-                 Debug.Log("IdentityToken " + appleIdCredential.IdentityToken.ToString());
-                 Debug.Log("RealUserStatus " + appleIdCredential.RealUserStatus);
-                 Debug.Log("State " + appleIdCredential.State);
-                 Debug.Log("User " + appleIdCredential.User);*/
-                GetServerAccessToken(credential.User, SuccessRequestAccessTokenCallBack, ErrorRequestAccessTokenCallBack);
+                GetServerAccessToken(code, SuccessRequestAccessTokenCallBack, ErrorRequestAccessTokenCallBack);
             },
             error => {
                 // If Quick Login fails, we should show the normal sign in with apple menu, to allow for a normal Sign In with apple
@@ -133,7 +120,47 @@ public class AppleAccountManager : MonoBehaviour {
             loginArgs,
             credential => {
                 var appleIdCredential = credential as IAppleIDCredential;
-                AttemptQuickLogin();
+
+                if (appleIdCredential == null)
+                    return;
+
+                Debug.Log("All info");
+
+                Debug.Log("AuthorizationCode " + appleIdCredential.AuthorizationCode);
+                Debug.Log("AuthorizationCode " + appleIdCredential.AuthorizationCode.Length);
+
+
+                string code = "";
+                try {
+                    // Authorization code
+                    code = System.Text.Encoding.UTF8.GetString(
+                        appleIdCredential.AuthorizationCode,
+                        0,
+                        appleIdCredential.AuthorizationCode.Length);
+                    Debug.Log(System.Text.Encoding.UTF8.GetString(appleIdCredential.IdentityToken));
+                } catch (System.Exception ex) { }
+
+                GUIUtility.systemCopyBuffer = code;
+
+                /* Debug.Log("AuthorizedScopes " + appleIdCredential.AuthorizedScopes.ToString());
+                 Debug.Log("Email " + appleIdCredential.Email);
+                 Debug.Log("FullName " + appleIdCredential.FullName.FamilyName);
+                 Debug.Log("IdentityToken " + appleIdCredential.IdentityToken.ToString());
+                 Debug.Log("RealUserStatus " + appleIdCredential.RealUserStatus);
+                 Debug.Log("State " + appleIdCredential.State);
+                 Debug.Log("User " + appleIdCredential.User);
+
+                 Debug.Log("AuthorizationCode " + appleIdCredential.AuthorizationCode.ToString());
+                 Debug.Log("AuthorizedScopes " + appleIdCredential.AuthorizedScopes.ToString());
+                 Debug.Log("Email " + appleIdCredential.Email);
+                 Debug.Log("FullName " + appleIdCredential.FullName.FamilyName);
+                 Debug.Log("IdentityToken " + appleIdCredential.IdentityToken.ToString());
+                 Debug.Log("RealUserStatus " + appleIdCredential.RealUserStatus);
+                 Debug.Log("State " + appleIdCredential.State);
+                 Debug.Log("User " + appleIdCredential.User);*/
+                GetServerAccessToken(code, SuccessRequestAccessTokenCallBack, ErrorRequestAccessTokenCallBack);
+
+                //AttemptQuickLogin();
             },
             error => {
                 var authorizationErrorCode = error.GetAuthorizationErrorCode();
@@ -159,15 +186,16 @@ public class AppleAccountManager : MonoBehaviour {
 
 
     #region request server access token
-    private void GetServerAccessToken(string appleAccessToken, ResponseDelegate responseCallBack, ErrorTypeDelegate errorCallBack) {
-        string url = GetRequestAccessTokenURL(appleAccessToken);
+    private void GetServerAccessToken<T>(T appleAccessToken, ResponseDelegate responseCallBack, ErrorTypeDelegate errorCallBack) {
+        string url = GetRequestAccessTokenURL();
         Debug.Log(" Apple post req " + url);
-        Dictionary<string, string> formData = new Dictionary<string, string>();
+        Debug.Log(" appleAccessToken " + appleAccessToken);
+        Dictionary<string, T> formData = new Dictionary<string, T>();
         formData["code"] = appleAccessToken;
         webRequestHandler.PostRequest(url, formData, WebRequestHandler.BodyType.XWWWFormUrlEncoded, responseCallBack, errorCallBack);
     }
 
-    private string GetRequestAccessTokenURL(string appleAccessToken) {
+    private string GetRequestAccessTokenURL() {
         return webRequestHandler.ServerURLAuthAPI + authorizationAPI.AppleCompliteLogIn;
     }
     #endregion

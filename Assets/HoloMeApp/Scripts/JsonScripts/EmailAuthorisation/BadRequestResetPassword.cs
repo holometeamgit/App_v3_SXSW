@@ -4,8 +4,7 @@ using UnityEngine;
 using System;
 
 [SerializeField]
-public class BadRequestResetPassword
-{
+public class BadRequestResetPassword : BadRequestJsonData {
     public List<string> new_password1;
     public List<string> new_password2;
     public List<string> uid;

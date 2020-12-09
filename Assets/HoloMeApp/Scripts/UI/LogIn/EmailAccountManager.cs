@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 
-public class EmailAccountManager : MonoBehaviour
-{
+public class EmailAccountManager : MonoBehaviour {
     public Action OnSignUp;
     public Action<BadRequestSignUpEmailJsonData> OnErrorSignUp;
 
@@ -85,7 +84,14 @@ public class EmailAccountManager : MonoBehaviour
     }
 
     private void ErrorSignUpCallBack(long code, string body) {
-        BadRequestSignUpEmailJsonData badRequestData = JsonUtility.FromJson<BadRequestSignUpEmailJsonData>(body);
+        BadRequestSignUpEmailJsonData badRequestData;
+        try {
+            badRequestData = JsonUtility.FromJson<BadRequestSignUpEmailJsonData>(body);
+        } catch (System.Exception) {
+            badRequestData = new BadRequestSignUpEmailJsonData();
+            badRequestData.code = code;
+            badRequestData.errorMsg = body;
+        }
         Debug.Log("ErrorSignUpCallBack " + code + " " + body);
         OnErrorSignUp?.Invoke(badRequestData);
     }
@@ -108,7 +114,14 @@ public class EmailAccountManager : MonoBehaviour
 
     private void ErrorResentVerificationBack(long code, string body) {
         Debug.Log("ErrorResentVerificationBack " + code + " " + body);
-        BadRequestResendVerificationJsonData badRequestData = JsonUtility.FromJson<BadRequestResendVerificationJsonData>(body);
+        BadRequestResendVerificationJsonData badRequestData;
+        try {
+            badRequestData = JsonUtility.FromJson<BadRequestResendVerificationJsonData>(body);
+        } catch (System.Exception) {
+            badRequestData = new BadRequestResendVerificationJsonData();
+            badRequestData.code = code;
+            badRequestData.errorMsg = body;
+        }
         OnErrorResendVerification?.Invoke(badRequestData);
     }
 
@@ -137,6 +150,7 @@ public class EmailAccountManager : MonoBehaviour
     #region Log In
     private void LogInRequest(EmailLogInJsonData emailLogInJsonData) {
         string url = GetRequestURL(authorizationAPI.EmailLogIn);
+        Debug.Log(url);
         webRequestHandler.PostRequest(url, emailLogInJsonData, WebRequestHandler.BodyType.JSON,
             LogInCallBack,
             ErrorLogInCallBack);
@@ -151,7 +165,14 @@ public class EmailAccountManager : MonoBehaviour
 
     private void ErrorLogInCallBack(long code, string body) {
         Debug.Log(body);
-        BadRequestLogInEmailJsonData badRequestData = JsonUtility.FromJson<BadRequestLogInEmailJsonData>(body);
+        BadRequestLogInEmailJsonData badRequestData;
+        try {
+            badRequestData = JsonUtility.FromJson<BadRequestLogInEmailJsonData>(body);
+        } catch (System.Exception) {
+            badRequestData = new BadRequestLogInEmailJsonData();
+            badRequestData.code = code;
+            badRequestData.errorMsg = body;
+        }
         OnErrorLogIn?.Invoke(badRequestData);
     }
 
@@ -171,17 +192,24 @@ public class EmailAccountManager : MonoBehaviour
     }
 
     private void ErrorStartResetPasswordCallBack(long code, string body) {
-        BadRequestStartResetPassword badRequestData = JsonUtility.FromJson<BadRequestStartResetPassword>(body);
+        BadRequestStartResetPassword badRequestData;
+        try {
+            badRequestData = JsonUtility.FromJson<BadRequestStartResetPassword>(body);
+        } catch (System.Exception) {
+            badRequestData = new BadRequestStartResetPassword();
+            badRequestData.code = code;
+            badRequestData.errorMsg = body;
+        }
         OnErrorStartResetPassword?.Invoke(badRequestData);
     }
     #endregion
 
     #region Reset Password verification
     private void ResetPasswordRequest(ResetPasswordJsonData resetPasswordJsonData) {
-       string url = GetRequestURL(authorizationAPI.ResetPasswordConfirm);
-       webRequestHandler.PostRequest(url, resetPasswordJsonData, WebRequestHandler.BodyType.JSON,
-            ResetPasswordCallBack,
-            ErrorResetPasswordCallBack);
+        string url = GetRequestURL(authorizationAPI.ResetPasswordConfirm);
+        webRequestHandler.PostRequest(url, resetPasswordJsonData, WebRequestHandler.BodyType.JSON,
+             ResetPasswordCallBack,
+             ErrorResetPasswordCallBack);
     }
 
     private void ResetPasswordCallBack(long code, string body) {
@@ -189,8 +217,15 @@ public class EmailAccountManager : MonoBehaviour
     }
 
     private void ErrorResetPasswordCallBack(long code, string body) {
-        BadRequestResetPassword badRequestResetPassword = JsonUtility.FromJson<BadRequestResetPassword>(body);
-        OnErrorResetPassword?.Invoke(badRequestResetPassword);
+        BadRequestResetPassword badRequestData;
+        try {
+            badRequestData = JsonUtility.FromJson<BadRequestResetPassword>(body);
+        } catch (System.Exception) {
+            badRequestData = new BadRequestResetPassword();
+            badRequestData.code = code;
+            badRequestData.errorMsg = body;
+        }
+        OnErrorResetPassword?.Invoke(badRequestData);
     }
     #endregion
 
@@ -208,8 +243,15 @@ public class EmailAccountManager : MonoBehaviour
     }
 
     private void ErrorChangePasswordCallBack(long code, string body) {
-        BadRequestChangePassword badRequestChangePassword = JsonUtility.FromJson<BadRequestChangePassword>(body);
-        OnErrorChangePassword?.Invoke(badRequestChangePassword);
+        BadRequestChangePassword badRequestData;
+        try {
+            badRequestData = JsonUtility.FromJson<BadRequestChangePassword>(body);
+        } catch (System.Exception) {
+            badRequestData = new BadRequestChangePassword();
+            badRequestData.code = code;
+            badRequestData.errorMsg = body;
+        }
+        OnErrorChangePassword?.Invoke(badRequestData);
     }
     #endregion
 

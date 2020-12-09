@@ -24,7 +24,7 @@ public class PnlWelcomeV4 : MonoBehaviour
     private void OnEnable() {
         webRequestHandler.GetRequest(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, null);
 
-        //LogInAppleGO.SetActive(AppleAccountManager.IsCurrentPlatformSupported());
+        LogInAppleGO.SetActive(AppleAccountManager.IsCurrentPlatformSupported());
     }
 
     private void EnableFB(long key, string body) {
@@ -33,8 +33,10 @@ public class PnlWelcomeV4 : MonoBehaviour
         //        Debug.Log(body);
         try {
             Providers providers = JsonUtility.FromJson<Providers>(body);
+            if (System.DateTime.Now < new DateTime(2020, 12, 9, 10, 0, 0, 0))
+                return;
             if (providers != null)
-                LogInFBGO.SetActive(providers.providers.Contains("fb"));
+                LogInFBGO.SetActive(providers.providers.Contains("fb")) ;
         } catch (Exception e) { }
     }
 }

@@ -87,7 +87,18 @@ public class FocusSquareV2 : PlacementHandler
     }
 
     private bool _launchFirstTime = true;
+
+    [SerializeField] private UIThumbnailsController _uiThumbnailsController;
+    private StreamJsonData.Data _streamJsonData;
     
+    private void Awake()
+    {
+        if (_uiThumbnailsController != null)
+        {
+            _uiThumbnailsController.OnPlay += delegate(StreamJsonData.Data data) { _streamJsonData = data; };
+        }
+    }
+
     private void OnEnable()
     {
         _arPlanesLayerMask = LayerMask.NameToLayer(_arPlanesLayerMaskName);
@@ -235,6 +246,7 @@ public class FocusSquareV2 : PlacementHandler
                     break;
                 }
                 
+                //if (_uiThumbnailsController != null) TODO split for stream/non stream
                 if (_currentDelayAfterLoading < _delayAfterLoading)
                 {
                     _currentDelayAfterLoading += Time.deltaTime;
@@ -297,11 +309,11 @@ public class FocusSquareV2 : PlacementHandler
             case FocusAnimationStates.TAP:
             {
                 HandleDistanceFade();
-                if (!HoloMe.IsPrepared)
+                if (!HoloMe.IsPrepared && _currentDelayAfterLoading <= _delayAfterLoading)
                 {
                     LoadignAnimation();
                 }
-
+            
                 break;
             }
             case FocusAnimationStates.LOADING:
@@ -309,8 +321,16 @@ public class FocusSquareV2 : PlacementHandler
                 if (HoloMe.IsPrepared)
                 {
                     TapToPlaceAnimation();
+                    break;
                 }
-
+                
+                // TODO - fix it with Agora api
+                if (_currentDelayAfterLoading < _delayAfterLoading)
+                {
+                    _currentDelayAfterLoading += Time.deltaTime;
+                }
+                
+                TapToPlaceAnimation();
                 break;
             }
         }
@@ -321,6 +341,11 @@ public class FocusSquareV2 : PlacementHandler
         }
 
         TransformUpdate();
+
+        if (IsAllButtonsCloseNotActive())
+        {
+            _currentDelayAfterLoading = 0.0f;
+        }
     }
 
     private bool SurfaceDetected() 
