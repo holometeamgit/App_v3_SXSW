@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.5748171, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -345,7 +345,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 2.3509887e-38, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: 1.3228e-41, z: 0, w: -0.0000000014842954}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -3415,6 +3415,7 @@ MonoBehaviour:
   liveStreamQuad: {fileID: 1386325299}
   agoraRTMChatController: {fileID: 1399294100}
   secondaryServerCalls: {fileID: 1485548532}
+  streamerCountUpdater: {fileID: 6511805454453755406}
   frameRate: 0
   videoSufaceStreamerRawTex: {fileID: 342812258}
 --- !u!114 &1146380146
@@ -9189,6 +9190,11 @@ PrefabInstance:
       propertyPath: agoraRTMChatController
       value: 
       objectReference: {fileID: 1399294100}
+    - target: {fileID: 1384849691682813138, guid: de650753e65ede242ba1d0f342eea0f8,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4623802630511203992, guid: de650753e65ede242ba1d0f342eea0f8,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -13615,6 +13621,16 @@ PrefabInstance:
       propertyPath: shareManager
       value: 
       objectReference: {fileID: 1187210775}
+    - target: {fileID: 3230502028447177389, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+        type: 3}
+      propertyPath: agoraRequests
+      value: 
+      objectReference: {fileID: 1146380146}
+    - target: {fileID: 3230502028447177389, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+        type: 3}
+      propertyPath: agoraController
+      value: 
+      objectReference: {fileID: 1146380145}
     - target: {fileID: 3546616512609274447, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.size
@@ -13660,6 +13676,11 @@ PrefabInstance:
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 8769522218479384240}
+    - target: {fileID: 4778808478551110401, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -96.3999
+      objectReference: {fileID: 0}
     - target: {fileID: 5021373847628888250, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -13793,6 +13814,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1d18b6ad82f107f48b55d083afacd6f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6511805454453755406 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3230502028447177389, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+    type: 3}
+  m_PrefabInstance: {fileID: 6511805454453755403}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ed21fdede87c3445a24b5836d0a0ffd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &6628130752786534748 stripped
