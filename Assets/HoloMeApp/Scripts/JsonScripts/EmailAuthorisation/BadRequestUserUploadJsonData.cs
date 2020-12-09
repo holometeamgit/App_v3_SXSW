@@ -4,8 +4,7 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public class BadRequestUserUploadJsonData
-{
+public class BadRequestUserUploadJsonData : BadRequestJsonData {
     public string username;
     public List<string> first_name;
     public List<string> last_name;

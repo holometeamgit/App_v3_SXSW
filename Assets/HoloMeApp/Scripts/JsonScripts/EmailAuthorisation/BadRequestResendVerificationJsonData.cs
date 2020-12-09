@@ -2,8 +2,7 @@
 using System;
 
 [Serializable]
-public class BadRequestResendVerificationJsonData
-{
+public class BadRequestResendVerificationJsonData : BadRequestJsonData {
     public List<string> email;
     public string detail;
 

@@ -34,8 +34,12 @@ public class ResetPasswordEnterEmail : MonoBehaviour
     }
 
     private void ErrorStartResetPasswordBack(BadRequestStartResetPassword badRequestData) {
+        emailInputField.ShowWarning("Server Error " + badRequestData.code.ToString());
+
         if (badRequestData.email.Count > 0)
             emailInputField.ShowWarning(badRequestData.email[0]);
+
+
     }
 
     private bool LocalDataVerification() {

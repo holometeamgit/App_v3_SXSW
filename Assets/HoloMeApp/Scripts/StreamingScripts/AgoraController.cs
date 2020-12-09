@@ -107,9 +107,11 @@ public class AgoraController : MonoBehaviour {
     }
 
     void OnViewerAgoraTokenReturned(long code, string data) {
-        tokenAgoraResponseChannel = JsonUtility.FromJson<TokenAgoraResponse>(data);
-        HelperFunctions.DevLog("Viewer Token Returned: " + tokenAgoraResponseChannel.token);
-        GetRTMLoginToken();
+        try {
+            tokenAgoraResponseChannel = JsonUtility.FromJson<TokenAgoraResponse>(data);
+            HelperFunctions.DevLog("Viewer Token Returned: " + tokenAgoraResponseChannel.token);
+            GetRTMLoginToken();
+        } catch (System.Exception) { }
     }
 
     void GetRTMLoginToken() {
@@ -118,9 +120,11 @@ public class AgoraController : MonoBehaviour {
     }
 
     void OnRTMAgoraTokenReturned(long code, string data) {
-        tokenAgoraResponseRTM = JsonUtility.FromJson<TokenAgoraResponse>(data);
-        HelperFunctions.DevLog("RTM Token Returned: " + tokenAgoraResponseRTM.token);
-        SecondaryServerCallsComplete(tokenAgoraResponseChannel.token, tokenAgoraResponseRTM.token);
+        try {
+            tokenAgoraResponseRTM = JsonUtility.FromJson<TokenAgoraResponse>(data);
+            HelperFunctions.DevLog("RTM Token Returned: " + tokenAgoraResponseRTM.token);
+            SecondaryServerCallsComplete(tokenAgoraResponseChannel.token, tokenAgoraResponseRTM.token);
+        } catch (System.Exception) { }
     }
 
     public void SecondaryServerCallsComplete(string viewerBroadcasterToken, string rtmToken) {

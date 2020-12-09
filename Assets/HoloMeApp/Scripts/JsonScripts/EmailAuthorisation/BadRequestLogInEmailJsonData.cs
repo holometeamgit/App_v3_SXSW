@@ -4,8 +4,7 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public class BadRequestLogInEmailJsonData
-{
+public class BadRequestLogInEmailJsonData : BadRequestJsonData {
     public List<string> username;
     public List<string> password;
     public List<string> non_field_errors;

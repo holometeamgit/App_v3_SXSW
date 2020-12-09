@@ -32,6 +32,7 @@ public class InputFieldController : MonoBehaviour
 
     private void Awake() {
         inputField.shouldHideMobileInput = true;
+        inputField.onEndEdit.AddListener(UpdateLayout);
         if (IsLowercase)
             inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
     }
@@ -51,6 +52,8 @@ public class InputFieldController : MonoBehaviour
     public void SetPasswordContentType(bool value) {
         inputField.contentType = value ? TMP_InputField.ContentType.Standard : TMP_InputField.ContentType.Password;
         inputField.ForceLabelUpdate();
+
+        
     }
 
     private string OverrideMsg(string msg) {
@@ -72,7 +75,8 @@ public class InputFieldController : MonoBehaviour
             msg.Contains("The password is too similar to the username"))
             return "Password must contain letters, numbers \nand be at least 8 characters";
 
-        if (msg.Contains("The two password fields didn’t match") || msg.Contains("The two password fields didn't match"))
+        if (msg.Contains("The two password fields didn’t match") ||
+            msg.Contains("The two password fields didn't match")) //if you think that these are the same lines, then you are wrong 
             return "Passwords do not match";
 
         if (msg.Contains("Wrong password"))
@@ -82,6 +86,10 @@ public class InputFieldController : MonoBehaviour
             return "Account wasn't found";
 
         return msg;
+    }
+
+    private void UpdateLayout(string str) {
+        inputField.ForceLabelUpdate();
     }
 
     private void OnDisable() {

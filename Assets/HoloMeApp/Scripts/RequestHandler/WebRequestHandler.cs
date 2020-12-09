@@ -136,10 +136,18 @@ public class WebRequestHandler : MonoBehaviour {
                         form.AddField(field.Key, field.Value);
                         Debug.Log("add field " + field.Key + " " + field.Value);
                     }
+                } else if (listType == typeof(Dictionary<string, byte[]>)) {
+                    Dictionary<string, byte[]> fields = body as Dictionary<string, byte[]>;
+                    foreach (var field in fields) {
+                        form.AddBinaryData(field.Key, field.Value);
+                        Debug.Log("add field " + field.Key + " " + field.Value);
+                    }
                 }
                 request = UnityWebRequest.Post(url, form);
+                request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 break;
             case BodyType.JSON: //only Json at this moment
+
                 string bodyString = JsonUtility.ToJson(body);
                 bodyRaw = Encoding.UTF8.GetBytes(bodyString);
                 request = new UnityWebRequest(url, "POST");

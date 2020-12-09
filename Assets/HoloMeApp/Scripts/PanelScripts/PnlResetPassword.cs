@@ -99,7 +99,7 @@ public class PnlResetPassword : MonoBehaviour {
         }
 
         if (!hasMsg)
-            passwordInputField.ShowWarning("Server Error");
+            passwordInputField.ShowWarning("Server Error " + badRequestResetPassword.code.ToString());
     }
 
     private bool LocalDataVerification() {
