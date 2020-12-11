@@ -21,6 +21,9 @@ public class AgoraController : MonoBehaviour {
     [SerializeField]
     SecondaryServerCalls secondaryServerCalls;
 
+    [SerializeField]
+    StreamerCountUpdater streamerCountUpdater;
+
     TokenAgoraResponse tokenAgoraResponseChannel;
     TokenAgoraResponse tokenAgoraResponseRTM;
 
@@ -195,6 +198,8 @@ public class AgoraController : MonoBehaviour {
         if (IsChannelCreator)
             sendThumbnailRoutine = StartCoroutine(SendThumbnailData());
 
+        streamerCountUpdater.StartCheck(ChannelName);
+
         IsLive = true;
 
         //streamID = iRtcEngine.CreateDataStream(true, true);
@@ -224,6 +229,8 @@ public class AgoraController : MonoBehaviour {
 
         if (sendThumbnailRoutine != null)
             StopCoroutine(sendThumbnailRoutine);
+
+        streamerCountUpdater.StopCheck();
 
         liveStreamQuad.SetActive(false);
 
