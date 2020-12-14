@@ -298,7 +298,7 @@ public class AgoraController : MonoBehaviour {
             videoSurfaceQuadRef.SetForUser(uid);
             videoSurfaceQuadRef.SetEnable(true);
             videoSurfaceQuadRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
-            videoSurfaceQuadRef.EnableFlipTextureApplyTransform(true, true, defaultLiveStreamQuadScale);
+            videoSurfaceQuadRef.EnableFlipTextureApplyTransform(false, true, defaultLiveStreamQuadScale);
             //videoSurfaceRef.EnableFilpTextureApply(true, true);
             videoSurfaceQuadRef.SetGameFps(frameRate);
             StartPreview();
