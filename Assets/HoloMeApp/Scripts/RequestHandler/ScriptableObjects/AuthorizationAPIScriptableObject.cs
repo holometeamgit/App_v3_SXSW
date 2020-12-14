@@ -47,7 +47,7 @@ public class AuthorizationAPIScriptableObject : ScriptableObject {
     [Tooltip("Get request google Log In. Details here: https://devholo.me/docs/auth/#/Login/get_social_auth_login_apple_id_")]
     public string AppleLogIn = "/social-auth/login/apple-id/";
     [Tooltip("Get request complite Log In. Details here: https://devholo.me/docs/auth/#/Login/get_social_auth_complete_apple_id_")]
-    public string AppleCompliteLogIn = "/social-auth/complete/apple-id/";
+    public string AppleCompliteLogIn = "/social-auth/complete/apple-id";
 
 
     [Header("User")]

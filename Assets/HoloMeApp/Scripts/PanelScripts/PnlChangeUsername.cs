@@ -7,6 +7,7 @@ public class PnlChangeUsername : MonoBehaviour
     [SerializeField] PnlGenericError pnlGenericError;
     [SerializeField] UserWebManager userWebManager;
     [SerializeField] InputFieldController usernameInputField;
+    [SerializeField] int userNameLimit = 30;
     [SerializeField] Switcher switchToSetting;
 
     public void ChangeUsername() {
@@ -16,10 +17,11 @@ public class PnlChangeUsername : MonoBehaviour
 
     private void Start() {
         userWebManager.LoadUserInfo();
+        usernameInputField.characterLimit = userNameLimit;
     }
 
     private void UserInfoLoadedCallBack() {
-        usernameInputField.text = usernameInputField.text == "" ? userWebManager.GetUsername() ?? "" : usernameInputField.text;
+        usernameInputField.text = string.IsNullOrWhiteSpace(usernameInputField.text) ? userWebManager.GetUsername() ?? "" : usernameInputField.text;
     }
 
     private void UpdateUserDataCallBack() {
@@ -52,6 +54,7 @@ public class PnlChangeUsername : MonoBehaviour
         userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
         userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
         userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
+        usernameInputField.text = userWebManager.GetUsername();
     }
 
     private void OnDisable() {

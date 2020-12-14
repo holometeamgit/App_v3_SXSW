@@ -128,7 +128,7 @@ public class UIThumbnailV3 : UIThumbnail {
         txtTime.gameObject.SetActive(!isLive);
 
         txtDate.text = thumbnailElement.Data.StartDate.ToString("ddd, d MMM");
-        txtTime.text = thumbnailElement.Data.StartDate.ToString("hh tt");
+        txtTime.text = thumbnailElement.Data.StartDate.ToString("HH:mm");
         txtTitle.text = thumbnailElement.Data.user;
         txtDescription.text = thumbnailElement.Data.description;
 
