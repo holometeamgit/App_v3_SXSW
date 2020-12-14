@@ -6,6 +6,7 @@ public class PnlCheckPassword : MonoBehaviour
 {
     [SerializeField] UserWebManager userWebManager;
     [SerializeField] EmailAccountManager emailAccountManager;
+    [SerializeField] AccountManager accountManager;
     [SerializeField] InputFieldController inputFieldPassword;
     [SerializeField] Switcher SwitchToNextMenu;
 
@@ -54,6 +55,9 @@ public class PnlCheckPassword : MonoBehaviour
         emailAccountManager.OnErrorLogIn += ErrorLogInCallBack;
 
         userWebManager.OnUserInfoLoaded += CheckAccess;
+
+        if(accountManager.GetLoginType() != LogInType.Email)
+            SwitchToNextMenu.Switch();
     }
 
     private void OnDisable() {
