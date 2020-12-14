@@ -49,36 +49,32 @@ public class AgoraController : MonoBehaviour {
 
     static Vector3 defaultLiveStreamQuadScale;
 
-    public void Start() {
+    public void Start()
+    {
         LoadEngine(AppId);
         frameRate = 30;
         agoraRTMChatController.Init(AppId);
         secondaryServerCalls.OnStreamStarted += (x, y) => SecondaryServerCallsComplete(x, y);
-                
+
         iRtcEngine.OnJoinChannelSuccess = OnJoinChannelSuccess;
         iRtcEngine.OnUserJoined = OnUserJoined; //Only fired for broadcasters
         iRtcEngine.OnUserOffline = OnUserOffline;
-        iRtcEngine.OnWarning += (int warn, string msg) => {
+        iRtcEngine.OnWarning += (int warn, string msg) =>
+        {
             string description = IRtcEngine.GetErrorDescription(warn);
             string warningMessage = string.Format("Agora onWarning callback {0} {1} {2}", warn, msg, description);
             HelperFunctions.DevLog(warningMessage);
         };
-        iRtcEngine.OnError += (int error, string msg) => {
+        iRtcEngine.OnError += (int error, string msg) =>
+        {
             string description = IRtcEngine.GetErrorDescription(error);
             string errorMessage = string.Format("Agora onError callback {0} {1} {2}", error, msg, description);
             HelperFunctions.DevLogError(errorMessage);
         };
 
-        var encoderConfiguration = new VideoEncoderConfiguration();
-        encoderConfiguration.degradationPreference = DEGRADATION_PREFERENCE.MAINTAIN_BALANCED;
-        encoderConfiguration.minFrameRate = 15;
-        encoderConfiguration.frameRate = FRAME_RATE.FRAME_RATE_FPS_30;
-        encoderConfiguration.bitrate = 3000;
-        encoderConfiguration.dimensions = new VideoDimensions() { width = 720, height = 1280 };
-        encoderConfiguration.orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE;
-        iRtcEngine.SetVideoEncoderConfiguration(encoderConfiguration);
+        SetEncoderSettings();
     }
-
+    
     void LoadEngine(string appId)
     {
         if (iRtcEngine != null)
@@ -97,10 +93,23 @@ public class AgoraController : MonoBehaviour {
         liveStreamQuad.SetActive(false);
     }
 
-    void OnPreviewReady(uint i, bool b)
+    private void SetEncoderSettings()
     {
-        HelperFunctions.DevLog("REMOTE USER CHANGED VIDEO SETTINGS");
+        var encoderConfiguration = new VideoEncoderConfiguration();
+        encoderConfiguration.degradationPreference = DEGRADATION_PREFERENCE.MAINTAIN_BALANCED;
+        encoderConfiguration.minFrameRate = 15;
+        encoderConfiguration.frameRate = FRAME_RATE.FRAME_RATE_FPS_30;
+        encoderConfiguration.bitrate = 3000;
+        encoderConfiguration.dimensions = new VideoDimensions() { width = 720, height = 1280 };
+        encoderConfiguration.orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT;//ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE;
+        //iRtcEngine.SetVideoProfile(VIDEO_PROFILE_TYPE.VIDEO_PROFILE_PORTRAIT_720P_3,false);
+        iRtcEngine.SetVideoEncoderConfiguration(encoderConfiguration);
     }
+
+    //void OnPreviewReady(uint i, bool b)
+    //{
+    //    HelperFunctions.DevLog("REMOTE USER CHANGED VIDEO SETTINGS");
+    //}
 
     public void StartPreview()
     {
@@ -132,8 +141,8 @@ public class AgoraController : MonoBehaviour {
         {
             HelperFunctions.DevLog("Agora Preview Stopped");
         }        
-        ResetVideoQuadSurface();
         VideoIsReady = false;
+        ResetVideoQuadSurface();
     }
           
     public void JoinOrCreateChannel(bool channelCreator) {
@@ -181,6 +190,7 @@ public class AgoraController : MonoBehaviour {
 
         if (IsChannelCreator) {
                 iRtcEngine.SetClientRole(CLIENT_ROLE.BROADCASTER);
+                SetEncoderSettings();
         } else {
                 liveStreamQuad.SetActive(true);
                 iRtcEngine.SetClientRole(CLIENT_ROLE.AUDIENCE);
@@ -298,12 +308,9 @@ public class AgoraController : MonoBehaviour {
             videoSurfaceQuadRef.SetForUser(uid);
             videoSurfaceQuadRef.SetEnable(true);
             videoSurfaceQuadRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
-            videoSurfaceQuadRef.EnableFlipTextureApplyTransform(false, true, defaultLiveStreamQuadScale);
-            //videoSurfaceRef.EnableFilpTextureApply(true, true);
+            videoSurfaceQuadRef.EnableFlipTextureApplyTransform(true, true, defaultLiveStreamQuadScale);
             videoSurfaceQuadRef.SetGameFps(frameRate);
-            StartPreview();
             //liveStreamQuad.GetComponent<LiveStreamGreenCalculator>().StartBackgroundRemoval();
-
             //Invoke("VideoResolution", 3);
         }
     }
