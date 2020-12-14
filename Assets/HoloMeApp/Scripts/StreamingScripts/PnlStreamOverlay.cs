@@ -153,7 +153,6 @@ public class PnlStreamOverlay : MonoBehaviour {
     public void CloseAsStreamer() {
         OnCloseAsStreamer.Invoke();
         StopStream();
-        agoraController.StopPreview();
     }
 
     private void CloseAsViewer() {
