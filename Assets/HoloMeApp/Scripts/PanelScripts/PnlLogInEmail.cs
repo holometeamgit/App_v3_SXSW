@@ -30,6 +30,15 @@ public class PnlLogInEmail : MonoBehaviour {
         if (!this.isActiveAndEnabled)
             return;
 
+        if (badRequestData == null ||
+            (badRequestData.username.Count == 0 &&
+            badRequestData.non_field_errors.Count == 0 &&
+            badRequestData.password.Count == 0 &&
+            string.IsNullOrEmpty(badRequestData.detail))) {
+            inputFieldEmail.ShowWarning("Server Error " + badRequestData.code.ToString());
+            return;
+        }
+
         if (badRequestData.username.Count > 0)
             inputFieldEmail.ShowWarning(badRequestData.username[0]);
 
@@ -53,12 +62,6 @@ public class PnlLogInEmail : MonoBehaviour {
         if (!string.IsNullOrEmpty(badRequestData.detail))
             //inputFieldEmail.ShowWarning(badRequestData.detail);
             inputFieldPassword.ShowWarning("Incorrect password");
-
-        if (badRequestData.username.Count == 0 &&
-            badRequestData.non_field_errors.Count == 0 &&
-            badRequestData.password.Count == 0 &&
-            string.IsNullOrEmpty(badRequestData.detail))
-            inputFieldEmail.ShowWarning("Server Error " + badRequestData.code.ToString());
     }
 
     private void ResendVerificationCallBack() {
