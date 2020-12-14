@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using DG.Tweening;
 using TMPro;
-using NatShare;
 using UnityEngine.Events;
 using System.Collections;
 using UnityEngine.UI;
@@ -125,7 +124,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
         //StartCountdown();
         agoraController.StartPreview();
-        //StartCoroutine(Resize());
+        StartCoroutine(OnPreviewReady());
     }
 
     public void OpenAsViewer() {
@@ -198,12 +197,16 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
     }
 
-    IEnumerator Resize() {
+    IEnumerator OnPreviewReady() {
+        if(!agoraController.VideoIsReady || cameraRenderImage.texture == null)
+            AnimatedCentreTextMessage("Loading Preview");
+
         while (!agoraController.VideoIsReady || cameraRenderImage.texture == null) {
             yield return null;
         }
         //yield return new WaitForSeconds(3);
-        cameraRenderImage.SizeToParent();
+        //cameraRenderImage.SizeToParent();
+        AnimatedFadeOutMessage();
     }
 
     private void EnableStreamControls(bool enable) {

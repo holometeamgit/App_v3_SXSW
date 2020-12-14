@@ -133,6 +133,7 @@ public class AgoraController : MonoBehaviour {
             HelperFunctions.DevLog("Agora Preview Stopped");
         }        
         ResetVideoQuadSurface();
+        VideoIsReady = false;
     }
           
     public void JoinOrCreateChannel(bool channelCreator) {
