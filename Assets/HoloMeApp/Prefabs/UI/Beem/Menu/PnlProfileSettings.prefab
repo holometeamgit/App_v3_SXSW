@@ -173,6 +173,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8071998731876317605}
   - component: {fileID: 8071998731876317608}
+  - component: {fileID: 2275525968572402822}
   m_Layer: 5
   m_Name: PnlProfileSettings
   m_TagString: Untagged
@@ -209,6 +210,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8071998731876317604}
   m_CullTransparentMesh: 0
+--- !u!114 &2275525968572402822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8071998731876317604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2e1960fed924fe4b6b72395e8a2edf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  changePassword: {fileID: 4608979834043965843}
+  accountManager: {fileID: 0}
 --- !u!1 &8071998732051790143
 GameObject:
   m_ObjectHideFlags: 0
@@ -1274,6 +1289,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa88fcbc81c7b4a1d83113967b5b31fe, type: 3}
+--- !u!1 &4608979834043965843 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5793784605799738165, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
+    type: 3}
+  m_PrefabInstance: {fileID: 8039429854681156262}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &4608979834043965842 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5793784605799738164, guid: aa88fcbc81c7b4a1d83113967b5b31fe,

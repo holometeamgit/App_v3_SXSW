@@ -78,6 +78,11 @@ public class PnlResetPassword : MonoBehaviour {
     }
 
     private void ErrorResetPasswordCallBack(BadRequestResetPassword badRequestResetPassword) {
+        if (badRequestResetPassword == null) {
+            passwordInputField.ShowWarning("Server Error " + badRequestResetPassword.code.ToString());
+            return;
+        }
+
         bool hasMsg = false;
         if (badRequestResetPassword.uid.Count > 0) {
             passwordInputField.ShowWarning("Outdated confirmation code in your email");//badRequestResetPassword.uid[0]); //Outdated confirmation code in your email

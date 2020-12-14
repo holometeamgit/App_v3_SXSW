@@ -35,6 +35,15 @@ public class PnlSignUpEmail : MonoBehaviour {
     }
 
     private void ErrorSignUpCallBack(BadRequestSignUpEmailJsonData badRequestData) {
+        if (badRequestData == null ||
+            (badRequestData.email.Count == 0 &&
+            badRequestData.password1.Count == 0 &&
+            badRequestData.password2.Count == 0 &&
+            badRequestData.non_field_errors.Count == 0)) {
+            inputFieldEmail.ShowWarning("Server Error " + badRequestData.code.ToString());
+            return;
+        }
+
         if (badRequestData.email.Count > 0)
             inputFieldEmail.ShowWarning(badRequestData.email[0]);
         if (badRequestData.password1.Count > 0)
@@ -43,12 +52,6 @@ public class PnlSignUpEmail : MonoBehaviour {
             inputFieldConfirmPassword.ShowWarning(badRequestData.password2[0]);
         if (badRequestData.non_field_errors.Count > 0)
             inputFieldConfirmPassword.ShowWarning(badRequestData.non_field_errors[0]);
-
-        if (badRequestData.email.Count == 0 &&
-            badRequestData.password1.Count == 0 &&
-            badRequestData.password2.Count == 0 &&
-            badRequestData.non_field_errors.Count == 0)
-            inputFieldEmail.ShowWarning("Server Error " + badRequestData.code.ToString());
     }
 
     private bool LocalDataVerification() {
