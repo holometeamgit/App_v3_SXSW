@@ -127,7 +127,7 @@ public class UIThumbnailV3 : UIThumbnail {
         imgLive.gameObject.SetActive(isLive);
         txtTime.gameObject.SetActive(!isLive);
 
-        txtDate.text = thumbnailElement.Data.StartDate.ToString("ddd, d MMM");
+        txtDate.text = thumbnailElement.Data.StartDate.ToString("MMM d");
         txtTime.text = thumbnailElement.Data.StartDate.ToString("HH:mm");
         txtTitle.text = thumbnailElement.Data.user;
         txtDescription.text = thumbnailElement.Data.description;
@@ -153,7 +153,7 @@ public class UIThumbnailV3 : UIThumbnail {
             btnShare.SetActive(!thumbnailElement.Data.HasTeaser);
             btnBuyTicketR.SetActive(true);
         } else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
-            txtInfoText.text = "You already have a ticket to this event";
+            txtInfoText.text = "This is a free event";
 
                 btnWatchNow.SetActive(true);
                 btnShareR.SetActive(true);
