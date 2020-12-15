@@ -37,10 +37,10 @@ public class RequestCloudRecordResource : RestRequest {
 
     [Serializable]
     public class TranscodingConfig {
-        public int height = 640;
-        public int width = 360;
-        public int bitrate = 500;
-        public int fps = 15;
+        public int height = 1280;
+        public int width = 720;
+        public int bitrate = 3000;
+        public int fps = 25;
         public int mixedVideoLayout = 1;
         public string backgroundColor = "#000000";
     }

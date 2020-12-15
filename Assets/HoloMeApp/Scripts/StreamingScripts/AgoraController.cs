@@ -24,6 +24,9 @@ public class AgoraController : MonoBehaviour {
     [SerializeField]
     StreamerCountUpdater streamerCountUpdater;
 
+    [SerializeField]
+    UserWebManager userWebManager;
+
     TokenAgoraResponse tokenAgoraResponseChannel;
     TokenAgoraResponse tokenAgoraResponseRTM;
 
@@ -196,10 +199,10 @@ public class AgoraController : MonoBehaviour {
                 iRtcEngine.SetClientRole(CLIENT_ROLE.AUDIENCE);
                 StartPreview(); //Must be called for viewers to view
         }
-              
+
         //iRtcEngine.EnableDualStreamMode(true);
-               
-        var result = iRtcEngine.JoinChannelByKey(viewerBroadcasterToken, ChannelName, null, IsChannelCreator ? 1u : 0);
+
+        var result = iRtcEngine.JoinChannelByKey(viewerBroadcasterToken, ChannelName, null, Convert.ToUInt32(userWebManager.GetUserID()));
 
         if (result < 0) {
             Debug.LogError("Agora Stream Join Failed!");
@@ -308,7 +311,7 @@ public class AgoraController : MonoBehaviour {
             videoSurfaceQuadRef.SetForUser(uid);
             videoSurfaceQuadRef.SetEnable(true);
             videoSurfaceQuadRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
-            videoSurfaceQuadRef.EnableFlipTextureApplyTransform(true, true, defaultLiveStreamQuadScale);
+            videoSurfaceQuadRef.EnableFlipTextureApplyTransform(false, true, defaultLiveStreamQuadScale);
             videoSurfaceQuadRef.SetGameFps(frameRate);
             //liveStreamQuad.GetComponent<LiveStreamGreenCalculator>().StartBackgroundRemoval();
             //Invoke("VideoResolution", 3);
