@@ -66,7 +66,11 @@ public class RequestCloudRecordResource : RestRequest {
     public class StorageConfig {
         public string accessKey = "AKIA2VJEQIYYQAVB4T67";
         public int region = 5;
+#if DEV
         public string bucket = "dev.agora";
+#else
+        public string bucket = "prod.agora";
+#endif
         public string secretKey = "tFAwjZ1LNUrfXq7eoBlBC33j7qQWjn3KMdiwCSyO";
         public int vendor = 1;
         public List<string> fileNamePrefix = new List<string>() { "beamapp" };
