@@ -37,9 +37,16 @@ public class UILog : MonoBehaviour {
     void HandleLog(string logString, string stackTrace, LogType type) {
         myLog = logString;
         string newString = "\n [" + type + "] : " + myLog;
+
+        if (type == LogType.Warning) {
+            newString = "<color=yellow>" + newString + "</color> ";
+        } else if (type == LogType.Exception) {
+            newString = "<color=orange>" + newString + "</color> ";
+        }
+
         myLogQueue.Enqueue(newString);
         if (type == LogType.Exception) {
-            newString = "\n" + stackTrace;
+            newString = "\n<color=orange>" + stackTrace + "</color>";
             myLogQueue.Enqueue(newString);
         }
         myLog = string.Empty;
