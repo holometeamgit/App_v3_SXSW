@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using DG.Tweening;
 using TMPro;
-using NatShare;
 using UnityEngine.Events;
 using System.Collections;
 using UnityEngine.UI;
@@ -87,9 +86,10 @@ public class PnlStreamOverlay : MonoBehaviour {
             var videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
             if (videoSurface) {
                 isUsingFrontCamera = !isUsingFrontCamera;
-                videoSurface.EnableFlipTextureApplyTransform(!isUsingFrontCamera, false, rawImageQuadDefaultScale);
+                videoSurface.EnableFlipTextureApplyTransform(!isUsingFrontCamera, false, rawImageQuadDefaultScale); //This may need to be adjusted if camera flip button ever comes back
             }
         };
+        
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
         AddVideoSurface();
@@ -125,7 +125,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
         //StartCountdown();
         agoraController.StartPreview();
-        //StartCoroutine(Resize());
+        StartCoroutine(OnPreviewReady());
     }
 
     public void OpenAsViewer() {
@@ -153,7 +153,6 @@ public class PnlStreamOverlay : MonoBehaviour {
     public void CloseAsStreamer() {
         OnCloseAsStreamer.Invoke();
         StopStream();
-        agoraController.StopPreview();
     }
 
     private void CloseAsViewer() {
@@ -179,6 +178,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
         EnableStreamControls(false);
         agoraController.Leave();
+        cameraRenderImage.texture = null;
     }
 
     void StartStream() {
@@ -191,20 +191,23 @@ public class PnlStreamOverlay : MonoBehaviour {
         if (!videoSurface) {
             videoSurface = cameraRenderImage.gameObject.AddComponent<VideoSurface>();
             isUsingFrontCamera = true;
-            videoSurface.EnableFlipTextureApplyTransform(true, true, rawImageQuadDefaultScale);
-            //videoSurface.EnableFilpTextureApply(true, true);
+            videoSurface.EnableFlipTextureApplyTransform(false, true, rawImageQuadDefaultScale);
             videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
             videoSurface.SetGameFps(agoraController.frameRate);
             videoSurface.SetEnable(true);
         }
     }
 
-    IEnumerator Resize() {
+    IEnumerator OnPreviewReady() {
+        if(!agoraController.VideoIsReady || cameraRenderImage.texture == null)
+            AnimatedCentreTextMessage("Loading Preview");
+
         while (!agoraController.VideoIsReady || cameraRenderImage.texture == null) {
             yield return null;
         }
         //yield return new WaitForSeconds(3);
-        cameraRenderImage.SizeToParent();
+        //cameraRenderImage.SizeToParent();
+        AnimatedFadeOutMessage();
     }
 
     private void EnableStreamControls(bool enable) {

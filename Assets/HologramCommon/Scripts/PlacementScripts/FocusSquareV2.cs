@@ -180,6 +180,12 @@ public class FocusSquareV2 : PlacementHandler
             case States.VIDEO_LAUNCH:
                 TransformUpdate();
 
+                if (IsAllButtonsCloseNotActive())
+                {
+                    SwitchToState(States.NOT_RUNNUNG);
+                    break;
+                }
+                
                 if (!_launchFirstTime && VideoQuadPlacing)
                 {
                     SwitchToState(States.LOADING);
@@ -197,6 +203,7 @@ public class FocusSquareV2 : PlacementHandler
                 if (IsAllButtonsCloseNotActive())
                 {
                     SwitchToState(States.NOT_RUNNUNG);
+                    break;
                 }
 
                 if (SurfaceDetected()) 
@@ -211,17 +218,20 @@ public class FocusSquareV2 : PlacementHandler
                 if (VideoQuadPlacing) 
                 {
                     SwitchToState(States.LOADING);
+                    break;
                 }
 
                 if (!SurfaceDetected()) 
                 {
                     SwitchToState(States.SCANNING);
+                    break;
                 }
                 else
                 {
                     if (TapToPlace())
                     {
-                        SwitchToState(States.LOADING); // TODO - check it
+                        SwitchToState(States.LOADING);
+                        break;
                     }
                 }
 
@@ -231,8 +241,12 @@ public class FocusSquareV2 : PlacementHandler
                 }
                 break;
             case States.LOADING:
-                // if (!VideoLoading) 
-                
+                // if (!VideoLoading)
+                if (IsAllButtonsCloseNotActive())
+                {
+                    break;
+                }
+
                 if (SurfaceDetected())
                 {
                     TapToPlace();
@@ -257,24 +271,33 @@ public class FocusSquareV2 : PlacementHandler
                 SwitchToState(_launchFirstTime ? States.PINCH : States.HIDE);
                 break;
             case States.PINCH:
+                if (IsAllButtonsCloseNotActive())
+                {
+                    break;
+                }
+                
                 if (Input.touchCount > 0) 
                 {
                     SwitchToState(States.DELAY_AFTER_PINCH);
-                }
-
-                if (IsAllButtonsCloseNotActive())
-                {
-                    SwitchToState(States.HIDE);
+                    break;
                 }
                 
                 if (SurfaceDetected())
                 {
                     TapToPlace();
+                    break;
                 }
 
                 TransformUpdate();
                 break;
             case States.DELAY_AFTER_PINCH:
+                
+                if (IsAllButtonsCloseNotActive())
+                {
+                    _currentDelayAfterPinch = _delayAfterPinch;
+                    break;
+                }
+                
                 HandleDistanceFade();
                 
                 if (SurfaceDetected())
@@ -289,10 +312,13 @@ public class FocusSquareV2 : PlacementHandler
                     _currentDelayAfterPinch += Time.deltaTime;
                     break;
                 }
-                _currentDelayAfterPinch = 0.0f;
-                _launchFirstTime = false;
-                SwitchToState(States.HIDE);
                 
+                if (IsOneOfButtonsCloseActive())
+                {
+                    _currentDelayAfterPinch = 0.0f;
+                    _launchFirstTime = false;
+                    SwitchToState(States.HIDE);
+                }
                 break;
             case States.HIDE:
                 HideState();

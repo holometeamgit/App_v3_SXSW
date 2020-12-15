@@ -33,6 +33,14 @@ public class PnlChangePassword : MonoBehaviour {
     }
 
     private void OnErrorChangePasswordCallBack(BadRequestChangePassword badRequestChangePassword) {
+        if (badRequestChangePassword == null ||
+        (badRequestChangePassword.new_password1.Count == 0 &&
+        badRequestChangePassword.new_password2.Count == 0 &&
+        string.IsNullOrEmpty(badRequestChangePassword.detail))) {
+            newPasswordInputField.ShowWarning("Server Error " + badRequestChangePassword.code.ToString());
+            return;
+        }
+
         if (!string.IsNullOrWhiteSpace(badRequestChangePassword.detail))
             newPasswordInputField.ShowWarning(badRequestChangePassword.detail);
 
