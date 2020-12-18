@@ -9,13 +9,32 @@ public class PnlSplashScreen : MonoBehaviour
     [SerializeField] FacebookAccountManager facebookAccountManager;
     [SerializeField] AppleAccountManager appleAccountManager;
     [SerializeField] EmailAccountManager emailAccountManager;
+    [SerializeField] GameObject updateRect;
+    [SerializeField] VersionChecker versionChecker;
 
     public UnityEvent OnLogInEvent;
     public UnityEvent OnAuthorisationErrorEvent;
 
+    public void OpenStore() {
+#if UNITY_IOS
+        Application.OpenURL("https://apps.apple.com/au/app/beem-me/id1532446771");
+#elif UNITY_ANDROID
+    Application.OpenURL("https://play.google.com/store/apps/details?id=com.HoloMe.Beem");
+#endif
+    }
+
+    private void Awake() {
+        versionChecker.OnCanUse += TryLogin;
+        versionChecker.OnNeedUpdateApp += ShowNeedUpdate;
+    }
+
     void Start()
     {
-        TryLogin();
+        versionChecker.RequestVersion();
+    }
+
+    private void ShowNeedUpdate() {
+        updateRect.SetActive(true);
     }
 
     private void TryLogin() {
