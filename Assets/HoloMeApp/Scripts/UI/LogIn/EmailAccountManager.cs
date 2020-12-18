@@ -200,6 +200,12 @@ public class EmailAccountManager : MonoBehaviour {
             badRequestData.code = code;
             badRequestData.errorMsg = body;
         }
+
+        if (badRequestData == null) {
+            badRequestData = new BadRequestStartResetPassword();
+            badRequestData.code = 500;
+        }
+
         OnErrorStartResetPassword?.Invoke(badRequestData);
     }
     #endregion

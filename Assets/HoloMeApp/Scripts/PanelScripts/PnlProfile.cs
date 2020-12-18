@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class PnlProfile : MonoBehaviour
-{
+public class PnlProfile : MonoBehaviour {
     [SerializeField] UserWebManager userWebManager;
     [SerializeField] GameObject InputDataArea;
     [SerializeField] InputFieldController usernameInputField;
@@ -13,12 +12,12 @@ public class PnlProfile : MonoBehaviour
     [SerializeField] InputFieldController surnameInputField;
     [SerializeField] int userNameLimit;
     [SerializeField] Switcher switchToMainMenu;
-    [SerializeField] Switcher switchLogOutToLogIn;
+    [SerializeField] Switcher switchLogOut;
 
     [SerializeField] List<GameObject> backBtns;
 
     public void ChooseUsername() {
-        if(LocalDataVerification())
+        if (LocalDataVerification())
             userWebManager.UpdateUserData(userName: usernameInputField?.text ?? null,
             first_name: firstnameInputField?.text ?? null,
             last_name: surnameInputField?.text ?? null);
@@ -30,13 +29,16 @@ public class PnlProfile : MonoBehaviour
     }
 
     private void UserInfoLoadedCallBack() {
-        usernameInputField.text = usernameInputField.text == "" ? userWebManager.GetUsername() ?? "" : usernameInputField.text;
-        firstnameInputField.text = firstnameInputField.text == "" ? userWebManager.GetFirstName() ?? "" : firstnameInputField.text;
-        surnameInputField.text = surnameInputField.text == "" ? userWebManager.GetLastName() ?? "" : surnameInputField.text;
-
-        if ((userWebManager.GetUsername() == null && usernameInputField != null) ||
-            userWebManager.GetFirstName() == null && firstnameInputField != null ||
-            userWebManager.GetLastName() == null && surnameInputField != null) {
+        Debug.Log("UserInfoLoadedCallBack");
+        Debug.Log(usernameInputField.text + " " + firstnameInputField.text + " " + surnameInputField.text);
+        Debug.Log(userWebManager?.GetUsername() + " " + userWebManager?.GetFirstName() + " " + userWebManager?.GetLastName());
+        usernameInputField.text = string.IsNullOrWhiteSpace(usernameInputField.text) ? userWebManager.GetUsername() ?? "" : usernameInputField.text;
+        firstnameInputField.text = string.IsNullOrWhiteSpace(firstnameInputField.text) ? userWebManager.GetFirstName() ?? "" : firstnameInputField.text;
+        surnameInputField.text = string.IsNullOrWhiteSpace(surnameInputField.text) ? userWebManager.GetLastName() ?? "" : surnameInputField.text;
+        Debug.Log(usernameInputField.text + " " + firstnameInputField.text + " " + surnameInputField.text);
+        if (userWebManager.GetUsername() == null ||
+            userWebManager.GetFirstName() == null ||
+            userWebManager.GetLastName() == null) {
             InputDataArea.SetActive(true);
         } else {
             SwitchToMainMenu();
@@ -44,7 +46,7 @@ public class PnlProfile : MonoBehaviour
     }
 
     private void ErrorUserInfoLoadedCallBack() {
-        switchLogOutToLogIn?.Switch();
+        switchLogOut?.Switch();
     }
 
     private void UpdateUserDataCallBack() {
@@ -53,7 +55,6 @@ public class PnlProfile : MonoBehaviour
     }
 
     private void SwitchToMainMenu() {
-        ClearInputFieldData();
         switchToMainMenu.Switch();
     }
 
@@ -120,6 +121,8 @@ public class PnlProfile : MonoBehaviour
         userWebManager.OnErrorUserInfoLoaded -= ErrorUserInfoLoadedCallBack;
         userWebManager.OnUserInfoUploaded -= UpdateUserDataCallBack;
         userWebManager.OnErrorUserUploaded -= ErrorUpdateUserDataCallBack;
+
+        ClearInputFieldData();
 
         foreach (var backBtn in backBtns) {
             backBtn.SetActive(false);

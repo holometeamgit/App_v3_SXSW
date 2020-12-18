@@ -53,7 +53,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
         uiThumbnailsController.OnPlay += OnPlayCallBack;
         uiThumbnailsController.OnNeedPurchase += OnNeedPurchaseCallBack;
 
-        pnlEventPurchaser.OnPurchased += RefreshItems;
+        pnlEventPurchaser.OnServerPurchasedDataUpdate += RefreshItems;
     }
 
     private void DataUpdateCallBack() {

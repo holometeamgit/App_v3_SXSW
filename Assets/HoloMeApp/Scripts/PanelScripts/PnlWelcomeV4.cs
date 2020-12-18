@@ -24,7 +24,7 @@ public class PnlWelcomeV4 : MonoBehaviour
     private void OnEnable() {
         webRequestHandler.GetRequest(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, null);
 
-        //LogInAppleGO.SetActive(AppleAccountManager.IsCurrentPlatformSupported());
+        LogInAppleGO.SetActive(AppleAccountManager.IsCurrentPlatformSupported());
     }
 
     private void EnableFB(long key, string body) {

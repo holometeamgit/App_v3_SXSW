@@ -60,10 +60,12 @@ public class AppleAccountManager : MonoBehaviour {
                 Debug.Log("AuthorizationCode " + appleIdCredential.AuthorizationCode);
                 Debug.Log("AuthorizationCode " + appleIdCredential.AuthorizationCode.Length);
 
-                string code = System.Text.Encoding.UTF8.GetString(
+                string code = System.Text.Encoding.ASCII.GetString(
                         appleIdCredential.AuthorizationCode,
                         0,
                         appleIdCredential.AuthorizationCode.Length);
+
+                
 
                 try {
                     Debug.Log(code);
@@ -80,7 +82,7 @@ public class AppleAccountManager : MonoBehaviour {
             });
     }
     
-    void Awake() {
+    void Start() {
         Init();
     }
 
@@ -188,8 +190,8 @@ public class AppleAccountManager : MonoBehaviour {
     #region request server access token
     private void GetServerAccessToken<T>(T appleAccessToken, string state, ResponseDelegate responseCallBack, ErrorTypeDelegate errorCallBack) {
         string url = GetGetRequestAccessTokenURL(appleAccessToken as string);
-        Debug.Log(" Apple post req " + url);
-        Debug.Log(" appleAccessToken " + appleAccessToken);
+        Debug.Log(" Apple req " + url);
+        Debug.Log(" appleAccessToken " + (appleAccessToken as string));
         Dictionary<string, T> formData = new Dictionary<string, T>();
         formData["code"] = appleAccessToken;
         //webRequestHandler.PostRequest(url, formData, WebRequestHandler.BodyType.XWWWFormUrlEncoded, responseCallBack, errorCallBack);

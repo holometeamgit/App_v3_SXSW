@@ -24,6 +24,10 @@ public class JsonParser
 
     public static T CreateFromJSON<T>(string jsonString)
     {
-        return JsonUtility.FromJson<T>(jsonString);
+        try {
+            return JsonUtility.FromJson<T>(jsonString);
+        } catch(System.Exception) {
+            return default;
+        }
     }
 }
