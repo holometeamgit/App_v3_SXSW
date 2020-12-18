@@ -67,6 +67,13 @@ public class UserWebManager : MonoBehaviour
             bio, profile_picture_s3_url));
     }
 
+    public long GetUserID()
+    {
+        if (userData == null)
+            return -1;
+        return userData.pk;
+    }
+
     public string GetUnituniqueName() {
         return GetEmail();
     }

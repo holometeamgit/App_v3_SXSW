@@ -37,10 +37,10 @@ public class RequestCloudRecordResource : RestRequest {
 
     [Serializable]
     public class TranscodingConfig {
-        public int height = 640;
-        public int width = 360;
-        public int bitrate = 500;
-        public int fps = 15;
+        public int height = 1280;
+        public int width = 720;
+        public int bitrate = 3000;
+        public int fps = 25;
         public int mixedVideoLayout = 1;
         public string backgroundColor = "#000000";
     }
@@ -66,7 +66,11 @@ public class RequestCloudRecordResource : RestRequest {
     public class StorageConfig {
         public string accessKey = "AKIA2VJEQIYYQAVB4T67";
         public int region = 5;
+#if DEV
         public string bucket = "dev.agora";
+#else
+        public string bucket = "prod.agora";
+#endif
         public string secretKey = "tFAwjZ1LNUrfXq7eoBlBC33j7qQWjn3KMdiwCSyO";
         public int vendor = 1;
         public List<string> fileNamePrefix = new List<string>() { "beamapp" };
