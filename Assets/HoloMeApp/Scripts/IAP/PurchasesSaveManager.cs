@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PurchasesSaveManager : MonoBehaviour {
+    public Action OnAllDataSended;
+
     [SerializeField] UserWebManager userWebManager;
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] PurchaseAPIScriptableObject purchaseAPISO;
@@ -42,6 +45,8 @@ public class PurchasesSaveManager : MonoBehaviour {
                 PostData(uniqName, purchaseSaveJsonData.purchaseSaveElements[0].id,
                     purchaseSaveJsonData.purchaseSaveElements[0].streamBillingJsonData,
                     accountManager.GetAccessToken().access);
+            } else {
+                OnAllDataSended?.Invoke();
             }
         } catch (System.Exception) {
         }
@@ -97,7 +102,13 @@ public class PurchasesSaveManager : MonoBehaviour {
     private void OnServerErrorBillingSent(string uniqName, long id, StreamBillingJsonData streamBillingJsonData) {
         Debug.Log("OnServerErrorBillingSent");
 
-        RemovePurchaseSaveElement(uniqName, id, streamBillingJsonData);
+        //RemovePurchaseSaveElement(uniqName, id, streamBillingJsonData);
+        StartCoroutine(Rechecking());
+    }
+
+    IEnumerator Rechecking() {
+        yield return new WaitForSeconds(2);
+        CheckSubmittedData();
     }
 
     private string GetRequestRefreshTokenURL(long id) {

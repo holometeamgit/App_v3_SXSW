@@ -8,7 +8,8 @@ using System;
 using NatShare;
 
 public class PnlEventPurchaser : MonoBehaviour {
-    public Action OnPurchased;
+    //public Action OnPurchased;
+    public Action OnServerPurchasedDataUpdate;
 
     [SerializeField] IAPController iapController;
     [SerializeField] List<Sprite> LockSprites;
@@ -71,6 +72,7 @@ public class PnlEventPurchaser : MonoBehaviour {
     private void Awake() {
         iapController.OnPurchaseHandler += OnPurchaseCallBack;
         iapController.OnPurchaseFailedHandler += OnPurchaseFailCallBack;
+        purchasesSaveManager.OnAllDataSended += AllPurchasedDataSentOnServerCallBack;
     }
 
     private void OnPurchaseCallBack(Product product) {
@@ -86,7 +88,11 @@ public class PnlEventPurchaser : MonoBehaviour {
 
         Debug.Log("OnPurchaseCallBack " + product.receipt);
         purchasesSaveManager.SendToServer(data.id, streamBillingJsonData);
-        OnPurchased?.Invoke();
+        //OnPurchased?.Invoke();
+    }
+
+    private void AllPurchasedDataSentOnServerCallBack() {
+        OnServerPurchasedDataUpdate?.Invoke();
     }
 
     private void OnPurchaseFailCallBack() {
