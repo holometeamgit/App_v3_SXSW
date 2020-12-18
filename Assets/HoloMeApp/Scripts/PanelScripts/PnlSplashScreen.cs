@@ -28,6 +28,9 @@ public class PnlSplashScreen : MonoBehaviour
         Debug.Log("TryGetNewRefreshTokenAndLogIn");
         Debug.Log(code + " : " + body);
 
+        AuthorisationErrorCallBack(code, body);
+
+        /*
         //if the user has not logged in then send to the registration menu
         if (!PlayerPrefs.HasKey(PlayerPrefsKeys.LastTypeLoginPPKey)) {
             AuthorisationErrorCallBack(0, "Doesn't contain Authorisation key");
@@ -53,7 +56,7 @@ public class PnlSplashScreen : MonoBehaviour
         case LogInType.Google:
             AuthorisationErrorCallBack(0, "it has not yet been implemented");  //TODO update after it will add to the server
             break;
-        }
+        }*/
     }
 
     private void AuthorisationErrorCallBack(long code, string body) {

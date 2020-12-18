@@ -135,7 +135,7 @@ public class UserWebManager : MonoBehaviour
         userData.first_name = first_name ?? userData.first_name;
         userData.last_name = last_name ?? userData.last_name;
 
-        userData.profile = userData.profile != null ? userData.profile : new ProfileJsonData();
+        userData.profile = userData.profile ?? new ProfileJsonData();
         userData.profile.bio = bio ?? userData.profile.bio;
         userData.profile.profile_picture_s3_url = profile_picture_s3_url ?? userData.profile.profile_picture_s3_url;
 

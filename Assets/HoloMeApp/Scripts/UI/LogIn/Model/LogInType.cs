@@ -3,5 +3,6 @@
     Apple,
     Google,
     Facebook,
+    SSO,
     Email
 }

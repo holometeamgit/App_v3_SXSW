@@ -7,6 +7,7 @@ public class UILog : MonoBehaviour {
     string myLog;
     Queue myLogQueue = new Queue();
     [SerializeField] Text text;
+    [SerializeField] Text versionText;
     [SerializeField] GameObject canvasLog;
     [SerializeField] GameObject scrollView;
 
@@ -21,6 +22,7 @@ public class UILog : MonoBehaviour {
 
     void Start() {
         Debug.Log("Test log");
+        versionText.text = "Version " + Application.version;
     }
 
     void OnEnable() {
