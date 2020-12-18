@@ -41,6 +41,9 @@ Shader "HLM/Unlit/GreenscreenRemoval"
         _sgFactor("sgFactor", Float) =  0.97
         [MaterialToggle] _AddEdgeAndRemoveSmallHoles("Add Edges and remove small holes", Float) = 1
         [Toggle(USE_AMBIENT_LIGHTING)] _UseAmbientLighting("Use ambient lighting", Float) = 1
+        
+        _OutlineColor("Outline Color", Color)=(1,1,1,1)
+        _OutlineSize("OutlineSize", Range(1.0,1.5))=1.1
     }
     
     SubShader
@@ -50,9 +53,9 @@ Shader "HLM/Unlit/GreenscreenRemoval"
         
         Cull Off
         ZWrite Off
-        
         Pass
         {
+
             Blend SrcAlpha OneMinusSrcAlpha 
 
             CGPROGRAM
@@ -216,7 +219,7 @@ Shader "HLM/Unlit/GreenscreenRemoval"
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
-                float4 blurRes = MedianBlur(3, i.uv);
+                float4 blurRes = MedianBlur(5, i.uv);
                 if (_On == 0)
                 {
                     return col;
@@ -232,11 +235,22 @@ Shader "HLM/Unlit/GreenscreenRemoval"
                 fixed4 down  = tex2D(_MainTex, i.uv - fixed2(0, _MainTex_TexelSize.y));
                 fixed4 left  = tex2D(_MainTex, i.uv - fixed2(_MainTex_TexelSize.x, 0));
                 fixed4 right = tex2D(_MainTex, i.uv + fixed2(_MainTex_TexelSize.x, 0));
-                
+
                 float3 hsv_up    = RGBtoHSV(up.rgb);
                 float3 hsv_down  = RGBtoHSV(down.rgb);
                 float3 hsv_left  = RGBtoHSV(left.rgb);
                 float3 hsv_right = RGBtoHSV(right.rgb);
+
+                fixed4 up_left    = tex2D(_MainTex, i.uv + fixed2(-_MainTex_TexelSize.x,  _MainTex_TexelSize.y));
+                fixed4 down_left  = tex2D(_MainTex, i.uv + fixed2(-_MainTex_TexelSize.x, -_MainTex_TexelSize.y));
+                fixed4 up_right   = tex2D(_MainTex, i.uv + fixed2( _MainTex_TexelSize.x,  _MainTex_TexelSize.y));
+                fixed4 down_right = tex2D(_MainTex, i.uv + fixed2( _MainTex_TexelSize.x, -_MainTex_TexelSize.y));
+
+                float3 hsv_up_left    = RGBtoHSV(up_left.rgb);
+                float3 hsv_down_left  = RGBtoHSV(down_left.rgb);
+                float3 hsv_up_right   = RGBtoHSV(up_right.rgb);
+                float3 hsv_down_right = RGBtoHSV(down_right.rgb);
+                
                 float distance = 0;
                 
                 if (isHSVgood(hsv, _H1, _H2, _S, _V)) {
@@ -246,6 +260,11 @@ Shader "HLM/Unlit/GreenscreenRemoval"
                     float distanceR = hsvDistance(hsv_right, _H1, _H2, _S, _V);
                     float distanceU = hsvDistance(hsv_up, _H1, _H2, _S, _V);
                     float distanceD = hsvDistance(hsv_down, _H1, _H2, _S, _V);
+
+                    float distanceUL = hsvDistance(hsv_up_left, _H1, _H2, _S, _V);
+                    float distanceDL = hsvDistance(hsv_down_left, _H1, _H2, _S, _V);
+                    float distanceUR = hsvDistance(hsv_up_right, _H1, _H2, _S, _V);
+                    float distanceDR = hsvDistance(hsv_down_right, _H1, _H2, _S, _V);
                     
                     float d = 1  - distance;
                     // float dm = (distanceL + distanceR + distanceU + distanceD) * 0.25;
@@ -253,31 +272,36 @@ Shader "HLM/Unlit/GreenscreenRemoval"
                     col.a = d * _maskContrast;
                     if (distance < _smallPolyhedron1)
                     {
-                        if (distanceL > _smallPolyhedron1 || distanceR > _smallPolyhedron1 || distanceU > _smallPolyhedron1 || distanceD > _smallPolyhedron1) {
+                        if (distanceL > _smallPolyhedron1 || distanceR > _smallPolyhedron1 || distanceU > _smallPolyhedron1 || distanceD > _smallPolyhedron1 ||
+                            distanceUL > _smallPolyhedron1 || distanceDL > _smallPolyhedron1 || distanceUR > _smallPolyhedron1 || distanceDR > _smallPolyhedron1) {
                         }
                         else {
                             col.a = d * _maskContrastS;
                         }
                     } else if (distance < _smallPolyhedron2) {
-                        if (distanceL > _smallPolyhedron2 || distanceR > _smallPolyhedron2 || distanceU > _smallPolyhedron2 || distanceD > _smallPolyhedron2) {
+                        if (distanceL > _smallPolyhedron2 || distanceR > _smallPolyhedron2 || distanceU > _smallPolyhedron2 || distanceD > _smallPolyhedron2 ||
+                            distanceUL > _smallPolyhedron2 || distanceDL > _smallPolyhedron2 || distanceUR > _smallPolyhedron2 || distanceDR > _smallPolyhedron2) {
                         } else {
                             col.a = d * _maskContrastS;
                         }
                     } else if (distance < _mediumPolyhedron) {
-                        if (distanceL > _mediumPolyhedron || distanceR > _mediumPolyhedron || distanceU > _mediumPolyhedron || distanceD > _mediumPolyhedron) {
+                        if (distanceL > _mediumPolyhedron || distanceR > _mediumPolyhedron || distanceU > _mediumPolyhedron || distanceD > _mediumPolyhedron ||
+                            distanceUL > _mediumPolyhedron || distanceDL > _mediumPolyhedron || distanceUR > _mediumPolyhedron || distanceDR > _mediumPolyhedron) {
                             col.a = d * _maskContrastM;
                         }
                     } else if (distance < _largePolyhedron) {
                         col.a = d * _maskContrastL;
                     }
 
-                    if (_AddEdgeAndRemoveSmallHoles) {
-                    if (!isHSVgood(hsv_up, _H1, _H2, _S, _V) || !isHSVgood(hsv_down, _H1, _H2, _S, _V) || 
-                        !isHSVgood(hsv_left, _H1, _H2, _S, _V) || !isHSVgood(hsv_right, _H1, _H2, _S, _V)) {
-                        //col.rgb *= 0.5;
-                        col.a = d * _maskContrastS;
+                     if (_AddEdgeAndRemoveSmallHoles) {
+                        if (distance < 0.5) {
+                            col.r *= (1.0 - distance * 2.0f);
+                            col.g *= (1.0 - distance * 2.0f);
+                            col.b *= (1.0 - distance * 2.0f);
+                            col.a = (1.0 - distance * 2.0f) * _maskContrast;
+                            col.a *= 1 / (sqrt(sqrt(i.uv.y)) * 1.5);
                         }
-                    }
+                    } 
                 }
                 
                 if (_ShowMatte != 0) {
@@ -304,7 +328,7 @@ Shader "HLM/Unlit/GreenscreenRemoval"
                 if (_UseBlendTex == 0) {
                     blendTextureColour.a = 1;
                 }
-
+            
                 return fixed4(col.rgb, col.a * _t);
             }
             ENDCG
