@@ -48,6 +48,14 @@ public class StreamJsonData {
         public string title;
         public string description;
 
+        public void InvokeDataUpdated() { //TODO better create RX
+            OnDataUpdated?.Invoke();
+        }
+
+        public Data() {
+            product_type = new ProductType();
+        }
+
         public bool IsStarted {
             get { return DateTime.Now >= StartDate; }
         }

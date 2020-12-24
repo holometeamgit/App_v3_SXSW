@@ -10,6 +10,7 @@ public class PurchasesSaveManager : MonoBehaviour {
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] PurchaseAPIScriptableObject purchaseAPISO;
     [SerializeField] AccountManager accountManager;
+    [SerializeField] IAPController iapController;
 
     private bool isSending;
 
@@ -23,7 +24,6 @@ public class PurchasesSaveManager : MonoBehaviour {
     }
 
     private void CheckSubmittedData() {
-        //        Debug.Log("CheckSubmittedData");
 
         if (isSending)
             return;
@@ -37,8 +37,6 @@ public class PurchasesSaveManager : MonoBehaviour {
 
         try {
             PurchaseSaveJsonData purchaseSaveJsonData = JsonUtility.FromJson<PurchaseSaveJsonData>(PlayerPrefs.GetString(uniqName));
-
-            //        Debug.Log("purchaseSaveElements count = " + purchaseSaveJsonData.purchaseSaveElements.Count);
 
             if (purchaseSaveJsonData.purchaseSaveElements.Count > 0) {
                 isSending = true;

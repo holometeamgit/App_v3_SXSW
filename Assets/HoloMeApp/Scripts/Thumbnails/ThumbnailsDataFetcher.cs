@@ -18,6 +18,8 @@ public class ThumbnailsDataFetcher {
     private int pageSize = 8;
     private int currentPage = 1;
 
+    private bool isBusy;
+
     private LoadingKey currentLoadingKey;
 
     public ThumbnailsDataFetcher(ThumbnailPriority thumbnailPriority,
@@ -44,6 +46,10 @@ public class ThumbnailsDataFetcher {
     }
 
     public void RefreshData() {
+        Debug.Log(isBusy);
+        if (isBusy)
+            return;
+        isBusy = true;
         currentLoadingKey = new LoadingKey(this);
         currentPriority = 0;
         thumbnailsDataContainer.Refresh();
@@ -51,6 +57,11 @@ public class ThumbnailsDataFetcher {
     }
 
     public void GetNextPage() {
+        Debug.Log(isBusy);
+        if (isBusy)
+            return;
+
+        isBusy = true;
         currentLoadingKey = new LoadingKey(this);
 
         if (currentPage >= 1)
@@ -58,6 +69,7 @@ public class ThumbnailsDataFetcher {
         else {
             currentPriority++;
             if (thumbnailPriority.Stages.Count <= currentPriority) {
+                isBusy = false;
                 OnAllDataLoaded?.Invoke();
                 return;
             }
@@ -84,12 +96,11 @@ public class ThumbnailsDataFetcher {
     }
 
     private void PageCountCallBack(int count, LoadingKey loadingKey) {
-//        Debug.Log("PageCountCallBack " + loadingKey.ToString());
         if (loadingKey != currentLoadingKey)
             return;
+        isBusy = false;
 
         currentPage = Mathf.Max(Mathf.CeilToInt((float)count / pageSize), 1);
-//        Debug.Log("currentPage = " + currentPage + " count = " + count);
 
         GetThumbnailsOnCurrentPage();
     }
@@ -97,7 +108,7 @@ public class ThumbnailsDataFetcher {
     private void ErrorPageCountCallBack(long code, string body, LoadingKey loadingKey) {
         if (loadingKey != currentLoadingKey)
             return;
-        Debug.Log(code + " " + body);
+        isBusy = false;
         OnErrorGetCountThumbnails?.Invoke();
     }
 
@@ -116,7 +127,7 @@ public class ThumbnailsDataFetcher {
 //        Debug.Log("GetThumbnailsOnCurrentPageCallBack " + loadingKey.ToString());
         if (loadingKey != currentLoadingKey)
             return;
-
+        isBusy = false;
         currentPage--;
 
         if (streamJsonData == null || streamJsonData.results.Count == 0)
@@ -128,7 +139,7 @@ public class ThumbnailsDataFetcher {
     private void ErrorGetThumbnailsOnCurrentPageCallBack(long code, string body, LoadingKey loadingKey) {
         if (loadingKey != currentLoadingKey)
             return;
-        Debug.Log(code + " " + body);
+        isBusy = false;
         OnErrorGetThumbnails?.Invoke();
     }
 
