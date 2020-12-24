@@ -8,4 +8,7 @@ public class PurchaseAPIScriptableObject : ScriptableObject {
     [Header("Purchase")]
     [Tooltip("Send hash for store")]
     public string SendPurchaseHash = "/stream/{id}/bill/";
+
+    [Tooltip("Get products list")]
+    public string GetProduct = "/product/";
 }

@@ -13,6 +13,8 @@ public class PurchaseManager : MonoBehaviour
 
     [SerializeField] IAPController iapController;
     [SerializeField] PurchasesSaveManager purchasesSaveManager;
+    [SerializeField] PurchaseAPIScriptableObject purchaseAPISO;
+    [SerializeField] WebRequestHandler webRequestHandler;
 
     StreamJsonData.Data streamData;
 
@@ -40,6 +42,45 @@ public class PurchaseManager : MonoBehaviour
         purchasesSaveManager.OnAllDataSended += AllPurchasedDataSentOnServerCallBack;
     }
 
+    private void Start() {
+        GetProductList();
+    }
+
+    #region products request
+
+    private void GetProductList() {
+        webRequestHandler.GetRequest(GetRequestProductURL(), ProductListCallBack, ErrorProductListCallBack);
+    }
+
+    private void ProductListCallBack(long code, string body) {
+        ProductJsonData productJsonData = new ProductJsonData();
+        try {
+            Debug.Log("ProductListCallBack " + body);
+            productJsonData = JsonUtility.FromJson<ProductJsonData>(body);
+            
+        } catch (Exception) {
+            body = "{ \"products\" :" + body + "}";
+
+            try {
+                productJsonData = JsonUtility.FromJson<ProductJsonData>(body);
+            } catch (Exception) { }
+        }
+
+        List<string> productIdList = new List<string>();
+
+        foreach (var product in productJsonData.products) {
+            productIdList.Add(product.product_id);
+        }
+
+        iapController.InitializePurchasing(productIdList);
+    }
+
+    private void ErrorProductListCallBack(long code, string body) {
+        StartCoroutine(RepeatRequestProduct());
+    }
+
+    #endregion
+
     private void OnPurchaseCallBack(Product product) {
         streamData.is_bought = true;
         streamData.InvokeDataUpdated();
@@ -63,5 +104,14 @@ public class PurchaseManager : MonoBehaviour
     private void OnPurchaseFailCallBack() {
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseCancelled);
         OnPurchaseCanceled?.Invoke();
+    }
+
+    private string GetRequestProductURL() {
+        return webRequestHandler.ServerURLMediaAPI + purchaseAPISO.GetProduct;
+    }
+
+    private IEnumerator RepeatRequestProduct () {
+        yield return new WaitForSeconds(1);
+        GetProductList();
     }
 }

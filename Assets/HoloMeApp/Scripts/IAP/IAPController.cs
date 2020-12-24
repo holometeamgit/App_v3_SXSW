@@ -11,35 +11,35 @@ public class IAPController : MonoBehaviour, IStoreListener {
     private static IStoreController m_StoreController;          // The Unity Purchasing system.
     private static IExtensionProvider m_StoreExtensionProvider; // The store-specific Purchasing subsystems.
 
-    public static string kProductIDConsumable = "FirstTProduct";
+    private List<string> productIdList;
+
+    //    public static string kProductIDConsumable = "FirstTProduct";
 
     public void BuyTicket(string productId) {
         BuyProductID(productId);
     }
 
-    public void InitializePurchasing() {
+    public void InitializePurchasing(List<string> productIdList) {
         // If we have already connected to Purchasing ...
         if (IsInitialized()) {
             // ... we are done here.
             return;
         }
+
+        this.productIdList = productIdList;
         var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
 
+        Debug.Log("InitializePurchasing");
+        foreach (var productId in productIdList) {
+            Debug.Log(productId);
 #if UNITY_IOS
-        builder.AddProduct(kProductIDConsumable, ProductType.Consumable);
+            builder.AddProduct(productId, ProductType.Consumable);
 #elif UNITY_ANDROID
-        builder.AddProduct(kProductIDConsumable.ToLower(), ProductType.Consumable);
+        builder.AddProduct(productId.ToLower(), ProductType.Consumable);
 #endif
+        }
 
         UnityPurchasing.Initialize(this, builder);
-    }
-
-    void Start() {
-        // If we haven't set up the Unity Purchasing reference
-        if (m_StoreController == null) {
-            // Begin to configure our connection to Purchasing
-            InitializePurchasing();
-        }
     }
 
 
@@ -137,12 +137,8 @@ public class IAPController : MonoBehaviour, IStoreListener {
 
 
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args) {
-        // A consumable product has been purchased by this user.
-        string producId = kProductIDConsumable;
-#if UNITY_ANDROID
-        producId = producId.ToLower();
-#endif
-        if (String.Equals(args.purchasedProduct.definition.id, producId, StringComparison.Ordinal)) {
+
+        if (productIdList.Contains(args.purchasedProduct.definition.id)) {
             Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
             // The consumable item has been successfully purchased, add 100 coins to the player's in-game score.
             OnPurchaseHandler?.Invoke(args.purchasedProduct);
