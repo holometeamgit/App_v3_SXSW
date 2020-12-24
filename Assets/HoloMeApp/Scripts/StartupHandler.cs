@@ -7,5 +7,6 @@ public class StartupHandler : MonoBehaviour
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         Application.targetFrameRate = 300;
         //TouchScreenKeyboard.hideInput = true;
+        Screen.sleepTimeout = 60;
     }
 }
