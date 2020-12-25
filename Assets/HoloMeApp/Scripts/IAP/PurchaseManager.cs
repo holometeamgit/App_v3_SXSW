@@ -16,6 +16,9 @@ public class PurchaseManager : MonoBehaviour
     [SerializeField] PurchaseAPIScriptableObject purchaseAPISO;
     [SerializeField] WebRequestHandler webRequestHandler;
 
+    [Space]//TODO change to signal when DI will add
+    [SerializeField] GameObject backgroudGO;
+
     StreamJsonData.Data streamData;
 
     public void SetPurchaseStreamData(StreamJsonData.Data data) {
@@ -33,6 +36,7 @@ public class PurchaseManager : MonoBehaviour
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed);
         //TODO add chech steam available befo purchaise 
         iapController.BuyTicket(streamData.product_type.product_id);
+        backgroudGO.SetActive(true);
         OnPurchaseStarted?.Invoke();
     }
 
@@ -95,6 +99,7 @@ public class PurchaseManager : MonoBehaviour
         streamData = null;
 
         OnPurchaseSuccessful?.Invoke();
+        backgroudGO.SetActive(false);
     }
 
     private void AllPurchasedDataSentOnServerCallBack() {
@@ -104,6 +109,7 @@ public class PurchaseManager : MonoBehaviour
     private void OnPurchaseFailCallBack() {
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseCancelled);
         OnPurchaseCanceled?.Invoke();
+        backgroudGO.SetActive(false);
     }
 
     private string GetRequestProductURL() {
