@@ -15,7 +15,7 @@ public class AuthorizationAPIScriptableObject : ScriptableObject {
     [Tooltip("Post email verification request. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/Register/post_signup_verify_email_")]
     public string EmailVerification = "/signup/verify-email/";
     [Tooltip("Post resend verification request. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/Register/post_signup_resend_verification_email_")]
-    public string ResendVerification = "/signup/resend-verification-email/";
+    public string ResendVerification = "/signup/resend-verify-email/";
 
     [Space]
     [Tooltip("Post request to get access token using email LogIn. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/Token/post_token_")]

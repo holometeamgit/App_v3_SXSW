@@ -85,6 +85,9 @@ public class InputFieldController : MonoBehaviour
         if (msg.Contains("Account wasn't found"))
             return "Account wasn't found";
 
+        if (msg.Contains("E-mail is not verified"))
+            return "E-mail is not verified";
+
         return msg;
     }
 
