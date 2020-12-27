@@ -51,6 +51,12 @@ public class UIThumbnailsController : MonoBehaviour {
         }
     }
 
+    public void LockToPressElements() {
+        for (int i = 0; i < btnThumbnailItems.Count; i++) {
+            btnThumbnailItems[i].LockToPress(true);
+        }
+    }
+
     private void Awake() {
 
         thumbnailElementsDictionary = new Dictionary<long, ThumbnailElement>();
@@ -99,6 +105,7 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetTeaserPlayAction(PlayTeaser);
             btnThumbnailItems[i].SetBuyAction(Buy);
             btnThumbnailItems[i].SetShareAction((_) => shareManager.ShareStream());
+            btnThumbnailItems[i].LockToPress(false);
         }
         OnUpdated?.Invoke();
     }

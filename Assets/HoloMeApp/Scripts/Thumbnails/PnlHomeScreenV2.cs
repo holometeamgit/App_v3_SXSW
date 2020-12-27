@@ -68,9 +68,8 @@ public class PnlHomeScreenV2 : MonoBehaviour
 
     private void RefreshItems() {
         Resources.UnloadUnusedAssets();
-        Debug.Log("RefreshItems");
         dataLoaded = false;
-        //pullRefreshController.StopBottomRefreshing = false;
+        uiThumbnailsController.LockToPressElements();
         thumbnailsDataFetcher.RefreshData();
         OnRefresh.Invoke();
     }
