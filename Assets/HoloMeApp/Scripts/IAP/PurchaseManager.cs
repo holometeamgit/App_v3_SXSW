@@ -59,7 +59,6 @@ public class PurchaseManager : MonoBehaviour
     private void ProductListCallBack(long code, string body) {
         ProductJsonData productJsonData = new ProductJsonData();
         try {
-            Debug.Log("ProductListCallBack " + body);
             productJsonData = JsonUtility.FromJson<ProductJsonData>(body);
             
         } catch (Exception) {

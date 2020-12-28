@@ -85,22 +85,19 @@ public class PurchasesSaveManager : MonoBehaviour {
         } catch (System.Exception) { }
     }
 
-    private void PostData(string uniqName, long id, StreamBillingJsonData streamBillingJsonData, string accessToken) {//, Action OnPurchaseCallBackAfterTrySend) {
+    private void PostData(string uniqName, long id, StreamBillingJsonData streamBillingJsonData, string accessToken) {
         webRequestHandler.PostRequest(GetRequestRefreshTokenURL(id),
            streamBillingJsonData, WebRequestHandler.BodyType.JSON,
-           (code, body) => { OnServerBillingSent(uniqName, id, streamBillingJsonData); isSending = false; CheckSubmittedData(); },// OnPurchaseCallBackAfterTrySend.Invoke(); },
+           (code, body) => { OnServerBillingSent(uniqName, id, streamBillingJsonData); isSending = false; CheckSubmittedData(); },
            (code, body) => { OnServerErrorBillingSent(uniqName, id, streamBillingJsonData); isSending = false; }, accessToken);
     }
 
     private void OnServerBillingSent(string uniqName, long id, StreamBillingJsonData streamBillingJsonData) {
-        Debug.Log("OnServerBillingSent");
         RemovePurchaseSaveElement(uniqName, id, streamBillingJsonData);
     }
 
     private void OnServerErrorBillingSent(string uniqName, long id, StreamBillingJsonData streamBillingJsonData) {
-        Debug.Log("OnServerErrorBillingSent");
 
-        //RemovePurchaseSaveElement(uniqName, id, streamBillingJsonData);
         StartCoroutine(Rechecking());
     }
 

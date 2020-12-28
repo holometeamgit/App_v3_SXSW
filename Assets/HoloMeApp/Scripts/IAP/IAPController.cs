@@ -29,9 +29,7 @@ public class IAPController : MonoBehaviour, IStoreListener {
         this.productIdList = productIdList;
         var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
 
-        Debug.Log("InitializePurchasing");
         foreach (var productId in productIdList) {
-            Debug.Log(productId);
 #if UNITY_IOS
             builder.AddProduct(productId, ProductType.Consumable);
 #elif UNITY_ANDROID
@@ -61,22 +59,10 @@ public class IAPController : MonoBehaviour, IStoreListener {
 
             // If the look up found a product for this device's store and that product is ready to be sold ... 
             if (product != null && product.availableToPurchase) {
-                Debug.Log(string.Format("Purchasing product asychronously: '{0}'", product.definition.id));
                 // ... buy the product. Expect a response either through ProcessPurchase or OnPurchaseFailed 
                 // asynchronously.
                 m_StoreController.InitiatePurchase(product);
             }
-            // Otherwise ...
-            else {
-                // ... report the product look-up failure situation  
-                Debug.Log("BuyProductID: FAIL. Not purchasing product, either is not found or is not available for purchase");
-            }
-        }
-        // Otherwise ...
-        else {
-            // ... report the fact Purchasing has not succeeded initializing yet. Consider waiting longer or 
-            // retrying initiailization.
-            Debug.Log("BuyProductID FAIL. Not initialized.");
         }
     }
 
@@ -87,15 +73,12 @@ public class IAPController : MonoBehaviour, IStoreListener {
         // If Purchasing has not yet been set up ...
         if (!IsInitialized()) {
             // ... report the situation and stop restoring. Consider either waiting longer, or retrying initialization.
-            Debug.Log("RestorePurchases FAIL. Not initialized.");
             return;
         }
 
         // If we are running on an Apple device ... 
         if (Application.platform == RuntimePlatform.IPhonePlayer ||
             Application.platform == RuntimePlatform.OSXPlayer) {
-            // ... begin restoring purchases
-            Debug.Log("RestorePurchases started ...");
 
             // Fetch the Apple store-specific subsystem.
             var apple = m_StoreExtensionProvider.GetExtension<IAppleExtensions>();
@@ -104,13 +87,11 @@ public class IAPController : MonoBehaviour, IStoreListener {
             apple.RestoreTransactions((result) => {
                 // The first phase of restoration. If no more responses are received on ProcessPurchase then 
                 // no purchases are available to be restored.
-                Debug.Log("RestorePurchases continuing: " + result + ". If no further messages, no purchases available to restore.");
             });
         }
         // Otherwise ...
         else {
             // We are not running on an Apple device. No work is necessary to restore purchases.
-            Debug.Log("RestorePurchases FAIL. Not supported on this platform. Current = " + Application.platform);
         }
     }
 
@@ -121,7 +102,6 @@ public class IAPController : MonoBehaviour, IStoreListener {
 
     public void OnInitialized(IStoreController controller, IExtensionProvider extensions) {
         // Purchasing has succeeded initializing. Collect our Purchasing references.
-        Debug.Log("OnInitialized: PASS");
 
         // Overall Purchasing system, configured with products for this application.
         m_StoreController = controller;
@@ -132,19 +112,16 @@ public class IAPController : MonoBehaviour, IStoreListener {
 
     public void OnInitializeFailed(InitializationFailureReason error) {
         // Purchasing set-up has not succeeded. Check error for reason. Consider sharing this reason with the user.
-        Debug.Log("OnInitializeFailed InitializationFailureReason:" + error);
     }
 
 
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args) {
 
         if (productIdList.Contains(args.purchasedProduct.definition.id)) {
-            Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
             // The consumable item has been successfully purchased, add 100 coins to the player's in-game score.
             OnPurchaseHandler?.Invoke(args.purchasedProduct);
         }
         else {
-            Debug.Log(string.Format("ProcessPurchase: FAIL. Unrecognized product: '{0}'", args.purchasedProduct.definition.id));
             OnPurchaseFailedHandler?.Invoke();
         }
 
@@ -158,7 +135,6 @@ public class IAPController : MonoBehaviour, IStoreListener {
     public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason) {
         // A product purchase attempt did not succeed. Check failureReason for more detail. Consider sharing 
         // this reason with the user to guide their troubleshooting actions.
-        Debug.Log(string.Format("OnPurchaseFailed: FAIL. Product: '{0}', PurchaseFailureReason: {1}", product.definition.storeSpecificId, failureReason));
         OnPurchaseFailedHandler?.Invoke();
     }
 }
