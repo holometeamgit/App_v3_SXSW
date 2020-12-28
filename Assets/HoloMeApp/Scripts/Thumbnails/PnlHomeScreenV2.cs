@@ -16,7 +16,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
     //ThumbnailWebDownloadManager need for data fetcher  
     [SerializeField] ThumbnailWebDownloadManager thumbnailWebDownloadManager;
     //puchase pnl
-    [SerializeField] PnlEventPurchaser pnlEventPurchaser;
+    [SerializeField] PurchaseManager purchaseManager;
 
     [Space]
     [SerializeField] int pageSize = 10;
@@ -51,9 +51,8 @@ public class PnlHomeScreenV2 : MonoBehaviour
         //add ref to data list from fetcher for ui Thumbnails Controller
         uiThumbnailsController.SetStreamJsonData(thumbnailsDataFetcher.GetDataList());
         uiThumbnailsController.OnPlay += OnPlayCallBack;
-        uiThumbnailsController.OnNeedPurchase += OnNeedPurchaseCallBack;
 
-        pnlEventPurchaser.OnServerPurchasedDataUpdate += RefreshItems;
+        
     }
 
     private void DataUpdateCallBack() {
@@ -69,9 +68,8 @@ public class PnlHomeScreenV2 : MonoBehaviour
 
     private void RefreshItems() {
         Resources.UnloadUnusedAssets();
-//        Debug.Log("RefreshItems");
         dataLoaded = false;
-        //pullRefreshController.StopBottomRefreshing = false;
+        uiThumbnailsController.LockToPressElements();
         thumbnailsDataFetcher.RefreshData();
         OnRefresh.Invoke();
     }
@@ -91,17 +89,13 @@ public class PnlHomeScreenV2 : MonoBehaviour
         pullRefreshController.StopBottomRefreshing = true;
         pullRefreshController.EndRefreshing();
         uiThumbnailsController.RemoveUnnecessary();
+        Debug.Log(" AllDataLoaded Data loaded");
         OnAllDataLoaded.Invoke();//temp
     }
 
     private void OnDisable() {
         StopAllCoroutines();
         pullRefreshController.EndRefreshing();
-    }
-
-    private void OnNeedPurchaseCallBack(StreamJsonData.Data data) {
-        Debug.Log("Home page OnClickCallBack");
-        pnlEventPurchaser.Show(data);
     }
 
     private void OnPlayCallBack(StreamJsonData.Data data) {

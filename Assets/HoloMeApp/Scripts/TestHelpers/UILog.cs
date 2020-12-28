@@ -21,7 +21,6 @@ public class UILog : MonoBehaviour {
     }
 
     void Start() {
-        Debug.Log("Test log");
         versionText.text = "Version " + Application.version;
     }
 

@@ -9,6 +9,8 @@ public class UIThumbnailV3 : UIThumbnail {
     [SerializeField] RawImage rawImage;
     [SerializeField] Texture defaultTexture;
     [Space]
+    [SerializeField] GameObject btnThumbnail;
+    [Space]
     [SerializeField] GameObject btnShare;
     [SerializeField] GameObject btnWatchNow;
     [SerializeField] GameObject btnPlayTeaser;
@@ -74,10 +76,6 @@ public class UIThumbnailV3 : UIThumbnail {
 
     public override void PlayTeaser() {
         OnTeaserClick?.Invoke(thumbnailElement.Data);
-
-        //TODO just for V3 buy when start play teaser
-        if(!thumbnailElement.Data.is_bought)
-            Buy();
     }
 
     public override void Buy() {
@@ -104,6 +102,17 @@ public class UIThumbnailV3 : UIThumbnail {
         UpdateData();
     }
 
+    public override void LockToPress(bool isLook) {
+        try {
+            btnThumbnail.GetComponent<Button>().interactable = !isLook;
+            btnShare.GetComponent<Button>().interactable = !isLook;
+            btnWatchNow.GetComponent<Button>().interactable = !isLook;
+            btnPlayTeaser.GetComponent<Button>().interactable = !isLook;
+            btnBuyTicketR.GetComponent<Button>().interactable = !isLook;
+            btnShareR.GetComponent<Button>().interactable = !isLook;
+        } catch (Exception) { }
+    }
+
     public override void Deactivate() {
         //rawImage.texture = defaultTexture;
         gameObject.SetActive(false);
@@ -118,6 +127,8 @@ public class UIThumbnailV3 : UIThumbnail {
 
     public override void Activate() {
         gameObject.SetActive(true);
+
+        LockToPress(true);
     }
 
     private void UpdateData() {

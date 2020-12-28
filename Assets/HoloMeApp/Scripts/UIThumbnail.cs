@@ -18,6 +18,8 @@ public class UIThumbnail : MonoBehaviour {
     public virtual void Buy() { }
     public virtual void Share() { }
 
+    public virtual void LockToPress(bool isLook) { }
+
     public virtual void Deactivate() { }
 
     public virtual void Activate() { }

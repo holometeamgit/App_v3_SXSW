@@ -68,6 +68,8 @@ public class PnlRecord : MonoBehaviour
 
     [SerializeField]
     Button btnBuyTickets;
+    [SerializeField]
+    PurchaseManager purchaseManager;
 
     [SerializeField]
     UnityEvent OnRecordStarted;
@@ -144,6 +146,8 @@ public class PnlRecord : MonoBehaviour
         //btnRecord.GetComponent<Image>().sprite = spriteRecord;
         videoButtonContainerPosition = rtButtonContainer.anchoredPosition;
         canvasGroup.alpha = 0;
+
+        purchaseManager.OnPurchaseSuccessful += RefreshBuyBtnState;
     }
 
     public void EnableRecordPanel(bool isTeaser, bool openForStream = false)
@@ -152,12 +156,16 @@ public class PnlRecord : MonoBehaviour
         //imgFillBackground.rectTransform.offsetMax = new Vector2(imgFillBackground.rectTransform.offsetMax.x, buttonOffset);
         //imgFillBackground.rectTransform.offsetMin = new Vector2(imgFillBackground.rectTransform.offsetMin.x, buttonOffset);
 
-        btnBuyTickets.gameObject.SetActive(isTeaser);
+        btnBuyTickets.gameObject.SetActive(isTeaser && !purchaseManager.IsBought());
         AssignRectTransform(imgFillBackground.rectTransform, isTeaser ? rectTeaser : rectNormal);
         btnShare.gameObject.SetActive(openForStream || isTeaser ? false : true);
 
         gameObject.SetActive(true);
         canvasGroup.DOFade(1, .5f);
+    }
+
+    private void RefreshBuyBtnState() {
+       btnBuyTickets.gameObject.SetActive(purchaseManager.IsBought() ? false : btnBuyTickets.gameObject.activeSelf);
     }
 
     private void AssignRectTransform(RectTransform transformToAssign, RectTransform reference)

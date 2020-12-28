@@ -29,13 +29,9 @@ public class PnlProfile : MonoBehaviour {
     }
 
     private void UserInfoLoadedCallBack() {
-        Debug.Log("UserInfoLoadedCallBack");
-        Debug.Log(usernameInputField.text + " " + firstnameInputField.text + " " + surnameInputField.text);
-        Debug.Log(userWebManager?.GetUsername() + " " + userWebManager?.GetFirstName() + " " + userWebManager?.GetLastName());
         usernameInputField.text = string.IsNullOrWhiteSpace(usernameInputField.text) ? userWebManager.GetUsername() ?? "" : usernameInputField.text;
         firstnameInputField.text = string.IsNullOrWhiteSpace(firstnameInputField.text) ? userWebManager.GetFirstName() ?? "" : firstnameInputField.text;
         surnameInputField.text = string.IsNullOrWhiteSpace(surnameInputField.text) ? userWebManager.GetLastName() ?? "" : surnameInputField.text;
-        Debug.Log(usernameInputField.text + " " + firstnameInputField.text + " " + surnameInputField.text);
         if (userWebManager.GetUsername() == null ||
             userWebManager.GetFirstName() == null ||
             userWebManager.GetLastName() == null) {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PnlLogInEmail : MonoBehaviour {
+    [SerializeField] PnlGenericError pnlGenericError;
     [SerializeField] EmailAccountManager emailAccountManager;
     [SerializeField] InputFieldController inputFieldEmail;
     [SerializeField] InputFieldController inputFieldPassword;
@@ -50,9 +51,17 @@ public class PnlLogInEmail : MonoBehaviour {
                     inputFieldPassword.ShowWarning(badRequestData.non_field_errors[0]);
 
             else {
-                inputFieldEmail.ShowWarning("E-mail is not verified. We had sent a verification email");
-                //ResendVerifyJsonData resendVerifyJsonData = new ResendVerifyJsonData(inputFieldEmail.text);
-                //emailAccountManager.ResendVerification(resendVerifyJsonData);
+                inputFieldEmail.ShowWarning(badRequestData.non_field_errors[0]);
+
+                pnlGenericError.ActivateDoubleButton("Email verication",
+                    "You have not activated your account via the email, would you like us to send it again?",
+                    "Yes",
+                    "No",
+                    () => {
+                        ResendVerifyJsonData resendVerifyJsonData = new ResendVerifyJsonData(inputFieldEmail.text);
+                        emailAccountManager.ResendVerification(resendVerifyJsonData);
+                    },
+                    () => { pnlGenericError.gameObject.SetActive(false); });
             }
         }
 
@@ -67,8 +76,8 @@ public class PnlLogInEmail : MonoBehaviour {
     private void ResendVerificationCallBack() {
         if (!this.isActiveAndEnabled)
             return;
-
-        inputFieldEmail.ShowWarning("E-mail is not verified. We have sent a verification email");
+        pnlGenericError.gameObject.SetActive(false);
+        inputFieldEmail.ShowWarning("We had sent a verification email");
     }
 
     private void ErrorResendVerificationCallBack(BadRequestResendVerificationJsonData badRequestData) {
