@@ -4,8 +4,7 @@ using UnityEngine;
 using System;
 
 //TODO all this class temp
-public class PnlWelcomeV4 : MonoBehaviour
-{
+public class PnlWelcomeV4 : MonoBehaviour {
     [Serializable]
     public class Providers {
         public List<string> providers;
@@ -15,28 +14,33 @@ public class PnlWelcomeV4 : MonoBehaviour
         }
     }
 
-    [SerializeField] WebRequestHandler webRequestHandler;
-    [SerializeField] GameObject LogInFBGO;
+    [SerializeField]
+    WebRequestHandler webRequestHandler;
+    [SerializeField]
+    GameObject LogInFBGO;
+
     [Space]
-    [SerializeField] AppleAccountManager AppleAccountManager;
-    [SerializeField] GameObject LogInAppleGO;
+    [SerializeField]
+    AppleAccountManager AppleAccountManager;
+    [SerializeField]
+    GameObject LogInAppleGO;
+
+    [Space]
+    [SerializeField]
+    GameObject LogInGoogleGO;
 
     private void OnEnable() {
         webRequestHandler.GetRequest(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, null);
-
-        LogInAppleGO.SetActive(AppleAccountManager.IsCurrentPlatformSupported());
     }
 
     private void EnableFB(long key, string body) {
-        //        Debug.Log(body);
-        //        body = body.Replace("\"fb\"", "");
-        //        Debug.Log(body);
         try {
             Providers providers = JsonUtility.FromJson<Providers>(body);
-            if (System.DateTime.Now < new DateTime(2020, 12, 9, 10, 0, 0, 0))
-                return;
-            if (providers != null)
-                LogInFBGO.SetActive(providers.providers.Contains("fb")) ;
+            if (providers != null) {
+                LogInFBGO.SetActive(providers.providers.Contains("fb"));
+                LogInAppleGO.SetActive(providers.providers.Contains("apple"));
+                LogInGoogleGO.SetActive(providers.providers.Contains("google"));
+            }
         } catch (Exception e) { }
     }
 }
