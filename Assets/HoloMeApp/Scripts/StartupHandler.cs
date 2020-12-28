@@ -2,11 +2,12 @@
 
 public class StartupHandler : MonoBehaviour
 {
+    const int SLEEP_TIMEOUT = 60;
+    const int TARGET_FRAAME_RATE = 300;
+
     private void Awake()
     {
-        Screen.sleepTimeout = SleepTimeout.NeverSleep;
-        Application.targetFrameRate = 300;
-        //TouchScreenKeyboard.hideInput = true;
-        Screen.sleepTimeout = 60;
+        Application.targetFrameRate = TARGET_FRAAME_RATE;
+        Screen.sleepTimeout = SLEEP_TIMEOUT;
     }
 }
