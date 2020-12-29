@@ -7,11 +7,14 @@ using System.Text;
 
 public class WebRequestHandler : MonoBehaviour {
     public enum BodyType {
-        JSON
+        None,
+        JSON,
+        XWWWFormUrlEncoded
     }
 
     public string ServerURLAuthAPI { get { return serverURLAPI.ServerURLAuthAPI; } private set { } }
     public string ServerURLMediaAPI { get { return serverURLAPI.ServerURLMediaAPI; } private set { } }
+    public string ServerProvidersAPI { get { return serverURLAPI.ServerProvidersAPI; } private set { } }
 
     [SerializeField] ServerURLAPIScriptableObject serverURLAPI;
 
@@ -118,19 +121,49 @@ public class WebRequestHandler : MonoBehaviour {
     }
 
     IEnumerator PostRequesting<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
-        byte[] bodyRaw;
-        var request = new UnityWebRequest(url, "POST");
+        byte[] bodyRaw = new byte[0];
+
+        UnityWebRequest request;// = new UnityWebRequest(url, "POST");
 
         switch (bodyType) {
-            default: //only Json at this moment
+            case BodyType.XWWWFormUrlEncoded:
+                Debug.Log("Post XWWWFormUrlEncoded");
+                WWWForm form = new WWWForm();
+                Type listType = typeof(T);
+                if (listType == typeof(Dictionary<string, string>)) {
+                    Dictionary<string, string> fields = body as Dictionary<string, string>;
+                    foreach (var field in fields) {
+                        form.AddField(field.Key, field.Value);
+                        Debug.Log("add field " + field.Key + " " + field.Value);
+                    }
+                } else if (listType == typeof(Dictionary<string, byte[]>)) {
+                    Dictionary<string, byte[]> fields = body as Dictionary<string, byte[]>;
+                    foreach (var field in fields) {
+                        form.AddBinaryData(field.Key, field.Value);
+                        Debug.Log("add field " + field.Key + " " + field.Value);
+                    }
+                }
+                request = UnityWebRequest.Post(url, form);
+                request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                break;
+            case BodyType.JSON: //only Json at this moment
+
                 string bodyString = JsonUtility.ToJson(body);
                 bodyRaw = Encoding.UTF8.GetBytes(bodyString);
+                request = new UnityWebRequest(url, "POST");
+                request.SetRequestHeader("Content-Type", "application/json");
+                request.uploadHandler = new UploadHandlerRaw(data: bodyRaw);
+                break;
+            case BodyType.None:
+            default:
+                request = new UnityWebRequest(url, "POST");
                 break;
         }
 
-        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+      //  if(bodyType != BodyType.None && body != null)
+
+
         request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
 
         if (headerAccessToken != null)
             request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);

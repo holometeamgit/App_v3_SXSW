@@ -14,6 +14,8 @@ public class AuthorizationAPIScriptableObject : ScriptableObject {
     public string EmailSignUp = "/signup/";
     [Tooltip("Post email verification request. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/Register/post_signup_verify_email_")]
     public string EmailVerification = "/signup/verify-email/";
+    [Tooltip("Post resend verification request. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/Register/post_signup_resend_verification_email_")]
+    public string ResendVerification = "/signup/resend-verify-email/";
 
     [Space]
     [Tooltip("Post request to get access token using email LogIn. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/Token/post_token_")]
@@ -38,6 +40,23 @@ public class AuthorizationAPIScriptableObject : ScriptableObject {
     public string FacebookLogIn = "/social-auth/login/facebook/";
     [Tooltip("Get request complite Log In. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/Login/get_social_auth_complete_facebook_")]
     public string FacebookCompliteLogIn = "/social-auth/complete/facebook/";
+
+    [Header("Google Authorization")]
+    [Tooltip("Get deeplink request Google")]
+    public string GoogleSSODeepLink = "/social-auth/login/google-oauth2/";
+    [Tooltip("Get request google Log In. Details here: https://devholo.me/docs/auth/#/Login/get_social_auth_login_google_oauth2_")]
+    public string GoogleLogIn = "/social-auth/login/facebook/";
+    [Tooltip("Get request complite Log In. Details here: https://devholo.me/docs/auth/#/Login/get_social_auth_complete_google_oauth2_")]
+    public string GoogleCompliteLogIn = "/social-auth/complete/facebook/";
+
+    [Header("Apple Authorization")]
+    [Tooltip("Get deeplink request Apple")]
+    public string AppleSSODeepLink = "/social-auth/deep-complete/apple-id";
+    [Tooltip("Get request Apple Log In. Details here: https://devholo.me/docs/auth/#/Login/get_social_auth_login_apple_id_")]
+    public string AppleLogIn = "/social-auth/login/apple-id/";
+    [Tooltip("Get request complite Log In. Details here: https://devholo.me/docs/auth/#/Login/get_social_auth_complete_apple_id_")]
+    public string AppleCompliteLogIn = "/social-auth/complete/apple-id";
+
 
     [Header("User")]
     [Tooltip("Get request user data. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/User/get_user_")]

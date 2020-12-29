@@ -67,6 +67,13 @@ public class UserWebManager : MonoBehaviour
             bio, profile_picture_s3_url));
     }
 
+    public long GetUserID()
+    {
+        if (userData == null)
+            return -1;
+        return userData.pk;
+    }
+
     public string GetUnituniqueName() {
         return GetEmail();
     }
@@ -128,7 +135,7 @@ public class UserWebManager : MonoBehaviour
         userData.first_name = first_name ?? userData.first_name;
         userData.last_name = last_name ?? userData.last_name;
 
-        userData.profile = userData.profile != null ? userData.profile : new ProfileJsonData();
+        userData.profile = userData.profile ?? new ProfileJsonData();
         userData.profile.bio = bio ?? userData.profile.bio;
         userData.profile.profile_picture_s3_url = profile_picture_s3_url ?? userData.profile.profile_picture_s3_url;
 
@@ -164,12 +171,17 @@ public class UserWebManager : MonoBehaviour
     }
 
     private void ErrorUploadUserInfoCallBack(long code, string body) {
+        BadRequestUserUploadJsonData badRequest;
         try {
-            BadRequestUserUploadJsonData badRequest = JsonUtility.FromJson<BadRequestUserUploadJsonData>(body);
             Debug.Log("ErrorUploadUserInfoCallBack " + code + " " + body);
+            badRequest = JsonUtility.FromJson<BadRequestUserUploadJsonData>(body);
 
             OnErrorUserUploaded?.Invoke(badRequest);
-        } catch (System.Exception e) { }
+        } catch (System.Exception) {
+            badRequest = new BadRequestUserUploadJsonData();
+            badRequest.code = code;
+            badRequest.errorMsg = body;
+        }
     }
 
     #endregion

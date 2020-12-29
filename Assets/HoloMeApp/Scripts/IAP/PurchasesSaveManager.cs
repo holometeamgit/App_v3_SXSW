@@ -1,12 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PurchasesSaveManager : MonoBehaviour {
+    public Action OnAllDataSended;
+
     [SerializeField] UserWebManager userWebManager;
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] PurchaseAPIScriptableObject purchaseAPISO;
     [SerializeField] AccountManager accountManager;
+    [SerializeField] IAPController iapController;
 
     private bool isSending;
 
@@ -20,7 +24,6 @@ public class PurchasesSaveManager : MonoBehaviour {
     }
 
     private void CheckSubmittedData() {
-        Debug.Log("CheckSubmittedData");
 
         if (isSending)
             return;
@@ -32,15 +35,18 @@ public class PurchasesSaveManager : MonoBehaviour {
         if (!PlayerPrefs.HasKey(uniqName))
             return;
 
-        PurchaseSaveJsonData purchaseSaveJsonData = JsonUtility.FromJson<PurchaseSaveJsonData>(PlayerPrefs.GetString(uniqName));
+        try {
+            PurchaseSaveJsonData purchaseSaveJsonData = JsonUtility.FromJson<PurchaseSaveJsonData>(PlayerPrefs.GetString(uniqName));
 
-        Debug.Log("purchaseSaveElements count = " + purchaseSaveJsonData.purchaseSaveElements.Count);
-
-        if (purchaseSaveJsonData.purchaseSaveElements.Count > 0) {
-            isSending = true;
-            PostData(uniqName, purchaseSaveJsonData.purchaseSaveElements[0].id,
-                purchaseSaveJsonData.purchaseSaveElements[0].streamBillingJsonData,
-                accountManager.GetAccessToken().access);
+            if (purchaseSaveJsonData.purchaseSaveElements.Count > 0) {
+                isSending = true;
+                PostData(uniqName, purchaseSaveJsonData.purchaseSaveElements[0].id,
+                    purchaseSaveJsonData.purchaseSaveElements[0].streamBillingJsonData,
+                    accountManager.GetAccessToken().access);
+            } else {
+                OnAllDataSended?.Invoke();
+            }
+        } catch (System.Exception) {
         }
     }
 
@@ -50,13 +56,15 @@ public class PurchasesSaveManager : MonoBehaviour {
         RemovePurchaseSaveElement(uniqName, id, streamBillingJsonData);
 
         PurchaseSaveJsonData purchaseSaveJsonData = new PurchaseSaveJsonData();
-        if (PlayerPrefs.HasKey(uniqName))
-            purchaseSaveJsonData = JsonUtility.FromJson<PurchaseSaveJsonData>(PlayerPrefs.GetString(uniqName));
+        try {
+            if (PlayerPrefs.HasKey(uniqName))
+                purchaseSaveJsonData = JsonUtility.FromJson<PurchaseSaveJsonData>(PlayerPrefs.GetString(uniqName));
 
-        purchaseSaveJsonData.Add(purchaseSaveElement);
+            purchaseSaveJsonData.Add(purchaseSaveElement);
 
-        PlayerPrefs.SetString(uniqName, JsonUtility.ToJson(purchaseSaveJsonData));
-        PlayerPrefs.Save();
+            PlayerPrefs.SetString(uniqName, JsonUtility.ToJson(purchaseSaveJsonData));
+            PlayerPrefs.Save();
+        } catch (System.Exception) { }
     }
 
     private void RemovePurchaseSaveElement(string uniqName, long id, StreamBillingJsonData streamBillingJsonData) {
@@ -64,34 +72,38 @@ public class PurchasesSaveManager : MonoBehaviour {
 
         if (!PlayerPrefs.HasKey(uniqName))
             return;
+        try {
+            PurchaseSaveJsonData purchaseSaveJsonData = JsonUtility.FromJson<PurchaseSaveJsonData>(PlayerPrefs.GetString(uniqName));
 
-        PurchaseSaveJsonData purchaseSaveJsonData = JsonUtility.FromJson<PurchaseSaveJsonData>(PlayerPrefs.GetString(uniqName));
+            foreach (var element in purchaseSaveJsonData.purchaseSaveElements.ToArray()) {
+                if (element.id == purchaseSaveElement.id)
+                    purchaseSaveJsonData.purchaseSaveElements.Remove(element);
+            }
 
-        foreach (var element in purchaseSaveJsonData.purchaseSaveElements.ToArray()) {
-            if (element.id == purchaseSaveElement.id)
-                purchaseSaveJsonData.purchaseSaveElements.Remove(element);
-        }
-
-        PlayerPrefs.SetString(uniqName, JsonUtility.ToJson(purchaseSaveJsonData));
-        PlayerPrefs.Save();
+            PlayerPrefs.SetString(uniqName, JsonUtility.ToJson(purchaseSaveJsonData));
+            PlayerPrefs.Save();
+        } catch (System.Exception) { }
     }
 
-    private void PostData(string uniqName, long id, StreamBillingJsonData streamBillingJsonData, string accessToken) {//, Action OnPurchaseCallBackAfterTrySend) {
+    private void PostData(string uniqName, long id, StreamBillingJsonData streamBillingJsonData, string accessToken) {
         webRequestHandler.PostRequest(GetRequestRefreshTokenURL(id),
            streamBillingJsonData, WebRequestHandler.BodyType.JSON,
-           (code, body) => { OnServerBillingSent(uniqName, id, streamBillingJsonData); isSending = false; CheckSubmittedData(); },// OnPurchaseCallBackAfterTrySend.Invoke(); },
+           (code, body) => { OnServerBillingSent(uniqName, id, streamBillingJsonData); isSending = false; CheckSubmittedData(); },
            (code, body) => { OnServerErrorBillingSent(uniqName, id, streamBillingJsonData); isSending = false; }, accessToken);
     }
 
     private void OnServerBillingSent(string uniqName, long id, StreamBillingJsonData streamBillingJsonData) {
-        Debug.Log("OnServerBillingSent");
         RemovePurchaseSaveElement(uniqName, id, streamBillingJsonData);
     }
 
     private void OnServerErrorBillingSent(string uniqName, long id, StreamBillingJsonData streamBillingJsonData) {
-        Debug.Log("OnServerErrorBillingSent");
 
-        RemovePurchaseSaveElement(uniqName, id, streamBillingJsonData);
+        StartCoroutine(Rechecking());
+    }
+
+    IEnumerator Rechecking() {
+        yield return new WaitForSeconds(2);
+        CheckSubmittedData();
     }
 
     private string GetRequestRefreshTokenURL(long id) {

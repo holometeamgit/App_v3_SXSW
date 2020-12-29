@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PnlLogInEmail : MonoBehaviour {
+    [SerializeField] PnlGenericError pnlGenericError;
     [SerializeField] EmailAccountManager emailAccountManager;
     [SerializeField] InputFieldController inputFieldEmail;
     [SerializeField] InputFieldController inputFieldPassword;
@@ -14,9 +15,7 @@ public class PnlLogInEmail : MonoBehaviour {
         emailLogInJsonData.username = inputFieldEmail.text;
         emailLogInJsonData.password = inputFieldPassword.text;
 
-        if (string.IsNullOrWhiteSpace(inputFieldEmail.text) || string.IsNullOrWhiteSpace(inputFieldPassword.text))
-            InitWarningMsg();
-        else
+        if(LocalDataVerification())
             emailAccountManager.LogIn(emailLogInJsonData);
     }
 
@@ -24,7 +23,7 @@ public class PnlLogInEmail : MonoBehaviour {
         if (!this.isActiveAndEnabled)
             return;
 
-        //AnalyticsController.Instance.CleverTapUnity.LoggedIn(inputFieldEmail.text);
+        ClearData();
         switcherToProfile.Switch();
     }
 
@@ -32,8 +31,39 @@ public class PnlLogInEmail : MonoBehaviour {
         if (!this.isActiveAndEnabled)
             return;
 
+        if (badRequestData == null ||
+            (badRequestData.username.Count == 0 &&
+            badRequestData.non_field_errors.Count == 0 &&
+            badRequestData.password.Count == 0 &&
+            string.IsNullOrEmpty(badRequestData.detail))) {
+            inputFieldEmail.ShowWarning("Server Error " + badRequestData.code.ToString());
+            return;
+        }
+
         if (badRequestData.username.Count > 0)
             inputFieldEmail.ShowWarning(badRequestData.username[0]);
+
+        if (badRequestData.non_field_errors.Count > 0) {
+            if (badRequestData.non_field_errors[0] != "E-mail is not verified.")
+                if(badRequestData.non_field_errors[0].Contains("Account wasn't found"))
+                    inputFieldEmail.ShowWarning(badRequestData.non_field_errors[0]);
+                else 
+                    inputFieldPassword.ShowWarning(badRequestData.non_field_errors[0]);
+
+            else {
+                inputFieldEmail.ShowWarning(badRequestData.non_field_errors[0]);
+
+                pnlGenericError.ActivateDoubleButton("Email verication",
+                    "You have not activated your account via the email, would you like us to send it again?",
+                    "Yes",
+                    "No",
+                    () => {
+                        ResendVerifyJsonData resendVerifyJsonData = new ResendVerifyJsonData(inputFieldEmail.text);
+                        emailAccountManager.ResendVerification(resendVerifyJsonData);
+                    },
+                    () => { pnlGenericError.gameObject.SetActive(false); });
+            }
+        }
 
         if (badRequestData.password.Count > 0)
             inputFieldPassword.ShowWarning(badRequestData.password[0]);
@@ -43,24 +73,51 @@ public class PnlLogInEmail : MonoBehaviour {
             inputFieldPassword.ShowWarning("Incorrect password");
     }
 
-    private void InitWarningMsg() {
-        BadRequestLogInEmailJsonData badRequestLogInEmailJsonData = new BadRequestLogInEmailJsonData();
+    private void ResendVerificationCallBack() {
+        if (!this.isActiveAndEnabled)
+            return;
+        pnlGenericError.gameObject.SetActive(false);
+        inputFieldEmail.ShowWarning("We had sent a verification email");
+    }
+
+    private void ErrorResendVerificationCallBack(BadRequestResendVerificationJsonData badRequestData) {
+        if (!this.isActiveAndEnabled)
+            return;
+
+        inputFieldEmail.ShowWarning(badRequestData.code.ToString());
+
+        if (badRequestData.email.Count > 0)
+            inputFieldEmail.ShowWarning(badRequestData.email[0]);
+    }
+
+    private void ClearData() {
+        inputFieldEmail.SetToDefaultState();
+        inputFieldEmail.text = "";
+        inputFieldPassword.SetToDefaultState();
+        inputFieldPassword.text = "";
+    }
+
+    private bool LocalDataVerification() {
         if (string.IsNullOrWhiteSpace(inputFieldEmail.text))
-            badRequestLogInEmailJsonData.username.Insert(0,"Required");
-
+            inputFieldEmail.ShowWarning("This field is compulsory");
         if (string.IsNullOrWhiteSpace(inputFieldPassword.text))
-            badRequestLogInEmailJsonData.password.Insert(0,"Required");
+            inputFieldPassword.ShowWarning("This field is compulsory");
 
-        ErrorLogInCallBack(badRequestLogInEmailJsonData);
+        return !string.IsNullOrWhiteSpace(inputFieldEmail.text) &&
+            !string.IsNullOrWhiteSpace(inputFieldPassword.text);
     }
 
     private void OnEnable() {
         emailAccountManager.OnLogIn += LogInCallBack;
         emailAccountManager.OnErrorLogIn += ErrorLogInCallBack;
+        emailAccountManager.OnResendVerification += ResendVerificationCallBack;
+        emailAccountManager.OnErrorResendVerification += ErrorResendVerificationCallBack;
     }
 
     private void OnDisable() {
         emailAccountManager.OnLogIn -= LogInCallBack;
         emailAccountManager.OnErrorLogIn -= ErrorLogInCallBack;
+        emailAccountManager.OnResendVerification -= ResendVerificationCallBack;
+        emailAccountManager.OnErrorResendVerification -= ErrorResendVerificationCallBack;
     }
 }

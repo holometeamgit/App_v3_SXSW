@@ -4,8 +4,7 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public class BadRequestStartResetPassword
-{
+public class BadRequestStartResetPassword : BadRequestJsonData {
     public List<string> email;
     public string detail;
 

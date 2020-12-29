@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class PnlResetPassword : MonoBehaviour
-{
+public class PnlResetPassword : MonoBehaviour {
+
+    [SerializeField]
+    PnlGenericError pnlGenericError;
     [SerializeField]
     EmailAccountManager emailAccountManager;
     [SerializeField]
@@ -37,6 +39,9 @@ public class PnlResetPassword : MonoBehaviour
     }
 
     public void ResetPassword() {
+        if (!LocalDataVerification())
+            return;
+
         ResetPasswordJsonData resetPasswordJsonData =
             new ResetPasswordJsonData(passwordInputField.text, confirmPasswordInputField.text, uid, token);
         emailAccountManager.ResetPassword(resetPasswordJsonData);
@@ -68,24 +73,48 @@ public class PnlResetPassword : MonoBehaviour
     }
 
     private void ResetPasswordCallBack() {
-        switcherToResetPassword.Switch();
+        resetPasswordEnterEmail.ClearData();
+        pnlGenericError.ActivateSingleButton(" ", "Password has been successfully updated", "Continue", () => switcherToResetPassword.Switch());
     }
 
     private void ErrorResetPasswordCallBack(BadRequestResetPassword badRequestResetPassword) {
-        if (badRequestResetPassword.new_password1.Count > 0)
-            passwordInputField.ShowWarning(badRequestResetPassword.new_password1[0]);
+        if (badRequestResetPassword == null) {
+            passwordInputField.ShowWarning("Server Error " + badRequestResetPassword.code.ToString());
+            return;
+        }
+
+        bool hasMsg = false;
         if (badRequestResetPassword.uid.Count > 0) {
-            //    passwordInputField.ShowWarning(badRequestResetPassword.uid[0]);
+            passwordInputField.ShowWarning("Outdated confirmation code in your email");//badRequestResetPassword.uid[0]); //Outdated confirmation code in your email
             EnableVerificationInfoResend();
+            hasMsg = true;
         }
         if (badRequestResetPassword.token.Count > 0) {
-            //passwordInputField.ShowWarning(badRequestResetPassword.token[0]);
+            passwordInputField.ShowWarning("Outdated confirmation code in your email");
             EnableVerificationInfoResend();
+            hasMsg = true;
         }
-        if (badRequestResetPassword.new_password2.Count > 0)
-            passwordInputField.ShowWarning(badRequestResetPassword.new_password2[0]);
+        if (badRequestResetPassword.new_password1.Count > 0) {
+            passwordInputField.ShowWarning(badRequestResetPassword.new_password1[0]);
+            hasMsg = true;
+        }
+        if (badRequestResetPassword.new_password2.Count > 0) {
+            hasMsg = true;
+            confirmPasswordInputField.ShowWarning(badRequestResetPassword.new_password2[0]);
+        }
 
-        passwordInputField.ShowWarning("Outdated confirmation code in your email");
+        if (!hasMsg)
+            passwordInputField.ShowWarning("Server Error " + badRequestResetPassword.code.ToString());
+    }
+
+    private bool LocalDataVerification() {
+        if (string.IsNullOrWhiteSpace(passwordInputField.text))
+            passwordInputField.ShowWarning("This field is compulsory");
+        if (string.IsNullOrWhiteSpace(confirmPasswordInputField.text))
+            confirmPasswordInputField.ShowWarning("This field is compulsory");
+
+        return !string.IsNullOrWhiteSpace(passwordInputField.text) &&
+            !string.IsNullOrWhiteSpace(confirmPasswordInputField.text);
     }
 
     private void OnEnable() {

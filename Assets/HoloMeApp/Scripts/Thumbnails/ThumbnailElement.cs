@@ -11,6 +11,7 @@ public class ThumbnailElement {
 
     public Action OnTextureLoaded;
     public Action OnErrorTextureLoaded;
+    public Action OnDataUpdated;
 
     MediaFileDataHandler mediaFileDataHandler;
 
@@ -26,6 +27,8 @@ public class ThumbnailElement {
         mediaFileDataHandler.LoadImg(teaserTextureUrl,
                                      FetchTeaserTextureCallBack,
                                      ErrorFetchTeaserTextureCallBack);
+
+        Data.OnDataUpdated += () => { OnDataUpdated?.Invoke(); };
     }
 
     private void FetchTeaserTextureCallBack(long code, string body, Texture texture) {
@@ -34,6 +37,7 @@ public class ThumbnailElement {
         FetchTexture();
     }
     private void ErrorFetchTeaserTextureCallBack(long code, string body) {
+        Debug.Log("ErrorFetchTeaserTextureCallBack");
         FetchTexture();
     }
 

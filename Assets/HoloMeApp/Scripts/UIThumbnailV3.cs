@@ -9,6 +9,8 @@ public class UIThumbnailV3 : UIThumbnail {
     [SerializeField] RawImage rawImage;
     [SerializeField] Texture defaultTexture;
     [Space]
+    [SerializeField] GameObject btnThumbnail;
+    [Space]
     [SerializeField] GameObject btnShare;
     [SerializeField] GameObject btnWatchNow;
     [SerializeField] GameObject btnPlayTeaser;
@@ -54,6 +56,20 @@ public class UIThumbnailV3 : UIThumbnail {
         this.OnShareClick += OnShareClick;
     }
 
+    public override void ThumbnailClick() {
+        base.ThumbnailClick();
+
+        if (thumbnailElement.Data.is_bought && thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live) {
+            Play();
+        } else if (!thumbnailElement.Data.is_bought && thumbnailElement.Data.HasTeaser) {
+            PlayTeaser();
+        } else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
+            Play();
+        } else if (!thumbnailElement.Data.is_bought && !thumbnailElement.Data.HasTeaser) {
+            Buy();
+        }
+    }
+
     public override void Play() {
         OnPlayClick?.Invoke(thumbnailElement.Data);
     }
@@ -86,6 +102,17 @@ public class UIThumbnailV3 : UIThumbnail {
         UpdateData();
     }
 
+    public override void LockToPress(bool isLook) {
+        try {
+            btnThumbnail.GetComponent<Button>().interactable = !isLook;
+            btnShare.GetComponent<Button>().interactable = !isLook;
+            btnWatchNow.GetComponent<Button>().interactable = !isLook;
+            btnPlayTeaser.GetComponent<Button>().interactable = !isLook;
+            btnBuyTicketR.GetComponent<Button>().interactable = !isLook;
+            btnShareR.GetComponent<Button>().interactable = !isLook;
+        } catch (Exception) { }
+    }
+
     public override void Deactivate() {
         //rawImage.texture = defaultTexture;
         gameObject.SetActive(false);
@@ -100,13 +127,19 @@ public class UIThumbnailV3 : UIThumbnail {
 
     public override void Activate() {
         gameObject.SetActive(true);
+
+        LockToPress(true);
     }
 
     private void UpdateData() {
-        imgLive.gameObject.SetActive(thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live);
+        UpdateTexture();
 
-        txtDate.text = thumbnailElement.Data.StartDate.ToString("ddd, d MMM");
-        txtTime.text = thumbnailElement.Data.StartDate.ToString("hh tt");
+        bool isLive = thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live;
+        imgLive.gameObject.SetActive(isLive);
+        txtTime.gameObject.SetActive(!isLive);
+
+        txtDate.text = thumbnailElement.Data.StartDate.ToString("MMM d");
+        txtTime.text = thumbnailElement.Data.StartDate.ToString("HH:mm");
         txtTitle.text = thumbnailElement.Data.user;
         txtDescription.text = thumbnailElement.Data.description;
 
@@ -131,7 +164,7 @@ public class UIThumbnailV3 : UIThumbnail {
             btnShare.SetActive(!thumbnailElement.Data.HasTeaser);
             btnBuyTicketR.SetActive(true);
         } else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
-            txtInfoText.text = "You already have a ticket to this event";
+            txtInfoText.text = "This is a free event";
 
                 btnWatchNow.SetActive(true);
                 btnShareR.SetActive(true);
@@ -145,6 +178,7 @@ public class UIThumbnailV3 : UIThumbnail {
     }
 
     private void UpdateTexture() {
+
         if (!thumbnailElement.Data.is_bought) {
             rawImage.texture = thumbnailElement.teaserTexture ?? thumbnailElement.texture ?? defaultTexture;
         } else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {

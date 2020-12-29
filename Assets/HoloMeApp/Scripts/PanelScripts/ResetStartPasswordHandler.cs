@@ -11,12 +11,19 @@ public class ResetStartPasswordHandler : MonoBehaviour {
     [SerializeField] UnityEvent OnStartResetPassword;
 
     private void Awake() {
-        deepLinkHandler.PasswordResetConfirmDeepLinkActivated += AddVerificationData;
+
     }
 
     public void AddVerificationData(string uid, string token) {
-        pnlResetPassword.gameObject.SetActive(true);
-        deepLinkHandler.PasswordResetConfirmDeepLinkActivated -= AddVerificationData;
+        OnStartResetPassword.Invoke();
         pnlResetPassword.AddVerificationData(uid, token);
+    }
+
+    private void OnEnable() {
+        deepLinkHandler.PasswordResetConfirmDeepLinkActivated += AddVerificationData;
+    }
+
+    private void OnDisable() {
+        deepLinkHandler.PasswordResetConfirmDeepLinkActivated -= AddVerificationData;
     }
 }

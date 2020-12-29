@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using NatShare;
 
 public class ShareManager : MonoBehaviour
@@ -16,12 +14,10 @@ public class ShareManager : MonoBehaviour
             switch (Application.platform) {
                 case RuntimePlatform.IPhonePlayer:
                     appLink = iosLink;
-                    appName = "Beem+";
                     break;
 
                 case RuntimePlatform.Android:
                     appLink = androidLink;
-                    appName = "Beem";
                     break;
 
                 default:

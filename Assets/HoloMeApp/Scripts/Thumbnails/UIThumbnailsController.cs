@@ -5,7 +5,6 @@ using System;
 
 public class UIThumbnailsController : MonoBehaviour {
     public Action OnUpdated;
-    public Action<StreamJsonData.Data> OnNeedPurchase;
     public Action<StreamJsonData.Data> OnPlay;
 
     [SerializeField] MediaFileDataHandler mediaFileDataHandler;
@@ -15,6 +14,7 @@ public class UIThumbnailsController : MonoBehaviour {
     [SerializeField] PnlStreamOverlay pnlStreamOverlay;
     [SerializeField] GameObject btnThumbnailPrefab;
     [SerializeField] Transform content;
+    [SerializeField] PurchaseManager purchaseManager;
 
     Dictionary<long, ThumbnailElement> thumbnailElementsDictionary;
 
@@ -36,17 +36,12 @@ public class UIThumbnailsController : MonoBehaviour {
     }
 
     public void RemoveUnnecessary() {
-        Debug.Log("RemoveUnnecessary");
         List<long> removingListID = new List<long>();
-
-        Debug.Log("dataList count " + dataList.Count + " thumbnailElementsDictionary count " + thumbnailElementsDictionary.Count);
 
         foreach (var thumbnailElement in thumbnailElementsDictionary) {
             if (!dataList.Contains(thumbnailElement.Value.Data))
                 removingListID.Add(thumbnailElement.Value.Data.id);
         }
-
-        Debug.Log("RemoveUnnecessary count " + removingListID.Count);
         foreach (var id in removingListID) {
             thumbnailElementsDictionary.Remove(id);
         }
@@ -56,7 +51,14 @@ public class UIThumbnailsController : MonoBehaviour {
         }
     }
 
+    public void LockToPressElements() {
+        for (int i = 0; i < btnThumbnailItems.Count; i++) {
+            btnThumbnailItems[i].LockToPress(true);
+        }
+    }
+
     private void Awake() {
+
         thumbnailElementsDictionary = new Dictionary<long, ThumbnailElement>();
         btnThumbnailItemsDictionary = new Dictionary<long, UIThumbnail>();
         btnThumbnailItems = new List<UIThumbnail>();
@@ -66,8 +68,6 @@ public class UIThumbnailsController : MonoBehaviour {
     #region Prepare thumbnails
     private void PrepareBtnThumbnails() {
         int quantityDifference = btnThumbnailItems.Count - dataList.Count;
-
-        Debug.Log("PrepareBtnThumbnails quantityDifference " + quantityDifference);
 
         for (int i = 0; i < -quantityDifference; i++) {
             GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
@@ -84,18 +84,15 @@ public class UIThumbnailsController : MonoBehaviour {
                 continue;
             btnThumbnailItems[i].Deactivate();
         }
-
     }
 
     private void PrepareThumbnailElement() {
-        Debug.Log("PrepareThumbnailElement " + dataList.Count);
         foreach (var thumbnailData in dataList) {
             if (thumbnailElementsDictionary.ContainsKey(thumbnailData.id)) {
                 ThumbnailElement thumbnailElement = thumbnailElementsDictionary[thumbnailData.id];
                 if (thumbnailElement.Data == thumbnailData || streamDataEqualityComparer.Equals(thumbnailElement.Data, thumbnailData))
                     continue;
             }
-            Debug.Log("thumbnailData " + thumbnailData.id + " " + thumbnailData.preview_s3_url);
             thumbnailElementsDictionary[thumbnailData.id] = new ThumbnailElement(thumbnailData, mediaFileDataHandler);
         }
     }
@@ -108,6 +105,7 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetTeaserPlayAction(PlayTeaser);
             btnThumbnailItems[i].SetBuyAction(Buy);
             btnThumbnailItems[i].SetShareAction((_) => shareManager.ShareStream());
+            btnThumbnailItems[i].LockToPress(false);
         }
         OnUpdated?.Invoke();
     }
@@ -115,8 +113,8 @@ public class UIThumbnailsController : MonoBehaviour {
     #endregion
 
     private void Buy(StreamJsonData.Data data) {
-        //if(!data.is_bought || data.is_bought && !data.IsStarted && data.HasProduct)
-        OnNeedPurchase?.Invoke(data);
+        purchaseManager.SetPurchaseStreamData(data);
+        purchaseManager.Purchase();
     }
 
     private void Play(StreamJsonData.Data data) {
@@ -141,5 +139,6 @@ public class UIThumbnailsController : MonoBehaviour {
     private void PlayTeaser(StreamJsonData.Data data) {
         pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, null, data.HasTeaser);
         OnPlay?.Invoke(data);
+        purchaseManager.SetPurchaseStreamData(data);
     }
 }

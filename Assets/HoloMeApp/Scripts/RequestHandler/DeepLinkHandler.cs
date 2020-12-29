@@ -6,9 +6,11 @@ public class DeepLinkHandler : MonoBehaviour {
 
     public Action<string> VerificationDeepLinkActivated;
     public Action<string, string> PasswordResetConfirmDeepLinkActivated;
+    public Action<ServerAccessToken> OnCompleteSSOLoginGetted;
 
     private const string signUpVerication = "verification";
     private const string passWordResetConfirm = "passwordresetconfirm";
+    private const string completeSSOLogin = "complete-login";
 
     public void OnDeepLinkActivated(string uriStr) {
 
@@ -25,6 +27,9 @@ public class DeepLinkHandler : MonoBehaviour {
                 break;
             case passWordResetConfirm:
                 GetPasswordResetConfirmParameters(uri);
+                break;
+            case completeSSOLogin:
+                GetCompleteSSOLoginParameters(uri);
                 break;
         }
     }
@@ -64,6 +69,22 @@ public class DeepLinkHandler : MonoBehaviour {
         Debug.Log("uid " + uid + " token " + token);
         //if (!string.IsNullOrWhiteSpace(uid) && !string.IsNullOrWhiteSpace(token))
         PasswordResetConfirmDeepLinkActivated?.Invoke(uid, token);
+    }
+
+    private void GetCompleteSSOLoginParameters(Uri uri) {
+        Debug.Log("GetCompleteSSOLoginParameters " + uri.Host);
+        string refresh = HttpUtility.ParseQueryString(uri.Query).Get("refresh");
+        string access = HttpUtility.ParseQueryString(uri.Query).Get("access");
+
+        if (string.IsNullOrWhiteSpace(refresh) || string.IsNullOrWhiteSpace(access))
+            return;
+
+        ServerAccessToken serverAccessToken = new ServerAccessToken(refresh, access);
+
+
+        //Debug.Log("uid " + uid + " token " + token);
+        //if (!string.IsNullOrWhiteSpace(uid) && !string.IsNullOrWhiteSpace(token))
+        OnCompleteSSOLoginGetted?.Invoke(serverAccessToken);
     }
 
 }

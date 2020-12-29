@@ -6,14 +6,17 @@ public class PnlCheckPassword : MonoBehaviour
 {
     [SerializeField] UserWebManager userWebManager;
     [SerializeField] EmailAccountManager emailAccountManager;
+    [SerializeField] AccountManager accountManager;
     [SerializeField] InputFieldController inputFieldPassword;
     [SerializeField] Switcher SwitchToNextMenu;
 
     public void CheckPassword() {
-        if (string.IsNullOrWhiteSpace(inputFieldPassword.text))
-            InitWarningMsg();
-        else
-        userWebManager.LoadUserInfo();
+        if(LocalDataVerification())
+            userWebManager.LoadUserInfo();
+    }
+
+    private void Start() {
+        inputFieldPassword.IsClearOnDisable = true;
     }
 
     private void CheckAccess() {
@@ -33,17 +36,18 @@ public class PnlCheckPassword : MonoBehaviour
         if (badRequestData.password.Count > 0)
             inputFieldPassword.ShowWarning(badRequestData.password[0]);
 
-        if (!string.IsNullOrEmpty(badRequestData.detail))
+        else if (!string.IsNullOrEmpty(badRequestData.detail))
+            inputFieldPassword.ShowWarning("Incorrect password");
+
+        else
             inputFieldPassword.ShowWarning("Incorrect password");
     }
 
-    private void InitWarningMsg() {
-        BadRequestLogInEmailJsonData badRequestLogInEmailJsonData = new BadRequestLogInEmailJsonData();
-
+    private bool LocalDataVerification() {
         if (string.IsNullOrWhiteSpace(inputFieldPassword.text))
-            badRequestLogInEmailJsonData.password.Insert(0, "Required");
+            inputFieldPassword.ShowWarning("This field is compulsory");
 
-        ErrorLogInCallBack(badRequestLogInEmailJsonData);
+        return !string.IsNullOrWhiteSpace(inputFieldPassword.text);
     }
 
     private void OnEnable() {
@@ -51,7 +55,9 @@ public class PnlCheckPassword : MonoBehaviour
         emailAccountManager.OnErrorLogIn += ErrorLogInCallBack;
 
         userWebManager.OnUserInfoLoaded += CheckAccess;
-        inputFieldPassword.text = "";
+
+        if(accountManager.GetLoginType() != LogInType.Email)
+            SwitchToNextMenu.Switch();
     }
 
     private void OnDisable() {
@@ -59,7 +65,6 @@ public class PnlCheckPassword : MonoBehaviour
         emailAccountManager.OnErrorLogIn -= ErrorLogInCallBack;
 
         userWebManager.OnUserInfoLoaded -= CheckAccess;
-        inputFieldPassword.text = "";
     }
 
 }

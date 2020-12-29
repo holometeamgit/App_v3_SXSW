@@ -17,9 +17,14 @@ public class PnlWelcomeV4 : MonoBehaviour
 
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] GameObject LogInFBGO;
+    [Space]
+    [SerializeField] AppleAccountManager AppleAccountManager;
+    [SerializeField] GameObject LogInAppleGO;
 
     private void OnEnable() {
-        webRequestHandler.GetRequest("https://devholo.me/oauth/providers/", EnableFB, (key, body) => { }, null);
+        webRequestHandler.GetRequest(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, null);
+
+        LogInAppleGO.SetActive(AppleAccountManager.IsCurrentPlatformSupported());
     }
 
     private void EnableFB(long key, string body) {
@@ -28,8 +33,10 @@ public class PnlWelcomeV4 : MonoBehaviour
         //        Debug.Log(body);
         try {
             Providers providers = JsonUtility.FromJson<Providers>(body);
+            if (System.DateTime.Now < new DateTime(2020, 12, 9, 10, 0, 0, 0))
+                return;
             if (providers != null)
-                LogInFBGO.SetActive(providers.providers.Contains("fb"));
+                LogInFBGO.SetActive(providers.providers.Contains("fb")) ;
         } catch (Exception e) { }
     }
 }
