@@ -3,7 +3,7 @@ stages:
   - Android
 AndroidBuild:
   script:
-  - /Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity -batchmode -quit -projectPath $CI_PROJECT_DIR -executeMethod AndroidBuilder.Build
+  - /Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity -batchmode -quit -projectPath $CI_PROJECT_DIR -executeMethod Beem.GitLabCI.AndroidBuilder.Build
   #- firebase appdistribution:distribute $CI_PROJECT_DIR/$PRODUCT_NAME.apk --app "$FIREBASE_ANDROID_ID" --release-notes "$CI_COMMIT_MESSAGE"
   stage: Android
   artifacts:
@@ -15,7 +15,7 @@ AndroidBuild:
   #  - develop
 IOSBuild:
   script:
-  - /Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity -batchmode -quit -projectPath $CI_PROJECT_DIR -executeMethod IOSBuilder.Build
+  - /Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity -batchmode -quit -projectPath $CI_PROJECT_DIR -executeMethod Beem.GitLabCI.IOSBuilder.Build
   - xcodebuild archive -workspace $XCODE_FILE_NAME/Unity-iPhone.xcworkspace -scheme "Unity-iPhone" -archivePath "$PRODUCT_NAME.xcarchive"
   - xcodebuild -exportArchive -archivePath "$PRODUCT_NAME.xcarchive" -exportPath $CI_PROJECT_DIR/$PRODUCT_NAME -exportOptionsPlist $CI_PROJECT_DIR/Options.plist
   #- firebase appdistribution:distribute $CI_PROJECT_DIR/$PRODUCT_NAME/$IPA_NAME.ipa --app "$FIREBASE_IOS_ID" --release-notes "$CI_COMMIT_MESSAGE"
