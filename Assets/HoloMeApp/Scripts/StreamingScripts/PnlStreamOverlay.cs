@@ -116,6 +116,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void OpenAsStreamer() {
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
         agoraController.ChannelName = userWebManager.GetUsername();
         isStreamer = true;
         gameObject.SetActive(true);
@@ -176,6 +177,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         if (countdownRoutine != null)
             StopCoroutine(countdownRoutine);
 
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         EnableStreamControls(false);
         agoraController.Leave();
         cameraRenderImage.texture = null;
