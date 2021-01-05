@@ -202,7 +202,7 @@ public class PnlViewingExperience : MonoBehaviour
     public void ActivateForPreRecorded(string code, VideoJsonData videoJsonData, bool isTeaser)
     {
         //print($"PLAY CALLED - " + code);
-        ShareActivationFunctions();
+        SharedActivationFunctions();
         this.isTeaser = isTeaser;
         activatedForStreaming = false;
         btnBurger.SetActive(true);
@@ -220,7 +220,7 @@ public class PnlViewingExperience : MonoBehaviour
 
     public void ActivateForStreaming()
     {
-        ShareActivationFunctions();
+        SharedActivationFunctions();
         activatedForStreaming = true;
         btnBurger.SetActive(false); //Close button not required on this page
         hologramHandler.TogglePreRecordedVideoRenderer(false);
@@ -234,7 +234,7 @@ public class PnlViewingExperience : MonoBehaviour
         }
     }
 
-    void ShareActivationFunctions()
+    void SharedActivationFunctions()
     {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
         blurController.RemoveBlur();

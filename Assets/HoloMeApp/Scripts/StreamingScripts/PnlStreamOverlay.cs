@@ -154,6 +154,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     public void CloseAsStreamer() {
         OnCloseAsStreamer.Invoke();
         StopStream();
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
     }
 
     private void CloseAsViewer() {
@@ -177,7 +178,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         if (countdownRoutine != null)
             StopCoroutine(countdownRoutine);
 
-        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         EnableStreamControls(false);
         agoraController.Leave();
         cameraRenderImage.texture = null;
