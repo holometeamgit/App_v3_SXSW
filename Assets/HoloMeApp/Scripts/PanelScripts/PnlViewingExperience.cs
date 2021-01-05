@@ -3,6 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 using TMPro;
 using System.Collections;
+using System;
 
 public class PnlViewingExperience : MonoBehaviour
 {
@@ -218,13 +219,13 @@ public class PnlViewingExperience : MonoBehaviour
         }
     }
 
-    public void ActivateForStreaming()
+    public void ActivateForStreaming(string channelName)
     {
         SharedActivationFunctions();
         activatedForStreaming = true;
         btnBurger.SetActive(false); //Close button not required on this page
         hologramHandler.TogglePreRecordedVideoRenderer(false);
-
+        hologramHandler.AssignStreamName(channelName + DateTime.Now);
         StopExperience();
 
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing

@@ -135,7 +135,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         gameObject.SetActive(true);
         controlsPresenter.SetActive(false);
         controlsViewer.SetActive(true);
-        pnlViewingExperience.ActivateForStreaming();
+        pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName);
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
     }
