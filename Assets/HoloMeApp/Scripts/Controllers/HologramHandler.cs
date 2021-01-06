@@ -143,7 +143,7 @@ public class HologramHandler : MonoBehaviour
 
     public void StartTrackingStream()
     {
-        AnalyticsController.Instance.StartTimer(hologramViewDwellTimer, $"{AnalyticKeys.KeyHologramViewPercentage} ({videoURL})");//TODO:Make a new key for this
+        AnalyticsController.Instance.StartTimer(hologramViewDwellTimer, $"{AnalyticKeys.KeyHologramLiveViewTime} ({videoURL})");
     }
 
     public void TogglePreRecordedVideoRenderer(bool enable)

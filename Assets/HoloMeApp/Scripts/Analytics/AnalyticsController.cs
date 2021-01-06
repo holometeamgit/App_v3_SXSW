@@ -60,7 +60,7 @@ public class AnalyticsController : MonoBehaviour {
         dwellTimer.StartTimer();
         dwellTimers.Add(timerKey, dwellTimer);
 
-        HelperFunctions.DevLog($"Added timer {timerKey}");
+        HelperFunctions.DevLog($"Added timer {timerKey} with name {timerName}");
 
         //return dwellTimer;
     }

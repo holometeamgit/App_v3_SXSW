@@ -6,6 +6,7 @@
     public const string KeySnapshotShared = "hologramSnapshotShared";
     public const string KeyVideoShared = "hologramVideoShared";
     public const string KeyHologramViewPercentage = "hologramViewPercentage";
+    public const string KeyHologramLiveViewTime = "hologramLiveViewTime";
     public const string KeySessionLength = "sessionLength";
 
     public const string KeyPerformanceLoaded = "performanceLoaded";
