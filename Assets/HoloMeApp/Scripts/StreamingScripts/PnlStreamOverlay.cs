@@ -129,7 +129,8 @@ public class PnlStreamOverlay : MonoBehaviour {
         StartCoroutine(OnPreviewReady());
     }
 
-    public void OpenAsViewer() {
+    public void OpenAsViewer(string channelName) {
+        agoraController.ChannelName = channelName;
         isStreamer = false;
         blurController.RemoveBlur();
         gameObject.SetActive(true);
