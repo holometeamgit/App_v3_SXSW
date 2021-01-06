@@ -47,6 +47,7 @@ public class HologramHandler : MonoBehaviour
 
 
     bool hasPlaced;
+    bool isPreRecorded;
     VideoPlayerUnity videoPlayer;
 
     void Start()
@@ -132,24 +133,37 @@ public class HologramHandler : MonoBehaviour
     }
 
     /// <summary>
-    /// This is required for analytics stream name tracking
+    /// This is required for analytics stream name tracking and sharing
     /// </summary>
     public void AssignStreamName(string streamName)
     {
         videoURL = streamName;
     }
 
+    public void StartTrackingStream()
+    {
+        AnalyticsController.Instance.StartTimer(hologramViewDwellTimer, $"{AnalyticKeys.KeyHologramViewPercentage} ({videoURL})");//TODO:Make a new key for this
+    }
+
     public void TogglePreRecordedVideoRenderer(bool enable)
     {
+        isPreRecorded = enable;
         holoMe.HologramTransform.parent.GetComponent<MeshRenderer>().enabled = enable;
     }
 
     public void StopVideo()
     {
-        float percentageViewed = Mathf.Round(Mathf.Clamp((float)(((float)AnalyticsController.Instance.GetElapsedTime(hologramViewDwellTimer) / videoPlayer.GetClipLength()) * 100), 0, 100));
-        print("Clip Length " + videoPlayer.GetClipLength());
-        print("Percentage Watched = " + percentageViewed + "%");
-        AnalyticsController.Instance.StopTimer(hologramViewDwellTimer, percentageViewed);
+        if (isPreRecorded)
+        {
+            float percentageViewed = Mathf.Round(Mathf.Clamp((float)(((float)AnalyticsController.Instance.GetElapsedTime(hologramViewDwellTimer) / videoPlayer.GetClipLength()) * 100), 0, 100));
+            HelperFunctions.DevLog("Clip Length " + videoPlayer.GetClipLength());
+            HelperFunctions.DevLog("Percentage Watched = " + percentageViewed + "%");
+            AnalyticsController.Instance.StopTimer(hologramViewDwellTimer, percentageViewed);           
+        }
+        else
+        {
+            AnalyticsController.Instance.StopTimer(hologramViewDwellTimer);
+        }
         holoMe.StopVideo();
     }
 

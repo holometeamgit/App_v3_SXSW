@@ -9,7 +9,6 @@ public class UIThumbnailsController : MonoBehaviour {
 
     [SerializeField] MediaFileDataHandler mediaFileDataHandler;
     [SerializeField] PnlViewingExperience pnlViewingExperience;
-    [SerializeField] AgoraController agoraController;
     [SerializeField] ShareManager shareManager;
     [SerializeField] PnlStreamOverlay pnlStreamOverlay;
     [SerializeField] GameObject btnThumbnailPrefab;
@@ -130,8 +129,7 @@ public class UIThumbnailsController : MonoBehaviour {
             pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null,false);
             OnPlay?.Invoke(data);
         } else if(data.HasAgoraChannel) {
-            agoraController.ChannelName = data.agora_channel;
-            pnlStreamOverlay.OpenAsViewer();
+            pnlStreamOverlay.OpenAsViewer(data.agora_channel);
             OnPlay?.Invoke(data);
         }
     }
