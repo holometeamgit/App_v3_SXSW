@@ -116,6 +116,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void OpenAsStreamer() {
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
         agoraController.ChannelName = userWebManager.GetUsername();
         isStreamer = true;
         gameObject.SetActive(true);
@@ -134,7 +135,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         gameObject.SetActive(true);
         controlsPresenter.SetActive(false);
         controlsViewer.SetActive(true);
-        pnlViewingExperience.ActivateForStreaming();
+        pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName);
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
     }
@@ -153,6 +154,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     public void CloseAsStreamer() {
         OnCloseAsStreamer.Invoke();
         StopStream();
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
     }
 
     private void CloseAsViewer() {

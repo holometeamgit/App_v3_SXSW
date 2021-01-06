@@ -3,7 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 using TMPro;
 using System.Collections;
-using UnityEngine.UI;
+using System;
 
 public class PnlViewingExperience : MonoBehaviour
 {
@@ -41,16 +41,16 @@ public class PnlViewingExperience : MonoBehaviour
     [SerializeField]
     RectTransform scanMessageRT;
 
-//    [TextArea]
-//    [SerializeField]
+    //    [TextArea]
+    //    [SerializeField]
     string scaneEnviromentStr = "Scan the floor in front of you by moving your phone slowly from side to side";
 
-//    [TextArea]
-//    [SerializeField]
+    //    [TextArea]
+    //    [SerializeField]
     string pinchToZoomStr = "Pinch to resize the hologram";
 
-//    [TextArea]
-//    [SerializeField]
+    //    [TextArea]
+    //    [SerializeField]
     string tapToPlaceStr = "To see your chosen performer, tap the white circle when it appears on the floor";
 
     Coroutine scanAnimationRoutine;
@@ -103,7 +103,7 @@ public class PnlViewingExperience : MonoBehaviour
             return;
         }
 
-        hologramHandler.SetOnPlacementUIHelperFinished(()=> StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, activatedForStreaming)));
+        hologramHandler.SetOnPlacementUIHelperFinished(() => StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, activatedForStreaming)));
 
         scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         ShowMessage(scaneEnviromentStr);
@@ -203,37 +203,29 @@ public class PnlViewingExperience : MonoBehaviour
     public void ActivateForPreRecorded(string code, VideoJsonData videoJsonData, bool isTeaser)
     {
         //print($"PLAY CALLED - " + code);
+        SharedActivationFunctions();
         this.isTeaser = isTeaser;
         activatedForStreaming = false;
-        blurController.RemoveBlur();
-        canvasGroup.alpha = 0;
-        gameObject.SetActive(true);
         btnBurger.SetActive(true);
         logoCanvas.ActivateIfLogoAvailable(videoJsonData);
-        hologramHandler.InitSession();
         hologramHandler.PlayIfPlaced(code);
         hologramHandler.TogglePreRecordedVideoRenderer(true);
-        FadeInCanvas();
+
 
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, false));
         }
-
-        viewingExperienceInFocus = true;
     }
 
-    public void ActivateForStreaming()
+    public void ActivateForStreaming(string channelName)
     {
+        SharedActivationFunctions();
         activatedForStreaming = true;
-        blurController.RemoveBlur();
-        canvasGroup.alpha = 0;
-        gameObject.SetActive(true);
         btnBurger.SetActive(false); //Close button not required on this page
-        hologramHandler.InitSession();
         hologramHandler.TogglePreRecordedVideoRenderer(false);
-        FadeInCanvas();
+        hologramHandler.AssignStreamName(channelName + DateTime.Now);
         StopExperience();
 
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
@@ -241,7 +233,16 @@ public class PnlViewingExperience : MonoBehaviour
             HideScanMessage();
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, true));
         }
+    }
 
+    void SharedActivationFunctions()
+    {
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+        blurController.RemoveBlur();
+        canvasGroup.alpha = 0;
+        gameObject.SetActive(true);
+        hologramHandler.InitSession();
+        FadeInCanvas();
         viewingExperienceInFocus = true;
     }
 
@@ -257,6 +258,7 @@ public class PnlViewingExperience : MonoBehaviour
 
     public void StopExperience()
     {
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         hologramHandler.StopVideo();
     }
 
