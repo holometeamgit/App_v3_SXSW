@@ -221,12 +221,13 @@ public class PnlViewingExperience : MonoBehaviour
 
     public void ActivateForStreaming(string channelName)
     {
+        StopExperience();
         SharedActivationFunctions();
         activatedForStreaming = true;
         btnBurger.SetActive(false); //Close button not required on this page
         hologramHandler.TogglePreRecordedVideoRenderer(false);
         hologramHandler.AssignStreamName(channelName + DateTime.Now);
-        StopExperience();
+        hologramHandler.StartTrackingStream();
 
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
