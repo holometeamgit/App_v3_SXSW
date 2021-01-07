@@ -10,9 +10,6 @@ public class PnlCameraAccessCheckiOS : MonoBehaviour, IPermissionGranter
     [SerializeField]
     Button btnRequestPermission;
 
-    public bool MicRequestComplete { get; private set; }
-    public bool WriteRequestComplete { get; private set; }
-
     public bool MicAccessAvailable => Application.HasUserAuthorization(UserAuthorization.Microphone);
     public bool WriteAccessAvailable => true;
 
@@ -25,20 +22,18 @@ public class PnlCameraAccessCheckiOS : MonoBehaviour, IPermissionGranter
         }
     }
 
+    public bool MicRequestComplete { get; private set; }
+    public bool WriteRequestComplete { get; private set; }
+    public bool CameraRequestComplete { get; private set; }
+
     void OnEnable()
     {
         iOSCameraPermission.VerifyPermission(gameObject.name, "OnCameraAccessVerified");
-
-        if (SceneManager.GetActiveScene().name == "Main")
-            return;
+        CameraRequestComplete = true;
         if (Application.platform != RuntimePlatform.IPhonePlayer)
             return;
 
         StartCoroutine(VerifyPermissionLive());
-
-        if (btnRequestPermission == null)
-            btnRequestPermission = GameObject.Find("btnSettings").GetComponent<Button>();
-        btnRequestPermission.onClick.AddListener(RequestCameraAccess);
     }
 
     IEnumerator VerifyPermissionLive()
@@ -54,17 +49,7 @@ public class PnlCameraAccessCheckiOS : MonoBehaviour, IPermissionGranter
     {
         if (permissionWasGranted == "true" && !cameraPermissionGranted)
         {
-            //gameObject.SetActive(false);
             cameraPermissionGranted = true;
-
-            //if (!MicAccessAvailable)
-            //{
-            //    StartCoroutine(AsyncMicAccess());
-            //}
-            //else
-            //{
-            //    SceneManager.LoadScene(1);
-            //}
         }
     }
 
@@ -78,8 +63,15 @@ public class PnlCameraAccessCheckiOS : MonoBehaviour, IPermissionGranter
 
     public void RequestMicAccess()
     {
-        Application.RequestUserAuthorization(UserAuthorization.Microphone);
-        MicRequestComplete = true;
+        if (!MicRequestComplete) {
+            Application.RequestUserAuthorization(UserAuthorization.Microphone);
+            MicRequestComplete = true;
+        } else {
+#if UNITY_IOS && !UNITY_EDITOR
+        string url = iOSSettingsOpenerBindings.GetSettingsURL();
+        Application.OpenURL(url);
+#endif
+        }
     }
 
     IEnumerator AsyncMicAccess()

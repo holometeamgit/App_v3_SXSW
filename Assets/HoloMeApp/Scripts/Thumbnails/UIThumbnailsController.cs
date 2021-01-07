@@ -14,6 +14,7 @@ public class UIThumbnailsController : MonoBehaviour {
     [SerializeField] GameObject btnThumbnailPrefab;
     [SerializeField] Transform content;
     [SerializeField] PurchaseManager purchaseManager;
+    [SerializeField] PermissionController permissionController;
 
     Dictionary<long, ThumbnailElement> thumbnailElementsDictionary;
 
@@ -125,6 +126,9 @@ public class UIThumbnailsController : MonoBehaviour {
     }
 
     private void PlayStream(StreamJsonData.Data data) {
+        if (!permissionController.CheckCameraAccess())
+            return;
+
         if(data.HasStreamUrl) {
             pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null,false);
             OnPlay?.Invoke(data);
@@ -135,6 +139,9 @@ public class UIThumbnailsController : MonoBehaviour {
     }
 
     private void PlayTeaser(StreamJsonData.Data data) {
+        if (!permissionController.CheckCameraAccess())
+            return;
+
         pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, null, data.HasTeaser);
         OnPlay?.Invoke(data);
         purchaseManager.SetPurchaseStreamData(data);
