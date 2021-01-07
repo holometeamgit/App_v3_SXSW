@@ -223,6 +223,7 @@ public class PnlViewingExperience : MonoBehaviour
     {
         StopExperience();
         SharedActivationFunctions();
+        this.isTeaser = false;
         activatedForStreaming = true;
         btnBurger.SetActive(false); //Close button not required on this page
         hologramHandler.TogglePreRecordedVideoRenderer(false);
