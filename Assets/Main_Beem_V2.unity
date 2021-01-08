@@ -1044,8 +1044,6 @@ GameObject:
   - component: {fileID: 250168742}
   - component: {fileID: 250168744}
   - component: {fileID: 250168743}
-  - component: {fileID: 250168745}
-  - component: {fileID: 250168746}
   m_Layer: 0
   m_Name: AnalyticsTracker
   m_TagString: Untagged
@@ -1091,41 +1089,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 915b695b94efb544193d82b1b554973a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cleverTapUnity: {fileID: 250168745}
-  appsFlyerObjectScript: {fileID: 250168746}
---- !u!114 &250168745
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 250168741}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8dfd7e12ca49465e94f60ff2dd51e17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CLEVERTAP_ACCOUNT_ID: 65R-W6K-KW6Z
-  CLEVERTAP_ACCOUNT_TOKEN: 360-256
-  CLEVERTAP_ACCOUNT_REGION: 
-  CLEVERTAP_DEBUG_LEVEL: 0
-  CLEVERTAP_ENABLE_PERSONALIZATION: 1
---- !u!114 &250168746
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 250168741}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a199002c7a1cb448fa164210c4b756d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  devKey: ySBPhh8s4HtZcUiz2QqfVb
-  appID: 1532446771
-  isDebug: 0
-  getConversionData: 0
+  analyticLibraries:
+  - {fileID: 11400000, guid: 6e5afae280e45764c91ea41657645ece, type: 2}
+  - {fileID: 11400000, guid: 9ef0bee03d6c2414387e085849456d5c, type: 2}
+  - {fileID: 11400000, guid: 429f9162a5fecb445865aeb4de6d54e6, type: 2}
 --- !u!1 &251015953 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9131335257026221797, guid: 604c9bb78e3af46b4aef4ea76027f8b0,
@@ -11709,6 +11676,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
         type: 3}
+      propertyPath: OnPinch.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
+        type: 3}
+      propertyPath: OnPlaced.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
+        type: 3}
+      propertyPath: OnSurfaceLost.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
+        type: 3}
+      propertyPath: OnSurfaceFound.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
+        type: 3}
       propertyPath: _camera
       value: 
       objectReference: {fileID: 1000972062}
@@ -11761,26 +11748,6 @@ PrefabInstance:
         type: 3}
       propertyPath: transparencyRangeUser
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
-        type: 3}
-      propertyPath: OnPinch.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
-        type: 3}
-      propertyPath: OnPlaced.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
-        type: 3}
-      propertyPath: OnSurfaceLost.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
-        type: 3}
-      propertyPath: OnSurfaceFound.m_PersistentCalls.m_Calls.Array.size
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
         type: 3}
@@ -13819,6 +13786,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
         type: 3}
+      propertyPath: OnCloseAsStreamer.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+        type: 3}
       propertyPath: arSession
       value: 
       objectReference: {fileID: 1445487951}
@@ -13862,11 +13834,6 @@ PrefabInstance:
       propertyPath: pnlViewingExperience
       value: 
       objectReference: {fileID: 4715128579803891304}
-    - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
-        type: 3}
-      propertyPath: OnCloseAsStreamer.m_PersistentCalls.m_Calls.Array.size
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
         type: 3}
       propertyPath: OnCloseAsStreamer.m_PersistentCalls.m_Calls.Array.data[1].m_Mode

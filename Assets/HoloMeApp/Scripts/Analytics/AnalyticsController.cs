@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Analytics;
 
 public class AnalyticsController : MonoBehaviour {
     public static AnalyticsController Instance { get; private set; }
@@ -8,10 +7,7 @@ public class AnalyticsController : MonoBehaviour {
     Dictionary<string, AnalyticsDwellTracker> dwellTimers = new Dictionary<string, AnalyticsDwellTracker>();
 
     [SerializeField]
-    CleverTapUnity  cleverTapUnity;
-
-    [SerializeField]
-    AppsFlyerObjectScript appsFlyerObjectScript;
+    AnalyticsLibrary[] analyticLibraries; //Consider adding an enum to explicitely define each plugin if required
 
     private void Awake() {
         if (Instance == null) {
@@ -23,6 +19,18 @@ public class AnalyticsController : MonoBehaviour {
         }
     }
 
+    void SendCustomEventToAllLibraries(string eventName) {
+        foreach (var analyticsLibrary in analyticLibraries) {
+            analyticsLibrary.SendCustomEvent(eventName);
+        }
+    }
+
+    void SendCustomEventToAllLibraries(string eventName, Dictionary<string, object> eventData) {
+        foreach (var analyticsLibrary in analyticLibraries) {
+            analyticsLibrary.SendCustomEvent(eventName, eventData);
+        }
+    }
+
     public void SendCustomEvent(string eventName) {
         if (string.IsNullOrWhiteSpace(eventName)) {
             Debug.LogError("Custom event name wasn't specified");
@@ -30,8 +38,7 @@ public class AnalyticsController : MonoBehaviour {
         }
 
         HelperFunctions.DevLog($"Custom Event Sent {eventName}");
-        Analytics.CustomEvent(eventName);
-        cleverTapUnity.SendCustomEvent(eventName);
+        SendCustomEventToAllLibraries(eventName);
     }
 
     public void SendCustomEvent(string eventName, string dataName, object data)
@@ -45,9 +52,10 @@ public class AnalyticsController : MonoBehaviour {
         dataContainer.Add(dataName, data);
 
         HelperFunctions.DevLog($"Custom Event Sent {eventName} with data {dataName} {data}");
-        Analytics.CustomEvent(eventName, dataContainer);
-        cleverTapUnity.SendCustomEvent(eventName, dataContainer);
-        appsFlyerObjectScript.SendCustomEvent(eventName, dataName, data);
+        SendCustomEventToAllLibraries(eventName, dataContainer);
+        //Analytics.CustomEvent(eventName, dataContainer);
+        //cleverTapUnity.SendCustomEvent(eventName, dataContainer);
+        //appsFlyerObjectScript.SendCustomEvent(eventName, dataName, data);
     }
 
     public void StartTimer(string timerKey, string timerName) {
@@ -92,7 +100,11 @@ public class AnalyticsController : MonoBehaviour {
 
         var time = new Dictionary<string, object>();
         time.Add(timerName, elapsedTime);
-        Analytics.CustomEvent(timerName, time);
+
+        SendCustomEventToAllLibraries(timerName, time);
+        //Analytics.CustomEvent(timerName, time);
+        //cleverTapUnity.SendCustomEvent(timerName, time);
+        //appsFlyerObjectScript.SendCustomEvent(timerName, timerName, time);
         dwellTimers.Remove(timerDictonaryKey);
 
         HelperFunctions.DevLog($"Dwell timer {timerName} stopped. Time tracked = {elapsedTime}");
