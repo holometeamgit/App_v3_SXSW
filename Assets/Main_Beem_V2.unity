@@ -3426,22 +3426,6 @@ MonoBehaviour:
   _debugCapsule: {fileID: 898386227}
   _maxDistanceOnSelection: 25
   _maxAngle: 10
---- !u!114 &1077115542
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1077115540}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6c904365782842fd95b30c3c22af81c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  placedObject: {fileID: 898386226}
-  _camera: {fileID: 1000972062}
-  arRaycastManager: {fileID: 780547049}
-  maxDistanceOnSelection: 25
 --- !u!1 &1084873058 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 959885029199567514, guid: 0e2514264091043ceb1656507cda1612,
@@ -4488,7 +4472,6 @@ MonoBehaviour:
   hologramChildren:
   - {fileID: 294683146}
   - {fileID: 237338055}
-  agoraController: {fileID: 0}
   audioSource: {fileID: 1735340510}
   liveStreamMat: {fileID: 2100000, guid: 4d2c24393236f3a41ba3414d55d755a2, type: 2}
 --- !u!1 &1259991540
@@ -6675,7 +6658,7 @@ Transform:
   - {fileID: 631881964}
   - {fileID: 481270416}
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1735340509
 GameObject:
@@ -12426,6 +12409,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
         type: 3}
+      propertyPath: OnPinch.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
+        type: 3}
+      propertyPath: OnPlaced.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
+        type: 3}
+      propertyPath: OnSurfaceLost.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
+        type: 3}
+      propertyPath: OnSurfaceFound.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
+        type: 3}
       propertyPath: _camera
       value: 
       objectReference: {fileID: 1000972062}
@@ -12478,26 +12481,6 @@ PrefabInstance:
         type: 3}
       propertyPath: transparencyRangeUser
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
-        type: 3}
-      propertyPath: OnPinch.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
-        type: 3}
-      propertyPath: OnPlaced.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
-        type: 3}
-      propertyPath: OnSurfaceLost.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
-        type: 3}
-      propertyPath: OnSurfaceFound.m_PersistentCalls.m_Calls.Array.size
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3195763610776529398, guid: 65f27277595733c46b483fb8530a683a,
         type: 3}
@@ -14536,6 +14519,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
         type: 3}
+      propertyPath: OnCloseAsStreamer.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+        type: 3}
       propertyPath: arSession
       value: 
       objectReference: {fileID: 1445487951}
@@ -14579,11 +14567,6 @@ PrefabInstance:
       propertyPath: pnlViewingExperience
       value: 
       objectReference: {fileID: 4715128579803891304}
-    - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
-        type: 3}
-      propertyPath: OnCloseAsStreamer.m_PersistentCalls.m_Calls.Array.size
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
         type: 3}
       propertyPath: OnCloseAsStreamer.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
