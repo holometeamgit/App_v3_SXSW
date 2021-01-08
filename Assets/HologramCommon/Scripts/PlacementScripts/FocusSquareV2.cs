@@ -18,7 +18,8 @@ public class FocusSquareV2 : PlacementHandler
         LOADING,      // is video still loading
         PINCH,        // Pich to zoom or drag to replace
         DELAY_AFTER_PINCH, // Short delay after pinch
-        HIDE 
+        HIDE,         // Show/Hide tap to place after all
+        DRAG_AND_DROP // Drag and drop state
     }
 
     private enum FocusAnimationStates
@@ -90,6 +91,15 @@ public class FocusSquareV2 : PlacementHandler
 
     [SerializeField] private UIThumbnailsController _uiThumbnailsController;
     private StreamJsonData.Data _streamJsonData;
+
+    [SerializeField] 
+    private Transform _debugCapsule;
+    
+    private static List<ARRaycastHit> _hitsDrugAndDrop = new List<ARRaycastHit>();
+    private Vector2 _touchPosition;
+    
+    [SerializeField]
+    private float _maxDistanceOnSelection = 25.0f;
     
     private void Awake()
     {
@@ -155,6 +165,7 @@ public class FocusSquareV2 : PlacementHandler
                 _currentState = value;
                 break;
             case States.HIDE:
+                TurnPlanes(false);
                 if (_isHideStateReachFirstTime)
                 {
                     _isHideStateReachFirstTime = false;
@@ -162,6 +173,10 @@ public class FocusSquareV2 : PlacementHandler
                 }
 
                 TapToPlaceAnimation();
+                _currentState = value;
+                break;
+            case States.DRAG_AND_DROP:
+                TurnPlanes(true);
                 _currentState = value;
                 break;
         }
@@ -323,6 +338,30 @@ public class FocusSquareV2 : PlacementHandler
             case States.HIDE:
                 HideState();
                 break;
+            case States.DRAG_AND_DROP:
+                _focusSquareRenderer.color = Color.Lerp(_focusSquareRenderer.color, new Color(1, 1, 1, 0.0f), Time.deltaTime * 5.0f);
+                if (Input.touchCount == 1)
+                {
+                    var touch = Input.GetTouch(0);
+                    switch (touch.phase)
+                    {
+                        case TouchPhase.Moved:
+                            _touchPosition = touch.position;
+                            break;
+                        case TouchPhase.Ended:
+                            SwitchToState(States.HIDE);
+                            break;
+                    }
+                }
+                
+                if(m_RaycastManager.Raycast(_touchPosition, _hitsDrugAndDrop, TrackableType.PlaneWithinPolygon))
+                {
+                    var hitPose = _hitsDrugAndDrop[0].pose;
+                    _debugCapsule.transform.position = hitPose.position;
+                    _hologramPlacedPosition = hitPose.position;
+                    OnPlaceDetected?.Invoke(_hologramPlacedPosition);
+                }
+                break;
         }
     }
 
@@ -330,6 +369,26 @@ public class FocusSquareV2 : PlacementHandler
     
     private void HideState()
     {
+        if (Input.touchCount == 1)
+        {
+            var touch = Input.GetTouch(0);
+            switch (touch.phase)
+            {
+                case TouchPhase.Began:
+                    var ray = _arSessionOrigin.camera.ScreenPointToRay(touch.position);
+
+                    if (Physics.Raycast(ray, out var hitObject, _maxDistanceOnSelection))
+                    {
+                        Debug.Log(hitObject.transform.name);
+                        if (hitObject.transform.name.Contains("PlaceObject"))
+                        {
+                            SwitchToState(States.DRAG_AND_DROP);
+                        }
+                    }
+                    break;
+            }
+        }
+
         switch (_focusAnimationState)
         {
             case FocusAnimationStates.TAP:
@@ -477,7 +536,8 @@ public class FocusSquareV2 : PlacementHandler
             OnPlaceDetected?.Invoke(_focusSquareV2Sprite.transform.position);
             _upWorldDirection = _focusSquareV2Sprite.transform.forward;
             _hologramPlacedPosition = _focusSquareV2Sprite.transform.position;
-
+            _debugCapsule.position = _focusSquareV2Sprite.transform.position;
+            
             TurnPlanes(false);
 
             return true;
