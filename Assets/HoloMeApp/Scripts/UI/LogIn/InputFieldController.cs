@@ -24,11 +24,13 @@ public class InputFieldController : MonoBehaviour
         set { inputField.interactable = value; }
     }
 
-    [SerializeField] TMP_InputField inputField;
+    [SerializeField]
+    TMP_InputField inputField;
 
-    [SerializeField] TMP_Text warningMsgText;
-    [SerializeField] GameObject warningMsgRect;
-    [SerializeField] GameObject warningOutline;
+    [SerializeField]
+    TMP_Text warningMsgText;
+    [SerializeField]
+    Animator animator;
 
     private void Awake() {
         //inputField.shouldHideMobileInput = true;
@@ -39,14 +41,12 @@ public class InputFieldController : MonoBehaviour
 
     public void ShowWarning(string warningMsg) {
         warningMsgText.text = OverrideMsg(warningMsg);
-        warningMsgRect.SetActive(true);
-        warningOutline.SetActive(true);
+        animator.SetBool("ShowWarning", true);
         StartCoroutine(UpdateLayout());
     }
 
     public void SetToDefaultState() {
-        warningMsgRect.SetActive(false);
-        warningOutline.SetActive(false);
+        animator.SetBool("ShowWarning", false);
     }
 
     public void SetPasswordContentType(bool value) {
