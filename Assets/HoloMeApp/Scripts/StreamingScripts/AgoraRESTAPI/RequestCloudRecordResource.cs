@@ -37,10 +37,10 @@ public class RequestCloudRecordResource : RestRequest {
 
     [Serializable]
     public class TranscodingConfig {
-        public int height = 1280;
-        public int width = 720;
-        public int bitrate = 3000;
-        public int fps = 25;
+        public int height = AgoraSharedVideoConfig.Height;
+        public int width = AgoraSharedVideoConfig.Width;
+        public int bitrate = AgoraSharedVideoConfig.Bitrate;
+        public int fps = AgoraSharedVideoConfig.FrameRate;
         public int mixedVideoLayout = 1;
         public string backgroundColor = "#000000";
     }
