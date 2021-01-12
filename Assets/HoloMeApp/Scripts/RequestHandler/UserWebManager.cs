@@ -7,8 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 
-public class UserWebManager : MonoBehaviour
-{
+public class UserWebManager : MonoBehaviour {
     public Action OnUserInfoLoaded;
     public Action OnErrorUserInfoLoaded;
 
@@ -55,20 +54,12 @@ public class UserWebManager : MonoBehaviour
         string bio = null,
         string profile_picture_s3_url = null) {
 
-        Debug.Log(userName + " " +
-            email + " " +
-            first_name + " " +
-            last_name + " " +
-            bio + " " +
-            profile_picture_s3_url);
-
-        LoadUserInfo( () =>
-        UpdateUserDataAfterLoadUserInfo(userName, email, first_name, last_name,
-            bio, profile_picture_s3_url));
+        LoadUserInfo(() =>
+       UpdateUserDataAfterLoadUserInfo(userName, email, first_name, last_name,
+           bio, profile_picture_s3_url));
     }
 
-    public long GetUserID()
-    {
+    public long GetUserID() {
         if (userData == null)
             return -1;
         return userData.pk;
@@ -139,13 +130,6 @@ public class UserWebManager : MonoBehaviour
         userData.profile.bio = bio ?? userData.profile.bio;
         userData.profile.profile_picture_s3_url = profile_picture_s3_url ?? userData.profile.profile_picture_s3_url;
 
-        Debug.Log(userName + " " +
-            email + " " +
-            first_name + " " +
-            last_name + " " +
-            bio + " " +
-            profile_picture_s3_url);
-
         UploadUserInfo();
     }
 
@@ -166,6 +150,7 @@ public class UserWebManager : MonoBehaviour
     #endregion
 
     #region upload user
+
     private void UploadUserInfoCallBack(long code, string body) {
         OnUserInfoUploaded?.Invoke();
     }
@@ -173,8 +158,13 @@ public class UserWebManager : MonoBehaviour
     private void ErrorUploadUserInfoCallBack(long code, string body) {
         BadRequestUserUploadJsonData badRequest;
         try {
-            Debug.Log("ErrorUploadUserInfoCallBack " + code + " " + body);
-            badRequest = JsonUtility.FromJson<BadRequestUserUploadJsonData>(body);
+            if (code != 500) {
+                badRequest = JsonUtility.FromJson<BadRequestUserUploadJsonData>(body);
+            } else {
+                badRequest = new BadRequestUserUploadJsonData();
+                badRequest.code = code;
+                badRequest.errorMsg = body;
+            }
 
             OnErrorUserUploaded?.Invoke(badRequest);
         } catch (System.Exception) {
@@ -200,7 +190,7 @@ public class UserWebManager : MonoBehaviour
     private void ErrorMsgCallBack(long code, string body) {
         Debug.LogWarning(code + " " + body);
     }
- 
+
 
     #region url generation functions
     private string GetRequestGetUserURL() {
