@@ -88,10 +88,11 @@ public class AgoraController : MonoBehaviour {
 
         iRtcEngine = IRtcEngine.GetEngine(appId);
 
-        if (Debug.isDebugBuild || Application.isEditor)
-            iRtcEngine.SetLogFilter(LOG_FILTER.DEBUG | LOG_FILTER.INFO | LOG_FILTER.WARNING | LOG_FILTER.ERROR | LOG_FILTER.CRITICAL);
-        else
+#if DEV
+        iRtcEngine.SetLogFilter(LOG_FILTER.DEBUG | LOG_FILTER.INFO | LOG_FILTER.WARNING | LOG_FILTER.ERROR | LOG_FILTER.CRITICAL);
+#else
             iRtcEngine.SetLogFilter(LOG_FILTER.CRITICAL);
+#endif
 
         liveStreamQuad.SetActive(false);
     }
@@ -101,9 +102,9 @@ public class AgoraController : MonoBehaviour {
         var encoderConfiguration = new VideoEncoderConfiguration();
         encoderConfiguration.degradationPreference = DEGRADATION_PREFERENCE.MAINTAIN_BALANCED;
         encoderConfiguration.minFrameRate = 15;
-        encoderConfiguration.frameRate = FRAME_RATE.FRAME_RATE_FPS_30;
-        encoderConfiguration.bitrate = 3000;
-        encoderConfiguration.dimensions = new VideoDimensions() { width = 720, height = 1280 };
+        encoderConfiguration.frameRate = (FRAME_RATE)AgoraSharedVideoConfig.FrameRate;
+        encoderConfiguration.bitrate = AgoraSharedVideoConfig.Bitrate;
+        encoderConfiguration.dimensions = new VideoDimensions() { width = AgoraSharedVideoConfig.Width, height = AgoraSharedVideoConfig.Height };
         encoderConfiguration.orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT;//ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE;
         //iRtcEngine.SetVideoProfile(VIDEO_PROFILE_TYPE.VIDEO_PROFILE_PORTRAIT_720P_3,false);
         iRtcEngine.SetVideoEncoderConfiguration(encoderConfiguration);
@@ -378,7 +379,7 @@ public class AgoraController : MonoBehaviour {
         return ver;
     }
 
-    #region Messaging system
+#region Messaging system
 
     //public void SendMessage(string message)
     //{
@@ -432,7 +433,7 @@ public class AgoraController : MonoBehaviour {
     //    }
     //}
 
-    #endregion
+#endregion
 
     void OnApplicationPause(bool paused) {
         if (!ReferenceEquals(iRtcEngine, null)) {

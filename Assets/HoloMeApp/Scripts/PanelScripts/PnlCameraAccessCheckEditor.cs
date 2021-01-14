@@ -12,6 +12,8 @@ public class PnlCameraAccessCheckEditor : MonoBehaviour, IPermissionGranter
 
     public bool WriteRequestComplete => true;
 
+    public bool CameraRequestComplete => true;
+
     public void RequestCameraAccess()
     {
         Debug.Log($"{nameof(PnlCameraAccessCheckEditor)} Requested Camera Access Editor");

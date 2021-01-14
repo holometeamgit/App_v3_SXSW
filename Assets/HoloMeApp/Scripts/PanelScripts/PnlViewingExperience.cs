@@ -17,7 +17,7 @@ public class PnlViewingExperience : MonoBehaviour
     CanvasGroup canvasGroup;
 
     [SerializeField]
-    PnlCameraAccess pnlCameraAccess;
+    PermissionController permissionController;
 
     [SerializeField]
     HologramHandler hologramHandler;
@@ -80,8 +80,9 @@ public class PnlViewingExperience : MonoBehaviour
         }
         else
         {
-            pnlCameraAccess.OnAccessGranted.AddListener(RunTutorial);
-            pnlCameraAccess.gameObject.SetActive(true);
+            if(permissionController == null)
+                permissionController = FindObjectOfType<PermissionController>();
+            permissionController.CheckCameraMicAccess();
         }
     }
 
@@ -223,6 +224,7 @@ public class PnlViewingExperience : MonoBehaviour
     {
         StopExperience();
         SharedActivationFunctions();
+        this.isTeaser = false;
         activatedForStreaming = true;
         btnBurger.SetActive(false); //Close button not required on this page
         hologramHandler.TogglePreRecordedVideoRenderer(false);

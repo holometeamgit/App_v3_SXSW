@@ -18,9 +18,9 @@ public class PnlProfile : MonoBehaviour {
 
     public void ChooseUsername() {
         if (LocalDataVerification())
-            userWebManager.UpdateUserData(userName: usernameInputField?.text ?? null,
-            first_name: firstnameInputField?.text ?? null,
-            last_name: surnameInputField?.text ?? null);
+            userWebManager.UpdateUserData(userName: usernameInputField.text,
+            first_name: firstnameInputField.text,
+            last_name: surnameInputField.text);
     }
 
     private void Start() {

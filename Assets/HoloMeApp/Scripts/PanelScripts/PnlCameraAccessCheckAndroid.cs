@@ -4,80 +4,89 @@ using UnityEngine.Android;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class PnlCameraAccessCheckAndroid : MonoBehaviour, IPermissionGranter
-{
+public class PnlCameraAccessCheckAndroid : MonoBehaviour, IPermissionGranter {
     bool cameraPermissionGranted;
 
     [SerializeField]
     Button btnRequestPermission;
 
-    public bool MicRequestComplete { get; private set; }
-    public bool WriteRequestComplete { get; private set; }
-
+    public bool HasCameraAccess => Permission.HasUserAuthorizedPermission(Permission.Camera);
     public bool MicAccessAvailable => Permission.HasUserAuthorizedPermission(Permission.Microphone);
     public bool WriteAccessAvailable => Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite);
-    public bool HasCameraAccess => Permission.HasUserAuthorizedPermission(Permission.Camera);
 
-    void OnEnable()
-    {
-        if (SceneManager.GetActiveScene().name == "Main")
-            return;
+    public bool MicRequestComplete { get; private set; }
+    public bool WriteRequestComplete { get; private set; }
+    public bool CameraRequestComplete { get; private set; }
+
+    void OnEnable() {
         if (Application.platform != RuntimePlatform.Android)
             return;
 
         StartCoroutine(VerifyPermissionLive());
-
-        if (btnRequestPermission == null)
-            btnRequestPermission = GameObject.Find("btnSettings").GetComponent<Button>();
-        btnRequestPermission.onClick.AddListener(RequestCameraAccess);
     }
 
-    public void RequestWriteAccess()
-    {
-        if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
-        {
+    public void RequestWriteAccess() {
+        if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite)) {
             Permission.RequestUserPermission(Permission.ExternalStorageWrite);
         }
         WriteRequestComplete = true;
     }
 
-    public void RequestMicAccess()
-    {
-        if (!Permission.HasUserAuthorizedPermission(Permission.Microphone))
-        {
-            Permission.RequestUserPermission(Permission.Microphone);
+    public void RequestMicAccess() {
+        if (!MicRequestComplete) {
+            if (!Permission.HasUserAuthorizedPermission(Permission.Microphone)) {
+                Permission.RequestUserPermission(Permission.Microphone);
+            }
+            MicRequestComplete = true;
+        } else {
+            NativeRequestSettings();
         }
-        MicRequestComplete = true;
     }
 
-    IEnumerator VerifyPermissionLive()
-    {
-        while (!cameraPermissionGranted)
-        {
-            if (Permission.HasUserAuthorizedPermission(Permission.Camera))
-            {
+
+    public void RequestCameraAccess() {
+        if (!CameraRequestComplete) {
+            AndroidRuntimePermissions.Permission[] result = AndroidRuntimePermissions.RequestPermissions("android.permission.CAMERA");
+        } else {
+            NativeRequestSettings();
+        }
+    }
+
+    private void NativeRequestSettings() {
+#if UNITY_ANDROID
+            try {
+                using (var unityClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+                using (AndroidJavaObject currentActivityObject = unityClass.GetStatic<AndroidJavaObject>("currentActivity")) {
+                    string packageName = currentActivityObject.Call<string>("getPackageName");
+
+                    using (var uriClass = new AndroidJavaClass("android.net.Uri"))
+                    using (AndroidJavaObject uriObject = uriClass.CallStatic<AndroidJavaObject>("fromParts", "package", packageName, null))
+                    using (var intentObject = new AndroidJavaObject("android.content.Intent", "android.settings.APPLICATION_DETAILS_SETTINGS", uriObject)) {
+                        intentObject.Call<AndroidJavaObject>("addCategory", "android.intent.category.DEFAULT");
+                        intentObject.Call<AndroidJavaObject>("setFlags", 0x10000000);
+                        currentActivityObject.Call("startActivity", intentObject);
+                    }
+                }
+            } catch (System.Exception ex) {
+                Debug.LogException(ex);
+            }
+#endif
+    }
+
+    IEnumerator VerifyPermissionLive() {
+        CameraRequestComplete = true;
+        while (!cameraPermissionGranted) {
+            if (Permission.HasUserAuthorizedPermission(Permission.Camera)) {
                 OnCameraAccessVerified("true");
             }
             yield return null;
         }
     }
 
-    void OnCameraAccessVerified(string permissionWasGranted)
-    {
-        if (permissionWasGranted == "true" && !cameraPermissionGranted)
-        {
-            print("Load SCENE CALLED");
-            //gameObject.SetActive(false);
+    void OnCameraAccessVerified(string permissionWasGranted) {
+        if (permissionWasGranted == "true" && !cameraPermissionGranted) {
             cameraPermissionGranted = true;
-            SceneManager.LoadScene(1);
-            print("POST LOAD");
         }
-    }
-
-    public void RequestCameraAccess()
-    {
-        AndroidRuntimePermissions.Permission[] result = AndroidRuntimePermissions.RequestPermissions("android.permission.CAMERA");
-        //AndroidRuntimePermissions.Permission[] result = AndroidRuntimePermissions.RequestPermissions("android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.CAMERA", "android.permission.RECORD_AUDIO");
     }
 
 }
