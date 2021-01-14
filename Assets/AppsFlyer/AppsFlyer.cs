@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,8 +7,12 @@ namespace AppsFlyerSDK
     public class AppsFlyer : MonoBehaviour
     {
 
-        public static readonly string kAppsFlyerPluginVersion = "6.0.7";
-  
+        public static readonly string kAppsFlyerPluginVersion = "6.1.3";
+        public static string CallBackObjectName = null;
+        private static EventHandler onRequestResponse;
+        private static EventHandler onInAppResponse;
+        private static EventHandler onDeepLinkReceived;
+
 
         /// <summary>
         /// Initialize the AppsFlyer SDK with your devKey and appID.
@@ -41,6 +46,12 @@ namespace AppsFlyerSDK
         /// </example>
         public static void initSDK(string devKey, string appID, MonoBehaviour gameObject)
         {
+            
+            if(gameObject != null)
+            {
+                CallBackObjectName = gameObject.name;
+            }
+
 #if UNITY_IOS && !UNITY_EDITOR
             AppsFlyeriOS.setAppsFlyerDevKey(devKey);
             AppsFlyeriOS.setAppleAppID(appID);
@@ -63,9 +74,9 @@ namespace AppsFlyerSDK
         public static void startSDK()
         {
 #if UNITY_IOS && !UNITY_EDITOR
-            AppsFlyeriOS.startSDK();
+            AppsFlyeriOS.startSDK(onRequestResponse != null, CallBackObjectName);
 #elif UNITY_ANDROID && !UNITY_EDITOR
-            AppsFlyerAndroid.startSDK();
+            AppsFlyerAndroid.startSDK(onRequestResponse != null, CallBackObjectName);
 #else
 
 #endif
@@ -80,9 +91,9 @@ namespace AppsFlyerSDK
         public static void sendEvent(string eventName, Dictionary<string, string> eventValues)
         {
 #if UNITY_IOS && !UNITY_EDITOR
-            AppsFlyeriOS.sendEvent(eventName, eventValues);
+            AppsFlyeriOS.sendEvent(eventName, eventValues, onInAppResponse != null, CallBackObjectName);
 #elif UNITY_ANDROID && !UNITY_EDITOR
-            AppsFlyerAndroid.sendEvent(eventName, eventValues);
+            AppsFlyerAndroid.sendEvent(eventName, eventValues, onInAppResponse != null, CallBackObjectName);
 #else
 
 #endif
@@ -474,6 +485,142 @@ namespace AppsFlyerSDK
 #else
 
 #endif
+        }
+
+
+        /// <summary>
+        /// Use this method if you’re integrating your app with push providers 
+        /// that don’t use the default push notification JSON schema the SDK expects.
+        /// See docs for more info.
+        /// </summary>
+        /// <param name="paths">array of nested json path</param>
+        public static void addPushNotificationDeepLinkPath(params string[] paths)
+        {
+#if UNITY_IOS && !UNITY_EDITOR
+            AppsFlyeriOS.addPushNotificationDeepLinkPath(paths);
+#elif UNITY_ANDROID && !UNITY_EDITOR
+            AppsFlyerAndroid.addPushNotificationDeepLinkPath(paths);
+#else
+
+#endif
+        }
+
+        /// <summary>
+        /// Subscribe for unified deeplink API.
+        /// This is called automatically from OnDeepLinkReceived.
+        /// CallBackObjectName is set in the init method.
+        /// </summary>
+        public static void subscribeForDeepLink()
+        {
+#if UNITY_IOS && !UNITY_EDITOR
+            AppsFlyeriOS.subscribeForDeepLink(CallBackObjectName);
+#elif UNITY_ANDROID && !UNITY_EDITOR
+            AppsFlyerAndroid.subscribeForDeepLink(CallBackObjectName);
+#else
+
+#endif
+        }
+        
+        /// <summary>
+        /// Start callback event.
+        /// </summary>
+        public static event EventHandler OnRequestResponse
+        {
+            add
+            {
+                onRequestResponse += value;
+            }  
+            remove  
+            {  
+                onRequestResponse -= value;
+            }     
+        }
+        
+        /// <summary>
+        /// In-App callback event.
+        /// </summary>
+        public static event EventHandler OnInAppResponse
+        {
+            add
+            {
+                onInAppResponse += value;
+            }  
+            remove  
+            {  
+                onInAppResponse -= value;
+            }     
+        }
+
+        /// <summary>
+        /// Unified DeepLink Event
+        /// </summary>
+        public static event EventHandler OnDeepLinkReceived
+        {
+            add
+            {
+                onDeepLinkReceived += value;
+                subscribeForDeepLink();
+            }  
+            remove  
+            {  
+                onDeepLinkReceived -= value;
+            }     
+        }
+
+        /// <summary>
+        /// Used to accept start callback from UnitySendMessage on native side.
+        /// </summary>
+        public void inAppResponseReceived(string response)
+        {
+            if (onInAppResponse != null) 
+            {
+                onInAppResponse.Invoke(null, parseRequestCallback(response));
+            }
+        }
+        
+        /// <summary>
+        /// Used to accept in-app callback from UnitySendMessage on native side.
+        /// </summary>
+        public void requestResponseReceived(string response)
+        {
+            if (onRequestResponse != null)
+            {
+                onRequestResponse.Invoke(null, parseRequestCallback(response));
+            }
+        }
+
+        /// <summary>
+        /// Used to accept deeplink callback from UnitySendMessage on native side.
+        /// </summary>
+        public void onDeepLinking(string response)
+        {
+
+            DeepLinkEventsArgs args = new DeepLinkEventsArgs(response);
+
+            if (onDeepLinkReceived != null)
+            {
+                onDeepLinkReceived.Invoke(null, args);
+            }
+        }
+
+        private static AppsFlyerRequestEventArgs parseRequestCallback(string response)
+        {
+            int responseCode = 0;
+            string errorDescription = "";
+            
+            try
+            {
+                Dictionary<string, object> dictionary = CallbackStringToDictionary(response);
+                var errorResponse = dictionary.ContainsKey("errorDescription") ? dictionary["errorDescription"] : "";
+                errorDescription = (string)errorResponse;
+                responseCode = (int)(long) dictionary["statusCode"];
+            }
+            catch (Exception e)
+            {
+                AFLog("parseRequestCallback", String.Format("{0} Exception caught.", e));
+            }
+
+            return new AppsFlyerRequestEventArgs(responseCode, errorDescription);
         }
 
         /// <summary>

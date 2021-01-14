@@ -32,8 +32,13 @@ namespace AppsFlyerSDK
         /// <param name="devkey"> AppsFlyer's Dev-Key, which is accessible from your AppsFlyer account under 'App Settings' in the dashboard.</param>
         public static void startSDK()
         {
+            startSDK(false, AppsFlyer.CallBackObjectName);
+        }
+        
+        public static void startSDK(bool shouldCallback, string callBackObjectName)
+        {
 #if !UNITY_EDITOR
-            appsFlyerAndroid.CallStatic("startTracking");
+            appsFlyerAndroid.CallStatic("startTracking", shouldCallback, callBackObjectName);
 #endif
         }
 
@@ -328,8 +333,13 @@ namespace AppsFlyerSDK
         /// <param name="eventValues">Event Values as Dictionary.</param>
         public static void sendEvent(string eventName, Dictionary<string, string> eventValues)
         {
+            sendEvent(eventName, eventValues, false, AppsFlyer.CallBackObjectName);
+        }
+        
+        public static void sendEvent(string eventName, Dictionary<string, string> eventValues, bool shouldCallback, string callBackObjectName)
+        {
 #if !UNITY_EDITOR
-            appsFlyerAndroid.CallStatic("trackEvent", eventName, convertDictionaryToJavaMap(eventValues));
+            appsFlyerAndroid.CallStatic("trackEvent", eventName, convertDictionaryToJavaMap(eventValues), shouldCallback, callBackObjectName);
 #endif
         }
 
@@ -607,6 +617,28 @@ namespace AppsFlyerSDK
         public static void handlePushNotifications(){
 #if !UNITY_EDITOR
             appsFlyerAndroid.CallStatic("handlePushNotifications");
+#endif
+        }
+
+        /// <summary>
+        /// Use this method if you’re integrating your app with push providers 
+        /// that don’t use the default push notification JSON schema the SDK expects.
+        /// See docs for more info.
+        /// </summary>
+        /// <param name="paths">array of nested json path</param>
+        public static void addPushNotificationDeepLinkPath(params string[] paths)
+        {
+#if !UNITY_EDITOR
+            appsFlyerAndroid.CallStatic("addPushNotificationDeepLinkPath", (object)paths);
+#endif
+        }
+
+        /// <summary>
+        /// subscribe to unified deep link callbacks
+        /// </summary>
+        public static void subscribeForDeepLink(string objectName){
+#if !UNITY_EDITOR
+            appsFlyerAndroid.CallStatic("subscribeForDeepLink", objectName);
 #endif
         }
 

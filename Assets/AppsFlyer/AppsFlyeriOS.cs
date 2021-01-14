@@ -15,8 +15,13 @@ namespace AppsFlyerSDK
         /// </summary>
         public static void startSDK()
         {
+                startSDK(false, AppsFlyer.CallBackObjectName);
+        }
+        
+        public static void startSDK(bool shouldCallback, string callBackObjectName)
+        {
 #if !UNITY_EDITOR
-          _startSDK(); 
+                _startSDK(shouldCallback, callBackObjectName); 
 #endif
         }
 
@@ -28,8 +33,13 @@ namespace AppsFlyerSDK
         /// <param name="eventValues">Contains dictionary of values for handling by backend.</param>
         public static void sendEvent(string eventName, Dictionary<string, string> eventValues)
         {
+                sendEvent(eventName, eventValues, false, AppsFlyer.CallBackObjectName);
+        }
+        
+        public static void sendEvent(string eventName, Dictionary<string, string> eventValues, bool shouldCallback, string callBackObjectName)
+        {
 #if !UNITY_EDITOR
-           _afSendEvent(eventName, AFMiniJSON.Json.Serialize(eventValues));
+           _afSendEvent(eventName, AFMiniJSON.Json.Serialize(eventValues), shouldCallback, callBackObjectName);
 #endif
         }
 
@@ -483,13 +493,34 @@ namespace AppsFlyerSDK
 #endif
         }
 
+        /// <summary>
+        /// Use this method if you’re integrating your app with push providers 
+        /// that don’t use the default push notification JSON schema the SDK expects.
+        /// See docs for more info.
+        /// </summary>
+        /// <param name="paths">array of nested json path</param>
+        public static void addPushNotificationDeepLinkPath(params string[] paths)
+        {
+#if !UNITY_EDITOR
+            _addPushNotificationDeepLinkPath(paths.Length, paths);
+#endif
+        }
+
+        /// <summary>
+        /// subscribe to unified deep link callbacks
+        /// </summary>
+        public static void subscribeForDeepLink(string objectName){
+#if !UNITY_EDITOR
+            _subscribeForDeepLink(objectName);
+#endif
+        }
 
         /*
          * AppsFlyer ios method mapping
          */
 
         [DllImport("__Internal")]
-        private static extern void _startSDK();
+        private static extern void _startSDK(bool shouldCallback, string objectName);
 
         [DllImport("__Internal")]
         private static extern void _getConversionData(string objectName);
@@ -546,7 +577,7 @@ namespace AppsFlyerSDK
         private static extern void _setPhoneNumber(string phoneNumber);
 
         [DllImport("__Internal")]
-        private static extern void _afSendEvent(string eventName, string eventValues);
+        private static extern void _afSendEvent(string eventName, string eventValues, bool shouldCallback, string objectName);
 
         [DllImport("__Internal")]
         private static extern void _validateAndSendInAppPurchase(string productIdentifier, string price, string currency, string tranactionId, string additionalParameters, string objectName);
@@ -604,6 +635,12 @@ namespace AppsFlyerSDK
 
         [DllImport("__Internal")]
         private static extern void _disableSKAdNetwork(bool isDisabled);
+
+        [DllImport("__Internal")]
+        private static extern void _addPushNotificationDeepLinkPath(int length, params string[] paths);
+
+        [DllImport("__Internal")]
+        private static extern void _subscribeForDeepLink(string objectName);
 
     }
 
