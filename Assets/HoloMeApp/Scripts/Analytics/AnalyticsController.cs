@@ -7,6 +7,8 @@ public class AnalyticsController : MonoBehaviour {
     
     Dictionary<string, AnalyticsDwellTracker> dwellTimers = new Dictionary<string, AnalyticsDwellTracker>();
 
+    static bool DisableTracking;
+
     [SerializeField]
     CleverTapUnity  cleverTapUnity;
 
@@ -16,6 +18,9 @@ public class AnalyticsController : MonoBehaviour {
     private void Awake() {
         if (Instance == null) {
             Instance = this;
+#if DEV
+            DisableTracking = true;            
+#endif
             DontDestroyOnLoad(Instance);
         } else {
             Debug.LogError($"{nameof(AnalyticsController)} Instance Already Exists!");
@@ -24,6 +29,9 @@ public class AnalyticsController : MonoBehaviour {
     }
 
     public void SendCustomEvent(string eventName) {
+        if (DisableTracking)
+            return;
+
         if (string.IsNullOrWhiteSpace(eventName)) {
             Debug.LogError("Custom event name wasn't specified");
             return;
@@ -36,6 +44,9 @@ public class AnalyticsController : MonoBehaviour {
 
     public void SendCustomEvent(string eventName, string dataName, object data)
     {
+        if (DisableTracking)
+            return;
+
         if (string.IsNullOrWhiteSpace(eventName))
         {
             Debug.LogError("Custom event name wasn't specified");
@@ -51,6 +62,9 @@ public class AnalyticsController : MonoBehaviour {
     }
 
     public void StartTimer(string timerKey, string timerName) {
+        if (DisableTracking)
+            return;
+
         if (dwellTimers.ContainsKey(timerKey)) {
             Debug.LogError("Timer already exists in collection " + timerKey);
             return; //dwellTimers[timerName];
@@ -66,6 +80,9 @@ public class AnalyticsController : MonoBehaviour {
     }
 
     public void StopTimer(string timerName) {
+        if (DisableTracking)
+            return;
+
         if (!dwellTimers.ContainsKey(timerName)) {
             Debug.LogError("Timer didn't exist in collection " + timerName);
             return;
@@ -76,6 +93,9 @@ public class AnalyticsController : MonoBehaviour {
     }
 
     public void StopTimer(string timerName, float customTime) {
+        if (DisableTracking)
+            return;
+
         if (!dwellTimers.ContainsKey(timerName)) {
             Debug.LogError("Timer didn't exist in collection " + timerName);
             return;
@@ -89,6 +109,8 @@ public class AnalyticsController : MonoBehaviour {
     /// <param name="timerName">Name to be shown in analytics</param>
     /// <param name="elapsedTime">Time specified</param>
     private void RemoveTimer(AnalyticsDwellTracker dwellTimercomponent, string timerDictonaryKey, string timerName, float elapsedTime) {
+        if (DisableTracking)
+            return;
 
         var time = new Dictionary<string, object>();
         time.Add(timerName, elapsedTime);
@@ -100,6 +122,9 @@ public class AnalyticsController : MonoBehaviour {
     }
 
     public int GetElapsedTime(string timerName) {
+        if (DisableTracking)
+            return 0;
+
         if (!dwellTimers.ContainsKey(timerName)) {
             Debug.LogError("Timer didn't exist in collection " + timerName);
             return 0;
@@ -108,6 +133,9 @@ public class AnalyticsController : MonoBehaviour {
     }
 
     public void PauseTimer(string timerName) {
+        if (DisableTracking)
+            return;
+
         if (!dwellTimers.ContainsKey(timerName)) {
             Debug.LogError("Timer didn't exist in collection " + timerName);
             return;
@@ -117,6 +145,9 @@ public class AnalyticsController : MonoBehaviour {
     }
 
     public void ResumeTimer(string timerName) {
+        if (DisableTracking)
+            return;
+
         if (!dwellTimers.ContainsKey(timerName)) {
             Debug.LogError("Timer didn't exist in collection " + timerName);
             return;
