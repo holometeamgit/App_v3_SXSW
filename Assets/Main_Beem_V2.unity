@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748172, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1087,6 +1087,8 @@ GameObject:
   - component: {fileID: 250168742}
   - component: {fileID: 250168744}
   - component: {fileID: 250168743}
+  - component: {fileID: 250168746}
+  - component: {fileID: 250168745}
   m_Layer: 0
   m_Name: AnalyticsTracker
   m_TagString: Untagged
@@ -1132,6 +1134,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 915b695b94efb544193d82b1b554973a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cleverTapUnity: {fileID: 250168746}
+  appsFlyerObjectScript: {fileID: 250168745}
+--- !u!114 &250168745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 250168741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a199002c7a1cb448fa164210c4b756d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  devKey: ySBPhh8s4HtZcUiz2QqfVb
+  appID: 1532446771
+  isDebug: 0
+  getConversionData: 0
+--- !u!114 &250168746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 250168741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8dfd7e12ca49465e94f60ff2dd51e17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CLEVERTAP_ACCOUNT_ID: 65R-W6K-KW6Z
+  CLEVERTAP_ACCOUNT_TOKEN: 360-256
+  CLEVERTAP_ACCOUNT_REGION: 
+  CLEVERTAP_DEBUG_LEVEL: 0
+  CLEVERTAP_ENABLE_PERSONALIZATION: 1
 --- !u!1 &251015953 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9131335257026221797, guid: 604c9bb78e3af46b4aef4ea76027f8b0,
@@ -4606,6 +4643,7 @@ MonoBehaviour:
   hologramChildren:
   - {fileID: 294683146}
   - {fileID: 237338055}
+  agoraController: {fileID: 0}
   audioSource: {fileID: 1735340510}
   liveStreamMat: {fileID: 2100000, guid: 4d2c24393236f3a41ba3414d55d755a2, type: 2}
 --- !u!1 &1259991540
