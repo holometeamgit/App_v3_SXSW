@@ -88,10 +88,11 @@ public class AgoraController : MonoBehaviour {
 
         iRtcEngine = IRtcEngine.GetEngine(appId);
 
-        if (Debug.isDebugBuild || Application.isEditor)
-            iRtcEngine.SetLogFilter(LOG_FILTER.DEBUG | LOG_FILTER.INFO | LOG_FILTER.WARNING | LOG_FILTER.ERROR | LOG_FILTER.CRITICAL);
-        else
+#if DEV
+        iRtcEngine.SetLogFilter(LOG_FILTER.DEBUG | LOG_FILTER.INFO | LOG_FILTER.WARNING | LOG_FILTER.ERROR | LOG_FILTER.CRITICAL);
+#else
             iRtcEngine.SetLogFilter(LOG_FILTER.CRITICAL);
+#endif
 
         liveStreamQuad.SetActive(false);
     }
@@ -378,7 +379,7 @@ public class AgoraController : MonoBehaviour {
         return ver;
     }
 
-    #region Messaging system
+#region Messaging system
 
     //public void SendMessage(string message)
     //{
@@ -432,7 +433,7 @@ public class AgoraController : MonoBehaviour {
     //    }
     //}
 
-    #endregion
+#endregion
 
     void OnApplicationPause(bool paused) {
         if (!ReferenceEquals(iRtcEngine, null)) {
