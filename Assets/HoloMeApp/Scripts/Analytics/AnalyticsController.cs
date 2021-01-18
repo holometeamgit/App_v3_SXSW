@@ -9,8 +9,8 @@ public class AnalyticsController : MonoBehaviour {
 
     static bool DisableTracking;
 
-    [SerializeField]
-    CleverTapUnity  cleverTapUnity;
+    //[SerializeField]
+    //CleverTapUnity  cleverTapUnity;
 
     [SerializeField]
     AppsFlyerObjectScript appsFlyerObjectScript;
@@ -39,7 +39,7 @@ public class AnalyticsController : MonoBehaviour {
 
         HelperFunctions.DevLog($"Custom Event Sent {eventName}");
         Analytics.CustomEvent(eventName);
-        cleverTapUnity.SendCustomEvent(eventName);
+        //cleverTapUnity.SendCustomEvent(eventName);
     }
 
     public void SendCustomEvent(string eventName, string dataName, object data)
@@ -57,7 +57,7 @@ public class AnalyticsController : MonoBehaviour {
 
         HelperFunctions.DevLog($"Custom Event Sent {eventName} with data {dataName} {data}");
         Analytics.CustomEvent(eventName, dataContainer);
-        cleverTapUnity.SendCustomEvent(eventName, dataContainer);
+        //cleverTapUnity.SendCustomEvent(eventName, dataContainer);
         appsFlyerObjectScript.SendCustomEvent(eventName, dataName, data);
     }
 
