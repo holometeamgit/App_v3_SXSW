@@ -57,23 +57,5 @@ public class AppsFlyerObjectScript : MonoBehaviour , IAppsFlyerConversionData
     {
         AppsFlyer.AFLog("onAppOpenAttributionFailure", error);
     }
-
-    public void SendCustomEvent(string eventName, string dataName, object data)
-    {
-        if (data is string)
-        {
-            HelperFunctions.DevLog("AppsFlyer SendCustomEvent data = " + (string)data);
-            Dictionary<string, string> dataToSend = new Dictionary<string, string>();
-            dataToSend.Add(dataName, (string)data);
-
-            try
-            {
-                AppsFlyer.sendEvent(eventName, dataToSend);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError("AppsFlyer Event record failed: " + e.ToString());
-            }
-        }
-    }
+ 
 }

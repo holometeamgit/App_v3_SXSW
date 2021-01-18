@@ -2,24 +2,30 @@
 using UnityEngine;
 using UnityEngine.Analytics;
 
+/// <summary>
+/// This is the universal Analytics class used to call same tracking calls across all libraries
+/// </summary>
 public class AnalyticsController : MonoBehaviour {
     public static AnalyticsController Instance { get; private set; }
     
     Dictionary<string, AnalyticsDwellTracker> dwellTimers = new Dictionary<string, AnalyticsDwellTracker>();
 
-    static bool DisableTracking;
+    bool disableTracking;
 
     [SerializeField]
-    CleverTapUnity  cleverTapUnity;
+    AnalyticsLibraryAbstraction[] analyticsLibraryAbstractions;
 
-    [SerializeField]
-    AppsFlyerObjectScript appsFlyerObjectScript;
+    //[SerializeField]
+    //CleverTapUnity  cleverTapUnity;
+
+    //[SerializeField]
+    //AppsFlyerObjectScript appsFlyerObjectScript;
 
     private void Awake() {
         if (Instance == null) {
             Instance = this;
 #if DEV
-            DisableTracking = true;            
+            disableTracking = true;            
 #endif
             DontDestroyOnLoad(Instance);
         } else {
@@ -29,7 +35,7 @@ public class AnalyticsController : MonoBehaviour {
     }
 
     public void SendCustomEvent(string eventName) {
-        if (DisableTracking)
+        if (disableTracking)
             return;
 
         if (string.IsNullOrWhiteSpace(eventName)) {
@@ -38,13 +44,18 @@ public class AnalyticsController : MonoBehaviour {
         }
 
         HelperFunctions.DevLog($"Custom Event Sent {eventName}");
-        Analytics.CustomEvent(eventName);
-        cleverTapUnity.SendCustomEvent(eventName);
+        //Analytics.CustomEvent(eventName);
+        //cleverTapUnity.SendCustomEvent(eventName);
+
+        foreach (var analyticsController in analyticsLibraryAbstractions)
+        {
+            analyticsController.SendCustomEvent(eventName);
+        }
     }
 
     public void SendCustomEvent(string eventName, string dataName, object data)
     {
-        if (DisableTracking)
+        if (disableTracking)
             return;
 
         if (string.IsNullOrWhiteSpace(eventName))
@@ -52,17 +63,21 @@ public class AnalyticsController : MonoBehaviour {
             Debug.LogError("Custom event name wasn't specified");
             return;
         }
-        var dataContainer = new Dictionary<string, object>();
-        dataContainer.Add(dataName, data);
+        
 
         HelperFunctions.DevLog($"Custom Event Sent {eventName} with data {dataName} {data}");
-        Analytics.CustomEvent(eventName, dataContainer);
-        cleverTapUnity.SendCustomEvent(eventName, dataContainer);
-        appsFlyerObjectScript.SendCustomEvent(eventName, dataName, data);
+        //Analytics.CustomEvent(eventName, dataContainer);
+        //cleverTapUnity.SendCustomEvent(eventName, dataContainer);
+        //appsFlyerObjectScript.SendCustomEvent(eventName, dataName, data);
+
+        foreach (var analyticsController in analyticsLibraryAbstractions)
+        {
+            analyticsController.SendCustomEvent(eventName, dataName, data);
+        }
     }
 
     public void StartTimer(string timerKey, string timerName) {
-        if (DisableTracking)
+        if (disableTracking)
             return;
 
         if (dwellTimers.ContainsKey(timerKey)) {
@@ -80,7 +95,7 @@ public class AnalyticsController : MonoBehaviour {
     }
 
     public void StopTimer(string timerName) {
-        if (DisableTracking)
+        if (disableTracking)
             return;
 
         if (!dwellTimers.ContainsKey(timerName)) {
@@ -93,7 +108,7 @@ public class AnalyticsController : MonoBehaviour {
     }
 
     public void StopTimer(string timerName, float customTime) {
-        if (DisableTracking)
+        if (disableTracking)
             return;
 
         if (!dwellTimers.ContainsKey(timerName)) {
@@ -109,7 +124,7 @@ public class AnalyticsController : MonoBehaviour {
     /// <param name="timerName">Name to be shown in analytics</param>
     /// <param name="elapsedTime">Time specified</param>
     private void RemoveTimer(AnalyticsDwellTracker dwellTimercomponent, string timerDictonaryKey, string timerName, float elapsedTime) {
-        if (DisableTracking)
+        if (disableTracking)
             return;
 
         var time = new Dictionary<string, object>();
@@ -122,7 +137,7 @@ public class AnalyticsController : MonoBehaviour {
     }
 
     public int GetElapsedTime(string timerName) {
-        if (DisableTracking)
+        if (disableTracking)
             return 0;
 
         if (!dwellTimers.ContainsKey(timerName)) {
@@ -133,7 +148,7 @@ public class AnalyticsController : MonoBehaviour {
     }
 
     public void PauseTimer(string timerName) {
-        if (DisableTracking)
+        if (disableTracking)
             return;
 
         if (!dwellTimers.ContainsKey(timerName)) {
@@ -145,7 +160,7 @@ public class AnalyticsController : MonoBehaviour {
     }
 
     public void ResumeTimer(string timerName) {
-        if (DisableTracking)
+        if (disableTracking)
             return;
 
         if (!dwellTimers.ContainsKey(timerName)) {
