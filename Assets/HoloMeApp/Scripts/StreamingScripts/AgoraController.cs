@@ -34,7 +34,7 @@ public class AgoraController : MonoBehaviour {
 
     public string ChannelName { get; set; }
     public bool IsLive { get; private set; }
-    public bool IsChannelCreator { get; private set; }
+    public bool IsChannelCreator { get; set; }
     public bool VideoIsReady { get; private set; }
 
     int userCount;
@@ -91,7 +91,7 @@ public class AgoraController : MonoBehaviour {
 #if DEV
         iRtcEngine.SetLogFilter(LOG_FILTER.DEBUG | LOG_FILTER.INFO | LOG_FILTER.WARNING | LOG_FILTER.ERROR | LOG_FILTER.CRITICAL);
 #else
-            iRtcEngine.SetLogFilter(LOG_FILTER.CRITICAL);
+        iRtcEngine.SetLogFilter(LOG_FILTER.CRITICAL);
 #endif
 
         liveStreamQuad.SetActive(false);
@@ -119,7 +119,7 @@ public class AgoraController : MonoBehaviour {
     {
         //iRtcEngine.OnUserEnableVideo  += OnPreviewReady; TODO: this may be used to show a custom videoDisabled image for remote users only
         //iRtcEngine.EnableLocalVideo(true);
-
+            
         if (iRtcEngine.EnableVideo() == 0)
         {
             if (iRtcEngine.EnableVideoObserver() == 0)
@@ -152,8 +152,7 @@ public class AgoraController : MonoBehaviour {
     public void JoinOrCreateChannel(bool channelCreator) {
         if (iRtcEngine == null)
             return;
-
-        IsChannelCreator = channelCreator;
+               
         if (channelCreator)
             secondaryServerCalls.StartStream(ChannelName);
         else {
@@ -448,13 +447,13 @@ public class AgoraController : MonoBehaviour {
         }
     }
 
-    IEnumerator UpdateUsers() {
-        if (IsChannelCreator) {
-            while (IsLive) {
-                yield return new WaitForSeconds(5);
-            }
-        }
-    }
+    //IEnumerator UpdateUsers() {
+    //    if (IsChannelCreator) {
+    //        while (IsLive) {
+    //            yield return new WaitForSeconds(5);
+    //        }
+    //    }
+    //}
 
     //bool dippedBelowPerformanceThreshold;
     //bool previousPerformanceState;

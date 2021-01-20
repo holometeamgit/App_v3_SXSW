@@ -57,7 +57,6 @@ public class AgoraRTMChatController : MonoBehaviour
 
         UserName = userWebManager.GetUsername();
         rtmClient.Login(token, UserName);
-        //loggedIn = true;
     }
 
     public void Logout()

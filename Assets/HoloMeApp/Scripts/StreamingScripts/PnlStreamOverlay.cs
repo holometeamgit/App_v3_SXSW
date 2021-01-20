@@ -117,6 +117,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void OpenAsStreamer() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+        agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
         isStreamer = true;
         gameObject.SetActive(true);
@@ -130,6 +131,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void OpenAsViewer(string channelName) {
+        agoraController.IsChannelCreator = false;
         agoraController.ChannelName = channelName;
         isStreamer = false;
         blurController.RemoveBlur();
