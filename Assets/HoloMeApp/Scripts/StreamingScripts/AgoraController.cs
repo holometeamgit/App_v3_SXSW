@@ -193,11 +193,11 @@ public class AgoraController : MonoBehaviour {
         iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
         if (IsChannelCreator) {
-                iRtcEngine.SetClientRole(CLIENT_ROLE.BROADCASTER);
+                iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
                 SetEncoderSettings();
         } else {
                 liveStreamQuad.SetActive(true);
-                iRtcEngine.SetClientRole(CLIENT_ROLE.AUDIENCE);
+                iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_AUDIENCE);
                 StartPreview(); //Must be called for viewers to view
         }
 
@@ -234,6 +234,8 @@ public class AgoraController : MonoBehaviour {
 
     public void Leave() {
 
+        StopPreview();
+
         if (iRtcEngine == null)
             return;
 
@@ -249,8 +251,7 @@ public class AgoraController : MonoBehaviour {
             StopCoroutine(sendThumbnailRoutine);
 
         streamerCountUpdater.StopCheck();
-        StopPreview();
-
+        
         liveStreamQuad.SetActive(false);
 
         if (IsChannelCreator)
@@ -312,7 +313,7 @@ public class AgoraController : MonoBehaviour {
             videoSurfaceQuadRef.SetForUser(uid);
             videoSurfaceQuadRef.SetEnable(true);
             videoSurfaceQuadRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
-            videoSurfaceQuadRef.EnableFlipTextureApplyTransform(false, true, defaultLiveStreamQuadScale);
+            //videoSurfaceQuadRef.EnableFlipTextureApplyTransform(false, true, defaultLiveStreamQuadScale);
             videoSurfaceQuadRef.SetGameFps(frameRate);
             //liveStreamQuad.GetComponent<LiveStreamGreenCalculator>().StartBackgroundRemoval();
             //Invoke("VideoResolution", 3);
