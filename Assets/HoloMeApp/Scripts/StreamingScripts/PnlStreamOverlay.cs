@@ -111,8 +111,8 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void ToggleARSessionObjects(bool enable) {
-        arSessionOrigin.SetActive(enable);
-        arSession.SetActive(enable);
+        arSessionOrigin?.SetActive(enable);
+        arSession?.SetActive(enable);
     }
 
     public void OpenAsStreamer() {

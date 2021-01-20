@@ -52,11 +52,12 @@ public class PnlStreamChat : AgoraMessageReceiver
 
     public void SendChatMessage(string message)
     {
-        if (string.IsNullOrWhiteSpace(message)) {
+        if (string.IsNullOrWhiteSpace(message))
+        {
             inputField.text = string.Empty;
             return;
         }
-        
+
         bool rudeWordDetected = BWFManager.Contains(message, ManagerMask.Domain | ManagerMask.BadWord);
         string censoredText = BWFManager.ReplaceAll(message, ManagerMask.Domain | ManagerMask.BadWord);
 
@@ -96,13 +97,18 @@ public class PnlStreamChat : AgoraMessageReceiver
 
     private GameObject GetChatMessage()
     {
+        print("CHAT MESSAGE COUNT = " + chatMessagePool.Count);
         if (chatMessagePool.Count == 0)
         {
+            print("CREATING A NEW CHAT MESSAGE");
             return Instantiate(chatMessagePrefabRef, Content, false);
         }
         else
         {
+            print("POPPING MESSAGE" + chatMessagePool.Count);
             var returnObject = chatMessagePool.Pop();
+            print("MESSAGE POPPED" + chatMessagePool.Count);
+            returnObject.GetComponent<RectTransform>().SetAsLastSibling();
             returnObject.SetActive(true);
             return returnObject;
         }

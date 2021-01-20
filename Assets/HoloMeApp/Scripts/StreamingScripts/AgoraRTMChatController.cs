@@ -64,7 +64,7 @@ public class AgoraRTMChatController : MonoBehaviour
     {
         //SendMessageToChat(userName + " logged out of the rtm", Message.MessageType.info);
         if (loggedIn)
-            rtmClient.Logout();
+            rtmClient?.Logout();
     }
 
     public void JoinChannel(string channelName)
