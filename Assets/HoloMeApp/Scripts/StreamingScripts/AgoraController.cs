@@ -213,7 +213,7 @@ public class AgoraController : MonoBehaviour {
         //print("JOINED");
 
         if (IsChannelCreator)
-            sendThumbnailRoutine = StartCoroutine(SendThumbnailData());
+            sendThumbnailRoutine = StartCoroutine(SendThumbnailData(true));
 
         streamerCountUpdater.StartCheck(ChannelName);
 
@@ -263,14 +263,31 @@ public class AgoraController : MonoBehaviour {
         IsLive = false;
     }
 
-    IEnumerator SendThumbnailData() {
+    IEnumerator SendThumbnailData(bool flipVertical) {
         yield return new WaitForSeconds(5);
         Texture2D originalSnapShot = (Texture2D)videoSufaceStreamerRawTex.texture;
-        Color[] pixels = originalSnapShot.GetPixels();
-        Array.Reverse(pixels);
-        Texture2D flippedTexture = new Texture2D(originalSnapShot.width, originalSnapShot.height);
-        flippedTexture.SetPixels(pixels);
-        byte[] data = flippedTexture.EncodeToPNG();
+        byte[] data;
+
+        if (flipVertical)
+        {
+            int width = originalSnapShot.width;
+            int height = originalSnapShot.height;
+            Texture2D resultTexture = new Texture2D(width, height);
+            Color[] pixels = originalSnapShot.GetPixels();
+            Color[] pixelsFlipped = new Color[pixels.Length];
+            for (int i = 0; i < height; i++)
+            {
+                Array.Copy(pixels, i * width, pixelsFlipped, (height - i - 1) * width, width);
+            }
+            resultTexture.SetPixels(pixelsFlipped);
+            resultTexture.Apply();
+            data = resultTexture.EncodeToPNG();
+        }
+        else
+        {
+            data = originalSnapShot.EncodeToPNG();
+        }
+      
         secondaryServerCalls.UploadPreviewImage(data);
     }
 
