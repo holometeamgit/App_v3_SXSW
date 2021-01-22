@@ -86,7 +86,7 @@ public class PnlStreamOverlay : MonoBehaviour {
             var videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
             if (videoSurface) {
                 isUsingFrontCamera = !isUsingFrontCamera;
-                videoSurface.EnableFlipTextureApplyTransform(!isUsingFrontCamera, false, rawImageQuadDefaultScale); //This may need to be adjusted if camera flip button ever comes back
+                //videoSurface.EnableFlipTextureApplyTransform(!isUsingFrontCamera, false, rawImageQuadDefaultScale); //This may need to be adjusted if camera flip button ever comes back
             }
         };
         
@@ -111,12 +111,13 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void ToggleARSessionObjects(bool enable) {
-        arSessionOrigin.SetActive(enable);
-        arSession.SetActive(enable);
+        arSessionOrigin?.SetActive(enable);
+        arSession?.SetActive(enable);
     }
 
     public void OpenAsStreamer() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+        agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
         isStreamer = true;
         gameObject.SetActive(true);
@@ -130,6 +131,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void OpenAsViewer(string channelName) {
+        agoraController.IsChannelCreator = false;
         agoraController.ChannelName = channelName;
         isStreamer = false;
         blurController.RemoveBlur();
@@ -194,7 +196,8 @@ public class PnlStreamOverlay : MonoBehaviour {
         if (!videoSurface) {
             videoSurface = cameraRenderImage.gameObject.AddComponent<VideoSurface>();
             isUsingFrontCamera = true;
-            videoSurface.EnableFlipTextureApplyTransform(false, true, rawImageQuadDefaultScale);
+            //videoSurface.EnableFlipTextureApplyTransform(false, true, rawImageQuadDefaultScale);
+            videoSurface.EnableFilpTextureApply(false, true);
             videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
             videoSurface.SetGameFps(agoraController.frameRate);
             videoSurface.SetEnable(true);

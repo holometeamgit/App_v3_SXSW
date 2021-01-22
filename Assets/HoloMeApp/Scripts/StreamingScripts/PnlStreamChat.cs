@@ -52,21 +52,28 @@ public class PnlStreamChat : AgoraMessageReceiver
 
     public void SendChatMessage(string message)
     {
-        if (string.IsNullOrWhiteSpace(message)) {
+        if (string.IsNullOrWhiteSpace(message))
+        {
             inputField.text = string.Empty;
             return;
         }
-        
+
         bool rudeWordDetected = BWFManager.Contains(message, ManagerMask.Domain | ManagerMask.BadWord);
         string censoredText = BWFManager.ReplaceAll(message, ManagerMask.Domain | ManagerMask.BadWord);
 
         if (rudeWordDetected)
             HelperFunctions.DevLog("Rude word detected new string = " + censoredText);
 
-        if (!agoraController.IsLive && agoraController.IsChannelCreator)
-            censoredText = "Channel must be live to post comments";
+        ChatMessageJsonData chatMessageJsonData;
 
-        ChatMessageJsonData chatMessageJsonData = new ChatMessageJsonData { userName = agoraRTMChatController.UserName, message = censoredText };
+        if (!agoraController.IsLive && agoraController.IsChannelCreator)
+        {
+            chatMessageJsonData = new ChatMessageJsonData { userName = "", message = "Channel must be live to post comments" };
+        }
+        else
+        {
+            chatMessageJsonData = new ChatMessageJsonData { userName = agoraRTMChatController.UserName, message = censoredText };
+        }
         CreateChatMessageGO(chatMessageJsonData);
 
         if (agoraController.IsLive)
@@ -103,6 +110,7 @@ public class PnlStreamChat : AgoraMessageReceiver
         else
         {
             var returnObject = chatMessagePool.Pop();
+            returnObject.GetComponent<RectTransform>().SetAsLastSibling();
             returnObject.SetActive(true);
             return returnObject;
         }
@@ -110,8 +118,11 @@ public class PnlStreamChat : AgoraMessageReceiver
 
     private void ReturnChatMessageToPool(GameObject message)
     {
-        chatMessagePool.Push(message);
-        message.gameObject.SetActive(false);
+        if (!chatMessagePool.Contains(message))//This is neccessary for now to add messages back if the user doesn't go online but posts in the chat it stops duplicate entries
+        {
+            chatMessagePool.Push(message);
+            message.gameObject.SetActive(false);
+        }
     }
 
     public override void OnDisconnected()
@@ -120,6 +131,8 @@ public class PnlStreamChat : AgoraMessageReceiver
         {
             ReturnChatMessageToPool(Content.GetChild(i).gameObject);
         }
+
+        //print("CHAT MESSAGE POOL COUNT = " + chatMessagePool.Count);
 
         GetComponent<AnimatedTransition>()?.DoMenuTransition(false);
     }
