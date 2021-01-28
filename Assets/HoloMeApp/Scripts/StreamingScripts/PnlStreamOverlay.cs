@@ -72,6 +72,8 @@ public class PnlStreamOverlay : MonoBehaviour {
     Coroutine countdownRoutine;
     bool isStreamer;
     bool isUsingFrontCamera;
+    [SerializeField]
+    VideoSurface videoSurface;
 
     Vector3 rawImageQuadDefaultScale;
 
@@ -89,6 +91,7 @@ public class PnlStreamOverlay : MonoBehaviour {
                 //videoSurface.EnableFlipTextureApplyTransform(!isUsingFrontCamera, false, rawImageQuadDefaultScale); //This may need to be adjusted if camera flip button ever comes back
             }
         };
+        agoraController.OnPreviewStopped += () => videoSurface.SetEnable(false);
         
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
@@ -126,8 +129,8 @@ public class PnlStreamOverlay : MonoBehaviour {
         ToggleARSessionObjects(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
         //StartCountdown();
-        agoraController.StartPreview();
         StartCoroutine(OnPreviewReady());
+        agoraController.StartPreview();
     }
 
     public void OpenAsViewer(string channelName) {
@@ -192,7 +195,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void AddVideoSurface() {
-        VideoSurface videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
+        videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
         if (!videoSurface) {
             videoSurface = cameraRenderImage.gameObject.AddComponent<VideoSurface>();
             isUsingFrontCamera = true;
@@ -200,11 +203,13 @@ public class PnlStreamOverlay : MonoBehaviour {
             videoSurface.EnableFilpTextureApply(false, true);
             videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
             videoSurface.SetGameFps(agoraController.frameRate);
-            videoSurface.SetEnable(true);
+            //videoSurface.SetEnable(true);
         }
     }
 
     IEnumerator OnPreviewReady() {
+        videoSurface.SetEnable(true);
+
         if(!agoraController.VideoIsReady || cameraRenderImage.texture == null)
             AnimatedCentreTextMessage("Loading Preview");
 
@@ -212,8 +217,8 @@ public class PnlStreamOverlay : MonoBehaviour {
             yield return null;
         }
         //yield return new WaitForSeconds(3);
-        //cameraRenderImage.SizeToParent();
         AnimatedFadeOutMessage();
+        cameraRenderImage.SizeToParent();
     }
 
     private void EnableStreamControls(bool enable) {
