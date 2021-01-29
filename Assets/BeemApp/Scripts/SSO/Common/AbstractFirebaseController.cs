@@ -33,29 +33,6 @@ namespace Beem.SSO {
         }
 
         protected void CheckTask(Task<FirebaseUser> task, Action onSuccess = null, Action<string> onFail = null) {
-            Debug.Log(task.Result.ProviderId);
-            Debug.Log(task.Result.UserId);
-            Debug.Log(task.Result);
-
-            Firebase.Auth.FirebaseUser user = _auth.CurrentUser;
-            user.TokenAsync(true).ContinueWith(taskTokenID => {
-                if (taskTokenID.IsCanceled) {
-                    Debug.LogError("TokenAsync was canceled.");
-                    return;
-                }
-
-                if (taskTokenID.IsFaulted) {
-                    Debug.LogError("TokenAsync encountered an error: " + taskTokenID.Exception);
-                    return;
-                }
-
-                string idToken = taskTokenID.Result;
-                Debug.Log(idToken);
-
-                // Send token to your backend via HTTPS
-                // ...
-            });
-
 
             TaskManager firebaseTask = new TaskManager();
             firebaseTask.CheckTask(task, onSuccess, onFail);

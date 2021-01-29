@@ -41,16 +41,17 @@ namespace Beem.SSO {
             }
         }
 
-        private void SignIn() {
+        public void SignIn() {
+            Debug.Log("Facebooc log in new 1 " + FB.IsInitialized);
             if (!FB.IsInitialized) {
                 FBInit();
                 return;
             }
+            Debug.Log("Facebooc log in new 2 " + FB.IsInitialized);
             FB.LogInWithReadPermissions(permissions, AuthCallback);
         }
 
         private void AuthCallback(ILoginResult result) {
-            Debug.Log(AccessToken.CurrentAccessToken.TokenString);
             if (FB.IsLoggedIn) {
                 Credential credential = FacebookAuthProvider.GetCredential(AccessToken.CurrentAccessToken.TokenString);
                 var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
