@@ -75,12 +75,15 @@ public class PnlStreamOverlay : MonoBehaviour {
     [SerializeField]
     VideoSurface videoSurface;
 
-    Vector3 rawImageQuadDefaultScale;
+    bool initialised;
+    //Vector3 rawImageQuadDefaultScale;
 
-    private void Awake() {
+     void Init() {
+        if (initialised)
+            return;
 
-        if (rawImageQuadDefaultScale == Vector3.zero)
-            rawImageQuadDefaultScale = cameraRenderImage.transform.localScale;
+        //if (rawImageQuadDefaultScale == Vector3.zero)
+        //    rawImageQuadDefaultScale = cameraRenderImage.transform.localScale;
 
         agoraController.OnCountIncremented += (x) => txtUserCount.text = x.ToString();
         agoraController.OnStreamerLeft += CloseAsViewer;
@@ -96,6 +99,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
         AddVideoSurface();
+        initialised = true;
     }
 
     private void OnEnable() {
@@ -119,6 +123,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void OpenAsStreamer() {
+        Init();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
         agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
@@ -209,6 +214,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     IEnumerator OnPreviewReady() {
         videoSurface.SetEnable(true);
+        cameraRenderImage.color = Color.black;
 
         if(!agoraController.VideoIsReady || cameraRenderImage.texture == null)
             AnimatedCentreTextMessage("Loading Preview");
@@ -218,6 +224,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
         //yield return new WaitForSeconds(3);
         AnimatedFadeOutMessage();
+        cameraRenderImage.color = Color.white;
         cameraRenderImage.SizeToParent();
     }
 
