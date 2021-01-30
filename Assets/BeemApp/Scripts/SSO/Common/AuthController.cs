@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Firebase;
 using Firebase.Auth;
+using System;
 
 namespace Beem.SSO {
 
@@ -18,6 +19,14 @@ namespace Beem.SSO {
         [SerializeField]
         private List<AbstractFirebaseController> abstractFirebaseControllers = new List<AbstractFirebaseController>();
         private FirebaseAuth _auth;
+        private BackEndTokenController _backEndTokenController;
+
+        public void GetFirebaseToken(Action<string> onSuccess, Action<string> onFales = null) {
+            Debug.Log("GetFirebaseToken 1");
+            _backEndTokenController = _backEndTokenController ?? new BackEndTokenController();
+            Debug.Log("GetFirebaseToken 2 " + _backEndTokenController);
+            _backEndTokenController.GetToken(_auth.CurrentUser, onSuccess, onFales);
+        }
 
         private void Awake() {
             Initialize();
@@ -41,6 +50,5 @@ namespace Beem.SSO {
                 item.InitializeFirebase(_auth);
             }
         }
-
     }
 }

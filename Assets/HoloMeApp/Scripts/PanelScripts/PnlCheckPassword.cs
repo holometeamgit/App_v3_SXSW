@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Beem.SSO;
 
 public class PnlCheckPassword : MonoBehaviour
 {
@@ -56,7 +57,7 @@ public class PnlCheckPassword : MonoBehaviour
 
         userWebManager.OnUserInfoLoaded += CheckAccess;
 
-        if(accountManager.GetLoginType() != LogInType.Email)
+        if(accountManager.GetLogInType() != LogInType.Email)
             SwitchToNextMenu.Switch();
     }
 

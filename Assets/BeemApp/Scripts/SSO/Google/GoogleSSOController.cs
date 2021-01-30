@@ -12,8 +12,16 @@ namespace Beem.SSO {
     public class GoogleSSOController : AbstractFirebaseController {
 
         //private GoogleSignIn googleSignIn;
-        private const string WEB_CLIENT_ID = "233061171188-p7n2s6hpc0o38gakfr2qvqjmfnad9hsh.apps.googleusercontent.com";
+        private const string WEB_CLIENT_ID = "233061171188-67n8vv3f0kvnk7fhujm98kmthvc4mqtq.apps.googleusercontent.com";
         private GoogleSignInConfiguration configuration;
+
+        protected override void Subscribe() {
+            CallBacks.onSignInGoogle += SignInWithGoogle;
+        }
+
+        protected override void Unsubscribe() {
+            CallBacks.onSignInGoogle -= SignInWithGoogle;
+        }
 
         private void Awake() {
 #if !UNITY_EDITOR
@@ -46,14 +54,17 @@ namespace Beem.SSO {
         private void OnGoogleAuthenticationFinished(Task<GoogleSignInUser> task) {
             if (task.IsCanceled) {
                 Debug.LogError("Task was canceled.");
+                CallBacks.onFail?.Invoke("User cancelled login");
                 return;
             }
             if (task.IsFaulted) {
                 IEnumerator<Exception> enumerator = task.Exception.InnerExceptions.GetEnumerator();
                 if (enumerator.MoveNext()) {
                     GoogleSignIn.SignInException error = (GoogleSignIn.SignInException)enumerator.Current;
+                    CallBacks.onFail?.Invoke("Got Error: " + error.Status + " " + error.Message);
                     Debug.Log("Got Error: " + error.Status + " " + error.Message);
                 } else {
+                    CallBacks.onFail?.Invoke("Got Unexpected Exception?!?" + task.Exception);
                     Debug.Log("Got Unexpected Exception?!?" + task.Exception);
                 }
                 return;
@@ -63,16 +74,8 @@ namespace Beem.SSO {
             Credential credential =
                     GoogleAuthProvider.GetCredential(task.Result.IdToken, null);
             _auth.SignInWithCredentialAsync(credential).ContinueWith(signIntask => {
-                CheckTask(signIntask, CallBacks.onSignInSuccess, CallBacks.onFail);
+                CheckTask(signIntask, () => CallBacks.onFirebaseSignInSuccess?.Invoke(LogInType.Google), CallBacks.onFail);
             }, taskScheduler);
-        }
-
-        protected override void Subscribe() {
-            CallBacks.onSignInGoogle += SignInWithGoogle;
-        }
-
-        protected override void Unsubscribe() {
-            CallBacks.onSignInGoogle -= SignInWithGoogle;
         }
     }
 }

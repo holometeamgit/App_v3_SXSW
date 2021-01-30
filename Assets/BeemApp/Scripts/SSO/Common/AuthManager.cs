@@ -24,18 +24,18 @@ namespace Beem.SSO {
         private UnityEvent onSignUp;
 
         private void OnEnable() {
-            CallBacks.onSignInSuccess += SignIn;
+            CallBacks.onFirebaseSignInSuccess += SignIn;
             CallBacks.onSignUpSuccess += SignUp;
             CallBacks.onSignOut += SignOut;
         }
 
         private void OnDisable() {
-            CallBacks.onSignInSuccess -= SignIn;
+            CallBacks.onFirebaseSignInSuccess -= SignIn;
             CallBacks.onSignUpSuccess -= SignUp;
             CallBacks.onSignOut -= SignOut;
         }
 
-        private void SignIn() {
+        private void SignIn(LogInType logInType) {
             onSignIn?.Invoke();
         }
 

@@ -11,13 +11,7 @@ namespace Beem.SSO {
     /// <summary>
     /// login Task Manager
     /// </summary>
-    public class TaskManager {
-
-        private BackEndTokenController backEndTokenController;
-
-        public TaskManager() {
-            backEndTokenController = new BackEndTokenController();
-        }
+    public class LogInTaskManager {
 
         /// <summary>
         /// Check Task with parameter
@@ -25,7 +19,7 @@ namespace Beem.SSO {
         /// <param name="task"></param>
         /// <param name="onSuccess"></param>
         /// <param name="onFail"></param>
-        public void CheckTask(Task<FirebaseUser> task, Action onSuccess = null, Action<string> onFail = null) {
+        public void CheckTask<T>(Task<T> task, Action onSuccess = null, Action<string> onFail = null) {
             if (task.IsCanceled) {
                 Debug.LogError("Task was canceled.");
                 onFail?.Invoke("Cancel");
@@ -38,7 +32,6 @@ namespace Beem.SSO {
                 onFail?.Invoke(errorCode.ToString());
                 return;
             }
-            backEndTokenController.GetToken(task.Result);
             onSuccess?.Invoke();
         }
 

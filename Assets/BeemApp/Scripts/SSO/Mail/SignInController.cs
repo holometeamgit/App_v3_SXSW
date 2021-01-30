@@ -20,7 +20,7 @@ namespace Beem.SSO {
                 CallBacks.onFail?.Invoke("Empty Mail");
             } else {
                 _auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(task => {
-                    CheckTask(task, CallBacks.onSignInSuccess, CallBacks.onFail);
+                    CheckTask(task, () => CallBacks.onFirebaseSignInSuccess?.Invoke(LogInType.Email), CallBacks.onFail);
                 }, taskScheduler);
             }
         }

@@ -4,25 +4,24 @@ using UnityEngine;
 using Firebase;
 using Firebase.Auth;
 using System.Threading.Tasks;
+using System;
+
 namespace Beem.SSO
 {
     public class BackEndTokenController {
-        public string GetToken(FirebaseUser user) {
-            string idToken = string.Empty;
+        public void GetToken(FirebaseUser user, Action<string> onSuccess, Action<string> onFail = null) {
+            var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             user.TokenAsync(true).ContinueWith(taskTokenID => {
                 if (taskTokenID.IsCanceled) {
-                    Debug.LogError("TokenAsync was canceled.");
+                    onFail?.Invoke("TokenAsync was canceled.");
                 }
 
                 if (taskTokenID.IsFaulted) {
-                    Debug.LogError("TokenAsync encountered an error: " + taskTokenID.Exception);
+                    onFail?.Invoke("TokenAsync encountered an error: " + taskTokenID.Exception);
                 }
 
-                idToken = taskTokenID.Result;
-                Debug.Log(idToken);
-            });
-
-            return idToken;
+                onSuccess?.Invoke(taskTokenID.Result);
+            }, taskScheduler);
         }
     }
 }

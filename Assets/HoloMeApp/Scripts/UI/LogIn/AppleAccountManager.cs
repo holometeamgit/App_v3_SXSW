@@ -6,6 +6,7 @@ using AppleAuth.Native;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections.Generic;
+using Beem.SSO;
 
 public class AppleAccountManager : MonoBehaviour {
     [SerializeField]
@@ -180,7 +181,7 @@ public class AppleAccountManager : MonoBehaviour {
                 Debug.Log("Acceess token: \n" + data);
                 _accessToken = data;
                 SaveAccessTokens();
-                accountManager.SaveLastAutoType(LogInType.Apple);
+                accountManager.SaveLogInType(LogInType.Apple);
                 OnAuthorized.Invoke();
                 break;
         }

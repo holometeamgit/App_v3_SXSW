@@ -79,13 +79,18 @@ namespace Beem.SSO {
 
             var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             _auth.SignInWithCredentialAsync(firebaseCredential).ContinueWith(task => {
-                CheckTask(task, CallBacks.onSignInSuccess, CallBacks.onFail);
+                CheckTask(task, () => CallBacks.onFirebaseSignInSuccess?.Invoke(LogInType.Apple), CallBacks.onFail);
             }, taskScheduler);
         }
 
 
         private void OnError(IAppleError args) {
-            Debug.Log(string.Format("A Sign in with Apple error has occured! {0}", args.GetAuthorizationErrorCode()));
+            AuthorizationErrorCode authorizationErrorCode = args.GetAuthorizationErrorCode();
+            if (authorizationErrorCode == AuthorizationErrorCode.Canceled) {
+                CallBacks.onFail?.Invoke("User cancelled login");
+            } else {
+                CallBacks.onFail?.Invoke("Fail " + args.Domain);
+            }
         }
 
         private static string GenerateRawNonce(int count) {

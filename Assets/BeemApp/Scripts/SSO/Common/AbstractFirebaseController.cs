@@ -33,8 +33,7 @@ namespace Beem.SSO {
         }
 
         protected void CheckTask(Task<FirebaseUser> task, Action onSuccess = null, Action<string> onFail = null) {
-
-            TaskManager firebaseTask = new TaskManager();
+            LogInTaskManager firebaseTask = new LogInTaskManager();
             firebaseTask.CheckTask(task, onSuccess, onFail);
         }
     }
