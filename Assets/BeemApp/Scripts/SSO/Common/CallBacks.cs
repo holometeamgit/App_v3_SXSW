@@ -15,17 +15,15 @@ namespace Beem.SSO {
         public static Action onSignInGoogle = delegate { };
         public static Action onSignInApple = delegate { };
         public static Action onSignInFacebook = delegate { };
-
         public static Action onSignInSuccess = delegate { };
+        public static Action<LogInType> onFirebaseSignInSuccess = delegate { };
 
         public static Action<string> onNeedVerification = delegate { };
         public static Action onRequestRepeatVerification = delegate { };
 
-        public static Action<LogInType> onFirebaseSignInSuccess = delegate { };
         public static Action<string, string, string, string> onSignUp = delegate { };
         public static Action onSignUpEMailClick = delegate { };
         public static Action onSignUpSuccess = delegate { };
-        public static Action<string> onFail = delegate { };
 
         public static Action onResetPasswordClick = delegate { };
         public static Action onResetPasswordMsgSent = delegate { };
@@ -33,5 +31,8 @@ namespace Beem.SSO {
 
         public static Action onSignOutClick = delegate { };
         public static Action onSignOut = delegate { };
+
+
+        public static Action<string> onFail = delegate { };
     }
 }

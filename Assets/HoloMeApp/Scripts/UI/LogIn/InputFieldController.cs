@@ -90,7 +90,7 @@ public class InputFieldController : MonoBehaviour
         if (msg.Contains("E-mail is not verified"))
             return "E-mail is not verified";
 
-        if (msg.Contains("User account is disabled"))
+        if (msg.Contains("User account is disabled") || msg.Contains("UserDisabled"))
             return "This account was previously deleted, please contact support to reinstate";
 
         return msg;
