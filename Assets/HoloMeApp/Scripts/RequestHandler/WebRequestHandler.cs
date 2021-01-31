@@ -30,7 +30,7 @@ public class WebRequestHandler : MonoBehaviour {
     }
 
     public void PostRequest<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null, int countRepeat = COUNT_REPEAT) {
-        StartCoroutine(PostRequesting(url, body, bodyType, responseDelegate, errorTypeDelegate, headerAccessToken));
+        StartCoroutine(PostRequesting(url, body, bodyType, responseDelegate, errorTypeDelegate, headerAccessToken, countRepeat));
     }
 
     public void PostRequestMultipart(string url, byte[] body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
@@ -123,7 +123,7 @@ public class WebRequestHandler : MonoBehaviour {
         }
     }
 
-    IEnumerator PostRequesting<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null, int countRepeat = COUNT_REPEAT) {
+    IEnumerator PostRequesting<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null, int countRepeat = 0) {
         byte[] bodyRaw = new byte[0];
 
         UnityWebRequest request;// = new UnityWebRequest(url, "POST");
@@ -173,25 +173,25 @@ public class WebRequestHandler : MonoBehaviour {
 
         } catch (System.Exception e) {
             Debug.Log("post error web request " + e);
+            errorTypeDelegate?.Invoke(500, "Sorry, problems with the request to the server");
             yield break;
         }
-
 
         yield return request.SendWebRequest();
 
         if (request.isNetworkError || request.isHttpError) {
             //            Debug.Log(request.responseCode + " : " + request.error);
-            errorTypeDelegate(request.responseCode, request.downloadHandler.text);
-        } else {
-            //            Debug.Log(request.responseCode + " : " + request.downloadHandler.text);
-            if (request.responseCode == 500 || countRepeat > 0) {
+            if (request.responseCode == 500 && countRepeat > 0) {
                 HelperFunctions.DevLogError("Server 500");
                 countRepeat--;
                 yield return new WaitForSeconds(TIME_REPEAT * (COUNT_REPEAT - countRepeat));
                 PostRequest(url, body, bodyType, responseDelegate, errorTypeDelegate, headerAccessToken, countRepeat);
             } else {
-                responseDelegate(request.responseCode, request.downloadHandler.text);
+                errorTypeDelegate(request.responseCode, request.downloadHandler.text);
             }
+        } else {
+            responseDelegate(request.responseCode, request.downloadHandler.text);
+
         }
     }
 

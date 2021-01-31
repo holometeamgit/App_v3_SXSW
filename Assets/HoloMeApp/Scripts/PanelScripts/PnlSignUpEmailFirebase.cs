@@ -18,9 +18,10 @@ public class PnlSignUpEmailFirebase : MonoBehaviour
     }
 
     private void SignUp() {
+        HelperFunctions.DevLog("Start SignUp");
         if (Time.time < nextTimeCanClick)
             return;
-        nextTimeCanClick += (Time.time + COOLDOWN);
+        nextTimeCanClick = (Time.time + COOLDOWN);
 
         if (!LocalDataVerification())
             return;
@@ -40,6 +41,7 @@ public class PnlSignUpEmailFirebase : MonoBehaviour
             inputFieldPassword.ShowWarning(msg);
             inputFieldConfirmPassword.ShowWarning(msg);
         }
+        inputFieldEmail.ShowWarning(msg);
     }
 
     private bool LocalDataVerification() {

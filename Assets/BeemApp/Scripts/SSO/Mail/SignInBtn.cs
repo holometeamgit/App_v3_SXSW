@@ -12,6 +12,7 @@ namespace Beem.SSO {
     public class SignInBtn : MonoBehaviour, IPointerClickHandler {
 
         public void PressSignInEMail() {
+            HelperFunctions.DevLog("PressSignInEMail");
             CallBacks.onSignInEMailClick?.Invoke();
         }
 

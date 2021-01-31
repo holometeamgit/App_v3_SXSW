@@ -14,18 +14,24 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     private float nextTimeCanClick = 0;
 
     public void LogIn() {
+        HelperFunctions.DevLog("Start login");
+
         if (Time.time < nextTimeCanClick)
             return;
-        nextTimeCanClick += (Time.time + COOLDOWN);
+        nextTimeCanClick = (Time.time + COOLDOWN);
 
-        if (!LocalDataVerification())
+        if (!LocalDataVerification()) {
+            HelperFunctions.DevLog("LocalDataVerification " + LocalDataVerification());
             return;
+        }
+
+        HelperFunctions.DevLog("Start login 2 ");
         CallBacks.onSignInEMail?.Invoke(inputFieldEmail.text, inputFieldPassword.text);
     }
 
     private void LogInCallBack() {
-        ClearData();
         switcherToProfile.Switch();
+        ClearData();
     }
 
     private void ErrorLogInCallBack(string msg) {

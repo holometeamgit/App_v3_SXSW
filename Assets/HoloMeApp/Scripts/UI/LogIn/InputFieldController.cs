@@ -43,6 +43,7 @@ public class InputFieldController : MonoBehaviour
     }
 
     public void ShowWarning(string warningMsg) {
+        HelperFunctions.DevLog(warningMsg);
         warningMsgText.text = OverrideMsg(warningMsg);
         animator.SetBool("ShowWarning", true);
     }
@@ -54,14 +55,12 @@ public class InputFieldController : MonoBehaviour
     public void SetPasswordContentType(bool value) {
         inputField.contentType = value ? TMP_InputField.ContentType.Standard : TMP_InputField.ContentType.Password;
         inputField.ForceLabelUpdate();
-
-        
     }
 
     private string OverrideMsg(string msg) {
         //sign up
         Debug.Log("OverrideMsg " +  msg);
-        if (msg.Contains("is exist")) 
+        if (msg.Contains("is exist") || msg.Contains("EmailAlreadyInUse")) 
             return "Username already exists";
 
         if (msg.Contains("A user is already registered with this e-mail address."))

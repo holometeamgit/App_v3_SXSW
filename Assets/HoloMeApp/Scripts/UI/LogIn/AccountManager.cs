@@ -12,6 +12,8 @@ public class AccountManager : MonoBehaviour {
     [SerializeField]
     WebRequestHandler webRequestHandler;
 
+    private bool canLogIn = true;
+
     #region public authorization
 
     public void QuickLogIn(ResponseDelegate responseCallBack, ErrorTypeDelegate errorTypeCallBack) {
@@ -103,6 +105,8 @@ public class AccountManager : MonoBehaviour {
     private void LogInToServer(LogInType logInType) {
         SaveLogInType(logInType);
 
+        HelperFunctions.DevLog("LogInToServer " + logInType + " IsVerifiried " + authController.IsVerifiried());
+
         if (logInType == LogInType.Email && !authController.IsVerifiried()) {
             CallBacks.onNeedVerification?.Invoke(authController.GetEmail());
             return;
@@ -112,8 +116,14 @@ public class AccountManager : MonoBehaviour {
     }
 
     private void GetServerAccessToken(string firebaseAccessToken) {
+
+        HelperFunctions.DevLog("GetServerAccessToken " + canLogIn);
+
+        if (!canLogIn)
+            return;
+        canLogIn = false;
+
         string url = GetRequestAccessTokenURL();
-        HelperFunctions.DevLog(firebaseAccessToken);
         HelperFunctions.DevLog(url);
 
         FirebaseJsonToken firebaseJsonToken = new FirebaseJsonToken(firebaseAccessToken);
@@ -121,20 +131,25 @@ public class AccountManager : MonoBehaviour {
         webRequestHandler.PostRequest(url, firebaseJsonToken, WebRequestHandler.BodyType.JSON,
             (code, data) => SuccessRequestAccessTokenCallBack(code, data),
             ErrorRequestAccessTokenCallBack);
-        //TODO not forgot about background 
     }
 
     private void SuccessRequestAccessTokenCallBack(long code, string data) {
-        switch (code) {
-            case 200:
-                SaveAccessToken(data);
-                CallBacks.onSignInSuccess?.Invoke();
-                break;
-        }
+        HelperFunctions.DevLog("SuccessRequestAccessTokenCallBack " + code + " " + data);
+        canLogIn = true;
+        try {
+            SaveAccessToken(data);
+        } catch (System.Exception) { }
+        CallBacks.onSignInSuccess?.Invoke();
     }
 
     private void ErrorRequestAccessTokenCallBack(long code, string data) {
+        HelperFunctions.DevLog("ErrorRequestAccessTokenCallBack " + code + " " + data);
+        canLogIn = true;
         CallBacks.onFail?.Invoke(code + " : " + data);
+    }
+
+    private void Awake() {
+        canLogIn = true;
     }
 
     private void OnEnable() {
