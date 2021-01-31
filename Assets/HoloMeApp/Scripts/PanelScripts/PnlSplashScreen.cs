@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Threading.Tasks;
+using Beem.SSO;
 
 public class PnlSplashScreen : MonoBehaviour
 {
@@ -61,6 +62,21 @@ public class PnlSplashScreen : MonoBehaviour
 
     public void AuthorisationErrorInvoke() {
         OnAuthorisationErrorEvent.Invoke();
+    }
+
+    private void FirebaseErrorLogIn(string msg) {
+        ErrorLogInCallBack(500, "Can't connect to server");
+        accountManager.LogOut();
+    }
+
+    private void OnEnable() {
+        CallBacks.onSignInSuccess += LogInIvoke;
+        CallBacks.onFail += FirebaseErrorLogIn;
+    }
+
+    private void OnDisable() {
+        CallBacks.onSignInSuccess -= LogInIvoke;
+        CallBacks.onFail -= FirebaseErrorLogIn;
     }
 
 }

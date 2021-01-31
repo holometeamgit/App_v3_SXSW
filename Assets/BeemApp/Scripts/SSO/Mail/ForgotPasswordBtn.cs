@@ -10,18 +10,8 @@ namespace Beem.SSO {
     /// Button for forgotting password
     /// </summary>
     public class ForgotPasswordBtn : MonoBehaviour, IPointerClickHandler {
-
-        [Header("User Name")]
-        [SerializeField]
-        private InputField _inputField;
-
         public void OnPointerClick(PointerEventData eventData) {
-            if (!_inputField.text.Contains("@")) {
-                CallBacks.onFail?.Invoke("Empty Mail");
-                return;
-            }
-
-            CallBacks.onForgotAccount?.Invoke(_inputField.text);
+            CallBacks.onResetPasswordClick?.Invoke();
         }
     }
 }

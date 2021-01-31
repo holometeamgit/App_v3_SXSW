@@ -22,10 +22,16 @@ namespace Beem.SSO {
         private BackEndTokenController _backEndTokenController;
 
         public void GetFirebaseToken(Action<string> onSuccess, Action<string> onFales = null) {
-            Debug.Log("GetFirebaseToken 1");
             _backEndTokenController = _backEndTokenController ?? new BackEndTokenController();
-            Debug.Log("GetFirebaseToken 2 " + _backEndTokenController);
             _backEndTokenController.GetToken(_auth.CurrentUser, onSuccess, onFales);
+        }
+
+        public bool IsVerifiried() {
+            return _auth != null && _auth.CurrentUser != null && _auth.CurrentUser.IsEmailVerified;
+        }
+
+        public string GetEmail() {
+            return _auth?.CurrentUser?.Email ?? "";
         }
 
         private void Awake() {
@@ -49,6 +55,18 @@ namespace Beem.SSO {
             foreach (AbstractFirebaseController item in abstractFirebaseControllers) {
                 item.InitializeFirebase(_auth);
             }
+        }
+
+        private void SignOutCallBack() {
+            _auth.SignOut();
+        }
+
+        private void OnEnable() {
+            CallBacks.onSignOut += SignOutCallBack;
+        }
+
+        private void OnDisable() {
+            CallBacks.onSignOut -= SignOutCallBack;
         }
     }
 }

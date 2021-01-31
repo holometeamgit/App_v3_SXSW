@@ -46,7 +46,7 @@ public class ThumbnailsDataFetcher {
     }
 
     public void RefreshData() {
-        Debug.Log(isBusy);
+//        Debug.Log(isBusy);
         if (isBusy)
             return;
         isBusy = true;

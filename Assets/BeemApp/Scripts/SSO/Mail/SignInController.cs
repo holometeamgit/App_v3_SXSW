@@ -14,23 +14,23 @@ namespace Beem.SSO {
 
         private void SignIn(string email, string password) {
             var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            if (_auth.CurrentUser != null && _auth.CurrentUser.IsEmailVerified) {
-                CallBacks.onFail?.Invoke("Email isn't verified");
-            } else if (!email.Contains("@")) {
-                CallBacks.onFail?.Invoke("Empty Mail");
-            } else {
-                _auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(task => {
-                    CheckTask(task, () => CallBacks.onFirebaseSignInSuccess?.Invoke(LogInType.Email), CallBacks.onFail);
-                }, taskScheduler);
-            }
+            _auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(task => {
+                CheckTask(task, () => CallBacks.onFirebaseSignInSuccess?.Invoke(LogInType.Email), CallBacks.onFail);
+            }, taskScheduler);
+        }
+
+        private void ResendVerification() {
+            _auth?.CurrentUser?.SendEmailVerificationAsync();
         }
 
         protected override void Subscribe() {
-            CallBacks.onSignInMail += SignIn;
+            CallBacks.onSignInEMail += SignIn;
+            CallBacks.onRequestRepeatVerification += ResendVerification;
         }
 
         protected override void Unsubscribe() {
-            CallBacks.onSignInMail -= SignIn;
+            CallBacks.onSignInEMail -= SignIn;
+            CallBacks.onRequestRepeatVerification -= ResendVerification;
         }
     }
 }

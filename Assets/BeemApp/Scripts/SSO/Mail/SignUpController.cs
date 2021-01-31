@@ -14,10 +14,8 @@ namespace Beem.SSO {
     public class SignUpController : AbstractFirebaseController {
 
         private void SignUp(string profileName, string email, string password, string repeatPassword) {
-            if (!email.Contains("@")) {
-                CallBacks.onFail?.Invoke("Empty Mail");
-            } else if (password != repeatPassword) {
-                CallBacks.onFail?.Invoke("Different passwords");
+            if (password != repeatPassword) {
+                CallBacks.onFail?.Invoke("Passwords do not match");
             } else {
                 var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
@@ -33,7 +31,7 @@ namespace Beem.SSO {
                 var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
                 UserProfile profile = new UserProfile { DisplayName = profileName };
                 user.UpdateUserProfileAsync(profile).ContinueWith(profileTask => {
-                    UserTask(profileTask, () => { UpdateUserProfile(user); }, CallBacks.onFail);
+                    UserTask(profileTask, () => { UpdateUserProfile(user); }, CallBacks.onFail); //TODO test can user have same name like other user?
                 }, taskScheduler);
             }
         }

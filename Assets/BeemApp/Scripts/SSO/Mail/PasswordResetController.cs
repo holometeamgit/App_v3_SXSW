@@ -21,9 +21,9 @@ namespace Beem.SSO {
         }
 
         private void ResetPassword(string email) {
-            if (_auth.CurrentUser != null) {
+            if (_auth != null) {
                 var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-                _auth.SendPasswordResetEmailAsync(email).ContinueWith(task => { UserTask(task); }, taskScheduler);
+                _auth.SendPasswordResetEmailAsync(email).ContinueWith(task => { UserTask(task, CallBacks.onResetPasswordMsgSent, CallBacks.onFail); }, taskScheduler);
             }
         }
 

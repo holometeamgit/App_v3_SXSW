@@ -11,15 +11,12 @@ namespace Beem.SSO {
     /// </summary>
     public class SignInBtn : MonoBehaviour, IPointerClickHandler {
 
-        [Header("Email")]
-        [SerializeField]
-        private InputField _email;
-        [Header("Password")]
-        [SerializeField]
-        private InputField _password;
+        public void PressSignInEMail() {
+            CallBacks.onSignInEMailClick?.Invoke();
+        }
 
         public void OnPointerClick(PointerEventData eventData) {
-            CallBacks.onSignInMail?.Invoke(_email.text, _password.text);
+            PressSignInEMail();
         }
     }
 }
