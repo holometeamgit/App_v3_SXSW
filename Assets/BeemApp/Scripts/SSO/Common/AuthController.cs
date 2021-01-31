@@ -26,7 +26,17 @@ namespace Beem.SSO {
             _backEndTokenController.GetToken(_auth.CurrentUser, onSuccess, onFales);
         }
 
+        public void DoAfterReloadUser(Action action) {
+            var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            _auth.CurrentUser.ReloadAsync().ContinueWith(task => { action?.Invoke(); }, taskScheduler);
+        }
+
+        public bool HasUser() {
+            return _auth != null && _auth.CurrentUser != null;
+        }
+
         public bool IsVerifiried() {
+            HelperFunctions.DevLog(string.Format("auth {0} user {1} isVerified {2} ", _auth, _auth?.CurrentUser, _auth?.CurrentUser?.IsEmailVerified));
             return _auth != null && _auth.CurrentUser != null && _auth.CurrentUser.IsEmailVerified;
         }
 

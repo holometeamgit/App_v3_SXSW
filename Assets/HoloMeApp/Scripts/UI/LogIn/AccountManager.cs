@@ -15,14 +15,15 @@ public class AccountManager : MonoBehaviour {
     #region public authorization
 
     public void QuickLogIn(ResponseDelegate responseCallBack, ErrorTypeDelegate errorTypeCallBack) {
-
+        HelperFunctions.DevLog("try QuickLogIn");
         ServerAccessToken accessToken = GetAccessToken();
 
-        if (accessToken == null && !authController.IsVerifiried()) {
+        if (accessToken == null && !authController.HasUser()) {
             errorTypeCallBack?.Invoke(0, "Server Access Token file doesn't exist");
             return;
-        } else if (accessToken == null && authController.IsVerifiried() && GetLogInType() != LogInType.None) {
-            CallBacks.onFirebaseSignInSuccess(GetLogInType()); //TODO need test 
+        } else if (accessToken == null && authController.HasUser() && GetLogInType() != LogInType.None) {
+            HelperFunctions.DevLog("QuickLogIn Firebase");
+            authController.DoAfterReloadUser(() => CallBacks.onFirebaseSignInSuccess(GetLogInType())); //TODO need test 
             return;
         }
 
@@ -66,8 +67,8 @@ public class AccountManager : MonoBehaviour {
         try {
             //            Debug.Log("Try Save Access Token \n" + serverAccessToken);
             ServerAccessToken accessToken = JsonUtility.FromJson<ServerAccessToken>(serverAccessToken);
-            Debug.Log("serverAccessToken");
-            Debug.Log(serverAccessToken);
+            HelperFunctions.DevLog("serverAccessToken");
+            HelperFunctions.DevLog(serverAccessToken);
             FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), accessToken, FileAccountManager.ServerAccessToken);
             //            Debug.Log("Access Token Saved");
         } catch (System.Exception e) { }
@@ -86,8 +87,8 @@ public class AccountManager : MonoBehaviour {
             ServerAccessToken accessToken = JsonUtility.FromJson<ServerAccessToken>(serverAccessToken);
             currentAccessToken.access = accessToken.access;
 
-            Debug.Log("serverAccessToken");
-            Debug.Log(serverAccessToken);
+            HelperFunctions.DevLog("serverAccessToken");
+            HelperFunctions.DevLog(serverAccessToken);
             FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), currentAccessToken, FileAccountManager.ServerAccessToken);
         } catch (System.Exception e) { }
     }
@@ -115,8 +116,8 @@ public class AccountManager : MonoBehaviour {
 
     private void GetServerAccessToken(string firebaseAccessToken) {
         string url = GetRequestAccessTokenURL();
-        Debug.Log(firebaseAccessToken);
-        Debug.Log(url);
+        HelperFunctions.DevLog(firebaseAccessToken);
+        HelperFunctions.DevLog(url);
 
         FirebaseJsonToken firebaseJsonToken = new FirebaseJsonToken(firebaseAccessToken);
 

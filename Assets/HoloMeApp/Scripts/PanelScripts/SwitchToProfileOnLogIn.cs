@@ -11,8 +11,9 @@ public class SwitchToProfileOnLogIn : MonoBehaviour {
     AccountManager accountManager;
 
     private void OnApplicationFocus(bool focus) {
-        if (focus)
+        if (focus) {
             accountManager.QuickLogIn((_, x) => { }, (_, x) => { });
+        }
     }
 
     private void SwitchToProfile() {

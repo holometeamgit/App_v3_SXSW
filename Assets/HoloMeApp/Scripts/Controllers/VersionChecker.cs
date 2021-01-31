@@ -44,8 +44,6 @@ public class VersionChecker : MonoBehaviour
         float appVersion = 0;
         float.TryParse(Application.version, out appVersion);
 
-        Debug.Log("Current version " + appVersion + " need min version " + currentMinVersionWithForceUpdate);
-
         if (currentMinVersionWithForceUpdate > appVersion)
             OnNeedUpdateApp?.Invoke();
         else
