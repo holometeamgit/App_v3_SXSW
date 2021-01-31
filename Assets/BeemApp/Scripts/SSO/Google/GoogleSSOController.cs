@@ -42,7 +42,7 @@ namespace Beem.SSO {
 
         private void SignInWithGoogle() {
 
-            Debug.Log("CallSignInWithGoogle");
+            HelperFunctions.DevLog("CallSignInWithGoogle");
             GoogleSignIn.Configuration = configuration;
             GoogleSignIn.Configuration.UseGameSignIn = false;
             GoogleSignIn.Configuration.RequestIdToken = true;
@@ -53,7 +53,7 @@ namespace Beem.SSO {
 
         private void OnGoogleAuthenticationFinished(Task<GoogleSignInUser> task) {
             if (task.IsCanceled) {
-                Debug.LogError("Task was canceled.");
+                HelperFunctions.DevLogError("Task was canceled.");
                 CallBacks.onFail?.Invoke("User cancelled login");
                 return;
             }
@@ -62,10 +62,10 @@ namespace Beem.SSO {
                 if (enumerator.MoveNext()) {
                     GoogleSignIn.SignInException error = (GoogleSignIn.SignInException)enumerator.Current;
                     CallBacks.onFail?.Invoke("Got Error: " + error.Status + " " + error.Message);
-                    Debug.Log("Got Error: " + error.Status + " " + error.Message);
+                    HelperFunctions.DevLog("Got Error: " + error.Status + " " + error.Message);
                 } else {
                     CallBacks.onFail?.Invoke("Got Unexpected Exception?!?" + task.Exception);
-                    Debug.Log("Got Unexpected Exception?!?" + task.Exception);
+                    HelperFunctions.DevLog("Got Unexpected Exception?!?" + task.Exception);
                 }
                 return;
             }

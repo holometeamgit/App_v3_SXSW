@@ -27,9 +27,6 @@ public class AccountManager : MonoBehaviour {
             return;
         }
 
-        Debug.Log("QuickLogIn refreshToken " + accessToken.refresh);
-        Debug.Log("QuickLogIn accessToken " + accessToken.access);
-
         webRequestHandler.PostRequest(GetRequestRefreshTokenURL(),
             accessToken, WebRequestHandler.BodyType.JSON,
             (code, body) => { UpdateAccessToken(body); responseCallBack(code, body); },
@@ -130,7 +127,6 @@ public class AccountManager : MonoBehaviour {
     private void SuccessRequestAccessTokenCallBack(long code, string data) {
         switch (code) {
             case 200:
-                Debug.Log("Acceess token: \n" + data);
                 SaveAccessToken(data);
                 CallBacks.onSignInSuccess?.Invoke();
                 break;
@@ -138,7 +134,6 @@ public class AccountManager : MonoBehaviour {
     }
 
     private void ErrorRequestAccessTokenCallBack(long code, string data) {
-        Debug.Log(code + " : " + data);
         CallBacks.onFail?.Invoke(code + " : " + data);
     }
 
