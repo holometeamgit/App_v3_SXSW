@@ -35,6 +35,10 @@ public class AuthorizationAPIScriptableObject : ScriptableObject {
     [Tooltip("Post request refresh token. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/Token/post_token_refresh_")]
     public string RefreshToken = "/token/refresh/";
 
+    [Header("Firebase Authorization")]
+    [Tooltip("Get request complite Log In. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/Token/post_token_firebase_")]
+    public string FirebaseToken = "/token/firebase/";
+
     [Header("Facebook Authorization")]
     [Tooltip("Get request facebook Log In. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/Login/get_social_auth_login_facebook_")]
     public string FacebookLogIn = "/social-auth/login/facebook/";

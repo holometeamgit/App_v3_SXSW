@@ -1,8 +1,11 @@
-﻿public enum LogInType {
-    None,
-    Apple,
-    Google,
-    Facebook,
-    SSO,
-    Email
+﻿namespace Beem.SSO {
+
+    public enum LogInType {
+        None,
+        Apple,
+        Google,
+        Facebook,
+        SSO,
+        Email
+    }
 }

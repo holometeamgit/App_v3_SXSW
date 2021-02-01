@@ -6,7 +6,7 @@ using System;
 
 public class PnlBroadcasterProfile : MonoBehaviour
 {
-    [SerializeField] AccountManager accountManager; 
+    [SerializeField] UserWebManager userWebManager; 
     [SerializeField] AnimatedTransition menuProfileBurger;
     [SerializeField] AnimatedTransition menuUserProfileBurger;
     [Space]
@@ -34,9 +34,8 @@ public class PnlBroadcasterProfile : MonoBehaviour
     private List<GameObject> thumbnails;
 
     public void ShowMenu() {
-        var accauntType = accountManager.GetAccountType();
-        menuProfileBurger.DoMenuTransition(accauntType == AccountManager.AccountType.Broadcaster);
-        menuUserProfileBurger.DoMenuTransition(accauntType == AccountManager.AccountType.Subscriber);
+        menuProfileBurger.DoMenuTransition(userWebManager.IsBroadcaster());
+        menuUserProfileBurger.DoMenuTransition(!userWebManager.IsBroadcaster());
         menuBtn.gameObject.SetActive(false);
     }
 
