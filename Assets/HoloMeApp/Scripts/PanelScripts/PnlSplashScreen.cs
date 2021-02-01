@@ -72,11 +72,13 @@ public class PnlSplashScreen : MonoBehaviour
     private void OnEnable() {
         CallBacks.onSignInSuccess += LogInIvoke;
         CallBacks.onFail += FirebaseErrorLogIn;
+        CallBacks.onNeedVerification += FirebaseErrorLogIn;
     }
 
     private void OnDisable() {
         CallBacks.onSignInSuccess -= LogInIvoke;
         CallBacks.onFail -= FirebaseErrorLogIn;
+        CallBacks.onNeedVerification -= FirebaseErrorLogIn;
     }
 
 }
