@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using System;
+using Beem.SSO;
 
 public class EmailAccountManager : MonoBehaviour {
     public Action OnSignUp;
@@ -139,7 +140,7 @@ public class EmailAccountManager : MonoBehaviour {
 
     private void VerifedCallBack(long code, string body) {
         accountManager.SaveAccessToken(body);
-        accountManager.SaveLastAutoType(LogInType.Email);
+        accountManager.SaveLogInType(LogInType.Email);
         OnVerified?.Invoke();
     }
 
@@ -160,9 +161,10 @@ public class EmailAccountManager : MonoBehaviour {
 
     private void LogInCallBack(long code, string body) {
         Debug.Log("Log In " + code + " : " + body);
-        accountManager.SaveLastAutoType(LogInType.Email);
+        accountManager.SaveLogInType(LogInType.Email);
         accountManager.SaveAccessToken(body);
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin, AnalyticParameters.ParamUserType , accountManager.GetAccountType() == AccountManager.AccountType.Subscriber ? AnalyticParameters.ParamViewer:AnalyticParameters.ParamBroadcaster ); // Using keys in case enum changes names in future
+        //TODO move to place when user loggined and take info from UserWebManager
+        //AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin, AnalyticParameters.ParamUserType , accountManager.GetAccountType() == AccountManager.AccountType.Subscriber ? AnalyticParameters.ParamViewer:AnalyticParameters.ParamBroadcaster ); // Using keys in case enum changes names in future
         OnLogIn?.Invoke();
     }
 

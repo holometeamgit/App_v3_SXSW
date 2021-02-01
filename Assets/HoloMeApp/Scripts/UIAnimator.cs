@@ -46,4 +46,9 @@ public class UIAnimator : MonoBehaviour
         }
     }
 
+    private void OnDisable() {
+        if (frames.Length > 1)
+            imgToAnimate.sprite = frames[0];
+    }
+
 }

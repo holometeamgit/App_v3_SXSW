@@ -6,6 +6,7 @@ using AppleAuth.Native;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections.Generic;
+using Beem.SSO;
 
 public class AppleAccountManager : MonoBehaviour {
     [SerializeField]
@@ -25,7 +26,7 @@ public class AppleAccountManager : MonoBehaviour {
 
     public void SignInWithAppleButtonPressed() {
 
-        Debug.Log("SignInWithAppleButtonPressed");
+        HelperFunctions.DevLog("SignInWithAppleButtonPressed");
 
         if (!AppleAuthManager.IsCurrentPlatformSupported)
             return;
@@ -55,10 +56,10 @@ public class AppleAccountManager : MonoBehaviour {
                 if (appleIdCredential == null)
                     return;
 
-                Debug.Log("All info");
+                HelperFunctions.DevLog("All info");
 
-                Debug.Log("AuthorizationCode " + appleIdCredential.AuthorizationCode);
-                Debug.Log("AuthorizationCode " + appleIdCredential.AuthorizationCode.Length);
+                HelperFunctions.DevLog("AuthorizationCode " + appleIdCredential.AuthorizationCode);
+                HelperFunctions.DevLog("AuthorizationCode " + appleIdCredential.AuthorizationCode.Length);
 
                 string code = System.Text.Encoding.ASCII.GetString(
                         appleIdCredential.AuthorizationCode,
@@ -68,7 +69,7 @@ public class AppleAccountManager : MonoBehaviour {
                 
 
                 try {
-                    Debug.Log(code);
+                    HelperFunctions.DevLog(code);
                 } catch (System.Exception ex) { }
 
                 GUIUtility.systemCopyBuffer = code;
@@ -78,7 +79,7 @@ public class AppleAccountManager : MonoBehaviour {
             error => {
                 // If Quick Login fails, we should show the normal sign in with apple menu, to allow for a normal Sign In with apple
                 var authorizationErrorCode = error.GetAuthorizationErrorCode();
-                Debug.LogWarning("Quick Login Failed " + authorizationErrorCode.ToString() + " " + error.ToString());
+               Debug.LogWarning("Quick Login Failed " + authorizationErrorCode.ToString() + " " + error.ToString());
             });
     }
     
@@ -88,12 +89,14 @@ public class AppleAccountManager : MonoBehaviour {
 
     private void Init() {
 
-        Debug.Log("try Init Apple");
+        
+
+        HelperFunctions.DevLog("try Init Apple");
 
         if (!AppleAuthManager.IsCurrentPlatformSupported)
             return;
 
-        Debug.Log("Apple Init");
+        HelperFunctions.DevLog("Apple Init");
 
         var deserializer = new PayloadDeserializer();
         appleAuthManager = new AppleAuthManager(deserializer);
@@ -111,13 +114,13 @@ public class AppleAccountManager : MonoBehaviour {
     private void SaveAccessTokens() {
 
         accountManager.SaveAccessToken(_accessToken);
-        Debug.Log("Save Acceess token: \n" + _accessToken);
+        HelperFunctions.DevLog("Save Acceess token: \n" + _accessToken);
         _accessToken = null;
     }
 
     private void SignInWithApple() {
         var loginArgs = new AppleAuthLoginArgs(LoginOptions.IncludeEmail | LoginOptions.IncludeFullName);
-        Debug.Log("LogIn WithApple");
+        HelperFunctions.DevLog("LogIn WithApple");
         appleAuthManager.LoginWithAppleId(
             loginArgs,
             credential => {
@@ -126,23 +129,11 @@ public class AppleAccountManager : MonoBehaviour {
                 if (appleIdCredential == null)
                     return;
 
-                Debug.Log("All info");
+                HelperFunctions.DevLog("All info");
 
-                Debug.Log("AuthorizationCode " + appleIdCredential.AuthorizationCode);
-                Debug.Log("AuthorizationCode " + appleIdCredential.AuthorizationCode.Length);
+                HelperFunctions.DevLog("AuthorizationCode " + appleIdCredential.AuthorizationCode);
+                HelperFunctions.DevLog("AuthorizationCode " + appleIdCredential.AuthorizationCode.Length);
 
-               /* try {
-                    Debug.Log("Scopes");
-                    if (appleIdCredential.AuthorizedScopes == null)
-                        foreach (var scope in appleIdCredential.AuthorizedScopes)
-                            Debug.Log(scope);
-                } catch (System.Exception) { }
-
-                try { 
-                Debug.Log("after  Scopes");
-                Debug.Log("appleIdCredential.State " + appleIdCredential.State);
-                } catch (System.Exception) { }
-               */
                 string code = "";
                 try {
                     // Authorization code
@@ -150,7 +141,7 @@ public class AppleAccountManager : MonoBehaviour {
                         appleIdCredential.AuthorizationCode,
                         0,
                         appleIdCredential.AuthorizationCode.Length);
-                    Debug.Log(System.Text.Encoding.UTF8.GetString(appleIdCredential.IdentityToken));
+                    HelperFunctions.DevLog(System.Text.Encoding.UTF8.GetString(appleIdCredential.IdentityToken));
                 } catch (System.Exception ex) { }
 
                 GUIUtility.systemCopyBuffer = code;
@@ -161,26 +152,26 @@ public class AppleAccountManager : MonoBehaviour {
             },
             error => {
                 var authorizationErrorCode = error.GetAuthorizationErrorCode();
-                Debug.Log("Sign in with Apple failed " + authorizationErrorCode.ToString() + " " + error.ToString());
-                Debug.Log("error.Domain: " + error.Domain);
-                Debug.Log("error.LocalizedDescription: " + error.LocalizedDescription);
-                Debug.Log("error.LocalizedFailureReason: " + error.LocalizedFailureReason);
-                Debug.Log("error.LocalizedRecoveryOptions: " + error.LocalizedRecoveryOptions);
-                Debug.Log("error.LocalizedRecoverySuggestion: " + error.LocalizedRecoverySuggestion);
+                HelperFunctions.DevLog("Sign in with Apple failed " + authorizationErrorCode.ToString() + " " + error.ToString());
+                HelperFunctions.DevLog("error.Domain: " + error.Domain);
+                HelperFunctions.DevLog("error.LocalizedDescription: " + error.LocalizedDescription);
+                HelperFunctions.DevLog("error.LocalizedFailureReason: " + error.LocalizedFailureReason);
+                HelperFunctions.DevLog("error.LocalizedRecoveryOptions: " + error.LocalizedRecoveryOptions);
+                HelperFunctions.DevLog("error.LocalizedRecoverySuggestion: " + error.LocalizedRecoverySuggestion);
             });
     }
 
     private void ErrorRequestAccessTokenCallBack(long code, string data) {
-        Debug.Log(code + " : " + data);
+        HelperFunctions.DevLog(code + " : " + data);
     }
 
     private void SuccessRequestAccessTokenCallBack(long code, string data) {
         switch (code) {
             case 200:
-                Debug.Log("Acceess token: \n" + data);
+                HelperFunctions.DevLog("Acceess token: \n" + data);
                 _accessToken = data;
                 SaveAccessTokens();
-                accountManager.SaveLastAutoType(LogInType.Apple);
+                accountManager.SaveLogInType(LogInType.Apple);
                 OnAuthorized.Invoke();
                 break;
         }
@@ -190,8 +181,8 @@ public class AppleAccountManager : MonoBehaviour {
     #region request server access token
     private void GetServerAccessToken<T>(T appleAccessToken, string state, ResponseDelegate responseCallBack, ErrorTypeDelegate errorCallBack) {
         string url = GetGetRequestAccessTokenURL(appleAccessToken as string);
-        Debug.Log(" Apple req " + url);
-        Debug.Log(" appleAccessToken " + (appleAccessToken as string));
+        HelperFunctions.DevLog(" Apple req " + url);
+        HelperFunctions.DevLog(" appleAccessToken " + (appleAccessToken as string));
         Dictionary<string, T> formData = new Dictionary<string, T>();
         formData["code"] = appleAccessToken;
         //webRequestHandler.PostRequest(url, formData, WebRequestHandler.BodyType.XWWWFormUrlEncoded, responseCallBack, errorCallBack);

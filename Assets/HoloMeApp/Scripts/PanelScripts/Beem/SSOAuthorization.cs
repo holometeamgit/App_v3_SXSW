@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Beem.SSO;
 
 public class SSOAuthorization : MonoBehaviour
 {
@@ -30,12 +31,12 @@ public class SSOAuthorization : MonoBehaviour
 
     private void SSOLogIn(ServerAccessToken serverAccessToken) {
         Debug.Log("SSOLogIn");
-        if (serverAccessToken == null || accountManager.GetLoginType() != LogInType.None)
+        if (serverAccessToken == null || accountManager.GetLogInType() != LogInType.None)
             return;
 
 
         accountManager.SaveAccessToken(JsonUtility.ToJson(serverAccessToken));
-        accountManager.SaveLastAutoType(LogInType.SSO);
+        accountManager.SaveLogInType(LogInType.SSO);
 
         OnAuthorized.Invoke();
     }
