@@ -10,6 +10,9 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     [SerializeField] InputFieldController inputFieldPassword;
     [SerializeField] Switcher switcherToProfile;
 
+    [SerializeField]
+    GameObject LogInLoadingBackground;
+
     private const float COOLDOWN = 0.5f;
     private float nextTimeCanClick = 0;
 
@@ -25,6 +28,7 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
             return;
         }
 
+        ShowBackground();
         HelperFunctions.DevLog("Start login 2 ");
         CallBacks.onSignInEMail?.Invoke(inputFieldEmail.text, inputFieldPassword.text);
     }
@@ -73,11 +77,28 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
         inputFieldPassword.text = "";
     }
 
+    private void ShowBackground() {
+        LogInLoadingBackground.SetActive(true);
+    }
+
+    private void HideBackground() {
+        LogInLoadingBackground.SetActive(false);
+    }
+
+    private void HideBackground(string reason) {
+        LogInLoadingBackground.SetActive(false);
+    }
+
     private void OnEnable() {
+        HideBackground();
         CallBacks.onSignInEMailClick += LogIn;
         CallBacks.onFail += ErrorLogInCallBack;
         CallBacks.onNeedVerification += NeedVerificationCallback;
         CallBacks.onSignInSuccess += LogInCallBack;
+
+        CallBacks.onFail += HideBackground;
+        CallBacks.onNeedVerification += HideBackground;
+        CallBacks.onSignInSuccess += HideBackground;
     }
 
     private void OnDisable() {
@@ -85,5 +106,9 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
         CallBacks.onFail -= ErrorLogInCallBack;
         CallBacks.onNeedVerification -= NeedVerificationCallback;
         CallBacks.onSignInSuccess -= LogInCallBack;
+
+        CallBacks.onFail -= HideBackground;
+        CallBacks.onNeedVerification -= HideBackground;
+        CallBacks.onSignInSuccess -= HideBackground;
     }
 }

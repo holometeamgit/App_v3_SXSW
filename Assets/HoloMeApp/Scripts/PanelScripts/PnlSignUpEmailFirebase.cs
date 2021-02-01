@@ -5,10 +5,16 @@ using Beem.SSO;
 
 public class PnlSignUpEmailFirebase : MonoBehaviour
 {
-    [SerializeField] InputFieldController inputFieldEmail;
-    [SerializeField] InputFieldController inputFieldPassword;
-    [SerializeField] InputFieldController inputFieldConfirmPassword;
-    [SerializeField] Switcher switcherToVerification;
+    [SerializeField]
+    InputFieldController inputFieldEmail;
+    [SerializeField]
+    InputFieldController inputFieldPassword;
+    [SerializeField]
+    InputFieldController inputFieldConfirmPassword;
+    [SerializeField]
+    Switcher switcherToVerification;
+    [SerializeField]
+    GameObject LogInLoadingBackground;
 
     private const float COOLDOWN = 0.5f;
     private float nextTimeCanClick = 0;
@@ -23,8 +29,11 @@ public class PnlSignUpEmailFirebase : MonoBehaviour
             return;
         nextTimeCanClick = (Time.time + COOLDOWN);
 
-        if (!LocalDataVerification())
+        if (!LocalDataVerification()) {
             return;
+        }
+
+        ShowBackground();
         CallBacks.onSignUp?.Invoke(inputFieldEmail.text,
             inputFieldEmail.text,
             inputFieldPassword.text,
@@ -37,11 +46,12 @@ public class PnlSignUpEmailFirebase : MonoBehaviour
     }
 
     private void ErrorSignUpCallBack(string msg) {
-        if(msg == "Passwords do not match") {
+        if (msg == "Passwords do not match") {
             inputFieldPassword.ShowWarning(msg);
             inputFieldConfirmPassword.ShowWarning(msg);
+        } else {
+            inputFieldEmail.ShowWarning(msg);
         }
-        inputFieldEmail.ShowWarning(msg);
     }
 
     private bool LocalDataVerification() {
@@ -63,15 +73,34 @@ public class PnlSignUpEmailFirebase : MonoBehaviour
         inputFieldConfirmPassword.text = "";
     }
 
+    private void ShowBackground() {
+        LogInLoadingBackground.SetActive(true);
+    }
+
+    private void HideBackground() {
+        LogInLoadingBackground.SetActive(false);
+    }
+
+    private void HideBackground(string reason) {
+        LogInLoadingBackground.SetActive(false);
+    }
+
     private void OnEnable() {
+        HideBackground();
         CallBacks.onSignUpEMailClick += SignUp;
         CallBacks.onFail += ErrorSignUpCallBack;
         CallBacks.onSignUpSuccess += SignUpCallBack;
+
+        CallBacks.onFail += HideBackground;
+        CallBacks.onSignUpSuccess += HideBackground;
     }
 
     private void OnDisable() {
         CallBacks.onSignUpEMailClick -= SignUp;
         CallBacks.onFail -= ErrorSignUpCallBack;
         CallBacks.onSignUpSuccess -= SignUpCallBack;
+
+        CallBacks.onFail -= HideBackground;
+        CallBacks.onSignUpSuccess -= HideBackground;
     }
 }

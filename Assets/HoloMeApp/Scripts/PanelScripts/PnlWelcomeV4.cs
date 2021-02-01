@@ -28,11 +28,14 @@ public class PnlWelcomeV4 : MonoBehaviour {
     [SerializeField]
     Switcher switcherToProfile;
 
-    private void OnEnable() {
-        HideBackground();
+    private void Awake() {
 #if !UNITY_IOS
         LogInAppleGO.SetActive(false);
 #endif
+    }
+
+    private void OnEnable() {
+        HideBackground();
         CallBacks.onSignInFacebook += ShowBackground;
         CallBacks.onSignInApple += ShowBackground;
         CallBacks.onSignInGoogle += ShowBackground;
