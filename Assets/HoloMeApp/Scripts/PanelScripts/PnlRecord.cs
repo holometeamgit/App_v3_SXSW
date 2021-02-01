@@ -13,9 +13,6 @@ using System.IO;
 public class PnlRecord : MonoBehaviour
 {
     [SerializeField]
-    GameObject watermarkCanvasObject;
-
-    [SerializeField]
     Camera canvasCamera;
 
     [SerializeField]
@@ -79,6 +76,13 @@ public class PnlRecord : MonoBehaviour
     UnityEvent OnSnapshotStarted;
     [SerializeField]
     UnityEvent OnSnapshotEnded;
+
+    [SerializeField]
+    UIThumbnailsController uiThumbnailsController;
+    [SerializeField]
+    GameObject watermarkCanvasObject;
+    [SerializeField]
+    Text txtWaterMarkText;
 
     public bool Recording { get; set; }
     private bool recordLengthFailed;
@@ -148,6 +152,8 @@ public class PnlRecord : MonoBehaviour
         canvasGroup.alpha = 0;
 
         purchaseManager.OnPurchaseSuccessful += RefreshBuyBtnState;
+        uiThumbnailsController.OnPlay += x => txtWaterMarkText.text = "@" + x.user; //Gameobject must be active in the editor for this to work correctly
+        gameObject.SetActive(false);
     }
 
     public void EnableRecordPanel(bool isTeaser, bool openForStream = false)
@@ -164,8 +170,9 @@ public class PnlRecord : MonoBehaviour
         canvasGroup.DOFade(1, .5f);
     }
 
-    private void RefreshBuyBtnState() {
-       btnBuyTickets.gameObject.SetActive(purchaseManager.IsBought() ? false : btnBuyTickets.gameObject.activeSelf);
+    private void RefreshBuyBtnState()
+    {
+        btnBuyTickets.gameObject.SetActive(purchaseManager.IsBought() ? false : btnBuyTickets.gameObject.activeSelf);
     }
 
     private void AssignRectTransform(RectTransform transformToAssign, RectTransform reference)
@@ -184,6 +191,8 @@ public class PnlRecord : MonoBehaviour
     {
         videoWidth = MakeEven(Screen.width / 2);
         videoHeight = MakeEven(Screen.height / 2);
+        //videoWidth = Screen.width;
+        //videoHeight = Screen.height;
         //print($"{videoWidth} x {videoHeight}");
         //videoWidth = 720;
         //videoHeight = (int)((float)videoWidth * ratio);

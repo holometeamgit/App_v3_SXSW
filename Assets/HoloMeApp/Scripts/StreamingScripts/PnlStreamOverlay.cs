@@ -72,13 +72,18 @@ public class PnlStreamOverlay : MonoBehaviour {
     Coroutine countdownRoutine;
     bool isStreamer;
     bool isUsingFrontCamera;
+    [SerializeField]
+    VideoSurface videoSurface;
 
-    Vector3 rawImageQuadDefaultScale;
+    bool initialised;
+    //Vector3 rawImageQuadDefaultScale;
 
-    private void Awake() {
+     void Init() {
+        if (initialised)
+            return;
 
-        if (rawImageQuadDefaultScale == Vector3.zero)
-            rawImageQuadDefaultScale = cameraRenderImage.transform.localScale;
+        //if (rawImageQuadDefaultScale == Vector3.zero)
+        //    rawImageQuadDefaultScale = cameraRenderImage.transform.localScale;
 
         agoraController.OnCountIncremented += (x) => txtUserCount.text = x.ToString();
         agoraController.OnStreamerLeft += CloseAsViewer;
@@ -86,13 +91,15 @@ public class PnlStreamOverlay : MonoBehaviour {
             var videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
             if (videoSurface) {
                 isUsingFrontCamera = !isUsingFrontCamera;
-                videoSurface.EnableFlipTextureApplyTransform(!isUsingFrontCamera, false, rawImageQuadDefaultScale); //This may need to be adjusted if camera flip button ever comes back
+                //videoSurface.EnableFlipTextureApplyTransform(!isUsingFrontCamera, false, rawImageQuadDefaultScale); //This may need to be adjusted if camera flip button ever comes back
             }
         };
+        agoraController.OnPreviewStopped += () => videoSurface.SetEnable(false);
         
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
         AddVideoSurface();
+        initialised = true;
     }
 
     private void OnEnable() {
@@ -111,12 +118,14 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void ToggleARSessionObjects(bool enable) {
-        arSessionOrigin.SetActive(enable);
-        arSession.SetActive(enable);
+        arSessionOrigin?.SetActive(enable);
+        arSession?.SetActive(enable);
     }
 
     public void OpenAsStreamer() {
+        Init();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+        agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
         isStreamer = true;
         gameObject.SetActive(true);
@@ -125,11 +134,12 @@ public class PnlStreamOverlay : MonoBehaviour {
         ToggleARSessionObjects(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
         //StartCountdown();
-        agoraController.StartPreview();
         StartCoroutine(OnPreviewReady());
+        agoraController.StartPreview();
     }
 
     public void OpenAsViewer(string channelName) {
+        agoraController.IsChannelCreator = false;
         agoraController.ChannelName = channelName;
         isStreamer = false;
         blurController.RemoveBlur();
@@ -190,18 +200,22 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void AddVideoSurface() {
-        VideoSurface videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
+        videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
         if (!videoSurface) {
             videoSurface = cameraRenderImage.gameObject.AddComponent<VideoSurface>();
             isUsingFrontCamera = true;
-            videoSurface.EnableFlipTextureApplyTransform(false, true, rawImageQuadDefaultScale);
+            //videoSurface.EnableFlipTextureApplyTransform(false, true, rawImageQuadDefaultScale);
+            videoSurface.EnableFilpTextureApply(false, true);
             videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
             videoSurface.SetGameFps(agoraController.frameRate);
-            videoSurface.SetEnable(true);
+            //videoSurface.SetEnable(true);
         }
     }
 
     IEnumerator OnPreviewReady() {
+        videoSurface.SetEnable(true);
+        cameraRenderImage.color = Color.black;
+
         if(!agoraController.VideoIsReady || cameraRenderImage.texture == null)
             AnimatedCentreTextMessage("Loading Preview");
 
@@ -209,8 +223,9 @@ public class PnlStreamOverlay : MonoBehaviour {
             yield return null;
         }
         //yield return new WaitForSeconds(3);
-        //cameraRenderImage.SizeToParent();
         AnimatedFadeOutMessage();
+        cameraRenderImage.color = Color.white;
+        cameraRenderImage.SizeToParent();
     }
 
     private void EnableStreamControls(bool enable) {

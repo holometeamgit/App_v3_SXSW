@@ -125,48 +125,54 @@ public class WebRequestHandler : MonoBehaviour {
 
         UnityWebRequest request;// = new UnityWebRequest(url, "POST");
 
-        switch (bodyType) {
-            case BodyType.XWWWFormUrlEncoded:
-                Debug.Log("Post XWWWFormUrlEncoded");
-                WWWForm form = new WWWForm();
-                Type listType = typeof(T);
-                if (listType == typeof(Dictionary<string, string>)) {
-                    Dictionary<string, string> fields = body as Dictionary<string, string>;
-                    foreach (var field in fields) {
-                        form.AddField(field.Key, field.Value);
-                        Debug.Log("add field " + field.Key + " " + field.Value);
+        try {
+            switch (bodyType) {
+                case BodyType.XWWWFormUrlEncoded:
+                    Debug.Log("Post XWWWFormUrlEncoded");
+                    WWWForm form = new WWWForm();
+                    Type listType = typeof(T);
+                    if (listType == typeof(Dictionary<string, string>)) {
+                        Dictionary<string, string> fields = body as Dictionary<string, string>;
+                        foreach (var field in fields) {
+                            form.AddField(field.Key, field.Value);
+                            Debug.Log("add field " + field.Key + " " + field.Value);
+                        }
+                    } else if (listType == typeof(Dictionary<string, byte[]>)) {
+                        Dictionary<string, byte[]> fields = body as Dictionary<string, byte[]>;
+                        foreach (var field in fields) {
+                            form.AddBinaryData(field.Key, field.Value);
+                            Debug.Log("add field " + field.Key + " " + field.Value);
+                        }
                     }
-                } else if (listType == typeof(Dictionary<string, byte[]>)) {
-                    Dictionary<string, byte[]> fields = body as Dictionary<string, byte[]>;
-                    foreach (var field in fields) {
-                        form.AddBinaryData(field.Key, field.Value);
-                        Debug.Log("add field " + field.Key + " " + field.Value);
-                    }
-                }
-                request = UnityWebRequest.Post(url, form);
-                request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                break;
-            case BodyType.JSON: //only Json at this moment
+                    request = UnityWebRequest.Post(url, form);
+                    request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    break;
+                case BodyType.JSON: //only Json at this moment
 
-                string bodyString = JsonUtility.ToJson(body);
-                bodyRaw = Encoding.UTF8.GetBytes(bodyString);
-                request = new UnityWebRequest(url, "POST");
-                request.SetRequestHeader("Content-Type", "application/json");
-                request.uploadHandler = new UploadHandlerRaw(data: bodyRaw);
-                break;
-            case BodyType.None:
-            default:
-                request = new UnityWebRequest(url, "POST");
-                break;
+                    string bodyString = JsonUtility.ToJson(body);
+                    bodyRaw = Encoding.UTF8.GetBytes(bodyString);
+                    request = new UnityWebRequest(url, "POST");
+                    request.SetRequestHeader("Content-Type", "application/json");
+                    request.uploadHandler = new UploadHandlerRaw(data: bodyRaw);
+                    break;
+                case BodyType.None:
+                default:
+                    request = new UnityWebRequest(url, "POST");
+                    break;
+            }
+
+            //  if(bodyType != BodyType.None && body != null)
+
+            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+
+            if (headerAccessToken != null)
+                request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
+
+        } catch (System.Exception e) {
+            Debug.Log("post error web request " + e);
+            yield break;
         }
 
-      //  if(bodyType != BodyType.None && body != null)
-
-
-        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-
-        if (headerAccessToken != null)
-            request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
 
         yield return request.SendWebRequest();
 
@@ -182,20 +188,25 @@ public class WebRequestHandler : MonoBehaviour {
     IEnumerator PutRequesting<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
         byte[] bodyRaw;
         var request = new UnityWebRequest(url, "PUT");
+        try {
+            switch (bodyType) {
+                default: //only Json at this moment
+                    string bodyString = JsonUtility.ToJson(body);
+                    bodyRaw = Encoding.UTF8.GetBytes(bodyString);
+                    break;
+            }
 
-        switch (bodyType) {
-            default: //only Json at this moment
-                string bodyString = JsonUtility.ToJson(body);
-                bodyRaw = Encoding.UTF8.GetBytes(bodyString);
-                break;
+            request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            if (headerAccessToken != null)
+                request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
+
+        } catch (System.Exception e) {
+            Debug.Log("post error web request " + e);
+            yield break;
         }
-
-        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-
-        if (headerAccessToken != null)
-            request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
 
         yield return request.SendWebRequest();
 
@@ -210,20 +221,24 @@ public class WebRequestHandler : MonoBehaviour {
         byte[] bodyRaw;
         var request = new UnityWebRequest(url, "PATCH");
 
-        switch (bodyType) {
-            default: //only Json at this moment
-                string bodyString = JsonUtility.ToJson(body);
-                bodyRaw = Encoding.UTF8.GetBytes(bodyString);
-                break;
+        try {
+            switch (bodyType) {
+                default: //only Json at this moment
+                    string bodyString = JsonUtility.ToJson(body);
+                    bodyRaw = Encoding.UTF8.GetBytes(bodyString);
+                    break;
+            }
+
+            request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            if (headerAccessToken != null)
+                request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
+        } catch (System.Exception e) {
+            Debug.Log("post error web request " + e);
+            yield break;
         }
-
-        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-
-        if (headerAccessToken != null)
-            request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
-
         yield return request.SendWebRequest();
 
         if (request.isNetworkError || request.isHttpError) {

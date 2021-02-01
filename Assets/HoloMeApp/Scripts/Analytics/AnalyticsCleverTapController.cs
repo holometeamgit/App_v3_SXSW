@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CleverTap;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
@@ -34,13 +35,13 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
 
     public override void SendCustomEvent(string eventName)
     {
-        cleverTapUnityComponent.SendCustomEvent(eventName);
+        CleverTapBinding.RecordEvent(eventName);
     }
-      
+
     public override void SendCustomEvent(string eventName, string dataName, object data)
     {
         var dataContainer = new Dictionary<string, object>();
         dataContainer.Add(dataName, data);
-        cleverTapUnityComponent.SendCustomEvent(eventName, dataContainer);
+        CleverTapBinding.RecordEvent(eventName, dataContainer);
     }
 }

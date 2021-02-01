@@ -159,16 +159,4 @@ public class CleverTapUnity: MonoBehaviour {
     void CleverTapExperimentMessagesDidUpdateCallback(){
         Debug.Log("unity received experiment messages updated");
     }
-
-    #region Stub Functions
-    public void SendCustomEvent(string eventName, Dictionary<string, object> data)
-    {
-        CleverTapBinding.RecordEvent(eventName, data);
-    }
-
-    public void SendCustomEvent(string eventName)
-    {
-        CleverTapBinding.RecordEvent(eventName);
-    }
-    #endregion
 }
