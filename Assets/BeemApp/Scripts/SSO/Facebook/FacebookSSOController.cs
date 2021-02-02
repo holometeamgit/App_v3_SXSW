@@ -50,7 +50,7 @@ namespace Beem.SSO {
         }
 
         private void AuthCallback(ILoginResult result) {
-            if (FB.IsLoggedIn) {
+            if (FB.IsLoggedIn && !result.Cancelled) {
                 Debug.Log("Log in Facebook");
                 Credential credential = FacebookAuthProvider.GetCredential(AccessToken.CurrentAccessToken.TokenString);
                 var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();

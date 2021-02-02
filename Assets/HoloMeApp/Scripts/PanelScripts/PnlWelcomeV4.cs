@@ -24,34 +24,13 @@ public class PnlWelcomeV4 : MonoBehaviour {
     GameObject LogInGoogleGO;
     [SerializeField]
     GameObject LogInBackground;
+    [SerializeField]
+    PnlGenericError pnlGenericError;
 
     [SerializeField]
     Switcher switcherToProfile;
 
     private void Awake() {
-#if !UNITY_IOS
-        LogInAppleGO.SetActive(false);
-#endif
-    }
-
-    private void OnEnable() {
-        HideBackground();
-        CallBacks.onSignInFacebook += ShowBackground;
-        CallBacks.onSignInApple += ShowBackground;
-        CallBacks.onSignInGoogle += ShowBackground;
-        CallBacks.onSignInSuccess += HideBackground;
-        CallBacks.onSignInSuccess += SwitchToProfile;
-        CallBacks.onFail += HideBackground;
-        webRequestHandler.GetRequest(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, null);
-    }
-
-    private void OnDisable() {
-        CallBacks.onSignInFacebook -= ShowBackground;
-        CallBacks.onSignInApple -= ShowBackground;
-        CallBacks.onSignInGoogle -= ShowBackground;
-        CallBacks.onSignInSuccess -= HideBackground;
-        CallBacks.onSignInSuccess -= SwitchToProfile;
-        CallBacks.onFail -= HideBackground;
     }
 
     private void EnableFB(long key, string body) {
@@ -81,5 +60,46 @@ public class PnlWelcomeV4 : MonoBehaviour {
 
     private void SwitchToProfile() {
         switcherToProfile.Switch();
+    }
+
+    /// <summary>
+    /// Firebase issue as of Feb 1, 2021. If the user logged in via email,
+    /// which is also associated with the user's Facebook account,
+    /// then he will no longer be able to log in via Facebook.
+    /// </summary>
+    private void ShowSpecialErrorFacebookFirebaseMsg(string msg) {
+        if (msg.Contains("AccountExistsWithDifferentCredentials")) {
+            pnlGenericError.ActivateSingleButton(SpecificFacebookSignInMsg.Title,
+                string.Format(SpecificFacebookSignInMsg.SpecificMsg),
+                "Continue",
+                () => { pnlGenericError.gameObject.SetActive(false); });
+        }
+    }
+
+    private void OnEnable() {
+        HideBackground();
+
+        CallBacks.onSignInSuccess += SwitchToProfile;
+        CallBacks.onFail += ShowSpecialErrorFacebookFirebaseMsg;
+
+        CallBacks.onSignInFacebook += ShowBackground;
+        CallBacks.onSignInApple += ShowBackground;
+        CallBacks.onSignInGoogle += ShowBackground;
+        CallBacks.onSignInSuccess += HideBackground;
+        CallBacks.onFail += HideBackground;
+        CallBacks.onNeedVerification += HideBackground;
+        webRequestHandler.GetRequest(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, null);
+    }
+
+    private void OnDisable() {
+        CallBacks.onSignInSuccess -= SwitchToProfile;
+        CallBacks.onFail -= ShowSpecialErrorFacebookFirebaseMsg;
+
+        CallBacks.onSignInFacebook -= ShowBackground;
+        CallBacks.onSignInApple -= ShowBackground;
+        CallBacks.onSignInGoogle -= ShowBackground;
+        CallBacks.onSignInSuccess -= HideBackground;
+        CallBacks.onFail -= HideBackground;
+        CallBacks.onNeedVerification -= HideBackground;
     }
 }

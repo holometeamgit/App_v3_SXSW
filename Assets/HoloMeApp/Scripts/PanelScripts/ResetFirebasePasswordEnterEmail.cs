@@ -12,11 +12,30 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour
     AuthController authController;
     [SerializeField]
     Switcher switchToLogIn;
+    [SerializeField]
+    bool needShowWarning = true;
 
     private void SendMsgOnEmailForChangePassword() {
         if (!LocalDataVerification())
             return;
 
+        if (needShowWarning) {
+            ShowWarning();
+        } else {
+            SendMsg();
+        }
+    }
+
+    private void ShowWarning() {
+        pnlGenericError.ActivateDoubleButton("",
+            string.Format("Password change information has been sent to email {0}", emailInputField.text),
+            "Continue",
+            "Cancel",
+            () => { pnlGenericError.gameObject.SetActive(false); SendMsg(); },
+            () => pnlGenericError.gameObject.SetActive(false));
+    }
+
+    private void SendMsg() {
         CallBacks.onForgotAccount?.Invoke(emailInputField.text);
     }
 

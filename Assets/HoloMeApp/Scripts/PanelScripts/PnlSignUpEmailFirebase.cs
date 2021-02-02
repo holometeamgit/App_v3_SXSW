@@ -93,6 +93,7 @@ public class PnlSignUpEmailFirebase : MonoBehaviour
 
         CallBacks.onFail += HideBackground;
         CallBacks.onSignUpSuccess += HideBackground;
+        CallBacks.onNeedVerification += HideBackground;
     }
 
     private void OnDisable() {
@@ -102,5 +103,6 @@ public class PnlSignUpEmailFirebase : MonoBehaviour
 
         CallBacks.onFail -= HideBackground;
         CallBacks.onSignUpSuccess -= HideBackground;
+        CallBacks.onNeedVerification -= HideBackground;
     }
 }
