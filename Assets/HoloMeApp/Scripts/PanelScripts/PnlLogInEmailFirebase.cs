@@ -39,8 +39,9 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     }
 
     private void ErrorLogInCallBack(string msg) {
-
-        if (msg.Contains("WrongPassword")) {
+        if(msg.Contains("AccountExistsWithDifferentCredentials") ||
+            msg.Contains("User cancelled login")) { // do nothing
+        } else if (msg.Contains("WrongPassword")) {
             inputFieldPassword.ShowWarning(msg);
         } else {
             inputFieldEmail.ShowWarning(msg);
@@ -96,6 +97,9 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
         CallBacks.onNeedVerification += NeedVerificationCallback;
         CallBacks.onSignInSuccess += LogInCallBack;
 
+        CallBacks.onSignInFacebook += ShowBackground;
+        CallBacks.onSignInApple += ShowBackground;
+        CallBacks.onSignInGoogle += ShowBackground;
         CallBacks.onFail += HideBackground;
         CallBacks.onNeedVerification += HideBackground;
         CallBacks.onSignInSuccess += HideBackground;
@@ -107,6 +111,9 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
         CallBacks.onNeedVerification -= NeedVerificationCallback;
         CallBacks.onSignInSuccess -= LogInCallBack;
 
+        CallBacks.onSignInFacebook -= ShowBackground;
+        CallBacks.onSignInApple -= ShowBackground;
+        CallBacks.onSignInGoogle -= ShowBackground;
         CallBacks.onFail -= HideBackground;
         CallBacks.onNeedVerification -= HideBackground;
         CallBacks.onSignInSuccess -= HideBackground;

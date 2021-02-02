@@ -11,8 +11,10 @@ public class PnlSplashScreen : MonoBehaviour
     [SerializeField] GameObject updateRect;
     [SerializeField] VersionChecker versionChecker;
 
-    public UnityEvent OnLogInEvent;
-    public UnityEvent OnAuthorisationErrorEvent;
+    [SerializeField] List<GameObject> specificAppleUIGONeedActive;
+
+    [SerializeField] UnityEvent OnLogInEvent;
+    [SerializeField] UnityEvent OnAuthorisationErrorEvent;
 
     private const int HIDE_SPLASH_SCREEN_TIME = 1000;
 
@@ -27,6 +29,11 @@ public class PnlSplashScreen : MonoBehaviour
     private void Awake() {
         versionChecker.OnCanUse += TryLogin;
         versionChecker.OnNeedUpdateApp += ShowNeedUpdate;
+#if UNITY_IOS
+        foreach (var appleUI in specificAppleUIGONeedActive) {
+            appleUI.SetActive(true);
+        }
+#endif
     }
 
     void Start()

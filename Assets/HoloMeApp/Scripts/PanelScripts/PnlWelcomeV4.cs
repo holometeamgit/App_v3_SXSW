@@ -29,29 +29,6 @@ public class PnlWelcomeV4 : MonoBehaviour {
     Switcher switcherToProfile;
 
     private void Awake() {
-#if !UNITY_IOS
-        LogInAppleGO.SetActive(false);
-#endif
-    }
-
-    private void OnEnable() {
-        HideBackground();
-        CallBacks.onSignInFacebook += ShowBackground;
-        CallBacks.onSignInApple += ShowBackground;
-        CallBacks.onSignInGoogle += ShowBackground;
-        CallBacks.onSignInSuccess += HideBackground;
-        CallBacks.onSignInSuccess += SwitchToProfile;
-        CallBacks.onFail += HideBackground;
-        webRequestHandler.GetRequest(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, null);
-    }
-
-    private void OnDisable() {
-        CallBacks.onSignInFacebook -= ShowBackground;
-        CallBacks.onSignInApple -= ShowBackground;
-        CallBacks.onSignInGoogle -= ShowBackground;
-        CallBacks.onSignInSuccess -= HideBackground;
-        CallBacks.onSignInSuccess -= SwitchToProfile;
-        CallBacks.onFail -= HideBackground;
     }
 
     private void EnableFB(long key, string body) {
@@ -81,5 +58,30 @@ public class PnlWelcomeV4 : MonoBehaviour {
 
     private void SwitchToProfile() {
         switcherToProfile.Switch();
+    }
+
+    private void OnEnable() {
+        HideBackground();
+
+        CallBacks.onSignInSuccess += SwitchToProfile;
+
+        CallBacks.onSignInFacebook += ShowBackground;
+        CallBacks.onSignInApple += ShowBackground;
+        CallBacks.onSignInGoogle += ShowBackground;
+        CallBacks.onSignInSuccess += HideBackground;
+        CallBacks.onFail += HideBackground;
+        CallBacks.onNeedVerification += HideBackground;
+        webRequestHandler.GetRequest(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, null);
+    }
+
+    private void OnDisable() {
+        CallBacks.onSignInSuccess -= SwitchToProfile;
+
+        CallBacks.onSignInFacebook -= ShowBackground;
+        CallBacks.onSignInApple -= ShowBackground;
+        CallBacks.onSignInGoogle -= ShowBackground;
+        CallBacks.onSignInSuccess -= HideBackground;
+        CallBacks.onFail -= HideBackground;
+        CallBacks.onNeedVerification -= HideBackground;
     }
 }
