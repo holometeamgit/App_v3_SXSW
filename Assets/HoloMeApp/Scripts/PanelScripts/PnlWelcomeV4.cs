@@ -24,6 +24,8 @@ public class PnlWelcomeV4 : MonoBehaviour {
     GameObject LogInGoogleGO;
     [SerializeField]
     GameObject LogInBackground;
+    [SerializeField]
+    PnlGenericError pnlGenericError;
 
     [SerializeField]
     Switcher switcherToProfile;
@@ -60,10 +62,25 @@ public class PnlWelcomeV4 : MonoBehaviour {
         switcherToProfile.Switch();
     }
 
+    /// <summary>
+    /// Firebase issue as of Feb 1, 2021. If the user logged in via email,
+    /// which is also associated with the user's Facebook account,
+    /// then he will no longer be able to log in via Facebook.
+    /// </summary>
+    private void ShowSpecialErrorFacebookFirebaseMsg(string msg) {
+        if (msg.Contains("AccountExistsWithDifferentCredentials")) {
+            pnlGenericError.ActivateSingleButton(SpecificFacebookSignInMsg.Title,
+                string.Format(SpecificFacebookSignInMsg.SpecificMsg),
+                "Continue",
+                () => { pnlGenericError.gameObject.SetActive(false); });
+        }
+    }
+
     private void OnEnable() {
         HideBackground();
 
         CallBacks.onSignInSuccess += SwitchToProfile;
+        CallBacks.onFail += ShowSpecialErrorFacebookFirebaseMsg;
 
         CallBacks.onSignInFacebook += ShowBackground;
         CallBacks.onSignInApple += ShowBackground;
@@ -76,6 +93,7 @@ public class PnlWelcomeV4 : MonoBehaviour {
 
     private void OnDisable() {
         CallBacks.onSignInSuccess -= SwitchToProfile;
+        CallBacks.onFail -= ShowSpecialErrorFacebookFirebaseMsg;
 
         CallBacks.onSignInFacebook -= ShowBackground;
         CallBacks.onSignInApple -= ShowBackground;
