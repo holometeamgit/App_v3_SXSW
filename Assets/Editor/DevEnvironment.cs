@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DevEnvironment : MonoBehaviour
 {
-    static string IdentifierDev= "com.HoloMe.BeemDev";
+    static string IdentifierDev = "com.HoloMe.Beem";//"com.HoloMe.BeemDev";
     static string IdentifierProd = "com.HoloMe.Beem";
     static string Prod = "PROD";
     static string Dev = "DEV";
