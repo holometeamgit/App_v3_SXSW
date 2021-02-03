@@ -8,7 +8,7 @@ public class LogOut : MonoBehaviour
     [SerializeField] Switcher switcher;
 
     public void DoLogOut() {
-        pnlGenericError.ActivateDoubleButton(" ", "Are you sure you want to log out?",
+        pnlGenericError.ActivateDoubleButton(null, "Are you sure you want to log out?",
             "log out", "Cancel",
             () => switcher.Switch(), pnlGenericError.CancelInvoke);
     }
