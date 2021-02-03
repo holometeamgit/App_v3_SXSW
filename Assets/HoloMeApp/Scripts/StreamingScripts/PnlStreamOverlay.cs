@@ -157,9 +157,15 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void ShowLeaveWarning() {
         if (isStreamer)
-            pnlGenericError.ActivateDoubleButton("End the live stream?", "Closing this page will end the live stream and disconnect your users.", onButtonOnePress: () => { CloseAsStreamer(); }, onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
+            pnlGenericError.ActivateDoubleButton("End the live stream?",
+                "Closing this page will end the live stream and disconnect your users.",
+                onButtonOnePress: () => { CloseAsStreamer(); },
+                onButtonTwoPress: () => pnlGenericError.gameObject.SetActive(false));
         else
-            pnlGenericError.ActivateDoubleButton("Disconnect from live stream?", "Closing this page will disconnect you from the live stream", onButtonOnePress: () => { CloseAsViewer(); }, onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
+            pnlGenericError.ActivateDoubleButton("Disconnect from live stream?",
+                "Closing this page will disconnect you from the live stream",
+                onButtonOnePress: () => { CloseAsViewer(); },
+                onButtonTwoPress: () => pnlGenericError.gameObject.SetActive(false));
     }
 
     public void CloseAsStreamer() {

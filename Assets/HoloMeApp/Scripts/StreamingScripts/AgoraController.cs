@@ -103,7 +103,7 @@ public class AgoraController : MonoBehaviour {
     {
         var encoderConfiguration = new VideoEncoderConfiguration();
         encoderConfiguration.degradationPreference = DEGRADATION_PREFERENCE.MAINTAIN_BALANCED;
-        encoderConfiguration.minFrameRate = 15;
+        encoderConfiguration.minFrameRate = 25;
         encoderConfiguration.frameRate = (FRAME_RATE)AgoraSharedVideoConfig.FrameRate;
         encoderConfiguration.bitrate = AgoraSharedVideoConfig.Bitrate;
         encoderConfiguration.dimensions = new VideoDimensions() { width = AgoraSharedVideoConfig.Width, height = AgoraSharedVideoConfig.Height };
@@ -340,7 +340,7 @@ public class AgoraController : MonoBehaviour {
             videoSurfaceQuadRef.SetEnable(true);
             videoSurfaceQuadRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
             //videoSurfaceQuadRef.EnableFlipTextureApplyTransform(false, true, defaultLiveStreamQuadScale);
-            videoSurfaceQuadRef.EnableFilpTextureApply(false, true);
+            //videoSurfaceQuadRef.EnableFilpTextureApply(false, true); //This should only be called once if used, currently the prefab live stream quad is being flipped via scale
             videoSurfaceQuadRef.SetGameFps(frameRate);
             //liveStreamQuad.GetComponent<LiveStreamGreenCalculator>().StartBackgroundRemoval();
             //Invoke("VideoResolution", 3);
