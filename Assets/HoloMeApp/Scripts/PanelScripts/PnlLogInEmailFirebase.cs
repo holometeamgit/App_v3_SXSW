@@ -100,7 +100,7 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
             pnlGenericError.ActivateSingleButton(SpecificFacebookSignInMsg.Title,
                 string.Format(SpecificFacebookSignInMsg.SpecificMsg),
                 "Continue",
-                () => { pnlGenericError.gameObject.SetActive(false); });
+                () => { pnlGenericError.gameObject.SetActive(false); }, true);
         }
     }
 

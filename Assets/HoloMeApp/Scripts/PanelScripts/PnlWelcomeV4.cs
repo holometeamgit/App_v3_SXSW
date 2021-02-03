@@ -29,6 +29,8 @@ public class PnlWelcomeV4 : MonoBehaviour {
 
     [SerializeField]
     Switcher switcherToProfile;
+    [SerializeField]
+    Switcher switcherToLigIn;
 
     private void Awake() {
     }
@@ -72,7 +74,7 @@ public class PnlWelcomeV4 : MonoBehaviour {
             pnlGenericError.ActivateSingleButton(SpecificFacebookSignInMsg.Title,
                 string.Format(SpecificFacebookSignInMsg.SpecificMsg),
                 "Continue",
-                () => { pnlGenericError.gameObject.SetActive(false); });
+                () => { pnlGenericError.gameObject.SetActive(false); switcherToLigIn.Switch(); }, true);
         }
     }
 

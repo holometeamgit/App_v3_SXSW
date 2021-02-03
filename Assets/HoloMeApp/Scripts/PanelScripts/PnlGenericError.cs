@@ -17,13 +17,21 @@ public class PnlGenericError : MonoBehaviour
     [SerializeField]
     Button btnRight;
 
+    [SerializeField]
+    Image imgWarning;
+
     const string DefaultHeader = "Error";
 
     const string DefaultMessage = "An error occurred please try again.";
 
     private void SetMessages(string header, string message)
     {
-        txtHeader.text = header == "" ? DefaultHeader : header;
+        if (header == null) {
+            txtHeader.gameObject.SetActive(false);
+        } else {
+            txtHeader.text = header == "" ? DefaultHeader : header;
+        }
+
         txtMessage.text = message == "" ? DefaultMessage : message;
     }
 
@@ -38,20 +46,26 @@ public class PnlGenericError : MonoBehaviour
         }
     }
 
-    public void ActivateSingleButton(string header = "", string message = "", string buttonText = "Back", UnityAction onBackPress = null)
+    public void ActivateSingleButton(string header = "", string message = "", string buttonText = "Back", UnityAction onBackPress = null, bool isWarning = false)
     {
         SetMessages(header, message);
         SetupButton(btnLeft, buttonText, onBackPress);
         btnRight.gameObject.SetActive(false);
         gameObject.SetActive(true);
+        imgWarning.gameObject.SetActive(isWarning);
     }
 
-    public void ActivateDoubleButton(string header = "", string message = "", string buttonOneText = "Yes", string buttonTwoText = "No", UnityAction onButtonOnePress = null, UnityAction onButtonTwoPress = null)
+    public void ActivateDoubleButton(string header = "", string message = "", string buttonOneText = "Yes", string buttonTwoText = "No", UnityAction onButtonOnePress = null, UnityAction onButtonTwoPress = null, bool isWarning = false)
     {
         SetMessages(header, message);
         SetupButton(btnLeft, buttonOneText, onButtonOnePress);
         SetupButton(btnRight, buttonTwoText, onButtonTwoPress);
         gameObject.SetActive(true);
+        imgWarning.gameObject.SetActive(isWarning); 
     }
 
+    private void OnDisable() {
+        txtHeader.gameObject.SetActive(true);
+        imgWarning.gameObject.SetActive(false);
+    }
 }
