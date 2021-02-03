@@ -18,6 +18,7 @@ public class ApplicationSettingsHandler : MonoBehaviour
 
         Application.targetFrameRate = TARGET_FRAAME_RATE;
         Screen.sleepTimeout = SLEEP_TIMEOUT;
+        TouchScreenKeyboard.hideInput = true;
     }
 
     public void ToggleSleepTimeout(bool disable) {

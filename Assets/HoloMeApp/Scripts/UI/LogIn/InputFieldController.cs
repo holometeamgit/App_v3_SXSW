@@ -26,7 +26,7 @@ public class InputFieldController : MonoBehaviour
     }
 
     [SerializeField]
-    TMP_InputField inputField;
+    InputField inputField;
 
     [SerializeField]
     TMP_Text warningMsgText;
@@ -37,6 +37,7 @@ public class InputFieldController : MonoBehaviour
 
     private void Awake() {
         inputField.onEndEdit.AddListener((_) => OnEndEditPassword.Invoke());
+        inputField.shouldHideMobileInput = true;
 //        inputField.onEndEdit.AddListener(UpdateLayout);
         if (IsLowercase)
             inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
@@ -53,7 +54,7 @@ public class InputFieldController : MonoBehaviour
     }
 
     public void SetPasswordContentType(bool value) {
-        inputField.contentType = value ? TMP_InputField.ContentType.Standard : TMP_InputField.ContentType.Password;
+        inputField.contentType = value ? InputField.ContentType.Standard : InputField.ContentType.Password;
         inputField.ForceLabelUpdate();
     }
 

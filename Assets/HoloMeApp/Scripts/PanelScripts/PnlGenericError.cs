@@ -41,10 +41,10 @@ public class PnlGenericError : MonoBehaviour
         button.gameObject.SetActive(true);
         button.GetComponentInChildren<TextMeshProUGUI>().text = text;
         button.onClick.RemoveAllListeners(); //Remember this doesn't effect editor actions
-        if (action != null)
-        {
+        if (action != null) {
             button.onClick.AddListener(action);
         }
+        button.onClick.AddListener(() => gameObject.SetActive(false));
     }
 
     public void ActivateSingleButton(string header = "", string message = "", string buttonText = "Back", UnityAction onBackPress = null, bool isWarning = false)
