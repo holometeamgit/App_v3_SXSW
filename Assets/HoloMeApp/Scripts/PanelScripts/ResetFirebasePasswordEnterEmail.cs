@@ -27,12 +27,12 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour
     }
 
     private void ShowWarning() {
-        pnlGenericError.ActivateDoubleButton("",
-            string.Format("Password change information has been sent to email {0}", emailInputField.text),
+        pnlGenericError.ActivateDoubleButton(null,
+            string.Format("Changing a password associated with a Facebook account will create login issues with your Beem account."),
             "Continue",
             "Cancel",
             () => { pnlGenericError.gameObject.SetActive(false); SendMsg(); },
-            () => pnlGenericError.gameObject.SetActive(false));
+            () => pnlGenericError.gameObject.SetActive(false), true);
     }
 
     private void SendMsg() {
