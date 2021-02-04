@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Beem.SSO;
-
+using System.Threading.Tasks;
 
 public class PnlLogInEmailFirebase : MonoBehaviour {
     [SerializeField] PnlGenericError pnlGenericError;
@@ -15,6 +15,7 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
 
     private const float COOLDOWN = 0.5f;
     private float nextTimeCanClick = 0;
+    private const int TIME_FOR_AUTOHIDINGBG = 5;
 
     public void LogIn() {
         HelperFunctions.DevLog("Start login");
@@ -39,7 +40,7 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     }
 
     private void ErrorLogInCallBack(string msg) {
-        if(msg.Contains("AccountExistsWithDifferentCredentials") ||
+        if (msg.Contains("AccountExistsWithDifferentCredentials") ||
             msg.Contains("User cancelled login")) { // do nothing
         } else if (msg.Contains("WrongPassword")) {
             inputFieldPassword.ShowWarning(msg);
@@ -80,6 +81,14 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
 
     private void ShowBackground() {
         LogInLoadingBackground.SetActive(true);
+        HideBackgroundWithDelay();
+    }
+
+    private async void HideBackgroundWithDelay() {
+        await Task.Delay(TIME_FOR_AUTOHIDINGBG);
+        if (LogInLoadingBackground.activeSelf) {
+            HideBackground();
+        }
     }
 
     private void HideBackground() {
