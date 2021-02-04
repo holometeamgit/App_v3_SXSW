@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Beem.SSO;
 
 public class PnlProfile : MonoBehaviour {
     [SerializeField] UserWebManager userWebManager;
@@ -15,6 +16,9 @@ public class PnlProfile : MonoBehaviour {
     [SerializeField] Switcher switchLogOut;
 
     [SerializeField] List<GameObject> backBtns;
+
+    [SerializeField] PnlGenericError pnlGenericError;
+    [SerializeField] ExternalLinkRedirector externalLinkRedirector;
 
     public void ChooseUsername() {
         if (LocalDataVerification())
@@ -42,6 +46,7 @@ public class PnlProfile : MonoBehaviour {
     }
 
     private void ErrorUserInfoLoadedCallBack() {
+        ShowMsgForDeletedUser();
         switchLogOut?.Switch();
     }
 
@@ -100,6 +105,14 @@ public class PnlProfile : MonoBehaviour {
             !string.IsNullOrWhiteSpace(firstnameInputField.text) &&
             !string.IsNullOrWhiteSpace(surnameInputField.text) &&
             usernameInputField.text.Length <= 20;
+    }
+
+    private void ShowMsgForDeletedUser() {
+        pnlGenericError.ActivateDoubleButton(null,
+            string.Format("This account has been deleted, contact support to reinstate. "),
+            "Support",
+            "Cancel",
+            () => { externalLinkRedirector.Redirect(); }, isWarning: true);
     }
 
     private void OnEnable() {
