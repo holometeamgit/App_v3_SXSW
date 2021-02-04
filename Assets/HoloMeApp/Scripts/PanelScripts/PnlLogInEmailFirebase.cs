@@ -81,11 +81,22 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
 
     private void ShowBackground() {
         LogInLoadingBackground.SetActive(true);
-        HideBackgroundWithDelay();
     }
 
-    private async void HideBackgroundWithDelay() {
-        await Task.Delay(TIME_FOR_AUTOHIDINGBG);
+    private void AutoHideLoadingBackground(LogInType logInType) {
+        AutoHideLoadingBackground();
+    }
+
+    private void AutoHideLoadingBackground(string msg) {
+        AutoHideLoadingBackground();
+    }
+
+    private void AutoHideLoadingBackground() {
+        var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        Task.Delay(TIME_FOR_AUTOHIDINGBG).ContinueWith(_ => HideBackgroundWithDelay(), taskScheduler);
+    }
+
+    private void HideBackgroundWithDelay() {
         if (LogInLoadingBackground.activeSelf) {
             HideBackground();
         }
@@ -120,6 +131,8 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
         CallBacks.onNeedVerification += NeedVerificationCallback;
         CallBacks.onSignInSuccess += LogInCallBack;
         CallBacks.onFail += ShowSpecialErrorFacebookFirebaseMsg;
+        CallBacks.onFail += AutoHideLoadingBackground;
+        CallBacks.onFirebaseSignInSuccess += AutoHideLoadingBackground;
 
         CallBacks.onSignInFacebook += ShowBackground;
         CallBacks.onSignInApple += ShowBackground;
@@ -135,6 +148,8 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
         CallBacks.onNeedVerification -= NeedVerificationCallback;
         CallBacks.onSignInSuccess -= LogInCallBack;
         CallBacks.onFail -= ShowSpecialErrorFacebookFirebaseMsg;
+        CallBacks.onFail -= AutoHideLoadingBackground;
+        CallBacks.onFirebaseSignInSuccess -= AutoHideLoadingBackground;
 
         CallBacks.onSignInFacebook -= ShowBackground;
         CallBacks.onSignInApple -= ShowBackground;

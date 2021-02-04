@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Beem.SSO;
+using System.Threading.Tasks;
 //TODO all this class temp
 public class PnlWelcomeV4 : MonoBehaviour {
     [Serializable]
@@ -32,6 +33,8 @@ public class PnlWelcomeV4 : MonoBehaviour {
     [SerializeField]
     Switcher switcherToLigIn;
 
+    private const int TIME_FOR_AUTOHIDINGBG = 5;
+
     private void Awake() {
     }
 
@@ -51,6 +54,26 @@ public class PnlWelcomeV4 : MonoBehaviour {
     private void ShowBackground() {
         LogInBackground.SetActive(true);
     }
+    #region autohide
+    private void AutoHideLoadingBackground(LogInType logInType) {
+        AutoHideLoadingBackground();
+    }
+
+    private void AutoHideLoadingBackground(string msg) {
+        AutoHideLoadingBackground();
+    }
+
+    private void AutoHideLoadingBackground() {
+        var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        Task.Delay(TIME_FOR_AUTOHIDINGBG).ContinueWith(_ => HideBackgroundWithDelay(), taskScheduler);
+    }
+
+    private void HideBackgroundWithDelay() {
+        if (LogInBackground.activeSelf) {
+            HideBackground();
+        }
+    }
+    #endregion
 
     private void HideBackground() {
         LogInBackground.SetActive(false);
@@ -83,6 +106,8 @@ public class PnlWelcomeV4 : MonoBehaviour {
 
         CallBacks.onSignInSuccess += SwitchToProfile;
         CallBacks.onFail += ShowSpecialErrorFacebookFirebaseMsg;
+        CallBacks.onFail += AutoHideLoadingBackground;
+        CallBacks.onFirebaseSignInSuccess += AutoHideLoadingBackground;
 
         CallBacks.onSignInFacebook += ShowBackground;
         CallBacks.onSignInApple += ShowBackground;
@@ -96,6 +121,8 @@ public class PnlWelcomeV4 : MonoBehaviour {
     private void OnDisable() {
         CallBacks.onSignInSuccess -= SwitchToProfile;
         CallBacks.onFail -= ShowSpecialErrorFacebookFirebaseMsg;
+        CallBacks.onFail -= AutoHideLoadingBackground;
+        CallBacks.onFirebaseSignInSuccess -= AutoHideLoadingBackground;
 
         CallBacks.onSignInFacebook -= ShowBackground;
         CallBacks.onSignInApple -= ShowBackground;
