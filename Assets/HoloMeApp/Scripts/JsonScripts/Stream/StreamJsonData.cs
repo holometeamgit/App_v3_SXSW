@@ -88,7 +88,6 @@ public class StreamJsonData {
             get {
                 if (startDate != new DateTime())
                     return startDate;
-                //Debug.Log("GET start_date " + start_date);
                 if (!DateTime.TryParse(start_date, out startDate))
                     startDate = new DateTime();
                 return startDate;
@@ -99,7 +98,6 @@ public class StreamJsonData {
             get {
                 if (endDate != new DateTime())
                     return endDate;
-                //Debug.Log("GET start_date " + start_date);
                 if (!DateTime.TryParse(end_date, out endDate))
                     endDate = new DateTime();
                 return endDate;

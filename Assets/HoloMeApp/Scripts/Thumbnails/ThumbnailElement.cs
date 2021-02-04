@@ -37,7 +37,7 @@ public class ThumbnailElement {
         FetchTexture();
     }
     private void ErrorFetchTeaserTextureCallBack(long code, string body) {
-        Debug.Log("ErrorFetchTeaserTextureCallBack");
+//        Debug.Log("ErrorFetchTeaserTextureCallBack");
         FetchTexture();
     }
 

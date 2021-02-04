@@ -46,7 +46,6 @@ public class ThumbnailsDataFetcher {
     }
 
     public void RefreshData() {
-//        Debug.Log(isBusy);
         if (isBusy)
             return;
         isBusy = true;
@@ -57,7 +56,6 @@ public class ThumbnailsDataFetcher {
     }
 
     public void GetNextPage() {
-        Debug.Log(isBusy);
         if (isBusy)
             return;
 
@@ -78,7 +76,6 @@ public class ThumbnailsDataFetcher {
     }
 
     private void DataUpdatedCallBack() {
-//        Debug.Log("DataUpdatedCallBack");
         OnDataUpdated?.Invoke();
     }
 
@@ -117,6 +114,7 @@ public class ThumbnailsDataFetcher {
     #region get new Thumbnails
 
     private void GetThumbnailsOnCurrentPage() {
+
         ThumbnailWebDownloadManager.ThumbnailWebRequestStruct thumbnailWebRequestStruct =
             new ThumbnailWebDownloadManager.ThumbnailWebRequestStruct(thumbnailPriority.Stages[currentPriority], currentPage, pageSize, thumbnailsFilter);
 
@@ -124,7 +122,6 @@ public class ThumbnailsDataFetcher {
     }
 
     private void GetThumbnailsOnCurrentPageCallBack(StreamJsonData streamJsonData, LoadingKey loadingKey) {
-//        Debug.Log("GetThumbnailsOnCurrentPageCallBack " + loadingKey.ToString());
         if (loadingKey != currentLoadingKey)
             return;
         isBusy = false;

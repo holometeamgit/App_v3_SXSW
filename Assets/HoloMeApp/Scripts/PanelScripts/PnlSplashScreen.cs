@@ -46,13 +46,13 @@ public class PnlSplashScreen : MonoBehaviour
     }
 
     private void TryLogin() {
-        Debug.Log("LogInType " + accountManager.GetLogInType());
+//        Debug.Log("LogInType " + accountManager.GetLogInType());
 
         accountManager.QuickLogIn(LogInCallBack, ErrorLogInCallBack);
     }
 
     private void LogInCallBack(long code, string body) {
-        Debug.Log("LogInCallBack " + body);
+//        Debug.Log("LogInCallBack " + body);
         var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         Task.Delay(HIDE_SPLASH_SCREEN_TIME).ContinueWith(_ => LogInIvoke(), taskScheduler);
     }

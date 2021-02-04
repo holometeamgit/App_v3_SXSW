@@ -71,6 +71,7 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
 
     #region GetCountThumbnailsCallBack
     private void GetCountThumbnailsCallBack(string data, LoadingKey loadingKey) {
+
         StreamJsonData streamJsonData = GetStreamJsonData(data);
         if (streamJsonData == null)
             return;
@@ -110,7 +111,6 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
         }
 
         builder.Query = query.ToString();
-//        Debug.Log(builder.ToString());
         return builder.ToString();
     }
 

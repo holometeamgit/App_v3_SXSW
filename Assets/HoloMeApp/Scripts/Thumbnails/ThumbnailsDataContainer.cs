@@ -27,13 +27,11 @@ public class ThumbnailsDataContainer {
     }
 
     public void Refresh() {
-//        Debug.Log("Refresh");
+        streamDataDictionary.Clear();
         streamData.Clear();
     }
 
     public void AddListStreamJsonData(StreamJsonData newStreamData) {
-
-//s        Debug.Log("AddListStreamJsonData " + newStreamData.count);
 
         foreach (var data in newStreamData.results) {
             AddStreamJsonData(data);
@@ -44,23 +42,20 @@ public class ThumbnailsDataContainer {
     }
 
     private void AddStreamJsonData(StreamJsonData.Data data) {
-
-//        Debug.Log("AddStreamJsonData" + data.id + " " + data.user + " ");
-
         if (streamDataDictionary.ContainsKey(data.id)) {
             StreamJsonData.Data prevStreamData = streamDataDictionary[data.id];
 
-            if (!streamDataEqualityComparer.Equals(prevStreamData, data))
+            if (!streamDataEqualityComparer.Equals(prevStreamData, data)) {
                 streamData.Remove(prevStreamData);
-            else {
-                streamData.Add(prevStreamData);
-                return;
-            }
+                streamData.Add(data);
+            } 
+        } else {
+            streamDataDictionary[data.id] = data;
+            streamData.Add(data);
         }
 
 
-        streamDataDictionary[data.id] = data;
-        streamData.Add(data);
+
     }
 
     private void SortListByStartDate() {
