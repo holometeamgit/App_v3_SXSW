@@ -20,6 +20,7 @@ public class WebRequestHandler : MonoBehaviour {
 
     private const int COUNT_REPEAT = 3;
     private const float TIME_REPEAT = 0.1f;
+    private const int TIMEOUT_REQUEST = 5;
 
     public void GetRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
         StartCoroutine(GetRequesting(url, responseDelegate, errorTypeDelegate, headerAccessToken));
@@ -53,6 +54,8 @@ public class WebRequestHandler : MonoBehaviour {
             if (headerAccessToken != null) {
                 request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
             }
+
+            request.timeout = TIMEOUT_REQUEST;
 
             yield return request.SendWebRequest();
 
@@ -111,7 +114,7 @@ public class WebRequestHandler : MonoBehaviour {
 
         if (headerAccessToken != null)
             wr.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
-
+        wr.timeout = TIMEOUT_REQUEST + TIMEOUT_REQUEST;
         yield return wr.SendWebRequest();
 
         if (wr.isNetworkError || wr.isHttpError) {
@@ -148,6 +151,7 @@ public class WebRequestHandler : MonoBehaviour {
                         }
                     }
                     request = UnityWebRequest.Post(url, form);
+                    request.timeout = 5;
                     request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                     break;
                 case BodyType.JSON: //only Json at this moment
@@ -180,7 +184,7 @@ public class WebRequestHandler : MonoBehaviour {
         yield return request.SendWebRequest();
 
         if (request.isNetworkError || request.isHttpError) {
-            //            Debug.Log(request.responseCode + " : " + request.error);
+            HelperFunctions.DevLogError(request.responseCode + " : " + request.error);
             if (request.responseCode == 500 && countRepeat > 0) {
                 HelperFunctions.DevLogError("Server 500");
                 countRepeat--;
@@ -209,7 +213,7 @@ public class WebRequestHandler : MonoBehaviour {
             request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
-
+            request.timeout = TIMEOUT_REQUEST;
             if (headerAccessToken != null)
                 request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
 
@@ -242,7 +246,7 @@ public class WebRequestHandler : MonoBehaviour {
             request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
-
+            request.timeout = TIMEOUT_REQUEST;
             if (headerAccessToken != null)
                 request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
         } catch (System.Exception e) {
@@ -268,7 +272,7 @@ public class WebRequestHandler : MonoBehaviour {
 
             if (headerAccessToken != null)
                 request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
-
+            request.timeout = TIMEOUT_REQUEST;
             yield return request.SendWebRequest();
 
             if (request.isNetworkError || request.isHttpError) {

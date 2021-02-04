@@ -64,7 +64,6 @@ public class ThumbnailsDataContainer {
             .OrderBy(grp => thumbnailPriority.Stages.IndexOf(grp.Key))
             .ThenBy(e => e.Key)*/
 
-//        Debug.Log("SortListByStartDate " + thumbnailPriority);
 
         streamData.Sort((elem1, elem2)
             => {

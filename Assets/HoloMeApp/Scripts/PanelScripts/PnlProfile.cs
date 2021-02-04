@@ -112,7 +112,7 @@ public class PnlProfile : MonoBehaviour {
             string.Format("This account has been deleted, contact support to reinstate. "),
             "Support",
             "Cancel",
-            () => { externalLinkRedirector.Redirect(); }, isWarning: true);
+            () => { externalLinkRedirector.Redirect(); });
     }
 
     private void OnEnable() {
