@@ -33,7 +33,7 @@ public class PnlWelcomeV4 : MonoBehaviour {
     [SerializeField]
     Switcher switcherToLigIn;
 
-    private const int TIME_FOR_AUTOHIDINGBG = 5;
+    private const int TIME_FOR_AUTOHIDINGBG = 5000;
 
     private void Awake() {
     }
@@ -42,7 +42,7 @@ public class PnlWelcomeV4 : MonoBehaviour {
         try {
             Providers providers = JsonUtility.FromJson<Providers>(body);
             if (providers != null) {
-                LogInFBGO.SetActive(providers.providers.Contains("fb"));
+//                LogInFBGO.SetActive(providers.providers.Contains("fb"));
 #if UNITY_IOS
                 LogInAppleGO.SetActive(providers.providers.Contains("apple"));
 #endif

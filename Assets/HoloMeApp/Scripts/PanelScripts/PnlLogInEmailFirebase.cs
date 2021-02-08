@@ -15,7 +15,7 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
 
     private const float COOLDOWN = 0.5f;
     private float nextTimeCanClick = 0;
-    private const int TIME_FOR_AUTOHIDINGBG = 5;
+    private const int TIME_FOR_AUTOHIDINGBG = 5000;
 
     public void LogIn() {
         HelperFunctions.DevLog("Start login");
