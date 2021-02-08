@@ -74,7 +74,8 @@ public class InputFieldController : MonoBehaviour
         if (msg.Contains("This password is too short. It must contain at least 8 characters") ||
             msg.Contains("This password is too common") ||
             msg.Contains("This password is entirely numeric") ||
-            msg.Contains("The password is too similar to the username"))
+            msg.Contains("The password is too similar to the username") || 
+            msg.Contains("WeakPassword"))
             return "Password must contain letters, numbers \nand be at least 8 characters";
 
         if (msg.Contains("The two password fields didn’t match") ||
