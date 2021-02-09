@@ -2397,6 +2397,7 @@ GameObject:
   m_Component:
   - component: {fileID: 713796929}
   - component: {fileID: 713796930}
+  - component: {fileID: 713796931}
   m_Layer: 0
   m_Name: AppsFlyer
   m_TagString: Untagged
@@ -2430,6 +2431,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e04a3828902125478c3470bc2930aa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  appsFlyerObjectComponent: {fileID: 713796931}
+--- !u!114 &713796931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 713796928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a199002c7a1cb448fa164210c4b756d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  devKey: ySBPhh8s4HtZcUiz2QqfVb
+  appID: 1532446771
+  isDebug: 0
+  getConversionData: 0
 --- !u!1 &726608653 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6014241591472124749, guid: 1e143b6ddd99543c393325dc4a00618e,
@@ -7217,6 +7235,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1799595192}
   - component: {fileID: 1799595193}
+  - component: {fileID: 1799595194}
   m_Layer: 0
   m_Name: CleverTap
   m_TagString: Untagged
@@ -7250,6 +7269,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26b70bd432011714da2b54b65228da08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cleverTapUnityComponent: {fileID: 1799595194}
+--- !u!114 &1799595194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1799595191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0438f727900704207a18a22450161fad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CLEVERTAP_ACCOUNT_ID: 65R-W6K-KW6Z
+  CLEVERTAP_ACCOUNT_TOKEN: 360-256
+  CLEVERTAP_ACCOUNT_REGION: 
+  CLEVERTAP_DEBUG_LEVEL: 0
+  CLEVERTAP_ENABLE_PERSONALIZATION: 1
 --- !u!1 &1832845514
 GameObject:
   m_ObjectHideFlags: 0

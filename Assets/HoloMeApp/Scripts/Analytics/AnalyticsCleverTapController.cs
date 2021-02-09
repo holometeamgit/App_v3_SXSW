@@ -10,6 +10,8 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
     const string Token = "360-256";
 
     bool disableTracking;
+
+    [SerializeField]
     CleverTapUnity cleverTapUnityComponent;
 
     // Start is called before the first frame update
@@ -21,9 +23,17 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
 #if DEV
             disableTracking = true;
 #endif
-            cleverTapUnityComponent = gameObject.AddComponent<CleverTapUnity>();
-            cleverTapUnityComponent.CLEVERTAP_ACCOUNT_ID = AccountID;
-            cleverTapUnityComponent.CLEVERTAP_ACCOUNT_TOKEN = Token;
+            //cleverTapUnityComponent = gameObject.AddComponent<CleverTapUnity>();
+            if (cleverTapUnityComponent.CLEVERTAP_ACCOUNT_ID != AccountID)
+            {
+                Debug.LogError("CleverTap Account ID didn't match");
+                cleverTapUnityComponent.CLEVERTAP_ACCOUNT_ID = AccountID;
+            }
+            if (cleverTapUnityComponent.CLEVERTAP_ACCOUNT_TOKEN != Token)
+            {
+                Debug.LogError("CleverTap Account Token didn't match");
+                cleverTapUnityComponent.CLEVERTAP_ACCOUNT_TOKEN = Token;
+            }
             DontDestroyOnLoad(Instance);
         }
         else

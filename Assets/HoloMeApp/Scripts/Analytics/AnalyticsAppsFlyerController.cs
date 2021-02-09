@@ -15,6 +15,7 @@ public class AnalyticsAppsFlyerController : AnalyticsLibraryAbstraction
 
     bool disableTracking;
 
+    [SerializeField]
     AppsFlyerObjectScript appsFlyerObjectComponent;
 
     void Awake()
@@ -25,9 +26,18 @@ public class AnalyticsAppsFlyerController : AnalyticsLibraryAbstraction
 #if DEV
             disableTracking = true;
 #endif
-            appsFlyerObjectComponent = gameObject.AddComponent<AppsFlyerObjectScript>();
-            appsFlyerObjectComponent.devKey = DevKey;
-            appsFlyerObjectComponent.appID = AppID;
+            //appsFlyerObjectComponent = gameObject.AddComponent<AppsFlyerObjectScript>();
+
+            if (appsFlyerObjectComponent.devKey != DevKey)
+            {
+                Debug.LogError("AppsFlyer Account DevKey didn't match");
+                appsFlyerObjectComponent.devKey = DevKey;
+            }
+            if (appsFlyerObjectComponent.appID != AppID)
+            {
+                Debug.LogError("AppsFlyer AppID didn't match");
+                appsFlyerObjectComponent.appID = AppID;
+            }
             DontDestroyOnLoad(Instance);
         }
         else
