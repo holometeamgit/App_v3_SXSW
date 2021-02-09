@@ -94,7 +94,7 @@ public class SecondaryServerCalls : MonoBehaviour {
         StreamStartJsonData data = new StreamStartJsonData();
         data.agora_sid = requestCloudRecordResource.CloudRecordResponseData.sid;
         data.agora_channel = requestCloudRecordResource.StartCloudRecordRequestData.cname;
-        data.file_name_prefix = requestCloudRecordResource.StartCloudRecordRequestData.clientRequest.storageConfig.fileNamePrefix[0] + "_" + streamName;
+        data.file_name_prefix = requestCloudRecordResource.StartCloudRecordRequestData.clientRequest.storageConfig.fileNamePrefix[0];
         data.title = streamName;
         //data.description = "";
         HelperFunctions.DevLog(webRequestHandler.ServerURLMediaAPI + videoUploader.Stream);
