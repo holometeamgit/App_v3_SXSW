@@ -5,8 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
 
-public class InputFieldController : MonoBehaviour
-{
+public class InputFieldController : MonoBehaviour {
     public bool IsClearOnDisable = true;
     public bool IsLowercase;
 
@@ -38,7 +37,7 @@ public class InputFieldController : MonoBehaviour
     private void Awake() {
         inputField.onEndEdit.AddListener((_) => OnEndEditPassword.Invoke());
         inputField.shouldHideMobileInput = true;
-//        inputField.onEndEdit.AddListener(UpdateLayout);
+        //        inputField.onEndEdit.AddListener(UpdateLayout);
         if (IsLowercase)
             inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
     }
@@ -60,9 +59,9 @@ public class InputFieldController : MonoBehaviour
 
     private string OverrideMsg(string msg) {
         //sign up
-        Debug.Log("OverrideMsg " +  msg);
-        if (msg.Contains("is exist") || msg.Contains("EmailAlreadyInUse")) 
-            return "Username already exists";
+        HelperFunctions.DevLog("OverrideMsg " + msg);
+        if (msg.Contains("is exist") || msg.Contains("EmailAlreadyInUse"))
+            return "Email already exists";
 
         if (msg.Contains("A user is already registered with this e-mail address."))
             return "Email is already in use";
@@ -74,7 +73,7 @@ public class InputFieldController : MonoBehaviour
         if (msg.Contains("This password is too short. It must contain at least 8 characters") ||
             msg.Contains("This password is too common") ||
             msg.Contains("This password is entirely numeric") ||
-            msg.Contains("The password is too similar to the username") || 
+            msg.Contains("The password is too similar to the username") ||
             msg.Contains("WeakPassword"))
             return "Password must contain letters, numbers \nand be at least 8 characters";
 

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Beem.SSO;
 
-public class PnlSignUpEmailFirebase : MonoBehaviour
-{
+public class PnlSignUpEmailFirebase : MonoBehaviour {
     [SerializeField]
     InputFieldController inputFieldEmail;
     [SerializeField]
@@ -46,7 +45,7 @@ public class PnlSignUpEmailFirebase : MonoBehaviour
     }
 
     private void ErrorSignUpCallBack(string msg) {
-        if (msg == "Passwords do not match") {
+        if (msg.Contains("Password")) {
             inputFieldPassword.ShowWarning(msg);
             inputFieldConfirmPassword.ShowWarning(msg);
         } else {
