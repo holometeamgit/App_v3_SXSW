@@ -68,7 +68,6 @@ public class UIThumbnailsController : MonoBehaviour {
     #region Prepare thumbnails
     private void PrepareBtnThumbnails() {
         int quantityDifference = btnThumbnailItems.Count - dataList.Count;
-
         for (int i = 0; i < -quantityDifference; i++) {
             GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
             UIThumbnail btnThumbnailItem = btnThumbnailItemsGO.GetComponent<UIThumbnail>();

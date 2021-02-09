@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
+using System.Threading.Tasks;
 
 public class PnlGenericError : MonoBehaviour
 {
@@ -17,13 +18,21 @@ public class PnlGenericError : MonoBehaviour
     [SerializeField]
     Button btnRight;
 
+    [SerializeField]
+    Image imgWarning;
+
     const string DefaultHeader = "Error";
 
     const string DefaultMessage = "An error occurred please try again.";
 
     private void SetMessages(string header, string message)
     {
-        txtHeader.text = header == "" ? DefaultHeader : header;
+        if (header == null) {
+            txtHeader.gameObject.SetActive(false);
+        } else {
+            txtHeader.text = header == "" ? DefaultHeader : header;
+        }
+
         txtMessage.text = message == "" ? DefaultMessage : message;
     }
 
@@ -32,26 +41,32 @@ public class PnlGenericError : MonoBehaviour
         button.gameObject.SetActive(true);
         button.GetComponentInChildren<TextMeshProUGUI>().text = text;
         button.onClick.RemoveAllListeners(); //Remember this doesn't effect editor actions
-        if (action != null)
-        {
+        if (action != null) {
             button.onClick.AddListener(action);
         }
+        button.onClick.AddListener(() => gameObject.SetActive(false));
     }
 
-    public void ActivateSingleButton(string header = "", string message = "", string buttonText = "Back", UnityAction onBackPress = null)
+    public void ActivateSingleButton(string header = "", string message = "", string buttonText = "Back", UnityAction onBackPress = null, bool isWarning = false)
     {
         SetMessages(header, message);
         SetupButton(btnLeft, buttonText, onBackPress);
         btnRight.gameObject.SetActive(false);
         gameObject.SetActive(true);
+        imgWarning.gameObject.SetActive(isWarning);
     }
 
-    public void ActivateDoubleButton(string header = "", string message = "", string buttonOneText = "Yes", string buttonTwoText = "No", UnityAction onButtonOnePress = null, UnityAction onButtonTwoPress = null)
+    public void ActivateDoubleButton(string header = "", string message = "", string buttonOneText = "Yes", string buttonTwoText = "No", UnityAction onButtonOnePress = null, UnityAction onButtonTwoPress = null, bool isWarning = false)
     {
         SetMessages(header, message);
         SetupButton(btnLeft, buttonOneText, onButtonOnePress);
         SetupButton(btnRight, buttonTwoText, onButtonTwoPress);
         gameObject.SetActive(true);
+        imgWarning.gameObject.SetActive(isWarning); 
     }
 
+    private void OnDisable() {
+        txtHeader.gameObject.SetActive(true);
+        imgWarning.gameObject.SetActive(false);
+    }
 }

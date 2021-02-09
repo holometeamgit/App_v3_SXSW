@@ -29,7 +29,6 @@ public class PnlHomeScreenV2 : MonoBehaviour
 
     public UnityEvent OnPlay;
 
-    public UnityEvent OnRefresh;
     public UnityEvent OnAllDataLoaded;
 
     public void SetDefaultState() {
@@ -71,7 +70,6 @@ public class PnlHomeScreenV2 : MonoBehaviour
         dataLoaded = false;
         uiThumbnailsController.LockToPressElements();
         thumbnailsDataFetcher.RefreshData();
-        OnRefresh.Invoke();
     }
 
     private void GetNextPage() {
@@ -84,12 +82,10 @@ public class PnlHomeScreenV2 : MonoBehaviour
     }
 
     private void AllDataLoaded() {
-        Debug.Log(" AllDataLoaded Data loaded");
         dataLoaded = true;
         pullRefreshController.StopBottomRefreshing = true;
         pullRefreshController.EndRefreshing();
         uiThumbnailsController.RemoveUnnecessary();
-        Debug.Log(" AllDataLoaded Data loaded");
         OnAllDataLoaded.Invoke();//temp
     }
 
@@ -99,12 +95,10 @@ public class PnlHomeScreenV2 : MonoBehaviour
     }
 
     private void OnPlayCallBack(StreamJsonData.Data data) {
-        Debug.Log("Home page OnPlayCallBack");
         OnPlay.Invoke();
     }
 
     private void EndingUIUpdate() {
-//        Debug.Log("IEnumerator EndingUIUpdate");
         pullRefreshController.EndRefreshing();
         pullRefreshController.RefreshLayout();
         pullRefreshController.RefreshLayout();

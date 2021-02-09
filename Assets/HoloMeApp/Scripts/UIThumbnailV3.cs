@@ -140,7 +140,7 @@ public class UIThumbnailV3 : UIThumbnail {
 
         txtDate.text = thumbnailElement.Data.StartDate.ToString("MMM d");
         txtTime.text = thumbnailElement.Data.StartDate.ToString("HH:mm");
-        txtTitle.text = thumbnailElement.Data.user;
+        txtTitle.text = thumbnailElement.Data.title;
         txtDescription.text = thumbnailElement.Data.description;
 
         btnShare.SetActive(false);

@@ -41,8 +41,7 @@ public class UIPullRefreshScrollController : MonoBehaviour
         isBottomRefreshing = false;
         bottomLoadingInfo.SetActive(false);
         topLoadingInfo.SetActive(true);
-        RefreshElementsPosiotion();
-//        Debug.Log("EndRefreshing");
+        RefreshElementsPosiotion(); 
     }
 
     private void RefreshElementsPosiotion() {
@@ -113,12 +112,9 @@ public class UIPullRefreshScrollController : MonoBehaviour
         if (GetBottomAnchoredPosition() > distanceReachedBottom)
             return;
 
-//        Debug.Log("GetBottomAnchoredPosition " + GetBottomAnchoredPosition());
-
         isBottomRefreshing = true;
         bottomLoadingInfo.SetActive(true);
         topLoadingInfo.SetActive(false);
-//        Debug.Log("OnBottomPull");
         OnReachedBottom?.Invoke();
     }
 

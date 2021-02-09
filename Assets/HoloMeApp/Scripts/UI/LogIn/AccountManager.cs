@@ -2,56 +2,57 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Beem.SSO;
 
-public class AccountManager : MonoBehaviour
-{
-    public Action OnSaveAccessToken;
-
-    public enum AccountType {
-        Broadcaster,
-        Subscriber
-    }
+public class AccountManager : MonoBehaviour {
+    public AuthController authController;
 
     [SerializeField]
     AuthorizationAPIScriptableObject authorizationAPI;
+    [SerializeField]
+    WebRequestHandler webRequestHandler;
 
-    [SerializeField] WebRequestHandler webRequestHandler;
-
-    [SerializeField] private AccountType accountType;
+    private bool canLogIn = true;
 
     #region public authorization
 
-    public void LogIn(ResponseDelegate responseCallBack, ErrorTypeDelegate errorTypeCallBack) {
-        ServerAccessToken accessToken = LoadAccessToken();
+    public void QuickLogIn(ResponseDelegate responseCallBack, ErrorTypeDelegate errorTypeCallBack) {
+        HelperFunctions.DevLog("try QuickLogIn");
+        ServerAccessToken accessToken = GetAccessToken();
 
-        if(accessToken == null) {
-            errorTypeCallBack.Invoke(0, "Server Access Token file doesn't exist");
+        if (accessToken == null && !authController.HasUser()) {
+            errorTypeCallBack?.Invoke(0, "Server Access Token file doesn't exist");
+            return;
+        } else if (accessToken == null && authController.HasUser() && GetLogInType() != LogInType.None) {
+            HelperFunctions.DevLog("QuickLogIn Firebase");
+            authController.DoAfterReloadUser(() => CallBacks.onFirebaseSignInSuccess(GetLogInType())); //TODO need test 
             return;
         }
 
-//        Debug.Log("LogIn " + accessToken.refresh + "\n\n" + accessToken.access);
-
         webRequestHandler.PostRequest(GetRequestRefreshTokenURL(),
             accessToken, WebRequestHandler.BodyType.JSON,
-            (code, body) => { UpdateAccessToke(body, accessToken); responseCallBack(code, body);},
+            (code, body) => { UpdateAccessToken(body); responseCallBack(code, body); },
             errorTypeCallBack);
     }
 
     public void LogOut() {
+        Debug.Log("LogOut");
         RemoveAccessToken();
-        SaveLastAutoType(LogInType.None);
+        CallBacks.onSignOut?.Invoke();
+        SaveLogInType(LogInType.None);
     }
 
-    public void SaveLastAutoType(LogInType logInType) {
-        PlayerPrefs.SetInt(PlayerPrefsKeys.LastTypeLoginPPKey, (int)logInType);
+
+    #endregion
+
+    #region Auth Type
+
+    public void SaveLogInType(LogInType type) {
+        PlayerPrefs.SetInt(PlayerPrefsKeys.LastTypeLoginPPKey, (int)type);
         PlayerPrefs.Save();
     }
 
-    public ServerAccessToken GetAccessToken() {
-        return FileAccountManager.ReadFile<ServerAccessToken>(nameof(FileAccountManager.ServerAccessToken), FileAccountManager.ServerAccessToken);
-    }
-
-    public LogInType GetLoginType() {
+    public LogInType GetLogInType() {
         if (!PlayerPrefs.HasKey(PlayerPrefsKeys.LastTypeLoginPPKey)) {
             return LogInType.None;
         }
@@ -60,31 +61,34 @@ public class AccountManager : MonoBehaviour
 
     #endregion
 
-    #region public account data
-
-    public AccountType GetAccountType() {
-        return accountType;
-    }
-
-    #endregion
-
+    #region server access token
     public void SaveAccessToken(string serverAccessToken) {
         try {
-//            Debug.Log("Try Save Access Token \n" + serverAccessToken);
+            //            Debug.Log("Try Save Access Token \n" + serverAccessToken);
             ServerAccessToken accessToken = JsonUtility.FromJson<ServerAccessToken>(serverAccessToken);
+            HelperFunctions.DevLog("serverAccessToken");
+            HelperFunctions.DevLog(serverAccessToken);
             FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), accessToken, FileAccountManager.ServerAccessToken);
-//            Debug.Log("Access Token Saved");
+            //            Debug.Log("Access Token Saved");
         } catch (System.Exception e) { }
-
-        OnSaveAccessToken?.Invoke();
     }
 
-    private void UpdateAccessToke(string onlyAccess, ServerAccessToken accessToken) {
+    public ServerAccessToken GetAccessToken() {
+        return FileAccountManager.ReadFile<ServerAccessToken>(nameof(FileAccountManager.ServerAccessToken),
+            FileAccountManager.ServerAccessToken);
+    }
+
+    private void UpdateAccessToken(string serverAccessToken) {
         try {
-            var access = JsonUtility.FromJson<ServerAccessToken>(onlyAccess);
-//        Debug.Log("UpdatedAccessToke " + access.access);
-            accessToken.access = access.access;
-            SaveAccessToken(JsonUtility.ToJson(accessToken));
+            ServerAccessToken currentAccessToken = GetAccessToken();
+            if (currentAccessToken == null)
+                return;
+            ServerAccessToken accessToken = JsonUtility.FromJson<ServerAccessToken>(serverAccessToken);
+            currentAccessToken.access = accessToken.access;
+
+            HelperFunctions.DevLog("serverAccessToken");
+            HelperFunctions.DevLog(serverAccessToken);
+            FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), currentAccessToken, FileAccountManager.ServerAccessToken);
         } catch (System.Exception e) { }
     }
 
@@ -92,14 +96,80 @@ public class AccountManager : MonoBehaviour
         FileAccountManager.DeleteFile(FileAccountManager.ServerAccessToken);
     }
 
+    #endregion
+
+    private void SignUpSuccessCallBack() {
+        SaveLogInType(LogInType.Email);
+    }
+
+    private void LogInToServer(LogInType logInType) {
+        SaveLogInType(logInType);
+
+        HelperFunctions.DevLog("LogInToServer " + logInType + " IsVerifiried " + authController.IsVerifiried());
+
+        if (logInType == LogInType.Email && !authController.IsVerifiried()) {
+            CallBacks.onNeedVerification?.Invoke(authController.GetEmail());
+            return;
+        }
+
+        authController.GetFirebaseToken((firebaseAccessToken) => GetServerAccessToken(firebaseAccessToken));
+    }
+
+    private void GetServerAccessToken(string firebaseAccessToken) {
+
+        HelperFunctions.DevLog("GetServerAccessToken " + canLogIn);
+
+        if (!canLogIn)
+            return;
+        canLogIn = false;
+
+        string url = GetRequestAccessTokenURL();
+        HelperFunctions.DevLog(url);
+
+        FirebaseJsonToken firebaseJsonToken = new FirebaseJsonToken(firebaseAccessToken);
+
+        webRequestHandler.PostRequest(url, firebaseJsonToken, WebRequestHandler.BodyType.JSON,
+            (code, data) => SuccessRequestAccessTokenCallBack(code, data),
+            ErrorRequestAccessTokenCallBack);
+    }
+
+    private void SuccessRequestAccessTokenCallBack(long code, string data) {
+        HelperFunctions.DevLog("SuccessRequestAccessTokenCallBack " + code + " " + data);
+        canLogIn = true;
+        try {
+            SaveAccessToken(data);
+        } catch (System.Exception) { }
+        CallBacks.onSignInSuccess?.Invoke();
+    }
+
+    private void ErrorRequestAccessTokenCallBack(long code, string data) {
+        HelperFunctions.DevLog("ErrorRequestAccessTokenCallBack " + code + " " + data);
+        canLogIn = true;
+        CallBacks.onFail?.Invoke(code + " : " + data);
+    }
+
+    private void Awake() {
+        canLogIn = true;
+    }
+
+    private void OnEnable() {
+        CallBacks.onFirebaseSignInSuccess += LogInToServer;
+        CallBacks.onSignUpSuccess += SignUpSuccessCallBack;
+    }
+
+    private void OnDisable() {
+        CallBacks.onFirebaseSignInSuccess -= LogInToServer;
+        CallBacks.onSignUpSuccess -= SignUpSuccessCallBack;
+    }
+
+    #region request urls
     private string GetRequestRefreshTokenURL() {
         return webRequestHandler.ServerURLAuthAPI + authorizationAPI.RefreshToken;
     }
 
-    private ServerAccessToken LoadAccessToken() {
-        ServerAccessToken accessToken =
-            FileAccountManager.ReadFile<ServerAccessToken>(nameof(FileAccountManager.ServerAccessToken),
-            FileAccountManager.ServerAccessToken);
-        return accessToken;
+    private string GetRequestAccessTokenURL() {
+        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.FirebaseToken;
     }
+
+    #endregion
 }

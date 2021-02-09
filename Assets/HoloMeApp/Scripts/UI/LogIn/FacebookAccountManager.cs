@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Facebook.Unity;
+using Beem.SSO;
 
 public class FacebookAccountManager : MonoBehaviour {
     [SerializeField]
@@ -150,7 +151,7 @@ public class FacebookAccountManager : MonoBehaviour {
     private void SaveAccessToken(Facebook.Unity.AccessToken accessToken) {
         FileAccountManager.SaveFile(nameof(FileAccountManager.FacebookTokenFileName), accessToken, FileAccountManager.FacebookTokenFileName);
 
-        accountManager.SaveLastAutoType(LogInType.Facebook);
+        accountManager.SaveLogInType(LogInType.Facebook);
     }
 
     private Facebook.Unity.AccessToken LoadAccessToken() {

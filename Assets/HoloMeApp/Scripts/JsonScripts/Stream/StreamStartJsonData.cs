@@ -5,8 +5,8 @@ public class StreamStartJsonData {
     public string agora_sid = "2d26583b814dcc71ce329c9095db5131"; //use this for open stream from customer;
     public string agora_channel = "username"; //use this for open stream from customer;
     public string file_name_prefix = "Beem";
-    public string title = "title";
-    public string description = "description";
+    public string title;
+    public string description;
 }
 
 [Serializable]
