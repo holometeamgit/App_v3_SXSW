@@ -56,22 +56,27 @@ public class AnalyticsAppsFlyerController : AnalyticsLibraryAbstraction
     /// <summary>
     /// Custom function made to fit universal calls
     /// </summary>
-    public override void SendCustomEvent(string eventName, string dataName, object data)
-    {
-        if (data is string)
-        {
-            HelperFunctions.DevLog("AppsFlyer SendCustomEvent data = " + (string)data);
-            Dictionary<string, string> dataToSend = new Dictionary<string, string>();
-            dataToSend.Add(dataName, (string)data);
+    //public override void SendCustomEvent(string eventName, string dataName, object data)
+    //{
+    //    if (data is string)
+    //    {
+    //        HelperFunctions.DevLog("AppsFlyer SendCustomEvent data = " + (string)data);
+    //        Dictionary<string, string> dataToSend = new Dictionary<string, string>();
+    //        dataToSend.Add(dataName, (string)data);
 
-            try
-            {
-                AppsFlyer.sendEvent(eventName, dataToSend);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError("AppsFlyer Event record failed: " + e.ToString());
-            }
-        }
+    //        try
+    //        {
+    //            AppsFlyer.sendEvent(eventName, dataToSend);
+    //        }
+    //        catch (Exception e)
+    //        {
+    //            Debug.LogError("AppsFlyer Event record failed: " + e.ToString());
+    //        }
+    //    }
+    //}
+
+    public override void SendCustomEvent(string eventName, Dictionary<string, string> data)
+    {
+        AppsFlyer.sendEvent(eventName, data);
     }
 }

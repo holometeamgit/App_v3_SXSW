@@ -14,7 +14,6 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
     [SerializeField]
     CleverTapUnity cleverTapUnityComponent;
 
-    // Start is called before the first frame update
     void Awake()
     {
         if (Instance == null)
@@ -48,10 +47,20 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
         CleverTapBinding.RecordEvent(eventName);
     }
 
-    public override void SendCustomEvent(string eventName, string dataName, object data)
+    //public override void SendCustomEvent(string eventName, string dataName, object data)
+    //{
+    //    var dataContainer = new Dictionary<string, object>();
+    //    dataContainer.Add(dataName, data);
+    //    CleverTapBinding.RecordEvent(eventName, dataContainer);
+    //}
+
+    public override void SendCustomEvent(string eventName, Dictionary<string, string> data)
     {
-        var dataContainer = new Dictionary<string, object>();
-        dataContainer.Add(dataName, data);
-        CleverTapBinding.RecordEvent(eventName, dataContainer);
+        Dictionary<string, object> convertedData = new Dictionary<string, object>();
+        foreach (KeyValuePair<string, string> eventData in data)
+        {
+            convertedData.Add(eventData.Key, eventData.Value);
+        }
+        CleverTapBinding.RecordEvent(eventName, convertedData);
     }
 }
