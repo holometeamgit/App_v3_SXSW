@@ -2,49 +2,46 @@
 using UnityEngine;
 using UnityEngine.Analytics;
 
-public class AnalyticsController : MonoBehaviour {
+/// <summary>
+/// This is the universal Analytics class used to call same tracking calls across all libraries
+/// </summary>
+public class AnalyticsController : MonoBehaviour
+{
     public static AnalyticsController Instance { get; private set; }
-    
+
     Dictionary<string, AnalyticsDwellTracker> dwellTimers = new Dictionary<string, AnalyticsDwellTracker>();
 
-    static bool DisableTracking;
-
-    //[SerializeField]
-    //CleverTapUnity  cleverTapUnity;
+    [SerializeField]
+    bool enableDebugTracking;
+    bool disableTracking;
 
     [SerializeField]
-    AppsFlyerObjectScript appsFlyerObjectScript;
+    AnalyticsLibraryAbstraction[] analyticsLibraryAbstractions;
 
-    private void Awake() {
-        if (Instance == null) {
+    [SerializeField]
+    UserWebManager userWebManager;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
             Instance = this;
 #if DEV
-            DisableTracking = true;            
+        if(!enableDebugTracking)
+            disableTracking = true;            
 #endif
             DontDestroyOnLoad(Instance);
-        } else {
+        }
+        else
+        {
             Debug.LogError($"{nameof(AnalyticsController)} Instance Already Exists!");
             Destroy(Instance);
         }
     }
 
-    public void SendCustomEvent(string eventName) {
-        if (DisableTracking)
-            return;
-
-        if (string.IsNullOrWhiteSpace(eventName)) {
-            Debug.LogError("Custom event name wasn't specified");
-            return;
-        }
-
-        HelperFunctions.DevLog($"Custom Event Sent {eventName}");
-        Analytics.CustomEvent(eventName);
-        //cleverTapUnity.SendCustomEvent(eventName);
-    }
-
-    public void SendCustomEvent(string eventName, string dataName, object data)
+    public void SendCustomEvent(string eventName)
     {
-        if (DisableTracking)
+        if (disableTracking)
             return;
 
         if (string.IsNullOrWhiteSpace(eventName))
@@ -52,20 +49,73 @@ public class AnalyticsController : MonoBehaviour {
             Debug.LogError("Custom event name wasn't specified");
             return;
         }
-        var dataContainer = new Dictionary<string, object>();
-        dataContainer.Add(dataName, data);
 
-        HelperFunctions.DevLog($"Custom Event Sent {eventName} with data {dataName} {data}");
-        Analytics.CustomEvent(eventName, dataContainer);
-        //cleverTapUnity.SendCustomEvent(eventName, dataContainer);
-        appsFlyerObjectScript.SendCustomEvent(eventName, dataName, data);
+        HelperFunctions.DevLog($"Custom Event Sent {eventName}");
+
+        foreach (var analyticsController in analyticsLibraryAbstractions)
+        {
+            analyticsController.SendCustomEvent(eventName);
+        }
     }
 
-    public void StartTimer(string timerKey, string timerName) {
-        if (DisableTracking)
+    public void SendCustomEvent(string eventName, string dataName, object data)
+    {
+        if (disableTracking)
             return;
 
-        if (dwellTimers.ContainsKey(timerKey)) {
+        if (string.IsNullOrWhiteSpace(eventName))
+        {
+            Debug.LogError("Custom event name wasn't specified");
+            return;
+        }
+
+        HelperFunctions.DevLog($"Custom Event Sent {eventName} with data {dataName} {data}");
+
+        Dictionary<string, string> dataDictionary = new Dictionary<string, string>() { { dataName, (string)data } };
+
+        //foreach (var analyticsController in analyticsLibraryAbstractions)
+        //{
+        //    //analyticsController.SendCustomEvent(eventName, dataName, data);
+        //}
+
+        SendCustomEvent(eventName, dataDictionary);
+    }
+
+    public void SendCustomEvent(string eventName, Dictionary<string, string> data)
+    {
+        if (disableTracking)
+            return;
+
+        if (string.IsNullOrWhiteSpace(eventName))
+        {
+            Debug.LogError("Custom event name wasn't specified");
+            return;
+        }
+
+        //HelperFunctions.DevLog($"Custom Event Sent {eventName} with data {data}");
+
+        if (userWebManager != null)
+        {
+            data.Add(AnalyticParameters.ParamUserID, userWebManager.GetUserID().ToString()); //Add user ID to tracking variable
+        }
+        else
+        {
+            Debug.LogError(nameof(UserWebManager) + "was null");
+        }
+
+        foreach (var analyticsController in analyticsLibraryAbstractions)
+        {
+            analyticsController.SendCustomEvent(eventName, data);
+        }
+    }
+
+    public void StartTimer(string timerKey, string timerName)
+    {
+        if (disableTracking)
+            return;
+
+        if (dwellTimers.ContainsKey(timerKey))
+        {
             Debug.LogError("Timer already exists in collection " + timerKey);
             return; //dwellTimers[timerName];
         }
@@ -79,11 +129,13 @@ public class AnalyticsController : MonoBehaviour {
         //return dwellTimer;
     }
 
-    public void StopTimer(string timerName) {
-        if (DisableTracking)
+    public void StopTimer(string timerName)
+    {
+        if (disableTracking)
             return;
 
-        if (!dwellTimers.ContainsKey(timerName)) {
+        if (!dwellTimers.ContainsKey(timerName))
+        {
             Debug.LogError("Timer didn't exist in collection " + timerName);
             return;
         }
@@ -92,11 +144,13 @@ public class AnalyticsController : MonoBehaviour {
         RemoveTimer(timer, timerName, timer.trackerName, timer.Timer);
     }
 
-    public void StopTimer(string timerName, float customTime) {
-        if (DisableTracking)
+    public void StopTimer(string timerName, float customTime)
+    {
+        if (disableTracking)
             return;
 
-        if (!dwellTimers.ContainsKey(timerName)) {
+        if (!dwellTimers.ContainsKey(timerName))
+        {
             Debug.LogError("Timer didn't exist in collection " + timerName);
             return;
         }
@@ -108,8 +162,9 @@ public class AnalyticsController : MonoBehaviour {
     /// <param name="timerDictonaryKey">Required to remove timer</param>
     /// <param name="timerName">Name to be shown in analytics</param>
     /// <param name="elapsedTime">Time specified</param>
-    private void RemoveTimer(AnalyticsDwellTracker dwellTimercomponent, string timerDictonaryKey, string timerName, float elapsedTime) {
-        if (DisableTracking)
+    private void RemoveTimer(AnalyticsDwellTracker dwellTimercomponent, string timerDictonaryKey, string timerName, float elapsedTime)
+    {
+        if (disableTracking)
             return;
 
         var time = new Dictionary<string, object>();
@@ -121,22 +176,26 @@ public class AnalyticsController : MonoBehaviour {
         Destroy(dwellTimercomponent);
     }
 
-    public int GetElapsedTime(string timerName) {
-        if (DisableTracking)
+    public int GetElapsedTime(string timerName)
+    {
+        if (disableTracking)
             return 0;
 
-        if (!dwellTimers.ContainsKey(timerName)) {
+        if (!dwellTimers.ContainsKey(timerName))
+        {
             Debug.LogError("Timer didn't exist in collection " + timerName);
             return 0;
         }
         return dwellTimers[timerName].Timer;
     }
 
-    public void PauseTimer(string timerName) {
-        if (DisableTracking)
+    public void PauseTimer(string timerName)
+    {
+        if (disableTracking)
             return;
 
-        if (!dwellTimers.ContainsKey(timerName)) {
+        if (!dwellTimers.ContainsKey(timerName))
+        {
             Debug.LogError("Timer didn't exist in collection " + timerName);
             return;
         }
@@ -144,11 +203,13 @@ public class AnalyticsController : MonoBehaviour {
         dwellTimers[timerName].PauseTimer();
     }
 
-    public void ResumeTimer(string timerName) {
-        if (DisableTracking)
+    public void ResumeTimer(string timerName)
+    {
+        if (disableTracking)
             return;
 
-        if (!dwellTimers.ContainsKey(timerName)) {
+        if (!dwellTimers.ContainsKey(timerName))
+        {
             Debug.LogError("Timer didn't exist in collection " + timerName);
             return;
         }

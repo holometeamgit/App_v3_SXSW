@@ -27,6 +27,7 @@ public class SSOAuthorization : MonoBehaviour
 
     private void Awake() {
         deepLinkHandler.OnCompleteSSOLoginGetted += SSOLogIn;
+        OnAuthorized.AddListener(() => AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete));
     }
 
     private void SSOLogIn(ServerAccessToken serverAccessToken) {

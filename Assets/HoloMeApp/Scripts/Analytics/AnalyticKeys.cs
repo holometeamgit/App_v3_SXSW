@@ -24,6 +24,7 @@
 }
 
 public class AnalyticParameters{
+    public const string ParamUserID = "userID";
     public const string ParamVideoName = "videoName";
     public const string ParamUserType = "userType";
     public const string ParamViewer = "viewer";

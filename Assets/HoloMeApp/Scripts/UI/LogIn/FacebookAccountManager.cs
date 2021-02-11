@@ -64,6 +64,7 @@ public class FacebookAccountManager : MonoBehaviour {
     }
 
     void Awake() {
+        OnAuthorized.AddListener(() => AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete));
         FBInit();
     }
 
