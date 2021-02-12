@@ -10,5 +10,5 @@ using System;
 public class ThumbnailPriority
 {
     //descending stages[0] > stages[1]
-    public List<StreamJsonData.Data.Stage> Stages;
+    public List<ThumbnailsDataContainer.Priority> Priorities;
 }

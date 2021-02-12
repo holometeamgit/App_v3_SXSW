@@ -66,7 +66,7 @@ public class ThumbnailsDataFetcher {
             GetThumbnailsOnCurrentPage();
         else {
             currentPriority++;
-            if (thumbnailPriority.Stages.Count <= currentPriority) {
+            if (thumbnailPriority.Priorities.Count <= currentPriority) {
                 isBusy = false;
                 OnAllDataLoaded?.Invoke();
                 return;
@@ -82,11 +82,11 @@ public class ThumbnailsDataFetcher {
     #region page count and continue get thumbnails 
 
     private void GetPageCount() {
-        if (thumbnailPriority.Stages.Count <= currentPriority)
+        if (thumbnailPriority.Priorities.Count <= currentPriority)
             return;
 
         ThumbnailWebDownloadManager.ThumbnailWebRequestStruct thumbnailWebRequestStruct =
-            new ThumbnailWebDownloadManager.ThumbnailWebRequestStruct(thumbnailPriority.Stages[currentPriority], 1, pageSize, thumbnailsFilter);
+            new ThumbnailWebDownloadManager.ThumbnailWebRequestStruct(thumbnailPriority.Priorities[currentPriority], 1, pageSize, thumbnailsFilter);
 
         thumbnailWebDownloadManager.GetCountThumbnails(thumbnailWebRequestStruct, currentLoadingKey);
 
@@ -116,7 +116,7 @@ public class ThumbnailsDataFetcher {
     private void GetThumbnailsOnCurrentPage() {
 
         ThumbnailWebDownloadManager.ThumbnailWebRequestStruct thumbnailWebRequestStruct =
-            new ThumbnailWebDownloadManager.ThumbnailWebRequestStruct(thumbnailPriority.Stages[currentPriority], currentPage, pageSize, thumbnailsFilter);
+            new ThumbnailWebDownloadManager.ThumbnailWebRequestStruct(thumbnailPriority.Priorities[currentPriority], currentPage, pageSize, thumbnailsFilter);
 
         thumbnailWebDownloadManager.DownloadThumbnails(thumbnailWebRequestStruct, currentLoadingKey);
     }
