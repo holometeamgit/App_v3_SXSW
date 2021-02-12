@@ -4,7 +4,6 @@ using DG.Tweening;
 using NatCorder;
 using NatCorder.Clocks;
 using NatCorder.Inputs;
-using NatShare;
 using System.Collections;
 using TMPro;
 using UnityEngine.Events;
@@ -315,7 +314,10 @@ public class PnlRecord : MonoBehaviour
         //imgFillBackground.enabled = false;
         btnToggleMode.interactable = true;
         Recording = false;
-        watermarkCanvasObject.SetActive(false);
+        //print("DISABLING HERE");
+
+        if (!recordLengthFailed)
+            watermarkCanvasObject.SetActive(false);
     }
 
     void StopMicrophone()
@@ -346,6 +348,7 @@ public class PnlRecord : MonoBehaviour
     {
         if (currentCoroutine == null)
         {
+            //print("MAKING SCREENSHOT");
             OnSnapshotStarted?.Invoke();
             currentCoroutine = StartCoroutine(ScreenShotAsync());
         }
@@ -354,6 +357,9 @@ public class PnlRecord : MonoBehaviour
     private IEnumerator ScreenShotAsync()
     {
         canvasGroup.alpha = 0;
+        watermarkCanvasObject.SetActive(true);
+        //print("ENABLED WATERMARK");
+
         yield return new WaitForEndOfFrame();
 
         Texture2D screenShot = ScreenCapture.CaptureScreenshotAsTexture(1);
@@ -365,5 +371,6 @@ public class PnlRecord : MonoBehaviour
         OnSnapshotEnded?.Invoke();
         canvasGroup.alpha = 1;
         currentCoroutine = null;
+        watermarkCanvasObject.SetActive(false);
     }
 }
