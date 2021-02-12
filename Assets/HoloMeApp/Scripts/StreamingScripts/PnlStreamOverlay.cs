@@ -139,6 +139,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void OpenAsViewer(string channelName) {
+        Init();
         agoraController.IsChannelCreator = false;
         agoraController.ChannelName = channelName;
         isStreamer = false;
