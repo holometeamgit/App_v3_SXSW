@@ -60,6 +60,15 @@
             </intent-filter>
             -->
 
+			<!--Login deep linking code merge with above when CT deep linking is enabled-->
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+				<data android:scheme="beemholomedl" android:host="verification" />
+				<data android:scheme="beemholomedl" android:host="passwordresetconfirm" />
+			</intent-filter>
+
             <meta-data
                 android:name="unityplayer.UnityActivity"
                 android:value="true" />
