@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System;
 using System.Text;
+using System.Threading.Tasks;
+using System.Threading;
 
 public class WebRequestHandler : MonoBehaviour {
     public enum BodyType {
@@ -26,6 +28,126 @@ public class WebRequestHandler : MonoBehaviour {
         StartCoroutine(GetRequesting(url, responseDelegate, errorTypeDelegate, headerAccessToken));
     }
 
+    CancellationTokenSource tokenSource2;
+    const int timeDelay = 250;
+
+    private void Start() {
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
+        tokenSource2 = new CancellationTokenSource();
+        CancellationToken ct = tokenSource2.Token;
+
+        Debug.Log("Start");
+
+        ct.Register(() => {
+            Debug.Log("Task is canceled");
+        });
+
+        //Task.Delay(4 * timeDelay).ContinueWith((_) => { Debug.Log(4 * timeDelay); });
+        //Task.Delay(8 * timeDelay).ContinueWith((_) => { Debug.Log(8 * timeDelay); });
+        //Task.Delay(12 * timeDelay).ContinueWith((_) => { Debug.Log(12 * timeDelay); });
+        //Task.Delay(16 * timeDelay).ContinueWith((_) => { Debug.Log(16 * timeDelay); });
+
+        FetchUsersAsync(ct).ContinueWith(task => {
+            Debug.Log("Task IsCompleted: " + task.IsCompleted);
+            Debug.Log("Task IsCanceled: " + task.IsCanceled);
+            Debug.Log("Task IsFaulted:  " + task.IsFaulted);
+
+            if (!task.IsCanceled && !task.IsFaulted) {
+                Debug.Log("Completed msg ");
+                Debug.Log("Completed msg " + task.Result);
+            } else if (task.IsCanceled) {
+                Debug.Log("Cancel msg ");
+            } else if (task.IsFaulted) {
+                Debug.Log("Exception msg ");
+
+                if (task.Exception is AggregateException) // is it an AggregateException?
+    {
+                    var ae = task.Exception as AggregateException;
+                    if (ae.InnerExceptions.Count > 0) {
+                        Debug.Log(ae.InnerExceptions[0].Message);
+                        WebException webException = JsonUtility.FromJson<WebException>(ae.InnerExceptions[0].Message);
+                        WebException webException1 = new WebException(502, "Timeout");
+                        Debug.Log("Example: " + JsonUtility.ToJson(webException));
+                        Debug.Log("Ready read error is null " + webException == null);
+                        if(webException != null) {
+                            Debug.Log(webException.Msg);
+                        } else {
+                            Debug.Log("can't read msg. It will be Connection Exception");
+                        }
+                    } else {
+                        Debug.Log("Connection Exception");
+                    }
+                    //foreach (var e in ae.InnerExceptions) // loop them and print their messages
+                    //{
+                    //    Debug.Log(e.Message); // output is "y" .. because that's what you threw
+                    //}
+                }
+            }
+            //tokenSource2.Dispose();
+        }
+        , taskScheduler);
+        tokenSource2.CancelAfter(6 * timeDelay);
+    }
+
+    private void Update() {
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            tokenSource2.Cancel();
+        }
+    }
+
+    async Task<string> FetchUsersAsync(CancellationToken ct) {
+        int i = 0;
+        int v = 1;
+        int c = 0;
+        // try {
+
+        await Task.Delay(4 * timeDelay);
+        WebException webException = new WebException(502, "Exception: Timeout");
+        throw new Exception(JsonUtility.ToJson(webException));
+        //c = v / i;
+        ct.ThrowIfCancellationRequested();
+        await Task.Delay(4 * timeDelay);
+        ct.ThrowIfCancellationRequested();
+        await Task.Delay(4 * timeDelay);
+        ct.ThrowIfCancellationRequested();
+
+        /*   } catch (AggregateException ae) {
+               return "AggregateException" + ae.Message;
+           } catch (Exception e) {
+               return "Exception " + e.Message;
+           } finally {
+               //tokenSource2.Dispose(); // ?????? how that can know about tokenSource2
+           }*/
+
+        return "Fetched";
+    }
+    async Task<string> Starting(CancellationToken ct) {
+        try {
+            var users = await FetchUsersAsync(ct);
+            return users;
+        } catch {
+            Debug.Log("An error occurred");
+            return "Error";
+        }
+    }
+
+    [Serializable]
+    public class WebException {
+
+        public long ResponseCode;
+        public string Msg;
+
+        public WebException() { }
+
+        public WebException(long responseCode, string msg) {
+            ResponseCode = responseCode;
+            Msg = msg;
+        }
+    }
+
+
+    #region old
     public void DeleteRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
         StartCoroutine(DeleteRequesting(url, responseDelegate, errorTypeDelegate, headerAccessToken));
     }
@@ -125,6 +247,8 @@ public class WebRequestHandler : MonoBehaviour {
             responseDelegate(wr.responseCode, wr.error);
         }
     }
+
+    #endregion
 
     IEnumerator PostRequesting<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null, int countRepeat = 0) {
         byte[] bodyRaw = new byte[0];
