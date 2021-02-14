@@ -24,18 +24,140 @@ public class WebRequestHandler : MonoBehaviour {
     private const float TIME_REPEAT = 0.1f;
     private const int TIMEOUT_REQUEST = 5;
 
+    //new
+    private const int REQUEST_CHECK_COOLDOWN = 250;
+    private const int MAX_COUNT_STOPPED_STEPS_REQUEST = 20;
+
     public void GetRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
         StartCoroutine(GetRequesting(url, responseDelegate, errorTypeDelegate, headerAccessToken));
+    }
+
+    public void GetRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, Action onCancel, string headerAccessToken = null) {
+        try {
+
+        } catch (Exception e) {
+
+        } finally { }
+    }
+
+    public async void Get(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, Action onCancel, Action<float> progress, string headerAccessToken = null) {
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        if (onCancel != null) {
+            onCancel += cancellationTokenSource.Cancel;
+        }
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+        var request = await PrepareGetRequest(url, headerAccessToken); //TODO вынести в отдельный блок и переименовать этот метод именно в обработчик request 
+
+        try {
+            Task requestTask = RequestAsync(request, cancellationToken, progress);
+            await RetryAsyncHelpe.RetryOnExceptionAsync<UnityWebRequestServerConnectionException>(async () => { await requestTask; });
+        } catch (UnityWebRequestException uwrException) {
+            errorTypeDelegate?.Invoke(uwrException.Code, uwrException.Message);
+        } catch (UnityWebRequestServerConnectionException uwrServerConnectionException) {
+            errorTypeDelegate?.Invoke(uwrServerConnectionException.Code, uwrServerConnectionException.Message);
+        } catch {
+            errorTypeDelegate?.Invoke(500, "Failed to connect to server");
+        }
+        finally {
+            if (onCancel != null) {
+                onCancel -= cancellationTokenSource.Cancel;
+            }
+            request?.Dispose();
+            cancellationTokenSource.Dispose();
+        }
+        //TODO request?.Dispose(); освобождается раньге, чем срабатывает следующий метод, а это неправильно
+        responseDelegate?.Invoke(request.responseCode, request.downloadHandler.text);
+    }
+
+    private async Task<UnityWebRequest> PrepareGetRequest(string url, string headerAccessToken = null) {
+        UnityWebRequest request = UnityWebRequest.Get(url);
+        request.certificateHandler = new CustomCertificateHandler();
+
+        if (headerAccessToken != null) {
+            request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
+        }
+
+        return request;
+    }
+
+    /// <summary>
+    /// Unity Asynchronous request
+    /// if nothing happens waiting time = REQUEST_CHECK_COOLDOWN * MAX_COUNT_STOPPED_STEPS_REQUEST and then timeout exception
+    /// </summary>
+    private async Task RequestAsync(UnityWebRequest request, CancellationToken cancellationToken, Action<float> progress) {
+        int countStoppedSteps = 0;
+        float prevProgressState = request.downloadProgress;
+
+        request.SendWebRequest();
+
+        await Task.Delay(REQUEST_CHECK_COOLDOWN);
+
+        //awaiting
+        while (request.downloadProgress != 1) {
+            //check cancel
+            if (cancellationToken.IsCancellationRequested) {
+                request.Abort();
+                cancellationToken.ThrowIfCancellationRequested();
+                //check timeout
+            } else if (IsServerWaitingTimeout(ref countStoppedSteps, ref prevProgressState, request)) {
+                request.Abort();
+                throw new UnityWebRequestServerConnectionException(504, "Gateway Timeout");
+            }
+
+            await Task.Delay(REQUEST_CHECK_COOLDOWN);
+        }
+
+        if (request.isNetworkError || request.isHttpError) {
+            if (request.responseCode >= 500) {
+                throw new UnityWebRequestServerConnectionException(request.responseCode, request.downloadHandler.text);
+            } else {
+                throw new UnityWebRequestException(request.responseCode, request.downloadHandler.text);
+            }
+        }
+    }
+
+    private bool IsServerWaitingTimeout(ref int countStoppedSteps, ref float prevProgressState, UnityWebRequest request) {
+        if (prevProgressState == request.downloadProgress) {
+            countStoppedSteps++;
+        } else {
+            prevProgressState = request.downloadProgress;
+            countStoppedSteps = 0;
+        }
+
+        return countStoppedSteps >= MAX_COUNT_STOPPED_STEPS_REQUEST;
+    }
+
+    private async Task<string> GetAsync() {
+
+        await Task.Delay(4 * timeDelay);
+
+        return "";
     }
 
     CancellationTokenSource tokenSource2;
     const int timeDelay = 250;
 
     private void Start() {
+        int a = 0;
+        int b = 1;
+        try {
+            b = a + a;
+        } finally {
+            Debug.Log("Finally");
+        }
+
+        Debug.Log("After catch");
+
+        return;
+        Action onCnacel = delegate { };
+
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
         tokenSource2 = new CancellationTokenSource();
         CancellationToken ct = tokenSource2.Token;
+
+        onCnacel += tokenSource2.Cancel;
 
         Debug.Log("Start");
 
@@ -47,6 +169,9 @@ public class WebRequestHandler : MonoBehaviour {
         //Task.Delay(8 * timeDelay).ContinueWith((_) => { Debug.Log(8 * timeDelay); });
         //Task.Delay(12 * timeDelay).ContinueWith((_) => { Debug.Log(12 * timeDelay); });
         //Task.Delay(16 * timeDelay).ContinueWith((_) => { Debug.Log(16 * timeDelay); });
+
+        onCnacel -= tokenSource2.Cancel;
+        Task.Delay(6 * timeDelay).ContinueWith((_) => { onCnacel?.Invoke(); });
 
         FetchUsersAsync(ct).ContinueWith(task => {
             Debug.Log("Task IsCompleted: " + task.IsCompleted);
@@ -66,11 +191,11 @@ public class WebRequestHandler : MonoBehaviour {
                     var ae = task.Exception as AggregateException;
                     if (ae.InnerExceptions.Count > 0) {
                         Debug.Log(ae.InnerExceptions[0].Message);
-                        WebException webException = JsonUtility.FromJson<WebException>(ae.InnerExceptions[0].Message);
-                        WebException webException1 = new WebException(502, "Timeout");
+                        WebExceptionJsonData webException = JsonUtility.FromJson<WebExceptionJsonData>(ae.InnerExceptions[0].Message);
+                        WebExceptionJsonData webException1 = new WebExceptionJsonData(502, "Timeout");
                         Debug.Log("Example: " + JsonUtility.ToJson(webException));
                         Debug.Log("Ready read error is null " + webException == null);
-                        if(webException != null) {
+                        if (webException != null) {
                             Debug.Log(webException.Msg);
                         } else {
                             Debug.Log("can't read msg. It will be Connection Exception");
@@ -87,7 +212,7 @@ public class WebRequestHandler : MonoBehaviour {
             //tokenSource2.Dispose();
         }
         , taskScheduler);
-        tokenSource2.CancelAfter(6 * timeDelay);
+        //tokenSource2.CancelAfter(6 * timeDelay);
     }
 
     private void Update() {
@@ -103,8 +228,8 @@ public class WebRequestHandler : MonoBehaviour {
         // try {
 
         await Task.Delay(4 * timeDelay);
-        WebException webException = new WebException(502, "Exception: Timeout");
-        throw new Exception(JsonUtility.ToJson(webException));
+        //WebException webException = new WebException(502, "Exception: Timeout");
+        //throw new Exception(JsonUtility.ToJson(webException));
         //c = v / i;
         ct.ThrowIfCancellationRequested();
         await Task.Delay(4 * timeDelay);
@@ -122,6 +247,7 @@ public class WebRequestHandler : MonoBehaviour {
 
         return "Fetched";
     }
+
     async Task<string> Starting(CancellationToken ct) {
         try {
             var users = await FetchUsersAsync(ct);
@@ -129,20 +255,6 @@ public class WebRequestHandler : MonoBehaviour {
         } catch {
             Debug.Log("An error occurred");
             return "Error";
-        }
-    }
-
-    [Serializable]
-    public class WebException {
-
-        public long ResponseCode;
-        public string Msg;
-
-        public WebException() { }
-
-        public WebException(long responseCode, string msg) {
-            ResponseCode = responseCode;
-            Msg = msg;
         }
     }
 
@@ -404,7 +516,9 @@ public class WebRequestHandler : MonoBehaviour {
             } else {
                 responseDelegate(request.responseCode, request.downloadHandler.text);
             }
+            request?.Dispose();
         }
+
     }
 
     public void LogCallback(long code, string body) {
