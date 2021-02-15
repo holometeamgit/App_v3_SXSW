@@ -7,11 +7,18 @@ using UnityEngine.UI;
 using agora_gaming_rtc;
 
 public class PnlStreamOverlay : MonoBehaviour {
+
     [SerializeField]
     GameObject controlsPresenter;
 
     [SerializeField]
     GameObject controlsViewer;
+
+    [SerializeField]
+    GameObject[] hiddenControlsDuringRoomShare;
+
+    [SerializeField]
+    Button btnShareYourRoom;
 
     [SerializeField]
     PnlGenericError pnlGenericError;
@@ -67,15 +74,14 @@ public class PnlStreamOverlay : MonoBehaviour {
     [SerializeField]
     UnityEvent OnCloseAsStreamer;
 
+    bool initialised;
     int countDown;
     string tweenAnimationID = nameof(tweenAnimationID);
     Coroutine countdownRoutine;
     bool isStreamer;
     bool isUsingFrontCamera;
-    [SerializeField]
     VideoSurface videoSurface;
 
-    bool initialised;
     //Vector3 rawImageQuadDefaultScale;
 
      void Init() {
@@ -122,8 +128,18 @@ public class PnlStreamOverlay : MonoBehaviour {
         arSession?.SetActive(enable);
     }
 
-    public void OpenAsStreamer() {
+    private void ToggleRoomShareControlObjects(bool showShareButton)
+    {
+        btnShareYourRoom.gameObject.SetActive(showShareButton);
+        foreach(GameObject go in hiddenControlsDuringRoomShare)
+        {
+            go.SetActive(!showShareButton);
+        }
+    }
+
+    public void OpenAsRoomBroadcaster() {
         Init();
+        ToggleRoomShareControlObjects(true);
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
         agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
@@ -133,13 +149,29 @@ public class PnlStreamOverlay : MonoBehaviour {
         controlsViewer.SetActive(false);
         ToggleARSessionObjects(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
-        //StartCountdown();
+        StartCoroutine(OnPreviewReady());
+        agoraController.StartPreview();
+    }
+
+    public void OpenAsStreamer() {
+        Init();
+        ToggleRoomShareControlObjects(false);
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+        agoraController.IsChannelCreator = true;
+        agoraController.ChannelName = userWebManager.GetUsername();
+        isStreamer = true;
+        gameObject.SetActive(true);
+        controlsPresenter.SetActive(true);
+        controlsViewer.SetActive(false);
+        ToggleARSessionObjects(false);
+        cameraRenderImage.transform.parent.gameObject.SetActive(true);
         StartCoroutine(OnPreviewReady());
         agoraController.StartPreview();
     }
 
     public void OpenAsViewer(string channelName) {
         Init();
+        ToggleRoomShareControlObjects(false);
         agoraController.IsChannelCreator = false;
         agoraController.ChannelName = channelName;
         isStreamer = false;
@@ -204,6 +236,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     void StartStream() {
         agoraController.JoinOrCreateChannel(true);
         EnableStreamControls(true);
+        ToggleRoomShareControlObjects(false);
     }
 
     private void AddVideoSurface() {
@@ -266,7 +299,8 @@ public class PnlStreamOverlay : MonoBehaviour {
             AnimatedCentreTextMessage(countDown > 0 ? countDown.ToString() : "ON AIR");
             AnimatedFadeOutMessage(.5f);
             countDown--;
-            yield return new WaitForSeconds(1);
+            //yield return new WaitForSeconds(1);
+            yield return new WaitForEndOfFrame();
         }
 
         StartStream();
