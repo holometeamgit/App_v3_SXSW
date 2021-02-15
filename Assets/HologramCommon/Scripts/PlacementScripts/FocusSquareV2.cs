@@ -91,9 +91,6 @@ public class FocusSquareV2 : PlacementHandler
 
     private bool _launchFirstTime = true;
 
-    [SerializeField] private UIThumbnailsController _uiThumbnailsController;
-    private StreamJsonData.Data _streamJsonData;
-
     [SerializeField] 
     private Transform _debugCapsule;
     
@@ -110,11 +107,6 @@ public class FocusSquareV2 : PlacementHandler
 
     private void Awake()
     {
-        if (_uiThumbnailsController != null)
-        {
-            _uiThumbnailsController.OnPlay += delegate(StreamJsonData.Data data) { _streamJsonData = data; };
-        }
-
         _stopPlaneConstruction = PlayerPrefs.GetInt("_stopPlaneConstruction", -1);
 
         _stopPlaneConstructionCheckbox.isOn = _stopPlaneConstruction >= 0;

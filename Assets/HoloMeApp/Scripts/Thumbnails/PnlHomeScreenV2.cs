@@ -49,7 +49,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
         uiThumbnailsController.OnUpdated += UIUpdated;
         //add ref to data list from fetcher for ui Thumbnails Controller
         uiThumbnailsController.SetStreamJsonData(thumbnailsDataFetcher.GetDataList());
-        uiThumbnailsController.OnPlay += OnPlayCallBack;
+        uiThumbnailsController.OnPlayFromUser += OnPlayCallBack;
 
         
     }
@@ -94,7 +94,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
         pullRefreshController.EndRefreshing();
     }
 
-    private void OnPlayCallBack(StreamJsonData.Data data) {
+    private void OnPlayCallBack(string user) {
         OnPlay.Invoke();
     }
 
