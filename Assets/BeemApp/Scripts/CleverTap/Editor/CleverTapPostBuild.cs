@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.iOS.Xcode;
 using UnityEditor.iOS.Xcode.Extensions;
+using UnityEngine;
 
 namespace Beem.CleverTap {
 
@@ -38,7 +39,9 @@ namespace Beem.CleverTap {
             fileGuid = proj.AddFile(fw2, fw2, PBXSourceTree.Source);
             proj.AddFileToEmbedFrameworks(target, fileGuid);
 
-            proj.AddShellScriptBuildPhase(target, "Build Framework", "/bin/sh", "./../Assets/CleverTap/Editor/strip.sh");
+            //Shell script
+            var text = Resources.Load<TextAsset>("CleverTap");
+            proj.AddShellScriptBuildPhase(target, "Build Framework", "/bin/sh", text.text);
 
             // done, write to the project file
             File.WriteAllText(projPath, proj.WriteToString());
