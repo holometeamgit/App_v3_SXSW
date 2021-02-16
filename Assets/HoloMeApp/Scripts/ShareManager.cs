@@ -46,6 +46,8 @@ public class ShareManager : MonoBehaviour
     private void ShareMyRoomLink(string link) {
         string msg = "Come to my room: " + link;
         HelperFunctions.DevLog(msg);
+#if !UNITY_EDITOR
         ShareStream(msg);
+#endif
     }
 }
