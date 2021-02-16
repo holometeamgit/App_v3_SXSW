@@ -25,12 +25,13 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
             accountManager.GetAccessToken().access);
     }
 
-    private void GetRoomCallBack(string roobBody) {
+    private void GetRoomCallBack(string roomBody) {
         if (!gameObject.activeInHierarchy)
             return;
 
         try {
-            RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(roobBody);
+            HelperFunctions.DevLog(roomBody);
+            RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(roomBody);
             if(StreamJsonData.Data.GetStatus(roomJsonData.status) != StreamJsonData.Data.Stage.Live) {
                 RepeatGetRoom(roomJsonData.agora_channel);
             } else {

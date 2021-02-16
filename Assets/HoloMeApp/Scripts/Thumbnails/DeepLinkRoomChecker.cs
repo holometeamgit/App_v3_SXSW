@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class DeepLinkRoomChecker : MonoBehaviour
 {
-    [SerializeField] GameObject RoomBroadcastHoldingScreen;
+    [SerializeField] Switcher SwitcherToRoomBroadcastHoldingScreen;
     [SerializeField] RoomLinkHandler roomLinkHandler;
 
     private void ShowBroadcastHoldingScreen() {
-        if(gameObject.activeInHierarchy)
-            RoomBroadcastHoldingScreen.SetActive(roomLinkHandler.HasRoomId());
+        if (gameObject.activeInHierarchy && roomLinkHandler.HasRoomId())
+            SwitcherToRoomBroadcastHoldingScreen.Switch();
     }
 
     private void OnEnable() {
