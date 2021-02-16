@@ -53,12 +53,21 @@ public class AgoraController : MonoBehaviour {
 
     static Vector3 defaultLiveStreamQuadScale;
 
+
+    //void OnUserEnableVideoHandler(uint uid, bool enabled)
+    //{
+    //    print("OnUserEnableVideoHandler called");
+    //}
+
     public void Start()
     {
         LoadEngine(AppId);
         frameRate = 30;
         agoraRTMChatController.Init(AppId);
         secondaryServerCalls.OnStreamStarted += (x, y) => SecondaryServerCallsComplete(x, y);
+
+        //iRtcEngine.OnUserEnableVideo = OnUserEnableVideoHandler;
+        //iRtcEngine.OnUserEnableLocalVideo = OnUserEnableVideoHandler;
 
         iRtcEngine.OnJoinChannelSuccess = OnJoinChannelSuccess;
         iRtcEngine.OnUserJoined = OnUserJoined; //Only fired for broadcasters
@@ -175,7 +184,9 @@ public class AgoraController : MonoBehaviour {
             tokenAgoraResponseChannel = JsonUtility.FromJson<TokenAgoraResponse>(data);
             HelperFunctions.DevLog("Viewer Token Returned: " + tokenAgoraResponseChannel.token);
             GetRTMLoginToken();
-        } catch (System.Exception) { }
+        } catch (Exception e) {
+            Debug.LogError(e);
+        }
     }
 
     void GetRTMLoginToken() {
@@ -183,12 +194,16 @@ public class AgoraController : MonoBehaviour {
         secondaryServerCalls.GetAgoraToken(OnRTMAgoraTokenReturned);
     }
 
-    void OnRTMAgoraTokenReturned(long code, string data) {
+    void OnRTMAgoraTokenReturned(long code, string data)
+    {
         try {
             tokenAgoraResponseRTM = JsonUtility.FromJson<TokenAgoraResponse>(data);
             HelperFunctions.DevLog("RTM Token Returned: " + tokenAgoraResponseRTM.token);
             SecondaryServerCallsComplete(tokenAgoraResponseChannel.token, tokenAgoraResponseRTM.token);
-        } catch (System.Exception) { }
+        }
+        catch (Exception e) {
+            Debug.LogError(e);
+        }
     }
 
     public void SecondaryServerCallsComplete(string viewerBroadcasterToken, string rtmToken) {
@@ -237,9 +252,7 @@ public class AgoraController : MonoBehaviour {
     }
 
     public void Leave() {
-
-        StopPreview();
-
+                
         if (iRtcEngine == null)
             return;
 
@@ -277,6 +290,12 @@ public class AgoraController : MonoBehaviour {
         yield return new WaitForSeconds(5);
         Texture2D originalSnapShot = (Texture2D)videoSufaceStreamerRawTex.texture;
         byte[] data;
+
+        if (originalSnapShot == null)
+        {
+            Debug.LogError("Stream thumbnail was null");
+            yield break;
+        }
 
         if (flipVertical)
         {

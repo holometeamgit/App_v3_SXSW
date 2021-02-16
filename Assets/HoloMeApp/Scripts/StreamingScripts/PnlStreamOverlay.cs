@@ -140,22 +140,16 @@ public class PnlStreamOverlay : MonoBehaviour {
     public void OpenAsRoomBroadcaster() {
         Init();
         ToggleRoomShareControlObjects(true);
-        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
-        agoraController.IsChannelCreator = true;
-        agoraController.ChannelName = userWebManager.GetUsername();
-        isStreamer = true;
-        gameObject.SetActive(true);
-        controlsPresenter.SetActive(true);
-        controlsViewer.SetActive(false);
-        ToggleARSessionObjects(false);
-        cameraRenderImage.transform.parent.gameObject.SetActive(true);
-        StartCoroutine(OnPreviewReady());
-        agoraController.StartPreview();
+        StreamerOpenSharedFunctions();
     }
 
     public void OpenAsStreamer() {
         Init();
         ToggleRoomShareControlObjects(false);
+        StreamerOpenSharedFunctions();
+    }
+
+    private void StreamerOpenSharedFunctions() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
         agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
@@ -204,6 +198,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     public void CloseAsStreamer() {
         OnCloseAsStreamer.Invoke();
         StopStream();
+        agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
     }
 
