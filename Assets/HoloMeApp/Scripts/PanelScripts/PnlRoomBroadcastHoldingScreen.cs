@@ -29,16 +29,12 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
         if (!gameObject.activeInHierarchy)
             return;
 
-        try {
-            HelperFunctions.DevLog(roomBody);
-            RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(roomBody);
-            if(StreamJsonData.Data.GetStatus(roomJsonData.status) != StreamJsonData.Data.Stage.Live) {
-                RepeatGetRoom(roomJsonData.agora_channel);
-            } else {
-                uiThumbnailsController.PlayLiveStream(roomJsonData.agora_channel, roomJsonData.agora_channel);
-            }
-        } catch {
-            RepeatGetRoom();
+        HelperFunctions.DevLog(roomBody);
+        RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(roomBody);
+        if(StreamJsonData.Data.GetStatus(roomJsonData.status) != StreamJsonData.Data.Stage.Live) {
+            RepeatGetRoom(roomJsonData.agora_channel);
+        } else {
+            uiThumbnailsController.PlayLiveStream(roomJsonData.agora_channel, roomJsonData.agora_channel);
         }
     }
 
