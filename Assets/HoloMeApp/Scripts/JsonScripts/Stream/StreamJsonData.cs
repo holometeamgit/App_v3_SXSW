@@ -113,6 +113,10 @@ public class StreamJsonData {
         private const string prerecordedStr = "prerecorded";
 
         public Stage GetStatus() {
+            return GetStatus(status);
+        }
+
+        public static Stage GetStatus(string status) {
             switch (status) {
                 case pinStr:
                     return Stage.Pin;

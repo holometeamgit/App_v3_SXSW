@@ -4,6 +4,18 @@ using NatShare;
 public class ShareManager : MonoBehaviour
 {
     public void ShareStream() {
+        ShareStream(string.Empty);
+    }
+
+    public void ShareRoomStream() {
+        StreamCallBacks.onGetMyRoomLink?.Invoke();
+    }
+
+    private void Awake() {
+        StreamCallBacks.onMyRoomLinkReceived += ShareMyRoomLink;
+    }
+
+    private void ShareStream(string aditionalInformation) {
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
 
         using (var payload = new SharePayload()) {
@@ -26,8 +38,12 @@ public class ShareManager : MonoBehaviour
             }
 
             string message = $"Click the link below to download the {appName} app which lets you experience human holograms using augmented reality: ";
-            payload.AddText(message + appLink);
+            payload.AddText(message + appLink + aditionalInformation);
         }
     }
 
+    private void ShareMyRoomLink(string link) {
+        string msg = "Come to my room: " + link;
+        ShareStream(msg);
+    }
 }
