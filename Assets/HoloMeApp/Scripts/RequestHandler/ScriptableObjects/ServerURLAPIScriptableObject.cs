@@ -8,11 +8,12 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     public string ProdServerURLAuth = "https://api.holo.me/api-auth";
     public string ProdServerURLMedia = "https://api.holo.me/api-media";
     public string ProdServerProviders = "https://api.holo.me/oauth/providers/";
+    public string ProdServerDeepLink = "https://api.holo.me/deep-link/";
     [Space]
     public string DevServerURLAuth = "https://devholo.me/api-auth";
     public string DevServerURLMedia = "https://devholo.me/api-media";
     public string DevServerProviders = "https://devholo.me/oauth/providers/";
-
+    public string DevServerDeepLink = "https://devholo.me/deep-link/";
 
     public string ServerURLAuthAPI {
         get {
@@ -39,6 +40,16 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
             return DevServerProviders;
 #else
             return ProdServerProviders;
+#endif
+        }
+    }
+
+    public string ServerDeepLinkAPI {
+        get {
+#if DEV
+            return DevServerDeepLink;
+#else
+            return ProdServerDeepLink;
 #endif
         }
     }

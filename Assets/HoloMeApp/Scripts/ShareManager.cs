@@ -7,6 +7,7 @@ public class ShareManager : MonoBehaviour
         ShareStream(string.Empty);
     }
 
+    [ContextMenu("ShareRoomStream")]
     public void ShareRoomStream() {
         StreamCallBacks.onGetMyRoomLink?.Invoke();
     }
@@ -44,6 +45,7 @@ public class ShareManager : MonoBehaviour
 
     private void ShareMyRoomLink(string link) {
         string msg = "Come to my room: " + link;
+        HelperFunctions.DevLog(msg);
         ShareStream(msg);
     }
 }

@@ -20,7 +20,7 @@ public class DeepLinkRoomController : MonoBehaviour {
         try {
             RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(body);
             //room?roomid=string
-            string uri = serverURLAPIScriptableObject.ServerURLMediaAPI + "/deep-link/" + DeepLinkHandler.ROOM + "?" + DeepLinkHandler.ROOM_ID_PARAMETTR_NAME + "=" + roomJsonData.id;
+            string uri = serverURLAPIScriptableObject.ServerDeepLinkAPI + DeepLinkHandler.ROOM + "?" + DeepLinkHandler.ROOM_ID_PARAMETTR_NAME + "=" + roomJsonData.id;
             StreamCallBacks.onMyRoomLinkReceived?.Invoke(uri);
         } catch { }
     }
