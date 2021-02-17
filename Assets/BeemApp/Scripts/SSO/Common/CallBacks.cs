@@ -19,7 +19,6 @@ namespace Beem.SSO {
         public static Action<LogInType> onFirebaseSignInSuccess = delegate { };
 
         public static Action<string> onNeedVerification = delegate { };
-        public static Action onRequestRepeatVerification = delegate { };
 
         public static Action<string, string, string, string> onSignUp = delegate { };
         public static Action onSignUpEMailClick = delegate { };
@@ -28,6 +27,8 @@ namespace Beem.SSO {
         public static Action onResetPasswordClick = delegate { };
         public static Action onResetPasswordMsgSent = delegate { };
         public static Action<string> onForgotAccount = delegate { };
+
+        public static Action onEmailVerification = delegate { };
 
         public static Action onSignOutClick = delegate { };
         public static Action onSignOut = delegate { };
