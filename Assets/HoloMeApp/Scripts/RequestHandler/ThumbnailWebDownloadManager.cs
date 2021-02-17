@@ -8,13 +8,13 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
 
     public struct ThumbnailWebRequestStruct {
 
-        public StreamJsonData.Data.Stage Stage;
+        public ThumbnailsDataContainer.Priority Priority;
         public int PageNumber;
         public int MaxPageSize;
         public ThumbnailsFilter Filter;
 
-        public ThumbnailWebRequestStruct(StreamJsonData.Data.Stage stage, int pageNumber, int maxPageSize, ThumbnailsFilter filter) {
-            Stage = stage;
+        public ThumbnailWebRequestStruct(ThumbnailsDataContainer.Priority priority, int pageNumber, int maxPageSize, ThumbnailsFilter filter) {
+            Priority = priority;
             PageNumber = pageNumber;
             MaxPageSize = maxPageSize;
             Filter = filter;
@@ -38,6 +38,7 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
     private string pageStreamParameter = "page";
 
     private string statusStreamParameter = "status";
+    private const string IS_PIN = "is_pin";
 
     private string pageSize = "page_size";
 
@@ -49,6 +50,8 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
     }
 
     public void GetCountThumbnails(ThumbnailWebRequestStruct thumbnailWebRequestStruct, LoadingKey loadingKey) {
+        Debug.Log("GetCountThumbnails");
+        Debug.Log(GetRequestRefreshTokenURL(thumbnailWebRequestStruct));
         webRequestHandler.GetRequest(GetRequestRefreshTokenURL(thumbnailWebRequestStruct),
         (code, body) => { GetCountThumbnailsCallBack(body, loadingKey); },
         (code, body) => { ErrorGetCountThumbnailsCallBack(code, body, loadingKey); },
@@ -102,8 +105,10 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
         //page size
         query[pageSize] = thumbnailWebRequestStruct.MaxPageSize.ToString();
         //status
-        if (thumbnailWebRequestStruct.Stage != StreamJsonData.Data.Stage.All)
-            query[statusStreamParameter] = StreamJsonData.Data.GetStatusValue(thumbnailWebRequestStruct.Stage);
+        if (thumbnailWebRequestStruct.Priority.Stage != StreamJsonData.Data.Stage.All)
+            query[statusStreamParameter] = StreamJsonData.Data.GetStatusValue(thumbnailWebRequestStruct.Priority.Stage);
+
+        query[IS_PIN] = thumbnailWebRequestStruct.Priority.IsPin.ToString();
         //user name
         if (thumbnailWebRequestStruct.Filter != null && !thumbnailWebRequestStruct.Filter.IsEmpty()) {
             foreach (var param in thumbnailWebRequestStruct.Filter.GetParameters())
