@@ -88,6 +88,8 @@ public class PnlStreamOverlay : MonoBehaviour {
         if (initialised)
             return;
 
+        btnShareYourRoom.onClick.AddListener(ShareRoomStream);
+
         //if (rawImageQuadDefaultScale == Vector3.zero)
         //    rawImageQuadDefaultScale = cameraRenderImage.transform.localScale;
 
@@ -208,11 +210,23 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void ShareStream() {
-        if (shareManager == null) {
+        TryGetShareManagerInstance();
+        shareManager.ShareStream();
+    }
+
+    void ShareRoomStream()
+    {
+        TryGetShareManagerInstance();
+        shareManager.ShareRoomStream();
+    }
+
+    void TryGetShareManagerInstance()
+    {
+        if (shareManager == null)
+        {
             shareManager = FindObjectOfType<ShareManager>();
             Debug.LogWarning("Share manager wasn't assigned in the inspect used find to replace");
         }
-        shareManager.ShareStream();
     }
 
     public void StartCountdown() {
