@@ -3,7 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 using TMPro;
 using System.Collections;
-using UnityEngine.UI;
+using System;
 
 public class PnlViewingExperience : MonoBehaviour
 {
@@ -17,7 +17,7 @@ public class PnlViewingExperience : MonoBehaviour
     CanvasGroup canvasGroup;
 
     [SerializeField]
-    PnlCameraAccess pnlCameraAccess;
+    PermissionController permissionController;
 
     [SerializeField]
     HologramHandler hologramHandler;
@@ -41,21 +41,25 @@ public class PnlViewingExperience : MonoBehaviour
     [SerializeField]
     RectTransform scanMessageRT;
 
-    [TextArea]
-    [SerializeField]
+    //    [TextArea]
+    //    [SerializeField]
     string scaneEnviromentStr = "Scan the floor in front of you by moving your phone slowly from side to side";
 
-    [TextArea]
-    [SerializeField]
-    string pinchToZoomStr = "Pinch to zoom the hologram. Drag to move it around your environment";
+    //    [TextArea]
+    //    [SerializeField]
+    string pinchToZoomStr = "Pinch to resize the hologram";
 
-    [TextArea]
-    [SerializeField]
+    //    [TextArea]
+    //    [SerializeField]
     string tapToPlaceStr = "To see your chosen performer, tap the white circle when it appears on the floor";
 
     Coroutine scanAnimationRoutine;
 
+    [SerializeField]
+    bool skipTutorial;
+
     bool activatedForStreaming;
+    bool isTeaser;
     bool viewingExperienceInFocus;
     bool tutorialDisplayed;
 
@@ -76,8 +80,9 @@ public class PnlViewingExperience : MonoBehaviour
         }
         else
         {
-            pnlCameraAccess.OnAccessGranted.AddListener(RunTutorial);
-            pnlCameraAccess.gameObject.SetActive(true);
+            if(permissionController == null)
+                permissionController = FindObjectOfType<PermissionController>();
+            permissionController.CheckCameraMicAccess();
         }
     }
 
@@ -92,9 +97,19 @@ public class PnlViewingExperience : MonoBehaviour
         if (scanAnimationRoutine != null)
             StopCoroutine(scanAnimationRoutine); //Stop old routine is reactivating
 
+        if (Application.isEditor && skipTutorial)
+        {
+            tutorialState = TutorialState.WaitingForPinch;
+            OnPlaced();
+            return;
+        }
+
+        hologramHandler.SetOnPlacementUIHelperFinished(() => StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, activatedForStreaming)));
+
         scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         ShowMessage(scaneEnviromentStr);
         tutorialState = TutorialState.MessageTapToPlace;
+
         // arPlaneManager.enabled = true;
     }
 
@@ -160,7 +175,7 @@ public class PnlViewingExperience : MonoBehaviour
         if (tutorialState == TutorialState.WaitingForPinch)
         {
             HideScanMessage();
-            StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, activatedForStreaming));
+            //StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, activatedForStreaming));
             tutorialState = TutorialState.TutorialComplete;
         }
     }
@@ -168,7 +183,7 @@ public class PnlViewingExperience : MonoBehaviour
     IEnumerator DelayStartRecordPanel(float delay, bool streamPanel)
     {
         yield return new WaitForSeconds(delay);
-        pnlRecord.EnableRecordPanel(streamPanel);
+        pnlRecord.EnableRecordPanel(isTeaser, streamPanel);
     }
 
     public void ShowMessage(string message, float delay = 0)
@@ -186,47 +201,51 @@ public class PnlViewingExperience : MonoBehaviour
         scanMessageRT.DOScale(Vector3.zero, animationSpeed).SetDelay(messageAnimationSpeed);
     }
 
-    public void ActivateForPreRecorded(string code, VideoJsonData videoJsonData)
+    public void ActivateForPreRecorded(string code, VideoJsonData videoJsonData, bool isTeaser)
     {
         //print($"PLAY CALLED - " + code);
+        SharedActivationFunctions();
+        this.isTeaser = isTeaser;
         activatedForStreaming = false;
-        blurController.RemoveBlur();
-        canvasGroup.alpha = 0;
-        gameObject.SetActive(true);
         btnBurger.SetActive(true);
         logoCanvas.ActivateIfLogoAvailable(videoJsonData);
-        hologramHandler.InitSession();
         hologramHandler.PlayIfPlaced(code);
         hologramHandler.TogglePreRecordedVideoRenderer(true);
-        FadeInCanvas();
+
 
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, false));
         }
-
-        viewingExperienceInFocus = true;
     }
 
-    public void ActivateForStreaming()
+    public void ActivateForStreaming(string channelName)
     {
-        activatedForStreaming = true;
-        blurController.RemoveBlur();
-        canvasGroup.alpha = 0;
-        gameObject.SetActive(true);
-        btnBurger.SetActive(false); //Close button not required on this page
-        hologramHandler.InitSession();
-        hologramHandler.TogglePreRecordedVideoRenderer(false);
-        FadeInCanvas();
         StopExperience();
+        SharedActivationFunctions();
+        this.isTeaser = false;
+        activatedForStreaming = true;
+        btnBurger.SetActive(false); //Close button not required on this page
+        hologramHandler.TogglePreRecordedVideoRenderer(false);
+        hologramHandler.AssignStreamName(channelName + DateTime.Now);
+        hologramHandler.StartTrackingStream();
 
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, true));
         }
+    }
 
+    void SharedActivationFunctions()
+    {
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+        blurController.RemoveBlur();
+        canvasGroup.alpha = 0;
+        gameObject.SetActive(true);
+        hologramHandler.InitSession();
+        FadeInCanvas();
         viewingExperienceInFocus = true;
     }
 
@@ -242,6 +261,7 @@ public class PnlViewingExperience : MonoBehaviour
 
     public void StopExperience()
     {
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         hologramHandler.StopVideo();
     }
 

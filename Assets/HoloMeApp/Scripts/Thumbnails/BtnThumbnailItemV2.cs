@@ -32,9 +32,12 @@ public class BtnThumbnailItemV2 : MonoBehaviour
     }
 
     public void AddData(ThumbnailElement element) {
+
+//        Debug.Log("element " + (thumbnailElement == element));
+
         if (thumbnailElement != null) {
             thumbnailElement.OnTextureLoaded -= UpdateTexture;
-            thumbnailElement.OnErrorTextureLoaded -= ErrorLoadTexture;
+            thumbnailElement.OnErrorTextureLoaded -= UpdateTexture;
             thumbnailElement.Data.OnDataUpdated -= UpdateData;
         }
 
@@ -44,7 +47,7 @@ public class BtnThumbnailItemV2 : MonoBehaviour
         //thumbnailElement.Data.teaser_link = thumbnailElement.Data.stream_s3_url;
 
         thumbnailElement.OnTextureLoaded += UpdateTexture;
-        thumbnailElement.OnErrorTextureLoaded += ErrorLoadTexture;
+        thumbnailElement.OnErrorTextureLoaded += UpdateTexture;
         thumbnailElement.Data.OnDataUpdated += UpdateData;
 
         imgLive.gameObject.SetActive(thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live);
@@ -53,8 +56,10 @@ public class BtnThumbnailItemV2 : MonoBehaviour
     }
 
     public void Deactivate() {
-        rawImage.texture = defaultTexture;
+        //rawImage.texture = defaultTexture;
         gameObject.SetActive(false);
+
+        txtDate.text = "";
     }
 
     public void Activate() {
@@ -63,8 +68,8 @@ public class BtnThumbnailItemV2 : MonoBehaviour
 
     //TODO если премя до, то одна надпись, если куплено и если будет, если нет тизера, то не показывать плей видео
     private void UpdateData() {
-        Debug.Log(name + " UpdateData");
-        UpdateTexture(thumbnailElement.texture);
+//        Debug.Log(name + " UpdateData");
+        UpdateTexture();
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(rawImage.GetComponent<RectTransform>());
 
@@ -84,20 +89,25 @@ public class BtnThumbnailItemV2 : MonoBehaviour
             (thumbnailElement.Data.IsStarted && (thumbnailElement.Data.HasStreamUrl || thumbnailElement.Data.HasAgoraChannel)));
     }
 
-    private void UpdateTexture(Texture texture) {
-        rawImage.texture = thumbnailElement.texture ?? defaultTexture;
+    private void UpdateTexture() {
+        if (!thumbnailElement.Data.is_bought) {
+//            Debug.Log("is not bought ");
+            rawImage.texture = thumbnailElement.teaserTexture ?? thumbnailElement.texture ?? defaultTexture;
+        } else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
+            rawImage.texture = thumbnailElement.texture ?? defaultTexture;
+//            Debug.Log("is bought and started ");
+        } else {
+//            Debug.Log("is bought and not started ");
+            rawImage.texture = thumbnailElement.teaserTexture ?? thumbnailElement.texture ?? defaultTexture;
+        }
 
         aspectRatioFitter.Refresh();
-    }
-
-    private void ErrorLoadTexture() {
-
     }
 
     private void OnDestroy() {
         if (thumbnailElement != null) {
             thumbnailElement.OnTextureLoaded -= UpdateTexture;
-            thumbnailElement.OnErrorTextureLoaded -= ErrorLoadTexture;
+            thumbnailElement.OnErrorTextureLoaded -= UpdateTexture;
             thumbnailElement.Data.OnDataUpdated -= UpdateData;
         }
     }

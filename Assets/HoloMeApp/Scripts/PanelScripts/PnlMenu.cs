@@ -20,6 +20,9 @@ public class PnlMenu : MonoBehaviour
     private void OnEnable() {
         userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
         userWebManager.LoadUserInfo();
+
+        txtUsername.text = userWebManager.GetUsername();
+        goLiveBtn.SetActive(userWebManager.IsBroadcaster());
     }
 
     private void OnDisable() {

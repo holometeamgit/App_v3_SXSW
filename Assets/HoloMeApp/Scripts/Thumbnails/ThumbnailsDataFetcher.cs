@@ -10,13 +10,15 @@ public class ThumbnailsDataFetcher {
     public Action OnErrorGetThumbnails;
 
     private ThumbnailWebDownloadManager thumbnailWebDownloadManager;
-    private ThumbnailsFilter thumbnailsFilter;
+    private ThumbnailsFilter thumbnailsFilter; //parame
     private ThumbnailPriority thumbnailPriority;
     private ThumbnailsDataContainer thumbnailsDataContainer;
     private int currentPriority;
 
     private int pageSize = 8;
     private int currentPage = 1;
+
+    private bool isBusy;
 
     private LoadingKey currentLoadingKey;
 
@@ -28,7 +30,7 @@ public class ThumbnailsDataFetcher {
         this.thumbnailsFilter = thumbnailsFilter;
         this.pageSize = pageSize;
 
-        thumbnailsDataContainer = new ThumbnailsDataContainer();
+        thumbnailsDataContainer = new ThumbnailsDataContainer(this.thumbnailPriority);
 
         thumbnailsDataContainer.OnDataUpdated += DataUpdatedCallBack;
 
@@ -44,6 +46,9 @@ public class ThumbnailsDataFetcher {
     }
 
     public void RefreshData() {
+        if (isBusy)
+            return;
+        isBusy = true;
         currentLoadingKey = new LoadingKey(this);
         currentPriority = 0;
         thumbnailsDataContainer.Refresh();
@@ -51,6 +56,10 @@ public class ThumbnailsDataFetcher {
     }
 
     public void GetNextPage() {
+        if (isBusy)
+            return;
+
+        isBusy = true;
         currentLoadingKey = new LoadingKey(this);
 
         if (currentPage >= 1)
@@ -58,6 +67,7 @@ public class ThumbnailsDataFetcher {
         else {
             currentPriority++;
             if (thumbnailPriority.Stages.Count <= currentPriority) {
+                isBusy = false;
                 OnAllDataLoaded?.Invoke();
                 return;
             }
@@ -66,7 +76,6 @@ public class ThumbnailsDataFetcher {
     }
 
     private void DataUpdatedCallBack() {
-//        Debug.Log("DataUpdatedCallBack");
         OnDataUpdated?.Invoke();
     }
 
@@ -84,12 +93,11 @@ public class ThumbnailsDataFetcher {
     }
 
     private void PageCountCallBack(int count, LoadingKey loadingKey) {
-//        Debug.Log("PageCountCallBack " + loadingKey.ToString());
         if (loadingKey != currentLoadingKey)
             return;
+        isBusy = false;
 
         currentPage = Mathf.Max(Mathf.CeilToInt((float)count / pageSize), 1);
-        Debug.Log("currentPage = " + currentPage + " count = " + count);
 
         GetThumbnailsOnCurrentPage();
     }
@@ -97,7 +105,7 @@ public class ThumbnailsDataFetcher {
     private void ErrorPageCountCallBack(long code, string body, LoadingKey loadingKey) {
         if (loadingKey != currentLoadingKey)
             return;
-        Debug.Log(code + " " + body);
+        isBusy = false;
         OnErrorGetCountThumbnails?.Invoke();
     }
 
@@ -106,6 +114,7 @@ public class ThumbnailsDataFetcher {
     #region get new Thumbnails
 
     private void GetThumbnailsOnCurrentPage() {
+
         ThumbnailWebDownloadManager.ThumbnailWebRequestStruct thumbnailWebRequestStruct =
             new ThumbnailWebDownloadManager.ThumbnailWebRequestStruct(thumbnailPriority.Stages[currentPriority], currentPage, pageSize, thumbnailsFilter);
 
@@ -113,18 +122,21 @@ public class ThumbnailsDataFetcher {
     }
 
     private void GetThumbnailsOnCurrentPageCallBack(StreamJsonData streamJsonData, LoadingKey loadingKey) {
-//        Debug.Log("GetThumbnailsOnCurrentPageCallBack " + loadingKey.ToString());
         if (loadingKey != currentLoadingKey)
             return;
-
-        thumbnailsDataContainer.AddListStreamJsonData(streamJsonData);
+        isBusy = false;
         currentPage--;
+
+        if (streamJsonData == null || streamJsonData.results.Count == 0)
+            GetNextPage();
+        else
+            thumbnailsDataContainer.AddListStreamJsonData(streamJsonData);
     }
 
     private void ErrorGetThumbnailsOnCurrentPageCallBack(long code, string body, LoadingKey loadingKey) {
         if (loadingKey != currentLoadingKey)
             return;
-        Debug.Log(code + " " + body);
+        isBusy = false;
         OnErrorGetThumbnails?.Invoke();
     }
 

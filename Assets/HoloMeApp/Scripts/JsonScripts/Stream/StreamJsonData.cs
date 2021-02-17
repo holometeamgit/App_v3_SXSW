@@ -21,13 +21,15 @@ public class StreamJsonData {
 
         public enum Stage {
             All,
+            Pin,
             Live,
-            Announced,
-            Finished
+            PastLivestream,
+            Prerecorded
         }
 
         public long id;
         public string preview_s3_url;
+        public string preview_teaser_s3_url;
         public string stream_s3_url;
         public string teaser_s3_url;
         public string user;
@@ -46,12 +48,24 @@ public class StreamJsonData {
         public string title;
         public string description;
 
+        public void InvokeDataUpdated() { //TODO better create RX
+            OnDataUpdated?.Invoke();
+        }
+
+        public Data() {
+            product_type = new ProductType();
+        }
+
         public bool IsStarted {
             get { return DateTime.Now >= StartDate; }
         }
 
         public bool HasTeaser {
             get { return !string.IsNullOrWhiteSpace(teaser_s3_url); }
+        }
+
+        public bool HasTeaserPreview {
+            get { return !string.IsNullOrWhiteSpace(preview_teaser_s3_url); }
         }
 
         public bool HasStreamUrl {
@@ -74,7 +88,6 @@ public class StreamJsonData {
             get {
                 if (startDate != new DateTime())
                     return startDate;
-                //Debug.Log("GET start_date " + start_date);
                 if (!DateTime.TryParse(start_date, out startDate))
                     startDate = new DateTime();
                 return startDate;
@@ -85,7 +98,6 @@ public class StreamJsonData {
             get {
                 if (endDate != new DateTime())
                     return endDate;
-                //Debug.Log("GET start_date " + start_date);
                 if (!DateTime.TryParse(end_date, out endDate))
                     endDate = new DateTime();
                 return endDate;
@@ -94,19 +106,22 @@ public class StreamJsonData {
 
         private DateTime startDate;
         private DateTime endDate;
-
-        private const string announcedStr = "announced";
-        private const string finishedStr = "finished";
+        private const string pinAll = "all";
+        private const string pinStr = "pin";
         private const string lifeStr = "live";
+        private const string pastLivestreamStr = "past_live";
+        private const string prerecordedStr = "prerecorded";
 
         public Stage GetStatus() {
             switch (status) {
-                case announcedStr:
-                    return Stage.Announced;
-                case finishedStr:
-                    return Stage.Finished;
+                case pinStr:
+                    return Stage.Pin;
                 case lifeStr:
                     return Stage.Live;
+                case pastLivestreamStr:
+                    return Stage.PastLivestream;
+                case prerecordedStr:
+                    return Stage.Prerecorded;
                 default:
                     return Stage.All;
             }
@@ -114,15 +129,16 @@ public class StreamJsonData {
 
         public static string GetStatusValue(Stage stage) {
             switch (stage) {
-                case StreamJsonData.Data.Stage.Announced:
-                    return announcedStr;
-                case StreamJsonData.Data.Stage.Finished:
-                    return finishedStr;
+                case StreamJsonData.Data.Stage.Pin:
+                    return pinStr;
                 case StreamJsonData.Data.Stage.Live:
                     return lifeStr;
-                case StreamJsonData.Data.Stage.All:
+                case StreamJsonData.Data.Stage.PastLivestream:
+                    return pastLivestreamStr;
+                case StreamJsonData.Data.Stage.Prerecorded:
+                    return prerecordedStr;
                 default:
-                    return "All";
+                    return pinAll;
             }
         }
     }

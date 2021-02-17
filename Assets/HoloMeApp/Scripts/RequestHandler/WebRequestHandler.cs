@@ -7,13 +7,20 @@ using System.Text;
 
 public class WebRequestHandler : MonoBehaviour {
     public enum BodyType {
-        JSON
+        None,
+        JSON,
+        XWWWFormUrlEncoded
     }
 
     public string ServerURLAuthAPI { get { return serverURLAPI.ServerURLAuthAPI; } private set { } }
     public string ServerURLMediaAPI { get { return serverURLAPI.ServerURLMediaAPI; } private set { } }
+    public string ServerProvidersAPI { get { return serverURLAPI.ServerProvidersAPI; } private set { } }
 
     [SerializeField] ServerURLAPIScriptableObject serverURLAPI;
+
+    private const int COUNT_REPEAT = 3;
+    private const float TIME_REPEAT = 0.1f;
+    private const int TIMEOUT_REQUEST = 5;
 
     public void GetRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
         StartCoroutine(GetRequesting(url, responseDelegate, errorTypeDelegate, headerAccessToken));
@@ -23,8 +30,8 @@ public class WebRequestHandler : MonoBehaviour {
         StartCoroutine(DeleteRequesting(url, responseDelegate, errorTypeDelegate, headerAccessToken));
     }
 
-    public void PostRequest<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
-        StartCoroutine(PostRequesting(url, body, bodyType, responseDelegate, errorTypeDelegate, headerAccessToken));
+    public void PostRequest<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null, int countRepeat = COUNT_REPEAT) {
+        StartCoroutine(PostRequesting(url, body, bodyType, responseDelegate, errorTypeDelegate, headerAccessToken, countRepeat));
     }
 
     public void PostRequestMultipart(string url, byte[] body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
@@ -47,6 +54,8 @@ public class WebRequestHandler : MonoBehaviour {
             if (headerAccessToken != null) {
                 request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
             }
+
+            request.timeout = TIMEOUT_REQUEST;
 
             yield return request.SendWebRequest();
 
@@ -105,7 +114,7 @@ public class WebRequestHandler : MonoBehaviour {
 
         if (headerAccessToken != null)
             wr.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
-
+        wr.timeout = TIMEOUT_REQUEST + TIMEOUT_REQUEST;
         yield return wr.SendWebRequest();
 
         if (wr.isNetworkError || wr.isHttpError) {
@@ -117,52 +126,101 @@ public class WebRequestHandler : MonoBehaviour {
         }
     }
 
-    IEnumerator PostRequesting<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
-        byte[] bodyRaw;
-        var request = new UnityWebRequest(url, "POST");
+    IEnumerator PostRequesting<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null, int countRepeat = 0) {
+        byte[] bodyRaw = new byte[0];
 
-        switch (bodyType) {
-            default: //only Json at this moment
-                string bodyString = JsonUtility.ToJson(body);
-                bodyRaw = Encoding.UTF8.GetBytes(bodyString);
-                break;
+        UnityWebRequest request;// = new UnityWebRequest(url, "POST");
+
+        try {
+            switch (bodyType) {
+                case BodyType.XWWWFormUrlEncoded:
+                    Debug.Log("Post XWWWFormUrlEncoded");
+                    WWWForm form = new WWWForm();
+                    Type listType = typeof(T);
+                    if (listType == typeof(Dictionary<string, string>)) {
+                        Dictionary<string, string> fields = body as Dictionary<string, string>;
+                        foreach (var field in fields) {
+                            form.AddField(field.Key, field.Value);
+                            Debug.Log("add field " + field.Key + " " + field.Value);
+                        }
+                    } else if (listType == typeof(Dictionary<string, byte[]>)) {
+                        Dictionary<string, byte[]> fields = body as Dictionary<string, byte[]>;
+                        foreach (var field in fields) {
+                            form.AddBinaryData(field.Key, field.Value);
+                            Debug.Log("add field " + field.Key + " " + field.Value);
+                        }
+                    }
+                    request = UnityWebRequest.Post(url, form);
+                    request.timeout = 5;
+                    request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    break;
+                case BodyType.JSON: //only Json at this moment
+
+                    string bodyString = JsonUtility.ToJson(body);
+                    bodyRaw = Encoding.UTF8.GetBytes(bodyString);
+                    request = new UnityWebRequest(url, "POST");
+                    request.SetRequestHeader("Content-Type", "application/json");
+                    request.uploadHandler = new UploadHandlerRaw(data: bodyRaw);
+                    break;
+                case BodyType.None:
+                default:
+                    request = new UnityWebRequest(url, "POST");
+                    break;
+            }
+
+            //  if(bodyType != BodyType.None && body != null)
+
+            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+
+            if (headerAccessToken != null)
+                request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
+
+        } catch (System.Exception e) {
+            Debug.Log("post error web request " + e);
+            errorTypeDelegate?.Invoke(500, "Sorry, problems with the request to the server");
+            yield break;
         }
-
-        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-
-        if (headerAccessToken != null)
-            request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
 
         yield return request.SendWebRequest();
 
         if (request.isNetworkError || request.isHttpError) {
-            //            Debug.Log(request.responseCode + " : " + request.error);
-            errorTypeDelegate(request.responseCode, request.downloadHandler.text);
+            HelperFunctions.DevLogError(request.responseCode + " : " + request.error);
+            if (request.responseCode == 500 && countRepeat > 0) {
+                HelperFunctions.DevLogError("Server 500");
+                countRepeat--;
+                yield return new WaitForSeconds(TIME_REPEAT * (COUNT_REPEAT - countRepeat));
+                PostRequest(url, body, bodyType, responseDelegate, errorTypeDelegate, headerAccessToken, countRepeat);
+            } else {
+                errorTypeDelegate(request.responseCode, request.downloadHandler.text);
+            }
         } else {
-            //            Debug.Log(request.responseCode + " : " + request.downloadHandler.text);
             responseDelegate(request.responseCode, request.downloadHandler.text);
+
         }
     }
 
     IEnumerator PutRequesting<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
         byte[] bodyRaw;
         var request = new UnityWebRequest(url, "PUT");
+        try {
+            switch (bodyType) {
+                default: //only Json at this moment
+                    string bodyString = JsonUtility.ToJson(body);
+                    bodyRaw = Encoding.UTF8.GetBytes(bodyString);
+                    break;
+            }
 
-        switch (bodyType) {
-            default: //only Json at this moment
-                string bodyString = JsonUtility.ToJson(body);
-                bodyRaw = Encoding.UTF8.GetBytes(bodyString);
-                break;
+            request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.timeout = TIMEOUT_REQUEST;
+            if (headerAccessToken != null)
+                request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
+
+        } catch (System.Exception e) {
+            Debug.Log("post error web request " + e);
+            yield break;
         }
-
-        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-
-        if (headerAccessToken != null)
-            request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
 
         yield return request.SendWebRequest();
 
@@ -177,20 +235,24 @@ public class WebRequestHandler : MonoBehaviour {
         byte[] bodyRaw;
         var request = new UnityWebRequest(url, "PATCH");
 
-        switch (bodyType) {
-            default: //only Json at this moment
-                string bodyString = JsonUtility.ToJson(body);
-                bodyRaw = Encoding.UTF8.GetBytes(bodyString);
-                break;
+        try {
+            switch (bodyType) {
+                default: //only Json at this moment
+                    string bodyString = JsonUtility.ToJson(body);
+                    bodyRaw = Encoding.UTF8.GetBytes(bodyString);
+                    break;
+            }
+
+            request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.timeout = TIMEOUT_REQUEST;
+            if (headerAccessToken != null)
+                request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
+        } catch (System.Exception e) {
+            Debug.Log("post error web request " + e);
+            yield break;
         }
-
-        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-
-        if (headerAccessToken != null)
-            request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
-
         yield return request.SendWebRequest();
 
         if (request.isNetworkError || request.isHttpError) {
@@ -210,7 +272,7 @@ public class WebRequestHandler : MonoBehaviour {
 
             if (headerAccessToken != null)
                 request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
-
+            request.timeout = TIMEOUT_REQUEST;
             yield return request.SendWebRequest();
 
             if (request.isNetworkError || request.isHttpError) {

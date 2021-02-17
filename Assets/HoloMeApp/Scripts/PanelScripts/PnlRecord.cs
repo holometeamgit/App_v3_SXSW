@@ -13,9 +13,6 @@ using System.IO;
 public class PnlRecord : MonoBehaviour
 {
     [SerializeField]
-    GameObject watermarkCanvasObject;
-
-    [SerializeField]
     Camera canvasCamera;
 
     [SerializeField]
@@ -61,6 +58,17 @@ public class PnlRecord : MonoBehaviour
     CanvasGroup canvasGroup;
 
     [SerializeField]
+    RectTransform rectTeaser;
+
+    [SerializeField]
+    RectTransform rectNormal;
+
+    [SerializeField]
+    Button btnBuyTickets;
+    [SerializeField]
+    PurchaseManager purchaseManager;
+
+    [SerializeField]
     UnityEvent OnRecordStarted;
     [SerializeField]
     UnityEvent OnRecordStopped;
@@ -68,6 +76,13 @@ public class PnlRecord : MonoBehaviour
     UnityEvent OnSnapshotStarted;
     [SerializeField]
     UnityEvent OnSnapshotEnded;
+
+    [SerializeField]
+    UIThumbnailsController uiThumbnailsController;
+    [SerializeField]
+    GameObject watermarkCanvasObject;
+    [SerializeField]
+    Text txtWaterMarkText;
 
     public bool Recording { get; set; }
     private bool recordLengthFailed;
@@ -135,18 +150,36 @@ public class PnlRecord : MonoBehaviour
         //btnRecord.GetComponent<Image>().sprite = spriteRecord;
         videoButtonContainerPosition = rtButtonContainer.anchoredPosition;
         canvasGroup.alpha = 0;
+
+        purchaseManager.OnPurchaseSuccessful += RefreshBuyBtnState;
+        uiThumbnailsController.OnPlay += x => txtWaterMarkText.text = "@" + x.user; //Gameobject must be active in the editor for this to work correctly
+        gameObject.SetActive(false);
     }
 
-    public void EnableRecordPanel(bool openForStream = false)
+    public void EnableRecordPanel(bool isTeaser, bool openForStream = false)
     {
         //int buttonOffset = streamOffset ? 210 : 0;
         //imgFillBackground.rectTransform.offsetMax = new Vector2(imgFillBackground.rectTransform.offsetMax.x, buttonOffset);
         //imgFillBackground.rectTransform.offsetMin = new Vector2(imgFillBackground.rectTransform.offsetMin.x, buttonOffset);
 
-        btnShare.gameObject.SetActive(openForStream? false : true);
+        btnBuyTickets.gameObject.SetActive(isTeaser && !purchaseManager.IsBought());
+        AssignRectTransform(imgFillBackground.rectTransform, isTeaser ? rectTeaser : rectNormal);
+        btnShare.gameObject.SetActive(openForStream || isTeaser ? false : true);
 
         gameObject.SetActive(true);
         canvasGroup.DOFade(1, .5f);
+    }
+
+    private void RefreshBuyBtnState()
+    {
+        btnBuyTickets.gameObject.SetActive(purchaseManager.IsBought() ? false : btnBuyTickets.gameObject.activeSelf);
+    }
+
+    private void AssignRectTransform(RectTransform transformToAssign, RectTransform reference)
+    {
+        transformToAssign.anchoredPosition = reference.anchoredPosition;
+        transformToAssign.anchorMax = reference.anchorMax;
+        transformToAssign.anchorMin = reference.anchorMin;
     }
 
     private void OnDisable()
@@ -158,6 +191,8 @@ public class PnlRecord : MonoBehaviour
     {
         videoWidth = MakeEven(Screen.width / 2);
         videoHeight = MakeEven(Screen.height / 2);
+        //videoWidth = Screen.width;
+        //videoHeight = Screen.height;
         //print($"{videoWidth} x {videoHeight}");
         //videoWidth = 720;
         //videoHeight = (int)((float)videoWidth * ratio);

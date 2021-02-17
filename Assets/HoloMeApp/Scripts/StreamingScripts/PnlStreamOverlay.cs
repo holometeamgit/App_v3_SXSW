@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using DG.Tweening;
 using TMPro;
-using NatShare;
 using UnityEngine.Events;
 using System.Collections;
 using UnityEngine.UI;
@@ -45,6 +44,9 @@ public class PnlStreamOverlay : MonoBehaviour {
     UserWebManager userWebManager;
 
     [SerializeField]
+    ShareManager shareManager;
+
+    [SerializeField]
     PnlViewingExperience pnlViewingExperience;
 
     [SerializeField]
@@ -70,13 +72,18 @@ public class PnlStreamOverlay : MonoBehaviour {
     Coroutine countdownRoutine;
     bool isStreamer;
     bool isUsingFrontCamera;
+    [SerializeField]
+    VideoSurface videoSurface;
 
-    Vector3 streamQuadDefaultScale;
+    bool initialised;
+    //Vector3 rawImageQuadDefaultScale;
 
-    private void Awake() {
+     void Init() {
+        if (initialised)
+            return;
 
-        if (streamQuadDefaultScale == Vector3.zero)
-            streamQuadDefaultScale = cameraRenderImage.transform.localScale;
+        //if (rawImageQuadDefaultScale == Vector3.zero)
+        //    rawImageQuadDefaultScale = cameraRenderImage.transform.localScale;
 
         agoraController.OnCountIncremented += (x) => txtUserCount.text = x.ToString();
         agoraController.OnStreamerLeft += CloseAsViewer;
@@ -84,10 +91,15 @@ public class PnlStreamOverlay : MonoBehaviour {
             var videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
             if (videoSurface) {
                 isUsingFrontCamera = !isUsingFrontCamera;
-                videoSurface.EnableFlipTextureApplyTransform(!isUsingFrontCamera, false, streamQuadDefaultScale);
+                //videoSurface.EnableFlipTextureApplyTransform(!isUsingFrontCamera, false, rawImageQuadDefaultScale); //This may need to be adjusted if camera flip button ever comes back
             }
         };
+        agoraController.OnPreviewStopped += () => videoSurface.SetEnable(false);
+        
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
+
+        AddVideoSurface();
+        initialised = true;
     }
 
     private void OnEnable() {
@@ -106,11 +118,14 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void ToggleARSessionObjects(bool enable) {
-        arSessionOrigin.SetActive(enable);
-        arSession.SetActive(enable);
+        arSessionOrigin?.SetActive(enable);
+        arSession?.SetActive(enable);
     }
 
     public void OpenAsStreamer() {
+        Init();
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+        agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
         isStreamer = true;
         gameObject.SetActive(true);
@@ -119,15 +134,19 @@ public class PnlStreamOverlay : MonoBehaviour {
         ToggleARSessionObjects(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
         //StartCountdown();
+        StartCoroutine(OnPreviewReady());
+        agoraController.StartPreview();
     }
 
-    public void OpenAsViewer() {
+    public void OpenAsViewer(string channelName) {
+        agoraController.IsChannelCreator = false;
+        agoraController.ChannelName = channelName;
         isStreamer = false;
         blurController.RemoveBlur();
         gameObject.SetActive(true);
         controlsPresenter.SetActive(false);
         controlsViewer.SetActive(true);
-        pnlViewingExperience.ActivateForStreaming();
+        pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName);
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
     }
@@ -138,14 +157,21 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void ShowLeaveWarning() {
         if (isStreamer)
-            pnlGenericError.ActivateDoubleButton("End the live stream?", "Closing this page will end the live stream and disconnect your users.", onButtonOnePress: () => { CloseAsStreamer(); }, onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
+            pnlGenericError.ActivateDoubleButton("End the live stream?",
+                "Closing this page will end the live stream and disconnect your users.",
+                onButtonOnePress: () => { CloseAsStreamer(); },
+                onButtonTwoPress: () => pnlGenericError.gameObject.SetActive(false));
         else
-            pnlGenericError.ActivateDoubleButton("Disconnect from live stream?", "Closing this page will disconnect you from the live stream", onButtonOnePress: () => { CloseAsViewer(); }, onButtonTwoPress: () => pnlGenericError.GetComponent<AnimatedTransition>().DoMenuTransition(false));
+            pnlGenericError.ActivateDoubleButton("Disconnect from live stream?",
+                "Closing this page will disconnect you from the live stream",
+                onButtonOnePress: () => { CloseAsViewer(); },
+                onButtonTwoPress: () => pnlGenericError.gameObject.SetActive(false));
     }
 
     public void CloseAsStreamer() {
         OnCloseAsStreamer.Invoke();
         StopStream();
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
     }
 
     private void CloseAsViewer() {
@@ -154,32 +180,11 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void ShareStream() {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareHologramPressed);
-
-        using (var payload = new SharePayload()) {
-            string appName = "Beem";
-            string iosLink = "https://apps.apple.com/us/app/beem/id1532446771?ign-mpt=uo%3D2";
-            string androidLink = "https://play.google.com/store/apps/details?id=com.HoloMe.Beem";
-            string appLink;
-            switch (Application.platform) {
-                case RuntimePlatform.IPhonePlayer:
-                    appLink = iosLink;
-                    appName = "Beem+";
-                    break;
-
-                case RuntimePlatform.Android:
-                    appLink = androidLink;
-                    appName = "Beem";
-                    break;
-
-                default:
-                    appLink = iosLink + " - " + androidLink;
-                    break;
-            }
-
-            string message = $"Click the link below to download the {appName} app which lets you experience human holograms using augmented reality: ";
-            payload.AddText(message + appLink);
+        if (shareManager == null) {
+            shareManager = FindObjectOfType<ShareManager>();
+            Debug.LogWarning("Share manager wasn't assigned in the inspect used find to replace");
         }
+        shareManager.ShareStream();
     }
 
     public void StartCountdown() {
@@ -192,33 +197,40 @@ public class PnlStreamOverlay : MonoBehaviour {
 
         EnableStreamControls(false);
         agoraController.Leave();
+        cameraRenderImage.texture = null;
     }
 
     void StartStream() {
         agoraController.JoinOrCreateChannel(true);
         EnableStreamControls(true);
-        AddVideoSurface();
     }
 
     private void AddVideoSurface() {
-        VideoSurface videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
+        videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
         if (!videoSurface) {
             videoSurface = cameraRenderImage.gameObject.AddComponent<VideoSurface>();
             isUsingFrontCamera = true;
-            videoSurface.EnableFlipTextureApplyTransform(true, true, streamQuadDefaultScale);
-            //videoSurface.EnableFilpTextureApply(true, true);
+            //videoSurface.EnableFlipTextureApplyTransform(false, true, rawImageQuadDefaultScale);
+            videoSurface.EnableFilpTextureApply(false, true);
             videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
             videoSurface.SetGameFps(agoraController.frameRate);
-            videoSurface.SetEnable(true);
+            //videoSurface.SetEnable(true);
         }
-        StartCoroutine(Resize());
     }
 
-    IEnumerator Resize() {
-        while (!agoraController.IsLive) {
+    IEnumerator OnPreviewReady() {
+        videoSurface.SetEnable(true);
+        cameraRenderImage.color = Color.black;
+
+        if(!agoraController.VideoIsReady || cameraRenderImage.texture == null)
+            AnimatedCentreTextMessage("Loading Preview");
+
+        while (!agoraController.VideoIsReady || cameraRenderImage.texture == null) {
             yield return null;
         }
-        yield return new WaitForSeconds(3);
+        //yield return new WaitForSeconds(3);
+        AnimatedFadeOutMessage();
+        cameraRenderImage.color = Color.white;
         cameraRenderImage.SizeToParent();
     }
 

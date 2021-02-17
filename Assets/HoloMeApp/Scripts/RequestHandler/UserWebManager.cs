@@ -7,8 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 
-public class UserWebManager : MonoBehaviour
-{
+public class UserWebManager : MonoBehaviour {
     public Action OnUserInfoLoaded;
     public Action OnErrorUserInfoLoaded;
 
@@ -55,22 +54,25 @@ public class UserWebManager : MonoBehaviour
         string bio = null,
         string profile_picture_s3_url = null) {
 
-        Debug.Log(userName + " " +
-            email + " " +
-            first_name + " " +
-            last_name + " " +
-            bio + " " +
-            profile_picture_s3_url);
+        LoadUserInfo(() =>
+       UpdateUserDataAfterLoadUserInfo(userName, email, first_name, last_name,
+           bio, profile_picture_s3_url));
+    }
 
-        LoadUserInfo( () =>
-        UpdateUserDataAfterLoadUserInfo(userName, email, first_name, last_name,
-            bio, profile_picture_s3_url));
+    public long GetUserID() {
+        if (userData == null)
+            return -1;
+        return userData.pk;
+    }
+
+    public string GetUnituniqueName() {
+        return GetEmail();
     }
 
     public string GetFullName() {
         if (userData == null || string.IsNullOrEmpty(userData.first_name))
             return null;
-        return userData.first_name + userData.last_name;
+        return userData.first_name + " " + userData.last_name;
     }
 
     public string GetFirstName() {
@@ -108,6 +110,12 @@ public class UserWebManager : MonoBehaviour
             ErrorMsgCallBack, accountManager.GetAccessToken().access);
     }
 
+    private string GetEmail() {
+        if (userData == null || string.IsNullOrEmpty(userData.email))
+            return null;
+        return userData.email;
+    }
+
     private void UpdateUserDataAfterLoadUserInfo(string userName, string email,
         string first_name, string last_name, string bio, string profile_picture_s3_url) {
         if (userData == null)
@@ -118,16 +126,9 @@ public class UserWebManager : MonoBehaviour
         userData.first_name = first_name ?? userData.first_name;
         userData.last_name = last_name ?? userData.last_name;
 
-        userData.profile = userData.profile != null ? userData.profile : new ProfileJsonData();
+        userData.profile = userData.profile ?? new ProfileJsonData();
         userData.profile.bio = bio ?? userData.profile.bio;
         userData.profile.profile_picture_s3_url = profile_picture_s3_url ?? userData.profile.profile_picture_s3_url;
-
-        Debug.Log(userName + " " +
-            email + " " +
-            first_name + " " +
-            last_name + " " +
-            bio + " " +
-            profile_picture_s3_url);
 
         UploadUserInfo();
     }
@@ -149,17 +150,28 @@ public class UserWebManager : MonoBehaviour
     #endregion
 
     #region upload user
+
     private void UploadUserInfoCallBack(long code, string body) {
         OnUserInfoUploaded?.Invoke();
     }
 
     private void ErrorUploadUserInfoCallBack(long code, string body) {
+        BadRequestUserUploadJsonData badRequest;
         try {
-            BadRequestUserUploadJsonData badRequest = JsonUtility.FromJson<BadRequestUserUploadJsonData>(body);
-            Debug.Log("ErrorUploadUserInfoCallBack " + code + " " + body);
+            if (code != 500) {
+                badRequest = JsonUtility.FromJson<BadRequestUserUploadJsonData>(body);
+            } else {
+                badRequest = new BadRequestUserUploadJsonData();
+                badRequest.code = code;
+                badRequest.errorMsg = body;
+            }
 
             OnErrorUserUploaded?.Invoke(badRequest);
-        } catch (System.Exception e) { }
+        } catch (System.Exception) {
+            badRequest = new BadRequestUserUploadJsonData();
+            badRequest.code = code;
+            badRequest.errorMsg = body;
+        }
     }
 
     #endregion
@@ -178,7 +190,7 @@ public class UserWebManager : MonoBehaviour
     private void ErrorMsgCallBack(long code, string body) {
         Debug.LogWarning(code + " " + body);
     }
- 
+
 
     #region url generation functions
     private string GetRequestGetUserURL() {

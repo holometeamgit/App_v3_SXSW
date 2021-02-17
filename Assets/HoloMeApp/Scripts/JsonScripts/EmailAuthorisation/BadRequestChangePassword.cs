@@ -2,8 +2,7 @@
 using System;
 
 [Serializable]
-public class BadRequestChangePassword
-{
+public class BadRequestChangePassword : BadRequestJsonData {
     public List<string> new_password1;
     public List<string> new_password2;
     public string detail;

@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+using UnityEngine.UI;
+
 
 public class FocusSquareV2 : PlacementHandler
 {
@@ -18,7 +20,8 @@ public class FocusSquareV2 : PlacementHandler
         LOADING,      // is video still loading
         PINCH,        // Pich to zoom or drag to replace
         DELAY_AFTER_PINCH, // Short delay after pinch
-        HIDE 
+        HIDE,         // Show/Hide tap to place after all
+        DRAG_AND_DROP // Drag and drop state
     }
 
     private enum FocusAnimationStates
@@ -52,6 +55,11 @@ public class FocusSquareV2 : PlacementHandler
     private float _delayAfterPinch = 2.0f;
     private float _currentDelayAfterPinch = 0.0f;
 
+    [SerializeField]
+    private float _delayAfterLoading = 2.5f;
+    private float _currentDelayAfterLoading = 0.0f;
+
+    
     // Remove it and add normal stuff
     [SerializeField] private Transform _focusSquareV2Sprite;
     [SerializeField] private PnlViewingExperience _pnlViewingExperience;
@@ -70,14 +78,58 @@ public class FocusSquareV2 : PlacementHandler
     private Vector3 _raycastOrigin;
     private Vector3 _raycastDirection;
 
+    [Space(20)] 
+    [SerializeField] private string _arPlanesLayerMaskName = "ARPlanes";
+    private int _arPlanesLayerMask;
+
+    public event Action OnPlacementUIHelperFinished;
     public HoloMe HoloMe
     {
         private get;
         set;
     }
 
+    private bool _launchFirstTime = true;
+
+    [SerializeField] private UIThumbnailsController _uiThumbnailsController;
+    private StreamJsonData.Data _streamJsonData;
+
+    [SerializeField] 
+    private Transform _debugCapsule;
+    
+    private static List<ARRaycastHit> _hitsDrugAndDrop = new List<ARRaycastHit>();
+    private Vector2 _touchPosition;
+    
+    [SerializeField]
+    private float _maxDistanceOnSelection = 25.0f;
+    
+    // *** DEBUG ***
+    private int _stopPlaneConstruction = -1;
+    [SerializeField] private Toggle _stopPlaneConstructionCheckbox;
+    // *** END DEBUG ***
+
+    private void Awake()
+    {
+        if (_uiThumbnailsController != null)
+        {
+            _uiThumbnailsController.OnPlay += delegate(StreamJsonData.Data data) { _streamJsonData = data; };
+        }
+
+        _stopPlaneConstruction = PlayerPrefs.GetInt("_stopPlaneConstruction", -1);
+
+        _stopPlaneConstructionCheckbox.isOn = _stopPlaneConstruction >= 0;
+        _stopPlaneConstructionCheckbox.onValueChanged.AddListener(x =>
+        {
+            _stopPlaneConstruction = x ? 1 : -1;
+            PlayerPrefs.SetInt("_stopPlaneConstruction", _stopPlaneConstruction);
+            Debug.Log("_stopPlaneConstruction PP: " + PlayerPrefs.GetInt("_stopPlaneConstruction", -1));
+            Debug.Log("_stopPlaneConstruction : " + _stopPlaneConstruction);
+        });
+    }
+
     private void OnEnable()
     {
+        _arPlanesLayerMask = LayerMask.NameToLayer(_arPlanesLayerMaskName);
         SwitchToState(States.NOT_RUNNUNG);
     }
 
@@ -92,8 +144,13 @@ public class FocusSquareV2 : PlacementHandler
                 _currentState = value;
                 break;
             case States.VIDEO_LAUNCH:
-                TurnPlanes(true);
+                if (_launchFirstTime)
+                {
+                    TurnPlanes(true);
+                }
+                
                 _currentState = value;
+                //_launchFirstTime = false;
                 break;
             case States.SCANNING:
                 TapToPlaceAnimation();
@@ -109,6 +166,7 @@ public class FocusSquareV2 : PlacementHandler
                 break;
             case States.LOADING:
                 _focusSquareRenderer.color = new Color(1, 1, 1, 1.0f);
+                _pnlViewingExperience.HideScanMessage();
                 TurnPlanes(false);
                 LoadignAnimation();
                 _currentState = value;
@@ -125,7 +183,18 @@ public class FocusSquareV2 : PlacementHandler
                 _currentState = value;
                 break;
             case States.HIDE:
+                TurnPlanes(false);
+                if (_isHideStateReachFirstTime)
+                {
+                    _isHideStateReachFirstTime = false;
+                    OnPlacementUIHelperFinished?.Invoke();
+                }
+
                 TapToPlaceAnimation();
+                _currentState = value;
+                break;
+            case States.DRAG_AND_DROP:
+                TurnPlanes(true);
                 _currentState = value;
                 break;
         }
@@ -143,6 +212,19 @@ public class FocusSquareV2 : PlacementHandler
                 break;
             case States.VIDEO_LAUNCH:
                 TransformUpdate();
+
+                if (IsAllButtonsCloseNotActive())
+                {
+                    SwitchToState(States.NOT_RUNNUNG);
+                    break;
+                }
+                
+                if (!_launchFirstTime && VideoQuadPlacing)
+                {
+                    SwitchToState(States.LOADING);
+                    break;
+                }
+
                 if (VideoLoading)
                 {
                     SwitchToState(States.SCANNING);
@@ -154,6 +236,7 @@ public class FocusSquareV2 : PlacementHandler
                 if (IsAllButtonsCloseNotActive())
                 {
                     SwitchToState(States.NOT_RUNNUNG);
+                    break;
                 }
 
                 if (SurfaceDetected()) 
@@ -168,17 +251,20 @@ public class FocusSquareV2 : PlacementHandler
                 if (VideoQuadPlacing) 
                 {
                     SwitchToState(States.LOADING);
+                    break;
                 }
 
                 if (!SurfaceDetected()) 
                 {
                     SwitchToState(States.SCANNING);
+                    break;
                 }
                 else
                 {
                     if (TapToPlace())
                     {
-                        SwitchToState(States.LOADING); // TODO - check it
+                        SwitchToState(States.LOADING);
+                        break;
                     }
                 }
 
@@ -188,52 +274,149 @@ public class FocusSquareV2 : PlacementHandler
                 }
                 break;
             case States.LOADING:
-                // if (!VideoLoading) 
-                if (HoloMe != null && HoloMe.IsPrepared)
-                {
-                    SwitchToState(States.PINCH);
-                }
-                break;
-            case States.PINCH:
-                // TODO add delay after pinch
-                if (Input.touchCount > 1) 
-                {
-                    SwitchToState(States.DELAY_AFTER_PINCH);
-                }
-
+                // if (!VideoLoading)
                 if (IsAllButtonsCloseNotActive())
                 {
-                    SwitchToState(States.HIDE);
+                    break;
                 }
+
+                if (SurfaceDetected())
+                {
+                    TapToPlace();
+                }
+
+                TransformUpdate();
+                
+                if (HoloMe != null && HoloMe.IsPrepared)
+                {
+                    SwitchToState(_launchFirstTime ? States.PINCH : States.HIDE);
+                    break;
+                }
+                
+                //if (_uiThumbnailsController != null) TODO split for stream/non stream
+                if (_currentDelayAfterLoading < _delayAfterLoading)
+                {
+                    _currentDelayAfterLoading += Time.deltaTime;
+                    break;
+                }
+
+                _currentDelayAfterLoading = 0.0f;
+                SwitchToState(_launchFirstTime ? States.PINCH : States.HIDE);
+                break;
+            case States.PINCH:
+                if (IsAllButtonsCloseNotActive())
+                {
+                    break;
+                }
+                
+                if (Input.touchCount > 0) 
+                {
+                    SwitchToState(States.DELAY_AFTER_PINCH);
+                    break;
+                }
+                
+                if (SurfaceDetected())
+                {
+                    TapToPlace();
+                    break;
+                }
+
+                TransformUpdate();
                 break;
             case States.DELAY_AFTER_PINCH:
+                
+                if (IsAllButtonsCloseNotActive())
+                {
+                    _currentDelayAfterPinch = _delayAfterPinch;
+                    break;
+                }
+                
                 HandleDistanceFade();
+                
+                if (SurfaceDetected())
+                {
+                    TapToPlace();
+                }
+
+                TransformUpdate();
+                
                 if (_currentDelayAfterPinch < _delayAfterPinch)
                 {
                     _currentDelayAfterPinch += Time.deltaTime;
                     break;
                 }
-                _currentDelayAfterPinch = 0.0f;
-                SwitchToState(States.HIDE);
+                
+                if (IsOneOfButtonsCloseActive())
+                {
+                    _currentDelayAfterPinch = 0.0f;
+                    _launchFirstTime = false;
+                    SwitchToState(States.HIDE);
+                }
                 break;
             case States.HIDE:
                 HideState();
                 break;
+            case States.DRAG_AND_DROP:
+                _focusSquareRenderer.color = Color.Lerp(_focusSquareRenderer.color, new Color(1, 1, 1, 0.0f), Time.deltaTime * 5.0f);
+                if (Input.touchCount == 1)
+                {
+                    var touch = Input.GetTouch(0);
+                    switch (touch.phase)
+                    {
+                        case TouchPhase.Moved:
+                            _touchPosition = touch.position;
+                            break;
+                        case TouchPhase.Ended:
+                            SwitchToState(States.HIDE);
+                            break;
+                    }
+                }
+                
+                if(m_RaycastManager.Raycast(_touchPosition, _hitsDrugAndDrop, TrackableType.PlaneWithinPolygon))
+                {
+                    var hitPose = _hitsDrugAndDrop[0].pose;
+                    _debugCapsule.transform.position = hitPose.position;
+                    _hologramPlacedPosition = hitPose.position;
+                    OnPlaceDetected?.Invoke(_hologramPlacedPosition);
+                }
+                break;
         }
     }
 
+    private bool _isHideStateReachFirstTime = true;
+    
     private void HideState()
     {
+        if (Input.touchCount == 1)
+        {
+            var touch = Input.GetTouch(0);
+            switch (touch.phase)
+            {
+                case TouchPhase.Began:
+                    var ray = _arSessionOrigin.camera.ScreenPointToRay(touch.position);
+
+                    if (Physics.Raycast(ray, out var hitObject, _maxDistanceOnSelection))
+                    {
+                        Debug.Log(hitObject.transform.name);
+                        if (hitObject.transform.name.Contains("PlaceObject"))
+                        {
+                            SwitchToState(States.DRAG_AND_DROP);
+                        }
+                    }
+                    break;
+            }
+        }
+
         switch (_focusAnimationState)
         {
             case FocusAnimationStates.TAP:
             {
                 HandleDistanceFade();
-                if (!HoloMe.IsPrepared)
+                if (!HoloMe.IsPrepared && _currentDelayAfterLoading <= _delayAfterLoading)
                 {
                     LoadignAnimation();
                 }
-
+            
                 break;
             }
             case FocusAnimationStates.LOADING:
@@ -241,8 +424,16 @@ public class FocusSquareV2 : PlacementHandler
                 if (HoloMe.IsPrepared)
                 {
                     TapToPlaceAnimation();
+                    break;
                 }
-
+                
+                // TODO - fix it with Agora api
+                if (_currentDelayAfterLoading < _delayAfterLoading)
+                {
+                    _currentDelayAfterLoading += Time.deltaTime;
+                }
+                
+                TapToPlaceAnimation();
                 break;
             }
         }
@@ -253,7 +444,11 @@ public class FocusSquareV2 : PlacementHandler
         }
 
         TransformUpdate();
-       
+
+        if (IsAllButtonsCloseNotActive())
+        {
+            _currentDelayAfterLoading = 0.0f;
+        }
     }
 
     private bool SurfaceDetected() 
@@ -267,15 +462,23 @@ public class FocusSquareV2 : PlacementHandler
 
         return _hits.Count > 0 && _arPlaneManager.trackables.count > 0;
     }
+    
+    private float _angle;
+    [SerializeField] private float _maxAngle = 10;
+    private Vector3 _upWorldDirection;
 
     private void HandleDistanceFade()
     {
+        var targetDir = _hologramPlacedPosition + _upWorldDirection * 1.02f - _arSessionOrigin.camera.transform.forward;
+        _angle = Vector3.Angle(targetDir, _arSessionOrigin.camera.transform.position);
+        
+        // TODO - think about angle and what the fuck is going on here?
         if (_D <= _D_max)
         {
             _focusSquareRenderer.color = Color.Lerp(_focusSquareRenderer.color, new Color(1, 1, 1, GetAlphaBasedOnDistance()), Time.deltaTime * 5.0f);
             return;
         }
-       
+        
         _focusSquareRenderer.color = Color.Lerp(_focusSquareRenderer.color, new Color(1, 1, 1, 1 / (_D - _D_max + 1)), Time.deltaTime * 5.0f);
     }
 
@@ -349,8 +552,10 @@ public class FocusSquareV2 : PlacementHandler
             //_hologramPlacedPosition = _hits[0].pose.position;
 
             OnPlaceDetected?.Invoke(_focusSquareV2Sprite.transform.position);
+            _upWorldDirection = _focusSquareV2Sprite.transform.forward;
             _hologramPlacedPosition = _focusSquareV2Sprite.transform.position;
-
+            _debugCapsule.position = _focusSquareV2Sprite.transform.position;
+            
             TurnPlanes(false);
 
             return true;
@@ -358,19 +563,29 @@ public class FocusSquareV2 : PlacementHandler
 
         return false;
     }
-    
+
     private void TurnPlanes(bool value)
     {
-        foreach (var plane in _arPlaneManager.trackables)
+        if (_stopPlaneConstruction > 0)
         {
-            var arPlaneMeshVisualizer = plane.GetComponent<ARPlaneMeshVisualizer>();
-            if (arPlaneMeshVisualizer != null)
+            foreach (var plane in _arPlaneManager.trackables)
             {
-                arPlaneMeshVisualizer.enabled = value;
+                var arPlaneMeshVisualizer = plane.GetComponent<ARPlaneMeshVisualizer>();
+                if (arPlaneMeshVisualizer != null)
+                {
+                    arPlaneMeshVisualizer.enabled = value;
+                }
             }
+
+            _arPlaneManager.enabled = value;
+            return;
         }
 
-        //_arPlaneManager.enabled = value;
+        var oldMask = _arSessionOrigin.camera.cullingMask;
+        var newMask = value ? oldMask | (1 << _arPlanesLayerMask) : oldMask & ~(1 << _arPlanesLayerMask);
+        _arSessionOrigin.camera.cullingMask = newMask;
+
+        
     }
 
     private void TapToPlaceAnimation()
@@ -418,12 +633,12 @@ public class FocusSquareV2 : PlacementHandler
         _focusSquareV2Sprite.transform.rotation = Quaternion.Slerp(_focusSquareV2Sprite.transform.rotation, Quaternion.LookRotation(cameraForwardBearing), Time.deltaTime * 15f);
     }
 
-    // private void OnGUI()
-    // {
-    //     GUILayout.Space(400);
-    //     // GUILayout.Box("_D: " + _D.ToString());
-    //     // GUILayout.Box("_H: " + _H.ToString());
-    //     // GUILayout.Box("_x: " + _x.ToString());
+     private void OnGUI()
+     { 
+         //     GUILayout.Space(400);
+    //      GUILayout.Box("_angle: " + _angle);
+    //      GUILayout.Box("_camera angles: " + _arSessionOrigin.camera.transform.eulerAngles.ToString());
+    // //     // GUILayout.Box("_x: " + _x.ToString());
     //
     //     GUILayout.Box("_currentState: " + _currentState.ToString());
     //     //_planePrefab.GetComponent<Renderer>().sharedMaterial.SetFloat("_AlphaFactor", GUILayout.HorizontalSlider(10 / Time.time, 0, 1));
@@ -436,10 +651,20 @@ public class FocusSquareV2 : PlacementHandler
     //          //     VideoLoading = false;
     //          // }
     //          //
-    //          // GUILayout.Space(20);
-    //          // if (GUILayout.Button("Video Loading"))
-    //          // {
-    //          //     VideoLoading = true;
-    //          // }
-    // }
+    //     GUILayout.Space(20);
+        // if (GUILayout.Button("Video Loading"))
+        // {
+        //     VideoLoading = true;
+        // }
+        // if (GUILayout.Button("On"))
+        // {
+        //     TurnPlanes(true);
+        // }
+        //
+        // GUILayout.Space(20);
+        // if (GUILayout.Button("Off"))
+        // {
+        //     TurnPlanes(false);
+        // }
+     }
 }

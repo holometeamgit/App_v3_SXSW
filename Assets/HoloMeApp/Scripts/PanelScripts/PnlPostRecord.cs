@@ -41,13 +41,15 @@ public class PnlPostRecord : MonoBehaviour
     [SerializeField]
     HologramHandler hologramHandler;
 
+    [SerializeField]
+    PnlShareOptions pnlShareOptions;
+
     static string lastRecordingPath;
     public static string LastRecordingPath { get { return lastRecordingPath; } }
     private Texture2D screenShot;
     private bool screenshotWasTaken;
     public string Code { private get; set; }
-    const string ShareMessage = "Experience this hologram yourself using the HoloMe app by entering code ";
-
+    
     VideoPlayer videoPlayer;
     VideoPlayer VideoPlayer {
         get {
@@ -61,7 +63,7 @@ public class PnlPostRecord : MonoBehaviour
 
     private void Start()
     {
-        //btnShare.onClick.AddListener(Share);
+        btnShare.onClick.AddListener(()=>pnlShareOptions.Activate(!screenshotWasTaken, screenShot));
 
         imgSavingCanvasGroup = imgSaving.GetComponent<CanvasGroup>();
         imgDownloadSuccessCanvasGroup = imgDownloadSuccess.GetComponent<CanvasGroup>();

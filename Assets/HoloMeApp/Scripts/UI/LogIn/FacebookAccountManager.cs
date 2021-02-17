@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Facebook.Unity;
+using Beem.SSO;
 
-public class FacebookAccountManager : MonoBehaviour
-{
+public class FacebookAccountManager : MonoBehaviour {
     [SerializeField]
     AccountManager accountManager;
     [SerializeField]
@@ -13,9 +13,12 @@ public class FacebookAccountManager : MonoBehaviour
 
     [Space]
     [SerializeField]
-    string getAccessRefreshTokenAPI = "/social-auth/complete/facebook/";
+    AuthorizationAPIScriptableObject authorizationAPI;
     [SerializeField]
     List<string> permissions = new List<string>() { "public_profile", "email" };
+
+    [Space]//TODO change to signal when DI will add
+    [SerializeField] GameObject backgroudGO;
 
     public UnityEvent OnAuthorized;
 
@@ -23,9 +26,10 @@ public class FacebookAccountManager : MonoBehaviour
     private string _accessToken;
 
     public void SignUp() {
-        if(!FB.IsInitialized)
+        if (!FB.IsInitialized)
             FBInit();
         StopAllCoroutines();
+        backgroudGO.SetActive(true);
         FB.LogInWithReadPermissions(permissions, AuthCallback);
     }
 
@@ -35,8 +39,8 @@ public class FacebookAccountManager : MonoBehaviour
 
     public void LogInWithSavedAccessToken(ResponseDelegate responseCallBack, ErrorTypeDelegate errorCallBack) {
         var aToken = LoadAccessToken();
-        if(aToken == null) {
-            errorCallBack.Invoke(0,"Missing saved Facebook book token");
+        if (aToken == null) {
+            errorCallBack.Invoke(0, "Missing saved Facebook book token");
             return;
         }
 
@@ -60,6 +64,7 @@ public class FacebookAccountManager : MonoBehaviour
     }
 
     void Awake() {
+        OnAuthorized.AddListener(() => AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete));
         FBInit();
     }
 
@@ -92,70 +97,72 @@ public class FacebookAccountManager : MonoBehaviour
     #region Facebook Sign Up
     private void AuthCallback(ILoginResult result) {
         if (FB.IsLoggedIn) {
-            var aToken = Facebook.Unity.AccessToken.CurrentAccessToken;
+            _FBAccessToken = Facebook.Unity.AccessToken.CurrentAccessToken;
             Debug.Log("Facebook Sign Up");
-            _FBAccessToken = aToken;
-            GetServerAccessToken(aToken, SuccessRequestAccessTokenCallBack, ErrorRequestAccessTokenCallBack);
+            GetServerAccessToken(_FBAccessToken, SuccessRequestAccessTokenCallBack, ErrorRequestAccessTokenCallBack);
         } else {
             Debug.Log("User cancelled login");
+            backgroudGO.SetActive(false);
         }
     }
 
-       private void ErrorRequestAccessTokenCallBack(long code, string data) {
-           Debug.Log(code + " : " + data);
-       }
+    private void ErrorRequestAccessTokenCallBack(long code, string data) {
+        Debug.Log(code + " : " + data);
+        backgroudGO.SetActive(false);
+    }
 
-       private void SuccessRequestAccessTokenCallBack(long code, string data) {
-           switch (code) {
-           case 200:
+    private void SuccessRequestAccessTokenCallBack(long code, string data) {
+        switch (code) {
+            case 200:
                 Debug.Log("Acceess token: \n" + data);
                 _accessToken = data;
                 SaveAccessTokens();
-            OnAuthorized.Invoke();
-               break;
-           }
-       }
-       #endregion
+                OnAuthorized.Invoke();
+                backgroudGO.SetActive(false);
+                break;
+        }
+    }
+    #endregion
 
-       #region request server access token
-       private void GetServerAccessToken(Facebook.Unity.AccessToken accessToken, ResponseDelegate responseCallBack, ErrorTypeDelegate errorCallBack) {
-           string url = GetRequestAccessTokenURL(accessToken.TokenString);
-           webRequestHandler.GetRequest(url, responseCallBack, errorCallBack);
-       }
+    #region request server access token
+    private void GetServerAccessToken(Facebook.Unity.AccessToken accessToken, ResponseDelegate responseCallBack, ErrorTypeDelegate errorCallBack) {
+        string url = GetRequestAccessTokenURL(accessToken.TokenString);
+        webRequestHandler.GetRequest(url, responseCallBack, errorCallBack);
+    }
 
-       private string GetStringPermissions() {
-           string resultString = "";
-           for (int i = 0; i < permissions.Count; i++) {
-               resultString += permissions[i];
-               if (i < permissions.Count - 1)
-                   resultString += ",";
-           }
-           return resultString;
-       }
+    private string GetStringPermissions() {
+        string resultString = "";
+        for (int i = 0; i < permissions.Count; i++) {
+            resultString += permissions[i];
+            if (i < permissions.Count - 1)
+                resultString += ",";
+        }
+        return resultString;
+    }
 
-       private string GetRequestAccessTokenURL(string FBAccessToken) {
-           return webRequestHandler.ServerURLAuthAPI + getAccessRefreshTokenAPI +
-               "?code=" + FBAccessToken +
-               "&state" + GetStringPermissions();
-       }
-       #endregion
+    private string GetRequestAccessTokenURL(string FBAccessToken) {
+        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.FacebookCompliteLogIn +
+            "?code=" + FBAccessToken +
+            "&state" + GetStringPermissions();
+    }
+    #endregion
 
-       #region save/load/delete access token file
-       private void SaveAccessToken(Facebook.Unity.AccessToken accessToken) {
-           FileAccountManager.SaveFile(nameof(FileAccountManager.FacebookTokenFileName), accessToken, FileAccountManager.FacebookTokenFileName);
+    #region save/load/delete access token file
+    private void SaveAccessToken(Facebook.Unity.AccessToken accessToken) {
+        FileAccountManager.SaveFile(nameof(FileAccountManager.FacebookTokenFileName), accessToken, FileAccountManager.FacebookTokenFileName);
 
-           accountManager.SaveLastAutoType(LogInType.Facebook);
-       }
+        accountManager.SaveLogInType(LogInType.Facebook);
+    }
 
-       private Facebook.Unity.AccessToken LoadAccessToken() {
-           var aToken = FileAccountManager.ReadFile<Facebook.Unity.AccessToken>(nameof(FileAccountManager.FacebookTokenFileName), FileAccountManager.FacebookTokenFileName);
-           return aToken;
-       }
+    private Facebook.Unity.AccessToken LoadAccessToken() {
+        var aToken = FileAccountManager.ReadFile<Facebook.Unity.AccessToken>(nameof(FileAccountManager.FacebookTokenFileName), FileAccountManager.FacebookTokenFileName);
+        return aToken;
+    }
 
-       private void DeleteAccessToken() {
-           FileAccountManager.DeleteFile(FileAccountManager.FacebookTokenFileName);
-       }
-       #endregion
-       
+    private void DeleteAccessToken() {
+        FileAccountManager.DeleteFile(FileAccountManager.FacebookTokenFileName);
+    }
+    #endregion
+
 
 }

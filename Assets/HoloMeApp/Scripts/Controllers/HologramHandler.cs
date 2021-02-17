@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using HoloMeSDK;
 using System.Linq;
+using System;
 
 [DisallowMultipleComponent]
 public class HologramHandler : MonoBehaviour
@@ -18,21 +19,35 @@ public class HologramHandler : MonoBehaviour
     HologramChild[] hologramChildren;
 
     [SerializeField]
+    AgoraController agoraController;
+
+    [SerializeField]
     AudioSource audioSource;
 
     [SerializeField]
     Material liveStreamMat;
 
     string hologramViewDwellTimer = nameof(hologramViewDwellTimer);
-  
+
     HoloMe holoMe;
 
     string videoURL;
 
-    public string GetVideoFileName { get { return videoURL.Split('/').Last(); } }
+    public string GetVideoFileName
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(videoURL))
+            {
+                return "";
+            }
+            return videoURL.Split('/').Last();
+        }
+    }
 
 
     bool hasPlaced;
+    bool isPreRecorded;
     VideoPlayerUnity videoPlayer;
 
     void Start()
@@ -41,7 +56,7 @@ public class HologramHandler : MonoBehaviour
         {
             LoopVideo = true
         };
-        
+
         placementHandler.OnPlaceDetected = PlayOnPlace;
 
         var focusSquareV2 = placementHandler as FocusSquareV2;
@@ -74,7 +89,7 @@ public class HologramHandler : MonoBehaviour
     public void PlayIfPlaced(string url)
     {
         HelperFunctions.DevLog("PLAY ON PLACE CALLED code =" + url);
-        
+
         videoURL = url;
 
         if (Application.isEditor)
@@ -118,18 +133,39 @@ public class HologramHandler : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This is required for analytics stream name tracking and sharing
+    /// </summary>
+    public void AssignStreamName(string streamName)
+    {
+        videoURL = streamName;
+    }
+
+    public void StartTrackingStream()
+    {
+        AnalyticsController.Instance.StartTimer(hologramViewDwellTimer, $"{AnalyticKeys.KeyHologramLiveViewTime} ({videoURL})");
+    }
+
     public void TogglePreRecordedVideoRenderer(bool enable)
     {
+        isPreRecorded = enable;
         holoMe.HologramTransform.parent.GetComponent<MeshRenderer>().enabled = enable;
     }
 
     public void StopVideo()
     {
-        float percentageViewed =  Mathf.Round( Mathf.Clamp((float)(((float)AnalyticsController.Instance.GetElapsedTime(hologramViewDwellTimer) / videoPlayer.GetClipLength()) * 100), 0, 100));
-        print("Clip Length " + videoPlayer.GetClipLength());
-        print("Percentage Watched = " + percentageViewed + "%");
-        AnalyticsController.Instance.StopTimer(hologramViewDwellTimer, percentageViewed);
-        AnalyticsController.Instance.SendCustomEvent(percentageViewed >=99 ? AnalyticKeys.KeyPerformanceEnded: AnalyticKeys.KeyPerformanceNotEnded, AnalyticParameters.ParamVideoName, GetVideoFileName);
+        if (isPreRecorded)
+        {
+            float percentageViewed = Mathf.Round(Mathf.Clamp((float)(((float)AnalyticsController.Instance.GetElapsedTime(hologramViewDwellTimer) / videoPlayer.GetClipLength()) * 100), 0, 100));
+            HelperFunctions.DevLog("Clip Length " + videoPlayer.GetClipLength());
+            HelperFunctions.DevLog("Percentage Watched = " + percentageViewed + "%");
+            AnalyticsController.Instance.StopTimer(hologramViewDwellTimer, percentageViewed);
+            AnalyticsController.Instance.SendCustomEvent(percentageViewed >= 99 ? AnalyticKeys.KeyPerformanceEnded : AnalyticKeys.KeyPerformanceNotEnded, AnalyticParameters.ParamVideoName, GetVideoFileName);
+        }
+        else
+        {
+            AnalyticsController.Instance.StopTimer(hologramViewDwellTimer);
+        }
         holoMe.StopVideo();
     }
 
@@ -138,10 +174,16 @@ public class HologramHandler : MonoBehaviour
         AnalyticsController.Instance.PauseTimer(hologramViewDwellTimer);
         holoMe.PauseVideo();
     }
-    
+
     public void ResumeVideo()
     {
         AnalyticsController.Instance.ResumeTimer(hologramViewDwellTimer);
         holoMe.ResumeVideo();
+    }
+
+    public void SetOnPlacementUIHelperFinished(Action action)
+    {
+        var focusSquareV2 = placementHandler as FocusSquareV2;
+        focusSquareV2.OnPlacementUIHelperFinished += action;
     }
 }

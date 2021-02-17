@@ -5,7 +5,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class AgoraController : MonoBehaviour {
-    public const string AppId = "9f6b623b2365404ea78ab4b08d8059eb";//"6f6b8da21bf744cb83e21a12c7497818";
+
+#if DEV
+    public const string AppId = "9f6b623b2365404ea78ab4b08d8059eb";
+#else
+    public const string AppId = "fa326d8119c84b739d398604931a3c8b";
+#endif
 
     [SerializeField]
     GameObject liveStreamQuad;
@@ -16,6 +21,12 @@ public class AgoraController : MonoBehaviour {
     [SerializeField]
     SecondaryServerCalls secondaryServerCalls;
 
+    [SerializeField]
+    StreamerCountUpdater streamerCountUpdater;
+
+    [SerializeField]
+    UserWebManager userWebManager;
+
     TokenAgoraResponse tokenAgoraResponseChannel;
     TokenAgoraResponse tokenAgoraResponseRTM;
 
@@ -23,15 +34,17 @@ public class AgoraController : MonoBehaviour {
 
     public string ChannelName { get; set; }
     public bool IsLive { get; private set; }
-    public bool IsChannelCreator { get; private set; }
+    public bool IsChannelCreator { get; set; }
+    public bool VideoIsReady { get; private set; }
 
     int userCount;
-    //int streamID;
+
     [HideInInspector]
     public uint frameRate;
     public Action<int> OnCountIncremented;
     public Action OnStreamerLeft;
     public Action OnCameraSwitched;
+    public Action OnPreviewStopped;
 
     [SerializeField]
     RawImage videoSufaceStreamerRawTex;
@@ -40,34 +53,111 @@ public class AgoraController : MonoBehaviour {
 
     static Vector3 defaultLiveStreamQuadScale;
 
-    public void Start() {
+    public void Start()
+    {
         LoadEngine(AppId);
         frameRate = 30;
         agoraRTMChatController.Init(AppId);
         secondaryServerCalls.OnStreamStarted += (x, y) => SecondaryServerCallsComplete(x, y);
-    }
 
-    void LoadEngine(string appId) {
-        if (iRtcEngine != null) {
+        iRtcEngine.OnJoinChannelSuccess = OnJoinChannelSuccess;
+        iRtcEngine.OnUserJoined = OnUserJoined; //Only fired for broadcasters
+        iRtcEngine.OnUserOffline = OnUserOffline;
+        iRtcEngine.OnWarning += (int warn, string msg) =>
+        {
+            string description = IRtcEngine.GetErrorDescription(warn);
+            string warningMessage = string.Format("Agora onWarning callback {0} {1} {2}", warn, msg, description);
+            HelperFunctions.DevLog(warningMessage);
+        };
+        iRtcEngine.OnError += (int error, string msg) =>
+        {
+            string description = IRtcEngine.GetErrorDescription(error);
+            string errorMessage = string.Format("Agora onError callback {0} {1} {2}", error, msg, description);
+            HelperFunctions.DevLogError(errorMessage);
+        };
+
+        SetEncoderSettings();
+    }
+    
+    void LoadEngine(string appId)
+    {
+        if (iRtcEngine != null)
+        {
             HelperFunctions.DevLog("Engine exists. Please unload it first!");
             return;
         }
 
         iRtcEngine = IRtcEngine.GetEngine(appId);
 
-        if (Debug.isDebugBuild || Application.isEditor)
-            iRtcEngine.SetLogFilter(LOG_FILTER.DEBUG | LOG_FILTER.INFO | LOG_FILTER.WARNING | LOG_FILTER.ERROR | LOG_FILTER.CRITICAL);
-        else
-            iRtcEngine.SetLogFilter(LOG_FILTER.CRITICAL);
+        //Logging causing iOS crashes
+#if DEV
+        //iRtcEngine.SetLogFilter(LOG_FILTER.DEBUG | LOG_FILTER.INFO | LOG_FILTER.WARNING | LOG_FILTER.ERROR | LOG_FILTER.CRITICAL);
+#else
+        //iRtcEngine.SetLogFilter(LOG_FILTER.CRITICAL);
+#endif
 
         liveStreamQuad.SetActive(false);
     }
 
+    private void SetEncoderSettings()
+    {
+        var encoderConfiguration = new VideoEncoderConfiguration();
+        encoderConfiguration.degradationPreference = DEGRADATION_PREFERENCE.MAINTAIN_BALANCED;
+        encoderConfiguration.minFrameRate = 25;
+        encoderConfiguration.frameRate = (FRAME_RATE)AgoraSharedVideoConfig.FrameRate;
+        encoderConfiguration.bitrate = AgoraSharedVideoConfig.Bitrate;
+        encoderConfiguration.dimensions = new VideoDimensions() { width = AgoraSharedVideoConfig.Width, height = AgoraSharedVideoConfig.Height };
+        encoderConfiguration.orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT;//ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE;
+        //iRtcEngine.SetVideoProfile(VIDEO_PROFILE_TYPE.VIDEO_PROFILE_PORTRAIT_720P_3,false);
+        iRtcEngine.SetVideoEncoderConfiguration(encoderConfiguration);
+    }
+
+    //void OnPreviewReady(uint i, bool b)
+    //{
+    //    HelperFunctions.DevLog("REMOTE USER CHANGED VIDEO SETTINGS");
+    //}
+
+    public void StartPreview()
+    {
+        if(iRtcEngine == null)
+        {
+            Debug.LogError("iRtC Engine was null when trying to start preview");
+            return;
+        }
+
+        if (iRtcEngine.EnableVideo() == 0)
+        {
+            if (iRtcEngine.EnableVideoObserver() == 0)
+            {
+                if (iRtcEngine.StartPreview() == 0)
+                {
+                    HelperFunctions.DevLog("Agora Preview Started");
+                    VideoIsReady = true;
+                }
+                else
+                {
+                    HelperFunctions.DevLog("Agora Preview Failed");
+                }
+            }
+        }
+    }
+    
+    public void StopPreview()
+    {
+        iRtcEngine.DisableVideo();
+        iRtcEngine.DisableVideoObserver();
+        if(iRtcEngine.StopPreview() == 0)
+        {
+            HelperFunctions.DevLog("Agora Preview Stopped");
+        }        
+        VideoIsReady = false;
+        OnPreviewStopped?.Invoke();
+    }
+          
     public void JoinOrCreateChannel(bool channelCreator) {
         if (iRtcEngine == null)
             return;
-
-        IsChannelCreator = channelCreator;
+               
         if (channelCreator)
             secondaryServerCalls.StartStream(ChannelName);
         else {
@@ -81,9 +171,11 @@ public class AgoraController : MonoBehaviour {
     }
 
     void OnViewerAgoraTokenReturned(long code, string data) {
-        tokenAgoraResponseChannel = JsonUtility.FromJson<TokenAgoraResponse>(data);
-        HelperFunctions.DevLog("Viewer Token Returned: " + tokenAgoraResponseChannel.token);
-        GetRTMLoginToken();
+        try {
+            tokenAgoraResponseChannel = JsonUtility.FromJson<TokenAgoraResponse>(data);
+            HelperFunctions.DevLog("Viewer Token Returned: " + tokenAgoraResponseChannel.token);
+            GetRTMLoginToken();
+        } catch (System.Exception) { }
     }
 
     void GetRTMLoginToken() {
@@ -92,9 +184,11 @@ public class AgoraController : MonoBehaviour {
     }
 
     void OnRTMAgoraTokenReturned(long code, string data) {
-        tokenAgoraResponseRTM = JsonUtility.FromJson<TokenAgoraResponse>(data);
-        HelperFunctions.DevLog("RTM Token Returned: " + tokenAgoraResponseRTM.token);
-        SecondaryServerCallsComplete(tokenAgoraResponseChannel.token, tokenAgoraResponseRTM.token);
+        try {
+            tokenAgoraResponseRTM = JsonUtility.FromJson<TokenAgoraResponse>(data);
+            HelperFunctions.DevLog("RTM Token Returned: " + tokenAgoraResponseRTM.token);
+            SecondaryServerCallsComplete(tokenAgoraResponseChannel.token, tokenAgoraResponseRTM.token);
+        } catch (System.Exception) { }
     }
 
     public void SecondaryServerCallsComplete(string viewerBroadcasterToken, string rtmToken) {
@@ -103,45 +197,17 @@ public class AgoraController : MonoBehaviour {
         iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
         if (IsChannelCreator) {
-            iRtcEngine.SetClientRole(CLIENT_ROLE.BROADCASTER);
-            var encoderConfiguration = new VideoEncoderConfiguration();
-            encoderConfiguration.degradationPreference = DEGRADATION_PREFERENCE.MAINTAIN_BALANCED;
-            encoderConfiguration.minFrameRate = 15;
-            encoderConfiguration.frameRate = FRAME_RATE.FRAME_RATE_FPS_30;
-            encoderConfiguration.bitrate = 3000;
-            encoderConfiguration.dimensions = new VideoDimensions() { width = 720, height = 1280 };
-            encoderConfiguration.orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE;
-            iRtcEngine.SetVideoEncoderConfiguration(encoderConfiguration);
+                iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
+                SetEncoderSettings();
         } else {
-            liveStreamQuad.SetActive(true);
-            iRtcEngine.SetClientRole(CLIENT_ROLE.AUDIENCE);
+                liveStreamQuad.SetActive(true);
+                iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_AUDIENCE);
+                StartPreview(); //Must be called for viewers to view
         }
 
-        // set callbacks (optional)
-        iRtcEngine.OnJoinChannelSuccess = OnJoinChannelSuccess;
-        iRtcEngine.OnUserJoined = OnUserJoined; //Only fired for broadcasters
-        iRtcEngine.OnUserOffline = OnUserOffline;
-        iRtcEngine.OnWarning += (int warn, string msg) => {
-            string description = IRtcEngine.GetErrorDescription(warn);
-            string warningMessage = string.Format("Agora onWarning callback {0} {1} {2}", warn, msg, description);
-            Debug.Log(warningMessage);
-        };
-        iRtcEngine.OnError += (int error, string msg) => {
-            string description = IRtcEngine.GetErrorDescription(error);
-            string errorMessage = string.Format("Agora onError callback {0} {1} {2}", error, msg, description);
-            Debug.LogError(errorMessage);
-        };
         //iRtcEngine.EnableDualStreamMode(true);
 
-        // enable video
-        iRtcEngine.EnableVideo();
-        // allow camera output callback
-        iRtcEngine.EnableVideoObserver();
-
-        // join channel
-        //var result = iRtcEngine.JoinChannel(ChannelName, null, 0);
-
-        var result = iRtcEngine.JoinChannelByKey(viewerBroadcasterToken, ChannelName, null, IsChannelCreator ? 1u : 0);
+        var result = iRtcEngine.JoinChannelByKey(viewerBroadcasterToken, ChannelName, null, Convert.ToUInt32(userWebManager.GetUserID()));
 
         if (result < 0) {
             Debug.LogError("Agora Stream Join Failed!");
@@ -152,7 +218,9 @@ public class AgoraController : MonoBehaviour {
         //print("JOINED");
 
         if (IsChannelCreator)
-            sendThumbnailRoutine = StartCoroutine(SendThumbnailData());
+            sendThumbnailRoutine = StartCoroutine(SendThumbnailData(true));
+
+        streamerCountUpdater.StartCheck(ChannelName);
 
         IsLive = true;
 
@@ -170,6 +238,8 @@ public class AgoraController : MonoBehaviour {
 
     public void Leave() {
 
+        StopPreview();
+
         if (iRtcEngine == null)
             return;
 
@@ -184,33 +254,54 @@ public class AgoraController : MonoBehaviour {
         if (sendThumbnailRoutine != null)
             StopCoroutine(sendThumbnailRoutine);
 
-        liveStreamQuad.SetActive(false);
-
+        streamerCountUpdater.StopCheck();
+               
         if (IsChannelCreator)
+        {
             secondaryServerCalls.EndStream();
+        }
+        else
+        {
+            liveStreamQuad.SetActive(false);
+            ResetVideoQuadSurface();
+        }
 
         iRtcEngine.LeaveChannel();
-        iRtcEngine.DisableVideoObserver();
         agoraRTMChatController.LeaveChannel();
-        ResetVideoSurface();
-
         //OnStreamDisconnected();
 
         IsLive = false;
     }
 
-    IEnumerator SendThumbnailData() {
+    IEnumerator SendThumbnailData(bool flipVertical) {
         yield return new WaitForSeconds(5);
         Texture2D originalSnapShot = (Texture2D)videoSufaceStreamerRawTex.texture;
-        Color[] pixels = originalSnapShot.GetPixels();
-        Array.Reverse(pixels);
-        Texture2D flippedTexture = new Texture2D(originalSnapShot.width, originalSnapShot.height);
-        flippedTexture.SetPixels(pixels);
-        byte[] data = flippedTexture.EncodeToPNG();
+        byte[] data;
+
+        if (flipVertical)
+        {
+            int width = originalSnapShot.width;
+            int height = originalSnapShot.height;
+            Texture2D resultTexture = new Texture2D(width, height);
+            Color[] pixels = originalSnapShot.GetPixels();
+            Color[] pixelsFlipped = new Color[pixels.Length];
+            for (int i = 0; i < height; i++)
+            {
+                Array.Copy(pixels, i * width, pixelsFlipped, (height - i - 1) * width, width);
+            }
+            resultTexture.SetPixels(pixelsFlipped);
+            resultTexture.Apply();
+            data = resultTexture.EncodeToPNG();
+        }
+        else
+        {
+            data = originalSnapShot.EncodeToPNG();
+        }
+      
         secondaryServerCalls.UploadPreviewImage(data);
     }
 
-    private void ResetVideoSurface() {
+    private void ResetVideoQuadSurface() {
         if (videoSurfaceQuadRef) {
             Destroy(videoSurfaceQuadRef);
             liveStreamQuad.GetComponent<MeshRenderer>().material.mainTexture = null;
@@ -220,7 +311,6 @@ public class AgoraController : MonoBehaviour {
 
     private void OnJoinChannelSuccess(string channelName, uint uid, int elapsed) {
         HelperFunctions.DevLog("JoinChannelSuccessHandler: uid = " + uid);
-        //secondaryServerCalls.StartStream(ChannelName);
         agoraRTMChatController.JoinChannel(channelName);
     }
 
@@ -233,7 +323,7 @@ public class AgoraController : MonoBehaviour {
         HelperFunctions.DevLog("onUserJoined: uid = " + uid + " elapsed = " + elapsed);
 
         if (!IsChannelCreator) {
-            ResetVideoSurface();
+            ResetVideoQuadSurface();
 
             if (defaultLiveStreamQuadScale == Vector3.zero) {
                 //print("SETTING DEFAULT QUAD SCALE");
@@ -243,17 +333,16 @@ public class AgoraController : MonoBehaviour {
             videoSurfaceQuadRef = liveStreamQuad.GetComponent<VideoSurface>();
             if (!videoSurfaceQuadRef) {
                 videoSurfaceQuadRef = liveStreamQuad.AddComponent<VideoSurface>();
+                //print("ADDED VIDEO SURFACE");
             }
-
+                        
             videoSurfaceQuadRef.SetForUser(uid);
             videoSurfaceQuadRef.SetEnable(true);
             videoSurfaceQuadRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
-            videoSurfaceQuadRef.EnableFlipTextureApplyTransform(true, true, defaultLiveStreamQuadScale);
-            //videoSurfaceRef.EnableFilpTextureApply(true, true);
+            //videoSurfaceQuadRef.EnableFlipTextureApplyTransform(false, true, defaultLiveStreamQuadScale);
+            //videoSurfaceQuadRef.EnableFilpTextureApply(false, true); //This should only be called once if used, currently the prefab live stream quad is being flipped via scale
             videoSurfaceQuadRef.SetGameFps(frameRate);
-
             //liveStreamQuad.GetComponent<LiveStreamGreenCalculator>().StartBackgroundRemoval();
-
             //Invoke("VideoResolution", 3);
         }
     }
@@ -318,7 +407,7 @@ public class AgoraController : MonoBehaviour {
         return ver;
     }
 
-    #region Messaging system
+#region Messaging system
 
     //public void SendMessage(string message)
     //{
@@ -372,7 +461,7 @@ public class AgoraController : MonoBehaviour {
     //    }
     //}
 
-    #endregion
+#endregion
 
     void OnApplicationPause(bool paused) {
         if (!ReferenceEquals(iRtcEngine, null)) {
@@ -386,13 +475,13 @@ public class AgoraController : MonoBehaviour {
         }
     }
 
-    IEnumerator UpdateUsers() {
-        if (IsChannelCreator) {
-            while (IsLive) {
-                yield return new WaitForSeconds(5);
-            }
-        }
-    }
+    //IEnumerator UpdateUsers() {
+    //    if (IsChannelCreator) {
+    //        while (IsLive) {
+    //            yield return new WaitForSeconds(5);
+    //        }
+    //    }
+    //}
 
     //bool dippedBelowPerformanceThreshold;
     //bool previousPerformanceState;

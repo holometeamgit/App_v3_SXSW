@@ -1,41 +1,46 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 public class DevEnvironment : MonoBehaviour
 {
-    [MenuItem("Dev/Switch To Staging")]
-    static void SwitchToStaging()
+    static string IdentifierDev = "com.HoloMe.Beem";//"com.HoloMe.BeemDev";
+    static string IdentifierProd = "com.HoloMe.Beem";
+    static string Prod = "PROD";
+    static string Dev = "DEV";
+
+    [MenuItem("Environment/Switch To Dev")]
+    static void SwitchToDev()
     {
-        PlayerSettings.productName = "HoloMe Staging";
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, "STAGING");
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, "STAGING");
-        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.HoloMe.ShowreelStaging");
-        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, "com.HoloMe.ShowreelStaging");
+        PlayerSettings.productName = "Beem Dev";
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, Dev);
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, Dev);
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, Dev);
+        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, IdentifierDev);
+        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, IdentifierDev);
         EditorUserBuildSettings.development = true;
     }
 
-    [MenuItem("Dev/Switch To Live")]
-    static void SwitchToLive()
+    [MenuItem("Environment/Switch To Prod")]
+    static void SwitchToProd()
     {
-        PlayerSettings.productName = "HoloMe";
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, "LIVE");
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, "LIVE");
-        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.HoloMe.Showreel");
-        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, "com.HoloMe.Showreel");
+        PlayerSettings.productName = "Beem";
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, Prod);
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, Prod);
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, Prod);
+        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, IdentifierProd);
+        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, IdentifierProd);
         EditorUserBuildSettings.development = false;
     }
 
 #if UNITY_CLOUD_BUILD
     public static void SetAsCloudStaging()
     {
-        SwitchToStaging();
+        SwitchToDev();
     }
 
     public static void SetAsCloudLive()
     {
-        SwitchToLive();
+        SwitchToProd();
     }
 #endif
 

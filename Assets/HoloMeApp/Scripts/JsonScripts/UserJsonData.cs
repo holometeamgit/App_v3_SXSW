@@ -6,7 +6,7 @@ using System;
 [Serializable]
 public class UserJsonData
 {
-    public int pk;
+    public long pk;
     public string username;
     public string email;
     public string first_name;
