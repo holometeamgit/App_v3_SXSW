@@ -60,7 +60,10 @@ public class InputFieldController : MonoBehaviour {
     private string OverrideMsg(string msg) {
         //sign up
         HelperFunctions.DevLog("OverrideMsg " + msg);
-        if (msg.Contains("is exist") || msg.Contains("EmailAlreadyInUse"))
+        if (msg.Contains("is exist"))
+            return "Already exists";
+
+        if (msg.Contains("EmailAlreadyInUse"))
             return "Email already exists";
 
         if (msg.Contains("A user is already registered with this e-mail address."))
