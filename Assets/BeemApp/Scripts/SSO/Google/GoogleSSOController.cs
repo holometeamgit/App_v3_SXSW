@@ -72,7 +72,7 @@ namespace Beem.SSO {
 
             var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             Credential credential =
-                    GoogleAuthProvider.GetCredential(task.Result.IdToken, null);
+                    GoogleAuthProvider.GetCredential(task.Result.IdToken, task.Result.AuthCode);
             _auth.SignInWithCredentialAsync(credential).ContinueWith(signIntask => {
                 CheckTask(signIntask, () => CallBacks.onFirebaseSignInSuccess?.Invoke(LogInType.Google), CallBacks.onFail);
             }, taskScheduler);
