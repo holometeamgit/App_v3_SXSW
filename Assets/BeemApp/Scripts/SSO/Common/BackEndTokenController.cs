@@ -9,7 +9,7 @@ using System;
 namespace Beem.SSO
 {
     public class BackEndTokenController {
-        public void GetToken(FirebaseUser user, Action<string> onSuccess, Action<string> onFail = null) {
+        public void GetToken(FirebaseUser user, Action<string> onSuccess, Action<string> onFail) {
             var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             user.TokenAsync(true).ContinueWith(taskTokenID => {
                 if (taskTokenID.IsCanceled) {
