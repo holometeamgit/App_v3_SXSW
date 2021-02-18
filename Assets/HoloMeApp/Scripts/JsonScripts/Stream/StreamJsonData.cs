@@ -108,7 +108,7 @@ public class StreamJsonData {
         private DateTime endDate;
         private const string pinAll = "all";
         private const string pinStr = "pin";
-        private const string lifeStr = "live";
+        public const string lifeStr = "live";
         private const string pastLivestreamStr = "past_live";
         private const string prerecordedStr = "prerecorded";
 
