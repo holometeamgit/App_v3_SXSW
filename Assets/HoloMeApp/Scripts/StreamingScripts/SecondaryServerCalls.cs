@@ -122,7 +122,7 @@ public class SecondaryServerCalls : MonoBehaviour {
         RoomJsonPutData data = new RoomJsonPutData();
         data.agora_sid = requestCloudRecordResource.CloudRecordResponseData.sid;
         data.agora_channel = requestCloudRecordResource.StartCloudRecordRequestData.cname;
-        data.status = "Live";
+        data.status = "live";
         webRequestHandler.PutRequest(webRequestHandler.ServerURLMediaAPI + videoUploader.PutRoom, data, WebRequestHandler.BodyType.JSON, (x, y) => webRequestHandler.LogCallback(x, "Put Room callback: "+ y), (x,y) => webRequestHandler.ErrorLogCallback(x,"Put Room error callback: " + y), accountManager.GetAccessToken().access);
     }
 
