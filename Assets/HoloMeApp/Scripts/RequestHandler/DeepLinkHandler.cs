@@ -22,7 +22,8 @@ public class DeepLinkHandler : MonoBehaviour {
         //beemholomedl://verification?code=string
         //beemholomedl://passwordresetconfirm?uid=string&token=string
         //beemholomedl://room?roomid=string
-        Debug.Log(uriStr);
+
+        HelperFunctions.DevLog("Deep link: " + uriStr);
 
         switch (uri.Host) {
             case signUpVerication:
