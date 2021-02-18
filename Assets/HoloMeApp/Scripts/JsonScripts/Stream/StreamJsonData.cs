@@ -47,11 +47,13 @@ public class StreamJsonData {
         public string title;
         public string description;
 
+        public const string PIN_ALL = "all";
+        public const string LIVE_STR = "live";
+        public const string PRERECORDED_STR = "prerecorded";
+
         private DateTime startDate;
         private DateTime endDate;
-        private const string PIN_ALL = "all";
-        private const string LIVE_STR = "live";
-        private const string PRERECORDED_STR = "prerecorded";
+
 
         public void InvokeDataUpdated() { //TODO better create RX
             OnDataUpdated?.Invoke();
@@ -110,6 +112,10 @@ public class StreamJsonData {
         }
 
         public Stage GetStage() {
+            return GetStage(status);
+        }
+
+        public static Stage GetStage(string status) {
             switch (status) {
                 case LIVE_STR:
                     return Stage.Live;
