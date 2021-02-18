@@ -151,7 +151,6 @@ public class WebRequestHandler : MonoBehaviour {
                         }
                     }
                     request = UnityWebRequest.Post(url, form);
-                    request.timeout = 5;
                     request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                     break;
                 case BodyType.JSON: //only Json at this moment
@@ -180,6 +179,8 @@ public class WebRequestHandler : MonoBehaviour {
             errorTypeDelegate?.Invoke(500, "Sorry, problems with the request to the server");
             yield break;
         }
+
+        request.timeout = TIMEOUT_REQUEST;
 
         yield return request.SendWebRequest();
 

@@ -105,6 +105,12 @@ public class UserWebManager : MonoBehaviour {
         return userData.profile.is_creator;
     }
 
+    public bool IsEnterpriseBroadcaster() {
+        if (userData == null || userData.profile == null)
+            return false;
+        return !string.IsNullOrWhiteSpace(userData.profile.enterprise);
+    }
+
     public void LoadUserInfo(Action loadUserInfoCallBack) {
         webRequestHandler.GetRequest(GetRequestGetUserURL(), (code, body) => loadUserInfoCallBack(),
             ErrorMsgCallBack, accountManager.GetAccessToken().access);

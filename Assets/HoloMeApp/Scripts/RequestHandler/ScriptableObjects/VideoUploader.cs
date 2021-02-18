@@ -15,4 +15,8 @@ public class VideoUploader : ScriptableObject { //TODO rename class this StreamA
 
     public string UploadPreview = "/stream/{id}/preview/";
 
+    [Header("Room")]
+    public string GetRoom = "/room/";
+    public string PutRoom = "/room/";
+    public string GetRoomById = "/room/{id}/";
 }

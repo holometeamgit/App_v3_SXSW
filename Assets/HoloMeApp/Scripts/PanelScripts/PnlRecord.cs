@@ -151,7 +151,7 @@ public class PnlRecord : MonoBehaviour
         canvasGroup.alpha = 0;
 
         purchaseManager.OnPurchaseSuccessful += RefreshBuyBtnState;
-        uiThumbnailsController.OnPlay += x => txtWaterMarkText.text = "@" + x.user; //Gameobject must be active in the editor for this to work correctly
+        uiThumbnailsController.OnPlayFromUser += user => txtWaterMarkText.text = "@" + user; //Gameobject must be active in the editor for this to work correctly
         gameObject.SetActive(false);
     }
 

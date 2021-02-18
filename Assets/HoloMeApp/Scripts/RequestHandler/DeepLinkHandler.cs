@@ -8,6 +8,9 @@ public class DeepLinkHandler : MonoBehaviour {
     public Action<string, string> PasswordResetConfirmDeepLinkActivated;
     public Action<ServerAccessToken> OnCompleteSSOLoginGetted;
 
+    public const string ROOM = "room";
+    public const string ROOM_ID_PARAMETTR_NAME = "roomid";
+
     private const string signUpVerication = "verification";
     private const string passWordResetConfirm = "passwordresetconfirm";
     private const string completeSSOLogin = "complete-login";
@@ -18,8 +21,9 @@ public class DeepLinkHandler : MonoBehaviour {
         //example
         //beemholomedl://verification?code=string
         //beemholomedl://passwordresetconfirm?uid=string&token=string
+        //beemholomedl://room?roomid=string
 
-        Debug.Log(uriStr);
+        HelperFunctions.DevLog("Deep link: " + uriStr);
 
         switch (uri.Host) {
             case signUpVerication:
@@ -30,6 +34,9 @@ public class DeepLinkHandler : MonoBehaviour {
                 break;
             case completeSSOLogin:
                 GetCompleteSSOLoginParameters(uri);
+                break;
+            case ROOM:
+                GetRoomParameters(uri);
                 break;
         }
     }
@@ -87,4 +94,12 @@ public class DeepLinkHandler : MonoBehaviour {
         OnCompleteSSOLoginGetted?.Invoke(serverAccessToken);
     }
 
+    private void GetRoomParameters(Uri uri) {
+        HelperFunctions.DevLog("GetRoomParameters");
+
+        string roomId = HttpUtility.ParseQueryString(uri.Query).Get(ROOM_ID_PARAMETTR_NAME);
+
+        HelperFunctions.DevLog("roomId = " + roomId);
+        StreamCallBacks.onRoomLinkReceived?.Invoke(roomId);
+    }
 }

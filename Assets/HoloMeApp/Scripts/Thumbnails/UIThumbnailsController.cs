@@ -5,7 +5,7 @@ using System;
 
 public class UIThumbnailsController : MonoBehaviour {
     public Action OnUpdated;
-    public Action<StreamJsonData.Data> OnPlay;
+    public Action<string> OnPlayFromUser;
 
     [SerializeField] MediaFileDataHandler mediaFileDataHandler;
     [SerializeField] PnlViewingExperience pnlViewingExperience;
@@ -55,6 +55,14 @@ public class UIThumbnailsController : MonoBehaviour {
         for (int i = 0; i < btnThumbnailItems.Count; i++) {
             btnThumbnailItems[i].LockToPress(true);
         }
+    }
+    /// <summary>
+    /// Play live stream from user 
+    /// </summary>
+   
+    public void PlayLiveStream(string user, string agoraChannel) { //TODO split it to ather class
+        pnlStreamOverlay.OpenAsViewer(agoraChannel);
+        OnPlayFromUser?.Invoke(user);
     }
 
     private void Awake() {
@@ -130,10 +138,9 @@ public class UIThumbnailsController : MonoBehaviour {
 
         if(data.HasStreamUrl) {
             pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null,false);
-            OnPlay?.Invoke(data);
+            OnPlayFromUser?.Invoke(data.user);
         } else if(data.HasAgoraChannel) {
-            pnlStreamOverlay.OpenAsViewer(data.agora_channel);
-            OnPlay?.Invoke(data);
+            PlayLiveStream(data.user, data.agora_channel);
         }
     }
 
@@ -142,7 +149,7 @@ public class UIThumbnailsController : MonoBehaviour {
             return;
 
         pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, null, data.HasTeaser);
-        OnPlay?.Invoke(data);
+        OnPlayFromUser?.Invoke(data.user);
         purchaseManager.SetPurchaseStreamData(data);
     }
 }

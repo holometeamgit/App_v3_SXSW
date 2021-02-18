@@ -8,21 +8,26 @@ public class PnlMenu : MonoBehaviour
     [SerializeField] UserWebManager userWebManager;
     [SerializeField] TMP_Text txtUsername;
     [SerializeField] GameObject goLiveBtn;
+    [SerializeField] GameObject myRoomBtn;
 
     private void UserInfoLoadedCallBack() {
         if (!this.isActiveAndEnabled)
             return;
 
+        UpdateUI();
+    }
+
+    private void UpdateUI() {
         txtUsername.text = userWebManager.GetUsername();
         goLiveBtn.SetActive(userWebManager.IsBroadcaster());
+        myRoomBtn.SetActive(userWebManager.IsEnterpriseBroadcaster() || userWebManager.IsBroadcaster());
     }
 
     private void OnEnable() {
         userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
         userWebManager.LoadUserInfo();
 
-        txtUsername.text = userWebManager.GetUsername();
-        goLiveBtn.SetActive(userWebManager.IsBroadcaster());
+        UpdateUI();
     }
 
     private void OnDisable() {

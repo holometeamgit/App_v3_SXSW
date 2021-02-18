@@ -35,7 +35,9 @@ public class AgoraController : MonoBehaviour {
     public string ChannelName { get; set; }
     public bool IsLive { get; private set; }
     public bool IsChannelCreator { get; set; }
+    public bool IsRoom { get; set; }
     public bool VideoIsReady { get; private set; }
+
 
     int userCount;
 
@@ -168,7 +170,7 @@ public class AgoraController : MonoBehaviour {
             return;
                
         if (channelCreator)
-            secondaryServerCalls.StartStream(ChannelName);
+            secondaryServerCalls.StartStream(ChannelName, IsRoom);
         else {
             GetViewerAgoraToken();
         }
