@@ -126,7 +126,20 @@ public class SecondaryServerCalls : MonoBehaviour {
         webRequestHandler.PutRequest(webRequestHandler.ServerURLMediaAPI + videoUploader.PutRoom, data, WebRequestHandler.BodyType.JSON, (x, y) => webRequestHandler.LogCallback(x, "Put Room callback: "+ y), (x,y) => webRequestHandler.ErrorLogCallback(x,"Put Room error callback: " + y), accountManager.GetAccessToken().access);
     }
 
+    void SetRoomToClosed()
+    {
+        HelperFunctions.DevLog("PUTTING ROOM CLOSED DATA");
+        RoomJsonPutData data = new RoomJsonPutData();
+        data.agora_sid = requestCloudRecordResource.CloudRecordResponseData.sid;
+        data.agora_channel = requestCloudRecordResource.StartCloudRecordRequestData.cname;
+        data.status = string.Empty;
+        webRequestHandler.PutRequest(webRequestHandler.ServerURLMediaAPI + videoUploader.PutRoom, data, WebRequestHandler.BodyType.JSON, (x, y) => webRequestHandler.LogCallback(x, "Put Room Closed callback: " + y), (x, y) => webRequestHandler.ErrorLogCallback(x, "Put Room Closed error callback: " + y), accountManager.GetAccessToken().access);
+    }
+
     public void EndStream() {
+        if (isRoom)
+            SetRoomToClosed();
+
         StopCloudRecording();
     }
 
