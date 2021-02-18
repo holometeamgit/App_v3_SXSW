@@ -16,6 +16,7 @@ public class SecondaryServerCalls : MonoBehaviour {
 
     public Action<string, string> OnStreamStarted;
     string streamName;
+    bool isRoom;
 
     TokenAgoraResponse tokenAgoraResponse;
     RequestCloudRecordAcquire requestCloudRecordAcquire;
@@ -29,8 +30,9 @@ public class SecondaryServerCalls : MonoBehaviour {
             WebRequestHandler.BodyType.JSON, webRequestHandler.LogCallback, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
     }
 
-    public void StartStream(string streamName) {
+    public void StartStream(string streamName, bool isRoom) {
         this.streamName = streamName;
+        this.isRoom = isRoom;
         GetAgoraToken(AssignToken);
 
         //Get agora token 
@@ -106,9 +108,22 @@ public class SecondaryServerCalls : MonoBehaviour {
         streamStartResponseJsonData = JsonUtility.FromJson<StreamStartResponseJsonData>(data);
         if (streamStartResponseJsonData != null)
             OnStreamStarted?.Invoke(tokenAgoraResponse.token, tokenAgoraResponse.token);
-        else {
+        if (isRoom)
+            CreateRoom();
+        else
+        {
             Debug.LogError("CREATE STREAM PARSE FAILED");
         }
+    }
+
+    void CreateRoom()
+    {
+        HelperFunctions.DevLog("PUTTING ROOM DATA");
+        RoomJsonPutData data = new RoomJsonPutData();
+        data.agora_sid = requestCloudRecordResource.CloudRecordResponseData.sid;
+        data.agora_channel = requestCloudRecordResource.StartCloudRecordRequestData.cname;
+        data.status = "Live";
+        webRequestHandler.PutRequest(webRequestHandler.ServerURLMediaAPI + videoUploader.PutRoom, data, WebRequestHandler.BodyType.JSON, (x, y) => webRequestHandler.LogCallback(x, "Put Room callback: "+ y), (x,y) => webRequestHandler.ErrorLogCallback(x,"Put Room error callback: " + y), accountManager.GetAccessToken().access);
     }
 
     public void EndStream() {

@@ -141,12 +141,14 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void OpenAsRoomBroadcaster() {
         Init();
+        agoraController.IsRoom = true;
         ToggleRoomShareControlObjects(true);
         StreamerOpenSharedFunctions();
     }
 
     public void OpenAsStreamer() {
         Init();
+        agoraController.IsRoom = false;
         ToggleRoomShareControlObjects(false);
         StreamerOpenSharedFunctions();
     }

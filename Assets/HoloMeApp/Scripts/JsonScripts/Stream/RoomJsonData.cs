@@ -7,5 +7,13 @@ public class RoomJsonData
     public string agora_sid;
     public string agora_channel;
     public string status;
-    public int user;
 }
+
+[Serializable]
+public class RoomJsonPutData
+{
+    public string agora_sid;
+    public string agora_channel;
+    public string status;
+}
+
