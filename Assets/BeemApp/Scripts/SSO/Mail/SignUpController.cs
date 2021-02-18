@@ -31,7 +31,7 @@ namespace Beem.SSO {
                 var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
                 UserProfile profile = new UserProfile { DisplayName = profileName };
                 user.UpdateUserProfileAsync(profile).ContinueWith(profileTask => {
-                    UserTask(profileTask, () => { UpdateUserProfile(user); }, CallBacks.onFail); //TODO test can user have same name like other user?
+                    UserTask(profileTask, () => { UpdateUserProfile(); }, CallBacks.onFail); //TODO test can user have same name like other user?
                 }, taskScheduler);
             }
         }
@@ -41,16 +41,9 @@ namespace Beem.SSO {
             firebaseTask.CheckTask(task, onSuccess, onFail);
         }
 
-        private void UpdateUserProfile(FirebaseUser firebaseUser) {
+        private void UpdateUserProfile() {
             CallBacks.onSignUpSuccess?.Invoke();
-            SendEmailVerification(firebaseUser);
-        }
-
-        private void SendEmailVerification(FirebaseUser user) {
-            if (user != null) {
-                var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-                user.SendEmailVerificationAsync().ContinueWith(task => { UserTask(task); }, taskScheduler);
-            }
+            CallBacks.onEmailVerification?.Invoke();
         }
 
         protected override void Subscribe() {

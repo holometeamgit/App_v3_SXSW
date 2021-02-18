@@ -12,6 +12,7 @@ public class PnlSplashScreen : MonoBehaviour
     [SerializeField] VersionChecker versionChecker;
 
     [SerializeField] List<GameObject> specificAppleUIGONeedActive;
+    [SerializeField] Animator animator;
 
     [SerializeField] UnityEvent OnLogInEvent;
     [SerializeField] UnityEvent OnAuthorisationErrorEvent;
@@ -24,6 +25,18 @@ public class PnlSplashScreen : MonoBehaviour
 #elif UNITY_ANDROID
     Application.OpenURL("https://play.google.com/store/apps/details?id=com.HoloMe.Beem");
 #endif
+    }
+
+    public void LogInIvoke() {
+        OnLogInEvent.Invoke();
+    }
+
+    public void AuthorisationErrorInvoke() {
+        OnAuthorisationErrorEvent.Invoke();
+    }
+
+    public void DisableSplashScreen() {
+        gameObject.SetActive(false);
     }
 
     private void Awake() {
@@ -52,28 +65,29 @@ public class PnlSplashScreen : MonoBehaviour
     }
 
     private void LogInCallBack(long code, string body) {
-//        Debug.Log("LogInCallBack " + body);
-        var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(HIDE_SPLASH_SCREEN_TIME).ContinueWith(_ => LogInIvoke(), taskScheduler);
-    }
-
-    private void LogInIvoke() {
-        OnLogInEvent.Invoke();
+        //        Debug.Log("LogInCallBack " + body);
+        //var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        //Task.Delay(HIDE_SPLASH_SCREEN_TIME).ContinueWith(_ => LogInIvoke(), taskScheduler);
+        LogInIvoke();
+        HideSplashScreen();
     }
 
     private void ErrorLogInCallBack(long code, string body) {
         Debug.Log("ErrorLogInCallBack " + code + " : "+ body);
-        var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(HIDE_SPLASH_SCREEN_TIME).ContinueWith(_ => AuthorisationErrorInvoke(), taskScheduler);
-    }
-
-    public void AuthorisationErrorInvoke() {
-        OnAuthorisationErrorEvent.Invoke();
+        //var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        //Task.Delay(HIDE_SPLASH_SCREEN_TIME).ContinueWith(_ => AuthorisationErrorInvoke(), taskScheduler);
+        AuthorisationErrorInvoke();
+        HideSplashScreen();
     }
 
     private void FirebaseErrorLogIn(string msg) {
         ErrorLogInCallBack(500, "Can't connect to server");
         accountManager.LogOut();
+        HideSplashScreen();
+    }
+
+    private void HideSplashScreen() {
+        animator.SetBool("Hide", true);
     }
 
     private void OnEnable() {

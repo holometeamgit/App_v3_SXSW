@@ -50,7 +50,7 @@ public class BtnThumbnailItemV2 : MonoBehaviour
         thumbnailElement.OnErrorTextureLoaded += UpdateTexture;
         thumbnailElement.Data.OnDataUpdated += UpdateData;
 
-        imgLive.gameObject.SetActive(thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live);
+        imgLive.gameObject.SetActive(thumbnailElement.Data.GetStage() == StreamJsonData.Data.Stage.Live);
 
         UpdateData();
     }

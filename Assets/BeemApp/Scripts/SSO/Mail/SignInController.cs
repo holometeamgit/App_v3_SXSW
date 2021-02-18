@@ -19,18 +19,12 @@ namespace Beem.SSO {
             }, taskScheduler);
         }
 
-        private void ResendVerification() {
-            _auth?.CurrentUser?.SendEmailVerificationAsync();
-        }
-
         protected override void Subscribe() {
             CallBacks.onSignInEMail += SignIn;
-            CallBacks.onRequestRepeatVerification += ResendVerification;
         }
 
         protected override void Unsubscribe() {
             CallBacks.onSignInEMail -= SignIn;
-            CallBacks.onRequestRepeatVerification -= ResendVerification;
         }
     }
 }

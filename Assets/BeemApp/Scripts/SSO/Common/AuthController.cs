@@ -21,7 +21,7 @@ namespace Beem.SSO {
         private FirebaseAuth _auth;
         private BackEndTokenController _backEndTokenController;
 
-        public void GetFirebaseToken(Action<string> onSuccess, Action<string> onFales = null) {
+        public void GetFirebaseToken(Action<string> onSuccess, Action<string> onFales) {
             _backEndTokenController = _backEndTokenController ?? new BackEndTokenController();
             _backEndTokenController.GetToken(_auth.CurrentUser, onSuccess, onFales);
         }

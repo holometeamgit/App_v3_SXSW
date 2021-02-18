@@ -59,16 +59,17 @@ public class ThumbnailsDataContainer {
     }
 
     private void SortListByStartDate() {
-        /*streamData.GroupBy(elem => elem.GetStatus())
-            .Where(grp => thumbnailPriority.Stages.Contains(grp.Key))
-            .OrderBy(grp => thumbnailPriority.Stages.IndexOf(grp.Key))
-            .ThenBy(e => e.Key)*/
+
 
 
         streamData.Sort((elem1, elem2)
             => {
-                int stageCompare = thumbnailPriority.Stages.IndexOf(elem1.GetStatus())
-                    .CompareTo(thumbnailPriority.Stages.IndexOf(elem2.GetStatus()));
+
+                Priority priority1 = new Priority { Stage = elem1.GetStage(), IsPin = elem1.IsPin() };
+                Priority priority2 = new Priority { Stage = elem2.GetStage(), IsPin = elem2.IsPin() };
+
+                int stageCompare = thumbnailPriority.Priorities.IndexOf(priority1)
+                    .CompareTo(thumbnailPriority.Priorities.IndexOf(priority2));
 
                 if (stageCompare != 0)
                     return stageCompare;
@@ -77,6 +78,11 @@ public class ThumbnailsDataContainer {
             });
 
 
-        //streamData.Sort((emp1, emp2) => emp2.StartDate.CompareTo(emp1.StartDate));
+    }
+
+    [Serializable]
+    public struct Priority {
+        public StreamJsonData.Data.Stage Stage;
+        public bool IsPin;
     }
 }

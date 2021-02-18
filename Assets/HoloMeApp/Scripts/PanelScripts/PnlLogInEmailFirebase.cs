@@ -13,6 +13,8 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     [SerializeField]
     GameObject LogInLoadingBackground;
 
+    private EmailVerificationTimer emailVerificationTimer = new EmailVerificationTimer();
+
     private const float COOLDOWN = 0.5f;
     private float nextTimeCanClick = 0;
     private const int TIME_FOR_AUTOHIDINGBG = 5000;
@@ -62,14 +64,22 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     private void NeedVerificationCallback(string email) {
         inputFieldEmail.ShowWarning("E-mail is not verified");
 
-        pnlGenericError.ActivateDoubleButton("Email verication",
-            string.Format("You have not activated your account via the email, would you like us to send it again? {0}", email),
-            "Yes",
-            "No",
-            () => {
-                CallBacks.onRequestRepeatVerification?.Invoke();
-            },
-            () => { pnlGenericError.gameObject.SetActive(false); });
+        if (EmailVerificationTimer.IsOver) {
+            pnlGenericError.ActivateDoubleButton("Email verication",
+                string.Format("You have not activated your account via the email, would you like us to send it again? \n {0}", email),
+                "Yes",
+                "No",
+                () => {
+                    CallBacks.onEmailVerification?.Invoke();
+                    EmailVerificationTimer.Release();
+                },
+                () => { pnlGenericError.gameObject.SetActive(false); });
+        } else {
+            pnlGenericError.ActivateSingleButton("Email verication",
+               string.Format("You have not activated your account via the email \n {0}", email),
+               "Ok",
+               () => { pnlGenericError.gameObject.SetActive(false); });
+        }
     }
 
     private void ClearData() {

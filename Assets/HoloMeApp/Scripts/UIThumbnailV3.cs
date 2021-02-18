@@ -59,7 +59,7 @@ public class UIThumbnailV3 : UIThumbnail {
     public override void ThumbnailClick() {
         base.ThumbnailClick();
 
-        if (thumbnailElement.Data.is_bought && thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live) {
+        if (thumbnailElement.Data.is_bought && thumbnailElement.Data.GetStage() == StreamJsonData.Data.Stage.Live) {
             Play();
         } else if (!thumbnailElement.Data.is_bought && thumbnailElement.Data.HasTeaser) {
             PlayTeaser();
@@ -134,7 +134,7 @@ public class UIThumbnailV3 : UIThumbnail {
     private void UpdateData() {
         UpdateTexture();
 
-        bool isLive = thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live;
+        bool isLive = thumbnailElement.Data.GetStage() == StreamJsonData.Data.Stage.Live;
         imgLive.gameObject.SetActive(isLive);
         txtTime.gameObject.SetActive(!isLive);
 
@@ -151,7 +151,7 @@ public class UIThumbnailV3 : UIThumbnail {
 
         txtPrice.text = "";
 
-        if (thumbnailElement.Data.is_bought && thumbnailElement.Data.GetStatus() == StreamJsonData.Data.Stage.Live) {
+        if (thumbnailElement.Data.is_bought && thumbnailElement.Data.GetStage() == StreamJsonData.Data.Stage.Live) {
             txtInfoText.text = "This is a free Live event";
 
             btnWatchNow.SetActive(true);

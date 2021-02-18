@@ -18,6 +18,11 @@ public class AccountManager : MonoBehaviour {
 
     public void QuickLogIn(ResponseDelegate responseCallBack, ErrorTypeDelegate errorTypeCallBack) {
         HelperFunctions.DevLog("try QuickLogIn");
+
+        if (GetLogInType() == LogInType.Facebook) {
+            LogOut();
+        }
+
         ServerAccessToken accessToken = GetAccessToken();
 
         if (accessToken == null && !authController.HasUser()) {
@@ -112,7 +117,7 @@ public class AccountManager : MonoBehaviour {
             return;
         }
 
-        authController.GetFirebaseToken((firebaseAccessToken) => GetServerAccessToken(firebaseAccessToken));
+        authController.GetFirebaseToken((firebaseAccessToken) => GetServerAccessToken(firebaseAccessToken), CallBacks.onFail);
     }
 
     private void GetServerAccessToken(string firebaseAccessToken) {

@@ -21,9 +21,7 @@ public class StreamJsonData {
 
         public enum Stage {
             All,
-            Pin,
             Live,
-            PastLivestream,
             Prerecorded
         }
 
@@ -37,6 +35,7 @@ public class StreamJsonData {
         public bool is_bought;
         public ProductType product_type;
         public string status;
+        public bool is_pin;
         public string agora_sid;
         public string agora_channel;
         public string file_name_prefix;
@@ -47,6 +46,12 @@ public class StreamJsonData {
         public string stream_s3_key;
         public string title;
         public string description;
+
+        private DateTime startDate;
+        private DateTime endDate;
+        private const string PIN_ALL = "all";
+        private const string LIVE_STR = "live";
+        private const string PRERECORDED_STR = "prerecorded";
 
         public void InvokeDataUpdated() { //TODO better create RX
             OnDataUpdated?.Invoke();
@@ -104,45 +109,29 @@ public class StreamJsonData {
             }
         }
 
-        private DateTime startDate;
-        private DateTime endDate;
-        private const string pinAll = "all";
-        private const string pinStr = "pin";
-        public const string lifeStr = "live";
-        private const string pastLivestreamStr = "past_live";
-        private const string prerecordedStr = "prerecorded";
-
-        public Stage GetStatus() {
-            return GetStatus(status);
-        }
-
-        public static Stage GetStatus(string status) {
+        public Stage GetStage() {
             switch (status) {
-                case pinStr:
-                    return Stage.Pin;
-                case lifeStr:
+                case LIVE_STR:
                     return Stage.Live;
-                case pastLivestreamStr:
-                    return Stage.PastLivestream;
-                case prerecordedStr:
+                case PRERECORDED_STR:
                     return Stage.Prerecorded;
                 default:
                     return Stage.All;
             }
         }
 
+        public bool IsPin() {
+            return is_pin;
+        }
+
         public static string GetStatusValue(Stage stage) {
             switch (stage) {
-                case StreamJsonData.Data.Stage.Pin:
-                    return pinStr;
-                case StreamJsonData.Data.Stage.Live:
-                    return lifeStr;
-                case StreamJsonData.Data.Stage.PastLivestream:
-                    return pastLivestreamStr;
-                case StreamJsonData.Data.Stage.Prerecorded:
-                    return prerecordedStr;
+                case Stage.Live:
+                    return LIVE_STR;
+                case Stage.Prerecorded:
+                    return PRERECORDED_STR;
                 default:
-                    return pinAll;
+                    return PIN_ALL;
             }
         }
     }
