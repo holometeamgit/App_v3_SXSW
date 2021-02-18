@@ -31,7 +31,7 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
 
         HelperFunctions.DevLog(roomBody);
         RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(roomBody);
-        if(StreamJsonData.Data.GetStage(roomJsonData.status) != StreamJsonData.Data.Stage.Live) {
+        if(roomJsonData.status != StreamJsonData.Data.LIVE_ROOM_STR) {
             RepeatGetRoom(roomJsonData.agora_channel);
         } else {
             uiThumbnailsController.PlayLiveStream(roomJsonData.agora_channel, roomJsonData.agora_channel);
