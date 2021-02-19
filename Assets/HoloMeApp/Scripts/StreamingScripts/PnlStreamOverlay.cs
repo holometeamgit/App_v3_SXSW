@@ -187,7 +187,10 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void ShowLeaveWarning() {
-        if (isStreamer)
+
+        if (!agoraController.IsLive && isStreamer)
+            CloseAsStreamer();        
+        else if (isStreamer)
             pnlGenericError.ActivateDoubleButton("End the live stream?",
                 "Closing this page will end the live stream and disconnect your users.",
                 onButtonOnePress: () => { CloseAsStreamer(); },

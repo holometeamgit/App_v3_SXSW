@@ -17,6 +17,7 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
 
     private const int TIME_DELAY = 5000;
 
+    bool liveRoomWasFound;
 
     private void RequestRoom() {
         webRequestHandler.GetRequest(GetRequestRoomUrl(currentRoomId),
@@ -34,6 +35,7 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
         if(roomJsonData.status != StreamJsonData.Data.LIVE_ROOM_STR) {
             RepeatGetRoom(roomJsonData.agora_channel);
         } else {
+            liveRoomWasFound = true;
             uiThumbnailsController.PlayLiveStream(roomJsonData.agora_channel, roomJsonData.agora_channel);
         }
     }
@@ -58,17 +60,22 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
     }
 
     private void OnEnable() {
+        liveRoomWasFound = false;
         currentRoomId = roomLinkHandler.PopRoomId();
         if (string.IsNullOrWhiteSpace(currentRoomId)) {
             RectInfo.SetActive(true);
         } else {
             RequestRoom();
         }
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
     }
 
     private void OnDisable() {
         title.text = "";
         RectInfo.SetActive(false);
         currentRoomId = "";
+
+        if(!liveRoomWasFound)
+            ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
     }
 }
