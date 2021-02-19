@@ -28,49 +28,44 @@ public class WebRequestHandler : MonoBehaviour {
     private const int REQUEST_CHECK_COOLDOWN = 250;
     private const int MAX_COUNT_STOPPED_STEPS_REQUEST = 20;
 
-    public void GetRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
-        StartCoroutine(GetRequesting(url, responseDelegate, errorTypeDelegate, headerAccessToken));
-    }
+    public void GetRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
+        string headerAccessToken = null, Action onCancel = null, Action<float> progress = null) {
 
-    public void GetRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, Action onCancel, string headerAccessToken = null) {
-        try {
+        Func<UnityWebRequest> createWebRequest = () => {
+            string currentUrl = url;
+            string currentHeaderAccessToken = headerAccessToken;
+            return PrepareGetRequest(currentUrl, currentHeaderAccessToken);
+        };
 
-        } catch (Exception e) {
+        //Debug.Log("GetRequest url: " + url);
 
-        } finally { }
-    }
+        //TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        //UnityWebRequest unityWebRequest = PrepareGetRequest(url, headerAccessToken);
+        //WebRequestWithRetryAsync(unityWebRequest, onCancel, progress).ContinueWith((taskWebRequestData) => {
+        //    Debug.Log("Request recieved data: " + taskWebRequestData.Result.Data);
+        //    Debug.Log("Request recieved data: " + unityWebRequest.downloadHandler.text);
 
-    public async void Get(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, Action onCancel, Action<float> progress, string headerAccessToken = null) {
+        //    //responseDelegate?.Invoke(taskWebRequestData.Result.Code, taskWebRequestData.Result.Data);
+        //}, taskScheduler);
+
+        MyRequest(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, progress);
+        /*TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        if (onCancel != null) {
-            onCancel += cancellationTokenSource.Cancel;
-        }
-        CancellationToken cancellationToken = cancellationTokenSource.Token;
+        UnityWebRequest unityWebRequest = PrepareGetRequest(url, headerAccessToken);
+        WebRequestWithRetryAsync(unityWebRequest, null, null).ContinueWith((task) => {
 
-        var request = await PrepareGetRequest(url, headerAccessToken); //TODO вынести в отдельный блок и переименовать этот метод именно в обработчик request 
+            Debug.Log("Done!!!!!!: " + unityWebRequest.downloadHandler.text);
+            Debug.Log("Task Done!!!!!!: " + task.Result.Data);
+        },
+            cancellationTokenSource.Token, TaskContinuationOptions.None, taskScheduler);*/
 
-        try {
-            Task requestTask = RequestAsync(request, cancellationToken, progress);
-            await RetryAsyncHelpe.RetryOnExceptionAsync<UnityWebRequestServerConnectionException>(async () => { await requestTask; });
-        } catch (UnityWebRequestException uwrException) {
-            errorTypeDelegate?.Invoke(uwrException.Code, uwrException.Message);
-        } catch (UnityWebRequestServerConnectionException uwrServerConnectionException) {
-            errorTypeDelegate?.Invoke(uwrServerConnectionException.Code, uwrServerConnectionException.Message);
-        } catch {
-            errorTypeDelegate?.Invoke(500, "Failed to connect to server");
-        }
-        finally {
-            if (onCancel != null) {
-                onCancel -= cancellationTokenSource.Cancel;
-            }
-            request?.Dispose();
-            cancellationTokenSource.Dispose();
-        }
-        //TODO request?.Dispose(); освобождается раньге, чем срабатывает следующий метод, а это неправильно
-        responseDelegate?.Invoke(request.responseCode, request.downloadHandler.text);
+        //StartCoroutine(GetRequesting(url, responseDelegate, errorTypeDelegate, headerAccessToken));
     }
 
-    private async Task<UnityWebRequest> PrepareGetRequest(string url, string headerAccessToken = null) {
+    /// <summary>
+    /// Prepare UnityWebRequest for get request text data
+    /// </summary>
+    private UnityWebRequest PrepareGetRequest(string url, string headerAccessToken = null) {
         UnityWebRequest request = UnityWebRequest.Get(url);
         request.certificateHandler = new CustomCertificateHandler();
 
@@ -82,10 +77,72 @@ public class WebRequestHandler : MonoBehaviour {
     }
 
     /// <summary>
+    /// request to server and send call back
+    /// </summary>
+    private void MyRequest(Func<UnityWebRequest> createWebRequest,
+        ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
+            Action onCancel = null, Action<float> progress = null) {
+
+        UnityWebRequest request = null;
+        try {
+            TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            Debug.Log("createWebRequest");
+
+            request = createWebRequest?.Invoke();
+
+            Debug.Log("request: " + request.uri);
+
+            WebRequestWithRetryAsync(request, onCancel, progress).ContinueWith((taskWebRequestData) => {
+                Debug.Log("Request recieved data: " + taskWebRequestData.Result.Data);
+                Debug.Log("Request recieved data: " + request.downloadHandler.text);
+
+                responseDelegate?.Invoke(taskWebRequestData.Result.Code, taskWebRequestData.Result.Data);
+            }, taskScheduler);
+
+        } catch(UnityWebRequestException uwrException) {
+            errorTypeDelegate?.Invoke(uwrException.Code, uwrException.Message);
+        } catch (UnityWebRequestServerConnectionException uwrServerConnectionException) {
+            errorTypeDelegate?.Invoke(uwrServerConnectionException.Code, uwrServerConnectionException.Message);
+        } catch {
+            errorTypeDelegate?.Invoke(500, "Failed to connect to server");
+        } finally {
+            request?.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// Async WebRequest with Retry 
+    /// </summary>
+    private async Task<UnitySuccessWebRequestData<string>> WebRequestWithRetryAsync(UnityWebRequest request,
+        Action onCancel = null, Action<float> progress = null) {
+
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        if (onCancel != null) {
+            onCancel += cancellationTokenSource.Cancel;
+        }
+        CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+        try {
+            //await UnityWebRequestAsync(request, cancellationToken, progress);
+            Task requestTask = UnityWebRequestAsync(request, cancellationToken, progress);
+            await RetryAsyncHelpe.RetryOnExceptionAsync<UnityWebRequestServerConnectionException>(async () => { await requestTask; });
+            long code = request.responseCode;
+            string text = request.downloadHandler.text;
+            return new UnitySuccessWebRequestData<string>(request.responseCode, text);
+        } 
+        finally {
+            if (onCancel != null) {
+                onCancel -= cancellationTokenSource.Cancel;
+            }
+            cancellationTokenSource.Dispose();
+        }
+    }
+
+    /// <summary>
     /// Unity Asynchronous request
     /// if nothing happens waiting time = REQUEST_CHECK_COOLDOWN * MAX_COUNT_STOPPED_STEPS_REQUEST and then timeout exception
     /// </summary>
-    private async Task RequestAsync(UnityWebRequest request, CancellationToken cancellationToken, Action<float> progress) {
+    private async Task UnityWebRequestAsync(UnityWebRequest request, CancellationToken cancellationToken, Action<float> progress) {
         int countStoppedSteps = 0;
         float prevProgressState = request.downloadProgress;
 
@@ -95,6 +152,7 @@ public class WebRequestHandler : MonoBehaviour {
 
         //awaiting
         while (request.downloadProgress != 1) {
+            progress?.Invoke(request.downloadProgress);
             //check cancel
             if (cancellationToken.IsCancellationRequested) {
                 request.Abort();
@@ -115,6 +173,8 @@ public class WebRequestHandler : MonoBehaviour {
                 throw new UnityWebRequestException(request.responseCode, request.downloadHandler.text);
             }
         }
+
+        progress?.Invoke(request.downloadProgress);
     }
 
     private bool IsServerWaitingTimeout(ref int countStoppedSteps, ref float prevProgressState, UnityWebRequest request) {
@@ -128,7 +188,7 @@ public class WebRequestHandler : MonoBehaviour {
         return countStoppedSteps >= MAX_COUNT_STOPPED_STEPS_REQUEST;
     }
 
-    private async Task<string> GetAsync() {
+    /*private async Task<string> GetAsync() {
 
         await Task.Delay(4 * timeDelay);
 
@@ -225,7 +285,7 @@ public class WebRequestHandler : MonoBehaviour {
         int i = 0;
         int v = 1;
         int c = 0;
-        // try {
+         try {
 
         await Task.Delay(4 * timeDelay);
         //WebException webException = new WebException(502, "Exception: Timeout");
@@ -237,13 +297,13 @@ public class WebRequestHandler : MonoBehaviour {
         await Task.Delay(4 * timeDelay);
         ct.ThrowIfCancellationRequested();
 
-        /*   } catch (AggregateException ae) {
+          } catch (AggregateException ae) {
                return "AggregateException" + ae.Message;
            } catch (Exception e) {
                return "Exception " + e.Message;
            } finally {
                //tokenSource2.Dispose(); // ?????? how that can know about tokenSource2
-           }*/
+           }
 
         return "Fetched";
     }
@@ -257,7 +317,7 @@ public class WebRequestHandler : MonoBehaviour {
             return "Error";
         }
     }
-
+    */
 
     #region old
     public void DeleteRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {

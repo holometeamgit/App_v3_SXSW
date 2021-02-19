@@ -13,8 +13,7 @@ public class UnityWebRequestException : Exception {
         : base(message, inner) { }
 
     public UnityWebRequestException(long code, string message)
-        : this(message)
-    {
+        : this(message) {
         Code = code;
     }
 }

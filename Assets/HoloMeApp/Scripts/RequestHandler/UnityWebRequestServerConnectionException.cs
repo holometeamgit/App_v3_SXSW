@@ -1,6 +1,6 @@
-﻿
-using System;
+﻿using System;
 
+[Serializable]
 public class UnityWebRequestServerConnectionException : Exception {
     public long Code { get; }
 
