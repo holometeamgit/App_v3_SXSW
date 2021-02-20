@@ -79,6 +79,21 @@ public class WebRequestHandler : MonoBehaviour {
         }, taskScheduler);
     }
 
+    public void PutRequest<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
+        string headerAccessToken = null, Action onCancel = null, Action<float> progress = null) {
+        Func<UnityWebRequest> createWebRequest = () => {
+            string currentUrl = url;
+            string currentHeaderAccessToken = headerAccessToken;
+            T currentBody = body;
+            BodyType currentBodyType = bodyType;
+            return PreparePutRequest(currentUrl, currentBody, currentBodyType, currentHeaderAccessToken);
+        };
+
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, progress).ContinueWith((taskWebRequestData) => {
+        }, taskScheduler);
+    }
+
     /// <summary>
     /// Prepare UnityWebRequest for get request text data
     /// </summary>
@@ -158,6 +173,29 @@ public class WebRequestHandler : MonoBehaviour {
         return request;
     }
 
+    /// <summary>
+    /// Prepare UnityWebRequest for put request text data
+    /// </summary>
+    private UnityWebRequest PreparePutRequest<T>(string url, T body, BodyType bodyType, string headerAccessToken = null) {
+        byte[] bodyRaw;
+        var request = new UnityWebRequest(url, "PUT");
+        request.certificateHandler = new CustomCertificateHandler();
+        switch (bodyType) {
+            default: //only Json at this moment
+                string bodyString = JsonUtility.ToJson(body);
+                bodyRaw = Encoding.UTF8.GetBytes(bodyString);
+                break;
+        }
+
+        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        if (headerAccessToken != null)
+            request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
+
+        return request;
+    }
 
     #region Async web request
     /// <summary>
@@ -259,10 +297,6 @@ public class WebRequestHandler : MonoBehaviour {
         StartCoroutine(PostRequestingMultiPart(url, body, bodyType, responseDelegate, errorTypeDelegate, headerAccessToken));
     }
 
-    public void PutRequest<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
-        StartCoroutine(PutRequesting(url, body, bodyType, responseDelegate, errorTypeDelegate, headerAccessToken));
-    }
-
     public void PatchRequest<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
         StartCoroutine(PatchRequesting(url, body, bodyType, responseDelegate, errorTypeDelegate, headerAccessToken));
     }
@@ -305,38 +339,6 @@ public class WebRequestHandler : MonoBehaviour {
     }
 
     #endregion
-
-    IEnumerator PutRequesting<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
-        byte[] bodyRaw;
-        var request = new UnityWebRequest(url, "PUT");
-        try {
-            switch (bodyType) {
-                default: //only Json at this moment
-                    string bodyString = JsonUtility.ToJson(body);
-                    bodyRaw = Encoding.UTF8.GetBytes(bodyString);
-                    break;
-            }
-
-            request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-            request.timeout = TIMEOUT_REQUEST;
-            if (headerAccessToken != null)
-                request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
-
-        } catch (System.Exception e) {
-            Debug.Log("post error web request " + e);
-            yield break;
-        }
-
-        yield return request.SendWebRequest();
-
-        if (request.isNetworkError || request.isHttpError) {
-            errorTypeDelegate(request.responseCode, request.downloadHandler.text);
-        } else {
-            responseDelegate(request.responseCode, request.downloadHandler.text);
-        }
-    }
 
     IEnumerator PatchRequesting<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
         byte[] bodyRaw;
