@@ -28,6 +28,14 @@ public class WebRequestHandler : MonoBehaviour {
     private const int REQUEST_CHECK_COOLDOWN = 250;
     private const int MAX_COUNT_STOPPED_STEPS_REQUEST = 20;
 
+    public void LogCallback(long code, string body) {
+        HelperFunctions.DevLog($"Code {code} Message {body}");
+    }
+
+    public void ErrorLogCallback(long code, string body) {
+        HelperFunctions.DevLogError($"An Error Occurred! Code {code} Message {body}");
+    }
+
     public void GetRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
         string headerAccessToken = null, Action onCancel = null, Action<float> progress = null) {
 
@@ -58,13 +66,25 @@ public class WebRequestHandler : MonoBehaviour {
         }, taskScheduler);
     }
 
+    public void DeleteRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
+        string headerAccessToken = null, Action onCancel = null, Action<float> progress = null) {
+        Func<UnityWebRequest> createWebRequest = () => {
+            string currentUrl = url;
+            string currentHeaderAccessToken = headerAccessToken;
+            return PrepareDeleteRequest(currentUrl, currentHeaderAccessToken);
+        };
+
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, progress).ContinueWith((taskWebRequestData) => {
+        }, taskScheduler);
+    }
+
     /// <summary>
     /// Prepare UnityWebRequest for get request text data
     /// </summary>
     private UnityWebRequest PrepareGetRequest(string url, string headerAccessToken = null) {
         UnityWebRequest request = UnityWebRequest.Get(url);
         request.certificateHandler = new CustomCertificateHandler();
-
 
         if (headerAccessToken != null) {
             request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
@@ -124,6 +144,22 @@ public class WebRequestHandler : MonoBehaviour {
 
     }
 
+    /// <summary>
+    /// Prepare UnityWebRequest for delete request text data
+    /// </summary>
+    private UnityWebRequest PrepareDeleteRequest(string url, string headerAccessToken = null) {
+        UnityWebRequest request = UnityWebRequest.Delete(url);
+        request.certificateHandler = new CustomCertificateHandler();
+        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+
+        if (headerAccessToken != null)
+            request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
+
+        return request;
+    }
+
+
+    #region Async web request
     /// <summary>
     /// Async WebRequest with Retry 
     /// </summary>
@@ -215,142 +251,9 @@ public class WebRequestHandler : MonoBehaviour {
 
         return countStoppedSteps >= MAX_COUNT_STOPPED_STEPS_REQUEST;
     }
-
-    /*private async Task<string> GetAsync() {
-
-        await Task.Delay(4 * timeDelay);
-
-        return "";
-    }
-
-    CancellationTokenSource tokenSource2;
-    const int timeDelay = 250;
-
-    private void Start() {
-        int a = 0;
-        int b = 1;
-        try {
-            b = a + a;
-        } finally {
-            Debug.Log("Finally");
-        }
-
-        Debug.Log("After catch");
-
-        return;
-        Action onCnacel = delegate { };
-
-        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-
-        tokenSource2 = new CancellationTokenSource();
-        CancellationToken ct = tokenSource2.Token;
-
-        onCnacel += tokenSource2.Cancel;
-
-        Debug.Log("Start");
-
-        ct.Register(() => {
-            Debug.Log("Task is canceled");
-        });
-
-        //Task.Delay(4 * timeDelay).ContinueWith((_) => { Debug.Log(4 * timeDelay); });
-        //Task.Delay(8 * timeDelay).ContinueWith((_) => { Debug.Log(8 * timeDelay); });
-        //Task.Delay(12 * timeDelay).ContinueWith((_) => { Debug.Log(12 * timeDelay); });
-        //Task.Delay(16 * timeDelay).ContinueWith((_) => { Debug.Log(16 * timeDelay); });
-
-        onCnacel -= tokenSource2.Cancel;
-        Task.Delay(6 * timeDelay).ContinueWith((_) => { onCnacel?.Invoke(); });
-
-        FetchUsersAsync(ct).ContinueWith(task => {
-            Debug.Log("Task IsCompleted: " + task.IsCompleted);
-            Debug.Log("Task IsCanceled: " + task.IsCanceled);
-            Debug.Log("Task IsFaulted:  " + task.IsFaulted);
-
-            if (!task.IsCanceled && !task.IsFaulted) {
-                Debug.Log("Completed msg ");
-                Debug.Log("Completed msg " + task.Result);
-            } else if (task.IsCanceled) {
-                Debug.Log("Cancel msg ");
-            } else if (task.IsFaulted) {
-                Debug.Log("Exception msg ");
-
-                if (task.Exception is AggregateException) // is it an AggregateException?
-    {
-                    var ae = task.Exception as AggregateException;
-                    if (ae.InnerExceptions.Count > 0) {
-                        Debug.Log(ae.InnerExceptions[0].Message);
-                        WebExceptionJsonData webException = JsonUtility.FromJson<WebExceptionJsonData>(ae.InnerExceptions[0].Message);
-                        WebExceptionJsonData webException1 = new WebExceptionJsonData(502, "Timeout");
-                        Debug.Log("Example: " + JsonUtility.ToJson(webException));
-                        Debug.Log("Ready read error is null " + webException == null);
-                        if (webException != null) {
-                            Debug.Log(webException.Msg);
-                        } else {
-                            Debug.Log("can't read msg. It will be Connection Exception");
-                        }
-                    } else {
-                        Debug.Log("Connection Exception");
-                    }
-                    //foreach (var e in ae.InnerExceptions) // loop them and print their messages
-                    //{
-                    //    Debug.Log(e.Message); // output is "y" .. because that's what you threw
-                    //}
-                }
-            }
-            //tokenSource2.Dispose();
-        }
-        , taskScheduler);
-        //tokenSource2.CancelAfter(6 * timeDelay);
-    }
-
-    private void Update() {
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            tokenSource2.Cancel();
-        }
-    }
-
-    async Task<string> FetchUsersAsync(CancellationToken ct) {
-        int i = 0;
-        int v = 1;
-        int c = 0;
-         try {
-
-        await Task.Delay(4 * timeDelay);
-        //WebException webException = new WebException(502, "Exception: Timeout");
-        //throw new Exception(JsonUtility.ToJson(webException));
-        //c = v / i;
-        ct.ThrowIfCancellationRequested();
-        await Task.Delay(4 * timeDelay);
-        ct.ThrowIfCancellationRequested();
-        await Task.Delay(4 * timeDelay);
-        ct.ThrowIfCancellationRequested();
-
-          } catch (AggregateException ae) {
-               return "AggregateException" + ae.Message;
-           } catch (Exception e) {
-               return "Exception " + e.Message;
-           } finally {
-               //tokenSource2.Dispose(); // ?????? how that can know about tokenSource2
-           }
-
-        return "Fetched";
-    }
-
-    async Task<string> Starting(CancellationToken ct) {
-        try {
-            var users = await FetchUsersAsync(ct);
-            return users;
-        } catch {
-            Debug.Log("An error occurred");
-            return "Error";
-        }
-    }
-    */
+    #endregion
 
     #region old
-    public void DeleteRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
-        StartCoroutine(DeleteRequesting(url, responseDelegate, errorTypeDelegate, headerAccessToken));
-    }
 
     public void PostRequestMultipart(string url, byte[] body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
         StartCoroutine(PostRequestingMultiPart(url, body, bodyType, responseDelegate, errorTypeDelegate, headerAccessToken));
@@ -363,49 +266,6 @@ public class WebRequestHandler : MonoBehaviour {
     public void PatchRequest<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
         StartCoroutine(PatchRequesting(url, body, bodyType, responseDelegate, errorTypeDelegate, headerAccessToken));
     }
-
-    /*IEnumerator GetRequesting(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
-
-        using (UnityWebRequest request = UnityWebRequest.Get(url)) {
-            request.certificateHandler = new CustomCertificateHandler();
-
-            if (headerAccessToken != null) {
-                request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
-            }
-
-            request.timeout = TIMEOUT_REQUEST;
-
-            yield return request.SendWebRequest();
-
-            if (request.isNetworkError || request.isHttpError) {
-                errorTypeDelegate(request.responseCode, request.error);
-            } else {
-                responseDelegate(request.responseCode, request.downloadHandler.text);
-            }
-        }
-    }*/
-
-    //IEnumerator PostRequestingMultiPart(string url, byte[] myData, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
-    //    {
-
-    //        using (UnityWebRequest webRequest = UnityWebRequest.Put(url, myData)) {
-    //            webRequest.method = "POST";
-    //            webRequest.SetRequestHeader("Content-Type", "multipart/form-data");
-    //            if (headerAccessToken != null)
-    //                webRequest.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
-
-    //            yield return webRequest.Send();
-
-    //            if (webRequest.isNetworkError || webRequest.isHttpError) {
-    //                HelperFunctions.DevLog("ErrorCode :" + webRequest.responseCode + ": Error: " + webRequest.error + webRequest.downloadHandler.text);
-    //                errorTypeDelegate(webRequest.responseCode, webRequest.downloadHandler.text);
-    //            } else {
-    //                Debug.Log("Upload complete!");
-    //                responseDelegate(webRequest.responseCode, webRequest.downloadHandler.text);
-    //            }
-    //        }
-    //    }
-    //}
 
     IEnumerator PostRequestingMultiPart(string url, byte[] myData, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
         // read a file and add it to the form
@@ -508,36 +368,4 @@ public class WebRequestHandler : MonoBehaviour {
             responseDelegate(request.responseCode, request.downloadHandler.text);
         }
     }
-
-    IEnumerator DeleteRequesting(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate, string headerAccessToken = null) {
-
-        Debug.Log(url);
-
-        using (UnityWebRequest request = UnityWebRequest.Delete(url)) {
-            request.certificateHandler = new CustomCertificateHandler();
-            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-
-            if (headerAccessToken != null)
-                request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
-            request.timeout = TIMEOUT_REQUEST;
-            yield return request.SendWebRequest();
-
-            if (request.isNetworkError || request.isHttpError) {
-                errorTypeDelegate(request.responseCode, request.error);
-            } else {
-                responseDelegate(request.responseCode, request.downloadHandler.text);
-            }
-            request?.Dispose();
-        }
-
-    }
-
-    public void LogCallback(long code, string body) {
-        HelperFunctions.DevLog($"Code {code} Message {body}");
-    }
-
-    public void ErrorLogCallback(long code, string body) {
-        HelperFunctions.DevLogError($"An Error Occurred! Code {code} Message {body}");
-    }
-
 }
