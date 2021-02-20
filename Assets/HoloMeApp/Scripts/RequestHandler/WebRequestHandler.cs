@@ -23,7 +23,8 @@ public class WebRequestHandler : MonoBehaviour {
     private const int TIMEOUT_REQUEST = 5;
 
     private const int REQUEST_CHECK_COOLDOWN = 250;
-    private const int MAX_COUNT_STOPPED_STEPS_REQUEST = 20;
+    private const int MAX_TIMES_BEFORE_STOP_REQUEST = 20;
+    private const int MAX_TIMES_BEFORE_STOP_TEXTURE_REQUEST = 240;
 
     public void LogCallback(long code, string body) {
         HelperFunctions.DevLog($"Code {code} Message {body}");
@@ -109,18 +110,31 @@ public class WebRequestHandler : MonoBehaviour {
 
     public void PatchRequest<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
         string headerAccessToken = null, Action onCancel = null, Action<float> progress = null) {
-            Func<UnityWebRequest> createWebRequest = () => {
-                string currentUrl = url;
-                string currentHeaderAccessToken = headerAccessToken;
-                T currentBody = body;
-                BodyType currentBodyType = bodyType;
-                return PreparePatchRequest(currentUrl, currentBody, currentBodyType, currentHeaderAccessToken);
-            };
+        Func<UnityWebRequest> createWebRequest = () => {
+            string currentUrl = url;
+            string currentHeaderAccessToken = headerAccessToken;
+            T currentBody = body;
+            BodyType currentBodyType = bodyType;
+            return PreparePatchRequest(currentUrl, currentBody, currentBodyType, currentHeaderAccessToken);
+        };
 
-            TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, progress).ContinueWith((taskWebRequestData) => {
-            }, taskScheduler);
-        }
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, progress).ContinueWith((taskWebRequestData) => {
+        }, taskScheduler);
+    }
+
+    public void GetTextureRequest(string url, ResponseTextureDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
+    string headerAccessToken = null, Action onCancel = null, Action<float> progress = null) {
+        Func<UnityWebRequest> createWebRequest = () => {
+            string currentUrl = url;
+            string currentHeaderAccessToken = headerAccessToken;
+            return PrepareGetTextureRequest(currentUrl);
+        };
+
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, progress, MAX_TIMES_BEFORE_STOP_TEXTURE_REQUEST).ContinueWith((taskWebRequestData) => {
+        }, taskScheduler);
+    }
 
     /// <summary>
     /// Prepare UnityWebRequest for get request text data
@@ -257,7 +271,7 @@ public class WebRequestHandler : MonoBehaviour {
     }
 
     /// <summary>
-    /// Prepare UnityWebRequest for put request text data
+    /// Prepare UnityWebRequest for Patch request text data
     /// </summary>
     private UnityWebRequest PreparePatchRequest<T>(string url, T body, BodyType bodyType, string headerAccessToken = null) {
         byte[] bodyRaw;
@@ -281,13 +295,23 @@ public class WebRequestHandler : MonoBehaviour {
         return request;
     }
 
+    /// <summary>
+    /// Prepare UnityWebRequest for get texture request text data
+    /// </summary>
+    private UnityWebRequest PrepareGetTextureRequest(string url) {
+        UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+        request.downloadHandler = new DownloadHandlerTexture();
+
+        return request;
+    }
+
     #region Async web request
     /// <summary>
     /// Async WebRequest with Retry 
     /// </summary>
-    private async Task WebRequestWithRetryAsync(Func<UnityWebRequest> createWebRequest,
-        ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
-        Action onCancel = null, Action<float> progress = null) {
+    private async Task WebRequestWithRetryAsync<T>(Func<UnityWebRequest> createWebRequest,
+        T responseDelegate, ErrorTypeDelegate errorTypeDelegate,
+        Action onCancel = null, Action<float> progress = null, int maxTimesWait = MAX_TIMES_BEFORE_STOP_REQUEST) {
 
         UnityWebRequest request = null;
         CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -302,9 +326,16 @@ public class WebRequestHandler : MonoBehaviour {
             errorMsg = "Befor req";
             request = createWebRequest?.Invoke();
             errorMsg = "After req: " + request.uri;
-            Task requestTask = UnityWebRequestAsync(request, cancellationToken, progress);
+            Task requestTask = UnityWebRequestAsync(request, cancellationToken, progress, maxTimesWait);
             await RetryAsyncHelpe.RetryOnExceptionAsync<UnityWebRequestServerConnectionException>(async () => { await requestTask; });
-            responseDelegate?.Invoke(request.responseCode, request.downloadHandler.text);
+
+            if (responseDelegate is ResponseDelegate) {
+                (responseDelegate as ResponseDelegate)?.Invoke(request.responseCode, request.downloadHandler.text);
+            } else if (responseDelegate is ResponseTextureDelegate) {
+                Texture texture = DownloadHandlerTexture.GetContent(request);
+                (responseDelegate as ResponseTextureDelegate)?.Invoke(request.responseCode,
+                    request.downloadHandler.text, ((DownloadHandlerTexture)request.downloadHandler).texture);
+            }
 
         } catch (UnityWebRequestException uwrException) {
             errorTypeDelegate?.Invoke(uwrException.Code, uwrException.Message);
@@ -325,7 +356,7 @@ public class WebRequestHandler : MonoBehaviour {
     /// Unity Asynchronous request
     /// if nothing happens waiting time = REQUEST_CHECK_COOLDOWN * MAX_COUNT_STOPPED_STEPS_REQUEST and then timeout exception
     /// </summary>
-    private async Task UnityWebRequestAsync(UnityWebRequest request, CancellationToken cancellationToken, Action<float> progress) {
+    private async Task UnityWebRequestAsync(UnityWebRequest request, CancellationToken cancellationToken, Action<float> progress, int maxTimesWait) {
         int countStoppedSteps = 0;
         float prevProgressState = request.downloadProgress;
 
@@ -334,14 +365,14 @@ public class WebRequestHandler : MonoBehaviour {
         await Task.Delay(REQUEST_CHECK_COOLDOWN);
 
         //awaiting
-        while (request.downloadProgress != 1) {
+        while (!request.isDone) {//request.downloadProgress != 1 || !request.isDone) {
             progress?.Invoke(request.downloadProgress);
             //check cancel
             if (cancellationToken.IsCancellationRequested) {
                 request.Abort();
                 cancellationToken.ThrowIfCancellationRequested();
                 //check timeout
-            } else if (IsServerWaitingTimeout(ref countStoppedSteps, ref prevProgressState, request)) {
+            } else if (IsServerWaitingTimeout(ref countStoppedSteps, ref prevProgressState, request, maxTimesWait)) {
                 request.Abort();
                 throw new UnityWebRequestServerConnectionException(504, "Gateway Timeout");
             }
@@ -363,7 +394,7 @@ public class WebRequestHandler : MonoBehaviour {
     /// <summary>
     /// check server timeout
     /// </summary>
-    private bool IsServerWaitingTimeout(ref int countStoppedSteps, ref float prevProgressState, UnityWebRequest request) {
+    private bool IsServerWaitingTimeout(ref int countStoppedSteps, ref float prevProgressState, UnityWebRequest request, int maxTimesWait) {
         if (prevProgressState == request.downloadProgress) {
             countStoppedSteps++;
         } else {
@@ -371,7 +402,7 @@ public class WebRequestHandler : MonoBehaviour {
             countStoppedSteps = 0;
         }
 
-        return countStoppedSteps >= MAX_COUNT_STOPPED_STEPS_REQUEST;
+        return countStoppedSteps >= maxTimesWait;
     }
     #endregion
 

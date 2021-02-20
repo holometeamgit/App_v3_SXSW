@@ -18,7 +18,7 @@ public class BroadcasterScreenLoader : MonoBehaviour
     ThumbnailWebDownloadManager thumbnailWebDownloadManager;
 
     [SerializeField]
-    MediaFileDataHandler mediaFileDataHandler;
+    WebRequestHandler webRequestHandler;
 
     [SerializeField]
     AccountManager accountManager;
@@ -86,7 +86,7 @@ public class BroadcasterScreenLoader : MonoBehaviour
                 continue;
             }
             Debug.Log(data.preview_s3_url);
-            mediaFileDataHandler.LoadImg(data.preview_s3_url,
+            webRequestHandler.GetTextureRequest(data.preview_s3_url,
                 (code, body, texture) => TextureDataFetchedCallBack(waitingCount, loadingKey, data, texture),
                 ((code, body) => Debug.Log(body)));
         }
