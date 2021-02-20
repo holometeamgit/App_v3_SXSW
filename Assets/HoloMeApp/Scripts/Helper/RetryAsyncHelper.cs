@@ -35,11 +35,11 @@ public class RetryAsyncHelpe {
     }
 
     internal static int[] DelayPerAttemptInSeconds = {
-        (int) TimeSpan.FromSeconds(2).TotalSeconds,
-        (int) TimeSpan.FromSeconds(5).TotalSeconds,
-        (int) TimeSpan.FromSeconds(10).TotalSeconds,
-        (int) TimeSpan.FromSeconds(30).TotalSeconds,
-        (int) TimeSpan.FromSeconds(60).TotalSeconds,
+        2000,
+        5000,
+        10000,
+        30000,
+        60000,
     };
 
     static int IncreasingDelayInSeconds(int failedAttempts) {
