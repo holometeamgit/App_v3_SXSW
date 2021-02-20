@@ -7,7 +7,7 @@ public class UIThumbnailsController : MonoBehaviour {
     public Action OnUpdated;
     public Action<string> OnPlayFromUser;
 
-    [SerializeField] MediaFileDataHandler mediaFileDataHandler;
+    [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] PnlViewingExperience pnlViewingExperience;
     [SerializeField] ShareManager shareManager;
     [SerializeField] PnlStreamOverlay pnlStreamOverlay;
@@ -100,7 +100,7 @@ public class UIThumbnailsController : MonoBehaviour {
                 if (thumbnailElement.Data == thumbnailData || streamDataEqualityComparer.Equals(thumbnailElement.Data, thumbnailData))
                     continue;
             }
-            thumbnailElementsDictionary[thumbnailData.id] = new ThumbnailElement(thumbnailData, mediaFileDataHandler);
+            thumbnailElementsDictionary[thumbnailData.id] = new ThumbnailElement(thumbnailData, webRequestHandler);
         }
     }
 

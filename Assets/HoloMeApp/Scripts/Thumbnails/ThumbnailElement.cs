@@ -13,18 +13,18 @@ public class ThumbnailElement {
     public Action OnErrorTextureLoaded;
     public Action OnDataUpdated;
 
-    MediaFileDataHandler mediaFileDataHandler;
+    WebRequestHandler webRequestHandler;
 
-    public ThumbnailElement(StreamJsonData.Data data, MediaFileDataHandler mediaFileDataHandler) {
+    public ThumbnailElement(StreamJsonData.Data data, WebRequestHandler webRequestHandler) {
         texture = null;
         teaserTexture = null;
         Data = data;
         Id = data.id;
-        this.mediaFileDataHandler = mediaFileDataHandler;
+        this.webRequestHandler = webRequestHandler;
 
         //TODO optimize 
         string teaserTextureUrl = string.IsNullOrWhiteSpace(Data.preview_teaser_s3_url) ? "1" : Data.preview_teaser_s3_url;
-        mediaFileDataHandler.LoadImg(teaserTextureUrl,
+        webRequestHandler.GetTextureRequest(teaserTextureUrl,
                                      FetchTeaserTextureCallBack,
                                      ErrorFetchTeaserTextureCallBack);
 
@@ -44,16 +44,18 @@ public class ThumbnailElement {
     private void FetchTexture() {
         //TODO optimize 
         string textureUrl = string.IsNullOrWhiteSpace(Data.preview_s3_url) ? "1" : Data.preview_s3_url;
-        mediaFileDataHandler.LoadImg(textureUrl,
+        webRequestHandler.GetTextureRequest(textureUrl,
                              FetchTextureCallBack,
                              ErrorFetchTextureCallBack);
     }
 
     private void FetchTextureCallBack(long code, string body, Texture texture) {
+        HelperFunctions.DevLog("FetchTextureCallBack: " + body);
         this.texture = texture;
         OnTextureLoaded?.Invoke();
     }
     private void ErrorFetchTextureCallBack(long code, string body) {
+        HelperFunctions.DevLog("ErrorFetchTextureCallBack: " + body);
         OnErrorTextureLoaded?.Invoke();
     }
 }
