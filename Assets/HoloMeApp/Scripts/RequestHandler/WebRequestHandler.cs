@@ -20,8 +20,6 @@ public class WebRequestHandler : MonoBehaviour {
 
     [SerializeField] ServerURLAPIScriptableObject serverURLAPI;
 
-    private const int TIMEOUT_REQUEST = 5;
-
     private const int REQUEST_CHECK_COOLDOWN = 250;
     private const int MAX_TIMES_BEFORE_STOP_REQUEST = 20;
     private const int MAX_TIMES_BEFORE_STOP_TEXTURE_REQUEST = 240;
@@ -320,12 +318,8 @@ public class WebRequestHandler : MonoBehaviour {
         }
         CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        string errorMsg = "";
-
         try {
-            errorMsg = "Befor req";
             request = createWebRequest?.Invoke();
-            errorMsg = "After req: " + request.uri;
             Task requestTask = UnityWebRequestAsync(request, cancellationToken, progress, maxTimesWait);
             await RetryAsyncHelpe.RetryOnExceptionAsync<UnityWebRequestServerConnectionException>(async () => { await requestTask; });
 
@@ -365,7 +359,7 @@ public class WebRequestHandler : MonoBehaviour {
         await Task.Delay(REQUEST_CHECK_COOLDOWN);
 
         //awaiting
-        while (!request.isDone) {//request.downloadProgress != 1 || !request.isDone) {
+        while (!request.isDone) {
             progress?.Invoke(request.downloadProgress);
             //check cancel
             if (cancellationToken.IsCancellationRequested) {
