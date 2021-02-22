@@ -22,6 +22,7 @@ public class ApplicationSettingsHandler : MonoBehaviour
     }
 
     public void ToggleSleepTimeout(bool disable) {
+        HelperFunctions.DevLog("Sleep Timeout Disabled = "+ disable);
         Screen.sleepTimeout = disable? SleepTimeout.NeverSleep : SLEEP_TIMEOUT;
     }
 }
