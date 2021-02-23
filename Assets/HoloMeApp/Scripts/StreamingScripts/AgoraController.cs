@@ -47,6 +47,8 @@ public class AgoraController : MonoBehaviour {
     public Action OnStreamerLeft;
     public Action OnCameraSwitched;
     public Action OnPreviewStopped;
+    public Action OnStreamWentLive;
+    public Action OnStreamWentOffline;
 
     [SerializeField]
     RawImage videoSufaceStreamerRawTex;
@@ -54,7 +56,6 @@ public class AgoraController : MonoBehaviour {
     Coroutine sendThumbnailRoutine;
 
     static Vector3 defaultLiveStreamQuadScale;
-
 
     //void OnUserEnableVideoHandler(uint uid, bool enabled)
     //{
@@ -240,6 +241,7 @@ public class AgoraController : MonoBehaviour {
         streamerCountUpdater.StartCheck(ChannelName);
 
         IsLive = true;
+        OnStreamWentLive?.Invoke();
 
         //streamID = iRtcEngine.CreateDataStream(true, true);
 
@@ -286,6 +288,7 @@ public class AgoraController : MonoBehaviour {
         //OnStreamDisconnected();
 
         IsLive = false;
+        OnStreamWentOffline?.Invoke();
     }
 
     IEnumerator SendThumbnailData(bool flipVertical) {

@@ -106,14 +106,14 @@ public class SecondaryServerCalls : MonoBehaviour {
     void CreateStreamSecondaryCallback(long code, string data) {
         print("CREATE STREAM IS BACK" + data);
         streamStartResponseJsonData = JsonUtility.FromJson<StreamStartResponseJsonData>(data);
+        
         if (streamStartResponseJsonData != null)
             OnStreamStarted?.Invoke(tokenAgoraResponse.token, tokenAgoraResponse.token);
+        else
+            Debug.LogError("CREATE STREAM PARSE FAILED");
+        
         if (isRoom)
             CreateRoom();
-        else
-        {
-            Debug.LogError("CREATE STREAM PARSE FAILED");
-        }
     }
 
     void CreateRoom()

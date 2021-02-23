@@ -72,6 +72,8 @@ namespace LostNative.Toolkit.FluidUI
 
         private Sequence toggleSequence;
 
+
+        private bool interactable = true;
         private bool toggleSequenceAlive;
         private bool targetIsOnValue;
         private bool isOn;
@@ -195,9 +197,21 @@ namespace LostNative.Toolkit.FluidUI
             }
         }
 
+        public void ToggleInteractibility(bool enable)
+        {
+            toggleLeftImage.color = new Color(toggleLeftImage.color.r, toggleLeftImage.color.g, toggleLeftImage.color.b, enable ? 1 : 0.25f);
+            toggleRightImage.color = new Color(toggleRightImage.color.r, toggleRightImage.color.g, toggleRightImage.color.b, enable ? 1 : 0.25f);
+            //toggleContainerImage.color = new Color(toggleContainerImage.color.r, toggleContainerImage.color.g, toggleContainerImage.color.b, enable ? 1 : 0.25f);
+            //toggleCenterImage.color = new Color(1, 1, 1, enable ? 1 : 0.25f);
+            interactable = enable;
+        }
+
         [UsedImplicitly]
         public virtual void OnToggleClick()
         {
+            if (!interactable)
+                return;
+
             FinishCurrentToggle();
 
             targetIsOnValue = !isOn;
