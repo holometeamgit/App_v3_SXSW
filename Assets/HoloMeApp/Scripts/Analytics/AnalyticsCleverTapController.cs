@@ -55,12 +55,7 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
     //}
 
     public override void SendCustomEvent(string eventName, Dictionary<string, string> data)
-    {
-        Dictionary<string, object> convertedData = new Dictionary<string, object>();
-        foreach (KeyValuePair<string, string> eventData in data)
-        {
-            convertedData.Add(eventData.Key, eventData.Value);
-        }
-        CleverTapBinding.RecordEvent(eventName, convertedData);
+    {        
+        CleverTapBinding.RecordEvent(eventName, ConvertToStringObjectDictionary(data));
     }
 }
