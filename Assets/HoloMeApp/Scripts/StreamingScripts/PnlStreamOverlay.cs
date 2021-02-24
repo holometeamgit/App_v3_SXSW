@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using System.Collections;
 using UnityEngine.UI;
 using agora_gaming_rtc;
+using LostNative.Toolkit.FluidUI;
 
 public class PnlStreamOverlay : MonoBehaviour {
 
@@ -37,6 +38,9 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     [SerializeField]
     Toggle toggleVideo;
+
+    [SerializeField]
+    FluidToggle fluidToggle;
 
     [SerializeField]
     Button btnFlipCamera;
@@ -103,7 +107,9 @@ public class PnlStreamOverlay : MonoBehaviour {
             }
         };
         agoraController.OnPreviewStopped += () => videoSurface.SetEnable(false);
-        
+        agoraController.OnStreamWentLive += () => fluidToggle.ToggleInteractibility(true);
+        agoraController.OnStreamWentOffline += () => fluidToggle.ToggleInteractibility(true);
+
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
         AddVideoSurface();
@@ -155,6 +161,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void StreamerOpenSharedFunctions() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+        fluidToggle.ToggleInteractibility(true);
         agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
         isStreamer = true;
@@ -239,6 +246,11 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void StopStream() {
+        HelperFunctions.DevLog(nameof(StopStream) + " was called");
+
+        if(agoraController.IsLive) //Check needed as Stop Stream is being called when enabled by unity events causing this to start off disabled
+            fluidToggle.ToggleInteractibility(false);
+        
         if (countdownRoutine != null)
             StopCoroutine(countdownRoutine);
 
@@ -248,6 +260,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     void StartStream() {
+        fluidToggle.ToggleInteractibility(false);
         agoraController.JoinOrCreateChannel(true);
         EnableStreamControls(true);
         ToggleRoomShareControlObjects(false);
