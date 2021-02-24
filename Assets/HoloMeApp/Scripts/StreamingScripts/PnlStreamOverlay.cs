@@ -336,4 +336,19 @@ public class PnlStreamOverlay : MonoBehaviour {
         StopAllCoroutines();
         ToggleARSessionObjects(true);
     }
+
+    IEnumerator OnApplicationFocus(bool hasFocus) //Potential fix for bug where audio and video are re-enabled after losing focus from sharing or minimising
+    {
+        if (hasFocus)
+        {
+            yield return new WaitForEndOfFrame();
+            
+            //HelperFunctions.DevLog("ON FOCUS CALLED");
+
+            if (toggleAudio.isOn)
+                ToggleAudio(true);
+            if (toggleVideo.isOn)
+                ToggleVideo(true);
+        }
+    }
 }
