@@ -198,6 +198,52 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!1 &31117297
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 31117298}
+  - component: {fileID: 31117299}
+  m_Layer: 0
+  m_Name: FirebaseController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &31117298
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31117297}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 635890366}
+  - {fileID: 950717279}
+  m_Father: {fileID: 1511041754}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &31117299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31117297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a48d313947a7454cb5be5414ff1dacc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dependencyStatus: 0
 --- !u!1 &35185071
 GameObject:
   m_ObjectHideFlags: 0
@@ -2590,7 +2636,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba9b0ac1bf2db4d209c26e5b038cf5b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dependencyStatus: 0
   abstractFirebaseControllers:
   - {fileID: 910162687}
   - {fileID: 1179878601}
@@ -2617,7 +2662,7 @@ Transform:
   - {fileID: 767196862}
   - {fileID: 1427020577}
   - {fileID: 2093616688}
-  m_Father: {fileID: 1511041754}
+  m_Father: {fileID: 31117298}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &647738930 stripped
@@ -3997,6 +4042,49 @@ MonoBehaviour:
   OnDelayEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &950717278
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 950717279}
+  - component: {fileID: 950717280}
+  m_Layer: 0
+  m_Name: DynamicLinksController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &950717279
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 950717278}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 31117298}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &950717280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 950717278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 788123d658f7e47d2a448f869f8c11de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &977903554
 GameObject:
   m_ObjectHideFlags: 0
@@ -6422,7 +6510,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 635890366}
+  - {fileID: 31117298}
   - {fileID: 1996615140}
   - {fileID: 921435836}
   - {fileID: 35185072}
@@ -10873,7 +10961,7 @@ PrefabInstance:
     - target: {fileID: 2069229955383226209, guid: 8c5a9e4d2b941694288254f9ed86d81b,
         type: 3}
       propertyPath: m_RootOrder
-      value: 16
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 2069229955383226209, guid: 8c5a9e4d2b941694288254f9ed86d81b,
         type: 3}
@@ -12440,7 +12528,7 @@ PrefabInstance:
     - target: {fileID: 611722738044528419, guid: 65f27277595733c46b483fb8530a683a,
         type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 611722738044528419, guid: 65f27277595733c46b483fb8530a683a,
         type: 3}
