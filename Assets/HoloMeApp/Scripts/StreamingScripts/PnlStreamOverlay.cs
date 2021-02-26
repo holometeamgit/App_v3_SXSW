@@ -67,12 +67,6 @@ public class PnlStreamOverlay : MonoBehaviour {
     PermissionGranter permissionGranter;
 
     [SerializeField]
-    GameObject arSessionOrigin;
-
-    [SerializeField]
-    GameObject arSession;
-
-    [SerializeField]
     UnityEvent OnCloseAsViewer;
 
     [SerializeField]
@@ -131,11 +125,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
     }
 
-    private void ToggleARSessionObjects(bool enable) {
-        arSessionOrigin?.SetActive(enable);
-        arSession?.SetActive(enable);
-    }
-
     private void ToggleRoomShareControlObjects(bool showShareButton)
     {
         btnShareYourRoom.gameObject.SetActive(showShareButton);
@@ -168,7 +157,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         gameObject.SetActive(true);
         controlsPresenter.SetActive(true);
         controlsViewer.SetActive(false);
-        ToggleARSessionObjects(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
         StartCoroutine(OnPreviewReady());
         agoraController.StartPreview();
@@ -347,7 +335,6 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void OnDisable() {
         StopAllCoroutines();
-        ToggleARSessionObjects(true);
     }
 
     IEnumerator OnApplicationFocus(bool hasFocus) //Potential fix for bug where audio and video are re-enabled after losing focus from sharing or minimising
