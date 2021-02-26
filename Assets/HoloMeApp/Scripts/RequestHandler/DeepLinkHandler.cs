@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using Beem.Firebase.DynamicLink;
 
 public class DeepLinkHandler : MonoBehaviour {
     public static DeepLinkHandler Instance { get; private set; }
@@ -45,11 +46,16 @@ public class DeepLinkHandler : MonoBehaviour {
         if (Instance == null) {
             Instance = this;
             Application.deepLinkActivated += OnDeepLinkActivated;
+            DynamicLinksCallBacks.onReceivedDeepLink += OnDeepLinkActivated;
             CheckStartDeepLink();
             DontDestroyOnLoad(gameObject);
         } else {
             Destroy(gameObject);
         }
+    }
+
+    private void OnDestroy() {
+        DynamicLinksCallBacks.onReceivedDeepLink -= OnDeepLinkActivated;
     }
 
     private void CheckStartDeepLink() {

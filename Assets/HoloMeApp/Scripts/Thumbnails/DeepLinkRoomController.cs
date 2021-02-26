@@ -1,5 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Beem.Firebase.DynamicLink;
+using Firebase.DynamicLinks;
 using UnityEngine;
 
 public class DeepLinkRoomController : MonoBehaviour {
@@ -20,9 +24,41 @@ public class DeepLinkRoomController : MonoBehaviour {
         try {
             RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(body);
             //room?roomid=string
-            string uri = serverURLAPIScriptableObject.ServerDeepLinkAPI + DeepLinkHandler.ROOM + "?" + DeepLinkHandler.ROOM_ID_PARAMETTR_NAME + "=" + roomJsonData.id;
-            StreamCallBacks.onMyRoomLinkReceived?.Invoke(uri);
+            string uri = serverURLAPIScriptableObject.FirebaseDynamicLinkAPI + "/" + DeepLinkHandler.ROOM + "?" + DeepLinkHandler.ROOM_ID_PARAMETTR_NAME + "=" + roomJsonData.id;
+            CreateLink(serverURLAPIScriptableObject.FirebaseDynamicLinkAPI, uri, StreamCallBacks.onMyRoomLinkReceived);
         } catch { }
+    }
+
+    private void CreateLink(string prefix, string baseLink, Action<string> onMyRoomLinkReceived) {
+        var components = new DynamicLinkComponents(
+      // The base Link.
+      new Uri(baseLink),
+      // The dynamic link URI prefix.
+      prefix) {
+            IOSParameters = new IOSParameters(Application.identifier),
+            AndroidParameters = new AndroidParameters(Application.identifier),
+        };
+
+        var options = new DynamicLinkOptions {
+            PathLength = DynamicLinkPathLength.Short
+        };
+
+        var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        DynamicLinks.GetShortLinkAsync(components, options).ContinueWith(task => {
+            if (task.IsCanceled) {
+                Debug.LogError("GetShortLinkAsync was canceled.");
+                return;
+            }
+            if (task.IsFaulted) {
+                Debug.LogError("GetShortLinkAsync encountered an error: " + task.Exception);
+                return;
+            }
+
+            // Short Link has been created.
+            ShortDynamicLink link = task.Result;
+            Debug.LogFormat("Generated short link: {0}", link.Url);
+            onMyRoomLinkReceived?.Invoke(link.Url.AbsoluteUri);
+        }, taskScheduler);
     }
 
     private void Awake() {
