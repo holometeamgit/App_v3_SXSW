@@ -133,6 +133,11 @@ public class HologramHandler : MonoBehaviour
         }
     }
 
+    public void ForcePlay()
+    {
+        holoMe.PlayVideo();
+    }
+
     /// <summary>
     /// This is required for analytics stream name tracking and sharing
     /// </summary>

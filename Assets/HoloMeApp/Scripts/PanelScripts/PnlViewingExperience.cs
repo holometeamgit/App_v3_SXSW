@@ -285,6 +285,25 @@ public class PnlViewingExperience : MonoBehaviour
         if (viewingExperienceInFocus && !isFocused)
         {
             //btnBurger.GetComponent<Button>().onClick?.Invoke();
+
+            
+        }
+
+        if (!isFocused && activatedForStreaming == false)
+        {
+            //print("FOCUS PAUSE CALLED");
+            //PauseExperience();
+            //hologramHandler.StopVideo();
+        }
+
+        if (isFocused && activatedForStreaming == false)
+        {
+            //yield return new WaitForSeconds(2);
+            //print("FOCUS RESUME CALLED");
+            hologramHandler.ForcePlay();
+            //ResumeVideo();
+
+
         }
     }
 }
