@@ -24,12 +24,14 @@ public class DeepLinkRoomController : MonoBehaviour {
         try {
             RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(body);
             //room?roomid=string
-            string uri = serverURLAPIScriptableObject.FirebaseDynamicLinkAPI + "/" + DeepLinkHandler.ROOM + "?" + DeepLinkHandler.ROOM_ID_PARAMETTR_NAME + "=" + roomJsonData.id;
+            string uri = serverURLAPIScriptableObject.FirebaseDynamicLinkAPI + "/" + roomJsonData.id;
             CreateLink(serverURLAPIScriptableObject.FirebaseDynamicLinkAPI, uri, StreamCallBacks.onMyRoomLinkReceived);
         } catch { }
     }
 
     private void CreateLink(string prefix, string baseLink, Action<string> onMyRoomLinkReceived) {
+        HelperFunctions.DevLog("baseLink = " + baseLink);
+        HelperFunctions.DevLog("prefix = " + prefix);
         var components = new DynamicLinkComponents(
       // The base Link.
       new Uri(baseLink),

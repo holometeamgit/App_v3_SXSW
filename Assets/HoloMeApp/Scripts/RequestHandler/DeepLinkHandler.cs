@@ -36,17 +36,22 @@ public class DeepLinkHandler : MonoBehaviour {
             case completeSSOLogin:
                 GetCompleteSSOLoginParameters(uri);
                 break;
-            case ROOM:
-                GetRoomParameters(uri);
-                break;
         }
+    }
+
+    public void OnDynamicLinkActivated(string uriStr) {
+
+        Uri uri = new Uri(uriStr);
+
+        HelperFunctions.DevLog("Dynamic link: " + uriStr);
+        GetRoomParameters(uri);
     }
 
     private void Start() {
         if (Instance == null) {
             Instance = this;
             Application.deepLinkActivated += OnDeepLinkActivated;
-            DynamicLinksCallBacks.onReceivedDeepLink += OnDeepLinkActivated;
+            DynamicLinksCallBacks.onReceivedDeepLink += OnDynamicLinkActivated;
             CheckStartDeepLink();
             DontDestroyOnLoad(gameObject);
         } else {
@@ -55,7 +60,8 @@ public class DeepLinkHandler : MonoBehaviour {
     }
 
     private void OnDestroy() {
-        DynamicLinksCallBacks.onReceivedDeepLink -= OnDeepLinkActivated;
+        Application.deepLinkActivated -= OnDeepLinkActivated;
+        DynamicLinksCallBacks.onReceivedDeepLink -= OnDynamicLinkActivated;
     }
 
     private void CheckStartDeepLink() {
@@ -103,7 +109,7 @@ public class DeepLinkHandler : MonoBehaviour {
     private void GetRoomParameters(Uri uri) {
         HelperFunctions.DevLog("GetRoomParameters");
 
-        string roomId = HttpUtility.ParseQueryString(uri.Query).Get(ROOM_ID_PARAMETTR_NAME);
+        string roomId = uri.Host;
 
         HelperFunctions.DevLog("roomId = " + roomId);
         StreamCallBacks.onRoomLinkReceived?.Invoke(roomId);
