@@ -39,10 +39,6 @@ namespace Beem.CleverTap {
             fileGuid = proj.AddFile(fw2, fw2, PBXSourceTree.Source);
             proj.AddFileToEmbedFrameworks(target, fileGuid);
 
-            //Shell script
-            var text = Resources.Load<TextAsset>("CleverTap");
-            proj.AddShellScriptBuildPhase(target, "Build Framework", "/bin/sh", text.text);
-
             // done, write to the project file
             File.WriteAllText(projPath, proj.WriteToString());
         }
