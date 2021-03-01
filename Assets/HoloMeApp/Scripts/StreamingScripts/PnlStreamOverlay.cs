@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using System.Collections;
 using UnityEngine.UI;
 using agora_gaming_rtc;
+using LostNative.Toolkit.FluidUI;
 
 public class PnlStreamOverlay : MonoBehaviour {
 
@@ -39,6 +40,9 @@ public class PnlStreamOverlay : MonoBehaviour {
     Toggle toggleVideo;
 
     [SerializeField]
+    FluidToggle fluidToggle;
+
+    [SerializeField]
     Button btnFlipCamera;
 
     [SerializeField]
@@ -61,12 +65,6 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     [SerializeField]
     PermissionGranter permissionGranter;
-
-    [SerializeField]
-    GameObject arSessionOrigin;
-
-    [SerializeField]
-    GameObject arSession;
 
     [SerializeField]
     UnityEvent OnCloseAsViewer;
@@ -103,7 +101,9 @@ public class PnlStreamOverlay : MonoBehaviour {
             }
         };
         agoraController.OnPreviewStopped += () => videoSurface.SetEnable(false);
-        
+        agoraController.OnStreamWentLive += () => fluidToggle.ToggleInteractibility(true);
+        agoraController.OnStreamWentOffline += () => fluidToggle.ToggleInteractibility(true);
+
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
         AddVideoSurface();
@@ -123,11 +123,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete) {
             permissionGranter.RequestMicAccess();
         }
-    }
-
-    private void ToggleARSessionObjects(bool enable) {
-        arSessionOrigin?.SetActive(enable);
-        arSession?.SetActive(enable);
     }
 
     private void ToggleRoomShareControlObjects(bool showShareButton)
@@ -155,13 +150,13 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void StreamerOpenSharedFunctions() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+        fluidToggle.ToggleInteractibility(true);
         agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
         isStreamer = true;
         gameObject.SetActive(true);
         controlsPresenter.SetActive(true);
         controlsViewer.SetActive(false);
-        ToggleARSessionObjects(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
         StartCoroutine(OnPreviewReady());
         agoraController.StartPreview();
@@ -187,7 +182,10 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void ShowLeaveWarning() {
-        if (isStreamer)
+
+        if (!agoraController.IsLive && isStreamer)
+            CloseAsStreamer();        
+        else if (isStreamer)
             pnlGenericError.ActivateDoubleButton("End the live stream?",
                 "Closing this page will end the live stream and disconnect your users.",
                 onButtonOnePress: () => { CloseAsStreamer(); },
@@ -236,6 +234,11 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void StopStream() {
+        HelperFunctions.DevLog(nameof(StopStream) + " was called");
+
+        if(agoraController.IsLive) //Check needed as Stop Stream is being called when enabled by unity events causing this to start off disabled
+            fluidToggle.ToggleInteractibility(false);
+        
         if (countdownRoutine != null)
             StopCoroutine(countdownRoutine);
 
@@ -245,6 +248,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     void StartStream() {
+        fluidToggle.ToggleInteractibility(false);
         agoraController.JoinOrCreateChannel(true);
         EnableStreamControls(true);
         ToggleRoomShareControlObjects(false);
@@ -331,6 +335,20 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void OnDisable() {
         StopAllCoroutines();
-        ToggleARSessionObjects(true);
+    }
+
+    IEnumerator OnApplicationFocus(bool hasFocus) //Potential fix for bug where audio and video are re-enabled after losing focus from sharing or minimising
+    {
+        if (hasFocus)
+        {
+            yield return new WaitForEndOfFrame();
+            
+            //HelperFunctions.DevLog("ON FOCUS CALLED");
+
+            if (toggleAudio.isOn)
+                ToggleAudio(true);
+            if (toggleVideo.isOn)
+                ToggleVideo(true);
+        }
     }
 }
