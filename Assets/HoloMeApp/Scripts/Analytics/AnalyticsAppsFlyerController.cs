@@ -1,5 +1,4 @@
 ﻿using AppsFlyerSDK;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +12,7 @@ public class AnalyticsAppsFlyerController : AnalyticsLibraryAbstraction
     const string DevKey = "ySBPhh8s4HtZcUiz2QqfVb";
     const string AppID = "1532446771";
 
-    bool disableTracking;
+    //bool disableTracking;
 
     [SerializeField]
     AppsFlyerObjectScript appsFlyerObjectComponent;
@@ -23,9 +22,9 @@ public class AnalyticsAppsFlyerController : AnalyticsLibraryAbstraction
         if (Instance == null)
         {
             Instance = this;
-#if DEV
-            disableTracking = true;
-#endif
+            //#if DEV
+            //            disableTracking = true;
+            //#endif
             //appsFlyerObjectComponent = gameObject.AddComponent<AppsFlyerObjectScript>();
 
             if (appsFlyerObjectComponent.devKey != DevKey)
@@ -45,12 +44,11 @@ public class AnalyticsAppsFlyerController : AnalyticsLibraryAbstraction
             Debug.LogError($"{nameof(AnalyticsController)} Instance Already Exists!");
             Destroy(Instance);
         }
-
     }
 
     public override void SendCustomEvent(string eventName)
     {
-        throw new NotImplementedException();
+        AppsFlyer.sendEvent(eventName, new Dictionary<string, string>() { { eventName, eventName } });
     }
 
     /// <summary>
