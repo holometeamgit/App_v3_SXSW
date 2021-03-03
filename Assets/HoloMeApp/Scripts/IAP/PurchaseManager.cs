@@ -33,7 +33,7 @@ public class PurchaseManager : MonoBehaviour
 
         if (streamData == null || streamData.is_bought)
             return;
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed);
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed, new Dictionary<string, string> { {AnalyticParameters.ParamProductID, streamData.product_type.product_id} } );
         //TODO add chech steam available befo purchaise 
         iapController.BuyTicket(streamData.product_type.product_id);
         backgroudGO.SetActive(true);
@@ -88,7 +88,7 @@ public class PurchaseManager : MonoBehaviour
         streamData.is_bought = true;
         streamData.InvokeDataUpdated();
 
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful);
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id } });
 
         StreamBillingJsonData streamBillingJsonData = new StreamBillingJsonData();
         streamBillingJsonData.bill.hash = product.receipt;
@@ -106,7 +106,7 @@ public class PurchaseManager : MonoBehaviour
     }
 
     private void OnPurchaseFailCallBack() {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseCancelled);
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseCancelled, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id } });
         OnPurchaseCanceled?.Invoke();
         backgroudGO.SetActive(false);
     }

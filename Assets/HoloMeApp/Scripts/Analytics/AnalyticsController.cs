@@ -56,14 +56,16 @@ public class AnalyticsController : MonoBehaviour
             return;
         }
 
-        AppendDevString(ref eventName);
+        //AppendDevString(ref eventName);
 
         HelperFunctions.DevLog($"Custom Event Sent {eventName}");
 
-        foreach (var analyticsController in analyticsLibraryAbstractions)
-        {
-            analyticsController.SendCustomEvent(eventName);
-        }
+        //foreach (var analyticsController in analyticsLibraryAbstractions)
+        //{
+        //    analyticsController.SendCustomEvent(eventName);
+        //}
+
+        SendCustomEvent(eventName, new Dictionary<string,string>());
     }
 
     public void SendCustomEvent(string eventName, string dataName, object data)
@@ -89,7 +91,7 @@ public class AnalyticsController : MonoBehaviour
         SendCustomEvent(eventName, dataDictionary);
     }
 
-    private void SendCustomEvent(string eventName, Dictionary<string, string> data)
+    public void SendCustomEvent(string eventName, Dictionary<string, string> data)
     {
         if (disableTracking)
             return;
@@ -104,9 +106,10 @@ public class AnalyticsController : MonoBehaviour
 
         HelperFunctions.DevLog($"Custom Event Sent {eventName} with data {data}");
 
-        if (userWebManager != null)
+        if (userWebManager != null && userWebManager.GetUserID() != -1)
         {
             data.Add(AnalyticParameters.ParamUserID, userWebManager.GetUserID().ToString()); //Add user ID to tracking variable
+            data.Add(AnalyticParameters.ParamUserType, userWebManager.IsBroadcaster() ? AnalyticParameters.ParamBroadcaster : AnalyticParameters.ParamViewer);
         }
         else
         {
