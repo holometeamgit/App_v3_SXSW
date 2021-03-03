@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using NatShare;
+using Beem.Firebase.DynamicLink;
+using System;
 
 public class ShareManager : MonoBehaviour {
     public void ShareStream() {
@@ -12,7 +14,11 @@ public class ShareManager : MonoBehaviour {
     }
 
     private void Awake() {
-        StreamCallBacks.onMyRoomLinkReceived += ShareMyRoomLink;
+        DynamicLinksCallBacks.onGetShortLink += ShareMyRoomLink;
+    }
+
+    private void OnDestroy() {
+        DynamicLinksCallBacks.onGetShortLink -= ShareMyRoomLink;
     }
 
     private void ShareStream(string aditionalInformation) {
@@ -29,5 +35,9 @@ public class ShareManager : MonoBehaviour {
 #if !UNITY_EDITOR
         ShareStream(link);
 #endif
+    }
+
+    private void ShareMyRoomLink(Uri link) {
+        ShareMyRoomLink(link.AbsoluteUri);
     }
 }
