@@ -65,7 +65,7 @@ public class PnlSplashScreen : MonoBehaviour
     }
 
     private void ErrorLogInCallBack(string body) {
-        HelperFunctions.DevLogError("ErrorLogInCallBack: " + " : "+ body);
+//        HelperFunctions.DevLogError("ErrorLogInCallBack: " + " : "+ body);
         AuthorisationErrorInvoke();
     }
 
