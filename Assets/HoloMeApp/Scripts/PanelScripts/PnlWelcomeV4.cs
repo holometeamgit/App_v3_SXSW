@@ -33,7 +33,7 @@ public class PnlWelcomeV4 : MonoBehaviour {
     [SerializeField]
     Switcher switcherToLigIn;
 
-    private const int TIME_FOR_AUTOHIDINGBG = 5000;
+    private const int TIME_FOR_AUTOHIDINGBG = 10000;
 
     private void Awake() {
     }

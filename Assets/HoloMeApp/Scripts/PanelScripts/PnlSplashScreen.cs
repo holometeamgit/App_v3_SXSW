@@ -17,7 +17,7 @@ public class PnlSplashScreen : MonoBehaviour
     [SerializeField] UnityEvent OnLogInEvent;
     [SerializeField] UnityEvent OnAuthorisationErrorEvent;
 
-    private const int HIDE_SPLASH_SCREEN_TIME = 5000;
+//    private const int HIDE_SPLASH_SCREEN_TIME = 5000;
 
     public void OpenStore() {
 #if UNITY_IOS
@@ -61,24 +61,11 @@ public class PnlSplashScreen : MonoBehaviour
     }
 
     private void TryLogin() {
-//        Debug.Log("LogInType " + accountManager.GetLogInType());
-
-        accountManager.QuickLogIn(LogInCallBack);
-        var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(HIDE_SPLASH_SCREEN_TIME).ContinueWith(_ => accountManager.CancelLogIn(), taskScheduler);
-    }
-
-    private void LogInCallBack(long code, string body) {
-        HelperFunctions.DevLog("LogInCallBack " + body);
-        //var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        //Task.Delay(HIDE_SPLASH_SCREEN_TIME).ContinueWith(_ => LogInIvoke(), taskScheduler);
-        LogInIvoke();
+        accountManager.QuickLogIn();
     }
 
     private void ErrorLogInCallBack(string body) {
         HelperFunctions.DevLogError("ErrorLogInCallBack: " + " : "+ body);
-        //var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        //Task.Delay(HIDE_SPLASH_SCREEN_TIME).ContinueWith(_ => AuthorisationErrorInvoke(), taskScheduler);
         AuthorisationErrorInvoke();
     }
 

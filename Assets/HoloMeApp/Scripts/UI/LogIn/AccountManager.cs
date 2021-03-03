@@ -23,13 +23,13 @@ public class AccountManager : MonoBehaviour {
         HelperFunctions.DevLog("Cancel Log In");
     }
 
-    public void QuickLogIn(ResponseDelegate responseCallBack) {
+    public void QuickLogIn() {
         HelperFunctions.DevLog("try QuickLogIn");
 
         if (!canLogIn) {
             return;
         }
-
+        canLogIn = false;
         if (GetLogInType() == LogInType.Facebook) {
             LogOut();
         }
@@ -52,7 +52,7 @@ public class AccountManager : MonoBehaviour {
 
         webRequestHandler.PostRequest(GetRequestRefreshTokenURL(),
             accessToken, WebRequestHandler.BodyType.JSON,
-            (code, body) => { UpdateAccessToken(body); responseCallBack(code, body); },
+            (code, body) => { UpdateAccessToken(body); SuccessRequestAccessTokenCallBack(code, body); },
             ErrorRequestAccessTokenCallBack, onCancel: onCancelLogIn);
     }
 
