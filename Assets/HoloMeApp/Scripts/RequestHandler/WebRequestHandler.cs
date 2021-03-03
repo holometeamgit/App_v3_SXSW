@@ -41,6 +41,8 @@ public class WebRequestHandler : MonoBehaviour {
             return PrepareGetRequest(currentUrl, currentHeaderAccessToken);
         };
 
+        HelperFunctions.DevLog("GetRequest: " + url);
+
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, progress).ContinueWith((taskWebRequestData) => {
         }, taskScheduler);
@@ -57,8 +59,11 @@ public class WebRequestHandler : MonoBehaviour {
             return PreparePostRequest<T>(currentUrl, currentBody, currentBodyType, currentHeaderAccessToken);
         };
 
+
+        HelperFunctions.DevLog("PostRequest: " + url);
+
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, progress).ContinueWith((taskWebRequestData) => {
+        WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel: onCancel, progress).ContinueWith((taskWebRequestData) => {
         }, taskScheduler);
     }
 
@@ -332,10 +337,13 @@ public class WebRequestHandler : MonoBehaviour {
             }
 
         } catch (UnityWebRequestException uwrException) {
+            HelperFunctions.DevLogError("UnityWebRequestException: WebRequestError " + uwrException.Code + " " + uwrException.Message);
             errorTypeDelegate?.Invoke(uwrException.Code, uwrException.Message);
         } catch (UnityWebRequestServerConnectionException uwrServerConnectionException) {
+            HelperFunctions.DevLogError("UnityWebRequestServerConnectionException: WebRequestError " + uwrServerConnectionException.Code + " " + uwrServerConnectionException.Message);
             errorTypeDelegate?.Invoke(uwrServerConnectionException.Code, uwrServerConnectionException.Message);
         } catch (Exception exception) {
+            HelperFunctions.DevLogError("Exception: WebRequestError " + exception.Message);
             errorTypeDelegate?.Invoke(500, "Failed to connect to server: " + exception.Message);
         } finally {
             if (onCancel != null) {
@@ -343,6 +351,7 @@ public class WebRequestHandler : MonoBehaviour {
             }
             cancellationTokenSource.Dispose();
             request?.Dispose();
+            UnityWebRequest.ClearCookieCache();
         }
     }
 

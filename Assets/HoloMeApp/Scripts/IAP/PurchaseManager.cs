@@ -117,6 +117,7 @@ public class PurchaseManager : MonoBehaviour
 
     private IEnumerator RepeatRequestProduct () {
         yield return new WaitForSeconds(1);
+        HelperFunctions.DevLog("Product list Request");
         GetProductList();
     }
 }

@@ -17,7 +17,7 @@ public class PnlSplashScreen : MonoBehaviour
     [SerializeField] UnityEvent OnLogInEvent;
     [SerializeField] UnityEvent OnAuthorisationErrorEvent;
 
-    private const int HIDE_SPLASH_SCREEN_TIME = 1000;
+    private const int HIDE_SPLASH_SCREEN_TIME = 5000;
 
     public void OpenStore() {
 #if UNITY_IOS
@@ -29,10 +29,12 @@ public class PnlSplashScreen : MonoBehaviour
 
     public void LogInIvoke() {
         OnLogInEvent.Invoke();
+        HideSplashScreen();
     }
 
     public void AuthorisationErrorInvoke() {
         OnAuthorisationErrorEvent.Invoke();
+        HideSplashScreen();
     }
 
     public void DisableSplashScreen() {
@@ -61,29 +63,28 @@ public class PnlSplashScreen : MonoBehaviour
     private void TryLogin() {
 //        Debug.Log("LogInType " + accountManager.GetLogInType());
 
-        accountManager.QuickLogIn(LogInCallBack, ErrorLogInCallBack);
+        accountManager.QuickLogIn(LogInCallBack);
+        var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        Task.Delay(HIDE_SPLASH_SCREEN_TIME).ContinueWith(_ => accountManager.CancelLogIn(), taskScheduler);
     }
 
     private void LogInCallBack(long code, string body) {
-        //        Debug.Log("LogInCallBack " + body);
+        HelperFunctions.DevLog("LogInCallBack " + body);
         //var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         //Task.Delay(HIDE_SPLASH_SCREEN_TIME).ContinueWith(_ => LogInIvoke(), taskScheduler);
         LogInIvoke();
-        HideSplashScreen();
     }
 
-    private void ErrorLogInCallBack(long code, string body) {
-        Debug.Log("ErrorLogInCallBack " + code + " : "+ body);
+    private void ErrorLogInCallBack(string body) {
+        HelperFunctions.DevLogError("ErrorLogInCallBack: " + " : "+ body);
         //var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         //Task.Delay(HIDE_SPLASH_SCREEN_TIME).ContinueWith(_ => AuthorisationErrorInvoke(), taskScheduler);
         AuthorisationErrorInvoke();
-        HideSplashScreen();
     }
 
     private void FirebaseErrorLogIn(string msg) {
-        ErrorLogInCallBack(500, "Can't connect to server");
+        ErrorLogInCallBack("FirebaseErrorLogIn " + msg);
         accountManager.LogOut();
-        HideSplashScreen();
     }
 
     private void HideSplashScreen() {
