@@ -10,19 +10,24 @@ namespace Beem.Firebase.DynamicLink {
     /// <summary>
     /// Deep Link Receiver
     /// </summary>
-    public class DynamicLinksController : AbstractFirebaseController {
+    public class DynamicLinksController : MonoBehaviour {
 
         private const string APPSTORE_ID = "1532446771";
 
-        protected override void Subscribe() {
+        private void OnEnable() {
+            FirebaseCallBacks.onInit += Subscribe;
+        }
+
+        protected void Subscribe() {
             DynamicLinks.DynamicLinkReceived += OnDynamicLink;
             DynamicLinksCallBacks.onCreateShortLink += CreateShortLink;
 
         }
 
-        protected override void Unsubscribe() {
+        protected void OnDisable() {
             DynamicLinks.DynamicLinkReceived -= OnDynamicLink;
             DynamicLinksCallBacks.onCreateShortLink -= CreateShortLink;
+            FirebaseCallBacks.onInit -= Subscribe;
         }
 
         // Display the dynamic link received by the application.
@@ -35,7 +40,6 @@ namespace Beem.Firebase.DynamicLink {
 
         private void CreateShortLink(string prefix, string id) {
             string baseLink = prefix + "/" + id;
-
             var components = new DynamicLinkComponents(
          // The base Link.
          new Uri(baseLink),
