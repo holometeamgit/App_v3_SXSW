@@ -163,8 +163,6 @@ public class EmailAccountManager : MonoBehaviour {
         Debug.Log("Log In " + code + " : " + body);
         accountManager.SaveLogInType(LogInType.Email);
         accountManager.SaveAccessToken(body);
-        //TODO move to place when user loggined and take info from UserWebManager
-        //AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin, AnalyticParameters.ParamUserType , accountManager.GetAccountType() == AccountManager.AccountType.Subscriber ? AnalyticParameters.ParamViewer:AnalyticParameters.ParamBroadcaster ); // Using keys in case enum changes names in future
         OnLogIn?.Invoke();
     }
 

@@ -116,6 +116,10 @@ public class PnlWelcomeV4 : MonoBehaviour {
         CallBacks.onFail += HideBackground;
         CallBacks.onNeedVerification += HideBackground;
         webRequestHandler.GetRequest(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, null);
+
+        //TODO move to place when user loggined and take info from UserWebManager
+        //AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin, AnalyticParameters.ParamUserType , accountManager.GetAccountType() == AccountManager.AccountType.Subscriber ? AnalyticParameters.ParamViewer:AnalyticParameters.ParamBroadcaster ); // Using keys in case enum changes names in future
+        CallBacks.onSignInSuccess += () => AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin);
     }
 
     private void OnDisable() {
