@@ -9,11 +9,13 @@ using UnityEditor.iOS.Xcode;
 using UnityEngine;
 
 public class AssociatedDomainPostBuild : MonoBehaviour {
-#if DEV
+#if !DEV
     private const string APPLINKS = "applinks:beemrfc.page.link";
 #else
-   private const string APPLINKS = "applinks:beemrfcdev.page.link";
+    private const string APPLINKS = "applinks:beemrfcdev.page.link";
 #endif
+
+    private const string ASSOCIATED_DOMAIN = "BeemAssociatedDomain";
 
     [PostProcessBuild(998)]
     public static void OnPostProcessBuild(BuildTarget buildTarget, string path) {
@@ -23,7 +25,7 @@ public class AssociatedDomainPostBuild : MonoBehaviour {
         //Default target name. Yours might be different
         string targetName = "Unity-iPhone";
         //Set the entitlements file name to what you want but make sure it has this extension
-        string entitlementsFileName = Application.identifier + ".entitlements";
+        string entitlementsFileName = ASSOCIATED_DOMAIN + ".entitlements";
 
         var entitlements = new ProjectCapabilityManager(projectPath, entitlementsFileName, targetName);
         entitlements.AddAssociatedDomains(new string[] { APPLINKS });
