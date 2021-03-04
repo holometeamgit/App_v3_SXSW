@@ -6,16 +6,11 @@ using UnityEditor.iOS.Xcode;
 namespace Beem.Firebase.DynamicLink {
 
     /// <summary>
-    /// Add AssociatedDomainCapability in Xcode
+    /// Add AppleSignInCapability in Xcode
     /// </summary>
-    public class AssociatedDomainPostBuild {
-#if !DEV
-        private const string APPLINKS = "applinks:beemrfc.page.link";
-#else
-        private const string APPLINKS = "applinks:beemrfcdev.page.link";
-#endif
+    public class AppleSignInPostBuild {
 
-        private const string ENTITLEMENTS = "AssociatedDomain";
+        private const string ENTITLEMENTS = "AppleSignIn";
 
         [PostProcessBuild]
         public static void OnPostProcessBuild(BuildTarget buildTarget, string path) {
@@ -28,12 +23,12 @@ namespace Beem.Firebase.DynamicLink {
             string entitlementsFileName = ENTITLEMENTS + ".entitlements";
 
             var entitlements = new ProjectCapabilityManager(projectPath, entitlementsFileName, targetName);
-            entitlements.AddAssociatedDomains(new string[] { APPLINKS });
+            entitlements.AddSignInWithApple();
             //Apply
             entitlements.WriteToFile();
 
         }
     }
 }
-#endif
 
+#endif
