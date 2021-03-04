@@ -17,8 +17,6 @@ public class PnlViewingExperience : MonoBehaviour
     [SerializeField]
     HologramHandler hologramHandler;
     [SerializeField]
-    BlurController blurController;
-    [SerializeField]
     PermissionGranter permissionGranter;
     [SerializeField]
     ARPlaneManager arPlaneManager;
@@ -69,7 +67,7 @@ public class PnlViewingExperience : MonoBehaviour
             permissionController.CheckCameraMicAccess();
         }
     }
-    private void ToggleARSessionObjects(bool enable)
+    public void ToggleARSessionObjects(bool enable)
     {
         arSessionOrigin?.SetActive(enable);
         arSession?.SetActive(enable);
@@ -207,7 +205,6 @@ public class PnlViewingExperience : MonoBehaviour
     {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
         ToggleARSessionObjects(true);
-        blurController.RemoveBlur();
         canvasGroup.alpha = 0;
         gameObject.SetActive(true);
         hologramHandler.InitSession();
@@ -225,7 +222,7 @@ public class PnlViewingExperience : MonoBehaviour
     public void StopExperience()
     {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
-        ToggleARSessionObjects(false);
+        //ToggleARSessionObjects(false);
         hologramHandler.StopVideo();
     }
     public void PauseExperience()

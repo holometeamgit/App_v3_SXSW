@@ -46,9 +46,6 @@ public class PnlStreamOverlay : MonoBehaviour {
     Button btnFlipCamera;
 
     [SerializeField]
-    BlurController blurController;
-
-    [SerializeField]
     AgoraController agoraController;
 
     [SerializeField]
@@ -157,6 +154,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         gameObject.SetActive(true);
         controlsPresenter.SetActive(true);
         controlsViewer.SetActive(false);
+        pnlViewingExperience.ToggleARSessionObjects(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
         StartCoroutine(OnPreviewReady());
         agoraController.StartPreview();
@@ -168,7 +166,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.IsChannelCreator = false;
         agoraController.ChannelName = channelName;
         isStreamer = false;
-        blurController.RemoveBlur();
         gameObject.SetActive(true);
         controlsPresenter.SetActive(false);
         controlsViewer.SetActive(true);
@@ -335,6 +332,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void OnDisable() {
         StopAllCoroutines();
+        pnlViewingExperience.ToggleARSessionObjects(true);
     }
 
     IEnumerator OnApplicationFocus(bool hasFocus) //Potential fix for bug where audio and video are re-enabled after losing focus from sharing or minimising
