@@ -5,7 +5,6 @@ using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.iOS.Xcode;
 using UnityEditor.iOS.Xcode.Extensions;
-using UnityEngine;
 
 namespace Beem.CleverTap {
 
@@ -13,6 +12,7 @@ namespace Beem.CleverTap {
     /// Add framework for CleverTap 
     /// </summary>
     public class CleverTapPostBuild {
+
         [PostProcessBuild]
         public static void OnPostprocessBuild(BuildTarget buildTarget, string path) {
             if (buildTarget == BuildTarget.iOS) {
@@ -22,9 +22,9 @@ namespace Beem.CleverTap {
 
         static void LinkLibraries(string path) {
             // linked library
-            string projPath = path + "/Unity-iPhone.xcodeproj/project.pbxproj";
+            string projectPath = path + "/Unity-iPhone.xcodeproj/project.pbxproj";
             PBXProject proj = new PBXProject();
-            proj.ReadFromFile(projPath);
+            proj.ReadFromFile(projectPath);
 
             // embedded frameworks
             string target = proj.GetUnityMainTargetGuid();
@@ -40,7 +40,7 @@ namespace Beem.CleverTap {
             proj.AddFileToEmbedFrameworks(target, fileGuid);
 
             // done, write to the project file
-            File.WriteAllText(projPath, proj.WriteToString());
+            File.WriteAllText(projectPath, proj.WriteToString());
         }
     }
 }
