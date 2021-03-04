@@ -30,4 +30,5 @@ public class AnalyticParameters{
     public const string ParamViewer = "viewer";
     public const string ParamBroadcaster = "broadcaster";
     public const string ParamProductID = "productId";
+    public const string ParamProductPrice = "amount";
 }
