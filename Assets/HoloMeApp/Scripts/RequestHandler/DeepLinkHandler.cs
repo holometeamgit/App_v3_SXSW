@@ -109,7 +109,7 @@ public class DeepLinkHandler : MonoBehaviour {
     private void GetRoomParameters(Uri uri) {
         HelperFunctions.DevLog("GetRoomParameters");
 
-        string roomId = uri.Host;
+        string roomId = uri.LocalPath.Replace("/", "");
 
         HelperFunctions.DevLog("roomId = " + roomId);
         StreamCallBacks.onRoomLinkReceived?.Invoke(roomId);

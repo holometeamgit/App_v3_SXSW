@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Beem.Firebase.DynamicLink;
 
 public class RoomDeeplinkTester : MonoBehaviour
 {
@@ -11,6 +12,6 @@ public class RoomDeeplinkTester : MonoBehaviour
     public void SendRoomId()
     {
         Debug.Log("RoomID " + linkRoomId);
-        DeepLinkHandler.OnDeepLinkActivated("beemholomedl://room?roomid=" + linkRoomId);
+        DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(linkRoomId);
     }
 }
