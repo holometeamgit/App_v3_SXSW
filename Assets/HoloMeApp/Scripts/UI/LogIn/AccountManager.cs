@@ -37,7 +37,7 @@ public class AccountManager : MonoBehaviour {
         ServerAccessToken accessToken = GetAccessToken();
 
         if (accessToken == null && !authController.HasUser()) {
-            ErrorRequestAccessTokenCallBack(0, "Server Access Token file doesn't exist");
+            ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
             //errorTypeCallBack?.Invoke();
             return;
         } else if (accessToken == null && authController.HasUser() && GetLogInType() != LogInType.None) {
@@ -46,7 +46,7 @@ public class AccountManager : MonoBehaviour {
             return;
         } else if (accessToken == null && authController.HasUser() && GetLogInType() == LogInType.None) {
             LogOut();
-            ErrorRequestAccessTokenCallBack(0, "Server Access Token file doesn't exist");
+            ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
             return;
         }
 
@@ -168,7 +168,7 @@ public class AccountManager : MonoBehaviour {
     private void ErrorRequestAccessTokenCallBack(long code, string data) {
         HelperFunctions.DevLogError("ErrorRequestAccessTokenCallBack " + code + " " + data);
         canLogIn = true;
-        CallBacks.onFail?.Invoke(code + " : " + data);
+        CallBacks.onFail?.Invoke(data);
     }
 
     private void Awake() {
