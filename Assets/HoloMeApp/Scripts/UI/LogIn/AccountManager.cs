@@ -12,13 +12,24 @@ public class AccountManager : MonoBehaviour {
     [SerializeField]
     WebRequestHandler webRequestHandler;
 
+    private Action onCancelLogIn;
+
     private bool canLogIn = true;
 
     #region public authorization
 
-    public void QuickLogIn(ResponseDelegate responseCallBack, ErrorTypeDelegate errorTypeCallBack) {
+    public void CancelLogIn() {
+        onCancelLogIn?.Invoke();
+        HelperFunctions.DevLog("Cancel Log In");
+    }
+
+    public void QuickLogIn() {
         HelperFunctions.DevLog("try QuickLogIn");
 
+        if (!canLogIn) {
+            return;
+        }
+        canLogIn = false;
         if (GetLogInType() == LogInType.Facebook) {
             LogOut();
         }
@@ -26,18 +37,23 @@ public class AccountManager : MonoBehaviour {
         ServerAccessToken accessToken = GetAccessToken();
 
         if (accessToken == null && !authController.HasUser()) {
-            errorTypeCallBack?.Invoke(0, "Server Access Token file doesn't exist");
+            ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
+            //errorTypeCallBack?.Invoke();
             return;
         } else if (accessToken == null && authController.HasUser() && GetLogInType() != LogInType.None) {
             HelperFunctions.DevLog("QuickLogIn Firebase");
             authController.DoAfterReloadUser(() => CallBacks.onFirebaseSignInSuccess(GetLogInType())); //TODO need test 
             return;
+        } else if (accessToken == null && authController.HasUser() && GetLogInType() == LogInType.None) {
+            LogOut();
+            ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
+            return;
         }
 
         webRequestHandler.PostRequest(GetRequestRefreshTokenURL(),
             accessToken, WebRequestHandler.BodyType.JSON,
-            (code, body) => { UpdateAccessToken(body); responseCallBack(code, body); },
-            errorTypeCallBack);
+            (code, body) => { UpdateAccessToken(body); SuccessRequestAccessTokenCallBack(code, body); },
+            ErrorRequestAccessTokenCallBack, onCancel: onCancelLogIn);
     }
 
     public void LogOut() {
@@ -124,8 +140,10 @@ public class AccountManager : MonoBehaviour {
 
         HelperFunctions.DevLog("GetServerAccessToken " + canLogIn);
 
-        if (!canLogIn)
+        if (!canLogIn) {
+          //  CallBacks.onFail?.Invoke("Can't Get Server Access Token");
             return;
+        }
         canLogIn = false;
 
         string url = GetRequestAccessTokenURL();
@@ -135,7 +153,7 @@ public class AccountManager : MonoBehaviour {
 
         webRequestHandler.PostRequest(url, firebaseJsonToken, WebRequestHandler.BodyType.JSON,
             (code, data) => SuccessRequestAccessTokenCallBack(code, data),
-            ErrorRequestAccessTokenCallBack);
+            ErrorRequestAccessTokenCallBack, onCancel: onCancelLogIn);
     }
 
     private void SuccessRequestAccessTokenCallBack(long code, string data) {
@@ -148,9 +166,9 @@ public class AccountManager : MonoBehaviour {
     }
 
     private void ErrorRequestAccessTokenCallBack(long code, string data) {
-        HelperFunctions.DevLog("ErrorRequestAccessTokenCallBack " + code + " " + data);
+        HelperFunctions.DevLogError("ErrorRequestAccessTokenCallBack " + code + " " + data);
         canLogIn = true;
-        CallBacks.onFail?.Invoke(code + " : " + data);
+        CallBacks.onFail?.Invoke(data);
     }
 
     private void Awake() {
