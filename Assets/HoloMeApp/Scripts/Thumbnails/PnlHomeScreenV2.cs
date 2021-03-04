@@ -15,8 +15,6 @@ public class PnlHomeScreenV2 : MonoBehaviour
     [SerializeField] ThumbnailPriorityScriptableObject thumbnailPriority;
     //ThumbnailWebDownloadManager need for data fetcher  
     [SerializeField] ThumbnailWebDownloadManager thumbnailWebDownloadManager;
-    //puchase pnl
-    [SerializeField] PurchaseManager purchaseManager;
 
     [Space]
     [SerializeField] int pageSize = 10;

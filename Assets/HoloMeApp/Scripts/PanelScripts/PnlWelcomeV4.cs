@@ -55,24 +55,24 @@ public class PnlWelcomeV4 : MonoBehaviour {
         LogInBackground.SetActive(true);
     }
     #region autohide
-    private void AutoHideLoadingBackground(LogInType logInType) {
-        AutoHideLoadingBackground();
-    }
+    //private void AutoHideLoadingBackground(LogInType logInType) {
+    //    AutoHideLoadingBackground();
+    //}
 
-    private void AutoHideLoadingBackground(string msg) {
-        AutoHideLoadingBackground();
-    }
+    //private void AutoHideLoadingBackground(string msg) {
+    //    AutoHideLoadingBackground();
+    //}
 
-    private void AutoHideLoadingBackground() {
-        var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(TIME_FOR_AUTOHIDINGBG).ContinueWith(_ => HideBackgroundWithDelay(), taskScheduler);
-    }
+    //private void AutoHideLoadingBackground() {
+    //    var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+    //    Task.Delay(TIME_FOR_AUTOHIDINGBG).ContinueWith(_ => HideBackgroundWithDelay(), taskScheduler);
+    //}
 
-    private void HideBackgroundWithDelay() {
-        if (LogInBackground.activeSelf) {
-            HideBackground();
-        }
-    }
+    //private void HideBackgroundWithDelay() {
+    //    if (LogInBackground.activeSelf) {
+    //        HideBackground();
+    //    }
+    //}
     #endregion
 
     private void HideBackground() {
@@ -106,13 +106,12 @@ public class PnlWelcomeV4 : MonoBehaviour {
 
         CallBacks.onSignInSuccess += SwitchToProfile;
         CallBacks.onFail += ShowSpecialErrorFacebookFirebaseMsg;
-        CallBacks.onFail += AutoHideLoadingBackground;
-        CallBacks.onFirebaseSignInSuccess += AutoHideLoadingBackground;
+        //CallBacks.onFail += AutoHideLoadingBackground;
+        //CallBacks.onFirebaseSignInSuccess += AutoHideLoadingBackground;
 
         CallBacks.onSignInFacebook += ShowBackground;
         CallBacks.onSignInApple += ShowBackground;
         CallBacks.onSignInGoogle += ShowBackground;
-        CallBacks.onSignInSuccess += HideBackground;
         CallBacks.onFail += HideBackground;
         CallBacks.onNeedVerification += HideBackground;
         webRequestHandler.GetRequest(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, null);
@@ -125,14 +124,15 @@ public class PnlWelcomeV4 : MonoBehaviour {
     private void OnDisable() {
         CallBacks.onSignInSuccess -= SwitchToProfile;
         CallBacks.onFail -= ShowSpecialErrorFacebookFirebaseMsg;
-        CallBacks.onFail -= AutoHideLoadingBackground;
-        CallBacks.onFirebaseSignInSuccess -= AutoHideLoadingBackground;
+        //CallBacks.onFail -= AutoHideLoadingBackground;
+        //CallBacks.onFirebaseSignInSuccess -= AutoHideLoadingBackground;
 
         CallBacks.onSignInFacebook -= ShowBackground;
         CallBacks.onSignInApple -= ShowBackground;
         CallBacks.onSignInGoogle -= ShowBackground;
-        CallBacks.onSignInSuccess -= HideBackground;
         CallBacks.onFail -= HideBackground;
         CallBacks.onNeedVerification -= HideBackground;
+
+        HideBackground();
     }
 }

@@ -30,13 +30,12 @@ public class PurchaseManager : MonoBehaviour
     }
 
     public void Purchase() {
-
         if (streamData == null || streamData.is_bought)
             return;
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed, new Dictionary<string, string> { {AnalyticParameters.ParamProductID, streamData.product_type.product_id}, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() } } );
-        //TODO add chech steam available befo purchaise 
-        iapController.BuyTicket(streamData.product_type.product_id);
+        //TODO add chech stream available befor purchaise
         backgroudGO.SetActive(true);
+        iapController.BuyTicket(streamData.product_type.product_id);
         OnPurchaseStarted?.Invoke();
     }
 
