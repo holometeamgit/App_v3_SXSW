@@ -24,17 +24,22 @@ public class AccountManager : MonoBehaviour {
     }
 
     public void QuickLogIn() {
-        HelperFunctions.DevLog("try QuickLogIn");
+
 
         if (!canLogIn) {
             return;
         }
+
+        HelperFunctions.DevLog("try QuickLogIn");
+
         canLogIn = false;
         if (GetLogInType() == LogInType.Facebook) {
             LogOut();
         }
 
         ServerAccessToken accessToken = GetAccessToken();
+
+        HelperFunctions.DevLog("QuickLogIn ServerAccessToken " + (accessToken == null) + accessToken);
 
         if (accessToken == null && !authController.HasUser()) {
             ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
@@ -87,8 +92,7 @@ public class AccountManager : MonoBehaviour {
         try {
             //            Debug.Log("Try Save Access Token \n" + serverAccessToken);
             ServerAccessToken accessToken = JsonUtility.FromJson<ServerAccessToken>(serverAccessToken);
-            HelperFunctions.DevLog("serverAccessToken");
-            HelperFunctions.DevLog(serverAccessToken);
+            HelperFunctions.DevLog("Save serverAccessToken " + serverAccessToken);
             FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), accessToken, FileAccountManager.ServerAccessToken);
             //            Debug.Log("Access Token Saved");
         } catch (System.Exception e) { }
@@ -107,13 +111,13 @@ public class AccountManager : MonoBehaviour {
             ServerAccessToken accessToken = JsonUtility.FromJson<ServerAccessToken>(serverAccessToken);
             currentAccessToken.access = accessToken.access;
 
-            HelperFunctions.DevLog("serverAccessToken");
-            HelperFunctions.DevLog(serverAccessToken);
+            HelperFunctions.DevLog("Updated serverAccessToken " + serverAccessToken);
             FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), currentAccessToken, FileAccountManager.ServerAccessToken);
         } catch (System.Exception e) { }
     }
 
     private void RemoveAccessToken() {
+        HelperFunctions.DevLog("Remove serverAccessToken");
         FileAccountManager.DeleteFile(FileAccountManager.ServerAccessToken);
     }
 
@@ -141,7 +145,7 @@ public class AccountManager : MonoBehaviour {
         HelperFunctions.DevLog("GetServerAccessToken " + canLogIn);
 
         if (!canLogIn) {
-          //  CallBacks.onFail?.Invoke("Can't Get Server Access Token");
+            //  CallBacks.onFail?.Invoke("Can't Get Server Access Token");
             return;
         }
         canLogIn = false;
@@ -152,16 +156,13 @@ public class AccountManager : MonoBehaviour {
         FirebaseJsonToken firebaseJsonToken = new FirebaseJsonToken(firebaseAccessToken);
 
         webRequestHandler.PostRequest(url, firebaseJsonToken, WebRequestHandler.BodyType.JSON,
-            (code, data) => SuccessRequestAccessTokenCallBack(code, data),
+            (code, data) => { SaveAccessToken(data); SuccessRequestAccessTokenCallBack(code, data); },
             ErrorRequestAccessTokenCallBack, onCancel: onCancelLogIn);
     }
 
     private void SuccessRequestAccessTokenCallBack(long code, string data) {
         HelperFunctions.DevLog("SuccessRequestAccessTokenCallBack " + code + " " + data);
         canLogIn = true;
-        try {
-            SaveAccessToken(data);
-        } catch (System.Exception) { }
         CallBacks.onSignInSuccess?.Invoke();
     }
 
