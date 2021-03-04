@@ -33,7 +33,7 @@ public class PurchaseManager : MonoBehaviour
 
         if (streamData == null || streamData.is_bought)
             return;
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed, new Dictionary<string, string> { {AnalyticParameters.ParamProductID, streamData.product_type.product_id} } );
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed, new Dictionary<string, string> { {AnalyticParameters.ParamProductID, streamData.product_type.product_id}, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() } } );
         //TODO add chech steam available befo purchaise 
         iapController.BuyTicket(streamData.product_type.product_id);
         backgroudGO.SetActive(true);
@@ -88,7 +88,7 @@ public class PurchaseManager : MonoBehaviour
         streamData.is_bought = true;
         streamData.InvokeDataUpdated();
 
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id } });
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, {AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() } });
 
         StreamBillingJsonData streamBillingJsonData = new StreamBillingJsonData();
         streamBillingJsonData.bill.hash = product.receipt;
