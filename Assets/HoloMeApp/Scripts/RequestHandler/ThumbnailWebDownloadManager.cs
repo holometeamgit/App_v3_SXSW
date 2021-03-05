@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Runtime;
+using Beem.SSO;
 
 public class ThumbnailWebDownloadManager : MonoBehaviour {
 
@@ -24,6 +25,7 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
     public AccountManager accountManager;
 
     public Action<StreamJsonData, LoadingKey> OnStreamJsonDataLoaded;
+    public Action<StreamJsonData> OnStreamByIdJsonDataLoaded;
     public Action<long, string, LoadingKey> OnErrorStreamJsonDataLoaded;
 
     public Action<int, LoadingKey> OnCountThumbnailsLoaded;
@@ -42,17 +44,34 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
 
     private string pageSize = "page_size";
 
+    public void DownloadStreamById(long id) {
+        webRequestHandler.GetRequest(GetRequestStreamByIdURL(id),
+(code, body) => {
+    HelperFunctions.DevLog("DownloadStreamById " + body);
+    StreamJsonData streams = new StreamJsonData();
+
+    StreamJsonData.Data streamJsonData = JsonUtility.FromJson<StreamJsonData.Data>(body);
+    if (streamJsonData != null) {
+        streams.results.Add(streamJsonData);
+    }
+
+
+    OnStreamByIdJsonDataLoaded?.Invoke(streams);
+},
+(code, body) => { HelperFunctions.DevLog("Error DownloadStreamById " + id); },
+accountManager.GetAccessToken().access);
+    }
+
     public void DownloadThumbnails(ThumbnailWebRequestStruct thumbnailWebRequestStruct, LoadingKey loadingKey) {
-        webRequestHandler.GetRequest(GetRequestRefreshTokenURL(thumbnailWebRequestStruct),
+        webRequestHandler.GetRequest(GetRequestStreamURL(thumbnailWebRequestStruct),
         (code, body) => { DownloadThumbnailsCallBack(body, loadingKey); },
         (code, body) => { DownloadErrorThumbnailsCallBack(code, body, loadingKey); },
         accountManager.GetAccessToken().access);
     }
 
     public void GetCountThumbnails(ThumbnailWebRequestStruct thumbnailWebRequestStruct, LoadingKey loadingKey) {
-        Debug.Log("GetCountThumbnails");
-        Debug.Log(GetRequestRefreshTokenURL(thumbnailWebRequestStruct));
-        webRequestHandler.GetRequest(GetRequestRefreshTokenURL(thumbnailWebRequestStruct),
+        Debug.Log("GetCountThumbnails" + GetRequestStreamURL(thumbnailWebRequestStruct));
+        webRequestHandler.GetRequest(GetRequestStreamURL(thumbnailWebRequestStruct),
         (code, body) => { GetCountThumbnailsCallBack(body, loadingKey); },
         (code, body) => { ErrorGetCountThumbnailsCallBack(code, body, loadingKey); },
         accountManager.GetAccessToken().access);
@@ -94,7 +113,7 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
         } catch (Exception e) { return null; }
     }
 
-    private string GetRequestRefreshTokenURL(ThumbnailWebRequestStruct thumbnailWebRequestStruct) {
+    private string GetRequestStreamURL(ThumbnailWebRequestStruct thumbnailWebRequestStruct) {
 
         var builder = new UriBuilder(webRequestHandler.ServerURLMediaAPI + videoUploader.Stream);
         builder.Port = -1;
@@ -119,5 +138,15 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
         return builder.ToString();
     }
 
+    private string GetRequestStreamByIdURL(long id) {
+        return webRequestHandler.ServerURLMediaAPI + videoUploader.StreamById.Replace("{id}",id.ToString());
+    }
 
+    private void OnEnable() {
+        CallBacks.onStreamPurchasedAndUpdateOnServer += DownloadStreamById;
+    }
+
+    private void OnDisable() {
+        CallBacks.onStreamPurchasedAndUpdateOnServer -= DownloadStreamById;
+    }
 }

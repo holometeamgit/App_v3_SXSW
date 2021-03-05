@@ -79,7 +79,7 @@ public class PnlEventPurchaser : MonoBehaviour {
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, data.product_type.product_id }, { AnalyticParameters.ParamProductPrice, data.product_type.price.ToString() } });
 
         data.is_bought = true;
-        data.OnDataUpdated.Invoke();
+        data.OnDataUpdated?.Invoke();
 
         Show(data);
 

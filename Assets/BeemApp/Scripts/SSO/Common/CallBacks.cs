@@ -10,6 +10,7 @@ namespace Beem.SSO {
     /// Callbacks for SignIn
     /// </summary>
     public class CallBacks {
+        #region SSO
         public static Action<string, string> onSignInEMail = delegate { };
         public static Action onSignInEMailClick = delegate { };
         public static Action onSignInGoogle = delegate { };
@@ -36,5 +37,13 @@ namespace Beem.SSO {
         public static Action onUserWasDeleted = delegate { };
 
         public static Action<string> onFail = delegate { };
+        #endregion
+
+        //TODO move to other place
+        #region purchase
+        public static Action<long> onStreamPurchasedInStore = delegate { };
+        public static Action<long> onStreamPurchasedAndUpdateOnServer = delegate { };
+
+        #endregion
     }
 }

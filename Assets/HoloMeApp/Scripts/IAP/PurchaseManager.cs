@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Purchasing;
+using Beem.SSO;
 
 public class PurchaseManager : MonoBehaviour
 {
@@ -84,23 +85,25 @@ public class PurchaseManager : MonoBehaviour
     #endregion
 
     private void OnPurchaseCallBack(Product product) {
-        streamData.is_bought = true;
-        streamData.InvokeDataUpdated();
+        //streamData.is_bought = true;
+        //streamData.InvokeDataUpdated();
 
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, {AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() } });
 
         StreamBillingJsonData streamBillingJsonData = new StreamBillingJsonData();
         streamBillingJsonData.bill.hash = product.receipt;
 
+        CallBacks.onStreamPurchasedInStore?.Invoke(streamData.id);
         purchasesSaveManager.SendToServer(streamData.id, streamBillingJsonData);
 
         streamData = null;
 
         OnPurchaseSuccessful?.Invoke();
-        backgroudGO.SetActive(false);
+        
     }
 
     private void AllPurchasedDataSentOnServerCallBack() {
+        backgroudGO.SetActive(false);
         OnServerPurchasedDataUpdated?.Invoke();
     }
 
