@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Beem.SSO;
+using System.Threading.Tasks;
 
 public class AccountManager : MonoBehaviour {
     public AuthController authController;
@@ -15,6 +16,7 @@ public class AccountManager : MonoBehaviour {
     private Action onCancelLogIn;
 
     private bool canLogIn = true;
+    private const int QUICK_LOGIN_DELAY_TIME = 1000;
 
     #region public authorization
 
@@ -23,9 +25,12 @@ public class AccountManager : MonoBehaviour {
         HelperFunctions.DevLog("Cancel Log In");
     }
 
-    public void QuickLogIn() {
+    public void QuickLogInWithDelay() {
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        Task.Delay(QUICK_LOGIN_DELAY_TIME).ContinueWith((_) => QuickLogIn(), taskScheduler);
+    }
 
-
+    private void QuickLogIn() {
         if (!canLogIn) {
             return;
         }

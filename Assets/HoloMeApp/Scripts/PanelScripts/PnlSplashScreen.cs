@@ -17,7 +17,7 @@ public class PnlSplashScreen : MonoBehaviour
     [SerializeField] UnityEvent OnLogInEvent;
     [SerializeField] UnityEvent OnAuthorisationErrorEvent;
 
-    private const int HIDE_SPLASH_SCREEN_TIME = 5000;
+    private const int HIDE_SPLASH_SCREEN_TIME = 6000;
 
     public void OpenStore() {
 #if UNITY_IOS
@@ -63,7 +63,7 @@ public class PnlSplashScreen : MonoBehaviour
     private void TryLogin() {
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         Task.Delay(HIDE_SPLASH_SCREEN_TIME).ContinueWith((_) => HideSplashScreen(), taskScheduler);
-        accountManager.QuickLogIn();
+        accountManager.QuickLogInWithDelay();
     }
 
     private void ErrorLogInCallBack(string body) {

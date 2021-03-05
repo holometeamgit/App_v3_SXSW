@@ -12,7 +12,7 @@ public class SwitchToProfileOnLogIn : MonoBehaviour {
 
     private void OnApplicationFocus(bool focus) {
         if (focus) {
-            accountManager.QuickLogIn();
+            accountManager.QuickLogInWithDelay();
         }
     }
 
