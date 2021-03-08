@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Analytics;
 
 /// <summary>
 /// This is the universal Analytics class used to call same tracking calls across all libraries
@@ -27,8 +26,8 @@ public class AnalyticsController : MonoBehaviour
         {
             Instance = this;
 #if DEV
-        if(!enableDebugTracking)
-            disableTracking = true;            
+            if (!enableDebugTracking)
+                disableTracking = true;
 #endif
             DontDestroyOnLoad(Instance);
         }
@@ -37,6 +36,13 @@ public class AnalyticsController : MonoBehaviour
             Debug.LogError($"{nameof(AnalyticsController)} Instance Already Exists!");
             Destroy(Instance);
         }
+    }
+
+    private void AppendDevString(ref string eventName)
+    {
+#if DEV
+        eventName = "dev_" + eventName;
+#endif
     }
 
     public void SendCustomEvent(string eventName)
@@ -50,12 +56,16 @@ public class AnalyticsController : MonoBehaviour
             return;
         }
 
+        //AppendDevString(ref eventName);
+
         HelperFunctions.DevLog($"Custom Event Sent {eventName}");
 
-        foreach (var analyticsController in analyticsLibraryAbstractions)
-        {
-            analyticsController.SendCustomEvent(eventName);
-        }
+        //foreach (var analyticsController in analyticsLibraryAbstractions)
+        //{
+        //    analyticsController.SendCustomEvent(eventName);
+        //}
+
+        SendCustomEvent(eventName, new Dictionary<string,string>());
     }
 
     public void SendCustomEvent(string eventName, string dataName, object data)
@@ -69,7 +79,7 @@ public class AnalyticsController : MonoBehaviour
             return;
         }
 
-        HelperFunctions.DevLog($"Custom Event Sent {eventName} with data {dataName} {data}");
+        //HelperFunctions.DevLog($"Custom Event Sent {eventName} with data {dataName} {data}");
 
         Dictionary<string, string> dataDictionary = new Dictionary<string, string>() { { dataName, (string)data } };
 
@@ -92,11 +102,14 @@ public class AnalyticsController : MonoBehaviour
             return;
         }
 
-        //HelperFunctions.DevLog($"Custom Event Sent {eventName} with data {data}");
+        AppendDevString(ref eventName);
 
-        if (userWebManager != null)
+        HelperFunctions.DevLog($"Custom Event Sent {eventName} with data {data}");
+
+        if (userWebManager != null && userWebManager.GetUserID() != -1)
         {
             data.Add(AnalyticParameters.ParamUserID, userWebManager.GetUserID().ToString()); //Add user ID to tracking variable
+            data.Add(AnalyticParameters.ParamUserType, userWebManager.IsBroadcaster() ? AnalyticParameters.ParamBroadcaster : AnalyticParameters.ParamViewer);
         }
         else
         {
@@ -167,9 +180,16 @@ public class AnalyticsController : MonoBehaviour
         if (disableTracking)
             return;
 
-        var time = new Dictionary<string, object>();
-        time.Add(timerName, elapsedTime);
-        Analytics.CustomEvent(timerName, time);
+        AppendDevString(ref timerName);
+
+        Dictionary<string, string> dataDictionary = new Dictionary<string, string>();
+        dataDictionary.Add("Time", elapsedTime.ToString());
+        dataDictionary.Add(AnalyticParameters.ParamUserID, userWebManager.GetUserID().ToString());
+
+        foreach (var analyticsController in analyticsLibraryAbstractions)
+        {
+            analyticsController.SendCustomEvent(timerName, dataDictionary);
+        }
         dwellTimers.Remove(timerDictonaryKey);
 
         HelperFunctions.DevLog($"Dwell timer {timerName} stopped. Time tracked = {elapsedTime}");

@@ -33,7 +33,7 @@ public class PnlWelcomeV4 : MonoBehaviour {
     [SerializeField]
     Switcher switcherToLigIn;
 
-    private const int TIME_FOR_AUTOHIDINGBG = 5000;
+    private const int TIME_FOR_AUTOHIDINGBG = 10000;
 
     private void Awake() {
     }
@@ -55,24 +55,24 @@ public class PnlWelcomeV4 : MonoBehaviour {
         LogInBackground.SetActive(true);
     }
     #region autohide
-    private void AutoHideLoadingBackground(LogInType logInType) {
-        AutoHideLoadingBackground();
-    }
+    //private void AutoHideLoadingBackground(LogInType logInType) {
+    //    AutoHideLoadingBackground();
+    //}
 
-    private void AutoHideLoadingBackground(string msg) {
-        AutoHideLoadingBackground();
-    }
+    //private void AutoHideLoadingBackground(string msg) {
+    //    AutoHideLoadingBackground();
+    //}
 
-    private void AutoHideLoadingBackground() {
-        var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(TIME_FOR_AUTOHIDINGBG).ContinueWith(_ => HideBackgroundWithDelay(), taskScheduler);
-    }
+    //private void AutoHideLoadingBackground() {
+    //    var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+    //    Task.Delay(TIME_FOR_AUTOHIDINGBG).ContinueWith(_ => HideBackgroundWithDelay(), taskScheduler);
+    //}
 
-    private void HideBackgroundWithDelay() {
-        if (LogInBackground.activeSelf) {
-            HideBackground();
-        }
-    }
+    //private void HideBackgroundWithDelay() {
+    //    if (LogInBackground.activeSelf) {
+    //        HideBackground();
+    //    }
+    //}
     #endregion
 
     private void HideBackground() {
@@ -106,29 +106,33 @@ public class PnlWelcomeV4 : MonoBehaviour {
 
         CallBacks.onSignInSuccess += SwitchToProfile;
         CallBacks.onFail += ShowSpecialErrorFacebookFirebaseMsg;
-        CallBacks.onFail += AutoHideLoadingBackground;
-        CallBacks.onFirebaseSignInSuccess += AutoHideLoadingBackground;
+        //CallBacks.onFail += AutoHideLoadingBackground;
+        //CallBacks.onFirebaseSignInSuccess += AutoHideLoadingBackground;
 
         CallBacks.onSignInFacebook += ShowBackground;
         CallBacks.onSignInApple += ShowBackground;
         CallBacks.onSignInGoogle += ShowBackground;
-        CallBacks.onSignInSuccess += HideBackground;
         CallBacks.onFail += HideBackground;
         CallBacks.onNeedVerification += HideBackground;
         webRequestHandler.GetRequest(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, null);
+
+        //TODO move to place when user loggined and take info from UserWebManager
+        //AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin, AnalyticParameters.ParamUserType , accountManager.GetAccountType() == AccountManager.AccountType.Subscriber ? AnalyticParameters.ParamViewer:AnalyticParameters.ParamBroadcaster ); // Using keys in case enum changes names in future
+        CallBacks.onSignInSuccess += () => AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin);
     }
 
     private void OnDisable() {
         CallBacks.onSignInSuccess -= SwitchToProfile;
         CallBacks.onFail -= ShowSpecialErrorFacebookFirebaseMsg;
-        CallBacks.onFail -= AutoHideLoadingBackground;
-        CallBacks.onFirebaseSignInSuccess -= AutoHideLoadingBackground;
+        //CallBacks.onFail -= AutoHideLoadingBackground;
+        //CallBacks.onFirebaseSignInSuccess -= AutoHideLoadingBackground;
 
         CallBacks.onSignInFacebook -= ShowBackground;
         CallBacks.onSignInApple -= ShowBackground;
         CallBacks.onSignInGoogle -= ShowBackground;
-        CallBacks.onSignInSuccess -= HideBackground;
         CallBacks.onFail -= HideBackground;
         CallBacks.onNeedVerification -= HideBackground;
+
+        HideBackground();
     }
 }

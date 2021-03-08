@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using UnityEngine.UI;
 using TMPro;
+using Beem.SSO;
 
 public class UIThumbnailV3 : UIThumbnail {
     [SerializeField] RawImage rawImage;
@@ -134,6 +135,8 @@ public class UIThumbnailV3 : UIThumbnail {
     private void UpdateData() {
         UpdateTexture();
 
+        HelperFunctions.DevLog("UIThumbnailV3 UpdateData id = " + thumbnailElement.Data.id + " is bought = " + thumbnailElement.Data.is_bought);
+
         bool isLive = thumbnailElement.Data.GetStage() == StreamJsonData.Data.Stage.Live;
         imgLive.gameObject.SetActive(isLive);
         txtTime.gameObject.SetActive(!isLive);
@@ -177,6 +180,13 @@ public class UIThumbnailV3 : UIThumbnail {
         }
     }
 
+    private void WaitServerPurchaseConfirmation(long id) {
+        if (thumbnailElement.Data.id != id)
+            return;
+
+        btnBuyTicketR.SetActive(false);
+    }
+
     private void UpdateTexture() {
 
         if (!thumbnailElement.Data.is_bought) {
@@ -196,5 +206,13 @@ public class UIThumbnailV3 : UIThumbnail {
             thumbnailElement.OnErrorTextureLoaded -= UpdateTexture;
             thumbnailElement.Data.OnDataUpdated -= UpdateData;
         }
+    }
+
+    private void OnEnable() {
+        CallBacks.onStreamPurchasedInStore += WaitServerPurchaseConfirmation;
+    }
+
+    private void OnDisable() {
+        CallBacks.onStreamPurchasedInStore -= WaitServerPurchaseConfirmation;
     }
 }

@@ -44,24 +44,20 @@ public class ThumbnailsDataContainer {
     private void AddStreamJsonData(StreamJsonData.Data data) {
         if (streamDataDictionary.ContainsKey(data.id)) {
             StreamJsonData.Data prevStreamData = streamDataDictionary[data.id];
+            //if (data.id == 796)
+                HelperFunctions.DevLog("ThumbnailsDataContainer AddStreamJsonData id = " + data.id + "is bought = " + data.is_bought);
 
             if (!streamDataEqualityComparer.Equals(prevStreamData, data)) {
-                streamData.Remove(prevStreamData);
-                streamData.Add(data);
+
+                prevStreamData.Update(data);
             } 
         } else {
             streamDataDictionary[data.id] = data;
             streamData.Add(data);
         }
-
-
-
     }
 
     private void SortListByStartDate() {
-
-
-
         streamData.Sort((elem1, elem2)
             => {
 
@@ -76,8 +72,6 @@ public class ThumbnailsDataContainer {
 
                 return elem2.StartDate.CompareTo(elem1.StartDate);
             });
-
-
     }
 
     [Serializable]

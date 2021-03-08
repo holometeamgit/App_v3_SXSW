@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Purchasing;
+using Beem.SSO;
 
 public class PurchaseManager : MonoBehaviour
 {
@@ -30,13 +31,12 @@ public class PurchaseManager : MonoBehaviour
     }
 
     public void Purchase() {
-
         if (streamData == null || streamData.is_bought)
             return;
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed);
-        //TODO add chech steam available befo purchaise 
-        iapController.BuyTicket(streamData.product_type.product_id);
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed, new Dictionary<string, string> { {AnalyticParameters.ParamProductID, streamData.product_type.product_id}, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() } } );
+        //TODO add chech stream available befor purchaise
         backgroudGO.SetActive(true);
+        iapController.BuyTicket(streamData.product_type.product_id);
         OnPurchaseStarted?.Invoke();
     }
 
@@ -85,28 +85,30 @@ public class PurchaseManager : MonoBehaviour
     #endregion
 
     private void OnPurchaseCallBack(Product product) {
-        streamData.is_bought = true;
-        streamData.InvokeDataUpdated();
+        //streamData.is_bought = true;
+        //streamData.InvokeDataUpdated();
 
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful);
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, {AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() } });
 
         StreamBillingJsonData streamBillingJsonData = new StreamBillingJsonData();
         streamBillingJsonData.bill.hash = product.receipt;
 
+        CallBacks.onStreamPurchasedInStore?.Invoke(streamData.id);
         purchasesSaveManager.SendToServer(streamData.id, streamBillingJsonData);
 
         streamData = null;
 
         OnPurchaseSuccessful?.Invoke();
-        backgroudGO.SetActive(false);
+        
     }
 
     private void AllPurchasedDataSentOnServerCallBack() {
+        backgroudGO.SetActive(false);
         OnServerPurchasedDataUpdated?.Invoke();
     }
 
     private void OnPurchaseFailCallBack() {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseCancelled);
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseCancelled, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id } });
         OnPurchaseCanceled?.Invoke();
         backgroudGO.SetActive(false);
     }
@@ -117,6 +119,7 @@ public class PurchaseManager : MonoBehaviour
 
     private IEnumerator RepeatRequestProduct () {
         yield return new WaitForSeconds(1);
+        HelperFunctions.DevLog("Product list Request");
         GetProductList();
     }
 }

@@ -9,7 +9,7 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
     const string AccountID = "65R-W6K-KW6Z";
     const string Token = "360-256";
 
-    bool disableTracking;
+    //bool disableTracking;
 
     [SerializeField]
     CleverTapUnity cleverTapUnityComponent;
@@ -19,9 +19,9 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
         if (Instance == null)
         {
             Instance = this;
-#if DEV
-            disableTracking = true;
-#endif
+//#if DEV
+//            disableTracking = true;
+//#endif
             //cleverTapUnityComponent = gameObject.AddComponent<CleverTapUnity>();
             if (cleverTapUnityComponent.CLEVERTAP_ACCOUNT_ID != AccountID)
             {
@@ -44,6 +44,9 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
 
     public override void SendCustomEvent(string eventName)
     {
+        if (Application.isEditor) //Stops android exception
+            return;
+
         CleverTapBinding.RecordEvent(eventName);
     }
 
@@ -55,7 +58,10 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
     //}
 
     public override void SendCustomEvent(string eventName, Dictionary<string, string> data)
-    {        
+    {
+        if (Application.isEditor) //Stops android exception
+            return;
+
         CleverTapBinding.RecordEvent(eventName, ConvertToStringObjectDictionary(data));
     }
 }

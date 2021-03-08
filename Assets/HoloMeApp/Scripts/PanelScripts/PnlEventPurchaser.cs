@@ -55,7 +55,7 @@ public class PnlEventPurchaser : MonoBehaviour {
     #region Purchase
     public void Purchase() {
 
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed);
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, data.product_type.product_id }, { AnalyticParameters.ParamProductPrice, data.product_type.price.ToString() } });
         purchaseWaitingScreen.gameObject.SetActive(true);
         iapController.BuyTicket(data.product_type.product_id);
     }
@@ -66,7 +66,7 @@ public class PnlEventPurchaser : MonoBehaviour {
 
     public void Cancel() {
         if (!data.is_bought)
-            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseCancelled);
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseCancelled, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, data.product_type.product_id } });
     }
 
     private void Awake() {
@@ -76,10 +76,10 @@ public class PnlEventPurchaser : MonoBehaviour {
     }
 
     private void OnPurchaseCallBack(Product product) {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful);
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, data.product_type.product_id }, { AnalyticParameters.ParamProductPrice, data.product_type.price.ToString() } });
 
         data.is_bought = true;
-        data.OnDataUpdated.Invoke();
+        data.OnDataUpdated?.Invoke();
 
         Show(data);
 
@@ -96,7 +96,7 @@ public class PnlEventPurchaser : MonoBehaviour {
     }
 
     private void OnPurchaseFailCallBack() {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseFailed);
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseFailed, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, data.product_type.product_id } });
         Debug.Log("OnPurchaseFailCallBack");
         Show(data);
     }

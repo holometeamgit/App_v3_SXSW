@@ -17,8 +17,6 @@ public class PnlViewingExperience : MonoBehaviour
     [SerializeField]
     HologramHandler hologramHandler;
     [SerializeField]
-    BlurController blurController;
-    [SerializeField]
     PermissionGranter permissionGranter;
     [SerializeField]
     ARPlaneManager arPlaneManager;
@@ -69,7 +67,7 @@ public class PnlViewingExperience : MonoBehaviour
             permissionController.CheckCameraMicAccess();
         }
     }
-    private void ToggleARSessionObjects(bool enable)
+    public void ToggleARSessionObjects(bool enable)
     {
         arSessionOrigin?.SetActive(enable);
         arSession?.SetActive(enable);
@@ -88,7 +86,7 @@ public class PnlViewingExperience : MonoBehaviour
             OnPlaced();
             return;
         }
-        hologramHandler.SetOnPlacementUIHelperFinished(() => StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, activatedForStreaming)));
+        hologramHandler.SetOnPlacementUIHelperFinished(() => { if (viewingExperienceInFocus) StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, activatedForStreaming)); });
         scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         ShowMessage(scaneEnviromentStr);
         tutorialState = TutorialState.MessageTapToPlace;
@@ -207,7 +205,6 @@ public class PnlViewingExperience : MonoBehaviour
     {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
         ToggleARSessionObjects(true);
-        blurController.RemoveBlur();
         canvasGroup.alpha = 0;
         gameObject.SetActive(true);
         hologramHandler.InitSession();
@@ -224,8 +221,9 @@ public class PnlViewingExperience : MonoBehaviour
     }
     public void StopExperience()
     {
+        viewingExperienceInFocus = false;
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
-        ToggleARSessionObjects(false);
+        //ToggleARSessionObjects(false);
         hologramHandler.StopVideo();
     }
     public void PauseExperience()
@@ -235,11 +233,7 @@ public class PnlViewingExperience : MonoBehaviour
     public void ResumeVideo()
     {
         hologramHandler.ResumeVideo();
-    }
-    public void SetOutOfFocus()
-    {
-        viewingExperienceInFocus = false;
-    }
+    }   
     void OnApplicationFocus(bool isFocused)
     {
         if (viewingExperienceInFocus && !isFocused)

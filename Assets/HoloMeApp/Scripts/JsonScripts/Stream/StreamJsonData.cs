@@ -56,9 +56,9 @@ public class StreamJsonData {
         private DateTime endDate;
 
 
-        public void InvokeDataUpdated() { //TODO better create RX
+        /*public void InvokeDataUpdated() { //TODO better create RX
             OnDataUpdated?.Invoke();
-        }
+        }*/
 
         public Data() {
             product_type = new ProductType();
@@ -140,6 +140,39 @@ public class StreamJsonData {
                 default:
                     return PIN_ALL;
             }
+        }
+
+        public void Update(Data data) {
+
+            if (data.id != id)
+                return;
+
+            HelperFunctions.DevLog("Update StreamJsonData.Data id = " + id);
+
+            preview_s3_url = data.preview_s3_url;
+            preview_teaser_s3_url = data.preview_teaser_s3_url;
+            stream_s3_url = data.stream_s3_url;
+            teaser_s3_url = data.teaser_s3_url;
+            user = data.user;
+            paid_type = data.paid_type;
+            is_bought = data.is_bought;
+            product_type = data.product_type;
+            status = data.status;
+            is_pin = data.is_pin;
+            agora_sid = data.agora_sid;
+            agora_channel = data.agora_channel;
+            file_name_prefix = data.file_name_prefix;
+            start_date = data.start_date;
+            end_date = data.end_date;
+            duration = data.duration;
+            preview_s3_key = data.preview_s3_key;
+            stream_s3_key = data.stream_s3_key;
+            title = data.title;
+            description = data.description;
+
+            startDate = new DateTime();
+            endDate = new DateTime();
+            OnDataUpdated?.Invoke();
         }
     }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Beem.SSO;
 
 public class PurchasesSaveManager : MonoBehaviour {
     public Action OnAllDataSended;
@@ -93,11 +94,11 @@ public class PurchasesSaveManager : MonoBehaviour {
     }
 
     private void OnServerBillingSent(string uniqName, long id, StreamBillingJsonData streamBillingJsonData) {
+        CallBacks.onStreamPurchasedAndUpdateOnServer?.Invoke(id);
         RemovePurchaseSaveElement(uniqName, id, streamBillingJsonData);
     }
 
     private void OnServerErrorBillingSent(string uniqName, long id, StreamBillingJsonData streamBillingJsonData) {
-
         StartCoroutine(Rechecking());
     }
 
