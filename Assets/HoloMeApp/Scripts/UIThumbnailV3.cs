@@ -111,7 +111,9 @@ public class UIThumbnailV3 : UIThumbnail {
             btnPlayTeaser.GetComponent<Button>().interactable = !isLook;
             btnBuyTicketR.GetComponent<Button>().interactable = !isLook;
             btnShareR.GetComponent<Button>().interactable = !isLook;
-        } catch (Exception) { }
+        } catch (Exception e) {
+            HelperFunctions.DevLogError(e.Message);
+        }
     }
 
     public override void Deactivate() {

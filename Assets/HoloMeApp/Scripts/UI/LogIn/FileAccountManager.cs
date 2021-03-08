@@ -34,6 +34,7 @@ public class FileAccountManager : MonoBehaviour {
             Cryptography cryptography = new Cryptography(key);
             resultData = JsonUtility.FromJson<T>(encrypted); //cryptography.Decrypt<T>(encrypted); //TODO comeback to cryptography
         } catch (System.Exception e) {
+            HelperFunctions.DevLogError(e.Message);
             return resultData;
         }
 

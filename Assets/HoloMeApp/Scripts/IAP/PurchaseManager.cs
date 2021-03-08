@@ -61,12 +61,15 @@ public class PurchaseManager : MonoBehaviour
         try {
             productJsonData = JsonUtility.FromJson<ProductJsonData>(body);
             
-        } catch (Exception) {
+        } catch (Exception e) {
+            HelperFunctions.DevLogError(e.Message);
             body = "{ \"products\" :" + body + "}";
 
             try {
                 productJsonData = JsonUtility.FromJson<ProductJsonData>(body);
-            } catch (Exception) { }
+            } catch (Exception ex) {
+                HelperFunctions.DevLogError(ex.Message);
+            }
         }
 
         List<string> productIdList = new List<string>();

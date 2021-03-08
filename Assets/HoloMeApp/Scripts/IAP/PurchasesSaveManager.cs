@@ -47,7 +47,8 @@ public class PurchasesSaveManager : MonoBehaviour {
             } else {
                 OnAllDataSended?.Invoke();
             }
-        } catch (System.Exception) {
+        } catch (System.Exception e) {
+            HelperFunctions.DevLogError(e.Message);
         }
     }
 
@@ -65,7 +66,9 @@ public class PurchasesSaveManager : MonoBehaviour {
 
             PlayerPrefs.SetString(uniqName, JsonUtility.ToJson(purchaseSaveJsonData));
             PlayerPrefs.Save();
-        } catch (System.Exception) { }
+        } catch (System.Exception e) {
+            HelperFunctions.DevLogError(e.Message);
+        }
     }
 
     private void RemovePurchaseSaveElement(string uniqName, long id, StreamBillingJsonData streamBillingJsonData) {
@@ -83,7 +86,9 @@ public class PurchasesSaveManager : MonoBehaviour {
 
             PlayerPrefs.SetString(uniqName, JsonUtility.ToJson(purchaseSaveJsonData));
             PlayerPrefs.Save();
-        } catch (System.Exception) { }
+        } catch (System.Exception e) {
+            HelperFunctions.DevLogError(e.Message);
+        }
     }
 
     private void PostData(string uniqName, long id, StreamBillingJsonData streamBillingJsonData, string accessToken) {

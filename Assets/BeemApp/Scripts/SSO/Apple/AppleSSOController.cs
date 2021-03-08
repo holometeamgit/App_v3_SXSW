@@ -65,8 +65,9 @@ namespace Beem.SSO {
                 _appleAuthManager.LoginWithAppleId(loginArgs,
                     (credential) => { OnLogin(credential, rawNonce); }
                 , OnError);
-            } catch {
-                CallBacks.onFail?.Invoke("Fail");
+            } catch (Exception e){
+                HelperFunctions.DevLogError("Apple Fail " + e.Message);
+                CallBacks.onFail?.Invoke("Apple Fail");
             }
         }
 
@@ -92,8 +93,10 @@ namespace Beem.SSO {
         private void OnError(IAppleError args) {
             AuthorizationErrorCode authorizationErrorCode = args.GetAuthorizationErrorCode();
             if (authorizationErrorCode == AuthorizationErrorCode.Canceled) {
+                HelperFunctions.DevLogError("User cancelled login");
                 CallBacks.onFail?.Invoke("User cancelled login");
             } else {
+                HelperFunctions.DevLogError("Fail " + args.Domain);
                 CallBacks.onFail?.Invoke("Fail " + args.Domain);
             }
         }

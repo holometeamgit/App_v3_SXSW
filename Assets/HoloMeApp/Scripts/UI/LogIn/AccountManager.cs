@@ -102,7 +102,9 @@ public class AccountManager : MonoBehaviour {
             HelperFunctions.DevLog("Save serverAccessToken " + serverAccessToken);
             FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), accessToken, FileAccountManager.ServerAccessToken);
             //            Debug.Log("Access Token Saved");
-        } catch (System.Exception e) { }
+        } catch (System.Exception e) {
+            HelperFunctions.DevLogError(e.Message);
+        }
     }
 
     public ServerAccessToken GetAccessToken() {
@@ -120,7 +122,9 @@ public class AccountManager : MonoBehaviour {
 
             HelperFunctions.DevLog("Updated serverAccessToken " + serverAccessToken);
             FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), currentAccessToken, FileAccountManager.ServerAccessToken);
-        } catch (System.Exception e) { }
+        } catch (System.Exception e) {
+            HelperFunctions.DevLogError(e.Message);
+        }
     }
 
     private void RemoveAccessToken() {

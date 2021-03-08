@@ -110,7 +110,10 @@ accountManager.GetAccessToken().access);
         try {
             StreamJsonData streamJsonData = JsonUtility.FromJson<StreamJsonData>(data);
             return streamJsonData;
-        } catch (Exception e) { return null; }
+        } catch (Exception e) {
+            HelperFunctions.DevLogError(e.Message);
+            return null;
+        }
     }
 
     private string GetRequestStreamURL(ThumbnailWebRequestStruct thumbnailWebRequestStruct) {
