@@ -24,6 +24,9 @@ public class WebRequestHandler : MonoBehaviour {
     private const int MAX_TIMES_BEFORE_STOP_REQUEST = 20;
     private const int MAX_TIMES_BEFORE_STOP_TEXTURE_REQUEST = 240;
 
+    private const int TIMEOUT = 5000;
+    private const int TIMEOUT_TEXTURE_REQUEST = 120000;
+
     public void LogCallback(long code, string body) {
         HelperFunctions.DevLog($"Code {code} Message {body}");
     }
@@ -150,6 +153,8 @@ public class WebRequestHandler : MonoBehaviour {
             request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
         }
 
+        request.timeout = TIMEOUT;
+
         return request;
     }
 
@@ -200,6 +205,8 @@ public class WebRequestHandler : MonoBehaviour {
         if (headerAccessToken != null)
             request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
 
+        request.timeout = TIMEOUT;
+
         return request;
 
     }
@@ -214,6 +221,8 @@ public class WebRequestHandler : MonoBehaviour {
 
         if (headerAccessToken != null)
             request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
+
+        request.timeout = TIMEOUT;
 
         return request;
     }
@@ -238,6 +247,8 @@ public class WebRequestHandler : MonoBehaviour {
 
         if (headerAccessToken != null)
             request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
+
+        request.timeout = TIMEOUT;
 
         return request;
     }
@@ -270,6 +281,8 @@ public class WebRequestHandler : MonoBehaviour {
         if (headerAccessToken != null)
             request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
 
+        request.timeout = TIMEOUT;
+
         return request;
     }
 
@@ -295,6 +308,8 @@ public class WebRequestHandler : MonoBehaviour {
         if (headerAccessToken != null)
             request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);
 
+        request.timeout = TIMEOUT;
+
         return request;
     }
 
@@ -304,6 +319,8 @@ public class WebRequestHandler : MonoBehaviour {
     private UnityWebRequest PrepareGetTextureRequest(string url) {
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
         request.downloadHandler = new DownloadHandlerTexture();
+
+        request.timeout = TIMEOUT_TEXTURE_REQUEST;
 
         return request;
     }

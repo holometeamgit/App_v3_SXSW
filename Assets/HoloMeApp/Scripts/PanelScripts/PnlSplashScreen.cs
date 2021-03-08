@@ -62,7 +62,7 @@ public class PnlSplashScreen : MonoBehaviour
 
     private void TryLogin() {
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(HIDE_SPLASH_SCREEN_TIME).ContinueWith((_) => HideSplashScreen(), taskScheduler);
+        Task.Delay(HIDE_SPLASH_SCREEN_TIME).ContinueWith((_) => { accountManager.CancelLogIn(); AuthorisationErrorInvoke(); }, taskScheduler);
         accountManager.QuickLogInWithDelay();
     }
 

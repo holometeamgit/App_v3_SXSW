@@ -60,9 +60,14 @@ namespace Beem.SSO {
             var loginArgs = new AppleAuthLoginArgs(
                 LoginOptions.IncludeEmail | LoginOptions.IncludeFullName,
                 nonce);
-            _appleAuthManager.LoginWithAppleId(loginArgs,
-                (credential) => { OnLogin(credential, rawNonce); }
-            , OnError);
+
+            try {
+                _appleAuthManager.LoginWithAppleId(loginArgs,
+                    (credential) => { OnLogin(credential, rawNonce); }
+                , OnError);
+            } catch {
+                CallBacks.onFail?.Invoke("Fail");
+            }
         }
 
         private void OnLogin(ICredential credential, string rawNonce) {
