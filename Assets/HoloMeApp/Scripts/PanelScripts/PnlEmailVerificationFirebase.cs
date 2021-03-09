@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Beem.SSO;
 using TMPro;
-
+using System.Threading.Tasks;
 
 public class PnlEmailVerificationFirebase : MonoBehaviour
 {
@@ -11,8 +11,23 @@ public class PnlEmailVerificationFirebase : MonoBehaviour
     AuthController AuthController;
     [SerializeField]
     TMP_Text txtEmail;
+    [SerializeField]
+    GameObject GoToLogInBtn;
+
+    private const int DELAY_TIME = 5000;
 
     private void OnEnable() {
         txtEmail.text = AuthController.GetEmail();
+
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        Task.Delay(DELAY_TIME).ContinueWith((_) => GoToLogInBtn.SetActive(true), taskScheduler);
+    }
+
+    private void OnDisable() {
+        GoToLogInBtn.SetActive(false);
+    }
+
+    private void OnApplicationFocus(bool focus) {
+        GoToLogInBtn.SetActive(true);
     }
 }

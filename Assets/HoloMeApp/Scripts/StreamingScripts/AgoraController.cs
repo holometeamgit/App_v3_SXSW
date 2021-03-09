@@ -188,7 +188,7 @@ public class AgoraController : MonoBehaviour {
             HelperFunctions.DevLog("Viewer Token Returned: " + tokenAgoraResponseChannel.token);
             GetRTMLoginToken();
         } catch (Exception e) {
-            Debug.LogError(e);
+            HelperFunctions.DevLogError(e.Message);
         }
     }
 
@@ -205,7 +205,7 @@ public class AgoraController : MonoBehaviour {
             SecondaryServerCallsComplete(tokenAgoraResponseChannel.token, tokenAgoraResponseRTM.token);
         }
         catch (Exception e) {
-            Debug.LogError(e);
+            HelperFunctions.DevLogError(e.Message);
         }
     }
 

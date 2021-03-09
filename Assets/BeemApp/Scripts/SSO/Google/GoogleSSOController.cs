@@ -41,14 +41,19 @@ namespace Beem.SSO {
 
 
         private void SignInWithGoogle() {
+            try {
 
-            HelperFunctions.DevLog("CallSignInWithGoogle");
-            GoogleSignIn.Configuration = configuration;
-            GoogleSignIn.Configuration.UseGameSignIn = false;
-            GoogleSignIn.Configuration.RequestIdToken = true;
+                HelperFunctions.DevLog("CallSignInWithGoogle");
+                GoogleSignIn.Configuration = configuration;
+                GoogleSignIn.Configuration.UseGameSignIn = false;
+                GoogleSignIn.Configuration.RequestIdToken = true;
 
-            var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnGoogleAuthenticationFinished, taskScheduler);
+                var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+                GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnGoogleAuthenticationFinished, taskScheduler);
+            } catch (Exception e) {
+                HelperFunctions.DevLogError(e.Message);
+                CallBacks.onFail?.Invoke(e.Message);
+            }
         }
 
         private void OnGoogleAuthenticationFinished(Task<GoogleSignInUser> task) {

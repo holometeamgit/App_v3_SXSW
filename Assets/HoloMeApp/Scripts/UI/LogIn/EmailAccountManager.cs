@@ -94,7 +94,10 @@ public class EmailAccountManager : MonoBehaviour {
             badRequestData = new BadRequestSignUpEmailJsonData();
             badRequestData.code = code;
             badRequestData.errorMsg = body;
-        }
+            Debug.Log("ErrorSignUpCallBack " + code + " " + body);
+            OnErrorSignUp?.Invoke(badRequestData);
+            return;
+        } 
         Debug.Log("ErrorSignUpCallBack " + code + " " + body);
         OnErrorSignUp?.Invoke(badRequestData);
     }
@@ -124,6 +127,8 @@ public class EmailAccountManager : MonoBehaviour {
             badRequestData = new BadRequestResendVerificationJsonData();
             badRequestData.code = code;
             badRequestData.errorMsg = body;
+            OnErrorResendVerification?.Invoke(badRequestData);
+            return;
         }
         OnErrorResendVerification?.Invoke(badRequestData);
     }
@@ -175,6 +180,8 @@ public class EmailAccountManager : MonoBehaviour {
             badRequestData = new BadRequestLogInEmailJsonData();
             badRequestData.code = code;
             badRequestData.errorMsg = body;
+            OnErrorLogIn?.Invoke(badRequestData);
+            return;
         }
         OnErrorLogIn?.Invoke(badRequestData);
     }
@@ -190,7 +197,7 @@ public class EmailAccountManager : MonoBehaviour {
     }
 
     private void StartResetPasswordCallBack(long code, string body) {
-        Debug.Log("Start Reset Password " + code + " : " + body);
+        HelperFunctions.DevLog("Start Reset Password " + code + " : " + body);
         OnStartResetPassword?.Invoke();
     }
 
@@ -202,6 +209,8 @@ public class EmailAccountManager : MonoBehaviour {
             badRequestData = new BadRequestStartResetPassword();
             badRequestData.code = code;
             badRequestData.errorMsg = body;
+            OnErrorStartResetPassword?.Invoke(badRequestData);
+            return;
         }
 
         if (badRequestData == null) {
@@ -233,6 +242,8 @@ public class EmailAccountManager : MonoBehaviour {
             badRequestData = new BadRequestResetPassword();
             badRequestData.code = code;
             badRequestData.errorMsg = body;
+            OnErrorResetPassword?.Invoke(badRequestData);
+            return;
         }
         OnErrorResetPassword?.Invoke(badRequestData);
     }
@@ -259,6 +270,8 @@ public class EmailAccountManager : MonoBehaviour {
             badRequestData = new BadRequestChangePassword();
             badRequestData.code = code;
             badRequestData.errorMsg = body;
+            OnErrorChangePassword?.Invoke(badRequestData);
+            return;
         }
         OnErrorChangePassword?.Invoke(badRequestData);
     }

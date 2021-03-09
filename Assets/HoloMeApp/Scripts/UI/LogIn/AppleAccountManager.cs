@@ -70,7 +70,9 @@ public class AppleAccountManager : MonoBehaviour {
 
                 try {
                     HelperFunctions.DevLog(code);
-                } catch (System.Exception ex) { }
+                } catch (System.Exception ex) {
+                    HelperFunctions.DevLogError(ex.Message);
+                }
 
                 GUIUtility.systemCopyBuffer = code;
 
@@ -142,7 +144,9 @@ public class AppleAccountManager : MonoBehaviour {
                         0,
                         appleIdCredential.AuthorizationCode.Length);
                     HelperFunctions.DevLog(System.Text.Encoding.UTF8.GetString(appleIdCredential.IdentityToken));
-                } catch (System.Exception ex) { }
+                } catch (System.Exception ex) {
+                    HelperFunctions.DevLogError(ex.Message);
+                }
 
                 GUIUtility.systemCopyBuffer = code;
 

@@ -13,10 +13,6 @@ public class AccountManager : MonoBehaviour {
     [SerializeField]
     WebRequestHandler webRequestHandler;
 
-    [Tooltip("Use this to test multiple editor logins on the same PC")]
-    [SerializeField]
-    bool disablePersistance;
-
     private Action onCancelLogIn;
 
     private bool canLogIn = true;
@@ -36,39 +32,36 @@ public class AccountManager : MonoBehaviour {
 
     private void QuickLogIn() {
         if (!canLogIn) {
+            LogOut(); // hotfix v4.9
             return;
         }
 
         HelperFunctions.DevLog("try QuickLogIn");
-
-        canLogIn = false;
-        if (Application.isEditor && disablePersistance) {
-            //errorTypeCallBack?.Invoke(0, "Editor login");
-            return;
-        }
-
         if (GetLogInType() == LogInType.Facebook) {
             LogOut();
         }
 
         ServerAccessToken accessToken = GetAccessToken();
 
-        HelperFunctions.DevLog("QuickLogIn ServerAccessToken " + (accessToken == null) + accessToken);
+        HelperFunctions.DevLog("QuickLogIn ServerAccessToken is null = " + (accessToken == null));
 
         if (accessToken == null && !authController.HasUser()) {
             ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
             //errorTypeCallBack?.Invoke();
+            LogOut();
             return;
         } else if (accessToken == null && authController.HasUser() && GetLogInType() != LogInType.None) {
-            HelperFunctions.DevLog("QuickLogIn Firebase");
+            HelperFunctions.DevLog("has firebase user. QuickLogIn Firebase");
             authController.DoAfterReloadUser(() => CallBacks.onFirebaseSignInSuccess(GetLogInType())); //TODO need test 
             return;
         } else if (accessToken == null && authController.HasUser() && GetLogInType() == LogInType.None) {
+            HelperFunctions.DevLog("has firebase user but doesn't have LogInType");
             LogOut();
             ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
             return;
         }
 
+        canLogIn = false;
         webRequestHandler.PostRequest(GetRequestRefreshTokenURL(),
             accessToken, WebRequestHandler.BodyType.JSON,
             (code, body) => { UpdateAccessToken(body); SuccessRequestAccessTokenCallBack(code, body); },
@@ -102,32 +95,19 @@ public class AccountManager : MonoBehaviour {
     #endregion
 
     #region server access token
-
-    ServerAccessToken temporaryEditorTestingAccessToken;
-
     public void SaveAccessToken(string serverAccessToken) {
         try {
-
-           
-
             //            Debug.Log("Try Save Access Token \n" + serverAccessToken);
             ServerAccessToken accessToken = JsonUtility.FromJson<ServerAccessToken>(serverAccessToken);
             HelperFunctions.DevLog("Save serverAccessToken " + serverAccessToken);
             FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), accessToken, FileAccountManager.ServerAccessToken);
             //            Debug.Log("Access Token Saved");
-
-            if (Application.isEditor && disablePersistance) {
-                temporaryEditorTestingAccessToken = accessToken;
-            }
-        } catch (System.Exception e) { }
+        } catch (System.Exception e) {
+            HelperFunctions.DevLogError(e.Message);
+        }
     }
 
     public ServerAccessToken GetAccessToken() {
-
-        if (Application.isEditor && disablePersistance) {
-            return temporaryEditorTestingAccessToken;
-        }
-
         return FileAccountManager.ReadFile<ServerAccessToken>(nameof(FileAccountManager.ServerAccessToken),
             FileAccountManager.ServerAccessToken);
     }
@@ -142,7 +122,9 @@ public class AccountManager : MonoBehaviour {
 
             HelperFunctions.DevLog("Updated serverAccessToken " + serverAccessToken);
             FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), currentAccessToken, FileAccountManager.ServerAccessToken);
-        } catch (System.Exception e) { }
+        } catch (System.Exception e) {
+            HelperFunctions.DevLogError(e.Message);
+        }
     }
 
     private void RemoveAccessToken() {
@@ -171,7 +153,7 @@ public class AccountManager : MonoBehaviour {
 
     private void GetServerAccessToken(string firebaseAccessToken) {
 
-        HelperFunctions.DevLog("GetServerAccessToken " + canLogIn);
+        HelperFunctions.DevLog("try GetServerAccessToken. Is busy prev request = " + canLogIn);
 
         if (!canLogIn) {
             //  CallBacks.onFail?.Invoke("Can't Get Server Access Token");

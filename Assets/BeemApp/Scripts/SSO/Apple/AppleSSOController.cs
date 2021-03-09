@@ -60,9 +60,15 @@ namespace Beem.SSO {
             var loginArgs = new AppleAuthLoginArgs(
                 LoginOptions.IncludeEmail | LoginOptions.IncludeFullName,
                 nonce);
-            _appleAuthManager.LoginWithAppleId(loginArgs,
-                (credential) => { OnLogin(credential, rawNonce); }
-            , OnError);
+
+            try {
+                _appleAuthManager.LoginWithAppleId(loginArgs,
+                    (credential) => { OnLogin(credential, rawNonce); }
+                , OnError);
+            } catch (Exception e){
+                HelperFunctions.DevLogError("Apple Fail " + e.Message);
+                CallBacks.onFail?.Invoke("Apple Fail");
+            }
         }
 
         private void OnLogin(ICredential credential, string rawNonce) {
@@ -87,8 +93,10 @@ namespace Beem.SSO {
         private void OnError(IAppleError args) {
             AuthorizationErrorCode authorizationErrorCode = args.GetAuthorizationErrorCode();
             if (authorizationErrorCode == AuthorizationErrorCode.Canceled) {
+                HelperFunctions.DevLogError("User cancelled login");
                 CallBacks.onFail?.Invoke("User cancelled login");
             } else {
+                HelperFunctions.DevLogError("Fail " + args.Domain);
                 CallBacks.onFail?.Invoke("Fail " + args.Domain);
             }
         }

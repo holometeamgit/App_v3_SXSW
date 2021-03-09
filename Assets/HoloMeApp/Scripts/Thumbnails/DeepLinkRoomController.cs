@@ -27,7 +27,9 @@ public class DeepLinkRoomController : MonoBehaviour {
             //room?roomid=string
             HelperFunctions.DevLog("MyRoomIdRecieved = " + body);
             DynamicLinksCallBacks.onCreateShortLink?.Invoke(serverURLAPIScriptableObject.FirebaseDynamicLinkAPI, roomJsonData.id);
-        } catch { }
+        } catch (Exception e) {
+            HelperFunctions.DevLogError(e.Message);
+        }
     }
 
     private void Awake() {

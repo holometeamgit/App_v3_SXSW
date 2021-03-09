@@ -34,6 +34,7 @@ public class PnlWelcomeV4 : MonoBehaviour {
     Switcher switcherToLigIn;
 
     private const int TIME_FOR_AUTOHIDINGBG = 10000;
+    private int HIDE_BACKGROUND_DELAY_TIME = 500;
 
     private void Awake() {
     }
@@ -48,10 +49,13 @@ public class PnlWelcomeV4 : MonoBehaviour {
 #endif
                 LogInGoogleGO.SetActive(providers.providers.Contains("google"));
             }
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            HelperFunctions.DevLogError(e.Message);
+        }
     }
 
     private void ShowBackground() {
+        HelperFunctions.DevLog("Show Background");
         LogInBackground.SetActive(true);
     }
     #region autohide
@@ -76,11 +80,13 @@ public class PnlWelcomeV4 : MonoBehaviour {
     #endregion
 
     private void HideBackground() {
-        LogInBackground.SetActive(false);
+        HelperFunctions.DevLog("Hide Background");
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        Task.Delay(HIDE_BACKGROUND_DELAY_TIME).ContinueWith((_) => LogInBackground.SetActive(false), taskScheduler);
     }
 
     private void HideBackground(string reason) {
-        LogInBackground.SetActive(false);
+        HideBackground();
     }
 
     private void SwitchToProfile() {

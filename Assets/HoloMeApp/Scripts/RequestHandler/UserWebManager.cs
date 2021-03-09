@@ -144,7 +144,9 @@ public class UserWebManager : MonoBehaviour {
         try {
             userData = JsonUtility.FromJson<UserJsonData>(body);
             OnUserInfoLoaded?.Invoke();
-        } catch (System.Exception e) { }
+        } catch (System.Exception e) {
+            HelperFunctions.DevLogError(e.Message);
+        }
 
         if (userData == null)
             userData = new UserJsonData();
@@ -177,6 +179,7 @@ public class UserWebManager : MonoBehaviour {
             badRequest = new BadRequestUserUploadJsonData();
             badRequest.code = code;
             badRequest.errorMsg = body;
+            OnErrorUserUploaded?.Invoke(badRequest);
         }
     }
 
