@@ -22,9 +22,13 @@ namespace Beem.Utility.UnityConsole {
         }
 
         private void Share() {
+#if !UNITY_EDITOR
             using (var payload = new SharePayload()) {
                 payload.AddText(_logData.FullLog);
             }
+#else
+            Debug.Log("Share Log:" + _logData.FullLog);
+#endif
         }
 
     }

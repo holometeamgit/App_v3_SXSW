@@ -74,7 +74,7 @@ namespace Beem.Utility.UnityConsole {
         }
 
         private void OnApplicationQuit() {
-            _logData.Save();
+            _logData.SaveAll();
         }
     }
 }

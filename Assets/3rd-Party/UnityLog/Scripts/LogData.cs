@@ -98,16 +98,47 @@ namespace Beem.Utility.UnityConsole {
             }
         }
 
+        private static bool isCompleted = false;
+
+        private Dictionary<string, string> _txt = new Dictionary<string, string>();
+
         private string GetTxt(string key, string defaultValue = "") {
-            return PlayerPrefs.GetString(key, defaultValue);
+
+            if (!_txt.ContainsKey(key)) {
+                _txt.Add(key, defaultValue);
+            }
+
+            if (!isCompleted) {
+                isCompleted = true;
+                _txt[key] = Load(key, defaultValue);
+            }
+
+            return _txt[key];
         }
 
         private void SetTxt(string key, string value) {
+            if (!_txt.ContainsKey(key)) {
+                _txt.Add(key, value);
+            } else {
+                _txt[key] = Load(key, value);
+            }
+
+        }
+
+        public void SaveAll() {
+            Save(FULL_LOGS, FullLog);
+            Save(LOGS, Log);
+            Save(WARNING, LogWarning);
+            Save(ERROR, LogError);
+            PlayerPrefs.Save();
+        }
+
+        public void Save(string key, string value) {
             PlayerPrefs.SetString(key, value);
         }
 
-        public void Save() {
-            PlayerPrefs.Save();
+        public string Load(string key, string defaultValue = "") {
+            return PlayerPrefs.GetString(key, defaultValue);
         }
 
         public TextAsset GetLog {
