@@ -1,8 +1,7 @@
 ﻿public class AnalyticKeys {
     public const string KeyRegistrationComplete = "registrationComplete";
     public const string KeyRegistrationDropOff = "registrationDroppedOff";
-    public const string KeyShareHologramPressed = "shareHologramPressed";
-    public const string KeyShareVideoPressed = "shareHologramRecordingPressed";
+    public const string KeyShareHologramMediaPressed = "shareHologramRecordingPressed";
     public const string KeySnapshotShared = "hologramSnapshotShared";
     public const string KeyVideoShared = "hologramVideoShared";
     public const string KeyHologramViewPercentage = "hologramViewPercentage";
