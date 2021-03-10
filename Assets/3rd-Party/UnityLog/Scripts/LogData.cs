@@ -108,10 +108,15 @@ namespace Beem.Utility.UnityConsole {
 
         public void Save() {
             PlayerPrefs.Save();
-            string time = string.Format("{0:D2}-{1:D2}-{2:D4}", DateTime.Now.Day, DateTime.Now.Month, DateTime.Now.Year);
-            string path = Application.dataPath + "/Resources/UnityLogs/" + FULL_LOGS + " - " + time + ".txt";
-            Debug.Log(path);
-            File.WriteAllText(path, FullLog);
+        }
+
+        public TextAsset GetLog {
+            get {
+                string time = string.Format("{0:D2}-{1:D2}-{2:D4}", DateTime.Now.Day, DateTime.Now.Month, DateTime.Now.Year);
+                string path = Application.dataPath + "/Resources/UnityLogs/" + FULL_LOGS + " - " + time + ".txt";
+                File.WriteAllText(path, FullLog);
+                return Resources.Load<TextAsset>("UnityLogs/FULL_LOGS" + " - " + time + ".txt");
+            }
         }
 
     }
