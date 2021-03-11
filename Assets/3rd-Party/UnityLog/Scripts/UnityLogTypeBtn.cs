@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Beem.Utility.UnityConsole {
     /// <summary>
@@ -11,14 +12,14 @@ namespace Beem.Utility.UnityConsole {
 
         [Header("Unity Log Type")]
         [SerializeField]
-        private UnityLogType unityLogType = UnityLogType.FullLogType;
+        private LogType unityLogType = LogType.Log;
 
-        private LogData _logData = new LogData();
+        private void OnEnable() {
+            Toggle(GetComponent<Toggle>().isOn);
+        }
 
         public void Toggle(bool value) {
-            if (value) {
-                _logData.CurrentLogType = unityLogType;
-            }
+            LogData.SetToggleLogType(unityLogType, value);
         }
     }
 }

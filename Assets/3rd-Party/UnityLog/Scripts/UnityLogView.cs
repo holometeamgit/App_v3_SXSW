@@ -11,7 +11,6 @@ namespace Beem.Utility.UnityConsole {
     [RequireComponent(typeof(Text))]
     public class UnityLogView : MonoBehaviour {
 
-        private LogData _logData = new LogData();
         private Text _text = default;
 
         private void Awake() {
@@ -28,7 +27,7 @@ namespace Beem.Utility.UnityConsole {
         }
 
         private void Refresh() {
-            _text.text = _logData.CurrentLog;
+            _text.text = LogData.CurrentLog;
         }
     }
 }

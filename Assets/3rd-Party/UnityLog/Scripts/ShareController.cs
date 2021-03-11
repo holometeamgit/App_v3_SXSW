@@ -10,9 +10,6 @@ namespace Beem.Utility.UnityConsole {
     /// </summary>
     public class ShareController : MonoBehaviour {
 
-
-        private LogData _logData = new LogData();
-
         private void OnEnable() {
             LogCallBacks.OnShare += Share;
         }
@@ -24,10 +21,10 @@ namespace Beem.Utility.UnityConsole {
         private void Share() {
 #if !UNITY_EDITOR
             using (var payload = new SharePayload()) {
-                payload.AddText(_logData.FullLog);
+                payload.AddText(LogData.CurrentLog);
             }
 #else
-            Debug.Log("Share Log:" + _logData.FullLog);
+            Debug.Log("Share Log:" + LogData.CurrentLog);
 #endif
         }
 
