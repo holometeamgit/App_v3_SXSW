@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,8 +10,6 @@ namespace Beem.Utility.UnityConsole {
     public class TestDebugBtn : MonoBehaviour, IPointerClickHandler {
         public void OnPointerClick(PointerEventData eventData) {
             Debug.Log("Log");
-            Debug.LogError("LogError");
-            Debug.LogWarning("LogWarning");
         }
     }
 }

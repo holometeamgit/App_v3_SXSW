@@ -38,6 +38,8 @@ namespace Beem.Utility.UnityConsole {
         public class UnityLog {
             public LogType Key;
             public string Value;
+            public DateTime Date;
+            public int InRow;
         }
 
         public static void Init() {
@@ -57,11 +59,16 @@ namespace Beem.Utility.UnityConsole {
         }
 
         public static void AddLog(LogType logType, string log) {
+
             UnityLog unityLog = new UnityLog {
                 Key = logType,
-                Value = log
+                Value = log,
+                Date = DateTime.Now,
+                InRow = 1
             };
             _log.Add(unityLog);
+
+            LogCallBacks.OnRefresh?.Invoke();
         }
 
         private static void RemoveLog(LogType logType) {
@@ -72,12 +79,12 @@ namespace Beem.Utility.UnityConsole {
         /// ClearLog
         /// </summary>
         public static void Clear() {
-
             string[] PieceTypeNames = Enum.GetNames(typeof(LogType));
             foreach (string item in PieceTypeNames) {
                 LogType logType = (LogType)Enum.Parse(typeof(LogType), item);
                 RemoveLog(logType);
             }
+            LogCallBacks.OnRefresh?.Invoke();
         }
 
         public static string CurrentLog {
@@ -86,7 +93,8 @@ namespace Beem.Utility.UnityConsole {
 
                 foreach (UnityLog item in _log) {
                     if (GetToggleLogType(item.Key)) {
-                        temp += item.Value;
+                        string date = string.Format("{0:D2}:{1:D2}:{2:D2}", item.Date.Hour, item.Date.Minute, item.Date.Second);
+                        temp += "[" + date + "]" + " : " + item.Value;
                     }
                 }
                 return temp;
