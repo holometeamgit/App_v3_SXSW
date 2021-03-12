@@ -6,6 +6,9 @@ using System;
 [Serializable]
 public class AppVersionJsonData 
 {
+    public const string IOS_PLATFORM = "ios";
+    public const string ANDROID_PLATFORM = "android";
+
     public List<Version> versions;
 
     public AppVersionJsonData() {
@@ -16,6 +19,7 @@ public class AppVersionJsonData
     public class Version {
         public string min_support_version;
         public bool forced_update;
+        public string platform;
     }
 }
 
