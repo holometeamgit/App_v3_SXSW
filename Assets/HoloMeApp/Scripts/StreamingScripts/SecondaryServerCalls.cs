@@ -89,7 +89,10 @@ public class SecondaryServerCalls : MonoBehaviour {
 
     void OnStartCloudRecordComplete() {
         HelperFunctions.DevLog($"Cloud recording started: sid = {requestCloudRecordResource.CloudRecordResponseData.sid}");
-        CreateStreamSecondaryServer();
+        if (isRoom)
+            CreateRoom();
+        else
+            CreateStreamSecondaryServer();
     }
 
     void CreateStreamSecondaryServer() {
@@ -103,6 +106,15 @@ public class SecondaryServerCalls : MonoBehaviour {
         webRequestHandler.PostRequest(webRequestHandler.ServerURLMediaAPI + videoUploader.Stream, data, WebRequestHandler.BodyType.JSON, (x, y) => { CreateStreamSecondaryCallback(x, y); webRequestHandler.LogCallback(x, y); }, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
     }
 
+    void CreateRoom() {
+        HelperFunctions.DevLog("PUTTING ROOM DATA");
+        RoomJsonPutData data = new RoomJsonPutData();
+        data.agora_sid = requestCloudRecordResource.CloudRecordResponseData.sid;
+        data.agora_channel = requestCloudRecordResource.StartCloudRecordRequestData.cname;
+        data.status = StreamJsonData.Data.LIVE_ROOM_STR;
+        webRequestHandler.PutRequest(webRequestHandler.ServerURLMediaAPI + videoUploader.PutRoom, data, WebRequestHandler.BodyType.JSON, (x, y) => { CreateStreamSecondaryCallback(x, y); webRequestHandler.LogCallback(x, "Put Room callback: " + y); }, (x, y) => webRequestHandler.ErrorLogCallback(x, "Put Room error callback: " + y), accountManager.GetAccessToken().access);
+    }
+
     void CreateStreamSecondaryCallback(long code, string data) {
         print("CREATE STREAM IS BACK" + data);
         streamStartResponseJsonData = JsonUtility.FromJson<StreamStartResponseJsonData>(data);
@@ -111,42 +123,21 @@ public class SecondaryServerCalls : MonoBehaviour {
             OnStreamStarted?.Invoke(tokenAgoraResponse.token, tokenAgoraResponse.token);
         else
             Debug.LogError("CREATE STREAM PARSE FAILED");
-        
-        if (isRoom)
-            CreateRoom();
-    }
-
-    void CreateRoom()
-    {
-        HelperFunctions.DevLog("PUTTING ROOM DATA");
-        RoomJsonPutData data = new RoomJsonPutData();
-        data.agora_sid = requestCloudRecordResource.CloudRecordResponseData.sid;
-        data.agora_channel = requestCloudRecordResource.StartCloudRecordRequestData.cname;
-        data.status = StreamJsonData.Data.LIVE_ROOM_STR;
-        webRequestHandler.PutRequest(webRequestHandler.ServerURLMediaAPI + videoUploader.PutRoom, data, WebRequestHandler.BodyType.JSON, (x, y) => webRequestHandler.LogCallback(x, "Put Room callback: "+ y), (x,y) => webRequestHandler.ErrorLogCallback(x,"Put Room error callback: " + y), accountManager.GetAccessToken().access);
-    }
-
-    void SetRoomToClosed()
-    {
-        HelperFunctions.DevLog("PUTTING ROOM CLOSED DATA");
-        RoomJsonPutData data = new RoomJsonPutData();
-        data.agora_sid = requestCloudRecordResource.CloudRecordResponseData.sid;
-        data.agora_channel = requestCloudRecordResource.StartCloudRecordRequestData.cname;
-        data.status = string.Empty;
-        webRequestHandler.PutRequest(webRequestHandler.ServerURLMediaAPI + videoUploader.PutRoom, data, WebRequestHandler.BodyType.JSON, (x, y) => webRequestHandler.LogCallback(x, "Put Room Closed callback: " + y), (x, y) => webRequestHandler.ErrorLogCallback(x, "Put Room Closed error callback: " + y), accountManager.GetAccessToken().access);
     }
 
     public void EndStream() {
+        StopCloudRecording();
+
         if (isRoom)
             SetRoomToClosed();
-
-        StopCloudRecording();
+        else
+            StopSecondaryServer();
     }
 
     void StopCloudRecording() {
         requestCloudRecordStop = new RequestCloudRecordStop();
-        requestCloudRecordStop.OnSuccessAction -= StopCloudRecordingCallback;
-        requestCloudRecordStop.OnSuccessAction += StopCloudRecordingCallback;
+        //requestCloudRecordStop.OnSuccessAction -= StopCloudRecordingCallback;
+        //requestCloudRecordStop.OnSuccessAction += StopCloudRecordingCallback;
         requestCloudRecordStop.AssignRequestString(requestCloudRecordResource.RequestString, requestCloudRecordResource.CloudRecordResponseData.sid);
 
         RequestCloudRecordStop.StopCloudRecordRequest payload = new RequestCloudRecordStop.StopCloudRecordRequest();
@@ -158,9 +149,19 @@ public class SecondaryServerCalls : MonoBehaviour {
         agoraRequests.MakePostRequest(requestCloudRecordStop, JsonUtility.ToJson(payload));
     }
 
-    void StopCloudRecordingCallback() {
-        //HelperFunctions.DevLog($"Cloud Recording Stopped: {requestCloudRecordStop.requestCloudRecordStopResponse.serverResponse.uploadingStatus}");
-        StopSecondaryServer();
+    //void StopCloudRecordingCallback() {
+    //    //HelperFunctions.DevLog($"Cloud Recording Stopped: {requestCloudRecordStop.requestCloudRecordStopResponse.serverResponse.uploadingStatus}");
+
+    //}
+
+    //SetRoomToClosed may be compatible with setting /stream/ status to stop as per Valery's reccomendation leaving as status is currently an empty string rather than "stop"
+    void SetRoomToClosed() {
+        HelperFunctions.DevLog("PUTTING ROOM CLOSED DATA");
+        RoomJsonPutData data = new RoomJsonPutData();
+        data.agora_sid = requestCloudRecordResource.CloudRecordResponseData.sid;
+        data.agora_channel = requestCloudRecordResource.StartCloudRecordRequestData.cname;
+        data.status = string.Empty;
+        webRequestHandler.PutRequest(webRequestHandler.ServerURLMediaAPI + videoUploader.PutRoom, data, WebRequestHandler.BodyType.JSON, (x, y) => webRequestHandler.LogCallback(x, "Put Room Closed callback: " + y), (x, y) => webRequestHandler.ErrorLogCallback(x, "Put Room Closed error callback: " + y), accountManager.GetAccessToken().access);
     }
 
     void StopSecondaryServer() {
