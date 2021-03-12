@@ -55,6 +55,7 @@ public class IAPController : MonoBehaviour, IStoreListener {
         if (IsInitialized()) {
             // ... look up the Product reference with the general product identifier and the Purchasing 
             // system's products collection.
+            HelperFunctions.DevLog("Purchasing has been initialized");
             Product product = m_StoreController.products.WithID(productId);
 
             // If the look up found a product for this device's store and that product is ready to be sold ... 
@@ -119,9 +120,11 @@ public class IAPController : MonoBehaviour, IStoreListener {
 
         if (productIdList.Contains(args.purchasedProduct.definition.id)) {
             // The consumable item has been successfully purchased, add 100 coins to the player's in-game score.
+            HelperFunctions.DevLog("Consumable item has been successfully purchased " + args.purchasedProduct);
             OnPurchaseHandler?.Invoke(args.purchasedProduct);
         }
         else {
+            HelperFunctions.DevLog("Fial: ProcessPurchase ");
             OnPurchaseFailedHandler?.Invoke();
         }
 

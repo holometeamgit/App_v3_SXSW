@@ -35,6 +35,7 @@ public class PurchaseManager : MonoBehaviour
             return;
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed, new Dictionary<string, string> { {AnalyticParameters.ParamProductID, streamData.product_type.product_id}, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() } } );
         //TODO add chech stream available befor purchaise
+        HelperFunctions.DevLog("Start store purchasing: product id = " + streamData.product_type.product_id);
         backgroudGO.SetActive(true);
         iapController.BuyTicket(streamData.product_type.product_id);
         OnPurchaseStarted?.Invoke();
@@ -44,6 +45,7 @@ public class PurchaseManager : MonoBehaviour
         iapController.OnPurchaseHandler += OnPurchaseCallBack;
         iapController.OnPurchaseFailedHandler += OnPurchaseFailCallBack;
         purchasesSaveManager.OnAllDataSended += AllPurchasedDataSentOnServerCallBack;
+        purchasesSaveManager.OnFailSentToserver += HideBackgroud;
     }
 
     private void Start() {
@@ -63,6 +65,9 @@ public class PurchaseManager : MonoBehaviour
             
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
+
+            HelperFunctions.DevLog(body);
+
             body = "{ \"products\" :" + body + "}";
 
             try {
@@ -97,6 +102,7 @@ public class PurchaseManager : MonoBehaviour
         streamBillingJsonData.bill.hash = product.receipt;
 
         CallBacks.onStreamPurchasedInStore?.Invoke(streamData.id);
+        HelperFunctions.DevLog("Try send to Server " + streamData.id);
         purchasesSaveManager.SendToServer(streamData.id, streamBillingJsonData);
 
         streamData = null;
@@ -105,15 +111,19 @@ public class PurchaseManager : MonoBehaviour
         
     }
 
-    private void AllPurchasedDataSentOnServerCallBack() {
+    private void HideBackgroud() {
         backgroudGO.SetActive(false);
+    }
+
+    private void AllPurchasedDataSentOnServerCallBack() {
+        HideBackgroud();
         OnServerPurchasedDataUpdated?.Invoke();
     }
 
     private void OnPurchaseFailCallBack() {
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseCancelled, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id } });
         OnPurchaseCanceled?.Invoke();
-        backgroudGO.SetActive(false);
+        HideBackgroud();
     }
 
     private string GetRequestProductURL() {

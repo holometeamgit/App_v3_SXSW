@@ -6,17 +6,24 @@ using Beem.SSO;
 
 public class PurchasesSaveManager : MonoBehaviour {
     public Action OnAllDataSended;
+    public Action OnFailSentToserver;
 
     [SerializeField] UserWebManager userWebManager;
-    [SerializeField] WebRequestHandler webRequestHandler;
-    [SerializeField] PurchaseAPIScriptableObject purchaseAPISO;
-    [SerializeField] AccountManager accountManager;
-    [SerializeField] IAPController iapController;
+    [SerializeField]
+    AuthController authController;
+    [SerializeField]
+    WebRequestHandler webRequestHandler;
+    [SerializeField]
+    PurchaseAPIScriptableObject purchaseAPISO;
+    [SerializeField]
+    AccountManager accountManager;
+    [SerializeField]
+    IAPController iapController;
 
-    private bool isSending;
+    private bool isBusy;
 
     public void SendToServer(long id, StreamBillingJsonData streamBillingJsonData) {
-        AddData(userWebManager.GetUnituniqueName(), id, streamBillingJsonData);
+        AddData(authController.GetID(), id, streamBillingJsonData);
         CheckSubmittedData();
     }
 
@@ -26,21 +33,34 @@ public class PurchasesSaveManager : MonoBehaviour {
 
     private void CheckSubmittedData() {
 
-        if (isSending)
+        HelperFunctions.DevLog("Check purchased Submitted Data: isBusy " + isBusy);
+        if (isBusy) {
+            OnFailSentToserver?.Invoke();
             return;
+        }
 
-        string uniqName = userWebManager.GetUnituniqueName();
-        if (string.IsNullOrWhiteSpace(uniqName))
-            return;
+        string uniqName = authController.GetID();
 
-        if (!PlayerPrefs.HasKey(uniqName))
+        HelperFunctions.DevLog("Check purchased Submitted Data: uniqName " + isBusy);
+        if (string.IsNullOrWhiteSpace(uniqName)) {
+            OnFailSentToserver?.Invoke();
             return;
+        }
+
+        HelperFunctions.DevLog("Check purchased Submitted Data: has data for this user " + !PlayerPrefs.HasKey(uniqName));
+
+        if (!PlayerPrefs.HasKey(uniqName)) {
+            OnFailSentToserver?.Invoke();
+            return;
+        }
 
         try {
             PurchaseSaveJsonData purchaseSaveJsonData = JsonUtility.FromJson<PurchaseSaveJsonData>(PlayerPrefs.GetString(uniqName));
 
+            HelperFunctions.DevLog("Check purchased Submitted Data: purchaseSaveElements.Count " + purchaseSaveJsonData.purchaseSaveElements.Count);
+
             if (purchaseSaveJsonData.purchaseSaveElements.Count > 0) {
-                isSending = true;
+                isBusy = true;
                 PostData(uniqName, purchaseSaveJsonData.purchaseSaveElements[0].id,
                     purchaseSaveJsonData.purchaseSaveElements[0].streamBillingJsonData,
                     accountManager.GetAccessToken().access);
@@ -53,6 +73,8 @@ public class PurchasesSaveManager : MonoBehaviour {
     }
 
     private void AddData(string uniqName, long id, StreamBillingJsonData streamBillingJsonData) {
+
+        HelperFunctions.DevLog("AddData purchase data for " + uniqName + " stream id = " + id);
         PurchaseSaveElement purchaseSaveElement = new PurchaseSaveElement(id, streamBillingJsonData);
 
         RemovePurchaseSaveElement(uniqName, id, streamBillingJsonData);
@@ -94,8 +116,8 @@ public class PurchasesSaveManager : MonoBehaviour {
     private void PostData(string uniqName, long id, StreamBillingJsonData streamBillingJsonData, string accessToken) {
         webRequestHandler.PostRequest(GetRequestRefreshTokenURL(id),
            streamBillingJsonData, WebRequestHandler.BodyType.JSON,
-           (code, body) => { OnServerBillingSent(uniqName, id, streamBillingJsonData); isSending = false; CheckSubmittedData(); },
-           (code, body) => { OnServerErrorBillingSent(uniqName, id, streamBillingJsonData); isSending = false; }, accessToken);
+           (code, body) => { OnServerBillingSent(uniqName, id, streamBillingJsonData); isBusy = false; CheckSubmittedData(); },
+           (code, body) => { OnServerErrorBillingSent(uniqName, id, streamBillingJsonData); isBusy = false; }, accessToken);
     }
 
     private void OnServerBillingSent(string uniqName, long id, StreamBillingJsonData streamBillingJsonData) {

@@ -86,7 +86,7 @@ public class PnlEventPurchaser : MonoBehaviour {
         StreamBillingJsonData streamBillingJsonData = new StreamBillingJsonData();
         streamBillingJsonData.bill.hash = product.receipt;
 
-        Debug.Log("OnPurchaseCallBack " + product.receipt);
+        Debug.Log("Purchase success: OnPurchaseCallBack " + product.receipt);
         purchasesSaveManager.SendToServer(data.id, streamBillingJsonData);
         //OnPurchased?.Invoke();
     }
