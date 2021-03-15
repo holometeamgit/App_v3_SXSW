@@ -9,7 +9,6 @@ namespace Beem.Utility.UnityConsole {
     /// Log CallBacks
     /// </summary>
     public class LogCallBacks {
-        public static Action OnClear = delegate { };
         public static Action OnRefresh = delegate { };
         public static Action OnShare = delegate { };
     }

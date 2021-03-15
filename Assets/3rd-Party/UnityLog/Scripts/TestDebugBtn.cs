@@ -9,7 +9,8 @@ namespace Beem.Utility.UnityConsole {
     /// </summary>
     public class TestDebugBtn : MonoBehaviour, IPointerClickHandler {
         public void OnPointerClick(PointerEventData eventData) {
-            Debug.Log("Log");
+            Debug.Log("Test Log");
+            Debug.LogError("Test LogError");
         }
     }
 }

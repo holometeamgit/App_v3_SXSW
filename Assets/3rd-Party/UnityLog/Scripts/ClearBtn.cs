@@ -8,7 +8,7 @@ namespace Beem.Utility.UnityConsole {
     /// </summary>
     public class ClearBtn : MonoBehaviour, IPointerClickHandler {
         public void OnPointerClick(PointerEventData eventData) {
-            LogCallBacks.OnClear?.Invoke();
+            LogData.Clear();
         }
     }
 }
