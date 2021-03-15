@@ -25,10 +25,10 @@ public class UIThumbnailsController : MonoBehaviour {
 
     StreamDataEqualityComparer streamDataEqualityComparer;
 
-    void OnEnable()
-    {
-        pnlViewingExperience.ToggleARSessionObjects(false);
-    }
+    //void OnEnable()
+    //{
+    //    pnlViewingExperience.ToggleARSessionObjects(false);
+    //}
 
     public void SetStreamJsonData(List<StreamJsonData.Data> data) {
         dataList = data;
