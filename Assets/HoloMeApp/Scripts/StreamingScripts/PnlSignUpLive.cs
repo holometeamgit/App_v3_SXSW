@@ -12,10 +12,7 @@ using UnityEngine.UI;
 public class PnlSignUpLive : MonoBehaviour
 {
     [SerializeField]
-    TMP_InputField inputEmail;
-
-    [SerializeField]
-    IncorrectInputAnimationToggle incorrectInputAnimationToggle;
+    InputFieldController inputFieldControllerEmail;
 
     [SerializeField]
     UnityEvent OnSignUpComplete;
@@ -40,9 +37,9 @@ public class PnlSignUpLive : MonoBehaviour
 
     public void Send()
     {
-        if (!IsEmail(inputEmail.text))
+        if (!IsEmail(inputFieldControllerEmail.text))
         {
-            incorrectInputAnimationToggle.StartIncorrectAnimation();
+            inputFieldControllerEmail.ShowWarning("Please enter a valid email");
             return;
         }
 
@@ -51,8 +48,8 @@ public class PnlSignUpLive : MonoBehaviour
             MailMessage mail = new MailMessage();
             mail.From = new MailAddress("customer-success@holo.me");
             mail.To.Add("customer-success@holo.me");
-            mail.Subject = "Holo Live Interest from " + inputEmail.text;
-            mail.Body = "User Email: " + inputEmail.text;
+            mail.Subject = "Holo Live Interest from " + inputFieldControllerEmail.text;
+            mail.Body = "User Email: " + inputFieldControllerEmail.text;
             SmtpClient smtpServer = new SmtpClient("smtp.gmail.com");
             smtpServer.Port = 587;
             smtpServer.Credentials = new System.Net.NetworkCredential("customer-success@holo.me", "kdudvzgzzpfuortr") as ICredentialsByHost;

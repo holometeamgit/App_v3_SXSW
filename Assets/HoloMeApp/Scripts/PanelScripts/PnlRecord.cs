@@ -4,7 +4,6 @@ using DG.Tweening;
 using NatCorder;
 using NatCorder.Clocks;
 using NatCorder.Inputs;
-using NatShare;
 using System.Collections;
 using TMPro;
 using UnityEngine.Events;
@@ -12,9 +11,6 @@ using System.IO;
 
 public class PnlRecord : MonoBehaviour
 {
-    [SerializeField]
-    GameObject watermarkCanvasObject;
-
     [SerializeField]
     Camera canvasCamera;
 
@@ -28,13 +24,10 @@ public class PnlRecord : MonoBehaviour
     Image imgFillBackground;
 
     [SerializeField]
-    Sprite spriteTakeSnapshot;
-
-    [SerializeField]
-    Sprite spriteStop;
-
-    [SerializeField]
     Sprite spriteRecord;
+
+    [SerializeField]
+    Button btnShare;
 
     [SerializeField]
     Button btnToggleMode;
@@ -64,6 +57,17 @@ public class PnlRecord : MonoBehaviour
     CanvasGroup canvasGroup;
 
     [SerializeField]
+    RectTransform rectTeaser;
+
+    [SerializeField]
+    RectTransform rectNormal;
+
+    [SerializeField]
+    Button btnBuyTickets;
+    [SerializeField]
+    PurchaseManager purchaseManager;
+
+    [SerializeField]
     UnityEvent OnRecordStarted;
     [SerializeField]
     UnityEvent OnRecordStopped;
@@ -71,6 +75,13 @@ public class PnlRecord : MonoBehaviour
     UnityEvent OnSnapshotStarted;
     [SerializeField]
     UnityEvent OnSnapshotEnded;
+
+    [SerializeField]
+    UIThumbnailsController uiThumbnailsController;
+    [SerializeField]
+    GameObject watermarkCanvasObject;
+    [SerializeField]
+    Text txtWaterMarkText;
 
     public bool Recording { get; set; }
     private bool recordLengthFailed;
@@ -88,8 +99,6 @@ public class PnlRecord : MonoBehaviour
     //const int RecordTimeLimit = 15;
     int videoWidth;
     int videoHeight;
-    //float startRecordTime;
-    //int recordTime;
 
     string lastRecordingPath;
 
@@ -140,11 +149,36 @@ public class PnlRecord : MonoBehaviour
         //btnRecord.GetComponent<Image>().sprite = spriteRecord;
         videoButtonContainerPosition = rtButtonContainer.anchoredPosition;
         canvasGroup.alpha = 0;
+
+        purchaseManager.OnPurchaseSuccessful += RefreshBuyBtnState;
+        uiThumbnailsController.OnPlayFromUser += user => txtWaterMarkText.text = "@" + user; //Gameobject must be active in the editor for this to work correctly
+        gameObject.SetActive(false);
     }
 
-    private void OnEnable()
+    public void EnableRecordPanel(bool isTeaser, bool openForStream = false)
     {
+        //int buttonOffset = streamOffset ? 210 : 0;
+        //imgFillBackground.rectTransform.offsetMax = new Vector2(imgFillBackground.rectTransform.offsetMax.x, buttonOffset);
+        //imgFillBackground.rectTransform.offsetMin = new Vector2(imgFillBackground.rectTransform.offsetMin.x, buttonOffset);
+
+        btnBuyTickets.gameObject.SetActive(isTeaser && !purchaseManager.IsBought());
+        AssignRectTransform(imgFillBackground.rectTransform, isTeaser ? rectTeaser : rectNormal);
+        btnShare.gameObject.SetActive(openForStream || isTeaser ? false : true);
+
+        gameObject.SetActive(true);
         canvasGroup.DOFade(1, .5f);
+    }
+
+    private void RefreshBuyBtnState()
+    {
+        btnBuyTickets.gameObject.SetActive(purchaseManager.IsBought() ? false : btnBuyTickets.gameObject.activeSelf);
+    }
+
+    private void AssignRectTransform(RectTransform transformToAssign, RectTransform reference)
+    {
+        transformToAssign.anchoredPosition = reference.anchoredPosition;
+        transformToAssign.anchorMax = reference.anchorMax;
+        transformToAssign.anchorMin = reference.anchorMin;
     }
 
     private void OnDisable()
@@ -156,6 +190,8 @@ public class PnlRecord : MonoBehaviour
     {
         videoWidth = MakeEven(Screen.width / 2);
         videoHeight = MakeEven(Screen.height / 2);
+        //videoWidth = Screen.width;
+        //videoHeight = Screen.height;
         //print($"{videoWidth} x {videoHeight}");
         //videoWidth = 720;
         //videoHeight = (int)((float)videoWidth * ratio);
@@ -255,6 +291,8 @@ public class PnlRecord : MonoBehaviour
 
     public void RecordLengthFail()
     {
+        OnRecordStopped?.Invoke();
+        MakeScreenshot();
         recordLengthFailed = true;
     }
 
@@ -276,7 +314,10 @@ public class PnlRecord : MonoBehaviour
         //imgFillBackground.enabled = false;
         btnToggleMode.interactable = true;
         Recording = false;
-        watermarkCanvasObject.SetActive(false);
+        //print("DISABLING HERE");
+
+        if (!recordLengthFailed)
+            watermarkCanvasObject.SetActive(false);
     }
 
     void StopMicrophone()
@@ -292,11 +333,13 @@ public class PnlRecord : MonoBehaviour
         if (recordLengthFailed)
         {
             File.Delete(outputPath);
+            OnRecordStopped?.Invoke();
+            MakeScreenshot();
         }
         else
         {
-            OnRecordStopped?.Invoke();
             lastRecordingPath = outputPath;
+            OnRecordStopped?.Invoke();
             pnlPostRecord.ActivatePostVideo(outputPath);
         }
     }
@@ -305,6 +348,7 @@ public class PnlRecord : MonoBehaviour
     {
         if (currentCoroutine == null)
         {
+            //print("MAKING SCREENSHOT");
             OnSnapshotStarted?.Invoke();
             currentCoroutine = StartCoroutine(ScreenShotAsync());
         }
@@ -313,6 +357,9 @@ public class PnlRecord : MonoBehaviour
     private IEnumerator ScreenShotAsync()
     {
         canvasGroup.alpha = 0;
+        watermarkCanvasObject.SetActive(true);
+        //print("ENABLED WATERMARK");
+
         yield return new WaitForEndOfFrame();
 
         Texture2D screenShot = ScreenCapture.CaptureScreenshotAsTexture(1);
@@ -324,5 +371,6 @@ public class PnlRecord : MonoBehaviour
         OnSnapshotEnded?.Invoke();
         canvasGroup.alpha = 1;
         currentCoroutine = null;
+        watermarkCanvasObject.SetActive(false);
     }
 }

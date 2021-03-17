@@ -7,6 +7,17 @@ using System;
 public class BlurController : MonoBehaviour
 {
     SuperBlurFast superBlurFast;
+    SuperBlurFast SuperBlurFast
+    {
+        get
+        {
+            if (superBlurFast == null)
+            {
+                superBlurFast = GetComponent<SuperBlurFast>();
+            }
+            return superBlurFast;
+        }
+    }
 
     public Action OnBlurRemoved;
     public Action OnBlurAdded;
@@ -15,11 +26,6 @@ public class BlurController : MonoBehaviour
     float speed = .125f;
 
     bool blurIsActive = true;
-
-    void Start()
-    {
-        superBlurFast = GetComponent<SuperBlurFast>();
-    }
 
     public void RemoveBlur()
     {
@@ -42,22 +48,22 @@ public class BlurController : MonoBehaviour
 
     IEnumerator RemoveBlurRoutine()
     {
-        while (superBlurFast.downsample != 0)
+        while (SuperBlurFast.downsample != 0)
         {
             yield return new WaitForSeconds(speed);
-            superBlurFast.downsample -= 1;
+            SuperBlurFast.downsample -= 1;
         }
-        superBlurFast.enabled = false;
+        SuperBlurFast.enabled = false;
         OnBlurRemoved?.Invoke();
     }
 
     IEnumerator AddBlurRoutine()
     {
-        superBlurFast.enabled = true;
-        while (superBlurFast.downsample < 4)
+        SuperBlurFast.enabled = true;
+        while (SuperBlurFast.downsample < 4)
         {
             yield return new WaitForSeconds(speed);
-            superBlurFast.downsample += 1;
+            SuperBlurFast.downsample += 1;
         }
         OnBlurAdded?.Invoke();
     }

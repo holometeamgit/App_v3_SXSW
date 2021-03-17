@@ -16,18 +16,23 @@ public class LiveStreamGreenCalculator : MonoBehaviour
 
     [SerializeField]
     [Range(0, 255)]
-    int redDetectionStength = 0;
+    int redDetectionStength = 90;
 
     [SerializeField]
     [Range(0, 256)]
-    int greenDetectionStength = 75;
+    int greenDetectionStength = 160;
 
     [SerializeField]
     [Range(0, 255)]
-    int blueDetectionStength = 0;
+    int blueDetectionStength = 90;
 
     [SerializeField]
     bool regenerate;
+
+    enum ColourChannelToDetect { Red, Green, Blue };
+
+    [SerializeField]
+    ColourChannelToDetect colourChannelToDetect = ColourChannelToDetect.Green;
 
     private void Awake()
     {
@@ -112,13 +117,37 @@ public class LiveStreamGreenCalculator : MonoBehaviour
 
         for (int i = 0; i < total; i++)
         {
-            if (texColors[i].r >= redDetectionStength && texColors[i].g >= greenDetectionStength && texColors[i].b >= blueDetectionStength)
+            switch (colourChannelToDetect)
             {
-                total2++;
-                r += texColors[i].r;
-                g += texColors[i].g;
-                b += texColors[i].b;
+                case ColourChannelToDetect.Red:
+                    if (texColors[i].r <= redDetectionStength && texColors[i].g >= greenDetectionStength && texColors[i].b <= blueDetectionStength)
+                    {
+                        total2++;
+                        r += texColors[i].r;
+                        g += texColors[i].g;
+                        b += texColors[i].b;
+                    }
+                    break;
+                case ColourChannelToDetect.Green:
+                    if (texColors[i].r >= redDetectionStength && texColors[i].g <= greenDetectionStength && texColors[i].b <= blueDetectionStength)
+                    {
+                        total2++;
+                        r += texColors[i].r;
+                        g += texColors[i].g;
+                        b += texColors[i].b;
+                    }
+                    break;
+                case ColourChannelToDetect.Blue:
+                    if (texColors[i].r <= redDetectionStength && texColors[i].g <= greenDetectionStength && texColors[i].b >= blueDetectionStength)
+                    {
+                        total2++;
+                        r += texColors[i].r;
+                        g += texColors[i].g;
+                        b += texColors[i].b;
+                    }
+                    break;
             }
+
         }
         return new Color32((byte)(r / total2), (byte)(g / total2), (byte)(b / total2), 0);
     }

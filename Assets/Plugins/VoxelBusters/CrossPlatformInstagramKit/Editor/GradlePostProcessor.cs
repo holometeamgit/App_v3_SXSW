@@ -132,6 +132,7 @@ namespace VoxelBusters.InstagramKit.Internal
             if(files.Length > 0)
             {
                 string gradlePropertiesPath = path + "/gradle.properties";
+                gradlePropertiesPath = gradlePropertiesPath.Replace("\\unityLibrary", "");
 
                 string[] lines = File.ReadAllLines(gradlePropertiesPath);
 
