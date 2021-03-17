@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class VideoThumbnailJsonData
+﻿public class VideoThumbnailJsonData
 {
     public bool showcaseHologram;
     public string code;

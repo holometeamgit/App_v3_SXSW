@@ -10,7 +10,7 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public UnityEvent onTouchDown, onTouchUp, onRecordTooShort;
     private bool pressed;
     private const float MaxRecordingTime = 15; // seconds
-    private const float MinRecordingTime = 3; // seconds
+    private const float MinRecordingTime = 2; // seconds
     private const float AccidentTapTime = 0.2f;
 
     [SerializeField]
@@ -42,9 +42,15 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private IEnumerator Countdown()
     {
         pressed = true;
+
         // First wait a short time to make sure it's not a tap
         yield return new WaitForSeconds(AccidentTapTime);
-        if (!pressed) yield break;
+
+        if (!pressed)
+        {
+            onRecordTooShort?.Invoke(); //Trying to call screenshot path is short pressed here 
+            yield break;
+        }
 
         if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete)
         {

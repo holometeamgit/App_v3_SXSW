@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1389a380c68054c78a4f8a0193e64cf9, type: 3}
+  m_Name: AuthorizationAPI
+  m_EditorClassIdentifier: 
+  EmailSignUp: /signup/
+  EmailVerification: /signup/verify-email/
+  ResendVerification: /signup/resend-verify-email/
+  EmailLogIn: /token/
+  ChangePassword: /password/change/
+  ResetPassword: /password/reset/
+  ResetPasswordConfirm: /password/reset/confirm/
+  RefreshToken: /token/refresh/
+  FacebookLogIn: /social-auth/login/facebook/
+  FacebookCompliteLogIn: /social-auth/complete/facebook/
+  GoogleSSODeepLink: /social-auth/login/google-oauth2/
+  GoogleLogIn: /social-auth/login/google-oauth2/
+  GoogleCompliteLogIn: /social-auth/complete/google-oauth2/
+  AppleSSODeepLink: /social-auth/login/apple-id
+  AppleLogIn: /social-auth/login/apple-id/
+  AppleCompliteLogIn: /social-auth/complete/apple-id
+  GetUser: /user/
+  PutUser: /user/
+  DeleteUser: /user/
+  DisableUser: /user/disable/
+  ProfilePictures: /user/disable/

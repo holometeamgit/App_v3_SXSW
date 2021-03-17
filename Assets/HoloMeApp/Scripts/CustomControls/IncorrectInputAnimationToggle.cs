@@ -22,8 +22,13 @@ public class IncorrectInputAnimationToggle : MonoBehaviour
 
     /// <param name="OnStart">Action to call before animation begins</param>
     /// <param name="OnComplete">Action to call when animation complets</param>
-    public void StartIncorrectAnimation(Action OnStart = null, Action OnComplete = null)
+    public void StartIncorrectAnimation(Action OnStart = null, Action OnComplete = null, string incorrectMessage = "")
     {
+        if (incorrectMessage != "")
+        {
+            txtErrorMessage.text = incorrectMessage;
+        }
+
         OnStart?.Invoke();
         StartCoroutine(InvalidNameRoutine(OnComplete));
     }

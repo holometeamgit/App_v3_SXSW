@@ -9,6 +9,8 @@ public class HelperFunctions
 
     public const string versionFile = "Version.json";
 
+    public const int ChannelNameCharacterLimit = 30;
+
     public static bool IsVideoThumbnailData(string name)
     {
         return name.Contains("VidThumb");
@@ -99,5 +101,10 @@ public class HelperFunctions
     {
         if (Application.isEditor || Debug.isDebugBuild)
             Debug.Log(message);
+    }
+
+    public static void DevLogError(string message) {
+        if (Application.isEditor || Debug.isDebugBuild)
+            Debug.LogError(message);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using NatShare;
-using System.Collections;
 using DG.Tweening;
 using UnityEngine.Video;
 
@@ -39,16 +38,32 @@ public class PnlPostRecord : MonoBehaviour
     [SerializeField]
     GameObject pnlGenericError;
 
+    [SerializeField]
+    HologramHandler hologramHandler;
+
+    [SerializeField]
+    PnlShareOptions pnlShareOptions;
+
     static string lastRecordingPath;
     public static string LastRecordingPath { get { return lastRecordingPath; } }
     private Texture2D screenShot;
     private bool screenshotWasTaken;
     public string Code { private get; set; }
-    const string ShareMessage = "Experience this hologram yourself using the HoloMe app by entering code ";
+    
+    VideoPlayer videoPlayer;
+    VideoPlayer VideoPlayer {
+        get {
+
+            if (!videoPlayer) {
+                videoPlayer = imgPreview.GetComponent<VideoPlayer>();
+            }
+            return videoPlayer;
+        }
+    }
 
     private void Start()
     {
-        //btnShare.onClick.AddListener(Share);
+        btnShare.onClick.AddListener(()=>pnlShareOptions.Activate(!screenshotWasTaken, screenShot));
 
         imgSavingCanvasGroup = imgSaving.GetComponent<CanvasGroup>();
         imgDownloadSuccessCanvasGroup = imgDownloadSuccess.GetComponent<CanvasGroup>();
@@ -56,20 +71,23 @@ public class PnlPostRecord : MonoBehaviour
 
     public void ActivatePostVideo(string lastRecordPath)
     {
+        HelperFunctions.DevLog("Post record video activate called");
         screenshotWasTaken = false;
         btnPreview.gameObject.SetActive(true);
 
         imgPreview.texture = renderTexture;
 
-        var videoPlayer = imgPreview.GetComponent<VideoPlayer>();
-        videoPlayer.url = lastRecordPath;
-        videoPlayer.Play();
+        VideoPlayer.enabled = true;
+        VideoPlayer.url = lastRecordPath;
+        VideoPlayer.Play();
 
         Activate(null, lastRecordPath);
     }
 
     public void ActivatePostScreenshot(Sprite sprite, Texture2D screenshotTexture, string lastRecordPath)
     {
+        HelperFunctions.DevLog("Post record screenshot activate called");
+        VideoPlayer.enabled = false;
         screenshotWasTaken = true;
         screenShot = screenshotTexture;
         btnPreview.gameObject.SetActive(false);
@@ -95,6 +113,7 @@ public class PnlPostRecord : MonoBehaviour
 
     public void Share()
     {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareVideoPressed, AnalyticParameters.ParamVideoName, hologramHandler.GetVideoFileName);
         if (screenshotWasTaken)
         {
             ShareScreenshot();
@@ -119,6 +138,7 @@ public class PnlPostRecord : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(lastRecordingPath))
         {
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyVideoShared, AnalyticParameters.ParamVideoName, hologramHandler.GetVideoFileName);
             using (var payload = new SharePayload())
             {
                 //payload.AddText(ShareMessage + Code);
@@ -136,9 +156,9 @@ public class PnlPostRecord : MonoBehaviour
     {
         if (screenShot != null)
         {
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySnapshotShared, AnalyticParameters.ParamVideoName, hologramHandler.GetVideoFileName);
             using (var payload = new SharePayload())
             {
-                //payload.AddText(ShareMessage + Code);
                 payload.AddImage(screenShot);
             }
         }

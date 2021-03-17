@@ -1,14 +1,10 @@
 ﻿using UnityEngine;
-using TMPro;
 using UnityEngine.Events;
+using Crosstales.BWF;
 
-public class PnlChannelName : MonoBehaviour
-{
+public class PnlChannelName : MonoBehaviour {
     [SerializeField]
-    TMP_InputField inputChannelName;
-
-    [SerializeField]
-    IncorrectInputAnimationToggle incorrectInputAnimationToggle;
+    InputFieldController inputFieldController;
 
     [SerializeField]
     UnityEvent OnChannelNamePassed;
@@ -16,27 +12,70 @@ public class PnlChannelName : MonoBehaviour
     [SerializeField]
     AgoraController agoraController;
 
-    private void Awake()
-    {
-        inputChannelName.characterLimit = 30;
+    [SerializeField]
+    AgoraRequests agoraRequests;
+
+    [SerializeField]
+    GameObject btnContinue;
+
+    [SerializeField]
+    UserWebManager userWebManager;
+
+    //RequestChannelList requestChannelList;
+
+    private void Awake() {
+        inputFieldController.characterLimit = HelperFunctions.ChannelNameCharacterLimit;
+        userWebManager = FindObjectOfType<UserWebManager>();
+        //requestChannelList = new RequestChannelList();
+        //requestChannelList.OnSuccessAction += OnChannelListOccupied;
     }
 
-    public void OnReadyPressed()
-    {
-        //Any verification and validation should go here
-        if (string.IsNullOrWhiteSpace(inputChannelName.text))
-        {
-            incorrectInputAnimationToggle.StartIncorrectAnimation();
-        }
-        else
-        {
-            agoraController.ChannelName = inputChannelName.text.ToLower();
-            OnChannelNamePassed?.Invoke();
+    public void ConfirmFilmingGuidelines() {
+        PlayerPrefs.SetInt("ConfirmFilmingGuidelines", 1);
+        CheckConfirmFilmingGuidelines();
+    }
+
+    public bool IsConfirmFilmingGuidelines() {
+        return PlayerPrefs.HasKey("ConfirmFilmingGuidelines") && PlayerPrefs.GetInt("ConfirmFilmingGuidelines") == 1;
+    }
+
+    public void OnReadyPressed() {
+        //Need to disable button interactability here while waiting for callback
+
+        if (string.IsNullOrWhiteSpace(inputFieldController.text) || BWFManager.Contains(inputFieldController.text, Crosstales.BWF.Model.ManagerMask.BadWord)) {
+            inputFieldController.ShowWarning("Please Enter A Valid Name");
+        } else {
+            OnChannelListOccupied();
+            //agoraRequests.MakeGetRequest(requestChannelList);
         }
     }
 
-    private void OnDisable()
-    {
-        inputChannelName.text = string.Empty;
+    void OnChannelListOccupied() {
+        //bool doesChannelExist = requestChannelList.DoesChannelExist(inputFieldController.text);
+
+        //if (doesChannelExist)
+        //{
+        //    inputFieldController.ShowWarning("Channel Already Exists!");
+        //}
+        //else
+        //{
+        //agoraController.ChannelName = inputFieldController.text.ToLower();
+        OnChannelNamePassed?.Invoke();
+        //}
+    }
+
+    private void CheckConfirmFilmingGuidelines() {
+        btnContinue.SetActive(IsConfirmFilmingGuidelines());
+    }
+
+    private void OnEnable() {
+        CheckConfirmFilmingGuidelines();
+        inputFieldController.text = userWebManager.GetUsername();
+        agoraController.ChannelName = inputFieldController.text;
+        inputFieldController.interactable = false;
+    }
+
+    private void OnDisable() {
+        inputFieldController.text = string.Empty;
     }
 }
