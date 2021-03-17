@@ -6,23 +6,6 @@ using Beem.SSO;
 using System.Threading.Tasks;
 //TODO all this class temp
 public class PnlWelcomeV4 : MonoBehaviour {
-    [Serializable]
-    public class Providers {
-        public List<string> providers;
-
-        public Providers() {
-            providers = new List<string>();
-        }
-    }
-
-    [SerializeField]
-    WebRequestHandler webRequestHandler;
-    [SerializeField]
-    GameObject LogInFBGO;
-    [SerializeField]
-    GameObject LogInAppleGO;
-    [SerializeField]
-    GameObject LogInGoogleGO;
     [SerializeField]
     GameObject LogInBackground;
     [SerializeField]
@@ -37,21 +20,6 @@ public class PnlWelcomeV4 : MonoBehaviour {
     private int HIDE_BACKGROUND_DELAY_TIME = 500;
 
     private void Awake() {
-    }
-
-    private void EnableFB(long key, string body) {
-        try {
-            Providers providers = JsonUtility.FromJson<Providers>(body);
-            if (providers != null) {
-//                LogInFBGO.SetActive(providers.providers.Contains("fb"));
-#if UNITY_IOS
-                LogInAppleGO.SetActive(providers.providers.Contains("apple"));
-#endif
-                LogInGoogleGO.SetActive(providers.providers.Contains("google"));
-            }
-        } catch (Exception e) {
-            HelperFunctions.DevLogError(e.Message);
-        }
     }
 
     private void ShowBackground() {
@@ -120,7 +88,6 @@ public class PnlWelcomeV4 : MonoBehaviour {
         CallBacks.onSignInGoogle += ShowBackground;
         CallBacks.onFail += HideBackground;
         CallBacks.onNeedVerification += HideBackground;
-        webRequestHandler.GetRequest(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, null);
 
         //TODO move to place when user loggined and take info from UserWebManager
         //AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin, AnalyticParameters.ParamUserType , accountManager.GetAccountType() == AccountManager.AccountType.Subscriber ? AnalyticParameters.ParamViewer:AnalyticParameters.ParamBroadcaster ); // Using keys in case enum changes names in future

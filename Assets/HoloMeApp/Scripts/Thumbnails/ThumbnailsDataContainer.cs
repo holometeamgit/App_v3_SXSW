@@ -47,7 +47,7 @@ public class ThumbnailsDataContainer {
             //if (data.id == 796)
                 HelperFunctions.DevLog("ThumbnailsDataContainer AddStreamJsonData id = " + data.id + "is bought = " + data.is_bought);
 
-            if (!streamDataEqualityComparer.Equals(prevStreamData, data)) {
+            if (!ObjectComparer.Equals(prevStreamData, data)) {
 
                 prevStreamData.Update(data);
             } 

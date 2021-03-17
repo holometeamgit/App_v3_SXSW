@@ -235,7 +235,7 @@ public class AgoraController : MonoBehaviour {
 
         //print("JOINED");
 
-        if (IsChannelCreator)
+        if (IsChannelCreator && !IsRoom)//No thumbnails for rooms for now
             sendThumbnailRoutine = StartCoroutine(SendThumbnailData(true));
 
         streamerCountUpdater.StartCheck(ChannelName);
@@ -268,7 +268,7 @@ public class AgoraController : MonoBehaviour {
         //iRtcEngine.SendStreamMessage(streamID, "CreatorLeft");
         //}
 
-        if (sendThumbnailRoutine != null)
+        if (sendThumbnailRoutine != null && !IsRoom)//No thumbnails for rooms for now
             StopCoroutine(sendThumbnailRoutine);
 
         streamerCountUpdater.StopCheck();

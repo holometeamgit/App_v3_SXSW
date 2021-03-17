@@ -17,11 +17,13 @@ public class RoomLinkHandler : MonoBehaviour
 
     public string PopRoomId() {
         string popString = roomId;
+        HelperFunctions.DevLog("PopRoomId " + roomId);
         roomId = "";
         return popString;
     }
 
     public bool HasRoomId() {
+        HelperFunctions.DevLog("HasRoomId " + !string.IsNullOrWhiteSpace(roomId));
         return !string.IsNullOrWhiteSpace(roomId);
     }
 }

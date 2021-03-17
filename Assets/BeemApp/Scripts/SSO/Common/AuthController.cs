@@ -33,6 +33,10 @@ namespace Beem.SSO {
             return _auth != null && _auth.CurrentUser != null;
         }
 
+        public string GetID() {
+            return _auth?.CurrentUser?.UserId;
+        }
+
         public bool IsVerifiried() {
             HelperFunctions.DevLog(string.Format("auth {0} user {1} isVerified {2} ", _auth, _auth?.CurrentUser, _auth?.CurrentUser?.IsEmailVerified));
             return _auth != null && _auth.CurrentUser != null && _auth.CurrentUser.IsEmailVerified;

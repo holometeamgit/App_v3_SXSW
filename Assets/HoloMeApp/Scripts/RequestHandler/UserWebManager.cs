@@ -65,9 +65,9 @@ public class UserWebManager : MonoBehaviour {
         return userData.pk;
     }
 
-    public string GetUnituniqueName() {
+   /* public string GetUnituniqueName() {
         return GetEmail();
-    }
+    }*/
 
     public string GetFullName() {
         if (userData == null || string.IsNullOrEmpty(userData.first_name))

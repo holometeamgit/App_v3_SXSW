@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Runtime;
 using Beem.SSO;
+using System.Threading.Tasks;
 
 public class ThumbnailWebDownloadManager : MonoBehaviour {
 
@@ -44,23 +45,7 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
 
     private string pageSize = "page_size";
 
-    public void DownloadStreamById(long id) {
-        webRequestHandler.GetRequest(GetRequestStreamByIdURL(id),
-(code, body) => {
-    HelperFunctions.DevLog("DownloadStreamById " + body);
-    StreamJsonData streams = new StreamJsonData();
-
-    StreamJsonData.Data streamJsonData = JsonUtility.FromJson<StreamJsonData.Data>(body);
-    if (streamJsonData != null) {
-        streams.results.Add(streamJsonData);
-    }
-
-
-    OnStreamByIdJsonDataLoaded?.Invoke(streams);
-},
-(code, body) => { HelperFunctions.DevLog("Error DownloadStreamById " + id); },
-accountManager.GetAccessToken().access);
-    }
+    private const int DOWNLOAD_STREAM_DELAY_TIME = 1500;
 
     public void DownloadThumbnails(ThumbnailWebRequestStruct thumbnailWebRequestStruct, LoadingKey loadingKey) {
         webRequestHandler.GetRequest(GetRequestStreamURL(thumbnailWebRequestStruct),
@@ -74,6 +59,29 @@ accountManager.GetAccessToken().access);
         webRequestHandler.GetRequest(GetRequestStreamURL(thumbnailWebRequestStruct),
         (code, body) => { GetCountThumbnailsCallBack(body, loadingKey); },
         (code, body) => { ErrorGetCountThumbnailsCallBack(code, body, loadingKey); },
+        accountManager.GetAccessToken().access);
+    }
+
+    private void DownloadStreamByIdWithDelay(long id) { //TODO need wait server confirmation
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        Task.Delay(DOWNLOAD_STREAM_DELAY_TIME).ContinueWith((_) => DownloadStreamById(id), taskScheduler);
+    }
+
+    private void DownloadStreamById(long id) {
+        webRequestHandler.GetRequest(GetRequestStreamByIdURL(id),
+            (code, body) => {
+                HelperFunctions.DevLog("DownloadStreamById " + body);
+                StreamJsonData streams = new StreamJsonData();
+
+                StreamJsonData.Data streamJsonData = JsonUtility.FromJson<StreamJsonData.Data>(body);
+                if (streamJsonData != null) {
+                    streams.results.Add(streamJsonData);
+                }
+
+
+                OnStreamByIdJsonDataLoaded?.Invoke(streams);
+            },
+        (code, body) => { HelperFunctions.DevLog("Error DownloadStreamById " + id); },
         accountManager.GetAccessToken().access);
     }
 
@@ -142,14 +150,14 @@ accountManager.GetAccessToken().access);
     }
 
     private string GetRequestStreamByIdURL(long id) {
-        return webRequestHandler.ServerURLMediaAPI + videoUploader.StreamById.Replace("{id}",id.ToString());
+        return webRequestHandler.ServerURLMediaAPI + videoUploader.StreamById.Replace("{id}", id.ToString());
     }
 
     private void OnEnable() {
-        CallBacks.onStreamPurchasedAndUpdateOnServer += DownloadStreamById;
+        CallBacks.onStreamPurchasedAndUpdateOnServer += DownloadStreamByIdWithDelay;
     }
 
     private void OnDisable() {
-        CallBacks.onStreamPurchasedAndUpdateOnServer -= DownloadStreamById;
+        CallBacks.onStreamPurchasedAndUpdateOnServer -= DownloadStreamByIdWithDelay;
     }
 }
