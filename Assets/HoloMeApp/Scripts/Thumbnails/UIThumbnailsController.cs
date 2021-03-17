@@ -80,6 +80,15 @@ public class UIThumbnailsController : MonoBehaviour {
 
     #region Prepare thumbnails
     private void PrepareBtnThumbnails() {
+
+        if(dataList.Count == 0) {
+            HelperFunctions.DevLog("Deactivate all thumbnails count = " + btnThumbnailItems.Count);
+            foreach(var btn in btnThumbnailItems) {
+                btn.Deactivate();
+            }
+            return;
+        }
+
         int quantityDifference = btnThumbnailItems.Count - dataList.Count;
         for (int i = 0; i < -quantityDifference; i++) {
             GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
