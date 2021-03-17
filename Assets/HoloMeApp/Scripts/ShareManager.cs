@@ -25,9 +25,11 @@ public class ShareManager : MonoBehaviour {
     private void ShareStream(string aditionalInformation) {
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
 
-        using (var payload = new SharePayload()) {
-            payload.AddText(aditionalInformation);
-        }
+        new NativeShare().SetText(aditionalInformation).Share();
+
+        //using (var payload = new SharePayload()) {
+        //    payload.AddText(aditionalInformation);
+        //}
     }
 
     private void ShareMyRoomLink(string link) {
