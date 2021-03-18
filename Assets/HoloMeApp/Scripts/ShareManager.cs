@@ -4,41 +4,40 @@ using Beem.Firebase.DynamicLink;
 using System;
 
 public class ShareManager : MonoBehaviour {
-    public void ShareStream() {
-        ShareStream(string.Empty);
+
+    [SerializeField]  
+    private ServerURLAPIScriptableObject serverURLAPIScriptableObject;
+
+    private void OnEnable()
+    {
+        DynamicLinksCallBacks.onGetShortLink += ShareRoom;
+        DynamicLinksCallBacks.onShareLink += ShareApp;
     }
 
-    [ContextMenu("ShareRoomStream")]
-    public void ShareRoomStream() {
-        HelperFunctions.DevLog("ShareRoomStream");
-        StreamCallBacks.onGetMyRoomLink?.Invoke();
+    private void OnDisable()
+    {
+        DynamicLinksCallBacks.onGetShortLink -= ShareRoom;
+        DynamicLinksCallBacks.onShareLink -= ShareApp;
     }
 
-    private void Awake() {
-        DynamicLinksCallBacks.onGetShortLink += ShareMyRoomLink;
-    }
-
-    private void OnDestroy() {
-        DynamicLinksCallBacks.onGetShortLink -= ShareMyRoomLink;
-    }
-
-    private void ShareStream(string aditionalInformation) {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
-
-        using (var payload = new SharePayload()) {
-            payload.AddText(aditionalInformation);
-        }
-    }
-
-    private void ShareMyRoomLink(string link) {
-        string msg = "Come to my room: " + link;
+    private void ShareApp() {
+        Uri link = new Uri(serverURLAPIScriptableObject.DevFirebaseDynamicLink + "/" + serverURLAPIScriptableObject.App);
+        string msg = "Come to my App: " + link.AbsoluteUri;
         HelperFunctions.DevLog(msg);
-#if !UNITY_EDITOR
-        ShareStream(link);
-#endif
+        ShareLink(link);
     }
 
-    private void ShareMyRoomLink(Uri link) {
-        ShareMyRoomLink(link.AbsoluteUri);
+    private void ShareRoom(Uri link) {
+        string msg = "Come to my room: " + link.AbsoluteUri;
+        HelperFunctions.DevLog(msg);
+        ShareLink(link);
+    }
+
+    protected void ShareLink(Uri link)
+    {
+#if !UNITY_EDITOR
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
+        new NativeShare().SetText(link.AbsoluteUri).Share();
+#endif
     }
 }

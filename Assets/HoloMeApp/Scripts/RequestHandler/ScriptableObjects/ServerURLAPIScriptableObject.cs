@@ -16,6 +16,26 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     public string DevServerProviders = "https://devholo.me/oauth/providers/";
     public string DevServerDeepLink = "https://devholo.me/deep-link/";
     public string DevFirebaseDynamicLink = "https://beemrfcdev.page.link";
+    [Space]
+    [SerializeField]
+    private string room = "room";
+
+    public string Room {
+        get {
+            return room;
+        }
+    }
+
+    [SerializeField]
+    private string app = "App";
+
+    public string App
+    {
+        get
+        {
+            return app;
+        }
+    }
 
     public string ServerURLAuthAPI {
         get {
