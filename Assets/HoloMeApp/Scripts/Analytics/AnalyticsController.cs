@@ -113,7 +113,7 @@ public class AnalyticsController : MonoBehaviour
         }
         else
         {
-            Debug.LogError(nameof(UserWebManager) + "was null");
+            Debug.LogError(nameof(UserWebManager) + " was null");
         }
 
         foreach (var analyticsController in analyticsLibraryAbstractions)
