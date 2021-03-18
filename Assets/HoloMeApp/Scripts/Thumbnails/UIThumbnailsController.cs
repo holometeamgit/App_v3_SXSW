@@ -64,7 +64,7 @@ public class UIThumbnailsController : MonoBehaviour {
     /// <summary>
     /// Play live stream from user 
     /// </summary>
-   
+
     public void PlayLiveStream(string user, string agoraChannel) { //TODO split it to ather class
         pnlStreamOverlay.OpenAsViewer(agoraChannel);
         OnPlayFromUser?.Invoke(user);
@@ -101,7 +101,7 @@ public class UIThumbnailsController : MonoBehaviour {
         if (dataList.Count == btnThumbnailItems.Count)
             return;
         for (int i = dataList.Count - 1; i < btnThumbnailItems.Count; i++) {
-            if (i <= 0) 
+            if (i <= 0)
                 continue;
             btnThumbnailItems[i].Deactivate();
         }
@@ -125,7 +125,7 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetPlayAction(Play);
             btnThumbnailItems[i].SetTeaserPlayAction(PlayTeaser);
             btnThumbnailItems[i].SetBuyAction(Buy);
-            btnThumbnailItems[i].SetShareAction((_) => DynamicLinksCallBacks.onShareLink?.Invoke());
+            btnThumbnailItems[i].SetShareAction((_) => { DynamicLinksCallBacks.onShareLink?.Invoke(); AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed); });
             btnThumbnailItems[i].LockToPress(false);
         }
         OnUpdated?.Invoke();
@@ -139,9 +139,9 @@ public class UIThumbnailsController : MonoBehaviour {
     }
 
     private void Play(StreamJsonData.Data data) {
-        if(data.is_bought && data.IsStarted) {
+        if (data.is_bought && data.IsStarted) {
             PlayStream(data);
-        } else if(data.HasTeaser) {
+        } else if (data.HasTeaser) {
             PlayTeaser(data);
         }
     }
@@ -150,10 +150,10 @@ public class UIThumbnailsController : MonoBehaviour {
         if (!permissionController.CheckCameraAccess())
             return;
 
-        if(data.HasStreamUrl) {
-            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null,false);
+        if (data.HasStreamUrl) {
+            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null, false);
             OnPlayFromUser?.Invoke(data.user);
-        } else if(data.HasAgoraChannel) {
+        } else if (data.HasAgoraChannel) {
             PlayLiveStream(data.user, data.agora_channel);
         }
     }

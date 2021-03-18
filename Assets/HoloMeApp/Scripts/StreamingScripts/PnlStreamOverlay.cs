@@ -208,6 +208,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         if (isStreamer && agoraController.IsRoom) {
             ShareRoomStream();
         } else {
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
             DynamicLinksCallBacks.onShareLink?.Invoke();
         }
     }
