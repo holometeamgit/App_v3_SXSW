@@ -4,8 +4,7 @@ using NatShare;
 using DG.Tweening;
 using UnityEngine.Video;
 
-public class PnlPostRecord : MonoBehaviour
-{
+public class PnlPostRecord : MonoBehaviour {
     [SerializeField]
     RawImage imgPreview;
 
@@ -49,7 +48,7 @@ public class PnlPostRecord : MonoBehaviour
     private Texture2D screenShot;
     private bool screenshotWasTaken;
     public string Code { private get; set; }
-    
+
     VideoPlayer videoPlayer;
     VideoPlayer VideoPlayer {
         get {
@@ -61,16 +60,14 @@ public class PnlPostRecord : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        btnShare.onClick.AddListener(()=>pnlShareOptions.Activate(!screenshotWasTaken, screenShot));
+    private void Start() {
+        btnShare.onClick.AddListener(() => pnlShareOptions.Activate(!screenshotWasTaken, screenShot));
 
         imgSavingCanvasGroup = imgSaving.GetComponent<CanvasGroup>();
         imgDownloadSuccessCanvasGroup = imgDownloadSuccess.GetComponent<CanvasGroup>();
     }
 
-    public void ActivatePostVideo(string lastRecordPath)
-    {
+    public void ActivatePostVideo(string lastRecordPath) {
         HelperFunctions.DevLog("Post record video activate called");
         screenshotWasTaken = false;
         btnPreview.gameObject.SetActive(true);
@@ -84,8 +81,7 @@ public class PnlPostRecord : MonoBehaviour
         Activate(null, lastRecordPath);
     }
 
-    public void ActivatePostScreenshot(Sprite sprite, Texture2D screenshotTexture, string lastRecordPath)
-    {
+    public void ActivatePostScreenshot(Sprite sprite, Texture2D screenshotTexture, string lastRecordPath) {
         HelperFunctions.DevLog("Post record screenshot activate called");
         VideoPlayer.enabled = false;
         screenshotWasTaken = true;
@@ -94,8 +90,7 @@ public class PnlPostRecord : MonoBehaviour
         Activate(sprite, lastRecordPath);
     }
 
-    private void Activate(Sprite sprite, string lastRecordPath)
-    {
+    private void Activate(Sprite sprite, string lastRecordPath) {
         imgSavingCanvasGroup.alpha = 0;
         imgSaving.gameObject.SetActive(false);
         imgDownloadSuccessCanvasGroup.alpha = 0;
@@ -111,21 +106,16 @@ public class PnlPostRecord : MonoBehaviour
         lastRecordingPath = lastRecordPath;
     }
 
-    public void Share()
-    {
+    public void Share() {
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareVideoPressed, AnalyticParameters.ParamVideoName, hologramHandler.GetVideoFileName);
-        if (screenshotWasTaken)
-        {
+        if (screenshotWasTaken) {
             ShareScreenshot();
-        }
-        else
-        {
+        } else {
             ShareVideo();
         }
     }
 
-    public void FadeToggleControls(bool show)
-    {
+    public void FadeToggleControls(bool show) {
         if (show)
             safeAreaContent.gameObject.SetActive(true);
 
@@ -134,36 +124,23 @@ public class PnlPostRecord : MonoBehaviour
     }
 
     #region Video Functions
-    public void ShareVideo()
-    {
-        if (!string.IsNullOrEmpty(lastRecordingPath))
-        {
+    public void ShareVideo() {
+        if (!string.IsNullOrEmpty(lastRecordingPath)) {
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyVideoShared, AnalyticParameters.ParamVideoName, hologramHandler.GetVideoFileName);
-            using (var payload = new SharePayload())
-            {
-                //payload.AddText(ShareMessage + Code);
-                payload.AddMedia(lastRecordingPath);
-            }
-        }
-        else
-        {
+
+            new NativeShare().AddFile(lastRecordingPath).Share();
+        } else {
             Debug.LogError("Record path was empty");
         }
     }
     #endregion
 
-    public void ShareScreenshot()
-    {
-        if (screenShot != null)
-        {
+    public void ShareScreenshot() {
+        if (screenShot != null) {
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySnapshotShared, AnalyticParameters.ParamVideoName, hologramHandler.GetVideoFileName);
-            using (var payload = new SharePayload())
-            {
-                payload.AddImage(screenShot);
-            }
-        }
-        else
-        {
+
+            new NativeShare().AddFile(screenShot).Share();
+        } else {
             Debug.LogError("Screenshot was null");
         }
     }

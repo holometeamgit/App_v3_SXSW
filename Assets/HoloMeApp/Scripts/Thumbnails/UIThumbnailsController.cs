@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Beem.Firebase.DynamicLink;
 
 public class UIThumbnailsController : MonoBehaviour {
     public Action OnUpdated;
@@ -9,7 +10,6 @@ public class UIThumbnailsController : MonoBehaviour {
 
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] PnlViewingExperience pnlViewingExperience;
-    [SerializeField] ShareManager shareManager;
     [SerializeField] PnlStreamOverlay pnlStreamOverlay;
     [SerializeField] GameObject btnThumbnailPrefab;
     [SerializeField] Transform content;
@@ -116,7 +116,7 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetPlayAction(Play);
             btnThumbnailItems[i].SetTeaserPlayAction(PlayTeaser);
             btnThumbnailItems[i].SetBuyAction(Buy);
-            btnThumbnailItems[i].SetShareAction((_) => shareManager.ShareStream());
+            btnThumbnailItems[i].SetShareAction((_) => DynamicLinksCallBacks.onShareLink?.Invoke());
             btnThumbnailItems[i].LockToPress(false);
         }
         OnUpdated?.Invoke();

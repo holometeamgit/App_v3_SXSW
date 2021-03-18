@@ -6,6 +6,7 @@ using UnityEngine.Purchasing;
 using TMPro;
 using System;
 using NatShare;
+using Beem.Firebase.DynamicLink;
 
 public class PnlEventPurchaser : MonoBehaviour {
     //public Action OnPurchased;
@@ -23,9 +24,6 @@ public class PnlEventPurchaser : MonoBehaviour {
     [SerializeField] TMP_Text txtName;
     [SerializeField] TMP_Text txtDateOnSale;
     [SerializeField] TMP_Text txtDatePeriod;
-
-    [Space]
-    [SerializeField] ShareManager shareManager;
 
     StreamJsonData.Data data;
 
@@ -61,7 +59,7 @@ public class PnlEventPurchaser : MonoBehaviour {
     }
 
     public void ShareStream() {
-        shareManager.ShareStream();
+        DynamicLinksCallBacks.onShareLink?.Invoke();
     }
 
     public void Cancel() {
