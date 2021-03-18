@@ -205,7 +205,11 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void ShareStream() {
-        DynamicLinksCallBacks.onShareLink?.Invoke();
+        if (isStreamer && agoraController.IsRoom) {
+            ShareRoomStream();
+        } else {
+            DynamicLinksCallBacks.onShareLink?.Invoke();
+        }
     }
 
     void ShareRoomStream()
