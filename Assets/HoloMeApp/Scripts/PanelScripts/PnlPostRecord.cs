@@ -129,12 +129,6 @@ public class PnlPostRecord : MonoBehaviour {
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyVideoShared, AnalyticParameters.ParamVideoName, hologramHandler.GetVideoFileName);
 
             new NativeShare().AddFile(lastRecordingPath).Share();
-
-            //using (var payload = new SharePayload())
-            //{
-            //    //payload.AddText(ShareMessage + Code);
-            //    payload.AddMedia(lastRecordingPath);
-            //}
         } else {
             Debug.LogError("Record path was empty");
         }
@@ -146,10 +140,6 @@ public class PnlPostRecord : MonoBehaviour {
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySnapshotShared, AnalyticParameters.ParamVideoName, hologramHandler.GetVideoFileName);
 
             new NativeShare().AddFile(screenShot).Share();
-
-            //using (var payload = new SharePayload()) {
-            //    payload.AddImage(screenShot);
-            //}
         } else {
             Debug.LogError("Screenshot was null");
         }

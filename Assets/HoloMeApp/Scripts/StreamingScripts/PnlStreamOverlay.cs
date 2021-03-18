@@ -6,6 +6,7 @@ using System.Collections;
 using UnityEngine.UI;
 using agora_gaming_rtc;
 using LostNative.Toolkit.FluidUI;
+using Beem.Firebase.DynamicLink;
 
 public class PnlStreamOverlay : MonoBehaviour {
 
@@ -50,9 +51,6 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     [SerializeField]
     UserWebManager userWebManager;
-
-    [SerializeField]
-    ShareManager shareManager;
 
     [SerializeField]
     PnlViewingExperience pnlViewingExperience;
@@ -207,23 +205,12 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void ShareStream() {
-        TryGetShareManagerInstance();
-        shareManager.ShareStream();
+        DynamicLinksCallBacks.onShareLink?.Invoke();
     }
 
     void ShareRoomStream()
     {
-        TryGetShareManagerInstance();
-        shareManager.ShareRoomStream();
-    }
-
-    void TryGetShareManagerInstance()
-    {
-        if (shareManager == null)
-        {
-            shareManager = FindObjectOfType<ShareManager>();
-            Debug.LogWarning("Share manager wasn't assigned in the inspect used find to replace");
-        }
+        StreamCallBacks.onGetMyRoomLink?.Invoke();
     }
 
     public void StartCountdown() {

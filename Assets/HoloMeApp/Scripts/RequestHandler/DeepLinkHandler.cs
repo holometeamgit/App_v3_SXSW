@@ -8,7 +8,8 @@ public class DeepLinkHandler : MonoBehaviour {
     public Action<string, string> PasswordResetConfirmDeepLinkActivated;
     public Action<ServerAccessToken> OnCompleteSSOLoginGetted;
 
-    private const string ROOM = "room";
+    [SerializeField]
+    private ServerURLAPIScriptableObject serverURLAPIScriptableObject;
 
     public void OnDynamicLinkActivated(string uriStr) {
 
@@ -39,7 +40,7 @@ public class DeepLinkHandler : MonoBehaviour {
     }
 
     private bool IsRoom(Uri uri) {
-          return uri.LocalPath.Contains(ROOM);
+          return uri.LocalPath.Contains(serverURLAPIScriptableObject.Room);
     }
 
     private string GetRoom(Uri uri)
@@ -49,7 +50,7 @@ public class DeepLinkHandler : MonoBehaviour {
         string[] split = localPath.Split('/');
         for (int i = 0; i < split.Length; i++)
         {
-            if (split[i].Contains(ROOM) && i < split.Length-1)
+            if (split[i].Contains(serverURLAPIScriptableObject.Room) && i < split.Length-1)
             {
                 return split[i+1];
             }
