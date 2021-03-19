@@ -135,10 +135,15 @@ public class AccountManager : MonoBehaviour {
     #endregion
 
     private void SignUpSuccessCallBack() {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete);
         SaveLogInType(LogInType.Email);
     }
 
     private void LogInToServer(LogInType logInType) {
+
+        if(authController.IsNewUser())
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete);
+
         SaveLogInType(logInType);
 
         HelperFunctions.DevLog("LogInToServer " + logInType + " IsVerifiried " + authController.IsVerifiried());
