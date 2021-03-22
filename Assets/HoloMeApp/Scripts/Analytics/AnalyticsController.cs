@@ -109,7 +109,7 @@ public class AnalyticsController : MonoBehaviour
         if (userWebManager != null && userWebManager.GetUserID() != -1)
         {
             data.Add(AnalyticParameters.ParamUserID, userWebManager.GetUserID().ToString()); //Add user ID to tracking variable
-            data.Add(AnalyticParameters.ParamUserType, userWebManager.IsBroadcaster() ? AnalyticParameters.ParamBroadcaster : AnalyticParameters.ParamViewer);
+            data.Add(AnalyticParameters.ParamUserType, userWebManager.CanGoLive() ? AnalyticParameters.ParamBroadcaster : AnalyticParameters.ParamViewer);
         }
         else
         {

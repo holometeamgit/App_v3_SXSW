@@ -61,14 +61,14 @@ public class PurchaseManager : MonoBehaviour
     private void ProductListCallBack(long code, string body) {
         ProductJsonData productJsonData = new ProductJsonData();
         try {
+            HelperFunctions.DevLog(body);
             productJsonData = JsonUtility.FromJson<ProductJsonData>(body);
             
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
 
-            HelperFunctions.DevLog(body);
 
-            body = "{ \"products\" :" + body + "}";
+            body = "{ \"product\" :" + body + "}";
 
             try {
                 productJsonData = JsonUtility.FromJson<ProductJsonData>(body);
@@ -79,7 +79,7 @@ public class PurchaseManager : MonoBehaviour
 
         List<string> productIdList = new List<string>();
 
-        foreach (var product in productJsonData.products) {
+        foreach (var product in productJsonData.product) {
             productIdList.Add(product.product_id);
         }
 

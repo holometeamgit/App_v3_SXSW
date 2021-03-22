@@ -52,9 +52,13 @@ public class ThumbnailsDataFetcher {
             return;
         isBusy = true;
         currentLoadingKey = new LoadingKey(this);
-        currentPriority = 0;
-        thumbnailsDataContainer.Refresh();
+        ClearData();
         GetPageCount();
+    }
+
+    public void ClearData() {
+        currentPriority = 0;
+        thumbnailsDataContainer.Clear();
     }
 
     public void GetNextPage() {
@@ -135,7 +139,6 @@ public class ThumbnailsDataFetcher {
     }
 
     private void AddThumbnails(StreamJsonData streamJsonData) {
-        HelperFunctions.DevLog("AddThumbnails count = " + streamJsonData.results?.Count.ToString());
         thumbnailsDataContainer.AddListStreamJsonData(streamJsonData);
     }
 

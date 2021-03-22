@@ -38,8 +38,8 @@ namespace Beem.Firebase.DynamicLink {
                             dynamicLinkEventArgs.ReceivedDynamicLink.Url.OriginalString);
         }
 
-        private void CreateShortLink(string prefix, string id) {
-            string baseLink = prefix + "/" + id;
+        private void CreateShortLink(string prefix, string parameterName, string id) {
+            string baseLink = prefix + "/"+ parameterName+"/" + id;
             var components = new DynamicLinkComponents(
          // The base Link.
          new Uri(baseLink),
@@ -48,7 +48,7 @@ namespace Beem.Firebase.DynamicLink {
                 IOSParameters = new IOSParameters(Application.identifier) {
                     AppStoreId = APPSTORE_ID
                 },
-                AndroidParameters = new AndroidParameters(Application.identifier)
+                AndroidParameters = new AndroidParameters(Application.identifier),
             };
 
             var options = new DynamicLinkOptions {

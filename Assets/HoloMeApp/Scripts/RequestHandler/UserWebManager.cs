@@ -99,16 +99,16 @@ public class UserWebManager : MonoBehaviour {
         return userData.profile.bio;
     }
 
-    public bool IsBroadcaster() {
+    public bool CanGoLive() {
         if (userData == null || userData.profile == null)
             return false;
-        return userData.profile.is_creator;
+        return userData.profile.go_live_feature;
     }
 
-    public bool IsEnterpriseBroadcaster() {
+    public bool CanStartRoom() {
         if (userData == null || userData.profile == null)
             return false;
-        return !string.IsNullOrWhiteSpace(userData.profile.enterprise);
+        return userData.profile.room_feature;
     }
 
     public void LoadUserInfo(Action loadUserInfoCallBack) {
