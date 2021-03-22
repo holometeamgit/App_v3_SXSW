@@ -151,7 +151,7 @@ public class UIThumbnailsController : MonoBehaviour {
             return;
 
         if (data.HasStreamUrl) {
-            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null, false);
+            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, data ,null, false);
             OnPlayFromUser?.Invoke(data.user);
         } else if (data.HasAgoraChannel) {
             PlayLiveStream(data.user, data.agora_channel);
@@ -162,7 +162,7 @@ public class UIThumbnailsController : MonoBehaviour {
         if (!permissionController.CheckCameraAccess())
             return;
 
-        pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, null, data.HasTeaser);
+        pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, data, null, data.HasTeaser);
         OnPlayFromUser?.Invoke(data.user);
         purchaseManager.SetPurchaseStreamData(data);
     }

@@ -2,6 +2,7 @@
 using HoloMeSDK;
 using System.Linq;
 using System;
+using System.Collections.Generic;
 
 [DisallowMultipleComponent]
 public class HologramHandler : MonoBehaviour
@@ -32,6 +33,7 @@ public class HologramHandler : MonoBehaviour
     HoloMe holoMe;
 
     string videoURL;
+    long broadcasterID;
 
     public string GetVideoFileName
     {
@@ -86,11 +88,12 @@ public class HologramHandler : MonoBehaviour
         }
     }
 
-    public void PlayIfPlaced(string url)
+    public void PlayIfPlaced(string url, long broadcasterID)
     {
         HelperFunctions.DevLog("PLAY ON PLACE CALLED code =" + url);
 
         videoURL = url;
+        this.broadcasterID = broadcasterID;
 
         if (Application.isEditor)
         {
@@ -129,7 +132,8 @@ public class HologramHandler : MonoBehaviour
         {
             holoMe.PlayVideo(videoURL);
             //holoMe.PlayVideo(HelperFunctions.PersistentDir() + videoCode + ".mp4");
-            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPerformanceLoaded, AnalyticParameters.ParamVideoName, GetVideoFileName);
+            //AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPerformanceLoaded, AnalyticParameters.ParamVideoName, GetVideoFileName);
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPerformanceLoaded, new Dictionary<string, string>{ { AnalyticParameters.ParamVideoName, GetVideoFileName }, {AnalyticParameters.ParamBroadcasterUserID, broadcasterID.ToString() }});
         }
     }
 
@@ -164,8 +168,8 @@ public class HologramHandler : MonoBehaviour
             float percentageViewed = Mathf.Round(Mathf.Clamp((float)(((float)AnalyticsController.Instance.GetElapsedTime(hologramViewDwellTimer) / videoPlayer.GetClipLength()) * 100), 0, 100));
             HelperFunctions.DevLog("Clip Length " + videoPlayer.GetClipLength());
             HelperFunctions.DevLog("Percentage Watched = " + percentageViewed + "%");
-            AnalyticsController.Instance.StopTimer(hologramViewDwellTimer, percentageViewed);
-            AnalyticsController.Instance.SendCustomEvent(percentageViewed >= 99 ? AnalyticKeys.KeyPerformanceEnded : AnalyticKeys.KeyPerformanceNotEnded, AnalyticParameters.ParamVideoName, GetVideoFileName);
+            AnalyticsController.Instance.StopTimer(hologramViewDwellTimer, percentageViewed, new Dictionary<string, string> { { AnalyticParameters.ParamBroadcasterUserID, broadcasterID.ToString() } });
+            AnalyticsController.Instance.SendCustomEvent(percentageViewed >= 99 ? AnalyticKeys.KeyPerformanceEnded : AnalyticKeys.KeyPerformanceNotEnded, new Dictionary<string, string> { { AnalyticParameters.ParamVideoName, GetVideoFileName }, { AnalyticParameters.ParamBroadcasterUserID, broadcasterID.ToString() } });
         }
         else
         {

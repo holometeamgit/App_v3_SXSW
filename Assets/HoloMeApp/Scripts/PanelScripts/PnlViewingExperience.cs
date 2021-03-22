@@ -169,7 +169,7 @@ public class PnlViewingExperience : MonoBehaviour
         //messageRT.DOAnchorPosY(0, messageAnimationSpeed);
         scanMessageRT.DOScale(Vector3.zero, animationSpeed).SetDelay(messageAnimationSpeed);
     }
-    public void ActivateForPreRecorded(string code, VideoJsonData videoJsonData, bool isTeaser)
+    public void ActivateForPreRecorded(string url, StreamJsonData.Data streamJsonData , VideoJsonData videoJsonData, bool isTeaser)
     {
         //print($"PLAY CALLED - " + code);
         SharedActivationFunctions();
@@ -177,7 +177,7 @@ public class PnlViewingExperience : MonoBehaviour
         activatedForStreaming = false;
         btnBurger.SetActive(true);
         logoCanvas.ActivateIfLogoAvailable(videoJsonData);
-        hologramHandler.PlayIfPlaced(code);
+        hologramHandler.PlayIfPlaced(url, streamJsonData.user_id);
         hologramHandler.TogglePreRecordedVideoRenderer(true);
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
