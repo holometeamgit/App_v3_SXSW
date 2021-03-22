@@ -139,7 +139,6 @@ public class ThumbnailsDataFetcher {
     }
 
     private void AddThumbnails(StreamJsonData streamJsonData) {
-        HelperFunctions.DevLog("AddThumbnails count = " + streamJsonData.results?.Count.ToString());
         thumbnailsDataContainer.AddListStreamJsonData(streamJsonData);
     }
 
