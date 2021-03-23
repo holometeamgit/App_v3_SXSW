@@ -16,11 +16,7 @@ namespace Beem.Xcode {
     /// </summary>
     public class CapabilityPostBuild {
 
-#if !DEV
-        private const string APPLINKS = "applinks:beemrfc.page.link";
-#else
-        private const string APPLINKS = "applinks:beemrfcdev.page.link";
-#endif
+        private const string APPLINKS = "applinks:join.beem.me";
 
         private const int CallOrder = 2;
 
