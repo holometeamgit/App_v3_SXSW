@@ -8,14 +8,12 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     public string ProdServerURLAuth = "https://api.holo.me/api-auth";
     public string ProdServerURLMedia = "https://api.holo.me/api-media";
     public string ProdServerProviders = "https://api.holo.me/oauth/providers/";
-    public string ProdServerDeepLink = "https://api.holo.me/deep-link/";
-    public string ProdFirebaseDynamicLink = "https://beemrfc.page.link";
+    public string ProdFirebaseDynamicLink = "https://join.beem.me";
     [Space]
     public string DevServerURLAuth = "https://devholo.me/api-auth";
     public string DevServerURLMedia = "https://devholo.me/api-media";
     public string DevServerProviders = "https://devholo.me/oauth/providers/";
-    public string DevServerDeepLink = "https://devholo.me/deep-link/";
-    public string DevFirebaseDynamicLink = "https://beemrfcdev.page.link";
+    public string DevFirebaseDynamicLink = "https://join.beem.me";
     [Space]
     [SerializeField]
     private string room = "room";
@@ -29,10 +27,8 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     [SerializeField]
     private string app = "App";
 
-    public string App
-    {
-        get
-        {
+    public string App {
+        get {
             return app;
         }
     }
@@ -66,15 +62,6 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
         }
     }
 
-    public string ServerDeepLinkAPI {
-        get {
-#if DEV
-            return DevServerDeepLink;
-#else
-            return ProdServerDeepLink;
-#endif
-        }
-    }
 
     public string FirebaseDynamicLinkAPI {
         get {
