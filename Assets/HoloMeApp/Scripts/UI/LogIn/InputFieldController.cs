@@ -42,6 +42,12 @@ public class InputFieldController : MonoBehaviour {
             inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
     }
 
+    public void ActivateInputField() {
+        if (inputField.isFocused) {
+            inputField.ActivateInputField();
+        }
+    }
+
     public void ShowWarning(string warningMsg) {
         HelperFunctions.DevLog(warningMsg);
         warningMsgText.text = OverrideMsg(warningMsg);
