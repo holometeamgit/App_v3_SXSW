@@ -47,11 +47,23 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
 
     void UpdateUserProfile()
     {
+        //Debug.Log("USER LONG INFO PASSED CT 1");
+        //if(userWebManager == null)
+        //{
+        //    //Debug.Log(" USER WEB MANAGER WAS NULL");
+        //}
+        //else
+        //{
+        //    Debug.Log("NAME = "+  userWebManager.GetUsername());
+        //}
+
         Dictionary<string, string> loginDetails = new Dictionary<string, string>();
         loginDetails.Add("Email", userWebManager.GetEmail());
         loginDetails.Add("Username", userWebManager.GetUsername());
         loginDetails.Add("UserID", userWebManager.GetUserID().ToString());
         CleverTapBinding.OnUserLogin(loginDetails);
+
+        //Debug.Log("USER LONG INFO PASSED CT2");
     }
 
     public override void SendCustomEvent(string eventName)
@@ -74,7 +86,7 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
         if (Application.isEditor) //Stops android exception
             return;
 
-        if (eventName == AnalyticKeys.KeyUserLogin)
+        if (eventName.Contains( AnalyticKeys.KeyUserLogin))//Contains in case of dev_ prefix
         {
             UpdateUserProfile();
         }
