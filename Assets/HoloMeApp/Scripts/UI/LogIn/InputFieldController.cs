@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public class InputFieldController : MonoBehaviour {
     public bool IsClearOnDisable = true;
@@ -33,8 +34,12 @@ public class InputFieldController : MonoBehaviour {
     Animator animator;
 
     [SerializeField] UnityEvent OnEndEditPassword;
+    [SerializeField] UnityEvent OnEnter;
+
+    private EventSystem eventSystem;
 
     private void Awake() {
+        eventSystem = EventSystem.current;
         inputField.onEndEdit.AddListener((_) => OnEndEditPassword.Invoke());
         inputField.shouldHideMobileInput = true;
         //        inputField.onEndEdit.AddListener(UpdateLayout);
@@ -42,10 +47,16 @@ public class InputFieldController : MonoBehaviour {
             inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
     }
 
-    public void ActivateInputField() {
-        if (inputField.isFocused) {
-            inputField.ActivateInputField();
+    private void Update()
+    {
+        if ((Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) && eventSystem.currentSelectedGameObject.GetInstanceID() == inputField.gameObject.GetInstanceID())
+        {
+            OnEnter?.Invoke();
         }
+    }
+
+    public void ActivateInputField() {
+        inputField.ActivateInputField();
     }
 
     public void ShowWarning(string warningMsg) {
