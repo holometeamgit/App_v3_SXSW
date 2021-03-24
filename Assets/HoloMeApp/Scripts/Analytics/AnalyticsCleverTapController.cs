@@ -14,14 +14,17 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
     [SerializeField]
     CleverTapUnity cleverTapUnityComponent;
 
+    [SerializeField]
+    UserWebManager userWebManager;
+
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-//#if DEV
-//            disableTracking = true;
-//#endif
+            //#if DEV
+            //            disableTracking = true;
+            //#endif
             //cleverTapUnityComponent = gameObject.AddComponent<CleverTapUnity>();
             if (cleverTapUnityComponent.CLEVERTAP_ACCOUNT_ID != AccountID)
             {
@@ -40,6 +43,15 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
             Debug.LogError($"{nameof(AnalyticsController)} Instance Already Exists!");
             Destroy(Instance);
         }
+    }
+
+    void UpdateUserProfile()
+    {
+        Dictionary<string, string> loginDetails = new Dictionary<string, string>();
+        loginDetails.Add("Email", userWebManager.GetEmail());
+        loginDetails.Add("Username", userWebManager.GetUsername());
+        loginDetails.Add("UserID", userWebManager.GetUserID().ToString());
+        CleverTapBinding.OnUserLogin(loginDetails);
     }
 
     public override void SendCustomEvent(string eventName)
@@ -62,6 +74,12 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
         if (Application.isEditor) //Stops android exception
             return;
 
+        if (eventName == AnalyticKeys.KeyUserLogin)
+        {
+            UpdateUserProfile();
+        }
+
+        data.Add(AnalyticParameters.ParamUserEmail, userWebManager.GetEmail() ?? "Not specified"); //Append email for CT only
         CleverTapBinding.RecordEvent(eventName, ConvertToStringObjectDictionary(data));
     }
 }

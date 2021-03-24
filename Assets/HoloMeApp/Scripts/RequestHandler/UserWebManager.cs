@@ -116,7 +116,7 @@ public class UserWebManager : MonoBehaviour {
             ErrorMsgCallBack, accountManager.GetAccessToken().access);
     }
 
-    private string GetEmail() {
+    public string GetEmail() {
         if (userData == null || string.IsNullOrEmpty(userData.email))
             return null;
         return userData.email;
