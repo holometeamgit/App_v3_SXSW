@@ -10,6 +10,10 @@ namespace Beem.Xcode {
     /// Add Plist Configuration
     /// </summary>
     public class XcodeConfigurationPostBuild {
+
+        private const string DOMAIN = "https://join.beem.me";
+        private const string DOMAIN_ROOM = "https://join.beem.me/room";
+
         [PostProcessBuild]
         public static void ChangeXcodePlist(BuildTarget buildTarget, string pathToBuiltProject) {
 
@@ -27,6 +31,11 @@ namespace Beem.Xcode {
             // background modes
             PlistElementArray bgModes = rootDict.CreateArray("Bonjour services");
             bgModes.AddString("_beem._tcp");
+
+            // custom domain modes
+            PlistElementArray customDomain = rootDict.CreateArray("FirebaseDynamicLinksCustomDomains");
+            customDomain.AddString(DOMAIN);
+            customDomain.AddString(DOMAIN_ROOM);
 
             // Write to file
             File.WriteAllText(plistPath, plist.WriteToString());
