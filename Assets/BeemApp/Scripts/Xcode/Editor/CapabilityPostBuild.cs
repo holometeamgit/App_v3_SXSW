@@ -16,7 +16,10 @@ namespace Beem.Xcode {
     /// </summary>
     public class CapabilityPostBuild {
 
-        private const string APPLINKS = "applinks:join.beem.me";
+        private static string[] applinks = new string[] {
+            "applinks:join.beem.me",
+            "applinks:beem.onelink.me"
+        };
 
         private const int CallOrder = 2;
 
@@ -35,7 +38,7 @@ namespace Beem.Xcode {
 #else
                 manager.AddPushNotifications(false);
 #endif
-                manager.AddAssociatedDomains(new string[] { APPLINKS });
+                manager.AddAssociatedDomains(applinks);
                 manager.WriteToFile();
 #else
                         var manager = new ProjectCapabilityManager(projectPath, "Entitlements.entitlements", PBXProject.GetUnityTargetName());
