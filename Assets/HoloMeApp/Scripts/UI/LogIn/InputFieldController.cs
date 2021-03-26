@@ -34,7 +34,6 @@ public class InputFieldController : MonoBehaviour {
     Animator animator;
 
     [SerializeField] UnityEvent OnEndEditPassword;
-    [SerializeField] UnityEvent OnEnter;
 
     private EventSystem eventSystem;
 
@@ -45,18 +44,6 @@ public class InputFieldController : MonoBehaviour {
         //        inputField.onEndEdit.AddListener(UpdateLayout);
         if (IsLowercase)
             inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
-    }
-
-    private void Update()
-    {
-        if ((Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) && eventSystem.currentSelectedGameObject.GetInstanceID() == inputField.gameObject.GetInstanceID())
-        {
-            OnEnter?.Invoke();
-        }
-    }
-
-    public void ActivateInputField() {
-        inputField.ActivateInputField();
     }
 
     public void ShowWarning(string warningMsg) {
