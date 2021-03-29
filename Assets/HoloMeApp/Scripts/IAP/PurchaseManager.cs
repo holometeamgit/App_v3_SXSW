@@ -97,6 +97,7 @@ public class PurchaseManager : MonoBehaviour
         //streamData.InvokeDataUpdated();
 
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, {AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, streamData.user_id.ToString() } });
+        AnalyticsCleverTapController.Instance.SendChargeEvent(new Dictionary<string, object> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() },{ "Currency", "USD" }, }, new List<Dictionary<string, object>>{ new Dictionary<string, object> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, streamData.user_id.ToString() } } });
 
         StreamBillingJsonData streamBillingJsonData = new StreamBillingJsonData();
         streamBillingJsonData.bill.hash = product.receipt;
