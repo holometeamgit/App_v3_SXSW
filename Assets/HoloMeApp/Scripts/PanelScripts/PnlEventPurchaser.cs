@@ -74,9 +74,7 @@ public class PnlEventPurchaser : MonoBehaviour {
     }
 
     private void OnPurchaseCallBack(Product product) {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, data.product_type.product_id }, { AnalyticParameters.ParamProductPrice, data.product_type.price.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, data.user_id.ToString() } });
-        AnalyticsCleverTapController.Instance.SendChargeEvent(new Dictionary<string, object> { { AnalyticParameters.ParamProductID, data.product_type.product_id }, { AnalyticParameters.ParamProductPrice, data.product_type.price.ToString() }, { "Currency", "USD" }, }, new List<Dictionary<string, object>>{ new Dictionary<string, object> { { AnalyticParameters.ParamProductID, data.product_type.product_id }, { AnalyticParameters.ParamProductPrice, data.product_type.price.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, data.user_id.ToString() } } });
-
+       
         data.is_bought = true;
         data.OnDataUpdated?.Invoke();
 

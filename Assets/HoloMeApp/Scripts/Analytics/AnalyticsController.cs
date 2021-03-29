@@ -30,6 +30,9 @@ public class AnalyticsController : MonoBehaviour
                 disableTracking = true;
 #endif
             DontDestroyOnLoad(Instance);
+
+            //CallBacks.onSignInSuccess += () => Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin);
+            userWebManager.OnLoadUserDataAfterLogIn += () => Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin);
         }
         else
         {
