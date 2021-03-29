@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using System;
+using Beem.SSO;
 
 public class UserWebManager : MonoBehaviour {
+    public Action OnLoadUserDataAfterLogIn;
     public Action OnUserInfoLoaded;
     public Action OnErrorUserInfoLoaded;
 
@@ -22,9 +24,6 @@ public class UserWebManager : MonoBehaviour {
     [SerializeField] AuthorizationAPIScriptableObject authorizationAPI;
 
     private UserJsonData userData;
-
-    [HideInInspector]
-
 
     public void LoadUserInfo() {
         webRequestHandler.GetRequest(GetRequestGetUserURL(), LoadUserInfoCallBack,
@@ -141,6 +140,7 @@ public class UserWebManager : MonoBehaviour {
 
     #region download user data
     private void LoadUserInfoCallBack(long code, string body) {
+        bool isLoadUserDataAfterLogIn = userData == null;
         try {
             userData = JsonUtility.FromJson<UserJsonData>(body);
             OnUserInfoLoaded?.Invoke();
@@ -150,6 +150,10 @@ public class UserWebManager : MonoBehaviour {
 
         if (userData == null)
             userData = new UserJsonData();
+
+        if (isLoadUserDataAfterLogIn) {
+            OnLoadUserDataAfterLogIn?.Invoke();
+        }
     }
 
     private void ErrorLoadUserInfoCallBack(long code, string body) {
@@ -185,6 +189,10 @@ public class UserWebManager : MonoBehaviour {
 
     #endregion
 
+    private void RemoveUserData() {
+        userData = null;
+    }
+
     #region delete and disable user
     private void DeleteUserInfoCallBack(long code, string body) {
         Debug.Log("DeleteUserInfoCallBack " + code + " " + body);
@@ -219,4 +227,12 @@ public class UserWebManager : MonoBehaviour {
     }
 
     #endregion
+
+    private void OnEnable() {
+        CallBacks.onSignOut += RemoveUserData;
+    }
+
+    private void OnDisable() {
+        CallBacks.onSignOut -= RemoveUserData;
+    }
 }
