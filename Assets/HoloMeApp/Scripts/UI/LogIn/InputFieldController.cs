@@ -10,6 +10,9 @@ public class InputFieldController : MonoBehaviour {
     public bool IsClearOnDisable = true;
     public bool IsLowercase;
 
+    [SerializeField]
+    private bool isEmail;
+
     public int characterLimit {
         get { return inputField.characterLimit; }
         set { inputField.characterLimit = value; }
@@ -41,6 +44,12 @@ public class InputFieldController : MonoBehaviour {
         eventSystem = EventSystem.current;
         inputField.onEndEdit.AddListener((_) => OnEndEditPassword.Invoke());
         inputField.shouldHideMobileInput = true;
+#if UNITY_IOS
+        if (isEmail)
+        {
+            inputField.contentType = InputField.ContentType.EmailAddress;
+        }
+#endif
         //        inputField.onEndEdit.AddListener(UpdateLayout);
         if (IsLowercase)
             inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
