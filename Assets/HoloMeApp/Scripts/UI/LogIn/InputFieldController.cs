@@ -4,10 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public class InputFieldController : MonoBehaviour {
     public bool IsClearOnDisable = true;
     public bool IsLowercase;
+
+    [SerializeField]
+    private bool isEmail;
 
     public int characterLimit {
         get { return inputField.characterLimit; }
@@ -39,6 +43,12 @@ public class InputFieldController : MonoBehaviour {
     private void Awake() {
         inputField.onEndEdit.AddListener((_) => OnEndEditPassword.Invoke());
         inputField.shouldHideMobileInput = true;
+#if UNITY_IOS
+        if (isEmail)
+        {
+            inputField.contentType = InputField.ContentType.EmailAddress;
+        }
+#endif
         //        inputField.onEndEdit.AddListener(UpdateLayout);
         if (IsLowercase)
             inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
