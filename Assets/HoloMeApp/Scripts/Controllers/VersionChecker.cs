@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class VersionChecker : MonoBehaviour
-{
+public class VersionChecker : MonoBehaviour {
     public Action OnNeedUpdateApp;
     public Action OnCanUse;
 
     [SerializeField] GeneralAppAPIScriptableObject generalAppAPIScriptableObject;
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] float delayRepeat = 2;
+
+    private const string DEFAULT_MIN_VERSION = "0";
 
     public void RequestVersion() {
         webRequestHandler.GetRequest(GetRequestURL(), VersionCallBack, ErrorVersionCallBack);
@@ -22,7 +23,7 @@ public class VersionChecker : MonoBehaviour
         HelperFunctions.DevLog("VersionCallBack " + body);
 
         AppVersionJsonData versionData = JsonParser.CreateFromJSON<AppVersionJsonData>(body);
-        if(versionData == null)
+        if (versionData == null)
             StartCoroutine(RepeatCheckVersion());
 
         if (versionData.versions.Count == 0) {
@@ -30,25 +31,22 @@ public class VersionChecker : MonoBehaviour
             return;
         }
 
-        string currentMinVersionWithForceUpdate = versionData.versions[0].min_support_version;
+        string currentMinVersionWithForceUpdate = DEFAULT_MIN_VERSION;
         foreach (var version in versionData.versions) {
 
-//            HelperFunctions.DevLog("platform " + version.platform + " currentMinVersionWithForceUpdate = " + currentMinVersionWithForceUpdate + " version = " + version.min_support_version);
-
-            //TODO waiting backend
-        /*    if (Application.platform == RuntimePlatform.IPhonePlayer && version.platform != AppVersionJsonData.IOS_PLATFORM) {
+#if UNITY_IOS
+            if (version.platform != AppVersionJsonData.IOS_PLATFORM) {
                 continue;
-            } else if (Application.platform == RuntimePlatform.Android && version.platform != AppVersionJsonData.ANDROID_PLATFORM) {
+            }
+#elif UNITY_ANDROID
+            if (version.platform != AppVersionJsonData.ANDROID_PLATFORM) {
                 continue;
-            }*/
-
-            HelperFunctions.DevLog("currentMinVersionWithForceUpdate = " + currentMinVersionWithForceUpdate + " version = " + version.min_support_version);
-            HelperFunctions.DevLog("CompareVersions" + (CompareVersions(version.min_support_version, currentMinVersionWithForceUpdate) > 0));
+            }
+#endif
             if (CompareVersions(version.min_support_version, currentMinVersionWithForceUpdate) > 0 && version.forced_update) {
                 currentMinVersionWithForceUpdate = version.min_support_version;
             }
         }
-
         if (CompareVersions(currentMinVersionWithForceUpdate, Application.version) > 0)
             OnNeedUpdateApp?.Invoke();
         else
@@ -70,7 +68,7 @@ public class VersionChecker : MonoBehaviour
 
         int countSubversion = Mathf.Min(subversions1.Length, subversions2.Length);
 
-        for(int i = 0; i < countSubversion; i++) {
+        for (int i = 0; i < countSubversion; i++) {
             int version1Number = 0;
             int version2Number = 0;
 

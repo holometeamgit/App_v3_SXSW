@@ -6,6 +6,7 @@ using UnityEngine.Purchasing;
 using TMPro;
 using System;
 using NatShare;
+using Beem.Firebase.DynamicLink;
 
 public class PnlEventPurchaser : MonoBehaviour {
     //public Action OnPurchased;
@@ -23,9 +24,6 @@ public class PnlEventPurchaser : MonoBehaviour {
     [SerializeField] TMP_Text txtName;
     [SerializeField] TMP_Text txtDateOnSale;
     [SerializeField] TMP_Text txtDatePeriod;
-
-    [Space]
-    [SerializeField] ShareManager shareManager;
 
     StreamJsonData.Data data;
 
@@ -55,18 +53,18 @@ public class PnlEventPurchaser : MonoBehaviour {
     #region Purchase
     public void Purchase() {
 
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, data.product_type.product_id }, { AnalyticParameters.ParamProductPrice, data.product_type.price.ToString() } });
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, data.product_type.product_id }, { AnalyticParameters.ParamProductPrice, data.product_type.price.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, data.user_id.ToString() } });
         purchaseWaitingScreen.gameObject.SetActive(true);
         iapController.BuyTicket(data.product_type.product_id);
     }
 
     public void ShareStream() {
-        shareManager.ShareStream();
+        DynamicLinksCallBacks.onShareLink?.Invoke();
     }
 
     public void Cancel() {
         if (!data.is_bought)
-            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseCancelled, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, data.product_type.product_id } });
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseCancelled, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, data.product_type.product_id }, { AnalyticParameters.ParamBroadcasterUserID, data.user_id.ToString() } });
     }
 
     private void Awake() {
@@ -76,8 +74,7 @@ public class PnlEventPurchaser : MonoBehaviour {
     }
 
     private void OnPurchaseCallBack(Product product) {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, data.product_type.product_id }, { AnalyticParameters.ParamProductPrice, data.product_type.price.ToString() } });
-
+       
         data.is_bought = true;
         data.OnDataUpdated?.Invoke();
 
@@ -96,7 +93,7 @@ public class PnlEventPurchaser : MonoBehaviour {
     }
 
     private void OnPurchaseFailCallBack() {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseFailed, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, data.product_type.product_id } });
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseFailed, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, data.product_type.product_id }, { AnalyticParameters.ParamBroadcasterUserID, data.user_id.ToString() } });
         Debug.Log("OnPurchaseFailCallBack");
         Show(data);
     }

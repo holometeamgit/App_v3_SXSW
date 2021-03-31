@@ -87,11 +87,7 @@ public class PnlWelcomeV4 : MonoBehaviour {
         CallBacks.onSignInApple += ShowBackground;
         CallBacks.onSignInGoogle += ShowBackground;
         CallBacks.onFail += HideBackground;
-        CallBacks.onNeedVerification += HideBackground;
-
-        //TODO move to place when user loggined and take info from UserWebManager
-        //AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin, AnalyticParameters.ParamUserType , accountManager.GetAccountType() == AccountManager.AccountType.Subscriber ? AnalyticParameters.ParamViewer:AnalyticParameters.ParamBroadcaster ); // Using keys in case enum changes names in future
-        CallBacks.onSignInSuccess += () => AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin);
+        CallBacks.onNeedVerification += HideBackground;               
     }
 
     private void OnDisable() {

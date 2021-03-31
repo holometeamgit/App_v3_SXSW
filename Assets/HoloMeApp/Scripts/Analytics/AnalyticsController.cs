@@ -30,6 +30,9 @@ public class AnalyticsController : MonoBehaviour
                 disableTracking = true;
 #endif
             DontDestroyOnLoad(Instance);
+
+            //CallBacks.onSignInSuccess += () => Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin);
+            userWebManager.OnLoadUserDataAfterLogIn += () => Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin);
         }
         else
         {
@@ -109,11 +112,11 @@ public class AnalyticsController : MonoBehaviour
         if (userWebManager != null && userWebManager.GetUserID() != -1)
         {
             data.Add(AnalyticParameters.ParamUserID, userWebManager.GetUserID().ToString()); //Add user ID to tracking variable
-            data.Add(AnalyticParameters.ParamUserType, userWebManager.IsBroadcaster() ? AnalyticParameters.ParamBroadcaster : AnalyticParameters.ParamViewer);
+            data.Add(AnalyticParameters.ParamUserType, userWebManager.CanGoLive() ? AnalyticParameters.ParamBroadcaster : AnalyticParameters.ParamViewer);
         }
         else
         {
-            Debug.LogError(nameof(UserWebManager) + "was null");
+            Debug.LogError(nameof(UserWebManager) + " was null");
         }
 
         foreach (var analyticsController in analyticsLibraryAbstractions)
@@ -142,7 +145,7 @@ public class AnalyticsController : MonoBehaviour
         //return dwellTimer;
     }
 
-    public void StopTimer(string timerName)
+    public void StopTimer(string timerName,Dictionary<string, string> additonalData = null)
     {
         if (disableTracking)
             return;
@@ -154,10 +157,10 @@ public class AnalyticsController : MonoBehaviour
         }
 
         var timer = dwellTimers[timerName];
-        RemoveTimer(timer, timerName, timer.trackerName, timer.Timer);
+        RemoveTimer(timer, timerName, timer.trackerName, timer.Timer, additonalData);
     }
 
-    public void StopTimer(string timerName, float customTime)
+    public void StopTimer(string timerName, float customTime, Dictionary<string, string> additonalData = null)
     {
         if (disableTracking)
             return;
@@ -169,20 +172,21 @@ public class AnalyticsController : MonoBehaviour
         }
 
         var timer = dwellTimers[timerName];
-        RemoveTimer(timer, timerName, timer.trackerName, customTime);
+        RemoveTimer(timer, timerName, timer.trackerName, customTime, additonalData);
     }
 
     /// <param name="timerDictonaryKey">Required to remove timer</param>
     /// <param name="timerName">Name to be shown in analytics</param>
     /// <param name="elapsedTime">Time specified</param>
-    private void RemoveTimer(AnalyticsDwellTracker dwellTimercomponent, string timerDictonaryKey, string timerName, float elapsedTime)
+    private void RemoveTimer(AnalyticsDwellTracker dwellTimercomponent, string timerDictonaryKey, string timerName, float elapsedTime, Dictionary<string, string> dataDictionary)
     {
         if (disableTracking)
             return;
 
         AppendDevString(ref timerName);
 
-        Dictionary<string, string> dataDictionary = new Dictionary<string, string>();
+        if(dataDictionary == null)
+            dataDictionary = new Dictionary<string, string>();
         dataDictionary.Add("Time", elapsedTime.ToString());
         dataDictionary.Add(AnalyticParameters.ParamUserID, userWebManager.GetUserID().ToString());
 

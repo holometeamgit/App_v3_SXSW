@@ -38,10 +38,9 @@ public class InputFieldController : MonoBehaviour {
 
     [SerializeField] UnityEvent OnEndEditPassword;
 
-    private EventSystem eventSystem;
+    private bool showWarning;
 
     private void Awake() {
-        eventSystem = EventSystem.current;
         inputField.onEndEdit.AddListener((_) => OnEndEditPassword.Invoke());
         inputField.shouldHideMobileInput = true;
 #if UNITY_IOS
@@ -56,13 +55,22 @@ public class InputFieldController : MonoBehaviour {
     }
 
     public void ShowWarning(string warningMsg) {
+        animator.enabled = true;
         HelperFunctions.DevLog(warningMsg);
         warningMsgText.text = OverrideMsg(warningMsg);
-        animator.SetBool("ShowWarning", true);
+        showWarning = true;
+        animator.SetBool("ShowWarning", showWarning);
     }
 
     public void SetToDefaultState() {
-        animator.SetBool("ShowWarning", false);
+        if (!showWarning)
+            return;
+        showWarning = false;
+        animator.SetBool("ShowWarning", showWarning);
+    }
+
+    public void DisableAnimator() {
+        animator.enabled = false;
     }
 
     public void SetPasswordContentType(bool value) {
@@ -120,6 +128,7 @@ public class InputFieldController : MonoBehaviour {
         if (IsClearOnDisable) {
             SetToDefaultState();
             text = "";
+            DisableAnimator();
         }
     }
 }

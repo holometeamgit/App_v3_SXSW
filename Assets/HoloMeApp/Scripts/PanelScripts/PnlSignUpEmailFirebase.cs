@@ -42,6 +42,7 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     private void SignUpCallBack() {
         switcherToVerification.Switch();
         ClearInputFieldData();
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete);
     }
 
     private void ErrorSignUpCallBack(string msg) {

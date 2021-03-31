@@ -14,14 +14,17 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
     [SerializeField]
     CleverTapUnity cleverTapUnityComponent;
 
+    [SerializeField]
+    UserWebManager userWebManager;
+
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-//#if DEV
-//            disableTracking = true;
-//#endif
+            //#if DEV
+            //            disableTracking = true;
+            //#endif
             //cleverTapUnityComponent = gameObject.AddComponent<CleverTapUnity>();
             if (cleverTapUnityComponent.CLEVERTAP_ACCOUNT_ID != AccountID)
             {
@@ -42,6 +45,27 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
         }
     }
 
+    void UpdateUserProfile()
+    {
+        //Debug.Log("USER LONG INFO PASSED CT 1");
+        //if (userWebManager == null)
+        //{
+        //    //Debug.Log(" USER WEB MANAGER WAS NULL");
+        //}
+        //else
+        //{
+        //    Debug.Log("NAME = " + userWebManager.GetUsername());
+        //}
+
+        Dictionary<string, string> loginDetails = new Dictionary<string, string>();
+        loginDetails.Add("Email", userWebManager.GetEmail());
+        loginDetails.Add("Username", userWebManager.GetUsername());
+        loginDetails.Add("UserID", userWebManager.GetUserID().ToString());
+        CleverTapBinding.OnUserLogin(loginDetails);
+                       
+        //Debug.Log("USER LONG INFO PASSED CT2");
+    }
+
     public override void SendCustomEvent(string eventName)
     {
         if (Application.isEditor) //Stops android exception
@@ -59,9 +83,25 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
 
     public override void SendCustomEvent(string eventName, Dictionary<string, string> data)
     {
+        //Without the return below the app won't login in the editor test on device for auto login tracking
         if (Application.isEditor) //Stops android exception
             return;
 
+        if (eventName.Contains(AnalyticKeys.KeyUserLogin))//Contains in case of dev_ prefix
+        {
+            UpdateUserProfile();
+        }
+
+        data?.Add(AnalyticParameters.ParamUserEmail, userWebManager.GetEmail() ?? "Not specified"); //Append email for CT only
         CleverTapBinding.RecordEvent(eventName, ConvertToStringObjectDictionary(data));
+    }
+
+    public void SendChargeEvent(Dictionary<string, object> chargeDetails, List<Dictionary<string, object>> items)
+    {
+        if (Application.isEditor) //Stops android exception
+            return;
+
+        chargeDetails?.Add(AnalyticParameters.ParamUserEmail, userWebManager.GetEmail() ?? "Not specified"); //Append email for CT only
+        CleverTapBinding.RecordChargedEventWithDetailsAndItems(chargeDetails, items);
     }
 }

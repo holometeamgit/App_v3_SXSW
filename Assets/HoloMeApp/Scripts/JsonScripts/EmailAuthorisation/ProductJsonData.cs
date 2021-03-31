@@ -6,11 +6,11 @@ using System;
 [Serializable]
 public class ProductJsonData
 {
-    public List<ProductElement> products;
+    public List<ProductElement> product;
 
     public ProductJsonData()
     {
-        products = new List<ProductElement>();
+        product = new List<ProductElement>();
     }
 
     [Serializable]

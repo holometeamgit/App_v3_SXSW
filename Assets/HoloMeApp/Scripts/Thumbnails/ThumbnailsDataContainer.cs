@@ -9,8 +9,6 @@ public class ThumbnailsDataContainer {
 
     private ThumbnailPriority thumbnailPriority;
 
-    StreamDataEqualityComparer streamDataEqualityComparer;
-
     Dictionary<long, StreamJsonData.Data> streamDataDictionary;
     List<StreamJsonData.Data> streamData;
 
@@ -18,15 +16,13 @@ public class ThumbnailsDataContainer {
         this.thumbnailPriority = thumbnailPriority;
         streamDataDictionary = new Dictionary<long, StreamJsonData.Data>();
         streamData = new List<StreamJsonData.Data>();
-
-        streamDataEqualityComparer = new StreamDataEqualityComparer();
     }
 
     public List<StreamJsonData.Data> GetDataList() {
         return streamData;
     }
 
-    public void Refresh() {
+    public void Clear() {
         streamDataDictionary.Clear();
         streamData.Clear();
     }
@@ -47,7 +43,7 @@ public class ThumbnailsDataContainer {
             //if (data.id == 796)
                 HelperFunctions.DevLog("ThumbnailsDataContainer AddStreamJsonData id = " + data.id + "is bought = " + data.is_bought);
 
-            if (!streamDataEqualityComparer.Equals(prevStreamData, data)) {
+            if (!ObjectComparer.Equals(prevStreamData, data)) {
 
                 prevStreamData.Update(data);
             } 

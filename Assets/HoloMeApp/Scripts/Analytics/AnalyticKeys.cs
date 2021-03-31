@@ -1,8 +1,7 @@
 ﻿public class AnalyticKeys {
     public const string KeyRegistrationComplete = "registrationComplete";
     public const string KeyRegistrationDropOff = "registrationDroppedOff";
-    public const string KeyShareHologramPressed = "shareHologramPressed";
-    public const string KeyShareVideoPressed = "shareHologramRecordingPressed";
+    public const string KeyShareHologramMediaPressed = "shareHologramRecordingPressed";
     public const string KeySnapshotShared = "hologramSnapshotShared";
     public const string KeyVideoShared = "hologramVideoShared";
     public const string KeyHologramViewPercentage = "hologramViewPercentage";
@@ -25,10 +24,12 @@
 
 public class AnalyticParameters{
     public const string ParamUserID = "userID";
+    public const string ParamUserEmail = "userEmail";
     public const string ParamVideoName = "videoName";
     public const string ParamUserType = "userType";
     public const string ParamViewer = "viewer";
     public const string ParamBroadcaster = "broadcaster";
     public const string ParamProductID = "productId";
     public const string ParamProductPrice = "amount";
+    public const string ParamBroadcasterUserID = "broadcasterUserId";
 }

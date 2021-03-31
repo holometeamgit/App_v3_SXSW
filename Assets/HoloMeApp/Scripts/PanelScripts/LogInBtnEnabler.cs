@@ -23,6 +23,12 @@ public class LogInBtnEnabler : MonoBehaviour
     [SerializeField]
     GameObject LogInGoogleGO;
 
+    public void CheckPlatform() {
+#if !UNITY_IOS
+        LogInAppleGO.SetActive(false);
+#endif
+    }
+
     private void EnableFB(long key, string body) {
         try {
             Providers providers = JsonUtility.FromJson<Providers>(body);
@@ -38,6 +44,7 @@ public class LogInBtnEnabler : MonoBehaviour
     }
 
     private void OnEnable() {
+        CheckPlatform();
         webRequestHandler.GetRequest(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, null);
     }
 }

@@ -38,8 +38,8 @@ namespace Beem.Firebase.DynamicLink {
                             dynamicLinkEventArgs.ReceivedDynamicLink.Url.OriginalString);
         }
 
-        private void CreateShortLink(string prefix, string id) {
-            string baseLink = prefix + "/" + id;
+        private void CreateShortLink(string prefix, string parameterName, string id, string url) {
+            string baseLink = prefix + "/"+ parameterName+"/" + id;
             var components = new DynamicLinkComponents(
          // The base Link.
          new Uri(baseLink),
@@ -48,15 +48,17 @@ namespace Beem.Firebase.DynamicLink {
                 IOSParameters = new IOSParameters(Application.identifier) {
                     AppStoreId = APPSTORE_ID
                 },
-                AndroidParameters = new AndroidParameters(Application.identifier)
+                AndroidParameters = new AndroidParameters(Application.identifier),
             };
+
+            Uri desktopLink = new Uri(components.LongDynamicLink.AbsoluteUri + "&ofl="+ url);
 
             var options = new DynamicLinkOptions {
                 PathLength = DynamicLinkPathLength.Short
             };
 
             var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            DynamicLinks.GetShortLinkAsync(components, options).ContinueWith(task => {
+            DynamicLinks.GetShortLinkAsync(desktopLink, options).ContinueWith(task => {
                 if (task.IsCanceled) {
                     Debug.LogError("GetShortLinkAsync was canceled.");
                     return;

@@ -137,8 +137,6 @@ public class UIThumbnailV3 : UIThumbnail {
     private void UpdateData() {
         UpdateTexture();
 
-        HelperFunctions.DevLog("UIThumbnailV3 UpdateData id = " + thumbnailElement.Data.id + " is bought = " + thumbnailElement.Data.is_bought);
-
         bool isLive = thumbnailElement.Data.GetStage() == StreamJsonData.Data.Stage.Live;
         imgLive.gameObject.SetActive(isLive);
         txtTime.gameObject.SetActive(!isLive);

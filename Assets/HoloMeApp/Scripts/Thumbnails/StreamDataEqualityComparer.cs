@@ -12,9 +12,19 @@ public class StreamDataEqualityComparer : IEqualityComparer<StreamJsonData.Data>
 
         return x.id == y.id &&
             x.preview_s3_url == y.preview_s3_url &&
+            x.preview_teaser_s3_url == y.preview_teaser_s3_url &&
             x.stream_s3_url == y.stream_s3_url &&
+            x.teaser_s3_url == y.teaser_s3_url &&
             x.user == y.user &&
+            x.paid_type == y.paid_type &&
+            x.is_bought == y.is_bought &&
+
+            x.product_type.name == y.product_type.name &&
+            x.product_type.product_id == y.product_type.product_id &&
+            x.product_type.price == y.product_type.price &&
+
             x.status == y.status &&
+            x.is_pin == y.is_pin &&
             x.agora_sid == y.agora_sid &&
             x.agora_channel == y.agora_channel &&
             x.file_name_prefix == y.file_name_prefix &&
