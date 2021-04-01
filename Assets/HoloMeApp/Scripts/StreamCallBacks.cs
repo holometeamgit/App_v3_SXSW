@@ -9,5 +9,6 @@ public class StreamCallBacks {
     public static Action onOpenRoom = delegate { };
     public static Action onCancelOpenRoom = delegate { };
     public static Action onGetMyRoomLink = delegate { };
-    public static Action<string> onMyRoomLinkReceived = delegate { };
+
+    public static Action<string> onStreamLinkReceived = delegate { };
 }
