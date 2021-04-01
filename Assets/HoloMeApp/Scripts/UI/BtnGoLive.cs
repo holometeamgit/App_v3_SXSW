@@ -12,6 +12,9 @@ public class BtnGoLive : MonoBehaviour
 
     public void GoLive() {
         if (permissionController.CheckCameraMicAccess())
+        {
+            AnalyticsCleverTapController.Instance.SendCustomEvent(AnalyticKeys.KeyGoLive, new Dictionary<string, string>() { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID } });
             OnGoLive.Invoke();
+        }
     }
 }

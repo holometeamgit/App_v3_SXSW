@@ -20,6 +20,14 @@ public class AnalyticsController : MonoBehaviour
     [SerializeField]
     UserWebManager userWebManager;
 
+    public string GetUserID
+    {
+        get
+        {
+            return userWebManager.GetUserID().ToString();
+        }
+    }
+
     private void Awake()
     {
         if (Instance == null)

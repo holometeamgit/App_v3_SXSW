@@ -237,6 +237,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     void StartStream() {
+        AnalyticsCleverTapController.Instance.SendCustomEvent(AnalyticKeys.KeyLiveStarted,  new System.Collections.Generic.Dictionary<string, string> { {AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }});
         fluidToggle.ToggleInteractibility(false);
         agoraController.JoinOrCreateChannel(true);
         EnableStreamControls(true);
