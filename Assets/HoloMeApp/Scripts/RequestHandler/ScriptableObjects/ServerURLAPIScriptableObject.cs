@@ -41,6 +41,17 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     }
 
     [SerializeField]
+    private string stream = "stream";
+
+    public string Stream
+    {
+        get
+        {
+            return stream;
+        }
+    }
+
+    [SerializeField]
     private string app = "App";
 
     public string App {

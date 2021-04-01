@@ -28,29 +28,37 @@ public class DeepLinkHandler : MonoBehaviour {
     }
 
     private void GetRoomParameters(Uri uri) {
-        if (IsRoom(uri))
+        if (IsFolder(uri, serverURLAPIScriptableObject.Room))
         {
             HelperFunctions.DevLog("GetRoomParameters");
 
-            string roomId = GetRoom(uri);
+            string roomId = GetId(uri, serverURLAPIScriptableObject.Room);
 
             HelperFunctions.DevLog("roomId = " + roomId);
             StreamCallBacks.onRoomLinkReceived?.Invoke(roomId);
         }
+        else if(IsFolder(uri, serverURLAPIScriptableObject.Stream)) {
+            HelperFunctions.DevLog("GetStreamParameters");
+
+            string streamId = GetId(uri, serverURLAPIScriptableObject.Stream);
+
+            HelperFunctions.DevLog("streamId = " + streamId);
+            StreamCallBacks.onStreamLinkReceived?.Invoke(streamId);
+        }
     }
 
-    private bool IsRoom(Uri uri) {
-          return uri.LocalPath.Contains(serverURLAPIScriptableObject.Room);
+    private bool IsFolder(Uri uri, string folder) {
+          return uri.LocalPath.Contains(folder);
     }
 
-    private string GetRoom(Uri uri)
+    private string GetId(Uri uri, string folder)
     {
         string localPath = uri.LocalPath;
         localPath = localPath.Substring(1, localPath.Length - 1);
         string[] split = localPath.Split('/');
         for (int i = 0; i < split.Length; i++)
         {
-            if (split[i].Contains(serverURLAPIScriptableObject.Room) && i < split.Length-1)
+            if (split[i].Contains(folder) && i < split.Length-1)
             {
                 return split[i+1];
             }

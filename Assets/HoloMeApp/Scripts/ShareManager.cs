@@ -10,13 +10,13 @@ public class ShareManager : MonoBehaviour {
 
     private void OnEnable()
     {
-        DynamicLinksCallBacks.onGetShortLink += ShareRoom;
+        DynamicLinksCallBacks.onGetShortLink += ShareStream;
         DynamicLinksCallBacks.onShareLink += ShareApp;
     }
 
     private void OnDisable()
     {
-        DynamicLinksCallBacks.onGetShortLink -= ShareRoom;
+        DynamicLinksCallBacks.onGetShortLink -= ShareStream;
         DynamicLinksCallBacks.onShareLink -= ShareApp;
     }
 
@@ -27,8 +27,8 @@ public class ShareManager : MonoBehaviour {
         ShareLink(link);
     }
 
-    private void ShareRoom(Uri link) {
-        string msg = "Come to my room: " + link.AbsoluteUri;
+    private void ShareStream(Uri link) {
+        string msg = "Come to my stream: " + link.AbsoluteUri;
         HelperFunctions.DevLog(msg);
         ShareLink(link);
     }
