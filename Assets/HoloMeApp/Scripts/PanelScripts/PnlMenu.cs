@@ -18,7 +18,8 @@ public class PnlMenu : MonoBehaviour
     }
 
     private void UpdateUI() {
-        txtUsername.text = userWebManager.GetUsername();
+        if(txtUsername != null)
+            txtUsername.text = userWebManager.GetUsername();
         goLiveBtn.SetActive(userWebManager.CanGoLive());
         myRoomBtn.SetActive(userWebManager.CanStartRoom());
     }
