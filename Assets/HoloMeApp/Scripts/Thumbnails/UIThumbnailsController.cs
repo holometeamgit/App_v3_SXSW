@@ -65,8 +65,8 @@ public class UIThumbnailsController : MonoBehaviour {
     /// Play live stream from user 
     /// </summary>
 
-    public void PlayLiveStream(string user, string agoraChannel) { //TODO split it to ather class
-        pnlStreamOverlay.OpenAsViewer(agoraChannel);
+    public void PlayLiveStream(string user, string agoraChannel, string streamID) { //TODO split it to ather class
+        pnlStreamOverlay.OpenAsViewer(agoraChannel, streamID);
         OnPlayFromUser?.Invoke(user);
     }
 
@@ -154,7 +154,7 @@ public class UIThumbnailsController : MonoBehaviour {
             pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, data ,null, false);
             OnPlayFromUser?.Invoke(data.user);
         } else if (data.HasAgoraChannel) {
-            PlayLiveStream(data.user, data.agora_channel);
+            PlayLiveStream(data.user, data.agora_channel, data.id);
         }
     }
 

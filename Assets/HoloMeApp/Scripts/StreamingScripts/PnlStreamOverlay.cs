@@ -158,7 +158,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.StartPreview();
     }
 
-    public void OpenAsViewer(string channelName) {
+    public void OpenAsViewer(string channelName, string streamID) {
         Init();
         ToggleRoomShareControlObjects(false);
         agoraController.IsChannelCreator = false;
@@ -167,7 +167,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         gameObject.SetActive(true);
         controlsPresenter.SetActive(false);
         controlsViewer.SetActive(true);
-        pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName);
+        pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName, streamID);
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
     }
@@ -237,7 +237,6 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     void StartStream() {
-        AnalyticsCleverTapController.Instance.SendCustomEvent(AnalyticKeys.KeyLiveStarted,  new System.Collections.Generic.Dictionary<string, string> { {AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }});
         fluidToggle.ToggleInteractibility(false);
         agoraController.JoinOrCreateChannel(true);
         EnableStreamControls(true);

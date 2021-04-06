@@ -186,11 +186,11 @@ public class PnlViewingExperience : MonoBehaviour
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, false));
         }
     }
-    public void ActivateForStreaming(string channelName)
+    public void ActivateForStreaming(string channelName, string streamID)
     {
         StopExperience();
         SharedActivationFunctions();
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, "Live Stream: " + channelName} });
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, "Live Stream: " + channelName} ,{ AnalyticParameters.ParamPerformanceID, streamID} });
         isTeaser = false;
         activatedForStreaming = true;
         btnBurger.SetActive(false); //Close button not required on this page

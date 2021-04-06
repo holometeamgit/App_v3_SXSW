@@ -14,7 +14,7 @@ public class SecondaryServerCalls : MonoBehaviour {
     [SerializeField]
     AccountManager accountManager;
 
-    public Action<string, string> OnStreamStarted;
+    public Action<string, string, int> OnStreamStarted;
     string streamName;
     bool isRoom;
 
@@ -120,7 +120,7 @@ public class SecondaryServerCalls : MonoBehaviour {
         streamStartResponseJsonData = JsonUtility.FromJson<StreamStartResponseJsonData>(data);
         
         if (streamStartResponseJsonData != null)
-            OnStreamStarted?.Invoke(tokenAgoraResponse.token, tokenAgoraResponse.token);
+            OnStreamStarted?.Invoke(tokenAgoraResponse.token, tokenAgoraResponse.token, streamStartResponseJsonData.id);
         else
             Debug.LogError("CREATE STREAM PARSE FAILED");
     }
