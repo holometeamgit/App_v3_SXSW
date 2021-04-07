@@ -24,6 +24,7 @@ public class PnlMenu : MonoBehaviour
     }
 
     private void OnEnable() {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticParameters.ParamSettingsPanel);
         userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
         userWebManager.LoadUserInfo();
 

@@ -30,14 +30,17 @@
 
 public class AnalyticParameters{
     public const string ParamUserID = "userID";
+    public const string ParamProductID = "productId";
+    public const string ParamBroadcasterUserID = "broadcasterUserId";
+    public const string ParamPerformanceID = "performanceID";
     public const string ParamUserEmail = "userEmail";
-    public const string ParamVideoName = "videoName";
-    public const string ParamEventName = "eventName";
     public const string ParamUserType = "userType";
     public const string ParamViewer = "viewer";
     public const string ParamBroadcaster = "broadcaster";
-    public const string ParamProductID = "productId";
+    public const string ParamVideoName = "videoName";
+    public const string ParamEventName = "eventName";
     public const string ParamProductPrice = "amount";
-    public const string ParamBroadcasterUserID = "broadcasterUserId";
-    public const string ParamPerformanceID = "performanceID";
+    
+    public const string ParamHomeScreen = "homeScreen";
+    public const string ParamSettingsPanel = "settings";
 }

@@ -217,7 +217,7 @@ public class AgoraController : MonoBehaviour {
         if (IsChannelCreator) {
                 iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
                 SetEncoderSettings();
-                AnalyticsCleverTapController.Instance.SendCustomEvent(AnalyticKeys.KeyLiveStarted, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID },{ AnalyticParameters.ParamPerformanceID, streamID.ToString() } });
+                AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[]{ AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance} ,AnalyticKeys.KeyLiveStarted, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID },{ AnalyticParameters.ParamPerformanceID, streamID.ToString() } });
         } else {
                 liveStreamQuad.SetActive(true);
                 iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_AUDIENCE);
