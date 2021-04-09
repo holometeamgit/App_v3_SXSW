@@ -59,6 +59,7 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
 
         Dictionary<string, string> loginDetails = new Dictionary<string, string>();
         loginDetails.Add("Email", userWebManager.GetEmail());
+        loginDetails.Add("Name", userWebManager.GetUsername());
         loginDetails.Add("Username", userWebManager.GetUsername());
         loginDetails.Add("UserID", userWebManager.GetUserID().ToString());
         CleverTapBinding.OnUserLogin(loginDetails);
