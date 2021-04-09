@@ -30,6 +30,23 @@ public class UIThumbnailsController : MonoBehaviour {
     //    pnlViewingExperience.ToggleARSessionObjects(false);
     //}
 
+    public void Buy(StreamJsonData.Data data) {
+        purchaseManager.SetPurchaseStreamData(data);
+        purchaseManager.Purchase();
+    }
+
+    public void PlayStream(StreamJsonData.Data data) {
+        if (!permissionController.CheckCameraAccess())
+            return;
+
+        if (data.HasStreamUrl) {
+            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, data, null, false);
+            OnPlayFromUser?.Invoke(data.user);
+        } else if (data.HasAgoraChannel) {
+            PlayLiveStream(data.user, data.agora_channel);
+        }
+    }
+
     public void SetStreamJsonData(List<StreamJsonData.Data> data) {
         dataList = data;
     }
@@ -133,28 +150,11 @@ public class UIThumbnailsController : MonoBehaviour {
 
     #endregion
 
-    private void Buy(StreamJsonData.Data data) {
-        purchaseManager.SetPurchaseStreamData(data);
-        purchaseManager.Purchase();
-    }
-
     private void Play(StreamJsonData.Data data) {
         if (data.is_bought && data.IsStarted) {
             PlayStream(data);
         } else if (data.HasTeaser) {
             PlayTeaser(data);
-        }
-    }
-
-    private void PlayStream(StreamJsonData.Data data) {
-        if (!permissionController.CheckCameraAccess())
-            return;
-
-        if (data.HasStreamUrl) {
-            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, data ,null, false);
-            OnPlayFromUser?.Invoke(data.user);
-        } else if (data.HasAgoraChannel) {
-            PlayLiveStream(data.user, data.agora_channel);
         }
     }
 
