@@ -43,7 +43,7 @@ public class UIThumbnailsController : MonoBehaviour {
             pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, data, null, false);
             OnPlayFromUser?.Invoke(data.user);
         } else if (data.HasAgoraChannel) {
-            PlayLiveStream(data.user, data.agora_channel);
+            PlayLiveStream(data.user, data.agora_channel, data.id.ToString());
         }
     }
 
@@ -82,8 +82,8 @@ public class UIThumbnailsController : MonoBehaviour {
     /// Play live stream from user 
     /// </summary>
 
-    public void PlayLiveStream(string user, string agoraChannel) { //TODO split it to ather class
-        pnlStreamOverlay.OpenAsViewer(agoraChannel);
+    public void PlayLiveStream(string user, string agoraChannel, string streamId) { 
+        pnlStreamOverlay.OpenAsViewer(agoraChannel, streamId);
         OnPlayFromUser?.Invoke(user);
     }
 
@@ -142,7 +142,11 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetPlayAction(Play);
             btnThumbnailItems[i].SetTeaserPlayAction(PlayTeaser);
             btnThumbnailItems[i].SetBuyAction(Buy);
-            btnThumbnailItems[i].SetShareAction((_) => { DynamicLinksCallBacks.onShareLink?.Invoke(); AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed); });
+            btnThumbnailItems[i].SetShareAction( (data) => {
+                    //btnThumbnailItems[i]
+                    StreamCallBacks.onGetStreamLink?.Invoke(data.id.ToString());
+                    AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
+                });
             btnThumbnailItems[i].LockToPress(false);
         }
         OnUpdated?.Invoke();

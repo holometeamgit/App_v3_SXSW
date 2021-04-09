@@ -74,14 +74,15 @@ public class PnlStreamOverlay : MonoBehaviour {
     bool isStreamer;
     bool isUsingFrontCamera;
     VideoSurface videoSurface;
+    string currentStreamId = "";
 
     //Vector3 rawImageQuadDefaultScale;
 
-     void Init() {
+    void Init() {
         if (initialised)
             return;
 
-        btnShareYourRoom.onClick.AddListener(ShareRoomStream);
+        btnShareYourRoom.onClick.AddListener(ShareRoomStreamLink);
 
         //if (rawImageQuadDefaultScale == Vector3.zero)
         //    rawImageQuadDefaultScale = cameraRenderImage.transform.localScale;
@@ -120,17 +121,16 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
     }
 
-    private void ToggleRoomShareControlObjects(bool showShareButton)
-    {
+    private void ToggleRoomShareControlObjects(bool showShareButton) {
         btnShareYourRoom.gameObject.SetActive(showShareButton);
-        foreach(GameObject go in hiddenControlsDuringRoomShare)
-        {
+        foreach (GameObject go in hiddenControlsDuringRoomShare) {
             go.SetActive(!showShareButton);
         }
     }
 
     public void OpenAsRoomBroadcaster() {
         Init();
+        currentStreamId = "";
         agoraController.IsRoom = true;
         ToggleRoomShareControlObjects(true);
         StreamerOpenSharedFunctions();
@@ -138,6 +138,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void OpenAsStreamer() {
         Init();
+        currentStreamId = "";
         agoraController.IsRoom = false;
         ToggleRoomShareControlObjects(false);
         StreamerOpenSharedFunctions();
@@ -158,7 +159,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.StartPreview();
     }
 
-    public void OpenAsViewer(string channelName) {
+    public void OpenAsViewer(string channelName, string streamId) {
         Init();
         ToggleRoomShareControlObjects(false);
         agoraController.IsChannelCreator = false;
@@ -170,6 +171,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName);
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
+        currentStreamId = streamId;
     }
 
     public void FadePanel(bool show) {
@@ -179,7 +181,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     public void ShowLeaveWarning() {
 
         if (!agoraController.IsLive && isStreamer)
-            CloseAsStreamer();        
+            CloseAsStreamer();
         else if (isStreamer)
             pnlGenericError.ActivateDoubleButton("End the live stream?",
                 "Closing this page will end the live stream and disconnect your users.",
@@ -206,16 +208,11 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void ShareStream() {
         if (isStreamer && agoraController.IsRoom) {
-            ShareRoomStream();
+            ShareRoomStreamLink();
         } else {
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
-            DynamicLinksCallBacks.onShareLink?.Invoke();
+            ShareStreamLink();
         }
-    }
-
-    void ShareRoomStream()
-    {
-        StreamCallBacks.onGetMyRoomLink?.Invoke();
     }
 
     public void StartCountdown() {
@@ -225,15 +222,27 @@ public class PnlStreamOverlay : MonoBehaviour {
     public void StopStream() {
         HelperFunctions.DevLog(nameof(StopStream) + " was called");
 
-        if(agoraController.IsLive) //Check needed as Stop Stream is being called when enabled by unity events causing this to start off disabled
+        if (agoraController.IsLive) //Check needed as Stop Stream is being called when enabled by unity events causing this to start off disabled
             fluidToggle.ToggleInteractibility(false);
-        
+
         if (countdownRoutine != null)
             StopCoroutine(countdownRoutine);
 
         EnableStreamControls(false);
         agoraController.Leave();
         cameraRenderImage.texture = null;
+    }
+
+
+    void ShareRoomStreamLink() {
+        StreamCallBacks.onGetMyRoomLink?.Invoke();
+    }
+
+    private void ShareStreamLink() {
+        if (!string.IsNullOrWhiteSpace(currentStreamId))
+            StreamCallBacks.onGetStreamLink?.Invoke(currentStreamId);
+        else
+            DynamicLinksCallBacks.onShareAppLink?.Invoke();
     }
 
     void StartStream() {
@@ -260,7 +269,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         videoSurface.SetEnable(true);
         cameraRenderImage.color = Color.black;
 
-        if(!agoraController.VideoIsReady || cameraRenderImage.texture == null)
+        if (!agoraController.VideoIsReady || cameraRenderImage.texture == null)
             AnimatedCentreTextMessage("Loading Preview");
 
         while (!agoraController.VideoIsReady || cameraRenderImage.texture == null) {
@@ -322,6 +331,10 @@ public class PnlStreamOverlay : MonoBehaviour {
         txtCentreMessage.DOFade(0, .5f).SetDelay(delay).SetId(tweenAnimationID);
     }
 
+    private void Awake() {
+        StreamCallBacks.onLiveStreamCreated += (id) => { currentStreamId = id; };
+    }
+
     private void OnDisable() {
         StopAllCoroutines();
         pnlViewingExperience.ToggleARSessionObjects(true);
@@ -329,10 +342,9 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     IEnumerator OnApplicationFocus(bool hasFocus) //Potential fix for bug where audio and video are re-enabled after losing focus from sharing or minimising
     {
-        if (hasFocus)
-        {
+        if (hasFocus) {
             yield return new WaitForEndOfFrame();
-            
+
             //HelperFunctions.DevLog("ON FOCUS CALLED");
 
             if (toggleAudio.isOn)
