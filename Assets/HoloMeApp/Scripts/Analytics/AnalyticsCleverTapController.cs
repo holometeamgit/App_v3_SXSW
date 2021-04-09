@@ -62,6 +62,7 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
         loginDetails.Add("Name", userWebManager.GetUsername());
         loginDetails.Add("Username", userWebManager.GetUsername());
         loginDetails.Add("UserID", userWebManager.GetUserID().ToString());
+        loginDetails.Add("Identity", userWebManager.GetUserID().ToString());
         CleverTapBinding.OnUserLogin(loginDetails);
                        
         //Debug.Log("USER LONG INFO PASSED CT2");
