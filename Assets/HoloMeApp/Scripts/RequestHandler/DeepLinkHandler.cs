@@ -28,8 +28,7 @@ public class DeepLinkHandler : MonoBehaviour {
     }
 
     private void GetRoomParameters(Uri uri) {
-        if (IsFolder(uri, serverURLAPIScriptableObject.Room))
-        {
+        if (IsFolder(uri, serverURLAPIScriptableObject.Room)){
             HelperFunctions.DevLog("GetRoomParameters");
 
             string roomId = GetId(uri, serverURLAPIScriptableObject.Room);
@@ -37,13 +36,17 @@ public class DeepLinkHandler : MonoBehaviour {
             HelperFunctions.DevLog("roomId = " + roomId);
             StreamCallBacks.onRoomLinkReceived?.Invoke(roomId);
         }
-        else if(IsFolder(uri, serverURLAPIScriptableObject.Stream)) {
+        else if (IsFolder(uri, serverURLAPIScriptableObject.Stream)){
             HelperFunctions.DevLog("GetStreamParameters");
 
             string streamId = GetId(uri, serverURLAPIScriptableObject.Stream);
 
             HelperFunctions.DevLog("streamId = " + streamId);
             StreamCallBacks.onStreamLinkReceived?.Invoke(streamId);
+        }
+        else if (IsFolder(uri, serverURLAPIScriptableObject.NotificationAccess)) { 
+            PermissionController permissionController = FindObjectOfType<PermissionController>();
+            permissionController.CheckPushNotifications();
         }
     }
 
