@@ -55,6 +55,10 @@ public class PnlCameraAccessCheckiOS : MonoBehaviour, IPermissionGranter
 
     public void RequestCameraAccess()
     {
+        RequestSettings();
+    }
+
+    public void RequestSettings() {
 #if UNITY_IOS && !UNITY_EDITOR
         string url = iOSSettingsOpenerBindings.GetSettingsURL();
         Application.OpenURL(url);
@@ -67,10 +71,7 @@ public class PnlCameraAccessCheckiOS : MonoBehaviour, IPermissionGranter
             Application.RequestUserAuthorization(UserAuthorization.Microphone);
             MicRequestComplete = true;
         } else {
-#if UNITY_IOS && !UNITY_EDITOR
-        string url = iOSSettingsOpenerBindings.GetSettingsURL();
-        Application.OpenURL(url);
-#endif
+            RequestSettings();
         }
     }
 
