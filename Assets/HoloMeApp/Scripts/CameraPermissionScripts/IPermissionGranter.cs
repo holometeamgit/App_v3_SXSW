@@ -11,4 +11,6 @@
     void RequestMicAccess();
     void RequestWriteAccess();
     void RequestCameraAccess();
+
+    void RequestSettings();
 }
