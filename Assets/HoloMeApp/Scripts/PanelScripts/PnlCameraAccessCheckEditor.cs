@@ -24,6 +24,11 @@ public class PnlCameraAccessCheckEditor : MonoBehaviour, IPermissionGranter
         Debug.Log($"{nameof(PnlCameraAccessCheckEditor)} Requested Mic Access Editor");
     }
 
+    public void RequestSettings()
+    {
+        Debug.Log($"{nameof(PnlCameraAccessCheckEditor)} Requested Settings Editor");
+    }
+
     public void RequestWriteAccess()
     {
         Debug.Log($"{nameof(PnlCameraAccessCheckEditor)} Requested Write Access Editor");

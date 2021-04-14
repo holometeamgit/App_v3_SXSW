@@ -27,6 +27,10 @@ public class ThumbnailsDataContainer {
         streamData.Clear();
     }
 
+    public bool ContainStream(long id) {
+        return streamDataDictionary.ContainsKey(id);
+    }
+
     public void AddListStreamJsonData(StreamJsonData newStreamData) {
 
         foreach (var data in newStreamData.results) {

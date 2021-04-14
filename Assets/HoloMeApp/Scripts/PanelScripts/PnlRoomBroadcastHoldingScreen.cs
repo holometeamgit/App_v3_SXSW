@@ -11,7 +11,7 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
     [SerializeField] ServerURLAPIScriptableObject serverURLAPIScriptable;
     [SerializeField] AccountManager accountManager;
     [SerializeField] UIThumbnailsController uiThumbnailsController;
-    [SerializeField] RoomLinkHandler roomLinkHandler;
+    [SerializeField] ContentLinkHandler contentLinkHandler;
 
     private string currentRoomId = "";
 
@@ -36,7 +36,7 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
             RepeatGetRoom(roomJsonData.agora_channel);
         } else {
             liveRoomWasFound = true;
-            uiThumbnailsController.PlayLiveStream(roomJsonData.agora_channel, roomJsonData.agora_channel);
+            uiThumbnailsController.PlayLiveStream(roomJsonData.agora_channel, roomJsonData.agora_channel, roomJsonData.id);
         }
     }
 
@@ -61,7 +61,9 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
 
     private void OnEnable() {
         liveRoomWasFound = false;
-        currentRoomId = roomLinkHandler.PopRoomId();
+        if (contentLinkHandler.HasContentId(ContentLinkHandlerType.Room)) {
+            currentRoomId = contentLinkHandler.PopContentId();
+        }
         if (string.IsNullOrWhiteSpace(currentRoomId)) {
             RectInfo.SetActive(true);
         } else {

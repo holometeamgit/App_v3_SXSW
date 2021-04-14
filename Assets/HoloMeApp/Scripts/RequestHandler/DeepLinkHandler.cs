@@ -16,7 +16,7 @@ public class DeepLinkHandler : MonoBehaviour {
         Uri uri = new Uri(uriStr);
 
         HelperFunctions.DevLog("Dynamic link: " + uriStr);
-        GetRoomParameters(uri);
+        GetContentsParameters(uri);
     }
 
     private void Awake() {
@@ -27,9 +27,9 @@ public class DeepLinkHandler : MonoBehaviour {
         DynamicLinksCallBacks.onReceivedDeepLink -= OnDynamicLinkActivated;
     }
 
-    private void GetRoomParameters(Uri uri) {
-        if (IsFolder(uri, serverURLAPIScriptableObject.Room))
-        {
+
+    private void GetContentsParameters(Uri uri) {
+        if (IsFolder(uri, serverURLAPIScriptableObject.Room)){
             HelperFunctions.DevLog("GetRoomParameters");
 
             string roomId = GetId(uri, serverURLAPIScriptableObject.Room);
@@ -37,13 +37,17 @@ public class DeepLinkHandler : MonoBehaviour {
             HelperFunctions.DevLog("roomId = " + roomId);
             StreamCallBacks.onRoomLinkReceived?.Invoke(roomId);
         }
-        else if(IsFolder(uri, serverURLAPIScriptableObject.Stream)) {
+        else if (IsFolder(uri, serverURLAPIScriptableObject.Stream)){
             HelperFunctions.DevLog("GetStreamParameters");
 
             string streamId = GetId(uri, serverURLAPIScriptableObject.Stream);
 
             HelperFunctions.DevLog("streamId = " + streamId);
             StreamCallBacks.onStreamLinkReceived?.Invoke(streamId);
+        }
+        else if (IsFolder(uri, serverURLAPIScriptableObject.NotificationAccess)) { 
+            PermissionController permissionController = FindObjectOfType<PermissionController>();
+            permissionController.CheckPushNotifications();
         }
     }
 
