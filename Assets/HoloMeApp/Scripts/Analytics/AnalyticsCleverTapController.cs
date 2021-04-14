@@ -26,6 +26,12 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
             //            disableTracking = true;
             //#endif
             //cleverTapUnityComponent = gameObject.AddComponent<CleverTapUnity>();
+
+            if (cleverTapUnityComponent == null)
+            {
+                cleverTapUnityComponent = FindObjectOfType<CleverTapUnity>();
+            }
+
             if (cleverTapUnityComponent.CLEVERTAP_ACCOUNT_ID != AccountID)
             {
                 Debug.LogError("CleverTap Account ID didn't match");

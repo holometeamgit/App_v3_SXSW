@@ -27,6 +27,11 @@ public class AnalyticsAppsFlyerController : AnalyticsLibraryAbstraction
             //#endif
             //appsFlyerObjectComponent = gameObject.AddComponent<AppsFlyerObjectScript>();
 
+            if (appsFlyerObjectComponent == null)
+            {
+                appsFlyerObjectComponent = FindObjectOfType<AppsFlyerObjectScript>();
+            }
+
             if (appsFlyerObjectComponent.devKey != DevKey)
             {
                 Debug.LogError("AppsFlyer Account DevKey didn't match");
