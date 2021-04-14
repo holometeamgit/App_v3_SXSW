@@ -52,6 +52,17 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     }
 
     [SerializeField]
+    private string notificationAccess = "NotificationAccess";
+
+    public string NotificationAccess
+    {
+        get
+        {
+            return notificationAccess;
+        }
+    }
+
+    [SerializeField]
     private string app = "App";
 
     public string App {
