@@ -15,26 +15,14 @@ public class ContentLinkHandler : MonoBehaviour
     }
 
     private void Awake() {
-        StreamCallBacks.onRoomLinkReceived += (id) => {
-            contentId = id;
-            contentLinkHandlerType = ContentLinkHandlerType.Room;
-            StreamCallBacks.onOpenRoom?.Invoke();
-        };
-
-        StreamCallBacks.onStreamLinkReceived += (id) => {
-            HelperFunctions.DevLog("onStreamLinkReceived " + id);
-            contentId = id;
-            contentLinkHandlerType = ContentLinkHandlerType.Stream;
-            StreamCallBacks.onOpenStream?.Invoke();
-        };
-
-        StreamCallBacks.onCancelOpenContent += () => PopContentId();
+        StreamCallBacks.onRoomLinkReceived += OnRoomLinkReceive;
+        StreamCallBacks.onStreamLinkReceived += OnStreamLinkReceive;
+        StreamCallBacks.onCancelOpenContent += OnClear;
     }
 
     public string PopContentId() {
         string popString = ContentId;
-        contentId = "";
-        contentLinkHandlerType = ContentLinkHandlerType.None;
+        OnClear();
         return popString;
     }
 
@@ -42,4 +30,29 @@ public class ContentLinkHandler : MonoBehaviour
         HelperFunctions.DevLog("HasRoomId type = " + contentLinkHandlerType + " id = " + !string.IsNullOrWhiteSpace(contentId));
         return contentLinkHandlerType == type && !string.IsNullOrWhiteSpace(contentId);
     }
+
+    private void OnClear() {
+        contentId = "";
+        contentLinkHandlerType = ContentLinkHandlerType.None;
+    }
+
+    private void OnRoomLinkReceive(string id) {
+        contentId = id;
+        contentLinkHandlerType = ContentLinkHandlerType.Room;
+        StreamCallBacks.onOpenRoom?.Invoke();
+    }
+
+    private void OnStreamLinkReceive(string id) {
+        HelperFunctions.DevLog("onStreamLinkReceived " + id);
+        contentId = id;
+        contentLinkHandlerType = ContentLinkHandlerType.Stream;
+        StreamCallBacks.onOpenStream?.Invoke();
+    }
+
+    private void OnDestroy() {
+        StreamCallBacks.onRoomLinkReceived -= OnRoomLinkReceive;
+        StreamCallBacks.onStreamLinkReceived -= OnStreamLinkReceive;
+        StreamCallBacks.onCancelOpenContent -= OnClear;
+    }
+
 }
