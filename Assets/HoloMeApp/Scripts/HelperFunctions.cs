@@ -21,6 +21,52 @@ public class HelperFunctions
         return Application.persistentDataPath + "/";
     }
 
+    public static T GetTypeIfNull<T>(MonoBehaviour behaviour) where T : MonoBehaviour
+    {
+        if (behaviour == null)
+        {
+            if (Application.isEditor) //In the editor try getting a list of this type to check for duplicated via log message
+            {
+                var components = GameObject.FindObjectsOfType<T>();
+
+                if (components != null && components.Length > 0)
+                {
+                    if (components.Length > 1)
+                    {
+                        DevLogError($"More than one of type {components[0].GetType()} was found, this function should only find 1 monobehaviour in the scene");
+                    }
+                    if (components[0] == null)
+                    {
+                        Debug.LogError($"No component of type {behaviour} was found in the scene");
+                    }
+                    else
+                    {
+                        return components[0];
+                    }
+                }
+                else if (components == null || components.Length <= 0)
+                {
+                    Debug.LogError($"No component of type {behaviour} was found in the scene");
+                }
+            }
+            else
+            {
+                if (behaviour == null)
+                {
+                    var returnComponent = GameObject.FindObjectOfType<T>();
+                    if (returnComponent == null)
+                    {
+                        Debug.LogError($"No component of type {behaviour} was found in the scene");
+                    }
+
+                    return returnComponent;
+                }
+            }
+        }
+
+        return behaviour as T;
+    }
+
     public static string GetExtension(string filename)
     {
         if (filename.Contains(EXTJSON))
@@ -103,7 +149,8 @@ public class HelperFunctions
             Debug.Log(message);
     }
 
-    public static void DevLogError(string message) {
+    public static void DevLogError(string message)
+    {
         if (Application.isEditor || Debug.isDebugBuild)
             Debug.LogError(message);
     }
