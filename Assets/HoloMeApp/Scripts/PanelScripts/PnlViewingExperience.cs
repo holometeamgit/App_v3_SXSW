@@ -173,6 +173,7 @@ public class PnlViewingExperience : MonoBehaviour
     {
         //print($"PLAY CALLED - " + code);
         SharedActivationFunctions();
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, streamJsonData.title } });
         this.isTeaser = isTeaser;
         activatedForStreaming = false;
         btnBurger.SetActive(true);
@@ -185,11 +186,12 @@ public class PnlViewingExperience : MonoBehaviour
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, false));
         }
     }
-    public void ActivateForStreaming(string channelName)
+    public void ActivateForStreaming(string channelName, string streamID)
     {
         StopExperience();
         SharedActivationFunctions();
-        this.isTeaser = false;
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, "Live Stream: " + channelName} ,{ AnalyticParameters.ParamPerformanceID, streamID} });
+        isTeaser = false;
         activatedForStreaming = true;
         btnBurger.SetActive(false); //Close button not required on this page
         hologramHandler.TogglePreRecordedVideoRenderer(false);

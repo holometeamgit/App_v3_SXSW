@@ -20,6 +20,14 @@ public class AnalyticsController : MonoBehaviour
     [SerializeField]
     UserWebManager userWebManager;
 
+    public string GetUserID
+    {
+        get
+        {
+            return userWebManager.GetUserID().ToString();
+        }
+    }
+
     private void Awake()
     {
         if (Instance == null)
@@ -46,6 +54,41 @@ public class AnalyticsController : MonoBehaviour
 #if DEV
         eventName = "dev_" + eventName;
 #endif
+    }
+
+    /// <summary>
+    /// Use this to send the same event through selected analytic controllers, this is for cases where you don't want to send an event through all controllers just a selected few
+    /// Auto appends userID
+    /// </summary>
+    public void SendCustomEventToSpecifiedControllers(AnalyticsLibraryAbstraction[] analyticsControllers, string eventName, Dictionary<string, string> data)
+    {
+        if (disableTracking)
+            return;
+
+        if (string.IsNullOrWhiteSpace(eventName))
+        {
+            Debug.LogError("Custom event name wasn't specified");
+            return;
+        }
+
+        AppendDevString(ref eventName);
+
+        HelperFunctions.DevLog($"Custom Event Sent {eventName} with data {data}");
+
+        if (userWebManager != null && userWebManager.GetUserID() != -1)
+        {
+            data.Add(AnalyticParameters.ParamUserID, userWebManager.GetUserID().ToString()); //Add user ID to tracking variable
+            data.Add(AnalyticParameters.ParamUserType, userWebManager.CanGoLive() ? AnalyticParameters.ParamBroadcaster : AnalyticParameters.ParamViewer);
+        }
+        else
+        {
+            Debug.LogError(nameof(UserWebManager) + " was null");
+        }
+
+        foreach (var analyticsController in analyticsControllers)
+        {
+            analyticsController.SendCustomEvent(eventName, data);
+        }               
     }
 
     public void SendCustomEvent(string eventName)

@@ -78,8 +78,8 @@ public class UIThumbnailsController : MonoBehaviour {
     /// Play live stream from user 
     /// </summary>
 
-    public void PlayLiveStream(string user, string agoraChannel, string streamId) { 
-        pnlStreamOverlay.OpenAsViewer(agoraChannel, streamId);
+    public void PlayLiveStream(string user, string agoraChannel, string streamID) { //TODO split it to ather class
+        pnlStreamOverlay.OpenAsViewer(agoraChannel, streamID);
         OnPlayFromUser?.Invoke(user);
     }
 

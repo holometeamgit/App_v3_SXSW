@@ -159,7 +159,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.StartPreview();
     }
 
-    public void OpenAsViewer(string channelName, string streamId) {
+    public void OpenAsViewer(string channelName, string streamID) {
         Init();
         ToggleRoomShareControlObjects(false);
         agoraController.IsChannelCreator = false;
@@ -168,7 +168,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         gameObject.SetActive(true);
         controlsPresenter.SetActive(false);
         controlsViewer.SetActive(true);
-        pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName);
+        pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName, streamID);
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
         currentStreamId = streamId;
