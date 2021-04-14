@@ -11,13 +11,13 @@ public class ShareManager : MonoBehaviour {
     private void OnEnable()
     {
         DynamicLinksCallBacks.onGetShortLink += ShareStream;
-        DynamicLinksCallBacks.onShareLink += ShareApp;
+        DynamicLinksCallBacks.onShareAppLink += ShareApp;
     }
 
     private void OnDisable()
     {
         DynamicLinksCallBacks.onGetShortLink -= ShareStream;
-        DynamicLinksCallBacks.onShareLink -= ShareApp;
+        DynamicLinksCallBacks.onShareAppLink -= ShareApp;
     }
 
     private void ShareApp() {

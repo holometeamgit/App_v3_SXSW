@@ -26,8 +26,10 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
     public AccountManager accountManager;
 
     public Action<StreamJsonData, LoadingKey> OnStreamJsonDataLoaded;
-    public Action<StreamJsonData> OnStreamByIdJsonDataLoaded;
     public Action<long, string, LoadingKey> OnErrorStreamJsonDataLoaded;
+
+    public Action<StreamJsonData.Data> OnStreamByIdJsonDataLoaded;
+    public Action<long> OnErrorStreamByIdJsonDataLoaded;
 
     public Action<int, LoadingKey> OnCountThumbnailsLoaded;
     public Action<long, string, LoadingKey> OnErrorCountThumbnailsLoaded;
@@ -62,27 +64,25 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
         accountManager.GetAccessToken().access);
     }
 
-    private void DownloadStreamByIdWithDelay(long id) { //TODO need wait server confirmation
-        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(DOWNLOAD_STREAM_DELAY_TIME).ContinueWith((_) => DownloadStreamById(id), taskScheduler);
-    }
-
-    private void DownloadStreamById(long id) {
+    public void DownloadStreamById(long id) {
         webRequestHandler.GetRequest(GetRequestStreamByIdURL(id),
             (code, body) => {
                 HelperFunctions.DevLog("DownloadStreamById " + body);
-                StreamJsonData streams = new StreamJsonData();
 
                 StreamJsonData.Data streamJsonData = JsonUtility.FromJson<StreamJsonData.Data>(body);
-                if (streamJsonData != null) {
-                    streams.results.Add(streamJsonData);
-                }
-
-
-                OnStreamByIdJsonDataLoaded?.Invoke(streams);
+                if (streamJsonData != null) 
+                    OnStreamByIdJsonDataLoaded?.Invoke(streamJsonData);
             },
-        (code, body) => { HelperFunctions.DevLog("Error DownloadStreamById " + id); },
+        (code, body) => {
+            HelperFunctions.DevLog("Error DownloadStreamById " + id);
+            OnErrorStreamByIdJsonDataLoaded?.Invoke(id);
+        },
         accountManager.GetAccessToken().access);
+    }
+
+    private void DownloadStreamByIdWithDelay(long id) { //TODO need wait server confirmation
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        Task.Delay(DOWNLOAD_STREAM_DELAY_TIME).ContinueWith((_) => DownloadStreamById(id), taskScheduler);
     }
 
     #region DownloadThumbnailsCallBack

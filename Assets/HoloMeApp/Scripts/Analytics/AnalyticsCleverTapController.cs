@@ -26,6 +26,12 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
             //            disableTracking = true;
             //#endif
             //cleverTapUnityComponent = gameObject.AddComponent<CleverTapUnity>();
+
+            if (cleverTapUnityComponent == null)
+            {
+                cleverTapUnityComponent = FindObjectOfType<CleverTapUnity>();
+            }
+
             if (cleverTapUnityComponent.CLEVERTAP_ACCOUNT_ID != AccountID)
             {
                 Debug.LogError("CleverTap Account ID didn't match");
@@ -59,10 +65,16 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
 
         Dictionary<string, string> loginDetails = new Dictionary<string, string>();
         loginDetails.Add("Email", userWebManager.GetEmail());
+        loginDetails.Add("Name", userWebManager.GetUsername());
         loginDetails.Add("Username", userWebManager.GetUsername());
         loginDetails.Add("UserID", userWebManager.GetUserID().ToString());
+        loginDetails.Add("Identity", userWebManager.GetUserID().ToString());
         CleverTapBinding.OnUserLogin(loginDetails);
-                       
+
+#if UNITY_ANDROID
+        CleverTapBinding.CreateNotificationChannel("Default", "Default", "Default", 1, true);
+#endif
+
         //Debug.Log("USER LONG INFO PASSED CT2");
     }
 

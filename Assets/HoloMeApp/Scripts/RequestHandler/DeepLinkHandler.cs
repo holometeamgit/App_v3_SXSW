@@ -16,7 +16,7 @@ public class DeepLinkHandler : MonoBehaviour {
         Uri uri = new Uri(uriStr);
 
         HelperFunctions.DevLog("Dynamic link: " + uriStr);
-        GetRoomParameters(uri);
+        GetContentsParameters(uri);
     }
 
     private void Awake() {
@@ -27,7 +27,8 @@ public class DeepLinkHandler : MonoBehaviour {
         DynamicLinksCallBacks.onReceivedDeepLink -= OnDynamicLinkActivated;
     }
 
-    private void GetRoomParameters(Uri uri) {
+
+    private void GetContentsParameters(Uri uri) {
         if (IsFolder(uri, serverURLAPIScriptableObject.Room)){
             HelperFunctions.DevLog("GetRoomParameters");
 

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class AnalyticsAmplitude : AnalyticsLibraryAbstraction
+public class AnalyticsAmplitudeController : AnalyticsLibraryAbstraction
 {
-    public static AnalyticsAmplitude Instance { get; private set; }
+    public static AnalyticsAmplitudeController Instance { get; private set; }
 
     private void Awake()
     {
