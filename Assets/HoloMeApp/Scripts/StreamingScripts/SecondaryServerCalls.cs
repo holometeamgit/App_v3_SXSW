@@ -118,10 +118,11 @@ public class SecondaryServerCalls : MonoBehaviour {
     void CreateStreamSecondaryCallback(long code, string data) {
         print("CREATE STREAM IS BACK" + data);
         streamStartResponseJsonData = JsonUtility.FromJson<StreamStartResponseJsonData>(data);
-        
-        if (streamStartResponseJsonData != null)
+
+        if (streamStartResponseJsonData != null) {
             OnStreamStarted?.Invoke(tokenAgoraResponse.token, tokenAgoraResponse.token, streamStartResponseJsonData.id);
-        else
+            StreamCallBacks.onLiveStreamCreated?.Invoke(streamStartResponseJsonData.id.ToString());
+        } else
             Debug.LogError("CREATE STREAM PARSE FAILED");
     }
 

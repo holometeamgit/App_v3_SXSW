@@ -171,7 +171,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName, streamID);
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
-        currentStreamId = streamId;
+        currentStreamId = streamID;
     }
 
     public void FadePanel(bool show) {
