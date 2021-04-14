@@ -16,7 +16,6 @@ public class PnlChangeUsername : MonoBehaviour
     }
 
     private void Start() {
-        userWebManager.LoadUserInfo();
         usernameInputField.characterLimit = userNameLimit;
     }
 
@@ -55,6 +54,7 @@ public class PnlChangeUsername : MonoBehaviour
         userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
         userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
         usernameInputField.text = userWebManager.GetUsername();
+        userWebManager.LoadUserInfo();
     }
 
     private void OnDisable() {
