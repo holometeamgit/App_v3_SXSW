@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Beem.SSO;
 
 public class PnlThumbnailPopup : UIThumbnail {
 
@@ -22,6 +23,8 @@ public class PnlThumbnailPopup : UIThumbnail {
     WebRequestHandler webRequestHandler;
     [SerializeField]
     UIThumbnailsController uiThumbnailsController;
+    [SerializeField]
+    ThumbnailWebDownloadManager thumbnailWebDownloadManager;
 
     [Space]
     [SerializeField]
@@ -32,19 +35,30 @@ public class PnlThumbnailPopup : UIThumbnail {
     UIAnimator auAnimator;
 
     ThumbnailElement thumbnailElement;
+    long currentId = 0;
 
-    //после покупки нужно проверить на домашней странице обновилось ли
-    public void OpenStream(StreamJsonData.Data streamData) {
-        if (streamData.is_bought) {
-            uiThumbnailsController.PlayStream(streamData);
-        } else {
-            uiThumbnailsController.Buy(streamData);
+    const long DEFAUL_STREAM_DATA_ID = 0;
+    bool isSubscribed;
+
+    public override void Play() {
+        uiThumbnailsController.Play(thumbnailElement.Data);
+    }
+
+    public override void PlayTeaser() {
+        uiThumbnailsController.Play(thumbnailElement.Data);
+    }
+
+    public override void Buy() {
+        uiThumbnailsController.Buy(thumbnailElement.Data);
+    }
+
+    public void OpenStream(long id) {
+        if (!isSubscribed) {
+            thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded += ShowStreamStream;
+            isSubscribed = true;
         }
-
-        ThumbnailElement element = new ThumbnailElement(streamData, webRequestHandler);
-        AddData(element);
-
-        ShowPnl();
+        currentId = id;
+        thumbnailWebDownloadManager.DownloadStreamById(id);
     }
 
     public override void AddData(ThumbnailElement element) {
@@ -53,8 +67,6 @@ public class PnlThumbnailPopup : UIThumbnail {
             thumbnailElement.OnErrorTextureLoaded -= UpdateTexture;
             thumbnailElement.Data.OnDataUpdated -= UpdateData;
         }
-
-        auAnimator.gameObject.SetActive(true);
 
         thumbnailElement = element;
 
@@ -66,11 +78,29 @@ public class PnlThumbnailPopup : UIThumbnail {
     }
 
     public void ClosePnl() {
+        HelperFunctions.DevLog("Close PnlThumbnailPopup");
         gameObject.SetActive(false);
+        currentId = DEFAUL_STREAM_DATA_ID;
     }
 
     private void ShowPnl() {
+        HelperFunctions.DevLog("show PnlThumbnailPopup");
         gameObject.SetActive(true);
+    }
+
+    private void ShowStreamStream(StreamJsonData.Data streamData) {
+        if (streamData.id != currentId)
+            return;
+        HelperFunctions.DevLog("thumbnail popup open stream id " + streamData.id);
+        /* autoplay
+         * if (streamData.is_bought) {
+            uiThumbnailsController.Play(streamData);
+        }*/
+
+        ThumbnailElement element = new ThumbnailElement(streamData, webRequestHandler);
+        AddData(element);
+
+        ShowPnl();
     }
 
     private void UpdateTexture() {
@@ -90,6 +120,7 @@ public class PnlThumbnailPopup : UIThumbnail {
 
     private void UpdateData() {
         UpdateTexture();
+        auAnimator.gameObject.SetActive(true);
 
         txtTitle.text = thumbnailElement.Data.title;
         txtDescription.text = thumbnailElement.Data.description;
@@ -107,5 +138,25 @@ public class PnlThumbnailPopup : UIThumbnail {
         } else {
             btnPlayTeaser.SetActive(thumbnailElement.Data.HasTeaser);
         }
+    }
+
+    private void WaitServerPurchaseConfirmation(long id) {
+        if (thumbnailElement.Data.id != id)
+            return;
+
+        btnBuyTicket.SetActive(false);
+    }
+
+    private void OnDestroy() {
+        if(isSubscribed)
+            thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded -= ShowStreamStream;
+    }
+
+    private void OnEnable() {
+        CallBacks.onStreamPurchasedInStore += WaitServerPurchaseConfirmation;
+    }
+
+    private void OnDisable() {
+        CallBacks.onStreamPurchasedInStore -= WaitServerPurchaseConfirmation;
     }
 }

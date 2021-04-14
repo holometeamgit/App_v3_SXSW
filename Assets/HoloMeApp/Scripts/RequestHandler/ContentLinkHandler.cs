@@ -22,8 +22,9 @@ public class ContentLinkHandler : MonoBehaviour
         };
 
         StreamCallBacks.onStreamLinkReceived += (id) => {
+            HelperFunctions.DevLog("onStreamLinkReceived " + id);
             contentId = id;
-            contentLinkHandlerType = ContentLinkHandlerType.Room;
+            contentLinkHandlerType = ContentLinkHandlerType.Stream;
             StreamCallBacks.onOpenStream?.Invoke();
         };
 

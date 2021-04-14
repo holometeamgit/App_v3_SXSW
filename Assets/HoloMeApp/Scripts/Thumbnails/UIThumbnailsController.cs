@@ -35,15 +35,11 @@ public class UIThumbnailsController : MonoBehaviour {
         purchaseManager.Purchase();
     }
 
-    public void PlayStream(StreamJsonData.Data data) {
-        if (!permissionController.CheckCameraAccess())
-            return;
-
-        if (data.HasStreamUrl) {
-            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, data, null, false);
-            OnPlayFromUser?.Invoke(data.user);
-        } else if (data.HasAgoraChannel) {
-            PlayLiveStream(data.user, data.agora_channel, data.id.ToString());
+    public void Play(StreamJsonData.Data data) {
+        if (data.is_bought && data.IsStarted) {
+            PlayStream(data);
+        } else if (data.HasTeaser) {
+            PlayTeaser(data);
         }
     }
 
@@ -154,11 +150,15 @@ public class UIThumbnailsController : MonoBehaviour {
 
     #endregion
 
-    private void Play(StreamJsonData.Data data) {
-        if (data.is_bought && data.IsStarted) {
-            PlayStream(data);
-        } else if (data.HasTeaser) {
-            PlayTeaser(data);
+    private void PlayStream(StreamJsonData.Data data) {
+        if (!permissionController.CheckCameraAccess())
+            return;
+
+        if (data.HasStreamUrl) {
+            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, data, null, false);
+            OnPlayFromUser?.Invoke(data.user);
+        } else if (data.HasAgoraChannel) {
+            PlayLiveStream(data.user, data.agora_channel, data.id.ToString());
         }
     }
 
