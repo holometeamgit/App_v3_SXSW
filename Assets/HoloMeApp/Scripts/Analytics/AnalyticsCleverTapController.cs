@@ -27,10 +27,8 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
             //#endif
             //cleverTapUnityComponent = gameObject.AddComponent<CleverTapUnity>();
 
-            if (cleverTapUnityComponent == null)
-            {
-                cleverTapUnityComponent = FindObjectOfType<CleverTapUnity>();
-            }
+            cleverTapUnityComponent = HelperFunctions.GetTypeIfNull<CleverTapUnity>(cleverTapUnityComponent);
+            userWebManager = HelperFunctions.GetTypeIfNull<UserWebManager>(userWebManager);
 
             if (cleverTapUnityComponent.CLEVERTAP_ACCOUNT_ID != AccountID)
             {

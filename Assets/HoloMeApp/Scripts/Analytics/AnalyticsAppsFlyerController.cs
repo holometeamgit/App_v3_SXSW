@@ -26,11 +26,8 @@ public class AnalyticsAppsFlyerController : AnalyticsLibraryAbstraction
             //            disableTracking = true;
             //#endif
             //appsFlyerObjectComponent = gameObject.AddComponent<AppsFlyerObjectScript>();
-
-            if (appsFlyerObjectComponent == null)
-            {
-                appsFlyerObjectComponent = FindObjectOfType<AppsFlyerObjectScript>();
-            }
+                        
+            appsFlyerObjectComponent = HelperFunctions.GetTypeIfNull<AppsFlyerObjectScript>(appsFlyerObjectComponent);
 
             if (appsFlyerObjectComponent.devKey != DevKey)
             {
