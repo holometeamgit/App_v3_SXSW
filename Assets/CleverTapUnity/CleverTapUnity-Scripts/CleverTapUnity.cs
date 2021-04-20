@@ -156,6 +156,11 @@ public class CleverTapUnity: MonoBehaviour {
         Debug.Log("unity received feature flags updated: " + (!String.IsNullOrEmpty(message) ? message : "NULL"));
     }
 
+    void CleverTapPushReceivedCallback(string message)
+    {
+        Debug.Log("Got push notification "+ message);
+    }
+
     void CleverTapExperimentMessagesDidUpdateCallback(){
         Debug.Log("unity received experiment messages updated");
     }
