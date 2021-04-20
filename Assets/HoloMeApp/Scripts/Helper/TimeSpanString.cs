@@ -9,7 +9,7 @@ namespace Beem {
         // return how much time passed since date object
         public static string GetTimeSince(DateTime objDateTime) {
             // here we are going to subtract the passed in DateTime from the current time converted to UTC
-            TimeSpan ts = DateTime.Now.ToUniversalTime().Subtract(objDateTime);
+            TimeSpan ts = DateTime.Now.ToUniversalTime().Subtract(objDateTime.ToUniversalTime());
             int intDays = ts.Days;
             int intHours = ts.Hours;
             int intMinutes = ts.Minutes;

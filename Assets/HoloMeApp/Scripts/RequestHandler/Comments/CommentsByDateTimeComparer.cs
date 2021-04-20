@@ -8,7 +8,7 @@ public class CommentsByDateTimeComparer : IComparer<CommentJsonData> {
     #region IComparer<CommentJsonData?> Members
 
     public int Compare(CommentJsonData x, CommentJsonData y) {
-        return CompareDate(x?.created_at, y?.created_at);
+        return CompareDate(x?.CreatedAt, y?.CreatedAt);
     }
 
     private int CompareDate(DateTime? x, DateTime?y) {

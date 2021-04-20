@@ -31,10 +31,6 @@ namespace Beem.UI {
         //ADDITIONAL SPACING BTW TITLE AND COMMENTS
         private const int ADDITIONAL_SPACING = 18;
 
-        //private void Start() {
-        //    UpdateData("WWWWWWWWWWWWWWWWWWW", "This is so cool, how did they even do this? Would love to find out mor", DateTime.Now.ToUniversalTime().AddDays(-1), 2, 2);
-        //}
-
         /// <summary>
         /// element id rom model
         /// </summary>

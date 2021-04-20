@@ -60,7 +60,6 @@ namespace Beem.Content {
                 Refresh();
                 return;
             }
-            HelperFunctions.DevLog("CommentsController NextPage");
             _commentPageLoader.NextPage();
         }
 
@@ -69,7 +68,6 @@ namespace Beem.Content {
         }
 
         public CommentJsonData GetData(int index) {
-            HelperFunctions.DevLog("CommentsController  GetData index " + index);
             return _commentsContainer.GetByIndex(index);
         }
 
@@ -90,7 +88,6 @@ namespace Beem.Content {
 
         #region onLoading 
         private void OnFetchData(List<CommentJsonData> comments) {
-            HelperFunctions.DevLog("OnGetData count = " + comments.Count);
 
             int prevCountItems = _commentsContainer.Count();
             _commentsContainer.Add(comments);

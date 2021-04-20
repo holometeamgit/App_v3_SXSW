@@ -134,22 +134,19 @@ public class PnlComments : MonoBehaviour
 	#region response from ui
 
 	void OnFillItem(int index, GameObject item) {
-		HelperFunctions.DevLog("OnFillItem " + index);
 		//if (onGetItemByOrdinalID == null)
 		//	return;
 		CommentJsonData commentData = onGetItemByOrdinalIndex(index);
-		item.GetComponentInChildren<UICommentElement>().UpdateData(commentData.user, commentData.body, commentData.created_at, 0, commentData.id);
+		item.GetComponentInChildren<UICommentElement>().UpdateData(commentData.user, commentData.body, commentData.CreatedAt, 0, commentData.id);
 	}
 
 	int OnHeightItem(int index) {
-		HelperFunctions.DevLog("OnHeightItem " + index);
 		CommentJsonData commentData = onGetItemByOrdinalIndex(index);
 
 		return Mathf.CeilToInt(uiCommentElementPrefab.GetRequiredHeight(commentData.user, commentData.body));
 	}
 
 	void OnPullItem(InfiniteScroll.Direction direction) {
-		HelperFunctions.DevLog("OnPullItem direction " + direction);
 		if (direction == InfiniteScroll.Direction.Top) {
 			Refresh();
 		} else {
