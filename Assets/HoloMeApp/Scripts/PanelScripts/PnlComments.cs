@@ -129,11 +129,15 @@ public class PnlComments : MonoBehaviour
 		_scroll.IsPullBottom = false;
 	}
 
-	#endregion
+    #endregion
 
-	#region response from ui
+    private void Awake() {
+		_commentInputField.shouldHideMobileInput = true;
+	}
 
-	void OnFillItem(int index, GameObject item) {
+    #region response from ui
+
+    void OnFillItem(int index, GameObject item) {
 		//if (onGetItemByOrdinalID == null)
 		//	return;
 		CommentJsonData commentData = onGetItemByOrdinalIndex(index);
