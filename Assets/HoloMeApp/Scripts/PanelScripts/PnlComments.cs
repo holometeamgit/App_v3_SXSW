@@ -41,6 +41,7 @@ public class PnlComments : MonoBehaviour
 		HelperFunctions.DevLog("pnlcomments OpenComments " + contentId);
 		PrepareToShowComments();
 		_isCanOpen = true;
+		OnOpen();
 		uiCommentElementPrefab = _scroll.Prefab.GetComponent<UICommentElement>();
 		_scroll.IsPullBottom = true;
 		onOpen?.Invoke(contentId);
@@ -60,6 +61,7 @@ public class PnlComments : MonoBehaviour
 
 	public void OnClose() {
 		gameObject.SetActive(false);
+		_scroll.RecycleAll();
 	}
 
 	public void PrepareToShowComments() {
