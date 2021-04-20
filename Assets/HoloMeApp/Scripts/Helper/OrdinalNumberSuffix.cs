@@ -9,15 +9,15 @@ namespace Beem {
                 case 1:
                 case 21:
                 case 31:
-                    return "st";
+                    return day + "st";
                 case 2:
                 case 22:
-                    return "nd";
+                    return day + "nd";
                 case 3:
                 case 23:
-                    return "rd";
+                    return day + "rd";
                 default:
-                    return "th";
+                    return day + "th";
             }
         }
     }
