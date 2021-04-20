@@ -192,6 +192,7 @@ namespace Beem.UI {
         RectTransform containerRectTransform;
 
         public void InitData(int itemsCount) {
+            HelperFunctions.DevLog("InitData itemsCount " + itemsCount + " containerRectTransform " + containerRectTransform);
             _containerRect = containerRectTransform.rect;
             if (Type == 0) {
                 InitVertical(itemsCount);
@@ -231,6 +232,10 @@ namespace Beem.UI {
         /// <param name="newCount">Added items count</param>
         /// <param name="direction">Direction to add</param>
         public void ApplyDataTo(int count, int newCount, Direction direction) {
+            if(_views == null) {
+                InitData(count);
+                return;
+            }
             if (Type == 0) {
                 ApplyDataToVertical(count, newCount, direction);
             } else {
@@ -695,10 +700,13 @@ namespace Beem.UI {
         /// <param name="direction">Direction to add</param>
         void ApplyDataToVertical(int count, int newCount, Direction direction) {
             _count = count;
+            HelperFunctions.DevLog("ApplyDataToVertical 1 count " + count + " newCount " + newCount);
+            HelperFunctions.DevLog("_views " + _views);
             if (_count <= _views.Length) {
                 InitData(count);
                 return;
             }
+            HelperFunctions.DevLog("ApplyDataToVertical 2 count " + count + " newCount " + newCount);
             float height = CalcSizesPositions(count);
             _content.sizeDelta = new Vector2(_content.sizeDelta.x, height);
             Vector2 pos = _content.anchoredPosition;
@@ -716,6 +724,7 @@ namespace Beem.UI {
                 }
                 pos.y = height - h - ContainerHeight;
             }
+            HelperFunctions.DevLog("ApplyDataToVertical 3 count " + count + " newCount " + newCount);
             _content.anchoredPosition = pos;
             float _topPosition = _content.anchoredPosition.y - ItemSpacing;
             float itemPosition = Mathf.Abs(_positions[_previousPosition]) + _heights[_previousPosition];

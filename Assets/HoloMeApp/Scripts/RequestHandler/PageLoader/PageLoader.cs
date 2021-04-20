@@ -7,7 +7,7 @@ namespace Beem.Pagination {
 
     public class PageLoader<T> {
 
-        public Action onReady;
+        public Action onInit;
         public Action<int> onTotalCountItemsIsTaken;
         public Action onFailInit;
         public Action onAllDataLoaded;
@@ -21,6 +21,8 @@ namespace Beem.Pagination {
         private int _currentPage;
         private int _pageSize;
         private int _totalCountItems;
+
+        bool _isBusy;
 
         const int FIRST_PAGE_NUMBER = 1;
 
@@ -36,6 +38,7 @@ namespace Beem.Pagination {
         }
 
         public void NextPage() {
+            HelperFunctions.DevLog("NextPage is busy " + _isBusy);
             _currentPage--;
             if (IsAllDataLoaded()) {
                 onAllDataLoaded?.Invoke();
@@ -50,6 +53,7 @@ namespace Beem.Pagination {
         }
 
         private void InitRequest() {
+            HelperFunctions.DevLog("InitRequest");
             Request(GetRequestUrl(), OnSuccessInitRequest, OnFailInitRequest);
         }
 
@@ -72,16 +76,22 @@ namespace Beem.Pagination {
         }
 
         private void Request(string url, Action<string> onSuccess, Action<string> onFail) {
+            if (_isBusy)
+                return;
+            _isBusy = true;
             _webRequestHandler.Get(url,
                 (successCode, data) => {
+                    _isBusy = false;
                     onSuccess?.Invoke(data);
                 },
                 (errorCode, data) => {
+                    _isBusy = false;
                     onFail?.Invoke("Get " + url + " " + errorCode + " " + data);
                 });
         }
 
         private void OnSuccessInitRequest(string data) {
+            HelperFunctions.DevLog("OnSuccessInitRequest " + data);
             PagedData<T> pagedData = DeserializePageData(data);
             if (pagedData == null) {
                 OnFailInitRequest(data);
@@ -90,7 +100,7 @@ namespace Beem.Pagination {
             onTotalCountItemsIsTaken?.Invoke(pagedData.count);
             _totalCountItems = pagedData.count;
             _currentPage = Mathf.Max(Mathf.CeilToInt((float)_totalCountItems / _pageSize), 1) + 1;
-            onReady?.Invoke();
+            onInit?.Invoke();
         }
 
         private void OnFailInitRequest(string msg) {
