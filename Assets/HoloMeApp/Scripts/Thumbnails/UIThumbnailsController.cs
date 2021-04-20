@@ -158,6 +158,8 @@ public class UIThumbnailsController : MonoBehaviour {
             pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, data, null, false);
             OnPlayFromUser?.Invoke(data.user);
         } else if (data.HasAgoraChannel) {
+            if (data.agora_channel == "0" || string.IsNullOrWhiteSpace(data.agora_channel))
+                return;
             PlayLiveStream(data.user, data.agora_channel, data.id.ToString());
         }
     }
