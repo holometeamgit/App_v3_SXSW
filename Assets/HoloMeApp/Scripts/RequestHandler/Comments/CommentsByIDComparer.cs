@@ -7,6 +7,13 @@ using Beem.Content;
 public class CommentsByIDComparer : IComparer<CommentJsonData> {
     #region IComparer<CommentJsonData?> Members
 
+    public CommentsByIDComparer() { }
+    public CommentsByIDComparer(bool isReverse) {
+        _isReverse = isReverse;
+    }
+
+    bool _isReverse;
+
     public int Compare(CommentJsonData x, CommentJsonData y) {
         return CompareDate(x?.id, y?.id);
     }
@@ -15,7 +22,11 @@ public class CommentsByIDComparer : IComparer<CommentJsonData> {
         int nx = x ?? int.MaxValue;
         int ny = y ?? int.MaxValue;
 
-        return nx.CompareTo(ny);
+        if (_isReverse) {
+            return ny.CompareTo(nx);
+        } else {
+            return nx.CompareTo(ny);
+        }
     }
 
     #endregion

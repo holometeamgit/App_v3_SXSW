@@ -8,7 +8,8 @@ namespace Beem.Content {
         private SortedHashSet<int, CommentJsonData> _comments;
 
         public CommentsContainer() {
-            _comments = new SortedHashSet<int, CommentJsonData>(new CommentsByIDComparer());
+            CommentsByIDComparer commentsByIDComparer = new CommentsByIDComparer(true);
+            _comments = new SortedHashSet<int, CommentJsonData>(commentsByIDComparer);
         }
 
         public void Add(List<CommentJsonData> commentsList) {

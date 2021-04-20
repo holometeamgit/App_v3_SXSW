@@ -18,30 +18,26 @@ public class PnlComments : MonoBehaviour
 	public Action<string> onPost;
 
 	[SerializeField]
-    private InfiniteScroll Scroll;
+    private InfiniteScroll _scroll;
 
-//	[SerializeField]
-	private UICommentElement uiCommentElementPrefab;
-
+	[SerializeField]
+	Animator _animator;
 	[SerializeField]
 	TMP_InputField _commentInputField;
 	[SerializeField]
 	Button _postBtn;
 
 	private bool _isCanOpen;
+	private UICommentElement uiCommentElementPrefab;
 
 	#region UI
 	public void OpenComments(int contentId) {
 		HelperFunctions.DevLog("pnlcomments OpenComments " + contentId);
+		PrepareToShowComments();
 		_isCanOpen = true;
-		uiCommentElementPrefab = Scroll.Prefab.GetComponent<UICommentElement>();
-		Scroll.IsPullBottom = true;
+		uiCommentElementPrefab = _scroll.Prefab.GetComponent<UICommentElement>();
+		_scroll.IsPullBottom = true;
 		onOpen?.Invoke(contentId);
-	}
-
-	public void CloseComments() {
-		_isCanOpen = false;
-		//animator set value close
 	}
 
 	public void Post() {
@@ -51,12 +47,26 @@ public class PnlComments : MonoBehaviour
 		onPost?.Invoke(_commentInputField.text);
     }
 
-	public void ShowComment() {
-		//animator open comment 
+	public void CloseComments() {
+		_isCanOpen = false;
+		_animator.SetBool("IsShowComment", _isCanOpen);
 	}
 
-	public void HideComment() {
-		//animator hide comment 
+	public void PrepareToShowComments() {
+		_isCanOpen = true;
+		_animator.SetBool("IsShowComment", _isCanOpen);
+	}
+
+	public void HidePost() {
+		_animator.SetBool("IsPostState", false);
+		_scroll.IsPullBottom = true;
+		_scroll.IsPullTop = true;
+	}
+
+	public void ShowPost() {
+		_animator.SetBool("IsPostState", true);
+		_scroll.IsPullBottom = false;
+		_scroll.IsPullTop = false;
 	}
 	#endregion
 
@@ -65,6 +75,8 @@ public class PnlComments : MonoBehaviour
 	public void OnPost() {
 		_commentInputField.text = "";
 		_postBtn.interactable = true;
+		_scroll.MoveToSide(InfiniteScroll.Direction.Top);
+		Refresh();
 	}
 
 	//calls after didn't post to backend
@@ -86,11 +98,11 @@ public class PnlComments : MonoBehaviour
 		if (!gameObject.activeSelf)
 			OnOpen();
 
-		Scroll.ApplyDataTo(count, pullCount, InfiniteScroll.Direction.Bottom);
+		_scroll.ApplyDataTo(count, pullCount, InfiniteScroll.Direction.Bottom);
 	}
 
 	public void OnAllDataLoaded() {
-		Scroll.IsPullBottom = false;
+		_scroll.IsPullBottom = false;
 	}
 
 	#endregion
@@ -115,13 +127,17 @@ public class PnlComments : MonoBehaviour
 	void OnPullItem(InfiniteScroll.Direction direction) {
 		HelperFunctions.DevLog("OnPullItem direction " + direction);
 		if (direction == InfiniteScroll.Direction.Top) {
-			onRefresh?.Invoke();
-			Scroll.IsPullBottom = true;
+			Refresh();
 		} else {
 			onLoadNext?.Invoke();
 		}
 	}
     #endregion
+
+	private void Refresh() {
+		onRefresh?.Invoke();
+		_scroll.IsPullBottom = true;
+	}
 
     private void OnOpen() {
 		gameObject.SetActive(true);
@@ -129,18 +145,18 @@ public class PnlComments : MonoBehaviour
 	}
 
 	private void OnEnable() {
-		Scroll.OnFill += OnFillItem;
-		Scroll.OnHeight += OnHeightItem;
-		Scroll.OnPull += OnPullItem;
+		_scroll.OnFill += OnFillItem;
+		_scroll.OnHeight += OnHeightItem;
+		_scroll.OnPull += OnPullItem;
 	}
 
     private void OnDisable() {
-		Scroll.OnFill -= OnFillItem;
-		Scroll.OnHeight -= OnHeightItem;
-		Scroll.OnPull -= OnPullItem;
+		_scroll.OnFill -= OnFillItem;
+		_scroll.OnHeight -= OnHeightItem;
+		_scroll.OnPull -= OnPullItem;
 	}
 
     private void OnRemoveItem(int index) {
-		Scroll.Recycle(index);
+		_scroll.Recycle(index);
 	}
 }
