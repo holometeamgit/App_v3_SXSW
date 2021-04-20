@@ -23,6 +23,21 @@ namespace Beem.Xcode {
         static void LinkLibraries(string path) {
             // linked library
 
+            // Get plist
+            string plistPath = path + "/Info.plist";
+            PlistDocument plist = new PlistDocument();
+            plist.ReadFromString(File.ReadAllText(plistPath));
+
+            // Get root
+            PlistElementDict rootDict = plist.root;
+
+            // Change value of CFBundleVersion in Xcode plist
+            var buildKey = "UIBackgroundModes";
+            rootDict.CreateArray(buildKey).AddString("remote-notification");
+
+            // Write to file
+            File.WriteAllText(plistPath, plist.WriteToString());
+
             string pbxPath = PBXProject.GetPBXProjectPath(path);
 
             // Add linked frameworks
