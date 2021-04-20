@@ -24,6 +24,7 @@ namespace Beem {
             _commentsController.onAllDataLoaded += _pnlComments.OnAllDataLoaded;
             _commentsController.onPosted += _pnlComments.OnPost;
             _commentsController.onFailPosted += _pnlComments.OnFailPost;
+            _commentsController.onFetchedTotalCommentsCount += _pnlComments.OnRefreshUpdateCommentsCount;
         }
 
         private void OnDestroy() {
@@ -38,6 +39,7 @@ namespace Beem {
             _commentsController.onAllDataLoaded -= _pnlComments.OnAllDataLoaded;
             _commentsController.onPosted -= _pnlComments.OnPost;
             _commentsController.onFailPosted -= _pnlComments.OnFailPost;
+            _commentsController.onFetchedTotalCommentsCount -= _pnlComments.OnRefreshUpdateCommentsCount;
         }
     }
 }

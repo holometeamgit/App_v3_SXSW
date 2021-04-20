@@ -8,7 +8,7 @@ namespace Beem.Pagination {
     public class PageLoader<T> {
 
         public Action onInit;
-        public Action<int> onTotalCountItemsIsTaken;
+        public Action<int> onFetchedTotalCommentsCount;
         public Action onFailInit;
         public Action onAllDataLoaded;
         public Action<List<T>> onDataLoaded;
@@ -97,7 +97,7 @@ namespace Beem.Pagination {
                 OnFailInitRequest(data);
                 return;
             }
-            onTotalCountItemsIsTaken?.Invoke(pagedData.count);
+            onFetchedTotalCommentsCount?.Invoke(pagedData.count);
             _totalCountItems = pagedData.count;
             _currentPage = Mathf.Max(Mathf.CeilToInt((float)_totalCountItems / _pageSize), 1) + 1;
             onInit?.Invoke();

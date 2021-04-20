@@ -26,9 +26,15 @@ public class PnlComments : MonoBehaviour
 	TMP_InputField _commentInputField;
 	[SerializeField]
 	Button _postBtn;
+	[SerializeField]
+	TMP_Text _commentsCount;
 
 	private bool _isCanOpen;
 	private UICommentElement uiCommentElementPrefab;
+
+	private const string COUNT_COMMENTS = " comments";
+	private const string ONE_COMMENT = " comment";
+	private const string NO_COMMENTS = "no comments";
 
 	#region UI
 	public void OpenComments(int contentId) {
@@ -52,6 +58,10 @@ public class PnlComments : MonoBehaviour
 		_animator.SetBool("IsShowComment", _isCanOpen);
 	}
 
+	public void OnClose() {
+		gameObject.SetActive(false);
+	}
+
 	public void PrepareToShowComments() {
 		_isCanOpen = true;
 		_animator.SetBool("IsShowComment", _isCanOpen);
@@ -67,6 +77,18 @@ public class PnlComments : MonoBehaviour
 		_animator.SetBool("IsPostState", true);
 		_scroll.IsPullBottom = false;
 		_scroll.IsPullTop = false;
+	}
+	#endregion
+
+	#region count comments
+	public void OnRefreshUpdateCommentsCount(int count) {
+		if(count == 0) {
+			_commentsCount.text = NO_COMMENTS;
+		} else if(count == 1) {
+			_commentsCount.text = 1 + ONE_COMMENT;
+		} else {
+			_commentsCount.text = count + COUNT_COMMENTS;
+		}
 	}
 	#endregion
 
@@ -134,7 +156,7 @@ public class PnlComments : MonoBehaviour
 	}
     #endregion
 
-	private void Refresh() {
+    private void Refresh() {
 		onRefresh?.Invoke();
 		_scroll.IsPullBottom = true;
 	}

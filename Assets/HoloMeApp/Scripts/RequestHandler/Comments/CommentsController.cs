@@ -12,6 +12,7 @@ namespace Beem.Content {
         public Action onPosted;
         public Action onFailPosted;
         public Action onAllDataLoaded;
+        public Action<int> onFetchedTotalCommentsCount;
 
         PageLoader<CommentJsonData> _commentPageLoader;
         WebRequestHandler _webRequestHandler;
@@ -43,6 +44,7 @@ namespace Beem.Content {
                 _commentPageLoader.onFailDataLoaded -= OnFailGetData;
                 _commentPageLoader.onAllDataLoaded -= OnAllDataLoad;
                 _commentPageLoader.onInit -= Next;
+                _commentPageLoader.onFetchedTotalCommentsCount -= onFetchedTotalCommentsCount;
             }
 
             _commentPageLoader = new PageLoader<CommentJsonData>(GetRequestUrl(), _webRequestHandler, PAGE_SIZE);
@@ -50,6 +52,7 @@ namespace Beem.Content {
             _commentPageLoader.onFailDataLoaded += OnFailGetData;
             _commentPageLoader.onAllDataLoaded += OnAllDataLoad;
             _commentPageLoader.onInit += Next;
+            _commentPageLoader.onFetchedTotalCommentsCount += onFetchedTotalCommentsCount;
         }
 
         public void Next() {
@@ -92,7 +95,14 @@ namespace Beem.Content {
             int prevCountItems = _commentsContainer.Count();
             _commentsContainer.Add(comments);
 
-            onDataFetched?.Invoke(_commentsContainer.Count(), _commentsContainer.Count() - prevCountItems);
+            int count = _commentsContainer.Count();
+            int newCount = _commentsContainer.Count() - prevCountItems;
+
+            onDataFetched?.Invoke(count, newCount);
+        }
+
+        private void OnFetchTotalCommentsCount(int count) {
+            onFetchedTotalCommentsCount?.Invoke(count);
         }
 
         private void OnFailGetData() {
