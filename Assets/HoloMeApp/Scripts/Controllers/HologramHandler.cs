@@ -84,7 +84,7 @@ public class HologramHandler : MonoBehaviour
                 hologramChild.SetParent(holoMe.HologramTransform);
             }
             holoMe.SetScale(0.75f);
-            videoPlayer.SetOnReadyEvent(() => AnalyticsController.Instance.StartTimer(hologramViewDwellTimer, $"{AnalyticKeys.KeyHologramViewPercentage} ({GetVideoFileName})"));
+            videoPlayer.SetOnReadyEvent(() => AnalyticsController.Instance.StartTimer(hologramViewDwellTimer, AnalyticKeys.KeyHologramViewPercentage));
         }
     }
 
@@ -133,7 +133,7 @@ public class HologramHandler : MonoBehaviour
             holoMe.PlayVideo(videoURL);
             //holoMe.PlayVideo(HelperFunctions.PersistentDir() + videoCode + ".mp4");
             //AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPerformanceLoaded, AnalyticParameters.ParamVideoName, GetVideoFileName);
-            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPerformanceLoaded, new Dictionary<string, string>{ { AnalyticParameters.ParamVideoName, GetVideoFileName }, {AnalyticParameters.ParamBroadcasterUserID, broadcasterID.ToString() }});
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPerformanceLoaded, new Dictionary<string, string> { { AnalyticParameters.ParamVideoName, GetVideoFileName }, { AnalyticParameters.ParamBroadcasterUserID, broadcasterID.ToString() } });
         }
     }
 
@@ -152,7 +152,7 @@ public class HologramHandler : MonoBehaviour
 
     public void StartTrackingStream()
     {
-        AnalyticsController.Instance.StartTimer(hologramViewDwellTimer, $"{AnalyticKeys.KeyHologramLiveViewTime} ({videoURL})");
+        AnalyticsController.Instance.StartTimer(hologramViewDwellTimer, AnalyticKeys.KeyHologramLiveViewTime);
     }
 
     public void TogglePreRecordedVideoRenderer(bool enable)
@@ -168,12 +168,12 @@ public class HologramHandler : MonoBehaviour
             float percentageViewed = Mathf.Round(Mathf.Clamp((float)(((float)AnalyticsController.Instance.GetElapsedTime(hologramViewDwellTimer) / videoPlayer.GetClipLength()) * 100), 0, 100));
             HelperFunctions.DevLog("Clip Length " + videoPlayer.GetClipLength());
             HelperFunctions.DevLog("Percentage Watched = " + percentageViewed + "%");
-            AnalyticsController.Instance.StopTimer(hologramViewDwellTimer, percentageViewed, new Dictionary<string, string> { { AnalyticParameters.ParamBroadcasterUserID, broadcasterID.ToString() } });
+            AnalyticsController.Instance.StopTimer(hologramViewDwellTimer, percentageViewed, new Dictionary<string, string> { { AnalyticParameters.ParamVideoName, GetVideoFileName }, { AnalyticParameters.ParamBroadcasterUserID, broadcasterID.ToString() } });
             AnalyticsController.Instance.SendCustomEvent(percentageViewed >= 99 ? AnalyticKeys.KeyPerformanceEnded : AnalyticKeys.KeyPerformanceNotEnded, new Dictionary<string, string> { { AnalyticParameters.ParamVideoName, GetVideoFileName }, { AnalyticParameters.ParamBroadcasterUserID, broadcasterID.ToString() } });
         }
         else
         {
-            AnalyticsController.Instance.StopTimer(hologramViewDwellTimer);
+            AnalyticsController.Instance.StopTimer(hologramViewDwellTimer, new Dictionary<string, string> { { AnalyticParameters.ParamEventName, videoURL }, { AnalyticParameters.ParamDate , DateTime.Now.ToString() } });
         }
         holoMe.StopVideo();
     }

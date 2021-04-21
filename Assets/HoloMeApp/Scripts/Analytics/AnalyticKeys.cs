@@ -40,7 +40,9 @@ public class AnalyticParameters{
     public const string ParamVideoName = "videoName";
     public const string ParamEventName = "eventName";
     public const string ParamProductPrice = "amount";
-    
+    public const string ParamTime = "time";
+    public const string ParamDate = "date";
+
     public const string ParamHomeScreen = "homeScreen";
     public const string ParamSettingsPanel = "settings";
 }
