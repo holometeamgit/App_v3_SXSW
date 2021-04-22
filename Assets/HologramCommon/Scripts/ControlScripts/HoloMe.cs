@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace HoloMeSDK {
     public class HoloMe
@@ -224,7 +225,13 @@ namespace HoloMeSDK {
                 return;
             }
 
-            //Debug.Log($"Called {position}");
+            if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+            {
+                Debug.Log("RETURNING TOUCH POSITION");
+                return;
+            };
+
+            Debug.Log($"POSITION CALLED {position}");
 
             parentGameObject.transform.position = position;
 
