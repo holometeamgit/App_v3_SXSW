@@ -5,6 +5,7 @@ using System;
 using UnityEngine.UI;
 using TMPro;
 using Beem.SSO;
+using Beem;
 
 public class UIThumbnailV3 : UIThumbnail {
     [SerializeField] RawImage rawImage;
@@ -69,6 +70,10 @@ public class UIThumbnailV3 : UIThumbnail {
         } else if (!thumbnailElement.Data.is_bought && !thumbnailElement.Data.HasTeaser) {
             Buy();
         }
+    }
+
+    public void OpenComment() {
+        StreamCallBacks.onOpenComment?.Invoke((int)thumbnailElement.Data.id);
     }
 
     public override void Play() {
@@ -141,7 +146,9 @@ public class UIThumbnailV3 : UIThumbnail {
         imgLive.gameObject.SetActive(isLive);
         txtTime.gameObject.SetActive(!isLive);
 
-        txtDate.text = thumbnailElement.Data.StartDate.ToString("MMM d");
+        string day = OrdinalNumberSuffix.AddOrdinalNumberSuffixDat(thumbnailElement.Data.StartDate.Day);
+
+        txtDate.text = thumbnailElement.Data.StartDate.ToString("MMM ") + day;
         txtTime.text = thumbnailElement.Data.StartDate.ToString("HH:mm");
         txtTitle.text = thumbnailElement.Data.title;
         txtDescription.text = thumbnailElement.Data.description;
