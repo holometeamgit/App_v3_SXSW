@@ -40,6 +40,11 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
                 Debug.LogError("CleverTap Account Token didn't match");
                 cleverTapUnityComponent.CLEVERTAP_ACCOUNT_TOKEN = Token;
             }
+
+#if UNITY_IOS && !UNITY_EDITOR
+            CleverTapBinding.RegisterPush();
+#endif
+
             DontDestroyOnLoad(Instance);
         }
         else
