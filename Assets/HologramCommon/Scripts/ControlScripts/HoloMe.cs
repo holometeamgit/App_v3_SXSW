@@ -227,11 +227,11 @@ namespace HoloMeSDK {
 
             if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
             {
-                Debug.Log("RETURNING TOUCH POSITION");
+                //Debug.Log("RETURNING TOUCH POSITION");
                 return;
             };
 
-            Debug.Log($"POSITION CALLED {position}");
+            //Debug.Log($"POSITION CALLED {position}");
 
             parentGameObject.transform.position = position;
 
