@@ -349,27 +349,30 @@ public class FocusSquareV2 : PlacementHandler
                 HideState();
                 break;
             case States.DRAG_AND_DROP:
-                _focusSquareRenderer.color = Color.Lerp(_focusSquareRenderer.color, new Color(1, 1, 1, 0.0f), Time.deltaTime * 5.0f);
-                if (Input.touchCount == 1)
+                if (!EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
                 {
-                    var touch = Input.GetTouch(0);
-                    switch (touch.phase)
+                    _focusSquareRenderer.color = Color.Lerp(_focusSquareRenderer.color, new Color(1, 1, 1, 0.0f), Time.deltaTime * 5.0f);
+                    if (Input.touchCount == 1)
                     {
-                        case TouchPhase.Moved:
-                            _touchPosition = touch.position;
-                            break;
-                        case TouchPhase.Ended:
-                            SwitchToState(States.HIDE);
-                            break;
+                        var touch = Input.GetTouch(0);
+                        switch (touch.phase)
+                        {
+                            case TouchPhase.Moved:
+                                _touchPosition = touch.position;
+                                break;
+                            case TouchPhase.Ended:
+                                SwitchToState(States.HIDE);
+                                break;
+                        }
                     }
-                }
-                
-                if(m_RaycastManager.Raycast(_touchPosition, _hitsDrugAndDrop, TrackableType.PlaneWithinPolygon))
-                {
-                    var hitPose = _hitsDrugAndDrop[0].pose;
-                    _debugCapsule.transform.position = hitPose.position;
-                    _hologramPlacedPosition = hitPose.position;
-                    OnPlaceDetected?.Invoke(_hologramPlacedPosition);
+
+                    if (m_RaycastManager.Raycast(_touchPosition, _hitsDrugAndDrop, TrackableType.PlaneWithinPolygon))
+                    {
+                        var hitPose = _hitsDrugAndDrop[0].pose;
+                        _debugCapsule.transform.position = hitPose.position;
+                        _hologramPlacedPosition = hitPose.position;
+                        OnPlaceDetected?.Invoke(_hologramPlacedPosition);
+                    }
                 }
                 break;
         }
@@ -379,67 +382,70 @@ public class FocusSquareV2 : PlacementHandler
     
     private void HideState()
     {
-        if (Input.touchCount == 1)
+        if (Input.touchCount == 1 && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
         {
-            var touch = Input.GetTouch(0);
-            switch (touch.phase)
+            if (Input.touchCount == 1)
             {
-                case TouchPhase.Began:
-                    var ray = _arSessionOrigin.camera.ScreenPointToRay(touch.position);
+                var touch = Input.GetTouch(0);
+                switch (touch.phase)
+                {
+                    case TouchPhase.Began:
+                        var ray = _arSessionOrigin.camera.ScreenPointToRay(touch.position);
 
-                    if (Physics.Raycast(ray, out var hitObject, _maxDistanceOnSelection))
-                    {
-                        Debug.Log(hitObject.transform.name);
-                        if (hitObject.transform.name.Contains("PlaceObject"))
+                        if (Physics.Raycast(ray, out var hitObject, _maxDistanceOnSelection))
                         {
-                            SwitchToState(States.DRAG_AND_DROP);
+                            Debug.Log(hitObject.transform.name);
+                            if (hitObject.transform.name.Contains("PlaceObject"))
+                            {
+                                SwitchToState(States.DRAG_AND_DROP);
+                            }
                         }
+                        break;
+                }
+            }
+
+            switch (_focusAnimationState)
+            {
+                case FocusAnimationStates.TAP:
+                    {
+                        HandleDistanceFade();
+                        if (!HoloMe.IsPrepared && _currentDelayAfterLoading <= _delayAfterLoading)
+                        {
+                            LoadignAnimation();
+                        }
+
+                        break;
                     }
-                    break;
-            }
-        }
+                case FocusAnimationStates.LOADING:
+                    {
+                        if (HoloMe.IsPrepared)
+                        {
+                            TapToPlaceAnimation();
+                            break;
+                        }
 
-        switch (_focusAnimationState)
-        {
-            case FocusAnimationStates.TAP:
+                        // TODO - fix it with Agora api
+                        if (_currentDelayAfterLoading < _delayAfterLoading)
+                        {
+                            _currentDelayAfterLoading += Time.deltaTime;
+                        }
+
+                        TapToPlaceAnimation();
+                        break;
+                    }
+            }
+
+            if (SurfaceDetected())
             {
-                HandleDistanceFade();
-                if (!HoloMe.IsPrepared && _currentDelayAfterLoading <= _delayAfterLoading)
-                {
-                    LoadignAnimation();
-                }
-            
-                break;
+                TapToPlace();
             }
-            case FocusAnimationStates.LOADING:
+
+            TransformUpdate();
+
+            if (IsAllButtonsCloseNotActive())
             {
-                if (HoloMe.IsPrepared)
-                {
-                    TapToPlaceAnimation();
-                    break;
-                }
-                
-                // TODO - fix it with Agora api
-                if (_currentDelayAfterLoading < _delayAfterLoading)
-                {
-                    _currentDelayAfterLoading += Time.deltaTime;
-                }
-                
-                TapToPlaceAnimation();
-                break;
+                _currentDelayAfterLoading = 0.0f;
             }
-        }
-
-        if (SurfaceDetected())
-        {
-            TapToPlace();
-        }
-
-        TransformUpdate();
-
-        if (IsAllButtonsCloseNotActive())
-        {
-            _currentDelayAfterLoading = 0.0f;
         }
     }
 
