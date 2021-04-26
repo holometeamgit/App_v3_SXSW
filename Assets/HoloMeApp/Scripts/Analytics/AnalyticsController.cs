@@ -230,7 +230,7 @@ public class AnalyticsController : MonoBehaviour
 
         if(dataDictionary == null)
             dataDictionary = new Dictionary<string, string>();
-        dataDictionary.Add("Time", elapsedTime.ToString());
+        dataDictionary.Add(AnalyticParameters.ParamTime, elapsedTime.ToString());
         dataDictionary.Add(AnalyticParameters.ParamUserID, userWebManager.GetUserID().ToString());
 
         foreach (var analyticsController in analyticsLibraryAbstractions)
