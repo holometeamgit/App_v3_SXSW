@@ -60,12 +60,16 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
     }
 
     private void CheckRoom() {
+        if (!gameObject.activeInHierarchy)
+            return;
         liveRoomWasFound = false;
         if (contentLinkHandler.HasContentId(ContentLinkHandlerType.Room)) {
             currentRoomId = contentLinkHandler.PopContentId();
         }
         if (string.IsNullOrWhiteSpace(currentRoomId)) {
             RectInfo.SetActive(true);
+            TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            Task.Delay(TIME_DELAY).ContinueWith((_) => CheckRoom(), taskScheduler);
         } else {
             RequestRoom();
         }

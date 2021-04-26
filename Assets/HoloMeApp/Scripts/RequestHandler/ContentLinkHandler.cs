@@ -27,8 +27,7 @@ public class ContentLinkHandler : MonoBehaviour
     }
 
     public bool HasContentId(ContentLinkHandlerType type) {
-        HelperFunctions.DevLog("HasRoomId type = " + contentLinkHandlerType);
-        HelperFunctions.DevLog("RoomId  = " + contentId);
+        HelperFunctions.DevLog("HasRoomId type = " + contentLinkHandlerType + "RoomId  = " + contentId);
         return contentLinkHandlerType == type && !string.IsNullOrWhiteSpace(contentId);
     }
 

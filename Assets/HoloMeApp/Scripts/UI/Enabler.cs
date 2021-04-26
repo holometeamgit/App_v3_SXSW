@@ -58,7 +58,7 @@ public class Enabler : MonoBehaviour
         if (!gameObject.activeInHierarchy)
             return;
         if(!focus) {
-            onNotFocusEvent.Invoke();
+        //    onNotFocusEvent.Invoke();
         } else {
             onFocusEvent.Invoke();
         }
