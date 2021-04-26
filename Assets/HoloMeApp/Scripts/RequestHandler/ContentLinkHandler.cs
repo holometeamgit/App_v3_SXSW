@@ -7,7 +7,7 @@ public class ContentLinkHandler : MonoBehaviour
     private string contentId = "";
     private ContentLinkHandlerType contentLinkHandlerType;
 
-    public string ContentId {
+    private string ContentId {
         get {
             HelperFunctions.DevLog("contentID " + contentId);
             return contentId;
