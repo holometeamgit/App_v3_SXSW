@@ -34,6 +34,9 @@ public class PnlThumbnailPopup : UIThumbnail {
     [SerializeField]
     UIAnimator auAnimator;
 
+    [SerializeField]
+    private VerticalLayoutGroup layoutGroup;
+
     ThumbnailElement thumbnailElement;
     long currentId = 0;
 
@@ -138,6 +141,13 @@ public class PnlThumbnailPopup : UIThumbnail {
         } else {
             btnPlayTeaser.SetActive(thumbnailElement.Data.HasTeaser);
         }
+
+        if (layoutGroup != null) {
+            layoutGroup.CalculateLayoutInputHorizontal();
+            layoutGroup.CalculateLayoutInputVertical();
+            layoutGroup.SetLayoutHorizontal();
+            layoutGroup.SetLayoutVertical();
+        }
     }
 
     private void WaitServerPurchaseConfirmation(long id) {
@@ -148,7 +158,7 @@ public class PnlThumbnailPopup : UIThumbnail {
     }
 
     private void OnDestroy() {
-        if(isSubscribed)
+        if (isSubscribed)
             thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded -= ShowStreamStream;
     }
 
