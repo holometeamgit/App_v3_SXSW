@@ -893,7 +893,6 @@ namespace Beem.UI {
                 end = (direction == Direction.Left) ? 0f : 1f;
             }
 
-
             while (timer <= 1f) {
                 speed = Mathf.Lerp(speed, 0f, timer);
                 if (Type == 0) {
