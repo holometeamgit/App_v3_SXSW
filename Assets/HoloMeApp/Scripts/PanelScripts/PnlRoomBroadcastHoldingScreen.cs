@@ -59,7 +59,7 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
         return serverURLAPIScriptable.ServerURLMediaAPI + videoUploader.GetRoomById.Replace("{id}", id);
     }
 
-    private void OnEnable() {
+    private void CheckRoom() {
         liveRoomWasFound = false;
         if (contentLinkHandler.HasContentId(ContentLinkHandlerType.Room)) {
             currentRoomId = contentLinkHandler.PopContentId();
@@ -70,6 +70,17 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
             RequestRoom();
         }
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+    }
+
+    private void OnApplicationFocus(bool focus) {
+        if (!gameObject.activeInHierarchy)
+            return;
+        if (focus)
+            CheckRoom();
+    }
+
+    private void OnEnable() {
+        CheckRoom();
     }
 
     private void OnDisable() {

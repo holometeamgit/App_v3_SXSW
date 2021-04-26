@@ -20,8 +20,8 @@ public class Enabler : MonoBehaviour
     public UnityEvent OnDelayEvent;
 
     [Space]
-    public UnityEvent onPauseEvent;
-    public UnityEvent onPlayEvent;
+    public UnityEvent onNotFocusEvent;
+    public UnityEvent onFocusEvent;
 
     private void OnEnable() {
         foreach (var element in ObjectListActiveOnEnable)
@@ -53,13 +53,14 @@ public class Enabler : MonoBehaviour
         OnDelayEvent.Invoke();
     }
 
-    private void OnApplicationPause(bool pause) {
+    private void OnApplicationFocus(bool focus) {
+        HelperFunctions.DevLog("pause" + focus);
         if (!gameObject.activeInHierarchy)
             return;
-        if(pause) {
-            onPauseEvent.Invoke();
+        if(!focus) {
+            onNotFocusEvent.Invoke();
         } else {
-            onPlayEvent.Invoke();
+            onFocusEvent.Invoke();
         }
     }
 }

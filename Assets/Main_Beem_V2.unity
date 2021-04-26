@@ -4382,11 +4382,11 @@ MonoBehaviour:
   OnDelayEvent:
     m_PersistentCalls:
       m_Calls: []
-  onPauseEvent:
+  onNotFocusEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1931655158}
-        m_MethodName: OnHomePageEnable
+        m_MethodName: OnHomePageDisable
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4396,11 +4396,11 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  onPlayEvent:
+  onFocusEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1931655158}
-        m_MethodName: OnHomePageDisable
+        m_MethodName: OnHomePageEnable
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5712,10 +5712,10 @@ MonoBehaviour:
   OnDelayEvent:
     m_PersistentCalls:
       m_Calls: []
-  onPauseEvent:
+  onNotFocusEvent:
     m_PersistentCalls:
       m_Calls: []
-  onPlayEvent:
+  onFocusEvent:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &1247021531
