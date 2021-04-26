@@ -120,8 +120,8 @@ public class PnlComments : MonoBehaviour
 		if (!gameObject.activeSelf)
 			OnOpen();
 
-		HelperFunctions.DevLog("OnApplyDataTo count " + count + "OnApp pullCount");
-		_scroll.ApplyDataTo(count, pullCount, InfiniteScroll.Direction.Bottom);
+		_scroll.MoveToSide(InfiniteScroll.Direction.Top);
+		_scroll.ApplyDataTo(count, pullCount, InfiniteScroll.Direction.Top);
 	}
 
 	public void OnAllDataLoaded() {
@@ -148,9 +148,9 @@ public class PnlComments : MonoBehaviour
 	}
 
 	int OnHeightItem(int index) {
-		CommentJsonData commentData = onGetItemByOrdinalIndex(index);
+		//CommentJsonData commentData = onGetItemByOrdinalIndex(index);
 
-		return Mathf.CeilToInt(uiCommentElementPrefab.GetRequiredHeight(commentData.user, commentData.body));
+		return 150;// Mathf.CeilToInt(uiCommentElementPrefab.GetRequiredHeight(commentData.user, commentData.body));
 	}
 
 	void OnPullItem(InfiniteScroll.Direction direction) {

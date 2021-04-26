@@ -699,13 +699,10 @@ namespace Beem.UI {
         /// <param name="direction">Direction to add</param>
         void ApplyDataToVertical(int count, int newCount, Direction direction) {
             _count = count;
-           HelperFunctions.DevLog("ApplyDataToVertical 1 count " + count + " newCount " + newCount);
-          HelperFunctions.DevLog("_views " + _views);
             if (_count <= _views.Length) {
                 InitData(count);
                 return;
             }
-            HelperFunctions.DevLog("ApplyDataToVertical 2 count " + count + " newCount " + newCount);
             float height = CalcSizesPositions(count);
             _content.sizeDelta = new Vector2(_content.sizeDelta.x, height);
             Vector2 pos = _content.anchoredPosition;
@@ -723,7 +720,6 @@ namespace Beem.UI {
                 }
                 pos.y = height - h - ContainerHeight;
             }
-            HelperFunctions.DevLog("ApplyDataToVertical 3 count " + count + " newCount " + newCount);
             _content.anchoredPosition = pos;
             float _topPosition = _content.anchoredPosition.y - ItemSpacing;
             float itemPosition = Mathf.Abs(_positions[_previousPosition]) + _heights[_previousPosition];
@@ -897,7 +893,6 @@ namespace Beem.UI {
                 end = (direction == Direction.Left) ? 0f : 1f;
             }
 
-            HelperFunctions.DevLog("MoveTo start " + start + " end " + end);
 
             while (timer <= 1f) {
                 speed = Mathf.Lerp(speed, 0f, timer);
