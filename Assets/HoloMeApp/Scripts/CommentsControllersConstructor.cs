@@ -25,6 +25,7 @@ namespace Beem {
             _commentsController.onPosted += _pnlComments.OnPost;
             _commentsController.onFailPosted += _pnlComments.OnFailPost;
             _commentsController.onFetchedTotalCommentsCount += _pnlComments.OnRefreshUpdateCommentsCount;
+            _commentsController.onRefresh += _pnlComments.DoOnModelRefreshed;
 
             StreamCallBacks.onOpenComment += _pnlComments.OpenComments;
         }

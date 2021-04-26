@@ -13,6 +13,7 @@ namespace Beem.Content {
         public Action onFailPosted;
         public Action onAllDataLoaded;
         public Action<int> onFetchedTotalCommentsCount;
+        public Action onRefresh;
 
         PageLoader<CommentJsonData> _commentPageLoader;
         WebRequestHandler _webRequestHandler;
@@ -20,6 +21,7 @@ namespace Beem.Content {
 
         VideoUploader _videoUploaderAPI;
         long _contentId;
+        bool _afterRefresh;
 
         const int PAGE_SIZE = 100;
 
@@ -44,15 +46,17 @@ namespace Beem.Content {
                 _commentPageLoader.onFailDataLoaded -= OnFailGetData;
                 _commentPageLoader.onAllDataLoaded -= OnAllDataLoad;
                 _commentPageLoader.onInit -= Next;
-                _commentPageLoader.onFetchedTotalCommentsCount -= onFetchedTotalCommentsCount;
+                _commentPageLoader.onFetchedTotalCommentsCount -= OnFetchTotalCommentsCount;
             }
+
+            _afterRefresh = true;
 
             _commentPageLoader = new PageLoader<CommentJsonData>(GetRequestUrl(), _webRequestHandler, PAGE_SIZE);
             _commentPageLoader.onDataLoaded += OnFetchData;
             _commentPageLoader.onFailDataLoaded += OnFailGetData;
             _commentPageLoader.onAllDataLoaded += OnAllDataLoad;
             _commentPageLoader.onInit += Next;
-            _commentPageLoader.onFetchedTotalCommentsCount += onFetchedTotalCommentsCount;
+            _commentPageLoader.onFetchedTotalCommentsCount += OnFetchTotalCommentsCount;
         }
 
         public void Next() {
@@ -96,6 +100,10 @@ namespace Beem.Content {
             int newCount = _commentsContainer.Count() - prevCountItems;
 
             onDataFetched?.Invoke(count, newCount);
+            if(_afterRefresh) {
+                _afterRefresh = false;
+                onRefresh?.Invoke();
+            }
         }
 
         private void OnFetchTotalCommentsCount(int count) {

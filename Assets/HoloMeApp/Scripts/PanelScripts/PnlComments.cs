@@ -99,7 +99,6 @@ public class PnlComments : MonoBehaviour
 	public void OnPost() {
 		_commentInputField.text = "";
 		_postBtn.interactable = true;
-		_scroll.MoveToSide(InfiniteScroll.Direction.Top);
 		Refresh();
 	}
 
@@ -109,19 +108,19 @@ public class PnlComments : MonoBehaviour
 		//TODO show msg for user
 	}
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="count">count comments</param>
-	/// <param name="pullCount">new loaded comments count</param>
-	public void OnApplyDataTo(int count, int pullCount) {
-		HelperFunctions.DevLog("count " + count + " pullCount " + pullCount);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="count">count comments</param>
+    /// <param name="pullCount">new loaded comments count</param>
+    public void OnApplyDataTo(int count, int pullCount) {
 		if (!_isCanOpen)
 			return;
 
 		if (!gameObject.activeSelf)
 			OnOpen();
 
+		HelperFunctions.DevLog("OnApplyDataTo count " + count + "OnApp pullCount");
 		_scroll.ApplyDataTo(count, pullCount, InfiniteScroll.Direction.Bottom);
 	}
 
@@ -130,6 +129,10 @@ public class PnlComments : MonoBehaviour
 	}
 
     #endregion
+
+	public void DoOnModelRefreshed() {
+		//_scroll.MoveToSide(InfiniteScroll.Direction.Top);
+	}
 
     private void Awake() {
 		_commentInputField.shouldHideMobileInput = true;
