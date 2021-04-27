@@ -16,7 +16,6 @@ namespace Beem.CleverTap
         private void Start()
         {
             NotificationServices.RegisterForNotifications(NotificationType.Alert | NotificationType.Badge | NotificationType.Sound);
-            CleverTapBinding.RegisterPush();
         }
 #endif
     }

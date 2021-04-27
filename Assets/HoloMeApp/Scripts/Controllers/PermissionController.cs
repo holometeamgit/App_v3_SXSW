@@ -48,13 +48,13 @@ public class PermissionController : MonoBehaviour {
     public void CheckSettings(string settingsTitle, string settingsDescription) {
             pnlGenericError.ActivateDoubleButton(settingsTitle,
                 settingsDescription,
-                "Settings",
-                "Cancel",
+                "Allow",
+                "Don’t Allow",
                 () => permissionGranter.RequestSettings(),
                 () => pnlGenericError.gameObject.SetActive(false));
     }
 
     public void CheckPushNotifications() {
-        CheckSettings("Push Notifications Required!", "Please enable push notifications to use this app");
+        CheckSettings("‘Beem’ Would Like To Send You Notifications", "Notifications may include alerts and sounds.");
     }
 }
