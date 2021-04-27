@@ -57,9 +57,7 @@ public class Enabler : MonoBehaviour
         HelperFunctions.DevLog("pause" + focus);
         if (!gameObject.activeInHierarchy)
             return;
-        if(!focus) {
-        //    onNotFocusEvent.Invoke();
-        } else {
+        if(focus) { 
             onFocusEvent.Invoke();
         }
     }

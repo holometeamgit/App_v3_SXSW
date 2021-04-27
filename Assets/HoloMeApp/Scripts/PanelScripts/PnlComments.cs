@@ -130,10 +130,6 @@ public class PnlComments : MonoBehaviour
 
     #endregion
 
-	public void DoOnModelRefreshed() {
-		//_scroll.MoveToSide(InfiniteScroll.Direction.Top);
-	}
-
     private void Awake() {
 		_commentInputField.shouldHideMobileInput = true;
 	}
@@ -148,9 +144,9 @@ public class PnlComments : MonoBehaviour
 	}
 
 	int OnHeightItem(int index) {
-		//CommentJsonData commentData = onGetItemByOrdinalIndex(index);
+		CommentJsonData commentData = onGetItemByOrdinalIndex(index);
 
-		return 150;// Mathf.CeilToInt(uiCommentElementPrefab.GetRequiredHeight(commentData.user, commentData.body));
+		return Mathf.CeilToInt(uiCommentElementPrefab.GetRequiredHeight(commentData.user, commentData.body));
 	}
 
 	void OnPullItem(InfiniteScroll.Direction direction) {
