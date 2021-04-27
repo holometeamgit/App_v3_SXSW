@@ -142,6 +142,9 @@ public class PnlThumbnailPopup : UIThumbnail {
             btnPlayTeaser.SetActive(thumbnailElement.Data.HasTeaser);
         }
 
+        layoutGroup.enabled = !layoutGroup.enabled;
+        layoutGroup.enabled = !layoutGroup.enabled;
+
         if (layoutGroup != null) {
             layoutGroup.CalculateLayoutInputHorizontal();
             layoutGroup.CalculateLayoutInputVertical();
