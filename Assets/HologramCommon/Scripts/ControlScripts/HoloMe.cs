@@ -225,7 +225,7 @@ namespace HoloMeSDK {
                 return;
             }
 
-            if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+            if (!Application.isEditor && EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
             {
                 //Debug.Log("RETURNING TOUCH POSITION");
                 return;
