@@ -194,7 +194,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 152.01}
+  m_SizeDelta: {x: 0, y: 128.1697}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7492731775733503160
 MonoBehaviour:
@@ -258,7 +258,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7492731775826142779
 RectTransform:
   m_ObjectHideFlags: 0
@@ -331,7 +331,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7492731776284830606
 RectTransform:
   m_ObjectHideFlags: 0
@@ -348,10 +348,10 @@ RectTransform:
   m_Father: {fileID: 7492731777263789952}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1054, y: -76.005}
-  m_SizeDelta: {x: 148, y: 152.01}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 152.01}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1566219059911282046
 MonoBehaviour:
@@ -384,6 +384,7 @@ GameObject:
   - component: {fileID: 7492731776715431969}
   - component: {fileID: 7492731776715431971}
   - component: {fileID: 7492731776715431970}
+  - component: {fileID: 6798713094079944824}
   m_Layer: 5
   m_Name: txtComments
   m_TagString: Untagged
@@ -407,8 +408,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 96}
+  m_AnchoredPosition: {x: 514, y: 0}
+  m_SizeDelta: {x: 932, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &7492731776715431971
 CanvasRenderer:
@@ -484,7 +485,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 126
+  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -531,6 +532,20 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6798713094079944824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7492731776715431968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &7492731777253025679
 GameObject:
   m_ObjectHideFlags: 0
@@ -548,7 +563,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7492731777253025664
 RectTransform:
   m_ObjectHideFlags: 0
@@ -785,7 +800,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f3f8d0b8ab654fee80c85dbc3d59c1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxWidth: 932
   _titleText: {fileID: 7492731775536873278}
   _commentText: {fileID: 7492731776715431970}
   _commentPostedColor: {r: 0.4862745, g: 0.48235294, b: 0.48235294, a: 1}

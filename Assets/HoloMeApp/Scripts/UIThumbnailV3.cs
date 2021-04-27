@@ -159,7 +159,7 @@ public class UIThumbnailV3 : UIThumbnail {
         btnBuyTicketR.SetActive(false);
         btnShareR.SetActive(false);
 
-        txtPrice.text = "";
+        txtPrice.text = "Free";
 
         if (thumbnailElement.Data.is_bought && thumbnailElement.Data.GetStage() == StreamJsonData.Data.Stage.Live) {
             txtInfoText.text = "This is a free Live event";
@@ -175,6 +175,8 @@ public class UIThumbnailV3 : UIThumbnail {
             btnBuyTicketR.SetActive(true);
         } else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
             txtInfoText.text = "This is a free event";
+            if (thumbnailElement.Data.is_bought && thumbnailElement.Data.HasProduct)
+                txtInfoText.text = "Ticket purchased for event";
 
                 btnWatchNow.SetActive(true);
                 btnShareR.SetActive(true);

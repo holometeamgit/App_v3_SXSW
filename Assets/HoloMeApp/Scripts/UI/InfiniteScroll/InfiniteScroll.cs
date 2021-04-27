@@ -667,7 +667,6 @@ namespace Beem.UI {
             float result = 0f;
             for (int i = 0; i < count; i++) {
                 _heights[i] = OnHeight(i);
-//                Debug.Log("_heights[" + i + "] = " + _heights[i]);
                 _positions[i] = -(TopPadding + i * ItemSpacing + result);
                 result += _heights[i];
             }
@@ -700,13 +699,10 @@ namespace Beem.UI {
         /// <param name="direction">Direction to add</param>
         void ApplyDataToVertical(int count, int newCount, Direction direction) {
             _count = count;
-            HelperFunctions.DevLog("ApplyDataToVertical 1 count " + count + " newCount " + newCount);
-            HelperFunctions.DevLog("_views " + _views);
             if (_count <= _views.Length) {
                 InitData(count);
                 return;
             }
-            HelperFunctions.DevLog("ApplyDataToVertical 2 count " + count + " newCount " + newCount);
             float height = CalcSizesPositions(count);
             _content.sizeDelta = new Vector2(_content.sizeDelta.x, height);
             Vector2 pos = _content.anchoredPosition;
@@ -724,7 +720,6 @@ namespace Beem.UI {
                 }
                 pos.y = height - h - ContainerHeight;
             }
-            HelperFunctions.DevLog("ApplyDataToVertical 3 count " + count + " newCount " + newCount);
             _content.anchoredPosition = pos;
             float _topPosition = _content.anchoredPosition.y - ItemSpacing;
             float itemPosition = Mathf.Abs(_positions[_previousPosition]) + _heights[_previousPosition];
@@ -897,6 +892,7 @@ namespace Beem.UI {
                 start = _scroll.horizontalNormalizedPosition;
                 end = (direction == Direction.Left) ? 0f : 1f;
             }
+
             while (timer <= 1f) {
                 speed = Mathf.Lerp(speed, 0f, timer);
                 if (Type == 0) {
@@ -909,10 +905,11 @@ namespace Beem.UI {
                 timer += Time.deltaTime / SCROLL_DURATION;
                 yield return null;
             }
+            _scroll.velocity = Vector2.zero;
             if (Type == 0) {
-                _scroll.velocity = new Vector2(0f, (direction == Direction.Top) ? -SCROLL_SPEED : SCROLL_SPEED);
+                _scroll.verticalNormalizedPosition = (direction == Direction.Bottom) ? 0f : 1f;
             } else {
-                _scroll.velocity = new Vector2((direction == Direction.Left) ? SCROLL_SPEED : -SCROLL_SPEED, 0f);
+                _scroll.verticalNormalizedPosition = (direction == Direction.Left) ? 0f : 1f;
             }
         }
 
@@ -940,12 +937,8 @@ namespace Beem.UI {
             foreach (int item in _heights.Values) {
                 height += item;
             }
-            Debug.Log("height " + height);
             height = height / _heights.Count;
-            Debug.Log("height " + height);
-            Debug.Log("ContainerHeight " + ContainerHeight);
             int fillCount = Mathf.RoundToInt(ContainerHeight / height) + 4;
-            Debug.Log("fillCount " + fillCount);
             _views = new GameObject[fillCount];
             for (int i = 0; i < fillCount; i++) {
                 clone = (GameObject)Instantiate(Prefab, Vector3.zero, Quaternion.identity);

@@ -10,8 +10,6 @@ namespace Beem.UI {
 
     public class UICommentElement : MonoBehaviour {
 
-        [SerializeField] float _maxWidth = 932;
-
         public Action<int> onRemoveByContentId;
 
         [Header("Comments")]
@@ -36,6 +34,8 @@ namespace Beem.UI {
         /// </summary>
         private int _contentId;
 
+        float _maxWidth = 932;
+
         public void UpdateData(string title, string commentText, DateTime dateTime, int likesCount, int contentId) {
             _titleText.text = title;
             _commentText.text = string.Format("{0} <color=#{1}>{2}</color> ",
@@ -52,11 +52,21 @@ namespace Beem.UI {
         }
 
         public float GetRequiredHeight(string title, string comments) {
-            int countTitleStr = Mathf.CeilToInt(((float)(_titleText.fontSize * title.Length)) / _maxWidth);
-            int countCommentStr = Mathf.CeilToInt(((float)(_commentText.fontSize * comments.Length + ADDITIONAL_CHARACTERS_LENGS)) / _maxWidth);
+            _commentText.text = comments;
+            _titleText.text = title;
+            int textCommentsLineCount = Mathf.CeilToInt(_commentText.preferredWidth / _maxWidth);
+            int spaceCommensLineCount = Mathf.Max(0, textCommentsLineCount - 1);
 
-            float height = _titleText.fontSize * countTitleStr + _titleText.lineSpacing * (countTitleStr - 1) + ADDITIONAL_SPACING +
-                _commentText.fontSize * countCommentStr + _commentText.lineSpacing * (countCommentStr - 1);
+            int textTitleLineCount = Mathf.CeilToInt(_titleText.preferredWidth / _maxWidth);
+            int spaceTitleLineCount = Mathf.Max(0, textTitleLineCount - 1);
+
+
+            float height =
+                textTitleLineCount * _commentText.fontSize +
+                spaceTitleLineCount * _commentText.lineSpacing +
+                ADDITIONAL_SPACING +
+                textCommentsLineCount * _commentText.fontSize +
+                spaceCommensLineCount * _commentText.lineSpacing;
 
             return height;
         }

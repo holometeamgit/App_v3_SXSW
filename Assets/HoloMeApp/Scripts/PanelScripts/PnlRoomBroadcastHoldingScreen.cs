@@ -59,17 +59,32 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
         return serverURLAPIScriptable.ServerURLMediaAPI + videoUploader.GetRoomById.Replace("{id}", id);
     }
 
-    private void OnEnable() {
+    private void CheckRoom() {
+        if (!gameObject.activeInHierarchy)
+            return;
         liveRoomWasFound = false;
         if (contentLinkHandler.HasContentId(ContentLinkHandlerType.Room)) {
             currentRoomId = contentLinkHandler.PopContentId();
         }
         if (string.IsNullOrWhiteSpace(currentRoomId)) {
             RectInfo.SetActive(true);
+            TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            Task.Delay(TIME_DELAY).ContinueWith((_) => CheckRoom(), taskScheduler);
         } else {
             RequestRoom();
         }
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+    }
+
+    private void OnApplicationFocus(bool focus) {
+        if (!gameObject.activeInHierarchy)
+            return;
+        if (focus)
+            CheckRoom();
+    }
+
+    private void OnEnable() {
+        CheckRoom();
     }
 
     private void OnDisable() {
