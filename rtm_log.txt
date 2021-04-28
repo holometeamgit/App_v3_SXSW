@@ -15072,3 +15072,64 @@ INFO    2021-03-01T13:56:28:025 414503; Agora Service Worker Thread stopped: 0x7
 INFO    2021-03-01T13:56:28:026    775; CacheManager: save cache to storage elapsed 1
 INFO    2021-03-01T13:56:28:026    775; CacheManager: save report cache to storage failed
 INFO    2021-03-01T13:56:28:026 185871; Agora Service Worker Thread stopped: 0x7fa56fbe6170
+
+
+INFO    2021-04-28T12:04:47:978 235283; [rlbs] request rs list from 123.56.235.221:8443 with fake ch report_lbs_1619586287978.......
+INFO    2021-04-28T12:04:48:262 235283; recognized uri 64 from server 123.56.235.221:8443
+INFO    2021-04-28T12:04:48:262 235283; [rlbs] [report servers]: 148.153.85.195
+INFO    2021-04-28T12:04:48:262 235283; [rlbs] [report servers]: 104.166.161.75
+INFO    2021-04-28T12:04:48:262 235283; [rlbs] [report servers]: 23.248.186.154
+INFO    2021-04-28T12:04:48:262 235283; [rlbs/t] responsed from 123.56.235.221:8443 with servers 148.153.85.195:8130
+INFO    2021-04-28T12:04:48:262 235283; [rs] updateServers 148.153.85.195:8130, priority 3
+INFO    2021-04-28T12:04:48:262 235283; [rs] updateServers 104.166.161.75:8130, priority 3
+INFO    2021-04-28T12:04:48:262 235283; [rs] updateServers 23.248.186.154:8130, priority 3
+INFO    2021-04-28T12:04:48:262 235283; create session builder 0x7fe77ac50630
+INFO    2021-04-28T12:04:48:262 235283; create dangling client connection 0x7fe77748dda0
+INFO    2021-04-28T12:04:48:265 235283; [remote:148.153.85.195:8130] start 0th connect, send client hello 7636860|syn, tags: SNI :3134382d3135...(28), PDMD:, CPTO:4e4f4e432000...(129), CID: 3103576160887512595
+INFO    2021-04-28T12:04:48:354 235283; [remote:148.153.85.195:8130] receive server hello piece id: 0, 1/10, not complete
+INFO    2021-04-28T12:04:48:354 235283; [remote:148.153.85.195:8130] receive server hello piece id: 1, 2/10, not complete
+INFO    2021-04-28T12:04:48:354 235283; [remote:148.153.85.195:8130] receive server hello piece id: 2, 3/10, not complete
+INFO    2021-04-28T12:04:48:355 235283; [remote:148.153.85.195:8130] receive server hello piece id: 3, 4/10, not complete
+INFO    2021-04-28T12:04:48:355 235283; [remote:148.153.85.195:8130] receive server hello piece id: 4, 5/10, complete
+INFO    2021-04-28T12:04:48:357 235283; [remote:148.153.85.195:8130] create connection 0x7fe779537e00, self initial seq: 7636861, initial rtt: 92ms, git tag: Unknown, perspective: Perspective::kClient, cc: BBRv1, pacing: enable
+INFO    2021-04-28T12:04:48:358 235283; [remote:148.153.85.195:8130] create session 0x7fe77ac6ff90
+INFO    2021-04-28T12:04:48:358 235283; [rs] link aut to 148.153.85.195:8130 connected
+INFO    2021-04-28T12:04:48:358 235283; destroy dangling client connection 0x7fe77748dda0
+INFO    2021-04-28T12:04:51:639 235283; [dns] parsed ip 128.1.78.146
+INFO    2021-04-28T12:04:51:639 235283; [dns] parsed ip 128.1.77.34
+INFO    2021-04-28T12:04:51:639 235283; [dns] parsed ip 23.236.96.138
+INFO    2021-04-28T12:04:51:639 235283; [ap] onParsedDns (normal) ap1.agora.io with err 0, 128.1.78.146, 128.1.77.34, 23.236.96.138, 
+INFO    2021-04-28T12:04:53:576 235283; [dns] parsed ip 52.59.134.47
+INFO    2021-04-28T12:04:53:576 235283; [dns] parsed ip 18.134.183.28
+INFO    2021-04-28T12:04:53:576 235283; [ap] onParsedDns (TLS) ap1-tls.agora.io with err 0, 52.59.134.47, 18.134.183.28, 
+INFO    2021-04-28T12:04:53:576 264199; [dns] parsed ip 128.1.78.146
+INFO    2021-04-28T12:04:53:576 264199; [dns] parsed ip 128.1.77.34
+INFO    2021-04-28T12:04:53:576 264199; [dns] parsed ip 23.236.96.138
+INFO    2021-04-28T12:04:53:576 264199; [ap] onParsedDns (normal) ap4.agora.io with err 0, 128.1.78.146, 128.1.77.34, 23.236.96.138, 
+INFO    2021-04-28T12:04:56:521 235283; [remote:148.153.85.195:8130] path MTU to remote increased: 1280 --> 1365
+INFO    2021-04-28T12:04:56:521 235283; [remote:148.153.85.195:8130] on max stream frame length changed from 1204 to 1339
+INFO    2021-04-28T12:05:02:760 264199; [ap] queryDns TLS domain is ap2-tls.agora.io
+INFO    2021-04-28T12:05:02:760 264199; [base_context]queryDns domain is ap2-tls.agora.io
+INFO    2021-04-28T12:05:02:760 264199; [cm] queryDns domain is ap2-tls.agora.io
+INFO    2021-04-28T12:05:02:760 264199; [base_context]queryDns domain is ap2-tls.agora.io
+INFO    2021-04-28T12:05:02:760 264199; [ap] dns parse retry time: 1
+INFO    2021-04-28T12:05:03:742 264199; [dns] parsed ip 18.134.183.28
+INFO    2021-04-28T12:05:03:742 264199; [dns] parsed ip 52.59.134.47
+INFO    2021-04-28T12:05:03:742 264199; [ap] onParsedDns (TLS) ap2-tls.agora.io with err 0, 18.134.183.28, 52.59.134.47, 
+INFO    2021-04-28T12:05:04:155 235283; [remote:148.153.85.195:8130] path MTU to remote increased: 1365 --> 1415
+INFO    2021-04-28T12:05:04:155 235283; [remote:148.153.85.195:8130] on max stream frame length changed from 1339 to 1389
+INFO    2021-04-28T12:05:10:761    775; [rtm-API] rtm stop service, sync: 1
+INFO    2021-04-28T12:05:11:263    775; [rtm-note] stop async handler
+INFO    2021-04-28T12:05:11:263    775; async task worker thread exited gracefully
+INFO    2021-04-28T12:05:11:263    775; rtm service release, count:0
+
+INFO    2021-04-28T12:05:11:263    775; agora service release
+
+INFO    2021-04-28T12:05:11:263 235283; [rs] **report stats: seq: 2, report list size 2, tx/rx: 111/0, cache size: 0
+INFO    2021-04-28T12:05:11:263 235283; [rs] report server1: 148.153.85.195:8130
+INFO    2021-04-28T12:05:11:263 235283; [remote:148.153.85.195:8130] destroy session 0x7fe77ac6ff90
+INFO    2021-04-28T12:05:11:263 235283; [remote:148.153.85.195:8130] destroy connection 0x7fe779537e00
+INFO    2021-04-28T12:05:11:263 235283; Agora Service Worker Thread stopped: 0x7fe77749b930
+INFO    2021-04-28T12:05:11:264    775; CacheManager: save cache to storage elapsed 1
+INFO    2021-04-28T12:05:11:264    775; CacheManager: save report cache to storage failed
+INFO    2021-04-28T12:05:11:265 264199; Agora Service Worker Thread stopped: 0x7fe7774974a0

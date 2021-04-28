@@ -27,24 +27,7 @@ public class PnlWelcomeV4 : MonoBehaviour {
         LogInBackground.SetActive(true);
     }
     #region autohide
-    //private void AutoHideLoadingBackground(LogInType logInType) {
-    //    AutoHideLoadingBackground();
-    //}
 
-    //private void AutoHideLoadingBackground(string msg) {
-    //    AutoHideLoadingBackground();
-    //}
-
-    //private void AutoHideLoadingBackground() {
-    //    var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-    //    Task.Delay(TIME_FOR_AUTOHIDINGBG).ContinueWith(_ => HideBackgroundWithDelay(), taskScheduler);
-    //}
-
-    //private void HideBackgroundWithDelay() {
-    //    if (LogInBackground.activeSelf) {
-    //        HideBackground();
-    //    }
-    //}
     #endregion
 
     private void HideBackground() {
@@ -61,41 +44,19 @@ public class PnlWelcomeV4 : MonoBehaviour {
         switcherToProfile.Switch();
     }
 
-    /// <summary>
-    /// Firebase issue as of Feb 1, 2021. If the user logged in via email,
-    /// which is also associated with the user's Facebook account,
-    /// then he will no longer be able to log in via Facebook.
-    /// </summary>
-    private void ShowSpecialErrorFacebookFirebaseMsg(string msg) {
-        if (msg.Contains("AccountExistsWithDifferentCredentials")) {
-            pnlGenericError.ActivateSingleButton(SpecificFacebookSignInMsg.Title,
-                string.Format(SpecificFacebookSignInMsg.SpecificMsg),
-                "Continue",
-                () => { pnlGenericError.gameObject.SetActive(false); switcherToLigIn.Switch(); }, true);
-        }
-    }
-
     private void OnEnable() {
         HideBackground();
 
         CallBacks.onSignInSuccess += SwitchToProfile;
-        CallBacks.onFail += ShowSpecialErrorFacebookFirebaseMsg;
-        //CallBacks.onFail += AutoHideLoadingBackground;
-        //CallBacks.onFirebaseSignInSuccess += AutoHideLoadingBackground;
-
         CallBacks.onSignInFacebook += ShowBackground;
         CallBacks.onSignInApple += ShowBackground;
         CallBacks.onSignInGoogle += ShowBackground;
         CallBacks.onFail += HideBackground;
-        CallBacks.onNeedVerification += HideBackground;               
+        CallBacks.onNeedVerification += HideBackground;
     }
 
     private void OnDisable() {
         CallBacks.onSignInSuccess -= SwitchToProfile;
-        CallBacks.onFail -= ShowSpecialErrorFacebookFirebaseMsg;
-        //CallBacks.onFail -= AutoHideLoadingBackground;
-        //CallBacks.onFirebaseSignInSuccess -= AutoHideLoadingBackground;
-
         CallBacks.onSignInFacebook -= ShowBackground;
         CallBacks.onSignInApple -= ShowBackground;
         CallBacks.onSignInGoogle -= ShowBackground;
