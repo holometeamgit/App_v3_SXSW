@@ -121,7 +121,7 @@ public class SecondaryServerCalls : MonoBehaviour {
 
         if (streamStartResponseJsonData != null) {
             OnStreamStarted?.Invoke(tokenAgoraResponse.token, tokenAgoraResponse.token, streamStartResponseJsonData.id);
-            StreamCallBacks.onLiveStreamCreated?.Invoke(streamStartResponseJsonData.id.ToString(), streamStartResponseJsonData.start_date);
+            StreamCallBacks.onLiveStreamCreated?.Invoke(streamStartResponseJsonData);
         } else
             Debug.LogError("CREATE STREAM PARSE FAILED");
     }

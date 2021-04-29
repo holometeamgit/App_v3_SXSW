@@ -333,7 +333,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void Awake() {
-        StreamCallBacks.onLiveStreamCreated += (id, date) => { currentStreamId = id; DateTime dt = DateTime.Parse(date); Debug.LogError("CurrentDate = " + dt); };
+        StreamCallBacks.onLiveStreamCreated += (data) => { currentStreamId = data.id.ToString(); };
     }
 
     private void OnDisable() {

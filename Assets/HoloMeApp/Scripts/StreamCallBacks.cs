@@ -19,7 +19,8 @@ public class StreamCallBacks {
     public static Action<string> onGetStreamLink = delegate { };
 
     //when start stream on Agora
-    public static Action<string, string> onLiveStreamCreated = delegate { };
+    public static Action<StreamStartResponseJsonData> onLiveStreamCreated = delegate { };
+    public static Action onLiveStreamFinished = delegate { };
 
     public static Action<int> onOpenComment = delegate { };
 }
