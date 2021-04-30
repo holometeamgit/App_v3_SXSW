@@ -4,7 +4,6 @@
         None,
         Apple,
         Google,
-        Facebook,
         SSO,
         Email
     }

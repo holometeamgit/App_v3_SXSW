@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Beem.SSO;
 
-public class SSOAuthorization : MonoBehaviour
-{
+public class SSOAuthorization : MonoBehaviour {
     [SerializeField] DeepLinkHandler deepLinkHandler;
     [SerializeField] AccountManager accountManager;
     [SerializeField] WebRequestHandler webRequestHandler;
@@ -19,10 +18,6 @@ public class SSOAuthorization : MonoBehaviour
 
     public void GoogleLogIn() {
         Application.OpenURL(GetGoogleLogInRequest());
-    }
-
-    public void FacebookLogIn() {
-
     }
 
     private void Awake() {

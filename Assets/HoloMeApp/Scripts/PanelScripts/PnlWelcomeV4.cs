@@ -48,7 +48,6 @@ public class PnlWelcomeV4 : MonoBehaviour {
         HideBackground();
 
         CallBacks.onSignInSuccess += SwitchToProfile;
-        CallBacks.onSignInFacebook += ShowBackground;
         CallBacks.onSignInApple += ShowBackground;
         CallBacks.onSignInGoogle += ShowBackground;
         CallBacks.onFail += HideBackground;
@@ -57,7 +56,6 @@ public class PnlWelcomeV4 : MonoBehaviour {
 
     private void OnDisable() {
         CallBacks.onSignInSuccess -= SwitchToProfile;
-        CallBacks.onSignInFacebook -= ShowBackground;
         CallBacks.onSignInApple -= ShowBackground;
         CallBacks.onSignInGoogle -= ShowBackground;
         CallBacks.onFail -= HideBackground;

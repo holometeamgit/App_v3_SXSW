@@ -129,7 +129,6 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
         CallBacks.onFail += AutoHideLoadingBackground;
         CallBacks.onFirebaseSignInSuccess += AutoHideLoadingBackground;
 
-        CallBacks.onSignInFacebook += ShowBackground;
         CallBacks.onSignInApple += ShowBackground;
         CallBacks.onSignInGoogle += ShowBackground;
         CallBacks.onFail += HideBackground;
@@ -145,7 +144,6 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
         CallBacks.onFail -= AutoHideLoadingBackground;
         CallBacks.onFirebaseSignInSuccess -= AutoHideLoadingBackground;
 
-        CallBacks.onSignInFacebook -= ShowBackground;
         CallBacks.onSignInApple -= ShowBackground;
         CallBacks.onSignInGoogle -= ShowBackground;
         CallBacks.onFail -= HideBackground;

@@ -37,9 +37,6 @@ public class AccountManager : MonoBehaviour {
         }
 
         HelperFunctions.DevLog("try QuickLogIn");
-        if (GetLogInType() == LogInType.Facebook) {
-            LogOut();
-        }
 
         ServerAccessToken accessToken = GetAccessToken();
 
@@ -141,7 +138,7 @@ public class AccountManager : MonoBehaviour {
 
     private void LogInToServer(LogInType logInType) {
 
-        if(authController.IsNewUser())
+        if (authController.IsNewUser())
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete);
 
         SaveLogInType(logInType);

@@ -15,7 +15,6 @@ namespace Beem.SSO {
         public static Action onSignInEMailClick = delegate { };
         public static Action onSignInGoogle = delegate { };
         public static Action onSignInApple = delegate { };
-        public static Action onSignInFacebook = delegate { };
         public static Action onSignInSuccess = delegate { };
         public static Action<LogInType> onFirebaseSignInSuccess = delegate { };
 
