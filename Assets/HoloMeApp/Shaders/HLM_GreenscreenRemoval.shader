@@ -21,10 +21,10 @@ Shader "HLM/Unlit/GreenscreenRemoval"
         _mediumPolyhedron("mp",  Float) = 0.34
         _largePolyhedron ("lp",  Float) = 2.0
         
-        _maskContrastL("maskContrastL", Float) = 0.01
+        _maskContrastL("maskContrastL", Float) = 0.0
         _maskContrastM("maskContrastM", Float) = 1.0
         _maskContrastS("maskContrastS", Float) = 1.0
-        _maskContrast ("maskContrast",  Float) = 0.75
+        _maskContrast ("maskContrast",  Float) = 0.0
         
         _rb ("BR", Int) = 3
         
