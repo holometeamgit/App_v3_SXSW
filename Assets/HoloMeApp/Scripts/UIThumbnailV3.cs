@@ -31,6 +31,9 @@ public class UIThumbnailV3 : UIThumbnail {
     [Space]
     [SerializeField] AspectRatioFitterByMinSide aspectRatioFitter;
 
+    [SerializeField]
+    private StreamTimerView _streamTimerView;
+
     Action<StreamJsonData.Data> OnPlayClick;
     Action<StreamJsonData.Data> OnTeaserClick;
     Action<StreamJsonData.Data> OnBuyClick;
@@ -178,8 +181,8 @@ public class UIThumbnailV3 : UIThumbnail {
             if (thumbnailElement.Data.is_bought && thumbnailElement.Data.HasProduct)
                 txtInfoText.text = "Ticket purchased for event";
 
-                btnWatchNow.SetActive(true);
-                btnShareR.SetActive(true);
+            btnWatchNow.SetActive(true);
+            btnShareR.SetActive(true);
         } else {
             txtInfoText.text = "Ticket purchased for event scheduled on " + thumbnailElement.Data.StartDate.ToString("ddd d MMM");
 
@@ -187,6 +190,8 @@ public class UIThumbnailV3 : UIThumbnail {
             btnShareR.SetActive(thumbnailElement.Data.HasTeaser);
             btnShare.SetActive(!thumbnailElement.Data.HasTeaser);
         }
+
+        _streamTimerView.OnStreamView(thumbnailElement.Data);
     }
 
     private void WaitServerPurchaseConfirmation(long id) {
