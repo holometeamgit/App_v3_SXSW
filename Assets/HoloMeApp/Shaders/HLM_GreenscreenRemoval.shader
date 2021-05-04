@@ -11,10 +11,6 @@ Shader "HLM/Unlit/GreenscreenRemoval"
 	    
         _MainTex ("Texture", 2D) = "white" {}
         
-        [MaterialToggle] _On("On", Float) = 1.0
-        
-        [MaterialToggle] _ShowMatte("Matte", Float) = 1.0
-        
         _H1("H1", Float) =  60
         _H2("H2", Float) = 120
         _S ("S",  Float) = 0.22
@@ -25,25 +21,23 @@ Shader "HLM/Unlit/GreenscreenRemoval"
         _mediumPolyhedron("mp",  Float) = 0.34
         _largePolyhedron ("lp",  Float) = 2.0
         
-        _maskContrastL("maskContrastL", Float) = 0.01
+        _maskContrastL("maskContrastL", Float) = 0.0
         _maskContrastM("maskContrastM", Float) = 1.0
         _maskContrastS("maskContrastS", Float) = 1.0
-        _maskContrast ("maskContrast",  Float) = 0.75
-
-        [MaterialToggle] _DespillAndReflectionRemove("Despill And Reflection Remove", Float) = 1.0
+        _maskContrast ("maskContrast",  Float) = 0.0
         
-        _rH1("rH1", Float) =  30
-        _rH2("rH2", Float) = 150
-        _rS ("rS",  Float) = 0.1
-        _rV ("rV",  Float) = 0.1
-
-        _srFactor("srFactor", Float) =  1.25
-        _sgFactor("sgFactor", Float) =  0.97
-        [MaterialToggle] _AddEdgeAndRemoveSmallHoles("Add Edges and remove small holes", Float) = 1
-        [Toggle(USE_AMBIENT_LIGHTING)] _UseAmbientLighting("Use ambient lighting", Float) = 1
+        _rb ("BR", Int) = 3
         
-        _OutlineColor("Outline Color", Color)=(1,1,1,1)
-        _OutlineSize("OutlineSize", Range(1.0,1.5))=1.1
+        _Hx("Hx", Float) = 0.0
+        _Px("Px", Float) = 0.5
+        
+        _By("By", Float) = 0.0
+        _Qy("Qy", Float) = 0.5
+        
+        _Qz("Qz", Float) = 0.0
+        _Rz("Rz", Float) = 0.5
+        
+        _QyC("_QyC", Float) = 0.0
     }
     
     SubShader
@@ -55,7 +49,6 @@ Shader "HLM/Unlit/GreenscreenRemoval"
         ZWrite Off
         Pass
         {
-
             Blend SrcAlpha OneMinusSrcAlpha 
 
             CGPROGRAM
@@ -65,8 +58,6 @@ Shader "HLM/Unlit/GreenscreenRemoval"
 
             #include "UnityCG.cginc"
             #include "UnityLightingCommon.cginc"
-
-			#define M_PI 3.1415926535897932384626433832795
 
             struct appdata
             {
@@ -88,9 +79,7 @@ Shader "HLM/Unlit/GreenscreenRemoval"
             sampler2D _MainTex;
             float4 _MainTex_ST;
             
-            float _On;
-            float _ShowMatte;
-            
+           
             float _H1;
             float _H2;
             float _S;
@@ -101,6 +90,7 @@ Shader "HLM/Unlit/GreenscreenRemoval"
             float _smallPolyhedron2;
             float _mediumPolyhedron;
             float _largePolyhedron;
+
             float _maskContrastL;
             float _maskContrastM;
             float _maskContrastS;
@@ -108,22 +98,23 @@ Shader "HLM/Unlit/GreenscreenRemoval"
             
             uniform float Epsilon = 1e-10;
             float4 _MainTex_TexelSize;
-            
-            float _DespillAndReflectionRemove;
 
-            float _rH1; 
-            float _rH2; 
-            float _rS;
-            float _rV;
-
-            float _srFactor;
-            float _sgFactor;
+            int _rb;
             
-            float _AddEdgeAndRemoveSmallHoles;
+            uniform float _Hx;
+            uniform float _Px;
+
+            uniform float _By;
+            uniform float _Qy;
+
+            uniform float _Qz;
+            uniform float _Rz;
+            
+            uniform float _QyC;
 
             float _t;
             
-            float4 MedianBlur(float r, float2 coord)
+            float4 median_blur(float r, float2 coord)
             {
                 float stepX = _MainTex_TexelSize.x;
                 float stepY = _MainTex_TexelSize.y;
@@ -157,29 +148,19 @@ Shader "HLM/Unlit/GreenscreenRemoval"
                 return float4(avgR/float(count), avgG/float(count), avgB/float(count), avgA/float(count));
             }
             
-            float3 RGBtoHCV(float3 RGB) {
-                float4 P = (RGB.g < RGB.b) ? float4(RGB.bg, -1.0, 2.0/3.0) : float4(RGB.gb, 0.0, -1.0/3.0);
-                float4 Q = (RGB.r < P.x) ? float4(P.xyw, RGB.r) : float4(RGB.r, P.yzx);
-                float C = Q.x - min(Q.w, Q.y);
-                float H = abs((Q.w - Q.y) / (6 * C + Epsilon) + Q.z);
-                return float3(H, C, Q.x);
-            }
-            
-            float3 RGBtoHSV(float3 RGB) {
-                float3 HCV = RGBtoHCV(RGB);
-                float S = HCV.y / (HCV.z + Epsilon);
-                return float3(HCV.x, S, HCV.z);
-            }
-            
-             float3 hsv2rgb(float3 c)
-             {
-              c = float3(c.x, clamp(c.yz, 0.0, 1.0));
-              float4 K = float4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-              float3 p = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
-              return c.z * lerp(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-            }
+             half3 rgb_to_hcv(half3 rgb) {
+                half4 p = rgb.g < rgb.b ? half4(rgb.bg, -1.0, 2.0/3.0) : half4(rgb.gb, 0.0, -1.0/3.0);
+                half4 q = rgb.r < p.x ? half4(p.xyw, rgb.r) : half4(rgb.r, p.yzx);
 
+                float c = q.x - min(q.w, q.y);
+                
+                return half3(abs((q.w - q.y) / (6 * c + Epsilon) + q.z), q.x - min(q.w, q.y), q.x);
+            }
             
+            half3 rgb_to_hsv(half3 rgb) {
+                half3 hcv = rgb_to_hcv(rgb);
+                return half3(hcv.x, hcv.y / (hcv.z + Epsilon), hcv.z);
+            }
             
             float hsvDistance(float3 hsv, float ih1, float ih2, float is, float iv)
             {
@@ -199,11 +180,7 @@ Shader "HLM/Unlit/GreenscreenRemoval"
                 return distance;
             }
             
-            float3 adjustContrastCurve(float3 color, float contrast) {
-                return pow(abs(color * 2 - 1), 1 / max(contrast, 0.0001)) * sign(color - 0.5) + 0.5;
-            }
-            
-            bool isHSVgood(float3 hsv, float ih1, float ih2, float is, float iv) {
+            bool is_hsv_good(float3 hsv, float ih1, float ih2, float is, float iv) {
                 return hsv.r * 255 >= ih1 && hsv.r * 255 <= ih2 && hsv.g >= is && hsv.b >= iv;
             }
             
@@ -218,112 +195,96 @@ Shader "HLM/Unlit/GreenscreenRemoval"
             
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, i.uv);
-                float4 blurRes = MedianBlur(5, i.uv);
-                if (_On == 0)
-                {
-                    return col;
-                }
+                float step_x = _MainTex_TexelSize.x;
+                float step_y = _MainTex_TexelSize.y;
                 
-                float3 inputColor = col;
-                if (_AddEdgeAndRemoveSmallHoles) {
-                    inputColor = blurRes.rgb;
-                }
-                float3 hsv = RGBtoHSV(blurRes.rgb);
-                
-                fixed4 up    = tex2D(_MainTex, i.uv + fixed2(0, _MainTex_TexelSize.y));
-                fixed4 down  = tex2D(_MainTex, i.uv - fixed2(0, _MainTex_TexelSize.y));
-                fixed4 left  = tex2D(_MainTex, i.uv - fixed2(_MainTex_TexelSize.x, 0));
-                fixed4 right = tex2D(_MainTex, i.uv + fixed2(_MainTex_TexelSize.x, 0));
+                half4 col = tex2D(_MainTex, i.uv);
+                half4 blur_res = median_blur(_rb, i.uv);
 
-                float3 hsv_up    = RGBtoHSV(up.rgb);
-                float3 hsv_down  = RGBtoHSV(down.rgb);
-                float3 hsv_left  = RGBtoHSV(left.rgb);
-                float3 hsv_right = RGBtoHSV(right.rgb);
-
-                fixed4 up_left    = tex2D(_MainTex, i.uv + fixed2(-_MainTex_TexelSize.x,  _MainTex_TexelSize.y));
-                fixed4 down_left  = tex2D(_MainTex, i.uv + fixed2(-_MainTex_TexelSize.x, -_MainTex_TexelSize.y));
-                fixed4 up_right   = tex2D(_MainTex, i.uv + fixed2( _MainTex_TexelSize.x,  _MainTex_TexelSize.y));
-                fixed4 down_right = tex2D(_MainTex, i.uv + fixed2( _MainTex_TexelSize.x, -_MainTex_TexelSize.y));
-
-                float3 hsv_up_left    = RGBtoHSV(up_left.rgb);
-                float3 hsv_down_left  = RGBtoHSV(down_left.rgb);
-                float3 hsv_up_right   = RGBtoHSV(up_right.rgb);
-                float3 hsv_down_right = RGBtoHSV(down_right.rgb);
+                half3 hsv = rgb_to_hsv(blur_res.rgb);
                 
-                float distance = 0;
+                half4 up    = tex2D(_MainTex, i.uv + fixed2(0, step_y));
+                half4 down  = tex2D(_MainTex, i.uv - fixed2(0, step_y));
+                half4 left  = tex2D(_MainTex, i.uv - fixed2(step_x, 0));
+                half4 right = tex2D(_MainTex, i.uv + fixed2(step_x, 0));
+
+                half3 hsv_up    = rgb_to_hsv(up.rgb);
+                half3 hsv_down  = rgb_to_hsv(down.rgb);
+                half3 hsv_left  = rgb_to_hsv(left.rgb);
+                half3 hsv_right = rgb_to_hsv(right.rgb);
+
+                half4 up_left    = tex2D(_MainTex, i.uv + fixed2(-step_x,  step_y));
+                half4 down_left  = tex2D(_MainTex, i.uv + fixed2(-step_x, -step_y));
+                half4 up_right   = tex2D(_MainTex, i.uv + fixed2( step_x,  step_y));
+                half4 down_right = tex2D(_MainTex, i.uv + fixed2( step_x, -step_y));
+
+                half3 hsv_up_left    = rgb_to_hsv(up_left.rgb);
+                half3 hsv_down_left  = rgb_to_hsv(down_left.rgb);
+                half3 hsv_up_right   = rgb_to_hsv(up_right.rgb);
+                half3 hsv_down_right = rgb_to_hsv(down_right.rgb);
                 
-                if (isHSVgood(hsv, _H1, _H2, _S, _V)) {
-                    distance  = hsvDistance(hsv, _H1, _H2, _S, _V);
+                if (is_hsv_good(hsv, _H1, _H2, _S, _V)) {
+                    half distance1 = hsvDistance(hsv, _H1, _H2, _S, _V);
                     
-                    float distanceL = hsvDistance(hsv_left, _H1, _H2, _S, _V);
-                    float distanceR = hsvDistance(hsv_right, _H1, _H2, _S, _V);
-                    float distanceU = hsvDistance(hsv_up, _H1, _H2, _S, _V);
-                    float distanceD = hsvDistance(hsv_down, _H1, _H2, _S, _V);
+                    half distance_l = hsvDistance(hsv_left, _H1, _H2, _S, _V);
+                    half distance_r = hsvDistance(hsv_right, _H1, _H2, _S, _V);
+                    half distance_u = hsvDistance(hsv_up, _H1, _H2, _S, _V);
+                    half distance_d = hsvDistance(hsv_down, _H1, _H2, _S, _V);
 
-                    float distanceUL = hsvDistance(hsv_up_left, _H1, _H2, _S, _V);
-                    float distanceDL = hsvDistance(hsv_down_left, _H1, _H2, _S, _V);
-                    float distanceUR = hsvDistance(hsv_up_right, _H1, _H2, _S, _V);
-                    float distanceDR = hsvDistance(hsv_down_right, _H1, _H2, _S, _V);
+                    half distance_ul = hsvDistance(hsv_up_left, _H1, _H2, _S, _V);
+                    half distance_dl = hsvDistance(hsv_down_left, _H1, _H2, _S, _V);
+                    half distance_ur = hsvDistance(hsv_up_right, _H1, _H2, _S, _V);
+                    half distance_dr = hsvDistance(hsv_down_right, _H1, _H2, _S, _V);
                     
-                    float d = 1  - distance;
-                    // float dm = (distanceL + distanceR + distanceU + distanceD) * 0.25;
-                    
+                    half d = 1  - distance1;
                     col.a = d * _maskContrast;
-                    if (distance < _smallPolyhedron1)
+                    
+                    if (distance1 < _smallPolyhedron1)
                     {
-                        if (distanceL > _smallPolyhedron1 || distanceR > _smallPolyhedron1 || distanceU > _smallPolyhedron1 || distanceD > _smallPolyhedron1 ||
-                            distanceUL > _smallPolyhedron1 || distanceDL > _smallPolyhedron1 || distanceUR > _smallPolyhedron1 || distanceDR > _smallPolyhedron1) {
-                        }
-                        else {
+                        if (distance_l <= _smallPolyhedron1 && distance_r <= _smallPolyhedron1 && distance_u <= _smallPolyhedron1 && distance_d <= _smallPolyhedron1 &&
+                            distance_ul <= _smallPolyhedron1 && distance_dl <= _smallPolyhedron1 && distance_ur <= _smallPolyhedron1 && distance_dr <= _smallPolyhedron1) {
                             col.a = d * _maskContrastS;
                         }
-                    } else if (distance < _smallPolyhedron2) {
-                        if (distanceL > _smallPolyhedron2 || distanceR > _smallPolyhedron2 || distanceU > _smallPolyhedron2 || distanceD > _smallPolyhedron2 ||
-                            distanceUL > _smallPolyhedron2 || distanceDL > _smallPolyhedron2 || distanceUR > _smallPolyhedron2 || distanceDR > _smallPolyhedron2) {
-                        } else {
+                    } else if (distance1 < _smallPolyhedron2) {
+                        if (distance_l <= _smallPolyhedron2 && distance_r <= _smallPolyhedron2 && distance_u <= _smallPolyhedron2 && distance_d <= _smallPolyhedron2 &&
+                            distance_ul <= _smallPolyhedron2 && distance_dl <= _smallPolyhedron2 && distance_ur <= _smallPolyhedron2 && distance_dr <= _smallPolyhedron2) {
                             col.a = d * _maskContrastS;
                         }
-                    } else if (distance < _mediumPolyhedron) {
-                        if (distanceL > _mediumPolyhedron || distanceR > _mediumPolyhedron || distanceU > _mediumPolyhedron || distanceD > _mediumPolyhedron ||
-                            distanceUL > _mediumPolyhedron || distanceDL > _mediumPolyhedron || distanceUR > _mediumPolyhedron || distanceDR > _mediumPolyhedron) {
+                    } else if (distance1 < _mediumPolyhedron) {
+                        if (distance_l > _mediumPolyhedron || distance_r > _mediumPolyhedron || distance_u > _mediumPolyhedron || distance_d > _mediumPolyhedron ||
+                            distance_ul > _mediumPolyhedron || distance_dl > _mediumPolyhedron || distance_ur > _mediumPolyhedron || distance_dr > _mediumPolyhedron) {
                             col.a = d * _maskContrastM;
                         }
-                    } else if (distance < _largePolyhedron) {
+                    } else if (distance1 < _largePolyhedron) {
                         col.a = d * _maskContrastL;
                     }
 
-                     if (_AddEdgeAndRemoveSmallHoles) {
-                        if (distance < 0.5) {
-                            col.r *= (1.0 - distance * 2.0f);
-                            col.g *= (1.0 - distance * 2.0f);
-                            col.b *= (1.0 - distance * 2.0f);
-                            col.a = (1.0 - distance * 2.0f) * _maskContrast;
-                            col.a *= 1 / (sqrt(sqrt(i.uv.y)) * 1.5);
-                        }
-                    } 
+                     if (distance1 < 0.5) {
+                         half res = 1.0 - distance1 * 2.0f;
+                         col.r *= res;
+                         col.g *= res;
+                         col.b *= res;
+
+                         col.a = res * _maskContrast * (1 / (sqrt(sqrt(i.uv.y)) * 1.5));
+                     } 
                 }
                 
-                if (_ShowMatte != 0) {
-                    return fixed4(col.a, col.a, col.a, 1.0);
+                half g = col.g;
+                half r = col.r;
+                half b = col.b;
+                
+                if (g > (b + 2 * r) / 3) {
+                    col.g = (b + 2 * r) / 3;
+                } else {
+                    col.g = g;
                 }
                 
-                if (_DespillAndReflectionRemove > 0.0) {
-                    float g = col.g;
-                    float r = col.r;
-                    float b = col.b;
-                    
-                    if (g > (b + 2 * r) / 3) {
-                        col.g = (b + 2 * r) / 3;
-                    } else {
-                        col.g = g;
-                    }
-                }
                 
 #ifdef USE_AMBIENT_LIGHTING
 				   i.diff.rgb = clamp(i.diff.rgb, float3(0.25, 0.25, 0.25), float3(1.75, 1.75, 1.75));
 				   col.rgb *= i.diff;
 #endif
+                
 				fixed4 blendTextureColour = tex2D(_BlendTex, i.uv);
                 if (_UseBlendTex == 0) {
                     blendTextureColour.a = 1;
