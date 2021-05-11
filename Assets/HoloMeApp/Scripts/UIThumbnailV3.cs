@@ -134,6 +134,7 @@ public class UIThumbnailV3 : UIThumbnail {
         txtDescription.text = "";
         txtInfoText.text = "";
         txtPrice.text = "";
+        _streamTimerView.Clear();
     }
 
     public override void Activate() {
@@ -191,7 +192,7 @@ public class UIThumbnailV3 : UIThumbnail {
             btnShare.SetActive(!thumbnailElement.Data.HasTeaser);
         }
 
-        _streamTimerView.OnStreamView(thumbnailElement.Data);
+        _streamTimerView.View(thumbnailElement.Data);
     }
 
     private void WaitServerPurchaseConfirmation(long id) {

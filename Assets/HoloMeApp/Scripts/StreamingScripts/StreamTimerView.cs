@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -12,26 +13,17 @@ using UnityEngine;
 public class StreamTimerView : MonoBehaviour {
 
     private TMP_Text _timerText;
-
-    private bool active;
+    private CancellationTokenSource cancelTokenSource;
 
     private void Awake() {
         _timerText = GetComponent<TMP_Text>();
-    }
-
-    private void OnEnable() {
-        OnStreamViewClear();
-    }
-
-    private void OnDisable() {
-        OnStreamViewClear();
     }
 
     /// <summary>
     /// Show stream timer
     /// </summary>
     /// <param name="data"></param>
-    public void OnStreamView(StreamJsonData.Data data) {
+    public void View(StreamJsonData.Data data) {
         switch (data.GetStage()) {
             case StreamJsonData.Data.Stage.Live:
                 OnLiveStreamView(data);
@@ -48,11 +40,35 @@ public class StreamTimerView : MonoBehaviour {
     /// Date from LiveStream
     /// </summary>
     /// <param name="StreamJsonData.Data"></param>
-    public async void OnLiveStreamView(StreamJsonData.Data data) {
-        active = true;
-        while (active) {
-            TimerTextFormat(DateTime.Now - DateTime.Parse(data.start_date));
-            await Task.Yield();
+    public void OnLiveStreamView(StreamJsonData.Data data) {
+        LiveView(data);
+    }
+
+    private async void LiveView(StreamJsonData.Data data) {
+        _timerText.text = string.Empty;
+        cancelTokenSource = new CancellationTokenSource();
+        try {
+            while (true) {
+                TimerTextFormat(DateTime.Now - DateTime.Parse(data.start_date));
+                await Task.Yield();
+            }
+        } finally {
+            cancelTokenSource.Dispose();
+            cancelTokenSource = null;
+        }
+    }
+
+    private void OnDestroy() {
+        Clear();
+    }
+
+    /// <summary>
+    /// Clear Info
+    /// </summary>
+    public void Clear() {
+        if (cancelTokenSource != null) {
+            cancelTokenSource.Cancel();
+            cancelTokenSource = null;
         }
         _timerText.text = string.Empty;
     }
@@ -66,19 +82,11 @@ public class StreamTimerView : MonoBehaviour {
     }
 
     private void TimerTextFormat(TimeSpan timeSpan) {
-        if (timeSpan.TotalSeconds > 0) {
+        if (timeSpan.TotalMinutes > 0) {
             _timerText.text = timeSpan.Hours > 0 ? string.Format("{0}h {1}m", timeSpan.Hours, timeSpan.Minutes) : string.Format("{0}m", timeSpan.Minutes);
         } else {
             _timerText.text = string.Empty;
         }
-    }
-
-    /// <summary>
-    /// Clear Stream Timer Info
-    /// </summary>
-    public void OnStreamViewClear() {
-        active = false;
-        _timerText.text = string.Empty;
     }
 
 }
