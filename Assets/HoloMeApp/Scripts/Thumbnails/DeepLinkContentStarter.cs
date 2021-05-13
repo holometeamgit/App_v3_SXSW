@@ -35,9 +35,8 @@ public class DeepLinkContentStarter : MonoBehaviour
         HelperFunctions.DevLog("check room ShowBroadcastHoldingScreen");
         HelperFunctions.DevLog("isHomePageActive " + isHomePageActive);
         if (isHomePageActive && contentLinkHandler.HasContentId(ContentLinkHandlerType.Room)) {
-            SwitcherToRoomBroadcastHoldingScreen.Switch();
-
             HelperFunctions.DevLog("room ShowBroadcastHoldingScreen");
+            SwitcherToRoomBroadcastHoldingScreen.Switch();
         } else if(isHomePageActive && contentLinkHandler.HasContentId(ContentLinkHandlerType.Stream)) {
             long id = 0;
             HelperFunctions.DevLog("try parse PopContentId");

@@ -4,6 +4,7 @@
 public class RoomJsonData
 {
     public string id;
+    public string user;
     public string agora_sid;
     public string agora_channel;
     public string status;
