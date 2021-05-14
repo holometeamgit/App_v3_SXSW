@@ -4,14 +4,15 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.Video;
+
 namespace Beem.Video {
 
-    public class VideoPlayerPlayBtn : MonoBehaviour, IPointerDownHandler {
+    public class VideoPlayerPauseBtn : MonoBehaviour, IPointerDownHandler {
         [SerializeField]
         private VideoPlayer videoPlayer;
 
         public void OnPointerDown(PointerEventData eventData) {
-            videoPlayer.Play();
+            videoPlayer.Pause();
         }
     }
 }
