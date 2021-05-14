@@ -34,6 +34,7 @@ public class HologramHandler : MonoBehaviour
 
     string videoURL;
     long broadcasterID;
+    private bool isPlayingBeforePause = false;
 
     public string GetVideoFileName
     {
@@ -137,9 +138,14 @@ public class HologramHandler : MonoBehaviour
         }
     }
 
-    public void ForcePlay()
-    {
-        holoMe.PlayVideo();
+    private void OnApplicationPause(bool pause){
+        isPlayingBeforePause = holoMe.IsPlaying && pause;
+    }
+
+    public void ForcePlay(){
+        if (isPlayingBeforePause){
+            holoMe.PlayVideo();
+        }
     }
 
     /// <summary>
