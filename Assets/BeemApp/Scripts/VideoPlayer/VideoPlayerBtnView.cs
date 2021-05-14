@@ -6,20 +6,35 @@ using UnityEngine.Video;
 
 namespace Beem.Video {
 
-    [System.Serializable]
-    public class MyBoolEvent : UnityEvent<bool> {
-    }
-
+    /// <summary>
+    /// Video Player view
+    /// </summary>
     public class VideoPlayerBtnView : MonoBehaviour {
 
+        [Header("Video Player")]
         [SerializeField]
         private VideoPlayer videoPlayer;
-
+        [Header("Action On Play")]
         [SerializeField]
-        private MyBoolEvent onPlay;
+        private UnityEvent onPlay;
+        [Header("Action On Pause")]
+        [SerializeField]
+        private UnityEvent onPause;
 
+        private void Start() {
+            UpdateVideoStatus();
+        }
+
+        /// <summary>
+        /// Refresh status
+        /// </summary>
         public void UpdateVideoStatus() {
-            onPlay?.Invoke(videoPlayer.isPlaying);
+            if (!videoPlayer.isPaused) {
+                onPause?.Invoke();
+            }
+            else {
+                onPlay?.Invoke();
+            }
         }
     }
 }
