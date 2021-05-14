@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using agora_gaming_rtc;
 using LostNative.Toolkit.FluidUI;
 using Beem.Firebase.DynamicLink;
+using System;
 
 public class PnlStreamOverlay : MonoBehaviour {
 
@@ -332,7 +333,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void Awake() {
-        StreamCallBacks.onLiveStreamCreated += (id) => { currentStreamId = id; };
+        StreamCallBacks.onLiveStreamCreated += (data) => { currentStreamId = data.id.ToString(); };
     }
 
     private void OnDisable() {

@@ -121,7 +121,7 @@ public class SecondaryServerCalls : MonoBehaviour {
 
         if (streamStartResponseJsonData != null) {
             OnStreamStarted?.Invoke(tokenAgoraResponse.token, tokenAgoraResponse.token, streamStartResponseJsonData.id);
-            StreamCallBacks.onLiveStreamCreated?.Invoke(streamStartResponseJsonData.id.ToString());
+            StreamCallBacks.onLiveStreamCreated?.Invoke(streamStartResponseJsonData);
         } else
             Debug.LogError("CREATE STREAM PARSE FAILED");
     }
@@ -170,5 +170,6 @@ public class SecondaryServerCalls : MonoBehaviour {
         StreamStatusJsonData data = new StreamStatusJsonData { status = "stop" };
         HelperFunctions.DevLog(webRequestHandler.ServerURLMediaAPI + videoUploader.StreamStatus.Replace("{id}", streamStartResponseJsonData.id.ToString()));
         webRequestHandler.PatchRequest(webRequestHandler.ServerURLMediaAPI + videoUploader.StreamStatus.Replace("{id}", streamStartResponseJsonData.id.ToString()), data, WebRequestHandler.BodyType.JSON, (x, y) => { webRequestHandler.LogCallback(x, y); HelperFunctions.DevLog("STREAM STOPPED SECONDARY SERVER"); }, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
+        StreamCallBacks.onLiveStreamFinished?.Invoke();
     }
 }
