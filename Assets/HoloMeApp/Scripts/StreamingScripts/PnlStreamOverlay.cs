@@ -161,11 +161,11 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void OpenAsViewer(string channelName, string streamID) {
 
-        if(channelName == userWebManager.GetUsername())
-        {
-            pnlGenericError.ActivateSingleButton("Viewing As Streamer",
-                "This account is currently streaming, please change to another to view this stream",
+        if(channelName == userWebManager.GetUsername()) {
+            pnlGenericError.ActivateSingleButton("Viewing as stream host",
+                "Please connect to the stream using a different account",
                 onBackPress: () => { CloseAsStreamer(); });
+
             return;
         }
 
