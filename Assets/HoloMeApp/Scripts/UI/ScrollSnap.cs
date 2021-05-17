@@ -51,6 +51,11 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler
         }
     }
 
+    protected override void Start() {
+        base.Start();
+        content.offsetMin = new Vector2(content.offsetMin.x, 0);
+    }
+
     void LateUpdate()
     {
         if(isLerping) {
