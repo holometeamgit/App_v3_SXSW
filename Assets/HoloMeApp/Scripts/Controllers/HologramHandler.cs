@@ -88,8 +88,7 @@ public class HologramHandler : MonoBehaviour {
         if (Application.isEditor) {
             Debug.LogWarning($"{nameof(PlayOnPlace)} Called Editor Mode");
             PlayOnPlace(new Vector3(0, -.5f, 2.5f));
-        }
-        else if (hasPlaced) {
+        } else if (hasPlaced) {
             PlayVideo();
         }
     }
@@ -110,8 +109,7 @@ public class HologramHandler : MonoBehaviour {
     private void PlayVideo() {
         if (holoMe.IsPaused) {
             holoMe.ResumeVideo();
-        }
-        else {
+        } else {
             holoMe.PlayVideo(videoURL);
             //holoMe.PlayVideo(HelperFunctions.PersistentDir() + videoCode + ".mp4");
             //AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPerformanceLoaded, AnalyticParameters.ParamVideoName, GetVideoFileName);
@@ -120,7 +118,9 @@ public class HologramHandler : MonoBehaviour {
     }
 
     private void OnApplicationPause(bool pause) {
-        isPlayingBeforePause = holoMe.IsPlaying && pause;
+        if (holoMe != null) {
+            isPlayingBeforePause = holoMe.IsPlaying && pause;
+        }
     }
 
     public void ForcePlay() {
@@ -152,8 +152,7 @@ public class HologramHandler : MonoBehaviour {
             HelperFunctions.DevLog("Percentage Watched = " + percentageViewed + "%");
             AnalyticsController.Instance.StopTimer(hologramViewDwellTimer, percentageViewed, new Dictionary<string, string> { { AnalyticParameters.ParamVideoName, GetVideoFileName }, { AnalyticParameters.ParamBroadcasterUserID, broadcasterID.ToString() } });
             AnalyticsController.Instance.SendCustomEvent(percentageViewed >= 99 ? AnalyticKeys.KeyPerformanceEnded : AnalyticKeys.KeyPerformanceNotEnded, new Dictionary<string, string> { { AnalyticParameters.ParamVideoName, GetVideoFileName }, { AnalyticParameters.ParamBroadcasterUserID, broadcasterID.ToString() } });
-        }
-        else {
+        } else {
             AnalyticsController.Instance.StopTimer(hologramViewDwellTimer, new Dictionary<string, string> { { AnalyticParameters.ParamEventName, videoURL }, { AnalyticParameters.ParamDate, DateTime.Now.ToString() } });
         }
         holoMe.StopVideo();
