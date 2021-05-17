@@ -12,9 +12,8 @@ namespace Beem.Video {
     /// <summary>
     /// Progress bar
     /// </summary>
+    [RequireComponent(typeof(Image))]
     public class VideoPlayerProgressBar : MonoBehaviour, IDragHandler, IPointerDownHandler {
-        [SerializeField]
-        private VideoPlayer videoPlayer;
 
         private Image progress;
 
@@ -24,11 +23,7 @@ namespace Beem.Video {
             progress = GetComponent<Image>();
         }
 
-        private void Start() {
-            UpdateProgressBar();
-        }
-
-        public async void UpdateProgressBar() {
+        public async void UpdateProgressBar(VideoPlayer videoPlayer) {
             progress.fillAmount = 0f;
             cancelTokenSource = new CancellationTokenSource();
             try {
@@ -38,8 +33,7 @@ namespace Beem.Video {
                     }
                     await Task.Yield();
                 }
-            }
-            finally {
+            } finally {
                 if (cancelTokenSource != null) {
                     cancelTokenSource.Dispose();
                     cancelTokenSource = null;
@@ -64,8 +58,7 @@ namespace Beem.Video {
         }
 
         private void SkipToPercent(float pct) {
-            var frame = videoPlayer.frameCount * pct;
-            videoPlayer.frame = (long)frame;
+            VideoPlayerCallBacks.onRewind?.Invoke(pct);
         }
 
         private void OnDestroy() {

@@ -306,31 +306,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 649ae8d0f1ab55146b1fcefe1a1f5558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onClick:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2117907973}
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 871158086}
-        m_MethodName: UpdateVideoStatus
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &500020737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -481,7 +456,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 068b6dfcc2aa7fa48bbc3c5ac7866498, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videoPlayer: {fileID: 2117907973}
 --- !u!114 &602950285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -618,6 +592,7 @@ GameObject:
   - component: {fileID: 871158084}
   - component: {fileID: 871158083}
   - component: {fileID: 871158082}
+  - component: {fileID: 871158087}
   - component: {fileID: 871158086}
   m_Layer: 5
   m_Name: Canvas
@@ -723,7 +698,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea1e51abaa59c814694ced8ea725b29e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videoPlayer: {fileID: 2117907973}
   onPlay:
     m_PersistentCalls:
       m_Calls:
@@ -736,7 +710,7 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1371396973}
         m_MethodName: SetActive
@@ -747,7 +721,7 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
   onPause:
     m_PersistentCalls:
@@ -761,7 +735,7 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 1371396973}
         m_MethodName: SetActive
@@ -772,8 +746,23 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &871158087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871158081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0f16f0f608a4f44099632696a9c40bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  videoPlayer: {fileID: 2117907973}
+  videoPlayerTimerView: {fileID: 602950284}
+  videoPlayerProgressBar: {fileID: 1328450161}
 --- !u!1 &1139992525
 GameObject:
   m_ObjectHideFlags: 0
@@ -902,7 +891,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ecd57634fc45d54393b4c9ab73bc1ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videoPlayer: {fileID: 2117907973}
 --- !u!114 &1328450162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -959,7 +947,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1371396974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -969,34 +957,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1371396973}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 649ae8d0f1ab55146b1fcefe1a1f5558, type: 3}
+  m_Script: {fileID: 11500000, guid: c12a365e5c3b5094bb0091bafdb5addb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onClick:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2117907973}
-        m_MethodName: Pause
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 871158086}
-        m_MethodName: UpdateVideoStatus
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1371396975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1423,7 +1386,7 @@ VideoPlayer:
   m_EnabledAudioTracks: 01
   m_DirectAudioMutes: 00
   m_ControlledAudioTrackCount: 1
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_SkipOnDrop: 1
   m_Looping: 1
   m_WaitForFirstFrame: 1

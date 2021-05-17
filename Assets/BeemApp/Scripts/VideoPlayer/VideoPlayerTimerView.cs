@@ -12,10 +12,8 @@ namespace Beem.Video {
     /// <summary>
     /// Timer View
     /// </summary>
+    [RequireComponent(typeof(Image))]
     public class VideoPlayerTimerView : MonoBehaviour {
-        [Header("Video Player")]
-        [SerializeField]
-        private VideoPlayer videoPlayer;
 
         private Text timerText;
 
@@ -25,11 +23,7 @@ namespace Beem.Video {
             timerText = GetComponent<Text>();
         }
 
-        private void Start() {
-            UpdateTimer();
-        }
-
-        public async void UpdateTimer() {
+        public async void UpdateTimer(VideoPlayer videoPlayer) {
             timerText.text = string.Empty;
             cancelTokenSource = new CancellationTokenSource();
             try {
@@ -40,8 +34,7 @@ namespace Beem.Video {
                     }
                     await Task.Yield();
                 }
-            }
-            finally {
+            } finally {
                 if (cancelTokenSource != null) {
                     cancelTokenSource.Dispose();
                     cancelTokenSource = null;

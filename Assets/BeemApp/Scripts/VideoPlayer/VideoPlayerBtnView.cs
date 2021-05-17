@@ -11,9 +11,6 @@ namespace Beem.Video {
     /// </summary>
     public class VideoPlayerBtnView : MonoBehaviour {
 
-        [Header("Video Player")]
-        [SerializeField]
-        private VideoPlayer videoPlayer;
         [Header("Action On Play")]
         [SerializeField]
         private UnityEvent onPlay;
@@ -21,20 +18,22 @@ namespace Beem.Video {
         [SerializeField]
         private UnityEvent onPause;
 
-        private void Start() {
-            UpdateVideoStatus();
+        private void OnEnable() {
+            VideoPlayerCallBacks.onPlay += OnPlay;
+            VideoPlayerCallBacks.onPause += OnPause;
         }
 
-        /// <summary>
-        /// Refresh status
-        /// </summary>
-        public void UpdateVideoStatus() {
-            if (!videoPlayer.isPaused) {
-                onPause?.Invoke();
-            }
-            else {
-                onPlay?.Invoke();
-            }
+        private void OnDisable() {
+            VideoPlayerCallBacks.onPlay -= OnPlay;
+            VideoPlayerCallBacks.onPause -= OnPause;
+        }
+
+        private void OnPlay() {
+            onPlay?.Invoke();
+        }
+
+        private void OnPause() {
+            onPause?.Invoke();
         }
     }
 }

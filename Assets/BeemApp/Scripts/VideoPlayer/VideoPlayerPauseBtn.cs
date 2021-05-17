@@ -1,16 +1,14 @@
 ﻿using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 namespace Beem.Video {
 
     /// <summary>
-    /// PlayBtn
+    /// PauseBtn
     /// </summary>
-    public class VideoPlayerPlayBtn : MonoBehaviour, IPointerDownHandler {
-
+    public class VideoPlayerPauseBtn : MonoBehaviour, IPointerDownHandler {
         public void OnPointerDown(PointerEventData eventData) {
-            VideoPlayerCallBacks.onPlay?.Invoke();
+            VideoPlayerCallBacks.onPause?.Invoke();
         }
     }
 }
