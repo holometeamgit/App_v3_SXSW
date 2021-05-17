@@ -488,7 +488,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: 00:00:00
 --- !u!222 &602950286
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -761,8 +761,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   videoPlayer: {fileID: 2117907973}
-  videoPlayerTimerView: {fileID: 602950284}
-  videoPlayerProgressBar: {fileID: 1328450161}
+  videoPlayerViews:
+  - {fileID: 1328450161}
+  - {fileID: 602950284}
 --- !u!1 &1139992525
 GameObject:
   m_ObjectHideFlags: 0
@@ -853,6 +854,7 @@ GameObject:
   - component: {fileID: 1328450163}
   - component: {fileID: 1328450162}
   - component: {fileID: 1328450161}
+  - component: {fileID: 1328450164}
   m_Layer: 5
   m_Name: ForegroundSlider
   m_TagString: Untagged
@@ -928,6 +930,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1328450159}
   m_CullTransparentMesh: 0
+--- !u!114 &1328450164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328450159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a874b23470c047b439e0aee3ceb36479, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1371396973
 GameObject:
   m_ObjectHideFlags: 0

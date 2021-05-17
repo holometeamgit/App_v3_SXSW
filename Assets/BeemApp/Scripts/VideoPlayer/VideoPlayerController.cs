@@ -14,13 +14,9 @@ namespace Beem.Video {
         [SerializeField]
         private VideoPlayer videoPlayer;
 
-        [Header("Timer for video")]
+        [Header("Views for video")]
         [SerializeField]
-        private VideoPlayerTimerView videoPlayerTimerView;
-
-        [Header("Progress bar for video")]
-        [SerializeField]
-        private VideoPlayerProgressBar videoPlayerProgressBar;
+        private List<AbstractVideoPlayerView> videoPlayerViews;
 
         private void OnEnable() {
             VideoPlayerCallBacks.onPlay += OnPlay;
@@ -34,16 +30,28 @@ namespace Beem.Video {
             VideoPlayerCallBacks.onRewind -= OnRewind;
         }
 
+        private void Start() {
+
+        }
+
+        private void Init() {
+            foreach (AbstractVideoPlayerView view in videoPlayerViews) {
+                view.Refresh(videoPlayer);
+            }
+        }
+
         private void OnPlay() {
             videoPlayer.Play();
-            videoPlayerTimerView.UpdateTimer(videoPlayer);
-            videoPlayerProgressBar.UpdateProgressBar(videoPlayer);
+            foreach (AbstractVideoPlayerView view in videoPlayerViews) {
+                view.UpdateVideo(videoPlayer);
+            }
         }
 
         private void OnPause() {
             videoPlayer.Pause();
-            videoPlayerTimerView.Clear();
-            videoPlayerProgressBar.Clear();
+            foreach (AbstractVideoPlayerView view in videoPlayerViews) {
+                view.Cancel();
+            }
         }
 
         private void OnRewind(float pct) {
