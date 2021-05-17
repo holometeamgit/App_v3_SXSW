@@ -1,4 +1,5 @@
-﻿using HoloMeSDK;
+﻿using Beem.Video;
+using HoloMeSDK;
 using System;
 using UnityEngine;
 using UnityEngine.Video;
@@ -14,6 +15,7 @@ public class VideoPlayerUnity : IVideoPlayer {
 
     public void AddToPlaybackQuad(GameObject ARQuad) {
         videoPlayer = ARQuad.AddComponent<VideoPlayer>();
+        VideoPlayerCallBacks.onSetVideoPlayer?.Invoke(videoPlayer);
         videoPlayer.prepareCompleted += VideoPlayerPrepareCompleted;
     }
 
