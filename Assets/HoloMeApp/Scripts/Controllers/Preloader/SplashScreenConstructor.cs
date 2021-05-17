@@ -21,8 +21,8 @@ namespace Beem {
             _pnlSplashScreen.onViewStartHide += _preloaderController.OnViewStartHide;
 
             _preloaderController.onSentNeedUpdateApp += _pnlSplashScreen.ShowNeedUpdate;
-            _preloaderController.onSignIn += _pnlSplashScreen.HideSplashScreen;
-            _preloaderController.onFailSignIn += _pnlSplashScreen.AuthorisationErrorInvoke;
+            _preloaderController.onSignIn += _pnlSplashScreen.OnAuthorisation;
+            _preloaderController.onFailSignIn += _pnlSplashScreen.OnAuthorisationErrorInvoke;
         }
 
         private void OnDestroy() {
@@ -30,8 +30,8 @@ namespace Beem {
             _pnlSplashScreen.onViewStartHide -= _preloaderController.OnViewStartHide;
 
             _preloaderController.onSentNeedUpdateApp -= _pnlSplashScreen.ShowNeedUpdate;
-            _preloaderController.onSignIn -= _pnlSplashScreen.HideSplashScreen;
-            _preloaderController.onFailSignIn -= _pnlSplashScreen.AuthorisationErrorInvoke;
+            _preloaderController.onSignIn -= _pnlSplashScreen.OnAuthorisation;
+            _preloaderController.onFailSignIn -= _pnlSplashScreen.OnAuthorisationErrorInvoke;
         }
     }
 }

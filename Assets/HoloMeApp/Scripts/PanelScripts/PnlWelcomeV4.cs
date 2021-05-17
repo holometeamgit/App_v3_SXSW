@@ -58,6 +58,7 @@ public class PnlWelcomeV4 : MonoBehaviour {
     }
 
     private void SwitchToProfile() {
+        HelperFunctions.DevLog("Welcome SwitchToProfile");
         switcherToProfile.Switch();
     }
 

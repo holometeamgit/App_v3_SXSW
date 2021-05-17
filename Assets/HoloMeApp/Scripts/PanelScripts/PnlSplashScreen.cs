@@ -19,13 +19,12 @@ public class PnlSplashScreen : MonoBehaviour
     [SerializeField] UnityEvent OnLogInEvent;
     [SerializeField] UnityEvent OnAuthorisationErrorEvent;
 
-    public void HideSplashScreen() {
-        onViewStartHide?.Invoke();
+    public void OnAuthorisation() {
+        HideSplashScreen();
         OnLogInEvent.Invoke();
-        animator.SetBool("Hide", true);
     }
 
-    public void AuthorisationErrorInvoke() {
+    public void OnAuthorisationErrorInvoke() {
         OnAuthorisationErrorEvent.Invoke();
         HideSplashScreen();
     }
@@ -54,7 +53,12 @@ public class PnlSplashScreen : MonoBehaviour
 #endif
     }
 
-    private void OnEnable() {
+    private void Start() {
         onViewEnabled?.Invoke();
+    }
+
+    private void HideSplashScreen() {
+        onViewStartHide?.Invoke();
+        animator.SetBool("Hide", true);
     }
 }
