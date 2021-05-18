@@ -115,6 +115,11 @@ public class PnlStreamOverlay : MonoBehaviour {
         RequestMicAccess();
     }
 
+    private void OnDestroy()
+    {
+        LeaveOnDestroy();
+    }
+
     private void RequestMicAccess() {
         if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete) {
             permissionGranter.RequestMicAccess();
@@ -185,6 +190,15 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void FadePanel(bool show) {
         canvasGroup.DOFade(show ? 1 : 0, 0.5f).OnComplete(() => { if (!show) { gameObject.SetActive(false); } });
+    }
+
+    private void LeaveOnDestroy() {
+        if (isStreamer){
+            CloseAsStreamer();
+        }
+        else{
+            CloseAsViewer();
+        }
     }
 
     public void ShowLeaveWarning() {
