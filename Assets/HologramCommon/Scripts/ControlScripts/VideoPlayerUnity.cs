@@ -15,7 +15,6 @@ public class VideoPlayerUnity : IVideoPlayer {
 
     public void AddToPlaybackQuad(GameObject ARQuad) {
         videoPlayer = ARQuad.AddComponent<VideoPlayer>();
-        VideoPlayerCallBacks.onSetVideoPlayer?.Invoke(videoPlayer);
         videoPlayer.prepareCompleted += VideoPlayerPrepareCompleted;
     }
 

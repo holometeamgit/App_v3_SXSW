@@ -22,9 +22,19 @@ namespace Beem.Video {
         }
 
         public override void Refresh(VideoPlayer videoPlayer) {
-            TimeSpan timeSpan = TimeSpan.FromSeconds(videoPlayer.frame);
+            if (videoPlayer == null) {
+                Cancel();
+                return;
+            }
+
+            TimeSpan timeSpan = TimeSpan.FromSeconds(videoPlayer.frame / videoPlayer.frameRate);
+
             if (timerText != null) {
-                timerText.text = string.Concat(timeSpan);
+                if (timeSpan.Hours > 0) {
+                    timerText.text = string.Format("{0:D2}:{1:D2}:{2:D2}", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
+                } else {
+                    timerText.text = string.Format("{0:D2}:{1:D2}", timeSpan.Minutes, timeSpan.Seconds);
+                }
             }
         }
     }

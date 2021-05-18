@@ -12,18 +12,22 @@ namespace Beem.Video {
     /// <summary>
     /// Progress bar
     /// </summary>
-    [RequireComponent(typeof(Image))]
-    public class VideoPlayerProgressBar : AbstractVideoPlayerView {
+    [RequireComponent(typeof(Slider))]
+    public class VideoPlayerSlider : AbstractVideoPlayerView {
 
-        private Image progress;
+        private Slider progress;
 
         private void Awake() {
-            progress = GetComponent<Image>();
+            progress = GetComponent<Slider>();
         }
 
         public override void Refresh(VideoPlayer videoPlayer) {
+            if (videoPlayer == null) {
+                Cancel();
+                return;
+            }
             if (videoPlayer.frameCount > 0) {
-                progress.fillAmount = (float)videoPlayer.frame / (float)videoPlayer.frameCount;
+                progress.value = (float)videoPlayer.frame / (float)videoPlayer.frameCount;
             }
         }
     }
