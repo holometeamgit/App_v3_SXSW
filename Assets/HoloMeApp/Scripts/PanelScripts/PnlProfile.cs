@@ -18,6 +18,16 @@ public class PnlProfile : MonoBehaviour {
     [SerializeField] PnlGenericError pnlGenericError;
     [SerializeField] ExternalLinkRedirector externalLinkRedirector;
 
+    [SerializeField]
+    Toggle isPolicyConfirmed;
+    [SerializeField]
+    Button continueBtn;
+
+
+    public void OnPolicyConfirmationChanged(bool isPolicyConfirmed) {
+        continueBtn.interactable = isPolicyConfirmed;
+    }
+
     public void ChooseUsername() {
         if (LocalDataVerification())
             userWebManager.UpdateUserData(userName: usernameInputField.text);
@@ -100,6 +110,12 @@ public class PnlProfile : MonoBehaviour {
 
         InputDataArea.SetActive(false);
         userWebManager.LoadUserInfo();
+
+        isPolicyConfirmed.isOn = true;
+        isPolicyConfirmed.enabled = false;
+        isPolicyConfirmed.enabled = true;
+
+        continueBtn.interactable = isPolicyConfirmed.isOn;
     }
 
     private void OnDisable() {
