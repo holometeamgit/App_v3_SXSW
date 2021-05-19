@@ -42,13 +42,16 @@ public class InputFieldController : MonoBehaviour {
 
     private void Awake() {
         inputField.onEndEdit.AddListener((_) => OnEndEditPassword.Invoke());
-        inputField.shouldHideMobileInput = true;
 #if UNITY_IOS
+        inputField.shouldHideMobileInput = true;
         if (isEmail)
         {
             inputField.contentType = InputField.ContentType.EmailAddress;
         }
+#elif UNITY_ANDROID
+        inputField.shouldHideMobileInput = false;
 #endif
+
         //        inputField.onEndEdit.AddListener(UpdateLayout);
         if (IsLowercase)
             inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
