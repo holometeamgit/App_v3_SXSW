@@ -55,6 +55,7 @@ public class PermissionController : MonoBehaviour {
     }
 
     public void CheckPushNotifications() {
-        CheckSettings("‘Beem’ Would Like To Send You Notifications", "Notifications may include alerts and sounds.");
+        HelperFunctions.DevLog("CheckPushNotifications permission");
+        CheckSettings("‘Beem’ Would Like To Send You Notifications", "Notifications may include alerts and sounds, and icon badget. These can be configure in Settings.");
     }
 }
