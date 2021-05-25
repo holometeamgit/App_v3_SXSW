@@ -30,6 +30,7 @@ public class PnlComments : MonoBehaviour
 	TMP_Text _commentsCount;
 
 	private bool _isCanOpen;
+	private bool _afterRefresh;
 	private UICommentElement uiCommentElementPrefab;
 
 	private const string COUNT_COMMENTS = " comments";
@@ -41,6 +42,7 @@ public class PnlComments : MonoBehaviour
 		HelperFunctions.DevLog("pnlcomments OpenComments " + contentId);
 		PrepareToShowComments();
 		_isCanOpen = true;
+		_afterRefresh = true;
 		OnOpen();
 		uiCommentElementPrefab = _scroll.Prefab.GetComponent<UICommentElement>();
 		_scroll.IsPullBottom = true;
@@ -120,8 +122,12 @@ public class PnlComments : MonoBehaviour
 		if (!gameObject.activeSelf)
 			OnOpen();
 
-		_scroll.MoveToSide(InfiniteScroll.Direction.Top);
-		_scroll.ApplyDataTo(count, pullCount, InfiniteScroll.Direction.Top);
+		_scroll.ApplyDataTo(count, pullCount, InfiniteScroll.Direction.Bottom);
+
+		if(_afterRefresh) {
+			_afterRefresh = false;
+			_scroll.MoveToSide(InfiniteScroll.Direction.Top);
+		}
 	}
 
 	public void OnAllDataLoaded() {
@@ -159,6 +165,7 @@ public class PnlComments : MonoBehaviour
     #endregion
 
     private void Refresh() {
+		_afterRefresh = true;
 		onRefresh?.Invoke();
 		_scroll.IsPullBottom = true;
 	}
