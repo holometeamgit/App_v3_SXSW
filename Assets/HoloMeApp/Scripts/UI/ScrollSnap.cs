@@ -6,8 +6,7 @@ using UnityEngine.Events;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(ScrollRect), typeof(CanvasGroup))]
-public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler
-{
+public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
     [SerializeField] public int startingIndex = 0;
     [SerializeField] public bool wrapAround = false;
     [SerializeField] public float lerpTimeMilliSeconds = 200f;
@@ -21,19 +20,81 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler
 
     [SerializeField] float cellWidth;
 
-    int actualIndex;
-    int cellIndex;
-    ScrollRect scrollRect;
-    CanvasGroup canvasGroup;
-    RectTransform content;
-    bool indexChangeTriggered = false;
-    bool isLerping = false;
-    float lerpStartedAt;
-    Vector2 releasedPosition;
-    Vector2 targetPosition;
+    private int actualIndex;
+    private int cellIndex;
+    private ScrollRect scrollRect;
+    private CanvasGroup canvasGroup;
+    private RectTransform content;
+    private bool indexChangeTriggered = false;
+    private bool isLerping = false;
+    private float lerpStartedAt;
+    private Vector2 releasedPosition;
+    private Vector2 targetPosition;
 
-    protected override void Awake()
-    {
+    public int CurrentIndex {
+        get {
+            int count = LayoutElementCount();
+            int mod = actualIndex % count;
+            return mod >= 0 ? mod : count + mod;
+        }
+    }
+
+    /// <summary>
+    /// Push layout element to interface
+    /// </summary>
+    public void PushLayoutElement(LayoutElement element) {
+        element.transform.SetParent(content.transform, false);
+        SetContentSize(LayoutElementCount());
+    }
+
+    /// <summary>
+    /// Pop layout element to interface
+    /// </summary>
+    public void PopLayoutElement() {
+        LayoutElement[] elements = content.GetComponentsInChildren<LayoutElement>();
+        Destroy(elements[elements.Length - 1].gameObject);
+        SetContentSize(LayoutElementCount() - 1);
+        if (cellIndex == CalculateMaxIndex()) {
+            cellIndex -= 1;
+        }
+    }
+
+    /// <summary>
+    /// Unshift layout element and set as first sibling
+    /// </summary>
+    public void UnshiftLayoutElement(LayoutElement element) {
+        cellIndex += 1;
+        element.transform.SetParent(content.transform, false);
+        element.transform.SetAsFirstSibling();
+        SetContentSize(LayoutElementCount());
+        content.anchoredPosition = new Vector2(content.anchoredPosition.x - cellWidth, content.anchoredPosition.y);
+    }
+
+    /// <summary>
+    /// check index change on drag
+    /// </summary>
+    public void OnDrag(PointerEventData data) {
+        float dx = data.delta.x;
+        float dt = Time.deltaTime * 1000f;
+        float acceleration = Mathf.Abs(dx / dt);
+        if (acceleration > triggerAcceleration && !float.IsPositiveInfinity(acceleration)) {
+            indexChangeTriggered = true;
+        }
+    }
+
+    /// <summary>
+    /// check index change or start lerping
+    /// </summary>
+    public void OnEndDrag(PointerEventData data) {
+        if (IndexShouldChangeFromDrag(data)) {
+            int direction = (data.pressPosition.x - data.position.x) > 0f ? 1 : -1;
+            SnapToIndex(cellIndex + direction * CalculateScrollingAmount(data));
+        } else {
+            StartLerping();
+        }
+    }
+
+    protected override void Awake() {
         base.Awake();
         actualIndex = startingIndex;
         cellIndex = startingIndex;
@@ -46,7 +107,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler
         int count = LayoutElementCount();
         SetContentSize(count);
 
-        if(startingIndex < count) {
+        if (startingIndex < count) {
             MoveToIndex(startingIndex);
         }
     }
@@ -56,123 +117,33 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler
         content.offsetMin = new Vector2(content.offsetMin.x, 0);
     }
 
-    void LateUpdate()
-    {
-        if(isLerping) {
-            LerpToElement();
-            if(ShouldStopLerping()) {
-                isLerping = false;
-                canvasGroup.blocksRaycasts = true;
-                onLerpComplete.Invoke();
-                onLerpComplete.RemoveListener(WrapElementAround);
-            }
-        }
-    }
-
-    public void PushLayoutElement(LayoutElement element)
-    {
-        element.transform.SetParent(content.transform, false);
-        SetContentSize(LayoutElementCount());
-    }
-
-    public void PopLayoutElement()
-    {
-        LayoutElement[] elements = content.GetComponentsInChildren<LayoutElement>();
-        Destroy(elements[elements.Length - 1].gameObject);
-        SetContentSize(LayoutElementCount() - 1);
-        if(cellIndex == CalculateMaxIndex()) {
-            cellIndex -= 1;
-        }
-    }
-
-    public void UnshiftLayoutElement(LayoutElement element)
-    {
-        cellIndex += 1;
-        element.transform.SetParent(content.transform, false);
-        element.transform.SetAsFirstSibling();
-        SetContentSize(LayoutElementCount());
-        content.anchoredPosition = new Vector2(content.anchoredPosition.x - cellWidth, content.anchoredPosition.y);
-    }
-
-    public void ShiftLayoutElement()
-    {
+    private void ShiftLayoutElement() {
         Destroy(GetComponentInChildren<LayoutElement>().gameObject);
         SetContentSize(LayoutElementCount() - 1);
         cellIndex -= 1;
         content.anchoredPosition = new Vector2(content.anchoredPosition.x + cellWidth, content.anchoredPosition.y);
     }
 
-    public int LayoutElementCount()
-    {
+    private int LayoutElementCount() {
         return content.GetComponentsInChildren<LayoutElement>(false)
             .Count(e => e.transform.parent == content);
     }
 
-    public int CurrentIndex
-    {
-        get
-        {
-            int count = LayoutElementCount();
-            int mod = actualIndex % count;
-            return mod >= 0 ? mod : count + mod;
-        }
-    }
-
-    public void OnDrag(PointerEventData data)
-    {
-        float dx = data.delta.x;
-        float dt = Time.deltaTime * 1000f;
-        float acceleration = Mathf.Abs(dx / dt);
-        if(acceleration > triggerAcceleration && !float.IsPositiveInfinity(acceleration)) {
-            indexChangeTriggered = true;
-        }
-    }
-
-    public void OnEndDrag(PointerEventData data)
-    {
-        if(IndexShouldChangeFromDrag(data)) {
-            int direction = (data.pressPosition.x - data.position.x) > 0f ? 1 : -1;
-            SnapToIndex(cellIndex + direction * CalculateScrollingAmount(data));
-        }
-        else {
-            StartLerping();
-        }
-    }
-
-    public int CalculateScrollingAmount(PointerEventData data)
-    {
-        var offset = scrollRect.content.anchoredPosition.x + cellIndex * cellWidth;
-        var normalizedOffset = Mathf.Abs(offset / cellWidth);
-        var skipping = (int)Mathf.Floor(normalizedOffset);
-        if(skipping == 0)
-            return 1;
-        if((normalizedOffset - skipping) * 100f > triggerPercent) {
-            return skipping + 1;
-        }
-        else {
-            return skipping;
-        }
-    }
-
-    public void SnapToNext()
-    {
+    private void SnapToNext() {
         SnapToIndex(cellIndex + 1);
     }
 
-    public void SnapToPrev()
-    {
+    private void SnapToPrev() {
         SnapToIndex(cellIndex - 1);
     }
 
-    public void SnapToIndex(int newCellIndex)
-    {
+    private void SnapToIndex(int newCellIndex) {
         int maxIndex = CalculateMaxIndex();
-        if(wrapAround && maxIndex > 0) {
+        if (wrapAround && maxIndex > 0) {
             actualIndex += newCellIndex - cellIndex;
             cellIndex = newCellIndex;
             onLerpComplete.AddListener(WrapElementAround);
-        }
-        else {
+        } else {
             newCellIndex = Mathf.Clamp(newCellIndex, 0, maxIndex);
             actualIndex += newCellIndex - cellIndex;
             cellIndex = newCellIndex;
@@ -181,10 +152,9 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler
         StartLerping();
     }
 
-    public void MoveToIndex(int newCellIndex)
-    {
+    private void MoveToIndex(int newCellIndex) {
         int maxIndex = CalculateMaxIndex();
-        if(newCellIndex >= 0 && newCellIndex <= maxIndex) {
+        if (newCellIndex >= 0 && newCellIndex <= maxIndex) {
             actualIndex += newCellIndex - cellIndex;
             cellIndex = newCellIndex;
         }
@@ -192,8 +162,19 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler
         content.anchoredPosition = CalculateTargetPoisition(cellIndex);
     }
 
-    void StartLerping()
-    {
+    private void LateUpdate() {
+        if (isLerping) {
+            LerpToElement();
+            if (ShouldStopLerping()) {
+                isLerping = false;
+                canvasGroup.blocksRaycasts = true;
+                onLerpComplete.Invoke();
+                onLerpComplete.RemoveListener(WrapElementAround);
+            }
+        }
+    }
+
+    private void StartLerping() {
         releasedPosition = content.anchoredPosition;
         targetPosition = CalculateTargetPoisition(cellIndex);
         lerpStartedAt = Time.time;
@@ -201,16 +182,14 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler
         isLerping = true;
     }
 
-    int CalculateMaxIndex()
-    {
+    private int CalculateMaxIndex() {
         int cellPerFrame = Mathf.FloorToInt(scrollRect.GetComponent<RectTransform>().rect.size.x / cellWidth);
         return LayoutElementCount() - cellPerFrame;
     }
 
-    bool IndexShouldChangeFromDrag(PointerEventData data)
-    {
+    private bool IndexShouldChangeFromDrag(PointerEventData data) {
         // acceleration was above threshold
-        if(indexChangeTriggered) {
+        if (indexChangeTriggered) {
             indexChangeTriggered = false;
             return true;
         }
@@ -220,22 +199,32 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler
         return normalizedOffset * 100f > triggerPercent;
     }
 
-    void LerpToElement()
-    {
+    private int CalculateScrollingAmount(PointerEventData data) {
+        var offset = scrollRect.content.anchoredPosition.x + cellIndex * cellWidth;
+        var normalizedOffset = Mathf.Abs(offset / cellWidth);
+        var skipping = (int)Mathf.Floor(normalizedOffset);
+        if (skipping == 0)
+            return 1;
+        if ((normalizedOffset - skipping) * 100f > triggerPercent) {
+            return skipping + 1;
+        } else {
+            return skipping;
+        }
+    }
+
+    private void LerpToElement() {
         float t = (Time.time - lerpStartedAt) * 1000f / lerpTimeMilliSeconds;
         float newX = Mathf.Lerp(releasedPosition.x, targetPosition.x, t);
         content.anchoredPosition = new Vector2(newX, content.anchoredPosition.y);
     }
 
-    void WrapElementAround()
-    {
-        if(cellIndex <= 0) {
+    private void WrapElementAround() {
+        if (cellIndex <= 0) {
             var elements = content.GetComponentsInChildren<LayoutElement>();
             elements[elements.Length - 1].transform.SetAsFirstSibling();
             cellIndex += 1;
             content.anchoredPosition = new Vector2(content.anchoredPosition.x - cellWidth, content.anchoredPosition.y);
-        }
-        else if(cellIndex >= CalculateMaxIndex()) {
+        } else if (cellIndex >= CalculateMaxIndex()) {
             var element = content.GetComponentInChildren<LayoutElement>();
             element.transform.SetAsLastSibling();
             cellIndex -= 1;
@@ -243,18 +232,15 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler
         }
     }
 
-    void SetContentSize(int elementCount)
-    {
+    private void SetContentSize(int elementCount) {
         content.sizeDelta = new Vector2(cellWidth * elementCount, content.rect.height);
     }
 
-    Vector2 CalculateTargetPoisition(int index)
-    {
+    private Vector2 CalculateTargetPoisition(int index) {
         return new Vector2(-cellWidth * index, content.anchoredPosition.y);
     }
 
-    bool ShouldStopLerping()
-    {
+    private bool ShouldStopLerping() {
         return Mathf.Abs(content.anchoredPosition.x - targetPosition.x) < 0.001f;
     }
 }
