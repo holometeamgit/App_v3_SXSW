@@ -19,6 +19,11 @@ public class DeepLinkHandler : MonoBehaviour {
         GetContentsParameters(uri);
     }
 
+    public void CheckSettings() {
+        PermissionController permissionController = FindObjectOfType<PermissionController>();
+        permissionController.InformAboutNotification("Notifications have been enabled", "Notifcations may include alerts, sounds, and icon badges. These can be configured in Settings.");
+    }
+
     private void Awake() {
         DynamicLinksCallBacks.onReceivedDeepLink += OnDynamicLinkActivated;
     }

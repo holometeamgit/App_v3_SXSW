@@ -37,6 +37,11 @@ namespace Beem.SSO {
         public static Action onUserWasDeleted = delegate { };
 
         public static Action<string> onFail = delegate { };
+
+        //requests
+        public static Action onQuickLogInRequest = delegate { };
+        public static Action onLogOutRequest = delegate { };
+
         #endregion
 
         //TODO move to other place
