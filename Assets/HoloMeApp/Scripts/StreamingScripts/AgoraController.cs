@@ -41,7 +41,7 @@ public class AgoraController : MonoBehaviour {
 
 
     int userCount;
-    int streamID;
+    int agoraMessageStreamID;
 
     [HideInInspector]
     public uint frameRate;
@@ -51,6 +51,7 @@ public class AgoraController : MonoBehaviour {
     public Action OnPreviewStopped;
     public Action OnStreamWentLive;
     public Action OnStreamWentOffline;
+    public Action<string> OnMessageRecieved;
 
     [SerializeField]
     RawImage videoSufaceStreamerRawTex;
@@ -58,6 +59,8 @@ public class AgoraController : MonoBehaviour {
     Coroutine sendThumbnailRoutine;
 
     static Vector3 defaultLiveStreamQuadScale;
+
+    bool isPushToTalkActive;
 
     //void OnUserEnableVideoHandler(uint uid, bool enabled)
     //{
@@ -185,18 +188,18 @@ public class AgoraController : MonoBehaviour {
         if (iRtcEngine == null)
             return;
 
-        if (channelCreator) { 
+        if (channelCreator) {
+            isPushToTalkActive = false;
             secondaryServerCalls.StartStream(ChannelName, IsRoom);
         } else {
             GetViewerAgoraToken();
         }
     }
-
-    void SwitchToCommuncationsChannel()
-    {
-        iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_COMMUNICATION);
+      
+    public void ToggleBroadcastToCommuncationsChannel() {
+        isPushToTalkActive = !isPushToTalkActive;
     }
-
+      
     void GetViewerAgoraToken() {
         HelperFunctions.DevLog("Getting Agora Viewer Token For Channel Name " + ChannelName);
         secondaryServerCalls.GetAgoraToken(OnViewerAgoraTokenReturned, ChannelName);
@@ -232,15 +235,15 @@ public class AgoraController : MonoBehaviour {
     public void SecondaryServerCallsComplete(string viewerBroadcasterToken, string rtmToken, int streamID = -1) {
         agoraRTMChatController.Login(rtmToken);
 
-        iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
+        iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_COMMUNICATION);
 
         if (IsChannelCreator) {
-                iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
+                //iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
                 SetEncoderSettings();
                 AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[]{ AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance} ,AnalyticKeys.KeyLiveStarted, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID },{ AnalyticParameters.ParamPerformanceID, streamID.ToString() } });
         } else {
                 liveStreamQuad.SetActive(true);
-                iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_AUDIENCE);
+                //iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_AUDIENCE);
                 EnableVideoPlayback(); //Must be called for viewers to view
         }
 
@@ -264,7 +267,7 @@ public class AgoraController : MonoBehaviour {
         IsLive = true;
         OnStreamWentLive?.Invoke();
 
-        streamID = iRtcEngine.CreateDataStream(true, true);
+        agoraMessageStreamID = iRtcEngine.CreateDataStream(true, true);
 
         iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
         iRtcEngine.OnStreamMessageError = OnStreamMessageError;
@@ -440,6 +443,12 @@ public class AgoraController : MonoBehaviour {
         }
     }
 
+    public void ToggleLocalAudio(bool pauseAudio) {
+        if (iRtcEngine != null) {
+            iRtcEngine.EnableLocalAudio(!pauseAudio);
+        }
+    }
+
     public string GetSdkVersion() {
         string ver = IRtcEngine.GetSdkVersion();
         if (ver == "2.9.1.45") {
@@ -454,11 +463,11 @@ public class AgoraController : MonoBehaviour {
 
     #region Messaging system
 
-    public void SendMessage(string message)
+    public void SendAgoraMessage(string message)
     {
         byte[] messageToBytes = Encoding.ASCII.GetBytes(message);
 
-        iRtcEngine.SendStreamMessage(streamID, messageToBytes);
+        iRtcEngine.SendStreamMessage(agoraMessageStreamID, messageToBytes);
     }
 
     public void OnStreamMessageError(uint userId, int streamId, int code, int missed, int cached)
@@ -469,7 +478,8 @@ public class AgoraController : MonoBehaviour {
     public void OnStreamMessageRecieved(uint userId, int streamId, byte[] data, int length)
     {
         string result = Encoding.ASCII.GetString(data);
-        HelperFunctions.DevLog($"Message recieved {data}");
+        HelperFunctions.DevLog($"Message recieved {result}");
+        OnMessageRecieved?.Invoke(result);
     }
 
     #endregion

@@ -21,6 +21,9 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     [SerializeField]
     Button btnShareYourRoom;
+    
+    [SerializeField]
+    Image btnPushToTalk;
 
     [SerializeField]
     PnlGenericError pnlGenericError;
@@ -73,6 +76,8 @@ public class PnlStreamOverlay : MonoBehaviour {
     Coroutine countdownRoutine;
     bool isStreamer;
     bool isUsingFrontCamera;
+    bool isPushToTalkActive;
+  
     VideoSurface videoSurface;
     string currentStreamId = "";
 
@@ -99,6 +104,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.OnPreviewStopped += () => videoSurface.SetEnable(false);
         agoraController.OnStreamWentLive += () => fluidToggle.ToggleInteractibility(true);
         agoraController.OnStreamWentOffline += () => fluidToggle.ToggleInteractibility(true);
+        agoraController.OnMessageRecieved += StreamMessageResponse;
 
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
@@ -162,6 +168,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
         StartCoroutine(OnPreviewReady());
         agoraController.StartPreview();
+        isPushToTalkActive = false;
     }
 
     public void OpenAsViewer(string channelName, string streamID) {
@@ -182,6 +189,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         gameObject.SetActive(true);
         controlsPresenter.SetActive(false);
         controlsViewer.SetActive(true);
+        btnPushToTalk.enabled = false;
         pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName, streamID);
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
@@ -266,6 +274,38 @@ public class PnlStreamOverlay : MonoBehaviour {
             StreamCallBacks.onGetStreamLink?.Invoke(currentStreamId);
         else
             DynamicLinksCallBacks.onShareAppLink?.Invoke();
+    }
+
+    public void TogglePushToTalk()
+    {
+        if (isPushToTalkActive) {
+            agoraController.ToggleBroadcastToCommuncationsChannel();
+            agoraController.SendAgoraMessage("DisableAudio");
+        } else {
+            agoraController.ToggleBroadcastToCommuncationsChannel();
+            agoraController.SendAgoraMessage("EnableAudio");
+        }
+
+        isPushToTalkActive = !isPushToTalkActive;
+    }
+
+    public void StreamMessageResponse(string message)
+    {
+        switch (message)
+        {
+            case "EnableAudio":
+                ToggleLocalAudio(true);
+                btnPushToTalk.enabled = true;
+                break;
+            case "DisableAudio":
+                ToggleLocalAudio(false);
+                btnPushToTalk.enabled = false;
+                break;
+        }
+    }
+
+    public void ToggleLocalAudio(bool pauseAudio) {
+        agoraController.ToggleLocalAudio(pauseAudio);
     }
 
     void StartStream() {
