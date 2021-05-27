@@ -22,10 +22,6 @@ public class ScrollScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private float endPerimeter;
     private TouchCounter touchCounter = new TouchCounter();
 
-    private void Update() {
-        text.text = touchCounter.TouchDifference.ToString();
-    }
-
     private Vector3 ClampDesiredScale(Vector3 desiredScale) {
         desiredScale = Vector3.Max(Vector3.one * minZoom, desiredScale);
         desiredScale = Vector3.Min(Vector3.one * maxZoom, desiredScale);
@@ -43,6 +39,7 @@ public class ScrollScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void OnDrag(PointerEventData eventData) {
         if (touchCounter.TouchCount == 2) {
             endPerimeter = touchCounter.TouchPerimeter;
+            text.text = "EndPerimeter = " + endPerimeter + ", StartPerimeter = " + startPerimeter + ", Difference = " + (endPerimeter - startPerimeter).ToString();
             if (Mathf.Abs(endPerimeter) > Mathf.Epsilon) {
                 float param = (endPerimeter - startPerimeter) / endPerimeter;
                 //text.text = param.ToString();
