@@ -23,6 +23,7 @@ namespace Beem.Video {
             VideoPlayerCallBacks.onPause += OnPause;
             VideoPlayerCallBacks.onRewind += OnRewind;
             VideoPlayerCallBacks.onSetVideoPlayer += OnSetVideoPlayer;
+            VideoPlayerCallBacks.onChangedUrl += OnChangeUrl;
             foreach (VideoPlayer item in FindObjectsOfType<VideoPlayer>()) {
                 if (item.gameObject.name == "VideoQuad") {
                     OnSetVideoPlayer(item);
@@ -36,6 +37,7 @@ namespace Beem.Video {
             VideoPlayerCallBacks.onPause -= OnPause;
             VideoPlayerCallBacks.onRewind -= OnRewind;
             VideoPlayerCallBacks.onSetVideoPlayer -= OnSetVideoPlayer;
+            VideoPlayerCallBacks.onChangedUrl -= OnChangeUrl;
             OnStop();
         }
 
@@ -80,12 +82,21 @@ namespace Beem.Video {
             }
         }
 
+        private void OnChangeUrl(string url) {
+            if (_videoPlayer != null) {
+                OnStop();
+                _videoPlayer.url = url;
+                Init();
+                //VideoPlayerCallBacks.onPlay?.Invoke();
+            }
+        }
+
         private void OnSetVideoPlayer(VideoPlayer videoPlayer) {
             if (videoPlayer != null) {
                 OnStop();
                 _videoPlayer = videoPlayer;
                 Init();
-                VideoPlayerCallBacks.onPlay?.Invoke();
+                //VideoPlayerCallBacks.onPlay?.Invoke();
             }
         }
 
