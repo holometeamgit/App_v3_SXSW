@@ -3,12 +3,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ScrollScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler, IBeginDragHandler, IEndDragHandler {
-
-    [SerializeField]
-    private Text text;
+public class HologramScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler, IBeginDragHandler, IEndDragHandler {
     [SerializeField]
     private GameObject _spawnedObject;
+    [Space]
+    [SerializeField]
+    private int fingers = 2;
     [Space]
     [SerializeField]
     private float zoomSpeed = 0.05f;
@@ -33,16 +33,14 @@ public class ScrollScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     }
 
     public void OnPointerUp(PointerEventData data) {
-        touchCounter.OnPointerDown(data);
+        touchCounter.OnPointerUp(data);
     }
 
     public void OnDrag(PointerEventData eventData) {
-        if (touchCounter.TouchCount == 2) {
+        if (touchCounter.TouchCount == fingers) {
             endPerimeter = touchCounter.TouchPerimeter;
-            text.text = "EndPerimeter = " + endPerimeter + ", StartPerimeter = " + startPerimeter + ", Difference = " + (endPerimeter - startPerimeter).ToString();
             if (Mathf.Abs(endPerimeter) > Mathf.Epsilon) {
                 float param = (endPerimeter - startPerimeter) / endPerimeter;
-                //text.text = param.ToString();
                 var delta = Vector3.one * (param * zoomSpeed);
                 var desiredScale = _spawnedObject.transform.localScale + delta;
                 desiredScale = ClampDesiredScale(desiredScale);
@@ -52,7 +50,7 @@ public class ScrollScale : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     }
 
     public void OnBeginDrag(PointerEventData eventData) {
-        if (touchCounter.TouchCount == 2) {
+        if (touchCounter.TouchCount == fingers) {
             startPerimeter = touchCounter.TouchPerimeter;
         }
     }
