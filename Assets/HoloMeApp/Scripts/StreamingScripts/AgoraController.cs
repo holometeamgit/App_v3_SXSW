@@ -53,14 +53,17 @@ public class AgoraController : MonoBehaviour {
     public Action OnStreamWentOffline;
     public Action<string> OnMessageRecieved;
 
+    /// <summary>
+    /// Called only for communication channels
+    /// </summary>
+    public Action OnUserViewerJoined;
+
     [SerializeField]
     RawImage videoSufaceStreamerRawTex;
     VideoSurface videoSurfaceQuadRef;
     Coroutine sendThumbnailRoutine;
 
     static Vector3 defaultLiveStreamQuadScale;
-
-    bool isPushToTalkActive;
 
     //void OnUserEnableVideoHandler(uint uid, bool enabled)
     //{
@@ -79,7 +82,7 @@ public class AgoraController : MonoBehaviour {
 
         iRtcEngine.OnJoinChannelSuccess = OnJoinChannelSuccess;
         iRtcEngine.OnUserJoined = OnUserJoined; //Only fired for broadcasters
-        iRtcEngine.OnUserOffline = OnUserOffline;
+        //iRtcEngine.OnUserOffline = OnUserOffline;
         iRtcEngine.OnWarning += (int warn, string msg) =>
         {
             string description = IRtcEngine.GetErrorDescription(warn);
@@ -189,17 +192,12 @@ public class AgoraController : MonoBehaviour {
             return;
 
         if (channelCreator) {
-            isPushToTalkActive = false;
             secondaryServerCalls.StartStream(ChannelName, IsRoom);
         } else {
             GetViewerAgoraToken();
         }
     }
-      
-    public void ToggleBroadcastToCommuncationsChannel() {
-        isPushToTalkActive = !isPushToTalkActive;
-    }
-      
+              
     void GetViewerAgoraToken() {
         HelperFunctions.DevLog("Getting Agora Viewer Token For Channel Name " + ChannelName);
         secondaryServerCalls.GetAgoraToken(OnViewerAgoraTokenReturned, ChannelName);
@@ -238,12 +236,11 @@ public class AgoraController : MonoBehaviour {
         iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_COMMUNICATION);
 
         if (IsChannelCreator) {
-                //iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
+                iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
                 SetEncoderSettings();
                 AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[]{ AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance} ,AnalyticKeys.KeyLiveStarted, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID },{ AnalyticParameters.ParamPerformanceID, streamID.ToString() } });
         } else {
-                liveStreamQuad.SetActive(true);
-                //iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_AUDIENCE);
+                iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_AUDIENCE);
                 EnableVideoPlayback(); //Must be called for viewers to view
         }
 
@@ -272,13 +269,7 @@ public class AgoraController : MonoBehaviour {
         iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
         iRtcEngine.OnStreamMessageError = OnStreamMessageError;
     }
-
-    void OnUserOffline(uint uid, USER_OFFLINE_REASON reason) //Only called for host
-    {
-        HelperFunctions.DevLog("onUserOffline: uid = " + uid + " reason = " + reason);
-        OnStreamerLeft?.Invoke();
-    }
-
+    
     public void Leave() {
                 
         if (iRtcEngine == null)
@@ -309,7 +300,6 @@ public class AgoraController : MonoBehaviour {
 
         iRtcEngine.LeaveChannel();
         agoraRTMChatController.LeaveChannel();
-        //OnStreamDisconnected();
 
         IsLive = false;
         OnStreamWentOffline?.Invoke();
@@ -370,7 +360,9 @@ public class AgoraController : MonoBehaviour {
     private void OnUserJoined(uint uid, int elapsed) {
         HelperFunctions.DevLog("onUserJoined: uid = " + uid + " elapsed = " + elapsed);
 
-        if (!IsChannelCreator) {
+        if (!IsChannelCreator && !liveStreamQuad.activeSelf) { //Live stream quad check ensures this isn't called after it's been activated more than once as other users join
+            
+            liveStreamQuad.SetActive(true);
             ResetVideoQuadSurface();
 
             if (defaultLiveStreamQuadScale == Vector3.zero) {
@@ -392,9 +384,21 @@ public class AgoraController : MonoBehaviour {
             videoSurfaceQuadRef.SetGameFps(frameRate);
             //liveStreamQuad.GetComponent<LiveStreamGreenCalculator>().StartBackgroundRemoval();
             //Invoke("VideoResolution", 3);
+        } else {
+            OnUserViewerJoined?.Invoke();
         }
     }
 
+    //void OnUserOffline(uint uid, USER_OFFLINE_REASON reason) //Only called for host in broadcast profile
+    //{
+    //    HelperFunctions.DevLog("onUserOffline: uid = " + uid + " reason = " + reason);
+
+    //    //if (IsChannelCreator)//Stops channel creator from leaving when another user leaves DOESN'T stop other users leaving due to it.
+    //    //    return;
+
+    //    OnStreamerLeft?.Invoke();
+    //}
+        
     //public void FlipVideoQuad(bool flipHorizontal, bool flipVertical)
     //{
     //    float newXScale = flipHorizontal ? -2 : 2;//? -liveStreamQuad.transform.localScale.x : liveStreamQuad.transform.localScale.x;
@@ -402,11 +406,11 @@ public class AgoraController : MonoBehaviour {
     //    liveStreamQuad.transform.localScale = new Vector3(newXScale, newYScale, liveStreamQuad.transform.localScale.z);
     //}
 
-    private void VideoResolution() {
-        int width = liveStreamQuad.GetComponent<MeshRenderer>().material.mainTexture.width;
-        int height = liveStreamQuad.GetComponent<MeshRenderer>().material.mainTexture.height;
-        HelperFunctions.DevLog($"TextureSize = {width} x {height}");
-    }
+    //private void VideoResolution() {
+    //    int width = liveStreamQuad.GetComponent<MeshRenderer>().material.mainTexture.width;
+    //    int height = liveStreamQuad.GetComponent<MeshRenderer>().material.mainTexture.height;
+    //    HelperFunctions.DevLog($"TextureSize = {width} x {height}");
+    //}
 
     public void UnloadEngine() {
         HelperFunctions.DevLog("calling unloadEngine");
@@ -433,15 +437,15 @@ public class AgoraController : MonoBehaviour {
         }
     }
 
-    public void ToggleAudio(bool pauseAudio) {
-        if (iRtcEngine != null) {
-            if (!pauseAudio) {
-                iRtcEngine.EnableAudio();
-            } else {
-                iRtcEngine.DisableAudio();
-            }
-        }
-    }
+    //public void ToggleAudio(bool pauseAudio) {
+    //    if (iRtcEngine != null) {
+    //        if (!pauseAudio) {
+    //            iRtcEngine.EnableAudio();
+    //        } else {
+    //            iRtcEngine.DisableAudio();
+    //        }
+    //    }
+    //}
 
     public void ToggleLocalAudio(bool pauseAudio) {
         if (iRtcEngine != null) {
@@ -465,8 +469,8 @@ public class AgoraController : MonoBehaviour {
 
     public void SendAgoraMessage(string message)
     {
+        HelperFunctions.DevLog($"Sending Agora Message {message}");
         byte[] messageToBytes = Encoding.ASCII.GetBytes(message);
-
         iRtcEngine.SendStreamMessage(agoraMessageStreamID, messageToBytes);
     }
 

@@ -83,6 +83,10 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     //Vector3 rawImageQuadDefaultScale;
 
+    const string MessageDisableAudio = "DisableAudio";
+    const string MessageEnableAudio = "EnableAudio";
+    const string MessageStreamerLeft = "StreamerLeft";
+
     void Init() {
         if (initialised)
             return;
@@ -160,6 +164,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         fluidToggle.ToggleInteractibility(true);
         agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
+        agoraController.OnUserViewerJoined += SendPushToTalkStatusToViewers;
         isStreamer = true;
         gameObject.SetActive(true);
         controlsPresenter.SetActive(true);
@@ -253,8 +258,12 @@ public class PnlStreamOverlay : MonoBehaviour {
     public void StopStream() {
         HelperFunctions.DevLog(nameof(StopStream) + " was called");
 
-        if (agoraController.IsLive) //Check needed as Stop Stream is being called when enabled by unity events causing this to start off disabled
+        if (agoraController.IsLive) { //Check needed as Stop Stream is being called when enabled by unity events causing this to start off disabled
             fluidToggle.ToggleInteractibility(false);
+
+            if (isStreamer) //Send event to viewers to disconnect if streamer
+                SendStreamLeaveStatusToViewers();
+        }
 
         if (countdownRoutine != null)
             StopCoroutine(countdownRoutine);
@@ -278,28 +287,33 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void TogglePushToTalk()
     {
-        if (isPushToTalkActive) {
-            agoraController.ToggleBroadcastToCommuncationsChannel();
-            agoraController.SendAgoraMessage("DisableAudio");
-        } else {
-            agoraController.ToggleBroadcastToCommuncationsChannel();
-            agoraController.SendAgoraMessage("EnableAudio");
-        }
-
         isPushToTalkActive = !isPushToTalkActive;
+        SendPushToTalkStatusToViewers();
     }
 
-    public void StreamMessageResponse(string message)
-    {
-        switch (message)
-        {
-            case "EnableAudio":
+    void SendPushToTalkStatusToViewers() {
+        agoraController.SendAgoraMessage(isPushToTalkActive ? MessageEnableAudio : MessageDisableAudio);
+    }
+
+    void SendStreamLeaveStatusToViewers() {
+        agoraController.SendAgoraMessage(MessageStreamerLeft);
+    }
+
+    public void StreamMessageResponse(string message) {
+
+        HelperFunctions.DevLog($"Stream Message Received ({message})");
+
+        switch (message) {
+            case MessageEnableAudio:
                 ToggleLocalAudio(true);
                 btnPushToTalk.enabled = true;
                 break;
-            case "DisableAudio":
+            case MessageDisableAudio:
                 ToggleLocalAudio(false);
                 btnPushToTalk.enabled = false;
+                break;
+            case MessageStreamerLeft:
+                               agoraController.OnStreamerLeft?.Invoke();
                 break;
         }
     }
@@ -352,7 +366,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void ToggleAudio(bool mute) {
         TogglePauseStream();
-        agoraController.ToggleAudio(mute);
+        agoraController.ToggleLocalAudio(mute);
     }
 
     public void ToggleVideo(bool hideVideo) {
