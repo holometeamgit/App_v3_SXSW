@@ -26,6 +26,10 @@ public class UIThumbnailV3 : UIThumbnail {
     [SerializeField] TMP_Text txtDescription;
     [SerializeField] TMP_Text txtInfoText;
     [SerializeField] TMP_Text txtPrice;
+
+    [Header("Like")]
+    [SerializeField] UIBtnLikes btnLikes;
+
     [Space]
     [SerializeField] AspectRatioFitterByMinSide aspectRatioFitter;
 
@@ -179,6 +183,8 @@ public class UIThumbnailV3 : UIThumbnail {
 
             btnPlayTeaser.SetActive(thumbnailElement.Data.HasTeaser);
         }
+
+        btnLikes.SetState(thumbnailElement.Data.is_liked, thumbnailElement.Data.count_of_likes, thumbnailElement.Data.id);
 
         _streamTimerView.View(thumbnailElement.Data);
     }
