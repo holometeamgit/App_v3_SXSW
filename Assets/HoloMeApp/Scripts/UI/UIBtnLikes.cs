@@ -5,38 +5,50 @@ using UnityEngine.UI;
 using Beem.SSO;
 using TMPro;
 
-public class UIBtnLikes : MonoBehaviour
-{
-    [SerializeField] Image imageLike;
-    [SerializeField] Image imageUnlike;
-    [SerializeField] TMP_Text likesCount;
+namespace Beem.UI {
 
-    private bool isLike;
-    private int count;
-    private long streamId = -1;
+    public class UIBtnLikes : MonoBehaviour {
+        [SerializeField] Image imageLike;
+        [SerializeField] Image imageUnlike;
+        [SerializeField] TMP_Text likesCount;
 
-    public void SetState(bool isLike, int count, long streamId) {
-        this.isLike = isLike;
-        this.count = count;
-        UpdateBtnState();
-    }
+        private bool _isLike;
+        private int _count;
+        private long _streamId = -1;
 
-    public void ClickLike() {
-        Handheld.Vibrate();
-        isLike = !isLike;
-        count = isLike ? ++count : --count;
-        UpdateBtnState();
-        if(isLike) {
-            CallBacks.onSetLike?.Invoke(streamId);
-        } else {
-            CallBacks.onSetUnlike?.Invoke(streamId);
+        /// <summary>
+        /// Set btn state 
+        /// </summary>
+        public void SetState(bool isLike, int count, long streamId) {
+            _isLike = isLike;
+            _count = count;
+            _streamId = streamId;
+            UpdateBtnState();
         }
-    }
 
-    private void UpdateBtnState() {
-        imageLike.enabled = isLike;
-        imageUnlike.enabled = !isLike;
-        likesCount.text = count.ToString();
-    }
+        /// <summary>
+        /// invoke when user click on btn
+        /// </summary>
+        public void ClickLike() {
+            HelperFunctions.DevLog("ClickLike streamId " + _streamId);
+            if (_streamId < 0)
+                return;
+            Handheld.Vibrate();
+            _isLike = !_isLike;
+            _count = _isLike ? ++_count : --_count;
+            UpdateBtnState();
+            if (_isLike) {
+                CallBacks.onClickLike?.Invoke(_streamId);
+            } else {
+                CallBacks.onClickUnlike?.Invoke(_streamId);
+            }
+        }
 
+        private void UpdateBtnState() {
+            imageLike.enabled = _isLike;
+            imageUnlike.enabled = !_isLike;
+            likesCount.text = _count.ToString();
+        }
+
+    }
 }

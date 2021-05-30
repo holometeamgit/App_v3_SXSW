@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using Beem.SSO;
 using Beem;
+using Beem.UI;
 
 public class UIThumbnailV3 : UIThumbnail {
     [SerializeField] RawImage rawImage;

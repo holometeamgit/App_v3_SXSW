@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Beem.Firebase.DynamicLink;
+using Beem.SSO;
 
 public class UIThumbnailsController : MonoBehaviour {
     public Action OnUpdated;
@@ -89,6 +90,10 @@ public class UIThumbnailsController : MonoBehaviour {
         btnThumbnailItemsDictionary = new Dictionary<long, UIThumbnail>();
         btnThumbnailItems = new List<UIThumbnail>();
         streamDataEqualityComparer = new StreamDataEqualityComparer();
+
+        CallBacks.onClickLike += SetLike;
+        CallBacks.onClickUnlike += SetUnlike;
+        CallBacks.onGetLikeCount += GetLike;
     }
 
     #region Prepare thumbnails
@@ -171,5 +176,45 @@ public class UIThumbnailsController : MonoBehaviour {
         pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, data, null, data.HasTeaser);
         OnPlayFromUser?.Invoke(data.user);
         purchaseManager.SetPurchaseStreamData(data);
+    }
+
+    private void SetLike(long streamId, bool isLike) {
+        var stream = GetStreamElement(streamId);
+        if (stream == null)
+            return;
+
+        stream.Data.is_liked = isLike;
+
+        stream.Data.count_of_likes = isLike ? ++stream.Data.count_of_likes : Mathf.Max(--stream.Data.count_of_likes,0);
+
+    }
+
+    private void SetLike(long streamId) {
+        SetLike(streamId, true);
+    }
+
+    private void SetUnlike(long streamId) {
+        SetLike(streamId, false);
+    }
+
+    private void GetLike(long streamId) {
+        var stream = GetStreamElement(streamId);
+        if (stream == null)
+            return;
+
+        CallBacks.onGetLikeCountCallBack?.Invoke(streamId, stream.Data.count_of_likes);
+    }
+
+    private ThumbnailElement GetStreamElement(long streamId) {
+        if (!thumbnailElementsDictionary.ContainsKey(streamId))
+            return null;
+
+        return thumbnailElementsDictionary[streamId];
+    }
+
+    private void OnDestroy() {
+        CallBacks.onClickLike -= SetLike;
+        CallBacks.onClickUnlike -= SetUnlike;
+        CallBacks.onGetLikeCount -= GetLike;
     }
 }

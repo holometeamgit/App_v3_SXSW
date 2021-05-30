@@ -53,13 +53,16 @@ namespace Beem.SSO {
 
         #region like
         // action parameter is stream id 
-        public static Action<long> onSetLike = delegate { };
-        public static Action<long> onSetLikeCallback = delegate { };
-        public static Action<long> onFailSetLikeCallback = delegate { };
+        public static Action<long> onClickLike = delegate { };
+        public static Action<long> onSentRequestLikeCallback = delegate { };
+        public static Action<long> onFailSentRequestLikeCallback = delegate { };
 
-        public static Action<long> onSetUnlike = delegate { };
-        public static Action<long> onSetUnlikeCallback = delegate { };
-        public static Action<long> onFailSetUnlikeCallback = delegate { };
+        public static Action<long> onClickUnlike = delegate { };
+        public static Action<long> onSentRequestUnlikeCallback = delegate { };
+        public static Action<long> onFailSentRequestUnlikeCallback = delegate { };
+
+        public static Action<long> onGetLikeCount = delegate { };
+        public static Action<long, int> onGetLikeCountCallBack = delegate { };
 
         #endregion
     }
