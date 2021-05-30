@@ -61,8 +61,8 @@ namespace Beem.SSO {
         public static Action<long> onSentRequestUnlikeCallback = delegate { };
         public static Action<long> onFailSentRequestUnlikeCallback = delegate { };
 
-        public static Action<long> onGetLikeCount = delegate { };
-        public static Action<long, int> onGetLikeCountCallBack = delegate { };
+        public static Action<long> onGetLikeState = delegate { };
+        public static Action<long, bool, int> onGetLikeStateCallBack = delegate { };
 
         #endregion
     }

@@ -19,11 +19,14 @@ namespace Beem.UI {
         /// <summary>
         /// Set btn state 
         /// </summary>
-        public void SetState(bool isLike, int count, long streamId) {
-            _isLike = isLike;
-            _count = count;
+        public void SetStreamId(long streamId) {
+            CallBacks.onGetLikeStateCallBack -= UpdateState;
+
             _streamId = streamId;
-            UpdateBtnState();
+            UpdateBtnUIState();
+            CallBacks.onGetLikeStateCallBack += UpdateState;
+
+            CallBacks.onGetLikeState?.Invoke(streamId);
         }
 
         /// <summary>
@@ -36,7 +39,7 @@ namespace Beem.UI {
             Handheld.Vibrate();
             _isLike = !_isLike;
             _count = _isLike ? ++_count : --_count;
-            UpdateBtnState();
+            UpdateBtnUIState();
             if (_isLike) {
                 CallBacks.onClickLike?.Invoke(_streamId);
             } else {
@@ -44,11 +47,21 @@ namespace Beem.UI {
             }
         }
 
-        private void UpdateBtnState() {
+        private void UpdateState(long streamId, bool isLike, int count) {
+            if (streamId != _streamId)
+                return;
+            _isLike = isLike;
+            _count = count;
+        }
+
+        private void UpdateBtnUIState() {
             imageLike.enabled = _isLike;
             imageUnlike.enabled = !_isLike;
             likesCount.text = _count.ToString();
         }
 
+        private void OnDisable() {
+            _streamId = -1;
+        }
     }
 }

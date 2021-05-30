@@ -185,7 +185,7 @@ public class UIThumbnailV3 : UIThumbnail {
             btnPlayTeaser.SetActive(thumbnailElement.Data.HasTeaser);
         }
 
-        btnLikes.SetState(thumbnailElement.Data.is_liked, thumbnailElement.Data.count_of_likes, thumbnailElement.Data.id);
+        btnLikes.SetStreamId(thumbnailElement.Data.id);
 
         _streamTimerView.View(thumbnailElement.Data);
     }

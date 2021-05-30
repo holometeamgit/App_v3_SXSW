@@ -93,7 +93,7 @@ public class UIThumbnailsController : MonoBehaviour {
 
         CallBacks.onClickLike += SetLike;
         CallBacks.onClickUnlike += SetUnlike;
-        CallBacks.onGetLikeCount += GetLike;
+        CallBacks.onGetLikeState += GetLikeState;
     }
 
     #region Prepare thumbnails
@@ -187,6 +187,7 @@ public class UIThumbnailsController : MonoBehaviour {
 
         stream.Data.count_of_likes = isLike ? ++stream.Data.count_of_likes : Mathf.Max(--stream.Data.count_of_likes,0);
 
+        CallBacks.onGetLikeStateCallBack?.Invoke(streamId, stream.Data.is_liked, stream.Data.count_of_likes);
     }
 
     private void SetLike(long streamId) {
@@ -197,12 +198,12 @@ public class UIThumbnailsController : MonoBehaviour {
         SetLike(streamId, false);
     }
 
-    private void GetLike(long streamId) {
+    private void GetLikeState(long streamId) {
         var stream = GetStreamElement(streamId);
         if (stream == null)
             return;
 
-        CallBacks.onGetLikeCountCallBack?.Invoke(streamId, stream.Data.count_of_likes);
+        CallBacks.onGetLikeStateCallBack?.Invoke(streamId, stream.Data.is_liked, stream.Data.count_of_likes);
     }
 
     private ThumbnailElement GetStreamElement(long streamId) {
@@ -215,6 +216,6 @@ public class UIThumbnailsController : MonoBehaviour {
     private void OnDestroy() {
         CallBacks.onClickLike -= SetLike;
         CallBacks.onClickUnlike -= SetUnlike;
-        CallBacks.onGetLikeCount -= GetLike;
+        CallBacks.onGetLikeState -= GetLikeState;
     }
 }
