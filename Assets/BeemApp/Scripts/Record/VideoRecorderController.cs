@@ -1,17 +1,15 @@
-﻿using System.Collections;
-using System.IO;
+﻿using System.IO;
 using NatCorder;
 using NatCorder.Clocks;
 using NatCorder.Inputs;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class VideoRecorderController : MonoBehaviour {
 
+    [Header("Source for Audio")]
     [SerializeField]
     private AudioSource audioSource;
 
-    private bool recording { get; set; }
     private bool recordLengthFailed;
     private bool recordMicrophone = true;
 
@@ -19,21 +17,13 @@ public class VideoRecorderController : MonoBehaviour {
     private IClock recordingClock;
     private CameraInput cameraInput;
     private AudioInput audioInput;
-    private Coroutine currentCoroutine;
     private PermissionGranter permissionGranter;
     private Camera[] cameras;
+
     private int videoWidth;
     private int videoHeight;
 
     private string lastRecordingPath;
-
-    enum Mode { Video, Photo };
-    private Mode mode;
-    private Mode ChangeMode {
-        set {
-            mode = value;
-        }
-    }
 
     private void Awake() {
         permissionGranter = FindObjectOfType<PermissionGranter>();
@@ -42,7 +32,6 @@ public class VideoRecorderController : MonoBehaviour {
 
     private void Start() {
         CorrectResolutionAspect();
-        ChangeMode = Mode.Video;
     }
 
     private void CorrectResolutionAspect() {
@@ -54,10 +43,11 @@ public class VideoRecorderController : MonoBehaviour {
         return value % 2 == 0 ? value : value - 1;
     }
 
-    public void StartRecording() {
+    private void StartRecording() {
         if (!permissionGranter.MicAccessAvailable) {
             recordMicrophone = false;
         }
+
         recordLengthFailed = false;
         recordingClock = new RealtimeClock();
         videoRecorder = new MP4Recorder(
@@ -74,15 +64,7 @@ public class VideoRecorderController : MonoBehaviour {
             audioInput = new AudioInput(videoRecorder, recordingClock, audioSource);
         }
 
-        recording = true;
-
         VideoRecorderCallbacks.onStartRecording?.Invoke();
-    }
-
-    public void RecordLengthFail() {
-        VideoRecorderCallbacks.onStopRecording?.Invoke();
-        MakeScreenshot();
-        recordLengthFailed = true;
     }
 
     public void StopRecording() {
@@ -92,33 +74,16 @@ public class VideoRecorderController : MonoBehaviour {
 
         cameraInput.Dispose();
         videoRecorder.Dispose();
-        recording = false;
     }
 
     private void OnRecordComplete(string outputPath) {
         if (recordLengthFailed) {
             File.Delete(outputPath);
-            MakeScreenshot();
+            VideoRecorderCallbacks.onStopRecording?.Invoke();
+            SnapShotCallBacks.onSnapshotStarted?.Invoke();
         } else {
             lastRecordingPath = outputPath;
         }
-        VideoRecorderCallbacks.onStopRecording?.Invoke();
     }
 
-    private void MakeScreenshot() {
-        if (currentCoroutine == null) {
-            VideoRecorderCallbacks.onSnapshotStarted?.Invoke();
-            currentCoroutine = StartCoroutine(ScreenShotAsync());
-        }
-    }
-
-    private IEnumerator ScreenShotAsync() {
-
-        yield return new WaitForEndOfFrame();
-        Texture2D screenShot = ScreenCapture.CaptureScreenshotAsTexture(1);
-        yield return new WaitForEndOfFrame();
-        Sprite spr = Sprite.Create(screenShot, new Rect(0, 0, Screen.width, Screen.height), Vector2.one * 0.5f);
-        VideoRecorderCallbacks.onSnapshotEnded?.Invoke();
-        currentCoroutine = null;
-    }
 }
