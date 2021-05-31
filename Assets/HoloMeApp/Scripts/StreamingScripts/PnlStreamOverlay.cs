@@ -115,8 +115,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         RequestMicAccess();
     }
 
-    private void OnDestroy()
-    {
+    private void OnDestroy() {
         LeaveOnDestroy();
     }
 
@@ -128,6 +127,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void ToggleRoomShareControlObjects(bool showShareButton) {
         btnShareYourRoom.gameObject.SetActive(showShareButton);
+        agoraController.IsRoom = showShareButton;
         foreach (GameObject go in hiddenControlsDuringRoomShare) {
             go.SetActive(!showShareButton);
         }
@@ -166,7 +166,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void OpenAsViewer(string channelName, string streamID) {
 
-        if(channelName == userWebManager.GetUsername()) {
+        if (channelName == userWebManager.GetUsername()) {
             pnlGenericError.ActivateSingleButton("Viewing as stream host",
                 "Please connect to the stream using a different account",
                 onBackPress: () => { CloseAsStreamer(); });
@@ -193,10 +193,9 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void LeaveOnDestroy() {
-        if (isStreamer){
+        if (isStreamer) {
             CloseAsStreamer();
-        }
-        else{
+        } else {
             CloseAsViewer();
         }
     }
@@ -230,11 +229,16 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void ShareStream() {
+
+        HelperFunctions.DevLog("isStreamer = " + isStreamer);
+        HelperFunctions.DevLog("agoraController.IsRoom = " + agoraController.IsRoom);
         if (isStreamer && agoraController.IsRoom) {
             ShareRoomStreamLink();
+            HelperFunctions.DevLog("SHARE_ROOM");
         } else {
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
             ShareStreamLink();
+            HelperFunctions.DevLog("SHARE_STREAM");
         }
     }
 
