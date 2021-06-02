@@ -11,7 +11,9 @@ namespace Beem.Video {
 
         private void OnEnable() {
             VideoPlayer videoPlayer = GetComponent<VideoPlayer>();
+            AudioSource audioSourcer = GetComponent<AudioSource>();
             VideoPlayerCallBacks.onSetVideoPlayer?.Invoke(videoPlayer);
+            VideoRecordCallbacks.onSetAudioSource?.Invoke(audioSourcer);
         }
 
     }
