@@ -79,6 +79,8 @@ public class UIThumbnailsController : MonoBehaviour {
     /// </summary>
 
     public void PlayLiveStream(string user, string agoraChannel, string streamID) { //TODO split it to ather class
+        if (!permissionController.CheckCameraAccess())
+            return;
         pnlStreamOverlay.OpenAsViewer(agoraChannel, streamID);
         OnPlayFromUser?.Invoke(user);
     }
