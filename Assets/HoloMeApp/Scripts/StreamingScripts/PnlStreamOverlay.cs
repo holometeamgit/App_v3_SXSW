@@ -11,6 +11,7 @@ using Beem.Firebase.DynamicLink;
 public class PnlStreamOverlay : MonoBehaviour {
 
     [Header("Views")]
+
     [SerializeField]
     private GameObject controlsPresenter;
 
@@ -96,7 +97,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.OnPreviewStopped += () => videoSurface.SetEnable(false);
         agoraController.OnStreamWentLive += () => fluidToggle.ToggleInteractibility(true);
         agoraController.OnStreamWentOffline += () => fluidToggle.ToggleInteractibility(true);
-
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
         AddVideoSurface();
@@ -107,6 +107,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         FadePanel(true);
         txtCentreMessage.text = string.Empty;
         RequestMicAccess();
+        ChatBtn.onOpen += OpenChat;
     }
 
     private void RequestMicAccess() {
@@ -293,6 +294,9 @@ public class PnlStreamOverlay : MonoBehaviour {
     /// </summary>
     public void OpenChat(bool value) {
         chat.DoMenuTransition(value);
+        foreach (GameObject item in onlineControls) {
+            item.SetActive(!value && agoraController.IsLive);
+        }
     }
 
     private void AddVideoSurface() {
@@ -375,6 +379,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     private void OnDisable() {
         StopAllCoroutines();
         pnlViewingExperience.ToggleARSessionObjects(true);
+        ChatBtn.onOpen -= OpenChat;
     }
 
     IEnumerator OnApplicationFocus(bool hasFocus) //Potential fix for bug where audio and video are re-enabled after losing focus from sharing or minimising

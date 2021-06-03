@@ -484,6 +484,7 @@ GameObject:
   - component: {fileID: 2541527371943490891}
   - component: {fileID: 3169120244370777458}
   - component: {fileID: 6447429403724881256}
+  - component: {fileID: 1041612558}
   m_Layer: 5
   m_Name: btnComments
   m_TagString: Untagged
@@ -619,18 +620,20 @@ MonoBehaviour:
   switchOffList: []
   OnSwitch:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2118979325922400105}
-        m_MethodName: OpenChat
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
+--- !u!114 &1041612558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 651358603381451920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9ea12e556b9ec34989cd239aef5dd97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isOpened: 1
 --- !u!1 &737303584409414417
 GameObject:
   m_ObjectHideFlags: 0
@@ -1950,7 +1953,7 @@ RectTransform:
   - {fileID: 358662116505587145}
   - {fileID: 2037505269074610366}
   m_Father: {fileID: 3766104011607352489}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2099,80 +2102,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &2938793814575022156
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1092108502896801406}
-  - component: {fileID: 5113320588422782729}
-  - component: {fileID: 9196892232356335182}
-  m_Layer: 5
-  m_Name: ChatBackground
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!224 &1092108502896801406
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2938793814575022156}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 3766104011607352489}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1124, y: 1230}
-  m_Pivot: {x: 0.5, y: 0}
---- !u!222 &5113320588422782729
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2938793814575022156}
-  m_CullTransparentMesh: 0
---- !u!114 &9196892232356335182
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2938793814575022156}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3b115a854d232419ab9674ff0373d662, type: 3}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &3060981794597584181
 GameObject:
   m_ObjectHideFlags: 0
@@ -2242,7 +2171,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1164791859691909957}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -2974,7 +2903,7 @@ RectTransform:
   m_Children:
   - {fileID: 5943038827773743254}
   m_Father: {fileID: 1164791859691909957}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -3237,6 +3166,7 @@ GameObject:
   - component: {fileID: 4784383363807254926}
   - component: {fileID: 5317253282219860430}
   - component: {fileID: 5021373847628888250}
+  - component: {fileID: 1043566818}
   m_Layer: 5
   m_Name: btnComments
   m_TagString: Untagged
@@ -3372,18 +3302,20 @@ MonoBehaviour:
   switchOffList: []
   OnSwitch:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OpenChat
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
+--- !u!114 &1043566818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5196268690089549173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9ea12e556b9ec34989cd239aef5dd97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isOpened: 1
 --- !u!1 &5514333785775418659
 GameObject:
   m_ObjectHideFlags: 0
@@ -3576,7 +3508,7 @@ RectTransform:
   - {fileID: 7967544044649793560}
   - {fileID: 904181482175622760}
   m_Father: {fileID: 3766104011607352489}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -3867,6 +3799,7 @@ GameObject:
   - component: {fileID: 6155584322207644228}
   - component: {fileID: 4095185944982213292}
   - component: {fileID: 5637543673810199491}
+  - component: {fileID: 601877630}
   m_Layer: 5
   m_Name: btnComments
   m_TagString: Untagged
@@ -4002,18 +3935,20 @@ MonoBehaviour:
   switchOffList: []
   OnSwitch:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2118979325922400105}
-        m_MethodName: OpenChat
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
+--- !u!114 &601877630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6842942642905522796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9ea12e556b9ec34989cd239aef5dd97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isOpened: 1
 --- !u!1 &6886179404956010577
 GameObject:
   m_ObjectHideFlags: 0
@@ -4277,7 +4212,7 @@ RectTransform:
   m_Children:
   - {fileID: 6886179405109602135}
   m_Father: {fileID: 3766104011607352489}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4443,9 +4378,9 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 293268087201617031}
-  - {fileID: 1845260368484849345}
   - {fileID: 4323316326629661965}
+  - {fileID: 1845260368484849345}
+  - {fileID: 293268087201617031}
   - {fileID: 2416826394452055469}
   m_Father: {fileID: 904181482175622760}
   m_RootOrder: 0
@@ -4543,6 +4478,7 @@ GameObject:
   - component: {fileID: 7912816344475527606}
   - component: {fileID: 1931034504616234489}
   - component: {fileID: 3618073639813658343}
+  - component: {fileID: 2016836001}
   m_Layer: 5
   m_Name: btnComments
   m_TagString: Untagged
@@ -4678,18 +4614,20 @@ MonoBehaviour:
   switchOffList: []
   OnSwitch:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2118979325922400105}
-        m_MethodName: OpenChat
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
+--- !u!114 &2016836001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7425394464837233718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9ea12e556b9ec34989cd239aef5dd97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isOpened: 1
 --- !u!1 &7436018818539454807
 GameObject:
   m_ObjectHideFlags: 0
@@ -4808,7 +4746,6 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1092108502896801406}
   - {fileID: 4722534462498786249}
   - {fileID: 3815561554128697686}
   - {fileID: 2723046388149429831}
@@ -4867,7 +4804,7 @@ RectTransform:
   - {fileID: 2669863512473860805}
   - {fileID: 6926247104407491366}
   m_Father: {fileID: 3766104011607352489}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -5770,7 +5707,7 @@ PrefabInstance:
     - target: {fileID: 5693050900238983826, guid: 581e32461906f42edbebeb4843d0deb9,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5693050900238983826, guid: 581e32461906f42edbebeb4843d0deb9,
         type: 3}
@@ -6682,24 +6619,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8030ab582d29544cb96f2ff38b3236bb, type: 3}
---- !u!224 &7224595261787314152 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6234890028823344546, guid: 8030ab582d29544cb96f2ff38b3236bb,
-    type: 3}
-  m_PrefabInstance: {fileID: 3658097650259878474}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7224595261787314153 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6234890028823344547, guid: 8030ab582d29544cb96f2ff38b3236bb,
-    type: 3}
-  m_PrefabInstance: {fileID: 3658097650259878474}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b7c96c74c98247019424d84ac463d3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7861693854096370374 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6908086998232680588, guid: 8030ab582d29544cb96f2ff38b3236bb,
@@ -6712,6 +6631,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09fdc7b321e6344b6bd87162f106db57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7224595261787314153 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6234890028823344547, guid: 8030ab582d29544cb96f2ff38b3236bb,
+    type: 3}
+  m_PrefabInstance: {fileID: 3658097650259878474}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b7c96c74c98247019424d84ac463d3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!224 &7224595261787314152 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6234890028823344546, guid: 8030ab582d29544cb96f2ff38b3236bb,
+    type: 3}
+  m_PrefabInstance: {fileID: 3658097650259878474}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5685255437933774443
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6987,6 +6924,12 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 2207050370119496723, guid: 581e32461906f42edbebeb4843d0deb9, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 581e32461906f42edbebeb4843d0deb9, type: 3}
+--- !u!224 &137309294978721017 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5693050900238983826, guid: 581e32461906f42edbebeb4843d0deb9,
+    type: 3}
+  m_PrefabInstance: {fileID: 5685255437933774443}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &8489855914263630577 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4266055964039861402, guid: 581e32461906f42edbebeb4843d0deb9,
@@ -6999,9 +6942,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6439298e7a369481d90dd373af950173, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &137309294978721017 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5693050900238983826, guid: 581e32461906f42edbebeb4843d0deb9,
-    type: 3}
-  m_PrefabInstance: {fileID: 5685255437933774443}
-  m_PrefabAsset: {fileID: 0}
