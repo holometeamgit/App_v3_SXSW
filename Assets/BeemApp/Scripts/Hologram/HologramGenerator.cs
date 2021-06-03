@@ -33,6 +33,9 @@ namespace Beem.Hologram {
         }
 
         private void OnEnable() {
+#if UNITY_EDITOR
+            CreateHologram(_hologramPrefab, _hologramPrefab.transform.position, _hologramPrefab.transform.rotation);
+#endif
             HologramCallbacks.onSelectHologramPrefab += SetHologram;
         }
 
@@ -50,11 +53,15 @@ namespace Beem.Hologram {
             if (_touchCounter.TouchCount == _touchCount) {
                 if (_raycastManager.Raycast(eventData.pressPosition, _hits, TrackableType.PlaneWithinPolygon)) {
                     var hitPose = _hits[0].pose;
-                    if (_spawnedObject == null) {
-                        _spawnedObject = Instantiate(_hologramPrefab, hitPose.position, hitPose.rotation);
-                        HologramCallbacks.onCreateHologram?.Invoke(_spawnedObject);
-                    }
+                    CreateHologram(_hologramPrefab, hitPose.position, hitPose.rotation);
                 }
+            }
+        }
+
+        private void CreateHologram(GameObject prefab, Vector3 position, Quaternion rotation) {
+            if (_spawnedObject == null) {
+                _spawnedObject = Instantiate(prefab, position, rotation);
+                HologramCallbacks.onCreateHologram?.Invoke(_spawnedObject);
             }
         }
 
