@@ -23,6 +23,7 @@ namespace Beem.Record.SnapShot {
             try {
                 Texture2D screenshot = ScreenCapture.CaptureScreenshotAsTexture(1);
                 await Task.Yield();
+                SnapShotCallBacks.onPostRecord?.Invoke();
                 SnapShotCallBacks.onSnapshotEnded?.Invoke(screenshot);
             } finally {
                 if (cancelTokenSource != null) {

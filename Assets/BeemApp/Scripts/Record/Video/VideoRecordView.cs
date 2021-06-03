@@ -1,30 +1,28 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
+using UnityEngine.Video;
+
 namespace Beem.Record.Video {
 
-    /// <summary>
-    /// Video Progress view
-    /// </summary>
-    public class VideoRecordView : MonoBehaviour {
 
-        [SerializeField]
-        private Image progressBar;
+    /// <summary>
+    /// VideoRecord View
+    /// </summary>
+    [RequireComponent(typeof(VideoPlayer))]
+    public class VideoRecordView : MonoBehaviour {
+        private VideoPlayer _videoPlayer;
 
         private void OnEnable() {
-            OnProgress();
-            VideoRecordCallbacks.onRecordProgress += OnProgress;
+            _videoPlayer = GetComponent<VideoPlayer>();
+            VideoRecordCallbacks.onRecordFinished += OnRecordComplete;
         }
 
         private void OnDisable() {
-            VideoRecordCallbacks.onRecordProgress -= OnProgress;
+            VideoRecordCallbacks.onRecordFinished -= OnRecordComplete;
         }
 
-        private void OnProgress(float value = 0f) {
-            if (progressBar != null) {
-                progressBar.fillAmount = value;
-            }
+        private void OnRecordComplete(string outpath) {
+            _videoPlayer.url = outpath;
+            _videoPlayer.Play();
         }
     }
 }

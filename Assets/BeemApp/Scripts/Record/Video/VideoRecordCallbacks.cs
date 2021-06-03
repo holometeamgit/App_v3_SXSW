@@ -11,5 +11,6 @@ namespace Beem.Record.Video {
         public static Action onRecordStoped = delegate { };
         public static Action<string> onRecordFinished = delegate { };
         public static Action<AudioSource> onSetAudioSource = delegate { };
+        public static Action onPostRecord = delegate { };
     }
 }

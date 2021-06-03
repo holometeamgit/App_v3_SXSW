@@ -11,5 +11,6 @@ namespace Beem.Record.SnapShot {
     public class SnapShotCallBacks {
         public static Action onSnapshotStarted = delegate { };
         public static Action<Texture2D> onSnapshotEnded = delegate { };
+        public static Action onPostRecord = delegate { };
     }
 }

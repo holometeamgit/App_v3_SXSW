@@ -10,21 +10,17 @@ namespace Beem.Record.SnapShot {
         [Header("Snap shot Panel")]
         [SerializeField]
         private GameObject _pnl;
-        [Header("Raw Image")]
-        [SerializeField]
-        private RawImage _rawImage;
 
         private void OnEnable() {
-            SnapShotCallBacks.onSnapshotEnded += OnRecordComplete;
+            SnapShotCallBacks.onPostRecord += OnRecordComplete;
         }
 
         private void OnDisable() {
-            SnapShotCallBacks.onSnapshotEnded -= OnRecordComplete;
+            SnapShotCallBacks.onPostRecord -= OnRecordComplete;
         }
 
-        private void OnRecordComplete(Texture2D screenshot) {
+        private void OnRecordComplete() {
             _pnl.SetActive(true);
-            _rawImage.texture = screenshot;
         }
     }
 }

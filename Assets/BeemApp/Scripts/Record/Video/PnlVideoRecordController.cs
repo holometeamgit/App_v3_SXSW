@@ -9,22 +9,17 @@ namespace Beem.Record.Video {
         [Header("Video Record Panel")]
         [SerializeField]
         private GameObject _pnl;
-        [Header("Video player")]
-        [SerializeField]
-        private VideoPlayer _videoPlayer;
 
         private void OnEnable() {
-            VideoRecordCallbacks.onRecordFinished += OnRecordComplete;
+            VideoRecordCallbacks.onPostRecord += OnRecordComplete;
         }
 
         private void OnDisable() {
-            VideoRecordCallbacks.onRecordFinished -= OnRecordComplete;
+            VideoRecordCallbacks.onPostRecord -= OnRecordComplete;
         }
 
-        private void OnRecordComplete(string outpath) {
+        private void OnRecordComplete() {
             _pnl.SetActive(true);
-            _videoPlayer.url = outpath;
-            _videoPlayer.Play();
         }
     }
 }

@@ -6,12 +6,24 @@ namespace Beem.Record.Video {
     /// Share video record
     /// </summary>
     public class ShareVideoRecordBtn : MonoBehaviour, IPointerDownHandler {
-        [SerializeField]
-        private VideoPlayer _videoPlayer;
+
+        private string _outpath;
+
+        private void OnEnable() {
+            VideoRecordCallbacks.onRecordFinished += OnRecordComplete;
+        }
+
+        private void OnDisable() {
+            VideoRecordCallbacks.onRecordFinished -= OnRecordComplete;
+        }
+
+        private void OnRecordComplete(string outpath) {
+            _outpath = outpath;
+        }
 
         public void OnPointerDown(PointerEventData eventData) {
-            if (!string.IsNullOrEmpty(_videoPlayer.url)) {
-                new NativeShare().AddFile(_videoPlayer.url).Share();
+            if (!string.IsNullOrEmpty(_outpath)) {
+                new NativeShare().AddFile(_outpath).Share();
             } else {
                 Debug.LogError("Record path was empty");
             }

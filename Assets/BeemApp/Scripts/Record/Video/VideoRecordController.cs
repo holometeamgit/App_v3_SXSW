@@ -109,6 +109,7 @@ namespace Beem.Record.Video {
                 SnapShotCallBacks.onSnapshotStarted?.Invoke();
             } else {
                 lastRecordingPath = outputPath;
+                VideoRecordCallbacks.onPostRecord?.Invoke();
                 VideoRecordCallbacks.onRecordFinished?.Invoke(lastRecordingPath);
                 recordLengthFailed = false;
             }

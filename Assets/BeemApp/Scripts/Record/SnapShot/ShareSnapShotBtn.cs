@@ -10,13 +10,24 @@ namespace Beem.Record.SnapShot {
     /// Share snapshot
     /// </summary>
     public class ShareSnapShotBtn : MonoBehaviour, IPointerDownHandler {
-        [Header("Snap shot")]
-        [SerializeField]
-        private RawImage _snapshot;
+
+        private Texture2D _snapshot;
+
+        private void OnEnable() {
+            SnapShotCallBacks.onSnapshotEnded += OnRecordComplete;
+        }
+
+        private void OnDisable() {
+            SnapShotCallBacks.onSnapshotEnded -= OnRecordComplete;
+        }
+
+        private void OnRecordComplete(Texture2D snapshot) {
+            _snapshot = snapshot;
+        }
 
         public void OnPointerDown(PointerEventData eventData) {
-            if (_snapshot.texture != null) {
-                new NativeShare().AddFile((Texture2D)_snapshot.texture).Share();
+            if (_snapshot != null) {
+                new NativeShare().AddFile(_snapshot).Share();
             } else {
                 Debug.LogError("Screenshot was null");
             }
