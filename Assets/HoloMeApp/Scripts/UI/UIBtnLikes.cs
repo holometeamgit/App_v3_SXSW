@@ -13,7 +13,7 @@ namespace Beem.UI {
         [SerializeField] TMP_Text likesCount;
 
         private bool _isLike;
-        private int _count;
+        private long _count;
         private long _streamId = -1;
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Beem.UI {
             }
         }
 
-        private void UpdateState(long streamId, bool isLike, int count) {
+        private void UpdateState(long streamId, bool isLike, long count) {
             if (streamId != _streamId)
                 return;
             _isLike = isLike;

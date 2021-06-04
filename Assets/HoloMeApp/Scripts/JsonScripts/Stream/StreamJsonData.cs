@@ -53,8 +53,8 @@ public class StreamJsonData {
         public string paid_type;
         public string privacy_type;
         public string shader_info;
-        public int count_of_likes;
-        public int count_of_views;
+        public long count_of_likes;
+        public long count_of_views;
 
         public const string PIN_ALL = "all";
         public const string LIVE_STR = "live";

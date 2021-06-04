@@ -185,7 +185,7 @@ public class UIThumbnailsController : MonoBehaviour {
 
         stream.Data.is_liked = isLike;
 
-        stream.Data.count_of_likes = isLike ? ++stream.Data.count_of_likes : Mathf.Max(--stream.Data.count_of_likes,0);
+        stream.Data.count_of_likes = isLike ? ++stream.Data.count_of_likes : Math.Max(--stream.Data.count_of_likes,0);
 
         CallBacks.onGetLikeStateCallBack?.Invoke(streamId, stream.Data.is_liked, stream.Data.count_of_likes);
     }
