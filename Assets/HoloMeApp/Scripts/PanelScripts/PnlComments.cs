@@ -124,7 +124,7 @@ public class PnlComments : MonoBehaviour
 
 		_scroll.ApplyDataTo(count, pullCount, InfiniteScroll.Direction.Bottom);
 
-		if (_afterRefresh) {
+		if(_afterRefresh) {
 			_afterRefresh = false;
 			_scroll.MoveToSide(InfiniteScroll.Direction.Top);
 		}

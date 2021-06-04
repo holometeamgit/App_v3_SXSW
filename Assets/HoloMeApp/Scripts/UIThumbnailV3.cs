@@ -13,12 +13,10 @@ public class UIThumbnailV3 : UIThumbnail {
     [Space]
     [SerializeField] GameObject btnThumbnail;
     [Space]
-    [SerializeField] GameObject btnShare;
     [SerializeField] GameObject btnWatchNow;
     [SerializeField] GameObject btnPlayTeaser;
     [Space]
     [SerializeField] GameObject btnBuyTicketR;
-    [SerializeField] GameObject btnShareR;
     [Space]
     [SerializeField] Image imgLive;
     [Space]
@@ -30,6 +28,9 @@ public class UIThumbnailV3 : UIThumbnail {
     [SerializeField] TMP_Text txtPrice;
     [Space]
     [SerializeField] AspectRatioFitterByMinSide aspectRatioFitter;
+
+    [SerializeField]
+    private StreamTimerView _streamTimerView;
 
     Action<StreamJsonData.Data> OnPlayClick;
     Action<StreamJsonData.Data> OnTeaserClick;
@@ -111,11 +112,9 @@ public class UIThumbnailV3 : UIThumbnail {
     public override void LockToPress(bool isLook) {
         try {
             btnThumbnail.GetComponent<Button>().interactable = !isLook;
-            btnShare.GetComponent<Button>().interactable = !isLook;
             btnWatchNow.GetComponent<Button>().interactable = !isLook;
             btnPlayTeaser.GetComponent<Button>().interactable = !isLook;
             btnBuyTicketR.GetComponent<Button>().interactable = !isLook;
-            btnShareR.GetComponent<Button>().interactable = !isLook;
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
         }
@@ -131,6 +130,7 @@ public class UIThumbnailV3 : UIThumbnail {
         txtDescription.text = "";
         txtInfoText.text = "";
         txtPrice.text = "";
+        _streamTimerView.Clear();
     }
 
     public override void Activate() {
@@ -153,11 +153,9 @@ public class UIThumbnailV3 : UIThumbnail {
         txtTitle.text = thumbnailElement.Data.title;
         txtDescription.text = thumbnailElement.Data.description;
 
-        btnShare.SetActive(false);
         btnWatchNow.SetActive(false);
         btnPlayTeaser.SetActive(false);
         btnBuyTicketR.SetActive(false);
-        btnShareR.SetActive(false);
 
         txtPrice.text = "Free";
 
@@ -165,28 +163,24 @@ public class UIThumbnailV3 : UIThumbnail {
             txtInfoText.text = "This is a free Live event";
 
             btnWatchNow.SetActive(true);
-            btnShareR.SetActive(true);
         } else if (!thumbnailElement.Data.is_bought) {
             txtInfoText.text = "Please purchase a ticket to watch full event";
             txtPrice.text = "$" + thumbnailElement.Data.product_type.price.ToString();
 
             btnPlayTeaser.SetActive(thumbnailElement.Data.HasTeaser);
-            btnShare.SetActive(!thumbnailElement.Data.HasTeaser);
             btnBuyTicketR.SetActive(true);
         } else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
             txtInfoText.text = "This is a free event";
             if (thumbnailElement.Data.is_bought && thumbnailElement.Data.HasProduct)
                 txtInfoText.text = "Ticket purchased for event";
-
                 btnWatchNow.SetActive(true);
-                btnShareR.SetActive(true);
         } else {
             txtInfoText.text = "Ticket purchased for event scheduled on " + thumbnailElement.Data.StartDate.ToString("ddd d MMM");
 
             btnPlayTeaser.SetActive(thumbnailElement.Data.HasTeaser);
-            btnShareR.SetActive(thumbnailElement.Data.HasTeaser);
-            btnShare.SetActive(!thumbnailElement.Data.HasTeaser);
         }
+
+        _streamTimerView.View(thumbnailElement.Data);
     }
 
     private void WaitServerPurchaseConfirmation(long id) {
