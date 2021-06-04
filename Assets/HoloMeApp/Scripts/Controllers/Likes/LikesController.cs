@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Conteroller for sending webrequest about like and unlike stream
+/// </summary>
 public class LikesController {
     private WebRequestHandler _webRequestHandler;
     private VideoUploader _videoUploaderAPI;

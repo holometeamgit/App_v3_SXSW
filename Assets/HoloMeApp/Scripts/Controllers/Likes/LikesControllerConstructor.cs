@@ -3,21 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using Beem.SSO;
 
+/// <summary>
+/// Constructor for initialization LikesController and adding all subscriptions
+/// </summary>
 public class LikesControllerConstructor : MonoBehaviour {
     [SerializeField] WebRequestHandler _webRequestHandler;
     [SerializeField] VideoUploader _videoUploader;
 
-    private LikesController likesController;
+    private LikesController _likesController;
 
     private void Awake() {
-        likesController = new LikesController(_webRequestHandler, _videoUploader);
+        _likesController = new LikesController(_webRequestHandler, _videoUploader);
 
-        CallBacks.onClickLike += likesController.SendRequestLike;
-        CallBacks.onClickUnlike += likesController.SendRequestUnlike;
+        CallBacks.onClickLike += _likesController.SendRequestLike;
+        CallBacks.onClickUnlike += _likesController.SendRequestUnlike;
     }
 
     private void OnDestroy() {
-        CallBacks.onClickLike -= likesController.SendRequestLike;
-        CallBacks.onClickUnlike -= likesController.SendRequestUnlike;
+        CallBacks.onClickLike -= _likesController.SendRequestLike;
+        CallBacks.onClickUnlike -= _likesController.SendRequestUnlike;
     }
 }
