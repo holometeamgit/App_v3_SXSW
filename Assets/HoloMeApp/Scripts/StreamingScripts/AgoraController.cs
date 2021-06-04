@@ -242,6 +242,7 @@ public class AgoraController : MonoBehaviour {
         } else {
                 iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_AUDIENCE);
                 EnableVideoPlayback(); //Must be called for viewers to view
+                ToggleLocalVideo(true); //Disable local video freeze fix iOS
         }
 
         //iRtcEngine.EnableDualStreamMode(true);
@@ -425,6 +426,13 @@ public class AgoraController : MonoBehaviour {
         int result = iRtcEngine.SwitchCamera();
         if (result == 0)
             OnCameraSwitched?.Invoke();
+    }
+
+    public void ToggleLocalVideo(bool pauseVideo)
+    {
+        if (iRtcEngine != null) {
+            iRtcEngine.EnableLocalVideo(!pauseVideo);
+        }
     }
 
     public void ToggleVideo(bool pauseVideo) {

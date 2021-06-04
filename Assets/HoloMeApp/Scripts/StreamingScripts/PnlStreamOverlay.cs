@@ -309,11 +309,11 @@ public class PnlStreamOverlay : MonoBehaviour {
                 btnPushToTalk.enabled = true;
                 break;
             case MessageDisableAudio:
-                ToggleLocalAudio(false);
+                ToggleLocalAudio(true);
                 btnPushToTalk.enabled = false;
                 break;
             case MessageStreamerLeft:
-                               agoraController.OnStreamerLeft?.Invoke();
+                agoraController.OnStreamerLeft?.Invoke();
                 break;
         }
     }
