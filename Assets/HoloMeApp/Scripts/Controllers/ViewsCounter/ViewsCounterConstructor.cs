@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Beem.SSO;
 
+/// <summary>
+/// Constructor for initialization ViewsCounterController and adding all subscriptions
+/// </summary>
 public class ViewsCounterConstructor : MonoBehaviour
 {
     [SerializeField] WebRequestHandler _webRequestHandler;

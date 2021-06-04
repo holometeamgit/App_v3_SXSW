@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/// <summary>
+/// Conteroller for sending webrequest that stream was viewed 
+/// </summary>
 public class ViewsCounterController
 {
     private WebRequestHandler _webRequestHandler;
