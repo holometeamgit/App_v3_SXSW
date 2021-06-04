@@ -54,6 +54,7 @@ public class StreamJsonData {
         public const string PIN_ALL = "all";
         public const string LIVE_STR = "live";
         public const string LIVE_ROOM_STR = "live_room";
+        public const string STOP_STR = "stop";
         public const string PRERECORDED_STR = "prerecorded";
 
         private DateTime startDate;
