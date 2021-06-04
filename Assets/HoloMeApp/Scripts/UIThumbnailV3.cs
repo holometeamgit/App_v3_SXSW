@@ -136,6 +136,7 @@ public class UIThumbnailV3 : UIThumbnail {
         txtDate.text = "";
         txtTime.text = "";
         txtTitle.text = "";
+        txtViews.text = "";
         txtDescription.text = "";
         txtInfoText.text = "";
         txtPrice.text = "";
@@ -162,7 +163,8 @@ public class UIThumbnailV3 : UIThumbnail {
         txtTitle.text = thumbnailElement.Data.title;
         txtDescription.text = thumbnailElement.Data.description;
 
-        txtViews.text = NumberToKMBConverter.ToKMB(thumbnailElement.Data.count_of_views) + " views";
+        txtViews.text = thumbnailElement.Data.count_of_views < 1 ? "" : NumberToKMBConverter.ToKMB(thumbnailElement.Data.count_of_views) +
+            (thumbnailElement.Data.count_of_views ==  1 ? " view" : " views");
 
         btnWatchNow.SetActive(false);
         btnPlayTeaser.SetActive(false);
