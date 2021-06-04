@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using Beem.SSO;
 using Beem;
+using Beem.UI;
 
 public class UIThumbnailV3 : UIThumbnail {
     [SerializeField] RawImage rawImage;
@@ -26,6 +27,10 @@ public class UIThumbnailV3 : UIThumbnail {
     [SerializeField] TMP_Text txtDescription;
     [SerializeField] TMP_Text txtInfoText;
     [SerializeField] TMP_Text txtPrice;
+
+    [Header("Like")]
+    [SerializeField] UIBtnLikes btnLikes;
+
     [Space]
     [SerializeField] AspectRatioFitterByMinSide aspectRatioFitter;
 
@@ -179,6 +184,8 @@ public class UIThumbnailV3 : UIThumbnail {
 
             btnPlayTeaser.SetActive(thumbnailElement.Data.HasTeaser);
         }
+
+        btnLikes.SetStreamId(thumbnailElement.Data.id);
 
         _streamTimerView.View(thumbnailElement.Data);
     }

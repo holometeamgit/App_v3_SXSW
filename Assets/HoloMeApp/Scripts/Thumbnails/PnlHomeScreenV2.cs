@@ -120,6 +120,4 @@ public class PnlHomeScreenV2 : MonoBehaviour
         StopAllCoroutines();
         pullRefreshController.EndRefreshing();
     }
-
-
 }

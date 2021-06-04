@@ -10,7 +10,8 @@ namespace Beem {
         [SerializeField] VideoUploader _videoUploader;
         [SerializeField] PnlComments _pnlComments;
 
-        CommentsController _commentsController;
+        private CommentsController _commentsController;
+
         private void Awake() {
             _commentsController = new CommentsController(_webRequestHandler, _videoUploader);
             _pnlComments.onOpen += _commentsController.Init;
