@@ -19,33 +19,28 @@ public class PnlWelcomeV4 : MonoBehaviour {
     private const int TIME_FOR_AUTOHIDINGBG = 10000;
     private int HIDE_BACKGROUND_DELAY_TIME = 500;
 
+    private DeepLinkHandler deepLinkHandler;
+    private const string IS_CHECKED_PUSH_KEY = "pushIsChecked";
+
+
     private void Awake() {
+        deepLinkHandler = FindObjectOfType<DeepLinkHandler>();
+    }
+
+    private void Start() {
+#if UNITY_ANDROID
+        if (deepLinkHandler != null && !PlayerPrefs.HasKey(IS_CHECKED_PUSH_KEY)) {
+            deepLinkHandler.CheckSettings();
+            PlayerPrefs.SetInt(IS_CHECKED_PUSH_KEY, 1);
+            PlayerPrefs.Save();
+        }
+#endif
     }
 
     private void ShowBackground() {
         HelperFunctions.DevLog("Show Background");
         LogInBackground.SetActive(true);
     }
-    #region autohide
-    //private void AutoHideLoadingBackground(LogInType logInType) {
-    //    AutoHideLoadingBackground();
-    //}
-
-    //private void AutoHideLoadingBackground(string msg) {
-    //    AutoHideLoadingBackground();
-    //}
-
-    //private void AutoHideLoadingBackground() {
-    //    var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-    //    Task.Delay(TIME_FOR_AUTOHIDINGBG).ContinueWith(_ => HideBackgroundWithDelay(), taskScheduler);
-    //}
-
-    //private void HideBackgroundWithDelay() {
-    //    if (LogInBackground.activeSelf) {
-    //        HideBackground();
-    //    }
-    //}
-    #endregion
 
     private void HideBackground() {
         HelperFunctions.DevLog("Hide Background");
@@ -58,6 +53,7 @@ public class PnlWelcomeV4 : MonoBehaviour {
     }
 
     private void SwitchToProfile() {
+        HelperFunctions.DevLog("Welcome SwitchToProfile");
         switcherToProfile.Switch();
     }
 
@@ -80,8 +76,6 @@ public class PnlWelcomeV4 : MonoBehaviour {
 
         CallBacks.onSignInSuccess += SwitchToProfile;
         CallBacks.onFail += ShowSpecialErrorFacebookFirebaseMsg;
-        //CallBacks.onFail += AutoHideLoadingBackground;
-        //CallBacks.onFirebaseSignInSuccess += AutoHideLoadingBackground;
 
         CallBacks.onSignInFacebook += ShowBackground;
         CallBacks.onSignInApple += ShowBackground;
@@ -93,8 +87,6 @@ public class PnlWelcomeV4 : MonoBehaviour {
     private void OnDisable() {
         CallBacks.onSignInSuccess -= SwitchToProfile;
         CallBacks.onFail -= ShowSpecialErrorFacebookFirebaseMsg;
-        //CallBacks.onFail -= AutoHideLoadingBackground;
-        //CallBacks.onFirebaseSignInSuccess -= AutoHideLoadingBackground;
 
         CallBacks.onSignInFacebook -= ShowBackground;
         CallBacks.onSignInApple -= ShowBackground;
