@@ -22,7 +22,7 @@ namespace Beem.Video {
         }
 
         public override void Refresh(VideoPlayer videoPlayer) {
-            if (videoPlayer == null) {
+            if (videoPlayer == null || !videoPlayer.isPrepared) {
                 Cancel();
                 return;
             }
