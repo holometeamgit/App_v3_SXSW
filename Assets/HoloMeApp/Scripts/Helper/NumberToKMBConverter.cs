@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Globalization;
 
+/// <summary>
+/// NumberToKMBConverter can convert numbers specific format
+/// 12.4K
+/// 12.45M
+/// 12.456B
+/// </summary>
 public static class NumberToKMBConverter {
     public static string ToKMB(this decimal num) {
         if (num > 999999999 || num < -999999999) {

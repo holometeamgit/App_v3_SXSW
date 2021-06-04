@@ -7,6 +7,11 @@ using TMPro;
 
 namespace Beem.UI {
 
+
+    /// <summary>
+    /// Need for demonstration count of likes
+    /// can invoke like and unlike event
+    /// </summary>
     public class UIBtnLikes : MonoBehaviour {
         [SerializeField] Image imageLike;
         [SerializeField] Image imageUnlike;

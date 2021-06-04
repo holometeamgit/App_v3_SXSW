@@ -163,8 +163,7 @@ public class UIThumbnailV3 : UIThumbnail {
         txtTitle.text = thumbnailElement.Data.title;
         txtDescription.text = thumbnailElement.Data.description;
 
-        txtViews.text = thumbnailElement.Data.count_of_views < 1 ? "" : NumberToKMBConverter.ToKMB(thumbnailElement.Data.count_of_views) +
-            (thumbnailElement.Data.count_of_views ==  1 ? " view" : " views");
+        txtViews.text = DataStringConverter.GetViews(thumbnailElement.Data.count_of_views);
 
         btnWatchNow.SetActive(false);
         btnPlayTeaser.SetActive(false);
