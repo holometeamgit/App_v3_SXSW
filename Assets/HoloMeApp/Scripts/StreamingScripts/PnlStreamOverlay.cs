@@ -118,7 +118,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void RefreshControls() {
-        RefreshStreamControls(agoraController.IsRoom);
+        RefreshStreamControls(!agoraController.IsChannelCreator || agoraController.IsRoom);
         RefreshBroadcasterControls(agoraController.IsChannelCreator);
         RefreshLiveControls(!agoraController.IsChannelCreator || agoraController.IsLive);
         HelperFunctions.DevLog("IsRoom = " + agoraController.IsRoom);
