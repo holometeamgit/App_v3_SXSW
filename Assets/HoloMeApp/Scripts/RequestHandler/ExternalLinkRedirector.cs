@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ExternalLinkRedirector : MonoBehaviour
 {
+    //TODO inject via DI
     [SerializeField] ExternalLinksScriptableObject externalLinksScriptableObject;
     [SerializeField] ExternalLinksScriptableObject.ExternalLinkType externalLinkType;
 
