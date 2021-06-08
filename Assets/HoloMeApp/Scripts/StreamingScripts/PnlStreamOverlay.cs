@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using agora_gaming_rtc;
 using LostNative.Toolkit.FluidUI;
 using Beem.Firebase.DynamicLink;
+using System;
 
 public class PnlStreamOverlay : MonoBehaviour {
 
@@ -117,9 +118,9 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void RefreshControls() {
-        RefreshStreamControls(agoraController.IsRoom);
+        RefreshStreamControls(!agoraController.IsChannelCreator || agoraController.IsRoom);
         RefreshBroadcasterControls(agoraController.IsChannelCreator);
-        RefreshLiveControls(agoraController.IsLive);
+        RefreshLiveControls(!agoraController.IsChannelCreator || agoraController.IsLive);
         HelperFunctions.DevLog("IsRoom = " + agoraController.IsRoom);
         HelperFunctions.DevLog("IsChannelCreator = " + agoraController.IsChannelCreator);
         HelperFunctions.DevLog("IsLive = " + agoraController.IsLive);
@@ -201,6 +202,10 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void FadePanel(bool show) {
         canvasGroup.DOFade(show ? 1 : 0, 0.5f).OnComplete(() => { if (!show) { gameObject.SetActive(false); } });
+    }
+
+    private void OnDestroy() {
+        LeaveOnDestroy();
     }
 
     private void LeaveOnDestroy() {
