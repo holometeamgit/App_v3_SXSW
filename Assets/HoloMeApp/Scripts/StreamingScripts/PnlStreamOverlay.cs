@@ -178,7 +178,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         RefreshControls();
     }
 
-    public void OpenAsViewer(string channelName, string streamID) {
+    public void OpenAsViewer(string channelName, string streamID, bool isRoom) {
 
         if (channelName == userWebManager.GetUsername()) {
             pnlGenericError.ActivateSingleButton("Viewing as stream host",
@@ -197,8 +197,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
         currentStreamId = streamID;
-        ContentLinkHandler contentLinkHandler = FindObjectOfType<ContentLinkHandler>();
-        agoraController.IsRoom = contentLinkHandler.HasContentId(ContentLinkHandlerType.Room);
+        agoraController.IsRoom = isRoom;
         RefreshControls();
     }
 
