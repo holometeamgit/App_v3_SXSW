@@ -15,7 +15,12 @@ public class ToggleSpriteSwap : MonoBehaviour {
             HelperFunctions.DevLogError(nameof(ToggleSpriteSwap) + " was missing image assignment, please assign for the component to work");
         } else {
             var toggle = GetComponent<Toggle>();
-            toggle.onValueChanged.AddListener(x => { toggle.image.sprite = x ? imgToggleOn : imgToggleOff; });
+            toggle.onValueChanged.AddListener(x => { ToggleSprite(x, toggle); });
+            ToggleSprite(toggle.isOn, toggle);
         }
+    }
+
+    private void ToggleSprite(bool isOn, Toggle toggle) {
+        toggle.image.sprite = isOn ? imgToggleOn : imgToggleOff;
     }
 }
