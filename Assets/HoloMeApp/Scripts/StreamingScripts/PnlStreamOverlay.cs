@@ -118,7 +118,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void RefreshControls() {
-        RefreshStreamControls(!agoraController.IsChannelCreator || agoraController.IsRoom);
+        RefreshStreamControls(agoraController.IsRoom);
         RefreshBroadcasterControls(agoraController.IsChannelCreator);
         RefreshLiveControls(!agoraController.IsChannelCreator || agoraController.IsLive);
         HelperFunctions.DevLog("IsRoom = " + agoraController.IsRoom);
@@ -173,9 +173,9 @@ public class PnlStreamOverlay : MonoBehaviour {
         gameObject.SetActive(true);
         pnlViewingExperience.ToggleARSessionObjects(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
-        RefreshControls();
         StartCoroutine(OnPreviewReady());
         agoraController.StartPreview();
+        RefreshControls();
     }
 
     public void OpenAsViewer(string channelName, string streamID) {
@@ -197,6 +197,8 @@ public class PnlStreamOverlay : MonoBehaviour {
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
         currentStreamId = streamID;
+        ContentLinkHandler contentLinkHandler = FindObjectOfType<ContentLinkHandler>();
+        agoraController.IsRoom = contentLinkHandler.HasContentId(ContentLinkHandlerType.Room);
         RefreshControls();
     }
 
