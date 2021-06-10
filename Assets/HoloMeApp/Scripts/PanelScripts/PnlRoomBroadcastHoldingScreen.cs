@@ -53,11 +53,11 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
 
         HelperFunctions.DevLog(roomBody);
         RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(roomBody);
-        if(roomJsonData.status != StreamJsonData.Data.LIVE_ROOM_STR) {
+        if (roomJsonData.status != StreamJsonData.Data.LIVE_ROOM_STR) {
             RepeatGetRoom(roomJsonData.user);
         } else {
             liveRoomWasFound = true;
-            uiThumbnailsController.PlayLiveStream(roomJsonData.agora_channel, roomJsonData.agora_channel, roomJsonData.id);
+            uiThumbnailsController.PlayLiveStream(roomJsonData.agora_channel, roomJsonData.agora_channel, roomJsonData.id, true);
         }
     }
 
