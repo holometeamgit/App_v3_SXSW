@@ -36,6 +36,16 @@ namespace Beem.Firebase.DynamicLink {
             DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(dynamicLinkEventArgs.ReceivedDynamicLink.Url.OriginalString);
             Debug.LogFormat("Received dynamic link {0}",
                             dynamicLinkEventArgs.ReceivedDynamicLink.Url.OriginalString);
+
+#if UNITY_ANDROID
+            using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer")) {
+                using (AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity")) {
+                    var intent = activity.Call<AndroidJavaObject>("getIntent");
+                    intent.Call("removeExtra", "com.google.firebase.dynamiclinks.DYNAMIC_LINK_DATA");
+                    intent.Call("removeExtra", "com.google.android.gms.appinvite.REFERRAL_BUNDLE");
+                }
+            }
+#endif
         }
 
         private void CreateShortLink(string prefix, string parameterName, string id, string url) {

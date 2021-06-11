@@ -164,13 +164,16 @@ public class PnlRecord : MonoBehaviour {
         //int buttonOffset = streamOffset ? 210 : 0;
         //imgFillBackground.rectTransform.offsetMax = new Vector2(imgFillBackground.rectTransform.offsetMax.x, buttonOffset);
         //imgFillBackground.rectTransform.offsetMin = new Vector2(imgFillBackground.rectTransform.offsetMin.x, buttonOffset);
-
-        btnBuyTickets.gameObject.SetActive(isTeaser && !purchaseManager.IsBought());
-        AssignRectTransform(imgFillBackground.rectTransform, isTeaser ? rectTeaser : rectNormal);
-        btnShare.gameObject.SetActive(openForStream || isTeaser ? false : true);
-        currentStreamId = data.id.ToString();
+       
+        btnBuyTickets?.gameObject?.SetActive(isTeaser && !purchaseManager.IsBought());
+        AssignRectTransform(imgFillBackground?.rectTransform, isTeaser ? rectTeaser : rectNormal);
+        btnShare?.gameObject?.SetActive(openForStream || isTeaser ? false : true);
+        if (data != null)
+        {
+            currentStreamId = data.id.ToString();
+        }        
         gameObject.SetActive(true);
-        canvasGroup.DOFade(1, .5f);
+        canvasGroup?.DOFade(1, .5f);
     }
 
     private void RefreshBuyBtnState() {

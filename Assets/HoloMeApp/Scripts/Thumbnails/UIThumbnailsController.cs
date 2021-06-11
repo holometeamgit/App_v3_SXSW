@@ -78,8 +78,10 @@ public class UIThumbnailsController : MonoBehaviour {
     /// Play live stream from user 
     /// </summary>
 
-    public void PlayLiveStream(string user, string agoraChannel, string streamID) { //TODO split it to ather class
-        pnlStreamOverlay.OpenAsViewer(agoraChannel, streamID);
+    public void PlayLiveStream(string user, string agoraChannel, string streamID, bool isRoom) { //TODO split it to ather class
+        if (!permissionController.CheckCameraAccess())
+            return;
+        pnlStreamOverlay.OpenAsViewer(agoraChannel, streamID, isRoom);
         OnPlayFromUser?.Invoke(user);
     }
 
@@ -160,7 +162,7 @@ public class UIThumbnailsController : MonoBehaviour {
         } else if (data.HasAgoraChannel) {
             if (data.agora_channel == "0" || string.IsNullOrWhiteSpace(data.agora_channel))
                 return;
-            PlayLiveStream(data.user, data.agora_channel, data.id.ToString());
+            PlayLiveStream(data.user, data.agora_channel, data.id.ToString(), false);
         }
     }
 

@@ -9,7 +9,6 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] VideoUploader videoUploader;
     [SerializeField] ServerURLAPIScriptableObject serverURLAPIScriptable;
-    [SerializeField] AccountManager accountManager;
     [SerializeField] UIThumbnailsController uiThumbnailsController;
     [SerializeField] ContentLinkHandler contentLinkHandler;
 
@@ -19,11 +18,33 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
 
     bool liveRoomWasFound;
 
+    //calling from SwitcherToRoomHolding on scene. TODO need move in controller
+    public void CheckRoom() {
+        HelperFunctions.DevLog("CheckRoom");
+        if (!gameObject.activeInHierarchy)
+            return;
+        liveRoomWasFound = false;
+        if (contentLinkHandler.HasContentId(ContentLinkHandlerType.Room)) {
+            currentRoomId = contentLinkHandler.PopContentId();
+            HelperFunctions.DevLog("currentRoomId " + currentRoomId);
+        }
+        if (string.IsNullOrWhiteSpace(currentRoomId)) {
+            RectInfo.SetActive(true);
+            TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            Task.Delay(TIME_DELAY).ContinueWith((_) => CheckRoom(), taskScheduler);
+        } else {
+            RequestRoom();
+        }
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+    }
+
     private void RequestRoom() {
-        webRequestHandler.GetRequest(GetRequestRoomUrl(currentRoomId),
+        if (string.IsNullOrWhiteSpace(currentRoomId))
+            return;
+        webRequestHandler.Get(GetRequestRoomUrl(currentRoomId),
             (code, body) => GetRoomCallBack(body),
             (code, body) => RepeatGetRoom(),
-            accountManager.GetAccessToken().access);
+            true);
     }
 
     private void GetRoomCallBack(string roomBody) {
@@ -32,11 +53,11 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
 
         HelperFunctions.DevLog(roomBody);
         RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(roomBody);
-        if(roomJsonData.status != StreamJsonData.Data.LIVE_ROOM_STR) {
-            RepeatGetRoom(roomJsonData.agora_channel);
+        if (roomJsonData.status != StreamJsonData.Data.LIVE_ROOM_STR) {
+            RepeatGetRoom(roomJsonData.user);
         } else {
             liveRoomWasFound = true;
-            uiThumbnailsController.PlayLiveStream(roomJsonData.agora_channel, roomJsonData.agora_channel, roomJsonData.id);
+            uiThumbnailsController.PlayLiveStream(roomJsonData.agora_channel, roomJsonData.agora_channel, roomJsonData.id, true);
         }
     }
 
@@ -59,32 +80,11 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
         return serverURLAPIScriptable.ServerURLMediaAPI + videoUploader.GetRoomById.Replace("{id}", id);
     }
 
-    private void CheckRoom() {
-        if (!gameObject.activeInHierarchy)
-            return;
-        liveRoomWasFound = false;
-        if (contentLinkHandler.HasContentId(ContentLinkHandlerType.Room)) {
-            currentRoomId = contentLinkHandler.PopContentId();
-        }
-        if (string.IsNullOrWhiteSpace(currentRoomId)) {
-            RectInfo.SetActive(true);
-            TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            Task.Delay(TIME_DELAY).ContinueWith((_) => CheckRoom(), taskScheduler);
-        } else {
-            RequestRoom();
-        }
-        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
-    }
-
     private void OnApplicationFocus(bool focus) {
         if (!gameObject.activeInHierarchy)
             return;
         if (focus)
             CheckRoom();
-    }
-
-    private void OnEnable() {
-        CheckRoom();
     }
 
     private void OnDisable() {
