@@ -379,7 +379,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void Awake() {
-        StreamCallBacks.onLiveStreamCreated += (id) => { currentStreamId = id; RefreshControls(); };
+        StreamCallBacks.onLiveStreamCreated += (data) => { currentStreamId = data.id.ToString();RefreshControls(); };
     }
 
     private void OnDisable() {
