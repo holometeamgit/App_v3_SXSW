@@ -88,6 +88,9 @@ public class WebRequestHandler : MonoBehaviour {
         }, taskScheduler);
     }
 
+    /// <summary>
+    /// Delete webrequest
+    /// </summary>
     public void Delete(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
         bool needHeaderAccessToken = true, Action onCancel = null, Action<float> progress = null) {
         DeleteRequest(url, responseDelegate, errorTypeDelegate,
