@@ -9,13 +9,16 @@ public class ExternalLinksScriptableObject : ScriptableObject
         PrivacyPolicyTermsConditions,
         PrivacyPolicy,
         TermsConditions,
-        Support
+        Support,
+        Store
     }
 
     public string PrivacyPolicyTermsConditions = "https://holo.me/help/";
     public string PrivacyPolicy = "https://holo.me/help/";
     public string TermsConditions = "https://holo.me/help/";
     public string Support = "https://holo.me/help/";
+    public string AppStoreLink = "https://apps.apple.com/au/app/beem-me/id1532446771";
+    public string GoogleStoreLink = "https://play.google.com/store/apps/details?id=com.HoloMe.Beem";
 
     public string GetLink(ExternalLinkType linkType) {
         switch(linkType) {
@@ -27,6 +30,12 @@ public class ExternalLinksScriptableObject : ScriptableObject
                 return TermsConditions;
             case ExternalLinkType.Support:
                 return Support;
+            case ExternalLinkType.Store:
+#if UNITY_IOS
+                return AppStoreLink;
+#elif UNITY_ANDROID
+                return GoogleStoreLink;
+#endif
             default:
                 return "";
         }
