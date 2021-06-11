@@ -2,24 +2,21 @@
 using TMPro;
 using UnityEngine;
 
-public class StreamerCountUpdater : MonoBehaviour
-{
+public class StreamerCountUpdater : MonoBehaviour {
     [SerializeField]
-    AgoraRequests agoraRequests;
-
+    private AgoraRequests agoraRequests;
     [SerializeField]
-    TextMeshProUGUI txtCount;
+    private TextMeshProUGUI txtCount;
+    private RequestUserList requestUserList;
+    private bool waitingForResponse;
+    private Coroutine updateRoutine;
 
-    RequestUserList requestUserList;
+    public void StartCheck(string channelName) {
+        if (agoraRequests == null) {
+            agoraRequests = HelperFunctions.GetTypeIfNull<AgoraRequests>(agoraRequests);
+        }
 
-    bool waitingForResponse;
-
-    Coroutine updateRoutine;
-
-    public void StartCheck(string channelName)
-    {
-        if (requestUserList == null)
-        {
+        if (requestUserList == null) {
             requestUserList = new RequestUserList();
             requestUserList.OnSuccessAction += UpdateCountText;
             requestUserList.OnFailedAction += () => waitingForResponse = false;
@@ -31,35 +28,29 @@ public class StreamerCountUpdater : MonoBehaviour
         HelperFunctions.DevLog("Getting user count routine started");
     }
 
-    public void StopCheck()
-    {
+    public void StopCheck() {
         if (updateRoutine != null)
             StopCoroutine(updateRoutine);
 
         txtCount.text = "0";
     }
 
-    IEnumerator UpdateCountRoutine()
-    {
-        while (true)
-        {
+    IEnumerator UpdateCountRoutine() {
+        while (true) {
             UpdateCount();
             yield return new WaitForSeconds(30);
         }
     }
 
-    void UpdateCount()
-    {
-        if (!waitingForResponse)
-        {
+    void UpdateCount() {
+        if (!waitingForResponse) {
             HelperFunctions.DevLog("Sending user count request");
             waitingForResponse = true;
             agoraRequests.MakeGetRequest(requestUserList);
         }
     }
 
-    void UpdateCountText()
-    {
+    void UpdateCountText() {
         var responseData = requestUserList.GetUserListResponseData;
         //if (responseData == null)
         //    Debug.LogError("response was null");

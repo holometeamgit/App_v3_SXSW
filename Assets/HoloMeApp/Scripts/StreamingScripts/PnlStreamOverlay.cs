@@ -21,9 +21,6 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     [SerializeField]
     private GameObject[] publicStreamsControls;
-    
-    [SerializeField]
-    Image btnPushToTalk;
 
     [SerializeField]
     private GameObject[] privateStreamsControls;
@@ -37,6 +34,9 @@ public class PnlStreamOverlay : MonoBehaviour {
     [Header("These Views")]
     [SerializeField]
     private RawImage cameraRenderImage;
+
+    [SerializeField]
+    private Image btnPushToTalk;
 
     [SerializeField]
     private TextMeshProUGUI txtCentreMessage;
@@ -80,7 +80,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     bool isStreamer;
     bool isUsingFrontCamera;
     bool isPushToTalkActive;
-  
+
     VideoSurface videoSurface;
     string currentStreamId = "";
 
@@ -98,7 +98,8 @@ public class PnlStreamOverlay : MonoBehaviour {
             return;
 
         agoraController.OnStreamerLeft += CloseAsViewer;
-        agoraController.OnCameraSwitched += () => {
+        agoraController.OnCameraSwitched += () =>
+        {
             var videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
             if (videoSurface) {
                 isUsingFrontCamera = !isUsingFrontCamera;
@@ -233,11 +234,11 @@ public class PnlStreamOverlay : MonoBehaviour {
     public void ShowLeaveWarning() {
 
         if (!agoraController.IsLive && isStreamer)
-            CloseAsStreamer();
+            StopStream();
         else if (isStreamer)
             pnlGenericError.ActivateDoubleButton("End the live stream?",
                 "Closing this page will end the live stream and disconnect your users.",
-                onButtonOnePress: () => { CloseAsStreamer(); },
+                onButtonOnePress: () => { StopStream(); },
                 onButtonTwoPress: () => pnlGenericError.gameObject.SetActive(false));
         else
             pnlGenericError.ActivateDoubleButton("Disconnect from live stream?",
@@ -306,8 +307,7 @@ public class PnlStreamOverlay : MonoBehaviour {
             DynamicLinksCallBacks.onShareAppLink?.Invoke();
     }
 
-    public void TogglePushToTalk()
-    {
+    public void TogglePushToTalk() {
         isPushToTalkActive = !isPushToTalkActive;
         SendPushToTalkStatusToViewers();
     }
