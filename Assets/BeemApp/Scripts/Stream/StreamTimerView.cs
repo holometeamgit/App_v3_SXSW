@@ -52,9 +52,12 @@ public class StreamTimerView : MonoBehaviour {
                 TimerTextFormat(DateTime.Now - DateTime.Parse(data.start_date));
                 await Task.Yield();
             }
-        } finally {
-            cancelTokenSource.Dispose();
-            cancelTokenSource = null;
+        }
+        finally {
+            if (cancelTokenSource != null) {
+                cancelTokenSource.Dispose();
+                cancelTokenSource = null;
+            }
         }
     }
 
@@ -70,7 +73,6 @@ public class StreamTimerView : MonoBehaviour {
             cancelTokenSource.Cancel();
             cancelTokenSource = null;
         }
-        _timerText.text = string.Empty;
     }
 
     /// <summary>
@@ -84,7 +86,8 @@ public class StreamTimerView : MonoBehaviour {
     private void TimerTextFormat(TimeSpan timeSpan) {
         if (timeSpan.TotalMinutes > 0) {
             _timerText.text = timeSpan.Hours > 0 ? string.Format("{0}h {1}m", timeSpan.Hours, timeSpan.Minutes) : string.Format("{0}m", timeSpan.Minutes);
-        } else {
+        }
+        else {
             _timerText.text = string.Empty;
         }
     }
