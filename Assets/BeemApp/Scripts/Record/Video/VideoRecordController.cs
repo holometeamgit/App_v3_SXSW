@@ -12,28 +12,25 @@ namespace Beem.Record.Video {
     /// </summary>
     public class VideoRecordController : MonoBehaviour {
 
-        [Header("Source for Audio")]
-        [SerializeField]
         private AudioSource _audioSource;
-
-        private bool recordLengthFailed = false;
-        private bool recordMicrophone = true;
-
-        private MP4Recorder videoRecorder;
-        private IClock recordingClock;
-        private CameraInput cameraInput;
-        private AudioInput audioInput;
+        private MP4Recorder _videoRecorder;
+        private IClock _recordingClock;
+        private CameraInput _cameraInput;
+        private AudioInput _audioInput;
         //private PermissionGranter permissionGranter;
-        private Camera[] cameras;
+        private Camera[] _cameras;
 
-        private int videoWidth;
-        private int videoHeight;
+        private int _videoWidth;
+        private int _videoHeight;
 
-        private string lastRecordingPath;
+        private string _lastRecordingPath;
+
+        private bool _recordLengthFailed = false;
+        private bool _recordMicrophone = true;
 
         private void Awake() {
             //permissionGranter = FindObjectOfType<PermissionGranter>();
-            cameras = FindObjectsOfType<Camera>();
+            _cameras = FindObjectsOfType<Camera>();
         }
 
         private void Start() {
@@ -59,8 +56,8 @@ namespace Beem.Record.Video {
         }
 
         private void CorrectResolutionAspect() {
-            videoWidth = MakeEven(Screen.width / 2);
-            videoHeight = MakeEven(Screen.height / 2);
+            _videoWidth = MakeEven(Screen.width / 2);
+            _videoHeight = MakeEven(Screen.height / 2);
         }
 
         public int MakeEven(int value) {
@@ -72,46 +69,46 @@ namespace Beem.Record.Video {
                 recordMicrophone = false;
             }*/
 
-            recordLengthFailed = false;
-            recordingClock = new RealtimeClock();
-            videoRecorder = new MP4Recorder(
-                videoWidth,
-                videoHeight,
+            _recordLengthFailed = false;
+            _recordingClock = new RealtimeClock();
+            _videoRecorder = new MP4Recorder(
+                _videoWidth,
+                _videoHeight,
                 25,
-                recordMicrophone ? AudioSettings.outputSampleRate : 0,
-                recordMicrophone ? (int)AudioSettings.speakerMode : 0,
+                _recordMicrophone ? AudioSettings.outputSampleRate : 0,
+                _recordMicrophone ? (int)AudioSettings.speakerMode : 0,
                 OnRecordComplete
             );
 
-            cameraInput = new CameraInput(videoRecorder, recordingClock, cameras);
-            if (recordMicrophone) {
-                audioInput = new AudioInput(videoRecorder, recordingClock, _audioSource);
+            _cameraInput = new CameraInput(_videoRecorder, _recordingClock, _cameras);
+            if (_recordMicrophone) {
+                _audioInput = new AudioInput(_videoRecorder, _recordingClock, _audioSource);
             }
         }
 
         private void OnRecordFail() {
-            recordLengthFailed = true;
+            _recordLengthFailed = true;
             OnRecordStop();
         }
 
         private void OnRecordStop() {
-            if (recordMicrophone) {
-                audioInput.Dispose();
+            if (_recordMicrophone) {
+                _audioInput.Dispose();
             }
 
-            cameraInput.Dispose();
-            videoRecorder.Dispose();
+            _cameraInput.Dispose();
+            _videoRecorder.Dispose();
         }
 
         private void OnRecordComplete(string outputPath) {
-            if (recordLengthFailed) {
+            if (_recordLengthFailed) {
                 File.Delete(outputPath);
                 SnapShotCallBacks.onSnapshotStarted?.Invoke();
             } else {
-                lastRecordingPath = outputPath;
+                _lastRecordingPath = outputPath;
                 VideoRecordCallbacks.onPostRecord?.Invoke();
-                VideoRecordCallbacks.onRecordFinished?.Invoke(lastRecordingPath);
-                recordLengthFailed = false;
+                VideoRecordCallbacks.onRecordFinished?.Invoke(_lastRecordingPath);
+                _recordLengthFailed = false;
             }
             VideoPlayerCallBacks.onPause?.Invoke();
         }
