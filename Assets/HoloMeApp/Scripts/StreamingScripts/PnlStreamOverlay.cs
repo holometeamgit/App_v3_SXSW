@@ -36,7 +36,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     private RawImage cameraRenderImage;
 
     [SerializeField]
-    private Image btnPushToTalk;
+    private GameObject btnPushToTalk;
 
     [SerializeField]
     private TextMeshProUGUI txtCentreMessage;
@@ -98,8 +98,7 @@ public class PnlStreamOverlay : MonoBehaviour {
             return;
 
         agoraController.OnStreamerLeft += CloseAsViewer;
-        agoraController.OnCameraSwitched += () =>
-        {
+        agoraController.OnCameraSwitched += () => {
             var videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
             if (videoSurface) {
                 isUsingFrontCamera = !isUsingFrontCamera;
@@ -207,7 +206,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.ChannelName = channelName;
         isStreamer = false;
         gameObject.SetActive(true);
-        btnPushToTalk.enabled = false;
+        btnPushToTalk.SetActive(false);
         pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName, streamID);
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
@@ -327,11 +326,11 @@ public class PnlStreamOverlay : MonoBehaviour {
         switch (message) {
             case MessageEnableAudio:
                 ToggleLocalAudio(true);
-                btnPushToTalk.enabled = true;
+                btnPushToTalk.SetActive(true);
                 break;
             case MessageDisableAudio:
                 ToggleLocalAudio(true);
-                btnPushToTalk.enabled = false;
+                btnPushToTalk.SetActive(false);
                 break;
             case MessageStreamerLeft:
                 agoraController.OnStreamerLeft?.Invoke();
