@@ -50,5 +50,27 @@ namespace Beem.SSO {
         public static Action<long> onStreamPurchasedAndUpdateOnServer = delegate { };
 
         #endregion
+
+        #region like
+        // action parameter is stream id 
+        public static Action<long> onClickLike = delegate { };
+        public static Action<long> onSentRequestLikeCallback = delegate { };
+        public static Action<long> onFailSentRequestLikeCallback = delegate { };
+
+        public static Action<long> onClickUnlike = delegate { };
+        public static Action<long> onSentRequestUnlikeCallback = delegate { };
+        public static Action<long> onFailSentRequestUnlikeCallback = delegate { };
+
+        public static Action<long> onGetLikeState = delegate { };
+        public static Action<long, bool, long> onGetLikeStateCallBack = delegate { };
+
+        #endregion
+
+        #region view
+        public static Action<long> onViewed = delegate { };
+        public static Action<long> onSentRequestViewCallback = delegate { };
+        public static Action<long> onFailSentRequestViewCallback = delegate { };
+
+        #endregion
     }
 }

@@ -47,7 +47,7 @@ public class RequestCloudRecordResource : RestRequest {
 
     [Serializable]
     public class RecordingConfig {
-        public int maxIdleTime = 30;
+        public int maxIdleTime = 5;
         public int streamTypes = 2;
         public int channelType = 0;
         public int videoStreamType = 0;
