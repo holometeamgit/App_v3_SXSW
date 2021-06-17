@@ -57,12 +57,6 @@ public class PnlRecord : MonoBehaviour {
     CanvasGroup canvasGroup;
 
     [SerializeField]
-    RectTransform rectTeaser;
-
-    [SerializeField]
-    RectTransform rectNormal;
-
-    [SerializeField]
     Button btnBuyTickets;
     [SerializeField]
     PurchaseManager purchaseManager;
@@ -164,26 +158,18 @@ public class PnlRecord : MonoBehaviour {
         //int buttonOffset = streamOffset ? 210 : 0;
         //imgFillBackground.rectTransform.offsetMax = new Vector2(imgFillBackground.rectTransform.offsetMax.x, buttonOffset);
         //imgFillBackground.rectTransform.offsetMin = new Vector2(imgFillBackground.rectTransform.offsetMin.x, buttonOffset);
-       
+
         btnBuyTickets?.gameObject?.SetActive(isTeaser && !purchaseManager.IsBought());
-        AssignRectTransform(imgFillBackground?.rectTransform, isTeaser ? rectTeaser : rectNormal);
         btnShare?.gameObject?.SetActive(openForStream || isTeaser ? false : true);
-        if (data != null)
-        {
+        if (data != null) {
             currentStreamId = data.id.ToString();
-        }        
+        }
         gameObject.SetActive(true);
         canvasGroup?.DOFade(1, .5f);
     }
 
     private void RefreshBuyBtnState() {
         btnBuyTickets.gameObject.SetActive(purchaseManager.IsBought() ? false : btnBuyTickets.gameObject.activeSelf);
-    }
-
-    private void AssignRectTransform(RectTransform transformToAssign, RectTransform reference) {
-        transformToAssign.anchoredPosition = reference.anchoredPosition;
-        transformToAssign.anchorMax = reference.anchorMax;
-        transformToAssign.anchorMin = reference.anchorMin;
     }
 
     private void OnDisable() {
