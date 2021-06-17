@@ -27,7 +27,7 @@ public class PnlGenericError : MonoBehaviour
 
     private void SetMessages(string header, string message)
     {
-        if (header == null) {
+        if (header == null || (string.IsNullOrWhiteSpace(header) && header != "")) {
             txtHeader.gameObject.SetActive(false);
         } else {
             txtHeader.text = header == "" ? DefaultHeader : header;

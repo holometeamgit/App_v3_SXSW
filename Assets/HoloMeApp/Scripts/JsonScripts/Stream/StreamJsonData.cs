@@ -27,12 +27,12 @@ public class StreamJsonData {
 
         public long id;
         public string preview_s3_url;
-        public string preview_teaser_s3_url;
         public string stream_s3_url;
         public string teaser_s3_url;
-        public string user;
-        public string paid_type;
+        public string preview_teaser_s3_url;
         public bool is_bought;
+        public string user;
+        public long user_id;
         public ProductType product_type;
         public string status;
         public bool is_pin;
@@ -44,12 +44,17 @@ public class StreamJsonData {
         public long duration;
         public string preview_s3_key;
         public string stream_s3_key;
+        public string preview_teaser_s3_key;
         public string title;
         public string description;
+        public string paid_type;
+        public string privacy_type;
+        public string shader_info;
 
         public const string PIN_ALL = "all";
         public const string LIVE_STR = "live";
         public const string LIVE_ROOM_STR = "live_room";
+        public const string STOP_STR = "stop";
         public const string PRERECORDED_STR = "prerecorded";
 
         private DateTime startDate;

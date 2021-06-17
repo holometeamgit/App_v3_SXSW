@@ -14,9 +14,17 @@ namespace Beem.SSO {
 
         private void SignIn(string email, string password) {
             var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            _auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(task => {
-                CheckTask(task, () => CallBacks.onFirebaseSignInSuccess?.Invoke(LogInType.Email), CallBacks.onFail);
-            }, taskScheduler);
+            if (!EmailChecker.IsEmail(email))
+            {
+                CallBacks.onFail?.Invoke("InvalidEmail");
+            }
+            else
+            {
+                _auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(task =>
+                {
+                    CheckTask(task, () => CallBacks.onFirebaseSignInSuccess?.Invoke(LogInType.Email), CallBacks.onFail);
+                }, taskScheduler);
+            }
         }
 
         protected override void Subscribe() {

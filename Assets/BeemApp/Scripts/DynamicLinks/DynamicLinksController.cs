@@ -36,9 +36,19 @@ namespace Beem.Firebase.DynamicLink {
             DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(dynamicLinkEventArgs.ReceivedDynamicLink.Url.OriginalString);
             Debug.LogFormat("Received dynamic link {0}",
                             dynamicLinkEventArgs.ReceivedDynamicLink.Url.OriginalString);
+
+#if UNITY_ANDROID
+            using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer")) {
+                using (AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity")) {
+                    var intent = activity.Call<AndroidJavaObject>("getIntent");
+                    intent.Call("removeExtra", "com.google.firebase.dynamiclinks.DYNAMIC_LINK_DATA");
+                    intent.Call("removeExtra", "com.google.android.gms.appinvite.REFERRAL_BUNDLE");
+                }
+            }
+#endif
         }
 
-        private void CreateShortLink(string prefix, string parameterName, string id) {
+        private void CreateShortLink(string prefix, string parameterName, string id, string url) {
             string baseLink = prefix + "/"+ parameterName+"/" + id;
             var components = new DynamicLinkComponents(
          // The base Link.
@@ -51,12 +61,14 @@ namespace Beem.Firebase.DynamicLink {
                 AndroidParameters = new AndroidParameters(Application.identifier),
             };
 
+            Uri desktopLink = new Uri(components.LongDynamicLink.AbsoluteUri + "&ofl="+ url);
+
             var options = new DynamicLinkOptions {
                 PathLength = DynamicLinkPathLength.Short
             };
 
             var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            DynamicLinks.GetShortLinkAsync(components, options).ContinueWith(task => {
+            DynamicLinks.GetShortLinkAsync(desktopLink, options).ContinueWith(task => {
                 if (task.IsCanceled) {
                     Debug.LogError("GetShortLinkAsync was canceled.");
                     return;

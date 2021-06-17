@@ -18,7 +18,7 @@ public class UIPullRefreshScrollController : MonoBehaviour
     [SerializeField] private GameObject bottomLoadingInfo;
     [SerializeField] bool withStartRefresh;
 
-    [SerializeField] private float autoRefreshCooldown = 12;
+    private float autoRefreshCooldown = 60;
     float stepAutoRefreshCooldown = 1;
     private float initialPosition;      
     private float progress;

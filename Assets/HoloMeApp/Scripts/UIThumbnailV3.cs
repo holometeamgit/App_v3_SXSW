@@ -5,6 +5,7 @@ using System;
 using UnityEngine.UI;
 using TMPro;
 using Beem.SSO;
+using Beem;
 
 public class UIThumbnailV3 : UIThumbnail {
     [SerializeField] RawImage rawImage;
@@ -69,6 +70,10 @@ public class UIThumbnailV3 : UIThumbnail {
         } else if (!thumbnailElement.Data.is_bought && !thumbnailElement.Data.HasTeaser) {
             Buy();
         }
+    }
+
+    public void OpenComment() {
+        StreamCallBacks.onOpenComment?.Invoke((int)thumbnailElement.Data.id);
     }
 
     public override void Play() {
@@ -137,13 +142,13 @@ public class UIThumbnailV3 : UIThumbnail {
     private void UpdateData() {
         UpdateTexture();
 
-        HelperFunctions.DevLog("UIThumbnailV3 UpdateData id = " + thumbnailElement.Data.id + " is bought = " + thumbnailElement.Data.is_bought);
-
         bool isLive = thumbnailElement.Data.GetStage() == StreamJsonData.Data.Stage.Live;
         imgLive.gameObject.SetActive(isLive);
         txtTime.gameObject.SetActive(!isLive);
 
-        txtDate.text = thumbnailElement.Data.StartDate.ToString("MMM d");
+        string day = OrdinalNumberSuffix.AddOrdinalNumberSuffixDat(thumbnailElement.Data.StartDate.Day);
+
+        txtDate.text = thumbnailElement.Data.StartDate.ToString("MMM ") + day;
         txtTime.text = thumbnailElement.Data.StartDate.ToString("HH:mm");
         txtTitle.text = thumbnailElement.Data.title;
         txtDescription.text = thumbnailElement.Data.description;
@@ -154,7 +159,7 @@ public class UIThumbnailV3 : UIThumbnail {
         btnBuyTicketR.SetActive(false);
         btnShareR.SetActive(false);
 
-        txtPrice.text = "";
+        txtPrice.text = "Free";
 
         if (thumbnailElement.Data.is_bought && thumbnailElement.Data.GetStage() == StreamJsonData.Data.Stage.Live) {
             txtInfoText.text = "This is a free Live event";
@@ -170,6 +175,8 @@ public class UIThumbnailV3 : UIThumbnail {
             btnBuyTicketR.SetActive(true);
         } else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
             txtInfoText.text = "This is a free event";
+            if (thumbnailElement.Data.is_bought && thumbnailElement.Data.HasProduct)
+                txtInfoText.text = "Ticket purchased for event";
 
                 btnWatchNow.SetActive(true);
                 btnShareR.SetActive(true);

@@ -15,20 +15,23 @@ public class PnlShareOptions : MonoBehaviour
 
     Texture2D image;
 
+    string hologramName;
+
     private void Awake()
     {
         btnInstagram.onClick.AddListener(ShareAsStory);
     }
 
-    public void Activate(bool isVideo, Texture2D image)//Flag is required as image may not always be null
+    public void Activate(bool isVideo, Texture2D image, string hologramName)//Flag is required as image may not always be null
     {
         this.isVideo = isVideo;
         this.image = image;
+        this.hologramName = hologramName;
         gameObject.SetActive(true);
         btnInstagram.interactable = InstagramKitManager.IsAvailable();
         //UploadToS3();
 
-        print("isVideo = " + isVideo);
+        //print("isVideo = " + isVideo);
     }
 
     private void UploadToS3()
@@ -45,10 +48,13 @@ public class PnlShareOptions : MonoBehaviour
 
     private void ShareAsStory()
     {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareHologramMediaPressed, AnalyticParameters.ParamVideoName, hologramName);
+
         if (isVideo)
         {
             if (!string.IsNullOrEmpty(PnlPostRecord.LastRecordingPath))
             {
+                AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyVideoShared, AnalyticParameters.ParamVideoName, hologramName);
                 //print("ShareAsStory Called " + "Path is = " + path);
                 StoryContent content = new StoryContent(PnlPostRecord.LastRecordingPath, isVideo);
 
@@ -74,6 +80,7 @@ public class PnlShareOptions : MonoBehaviour
         }
         else
         {
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySnapshotShared, AnalyticParameters.ParamVideoName, hologramName);
             byte[] data = null;
             data = ImageConversion.EncodeToJPG(image);
             string saveDir = Application.persistentDataPath + "/" + "InstagramSharePlaceholder.jpg";

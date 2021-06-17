@@ -30,6 +30,19 @@ public class UIThumbnailsController : MonoBehaviour {
     //    pnlViewingExperience.ToggleARSessionObjects(false);
     //}
 
+    public void Buy(StreamJsonData.Data data) {
+        purchaseManager.SetPurchaseStreamData(data);
+        purchaseManager.Purchase();
+    }
+
+    public void Play(StreamJsonData.Data data) {
+        if (data.is_bought && data.IsStarted) {
+            PlayStream(data);
+        } else if (data.HasTeaser) {
+            PlayTeaser(data);
+        }
+    }
+
     public void SetStreamJsonData(List<StreamJsonData.Data> data) {
         dataList = data;
     }
@@ -65,8 +78,10 @@ public class UIThumbnailsController : MonoBehaviour {
     /// Play live stream from user 
     /// </summary>
 
-    public void PlayLiveStream(string user, string agoraChannel) { //TODO split it to ather class
-        pnlStreamOverlay.OpenAsViewer(agoraChannel);
+    public void PlayLiveStream(string user, string agoraChannel, string streamID, bool isRoom) { //TODO split it to ather class
+        if (!permissionController.CheckCameraAccess())
+            return;
+        pnlStreamOverlay.OpenAsViewer(agoraChannel, streamID, isRoom);
         OnPlayFromUser?.Invoke(user);
     }
 
@@ -80,6 +95,15 @@ public class UIThumbnailsController : MonoBehaviour {
 
     #region Prepare thumbnails
     private void PrepareBtnThumbnails() {
+
+        if(dataList.Count == 0) {
+            HelperFunctions.DevLog("Deactivate all thumbnails count = " + btnThumbnailItems.Count);
+            foreach(var btn in btnThumbnailItems) {
+                btn.Deactivate();
+            }
+            return;
+        }
+
         int quantityDifference = btnThumbnailItems.Count - dataList.Count;
         for (int i = 0; i < -quantityDifference; i++) {
             GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
@@ -116,7 +140,11 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetPlayAction(Play);
             btnThumbnailItems[i].SetTeaserPlayAction(PlayTeaser);
             btnThumbnailItems[i].SetBuyAction(Buy);
-            btnThumbnailItems[i].SetShareAction((_) => { DynamicLinksCallBacks.onShareLink?.Invoke(); AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed); });
+            btnThumbnailItems[i].SetShareAction( (data) => {
+                    //btnThumbnailItems[i]
+                    StreamCallBacks.onGetStreamLink?.Invoke(data.id.ToString());
+                    AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
+                });
             btnThumbnailItems[i].LockToPress(false);
         }
         OnUpdated?.Invoke();
@@ -124,28 +152,17 @@ public class UIThumbnailsController : MonoBehaviour {
 
     #endregion
 
-    private void Buy(StreamJsonData.Data data) {
-        purchaseManager.SetPurchaseStreamData(data);
-        purchaseManager.Purchase();
-    }
-
-    private void Play(StreamJsonData.Data data) {
-        if (data.is_bought && data.IsStarted) {
-            PlayStream(data);
-        } else if (data.HasTeaser) {
-            PlayTeaser(data);
-        }
-    }
-
     private void PlayStream(StreamJsonData.Data data) {
         if (!permissionController.CheckCameraAccess())
             return;
 
         if (data.HasStreamUrl) {
-            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null, false);
+            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, data, null, false);
             OnPlayFromUser?.Invoke(data.user);
         } else if (data.HasAgoraChannel) {
-            PlayLiveStream(data.user, data.agora_channel);
+            if (data.agora_channel == "0" || string.IsNullOrWhiteSpace(data.agora_channel))
+                return;
+            PlayLiveStream(data.user, data.agora_channel, data.id.ToString(), false);
         }
     }
 
@@ -153,7 +170,7 @@ public class UIThumbnailsController : MonoBehaviour {
         if (!permissionController.CheckCameraAccess())
             return;
 
-        pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, null, data.HasTeaser);
+        pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, data, null, data.HasTeaser);
         OnPlayFromUser?.Invoke(data.user);
         purchaseManager.SetPurchaseStreamData(data);
     }

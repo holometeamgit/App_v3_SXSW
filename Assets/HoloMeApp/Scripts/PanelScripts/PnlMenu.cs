@@ -18,12 +18,14 @@ public class PnlMenu : MonoBehaviour
     }
 
     private void UpdateUI() {
-        txtUsername.text = userWebManager.GetUsername();
-        goLiveBtn.SetActive(userWebManager.IsBroadcaster());
-        myRoomBtn.SetActive(userWebManager.IsEnterpriseBroadcaster() || userWebManager.IsBroadcaster());
+        if(txtUsername != null)
+            txtUsername.text = userWebManager.GetUsername();
+        goLiveBtn.SetActive(userWebManager.CanGoLive());
+        myRoomBtn.SetActive(userWebManager.CanStartRoom());
     }
 
     private void OnEnable() {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticParameters.ParamSettingsPanel);
         userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
         userWebManager.LoadUserInfo();
 

@@ -60,8 +60,9 @@ public class PnlPostRecord : MonoBehaviour {
         }
     }
 
-    private void Start() {
-        btnShare.onClick.AddListener(() => pnlShareOptions.Activate(!screenshotWasTaken, screenShot));
+    private void Start()
+    {
+        btnShare.onClick.AddListener(()=>pnlShareOptions.Activate(!screenshotWasTaken, screenShot, hologramHandler.GetVideoFileName));
 
         imgSavingCanvasGroup = imgSaving.GetComponent<CanvasGroup>();
         imgDownloadSuccessCanvasGroup = imgDownloadSuccess.GetComponent<CanvasGroup>();
@@ -106,9 +107,11 @@ public class PnlPostRecord : MonoBehaviour {
         lastRecordingPath = lastRecordPath;
     }
 
-    public void Share() {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareVideoPressed, AnalyticParameters.ParamVideoName, hologramHandler.GetVideoFileName);
-        if (screenshotWasTaken) {
+    public void Share()
+    {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareHologramMediaPressed, AnalyticParameters.ParamVideoName, hologramHandler.GetVideoFileName);
+        if (screenshotWasTaken)
+        {
             ShareScreenshot();
         } else {
             ShareVideo();

@@ -14,7 +14,7 @@ public class SecondaryServerCalls : MonoBehaviour {
     [SerializeField]
     AccountManager accountManager;
 
-    public Action<string, string> OnStreamStarted;
+    public Action<string, string, int> OnStreamStarted;
     string streamName;
     bool isRoom;
 
@@ -118,10 +118,16 @@ public class SecondaryServerCalls : MonoBehaviour {
     void CreateStreamSecondaryCallback(long code, string data) {
         print("CREATE STREAM IS BACK" + data);
         streamStartResponseJsonData = JsonUtility.FromJson<StreamStartResponseJsonData>(data);
-        
-        if (streamStartResponseJsonData != null)
-            OnStreamStarted?.Invoke(tokenAgoraResponse.token, tokenAgoraResponse.token);
-        else
+
+        if (streamStartResponseJsonData != null) {
+
+            if (!isRoom) {
+                SetStreamStatusToLive();
+            }
+
+            OnStreamStarted?.Invoke(tokenAgoraResponse.token, tokenAgoraResponse.token, streamStartResponseJsonData.id);
+            StreamCallBacks.onLiveStreamCreated?.Invoke(streamStartResponseJsonData.id.ToString());
+        } else
             Debug.LogError("CREATE STREAM PARSE FAILED");
     }
 
@@ -166,8 +172,18 @@ public class SecondaryServerCalls : MonoBehaviour {
 
     void StopSecondaryServer() {
         HelperFunctions.DevLog("STOPPING STREAM SECONDARY SERVER");
-        StreamStatusJsonData data = new StreamStatusJsonData { status = "stop" };
+        StreamStatusJsonData data = new StreamStatusJsonData { status = StreamJsonData.Data.STOP_STR };
         HelperFunctions.DevLog(webRequestHandler.ServerURLMediaAPI + videoUploader.StreamStatus.Replace("{id}", streamStartResponseJsonData.id.ToString()));
+        StreamStatusChange(data);
+    }
+
+    void SetStreamStatusToLive() {
+        StreamStatusJsonData data = new StreamStatusJsonData { status = StreamJsonData.Data.LIVE_STR };
+        StreamStatusChange(data);
+    }
+
+    void StreamStatusChange(StreamStatusJsonData data) {
+        HelperFunctions.DevLog($"Stream status changed " + data.status);
         webRequestHandler.PatchRequest(webRequestHandler.ServerURLMediaAPI + videoUploader.StreamStatus.Replace("{id}", streamStartResponseJsonData.id.ToString()), data, WebRequestHandler.BodyType.JSON, (x, y) => { webRequestHandler.LogCallback(x, y); HelperFunctions.DevLog("STREAM STOPPED SECONDARY SERVER"); }, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
     }
 }

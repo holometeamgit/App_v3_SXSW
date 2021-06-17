@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace HoloMeSDK {
     public class HoloMe
@@ -224,7 +225,7 @@ namespace HoloMeSDK {
                 return;
             }
 
-            //Debug.Log($"Called {position}");
+            //Debug.Log($"POSITION CALLED {position}");
 
             parentGameObject.transform.position = position;
 

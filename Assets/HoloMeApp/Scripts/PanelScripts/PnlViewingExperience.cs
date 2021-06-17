@@ -4,8 +4,7 @@ using DG.Tweening;
 using TMPro;
 using System.Collections;
 using System;
-public class PnlViewingExperience : MonoBehaviour
-{
+public class PnlViewingExperience : MonoBehaviour {
     [SerializeField]
     GameObject scanAnimationItems;
     [SerializeField]
@@ -45,6 +44,7 @@ public class PnlViewingExperience : MonoBehaviour
     bool skipTutorial;
     bool activatedForStreaming;
     bool isTeaser;
+    StreamJsonData.Data data;
     bool viewingExperienceInFocus;
     bool tutorialDisplayed;
     float messageAnimationSpeed = 0.25f;
@@ -52,36 +52,29 @@ public class PnlViewingExperience : MonoBehaviour
     float animationSpeed = 0.25f;
     private enum TutorialState { MessageScan, MessageTapToPlace, WaitingForTap, WaitingForPinch, TutorialComplete };
     TutorialState tutorialState = TutorialState.MessageScan;
-    void OnEnable()
-    {
+    void OnEnable() {
         scanAnimationItems.SetActive(false);
-        if (permissionGranter.HasCameraAccess && !tutorialDisplayed)
-        {
+        if (permissionGranter.HasCameraAccess && !tutorialDisplayed) {
             //RunTutorial();
             tutorialDisplayed = true;
-        }
-        else
-        {
-            if(permissionController == null)
+        } else {
+            if (permissionController == null)
                 permissionController = FindObjectOfType<PermissionController>();
             permissionController.CheckCameraMicAccess();
         }
     }
-    public void ToggleARSessionObjects(bool enable)
-    {
+    public void ToggleARSessionObjects(bool enable) {
         arSessionOrigin?.SetActive(enable);
         arSession?.SetActive(enable);
     }
-    public void RunTutorial()
-    {
+    public void RunTutorial() {
         if (!gameObject.activeSelf)
             return;
         if (tutorialState == TutorialState.TutorialComplete)
             return;
         if (scanAnimationRoutine != null)
             StopCoroutine(scanAnimationRoutine); //Stop old routine is reactivating
-        if (Application.isEditor && skipTutorial)
-        {
+        if (Application.isEditor && skipTutorial) {
             tutorialState = TutorialState.WaitingForPinch;
             OnPlaced();
             return;
@@ -92,40 +85,30 @@ public class PnlViewingExperience : MonoBehaviour
         tutorialState = TutorialState.MessageTapToPlace;
         // arPlaneManager.enabled = true;
     }
-    IEnumerator StartScanAnimationLoop(float toggleTime)
-    {
-        while (true)
-        {
+    IEnumerator StartScanAnimationLoop(float toggleTime) {
+        while (true) {
             float delay = toggleTime;
-            if (scanAnimationItems.activeSelf)
-            {
+            if (scanAnimationItems.activeSelf) {
                 delay = delay / 2; //half time before reshowing
                 HideScanAnimation(animationSpeed);
-            }
-            else
-            {
+            } else {
                 ShowScanAnimation(animationSpeed);
             }
             yield return new WaitForSeconds(delay);
         }
     }
-    private void ShowScanAnimation(float animationSpeed)
-    {
+    private void ShowScanAnimation(float animationSpeed) {
         scanAnimationItems.transform.localScale = Vector3.zero;
         scanAnimationItems.SetActive(true);
         scanAnimationItems.transform.DOScale(Vector3.one, animationSpeed).SetDelay(0.5f);
     }
-    private void HideScanAnimation(float animationSpeed)
-    {
-        scanAnimationItems.transform.DOScale(Vector3.zero, animationSpeed).OnComplete(() =>
-        {
+    private void HideScanAnimation(float animationSpeed) {
+        scanAnimationItems.transform.DOScale(Vector3.zero, animationSpeed).OnComplete(() => {
             scanAnimationItems.SetActive(false);
         });
     }
-    public void ShowTapToPlaceMessage()
-    {
-        if (tutorialState == TutorialState.MessageTapToPlace)
-        {
+    public void ShowTapToPlaceMessage() {
+        if (tutorialState == TutorialState.MessageTapToPlace) {
             StopCoroutine(scanAnimationRoutine);
             HideScanAnimation(animationSpeed);
             HideScanMessage();
@@ -134,50 +117,44 @@ public class PnlViewingExperience : MonoBehaviour
         }
     }
     // TODO доделать сообщение
-    public void ShowPinchToZoomMessage()
-    {
-        if (tutorialState == TutorialState.WaitingForTap)
-        {
+    public void ShowPinchToZoomMessage() {
+        if (tutorialState == TutorialState.WaitingForTap) {
             HideScanMessage();
             ShowMessage(pinchToZoomStr, messageAnimationSpeed);
             tutorialState = TutorialState.WaitingForPinch;
         }
     }
-    public void OnPlaced()
-    {
-        if (tutorialState == TutorialState.WaitingForPinch)
-        {
+    public void OnPlaced() {
+        if (tutorialState == TutorialState.WaitingForPinch) {
             HideScanMessage();
             //StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, activatedForStreaming));
             tutorialState = TutorialState.TutorialComplete;
         }
     }
-    IEnumerator DelayStartRecordPanel(float delay, bool streamPanel)
-    {
+    IEnumerator DelayStartRecordPanel(float delay, bool streamPanel) {
         yield return new WaitForSeconds(delay);
-        pnlRecord.EnableRecordPanel(isTeaser, streamPanel);
+        pnlRecord.EnableRecordPanel(isTeaser, data, streamPanel);
     }
-    public void ShowMessage(string message, float delay = 0)
-    {
+    public void ShowMessage(string message, float delay = 0) {
         scanMessageRT.localScale = Vector3.zero;
         scanMessageRT.GetComponentInChildren<TextMeshProUGUI>().text = message;
         //messageRT.DOAnchorPosY(messageRT.rect.height, messageAnimationSpeed).SetDelay(delay);
         scanMessageRT.DOScale(Vector3.one, animationSpeed).SetDelay(delay);
     }
-    public void HideScanMessage()
-    {
+    public void HideScanMessage() {
         //messageRT.DOAnchorPosY(0, messageAnimationSpeed);
         scanMessageRT.DOScale(Vector3.zero, animationSpeed).SetDelay(messageAnimationSpeed);
     }
-    public void ActivateForPreRecorded(string code, VideoJsonData videoJsonData, bool isTeaser)
-    {
+    public void ActivateForPreRecorded(string url, StreamJsonData.Data streamJsonData, VideoJsonData videoJsonData, bool isTeaser) {
         //print($"PLAY CALLED - " + code);
         SharedActivationFunctions();
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, streamJsonData.title } });
         this.isTeaser = isTeaser;
+        this.data = streamJsonData;
         activatedForStreaming = false;
         btnBurger.SetActive(true);
         logoCanvas.ActivateIfLogoAvailable(videoJsonData);
-        hologramHandler.PlayIfPlaced(code);
+        hologramHandler.PlayIfPlaced(url, streamJsonData.user_id);
         hologramHandler.TogglePreRecordedVideoRenderer(true);
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
@@ -185,15 +162,15 @@ public class PnlViewingExperience : MonoBehaviour
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, false));
         }
     }
-    public void ActivateForStreaming(string channelName)
-    {
+    public void ActivateForStreaming(string channelName, string streamID) {
         StopExperience();
         SharedActivationFunctions();
-        this.isTeaser = false;
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, "Live Stream: " + channelName }, { AnalyticParameters.ParamPerformanceID, streamID } });
+        isTeaser = false;
         activatedForStreaming = true;
         btnBurger.SetActive(false); //Close button not required on this page
         hologramHandler.TogglePreRecordedVideoRenderer(false);
-        hologramHandler.AssignStreamName(channelName + DateTime.Now);
+        hologramHandler.AssignStreamName(channelName);
         hologramHandler.StartTrackingStream();
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
@@ -201,8 +178,7 @@ public class PnlViewingExperience : MonoBehaviour
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, true));
         }
     }
-    void SharedActivationFunctions()
-    {
+    void SharedActivationFunctions() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
         ToggleARSessionObjects(true);
         canvasGroup.alpha = 0;
@@ -211,31 +187,25 @@ public class PnlViewingExperience : MonoBehaviour
         FadeInCanvas();
         viewingExperienceInFocus = true;
     }
-    void FadeInCanvas()
-    {
+    void FadeInCanvas() {
         canvasGroup.DOFade(1, .5f);
     }
-    public void FadeOutCanvas()
-    {
+    public void FadeOutCanvas() {
         canvasGroup.DOFade(0, .5f);
     }
-    public void StopExperience()
-    {
+    public void StopExperience() {
         viewingExperienceInFocus = false;
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         //ToggleARSessionObjects(false);
         hologramHandler.StopVideo();
     }
-    public void PauseExperience()
-    {
+    public void PauseExperience() {
         hologramHandler.PauseVideo();
     }
-    public void ResumeVideo()
-    {
+    public void ResumeVideo() {
         hologramHandler.ResumeVideo();
-    }   
-    void OnApplicationFocus(bool isFocused)
-    {
+    }
+    void OnApplicationFocus(bool isFocused) {
         //if (viewingExperienceInFocus && !isFocused)
         //{
         //    //btnBurger.GetComponent<Button>().onClick?.Invoke();
@@ -246,8 +216,7 @@ public class PnlViewingExperience : MonoBehaviour
         //    //PauseExperience();
         //    //hologramHandler.StopVideo();
         //}
-        if (isFocused && activatedForStreaming == false && viewingExperienceInFocus)
-        {
+        if (isFocused && activatedForStreaming == false && viewingExperienceInFocus) {
             //yield return new WaitForSeconds(2);
             //print("FOCUS RESUME CALLED");
             hologramHandler.ForcePlay();

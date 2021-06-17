@@ -19,6 +19,10 @@ public class Enabler : MonoBehaviour
     public float timeDelay;
     public UnityEvent OnDelayEvent;
 
+    [Space]
+    public UnityEvent onNotFocusEvent;
+    public UnityEvent onFocusEvent;
+
     private void OnEnable() {
         foreach (var element in ObjectListActiveOnEnable)
             element.SetActive(true);
@@ -47,5 +51,14 @@ public class Enabler : MonoBehaviour
         yield return new WaitForSeconds(timeDelay);
 
         OnDelayEvent.Invoke();
+    }
+
+    private void OnApplicationFocus(bool focus) {
+        HelperFunctions.DevLog("pause" + focus);
+        if (!gameObject.activeInHierarchy)
+            return;
+        if(focus) { 
+            onFocusEvent.Invoke();
+        }
     }
 }

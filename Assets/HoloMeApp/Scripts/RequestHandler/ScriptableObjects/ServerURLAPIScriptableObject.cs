@@ -8,15 +8,29 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     public string ProdServerURLAuth = "https://api.holo.me/api-auth";
     public string ProdServerURLMedia = "https://api.holo.me/api-media";
     public string ProdServerProviders = "https://api.holo.me/oauth/providers/";
-    public string ProdServerDeepLink = "https://api.holo.me/deep-link/";
-    public string ProdFirebaseDynamicLink = "https://beemrfc.page.link";
     [Space]
     public string DevServerURLAuth = "https://devholo.me/api-auth";
     public string DevServerURLMedia = "https://devholo.me/api-media";
     public string DevServerProviders = "https://devholo.me/oauth/providers/";
-    public string DevServerDeepLink = "https://devholo.me/deep-link/";
-    public string DevFirebaseDynamicLink = "https://beemrfcdev.page.link";
     [Space]
+    [SerializeField]
+    private string firebaseDynamicLink = "https://join.beem.me";
+    public string FirebaseDynamicLink
+    {
+        get
+        {
+            return firebaseDynamicLink;
+        }
+    }
+    [SerializeField]
+    private string url = "https://beem.me";
+    public string Url
+    {
+        get
+        {
+            return url;
+        }
+    }
     [SerializeField]
     private string room = "room";
 
@@ -27,12 +41,32 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     }
 
     [SerializeField]
-    private string app = "App";
+    private string stream = "stream";
 
-    public string App
+    public string Stream
     {
         get
         {
+            return stream;
+        }
+    }
+
+    [SerializeField]
+    private string notificationAccess = "NotificationAccess";
+
+    public string NotificationAccess
+    {
+        get
+        {
+            return notificationAccess;
+        }
+    }
+
+    [SerializeField]
+    private string app = "App";
+
+    public string App {
+        get {
             return app;
         }
     }
@@ -66,23 +100,4 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
         }
     }
 
-    public string ServerDeepLinkAPI {
-        get {
-#if DEV
-            return DevServerDeepLink;
-#else
-            return ProdServerDeepLink;
-#endif
-        }
-    }
-
-    public string FirebaseDynamicLinkAPI {
-        get {
-#if DEV
-            return DevFirebaseDynamicLink;
-#else
-            return ProdFirebaseDynamicLink;
-#endif
-        }
-    }
 }

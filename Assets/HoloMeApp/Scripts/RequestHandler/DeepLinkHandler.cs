@@ -16,7 +16,7 @@ public class DeepLinkHandler : MonoBehaviour {
         Uri uri = new Uri(uriStr);
 
         HelperFunctions.DevLog("Dynamic link: " + uriStr);
-        GetRoomParameters(uri);
+        GetContentsParameters(uri);
     }
 
     private void Awake() {
@@ -27,30 +27,42 @@ public class DeepLinkHandler : MonoBehaviour {
         DynamicLinksCallBacks.onReceivedDeepLink -= OnDynamicLinkActivated;
     }
 
-    private void GetRoomParameters(Uri uri) {
-        if (IsRoom(uri))
-        {
+
+    private void GetContentsParameters(Uri uri) {
+        if (IsFolder(uri, serverURLAPIScriptableObject.Room)){
             HelperFunctions.DevLog("GetRoomParameters");
 
-            string roomId = GetRoom(uri);
+            string roomId = GetId(uri, serverURLAPIScriptableObject.Room);
 
             HelperFunctions.DevLog("roomId = " + roomId);
             StreamCallBacks.onRoomLinkReceived?.Invoke(roomId);
         }
+        else if (IsFolder(uri, serverURLAPIScriptableObject.Stream)){
+            HelperFunctions.DevLog("GetStreamParameters");
+
+            string streamId = GetId(uri, serverURLAPIScriptableObject.Stream);
+
+            HelperFunctions.DevLog("streamId = " + streamId);
+            StreamCallBacks.onStreamLinkReceived?.Invoke(streamId);
+        }
+        else if (IsFolder(uri, serverURLAPIScriptableObject.NotificationAccess)) { 
+            PermissionController permissionController = FindObjectOfType<PermissionController>();
+            permissionController.CheckPushNotifications();
+        }
     }
 
-    private bool IsRoom(Uri uri) {
-          return uri.LocalPath.Contains(serverURLAPIScriptableObject.Room);
+    private bool IsFolder(Uri uri, string folder) {
+          return uri.LocalPath.Contains(folder);
     }
 
-    private string GetRoom(Uri uri)
+    private string GetId(Uri uri, string folder)
     {
         string localPath = uri.LocalPath;
         localPath = localPath.Substring(1, localPath.Length - 1);
         string[] split = localPath.Split('/');
         for (int i = 0; i < split.Length; i++)
         {
-            if (split[i].Contains(serverURLAPIScriptableObject.Room) && i < split.Length-1)
+            if (split[i].Contains(folder) && i < split.Length-1)
             {
                 return split[i+1];
             }

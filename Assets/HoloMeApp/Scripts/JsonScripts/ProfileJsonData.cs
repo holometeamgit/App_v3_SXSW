@@ -6,7 +6,7 @@ using System;
 [Serializable]
 public class ProfileJsonData {
     public string bio;
-    public bool is_creator;
-    public string enterprise;
+    public bool go_live_feature;
+    public bool room_feature;
     public string profile_picture_s3_url;
 }
