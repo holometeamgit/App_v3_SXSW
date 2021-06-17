@@ -46,6 +46,9 @@ public class PnlStreamOverlay : MonoBehaviour {
     StreamerCountUpdater[] streamCountUpdaters;
 
     [SerializeField]
+    private RectTransform CentreMessage;
+
+    [SerializeField]
     private TextMeshProUGUI txtCentreMessage;
 
     [SerializeField]
@@ -126,6 +129,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     private void OnEnable() {
         FadePanel(true);
         txtCentreMessage.text = string.Empty;
+        CentreMessage.localScale = Vector3.zero;
         RequestMicAccess();
         ChatBtn.onOpen += OpenChat;
     }
@@ -316,6 +320,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
         agoraController.Leave();
         cameraRenderImage.texture = null;
+        AnimatedFadeOutMessage();
         RefreshControls();
     }
 
@@ -363,10 +368,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
     }
 
-    public void ToggleLocalAudio(bool pauseAudio) {
-        agoraController.ToggleLocalAudio(pauseAudio);
-    }
-
     void StartStream() {
         btnGoLive.interactable = false;
         agoraController.JoinOrCreateChannel(true);
@@ -378,9 +379,9 @@ public class PnlStreamOverlay : MonoBehaviour {
     /// </summary>
     public void OpenChat(bool value) {
         chat.DoMenuTransition(value);
-        foreach (GameObject item in onlineControls) {
-            item.SetActive(!value && agoraController.IsLive);
-        }
+        //foreach (GameObject item in onlineControls) {
+        //    item.SetActive(!value && agoraController.IsLive);
+        //}
     }
 
     private void AddVideoSurface() {
@@ -410,21 +411,40 @@ public class PnlStreamOverlay : MonoBehaviour {
         cameraRenderImage.SizeToParent();
     }
 
+    public void ToggleLocalAudio(bool mute) {
+        _muteAudio = mute;
+        UpdateToggleMessage();
+        //if (!UpdateToggleMessage() && mute) {
+        //    AnimatedCentreTextMessage("Audio is muted");
+        //}
+        agoraController.ToggleLocalAudio(mute);
+    }
+
     public void ToggleAudio(bool mute) {
         _muteAudio = mute;
-        TogglePauseStream();
+        UpdateToggleMessage();
+        //if (!UpdateToggleMessage() && mute) {
+        //    AnimatedCentreTextMessage("Audio is muted");
+        //}
         agoraController.ToggleLocalAudio(mute);
     }
 
     public void ToggleVideo(bool hideVideo) {
         _hideVideo = hideVideo;
-        TogglePauseStream();
+        UpdateToggleMessage();
+        //if (!() && hideVideo) {
+        //    AnimatedCentreTextMessage("Video is paused");
+        //}
         agoraController.ToggleVideo(hideVideo);
     }
 
-    void TogglePauseStream() {
+    private void UpdateToggleMessage() {
         if (_hideVideo && _muteAudio) {
-            AnimatedCentreTextMessage("Stream Paused");
+            AnimatedCentreTextMessage("Audio is muted and Video is paused");
+        } else if (_hideVideo) {
+            AnimatedCentreTextMessage("Video is paused");
+        } else if (_muteAudio) {
+            AnimatedCentreTextMessage("Audio is muted");
         } else {
             AnimatedFadeOutMessage();
         }
@@ -446,16 +466,17 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void AnimatedCentreTextMessage(string message) {
         DOTween.Kill(tweenAnimationID);
-        txtCentreMessage.rectTransform.localScale = Vector3.one;
+        CentreMessage.localScale = Vector3.zero;
         txtCentreMessage.text = message;
         txtCentreMessage.color = new Color(txtCentreMessage.color.r, txtCentreMessage.color.g, txtCentreMessage.color.b, 1);
-        txtCentreMessage.rectTransform.DOPunchScale(Vector3.one, .25f, 3).SetId(tweenAnimationID);
+        CentreMessage.DOScale(Vector3.one, .1f).SetId(tweenAnimationID);
     }
 
-    private void AnimatedFadeOutMessage(float delay = 0) {
+    public void AnimatedFadeOutMessage(float delay = 0) {
         txtCentreMessage.DOFade(0, .5f).SetDelay(delay).SetId(tweenAnimationID);
+        CentreMessage.DOScale(Vector3.zero, .1f).SetDelay(delay).SetId(tweenAnimationID);
     }
-     
+
     private void OnDisable() {
         StopAllCoroutines();
         pnlViewingExperience.ToggleARSessionObjects(true);
