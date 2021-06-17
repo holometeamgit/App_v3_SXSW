@@ -12,6 +12,9 @@ public class StreamerCountUpdater : MonoBehaviour {
     private Coroutine updateRoutine;
 
     public void StartCheck(string channelName) {
+        if (!gameObject.activeInHierarchy)
+            return;
+
         if (agoraRequests == null) {
             agoraRequests = HelperFunctions.GetTypeIfNull<AgoraRequests>(agoraRequests);
         }

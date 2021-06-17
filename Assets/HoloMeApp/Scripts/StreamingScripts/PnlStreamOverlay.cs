@@ -5,9 +5,7 @@ using UnityEngine.Events;
 using System.Collections;
 using UnityEngine.UI;
 using agora_gaming_rtc;
-using LostNative.Toolkit.FluidUI;
 using Beem.Firebase.DynamicLink;
-using System;
 
 public class PnlStreamOverlay : MonoBehaviour {
 
@@ -26,6 +24,9 @@ public class PnlStreamOverlay : MonoBehaviour {
     private GameObject[] privateStreamsControls;
 
     [SerializeField]
+    private GameObject[] sharedStreamsControls;
+
+    [SerializeField]
     private GameObject[] onlineControls;
 
     [SerializeField]
@@ -39,13 +40,16 @@ public class PnlStreamOverlay : MonoBehaviour {
     private GameObject btnPushToTalk;
 
     [SerializeField]
+    private Button btnGoLive;
+
+    [SerializeField]
+    StreamerCountUpdater[] streamCountUpdaters;
+
+    [SerializeField]
     private TextMeshProUGUI txtCentreMessage;
 
     [SerializeField]
     private CanvasGroup canvasGroup;
-
-    [SerializeField]
-    private FluidToggle fluidToggle;
 
     [Header("Other Views")]
     [SerializeField]
@@ -105,11 +109,15 @@ public class PnlStreamOverlay : MonoBehaviour {
             }
         };
         agoraController.OnPreviewStopped += () => videoSurface.SetEnable(false);
-        agoraController.OnStreamWentLive += () => fluidToggle.ToggleInteractibility(true);
-        agoraController.OnStreamWentOffline += () => fluidToggle.ToggleInteractibility(true);
+        //agoraController.OnStreamWentLive += x => btnGoLive.interactable = false;
+        //agoraController.OnStreamWentLive += StartStreamCountUpdaters;
+        agoraController.OnStreamWentOffline += StopStreamCountUpdaters;
+        agoraController.OnStreamWentOffline += () => btnGoLive.interactable = true;
         agoraController.OnMessageRecieved += StreamMessageResponse;
 
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
+
+        StreamCallBacks.onLiveStreamCreated += (data) => { currentStreamId = data.id.ToString(); RefreshControls(); StartStreamCountUpdaters(); };
 
         AddVideoSurface();
         initialised = true;
@@ -135,7 +143,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         HelperFunctions.DevLog("IsRoom = " + agoraController.IsRoom);
         HelperFunctions.DevLog("IsChannelCreator = " + agoraController.IsChannelCreator);
         HelperFunctions.DevLog("IsLive = " + agoraController.IsLive);
-
     }
 
     private void RefreshStreamControls(bool room) {
@@ -144,6 +151,23 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
         foreach (GameObject item in publicStreamsControls) {
             item.SetActive(!room);
+        }
+        foreach (GameObject item in sharedStreamsControls) {
+            item.SetActive(true);
+        }
+    }
+
+    private void StartStreamCountUpdaters() {
+        HelperFunctions.DevLog("Stream Count Updaters Started");
+        foreach (StreamerCountUpdater streamerCountUpdater in streamCountUpdaters) {
+            streamerCountUpdater.StartCheck(agoraController.ChannelName);
+        }
+    }
+
+    private void StopStreamCountUpdaters() {
+        HelperFunctions.DevLog("Stream Count Updaters Stopped");
+        foreach (StreamerCountUpdater streamerCountUpdater in streamCountUpdaters) {
+            streamerCountUpdater.StopCheck();
         }
     }
 
@@ -177,7 +201,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void StreamerOpenSharedFunctions() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
-        fluidToggle.ToggleInteractibility(true);
+        btnGoLive.interactable = true;
         agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
         agoraController.OnUserViewerJoined += SendPushToTalkStatusToViewers;
@@ -212,6 +236,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.JoinOrCreateChannel(false);
         currentStreamId = streamID;
         RefreshControls();
+        StartStreamCountUpdaters();
     }
 
     public void FadePanel(bool show) {
@@ -280,7 +305,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         HelperFunctions.DevLog(nameof(StopStream) + " was called");
 
         if (agoraController.IsLive) { //Check needed as Stop Stream is being called when enabled by unity events causing this to start off disabled
-            fluidToggle.ToggleInteractibility(false);
+            btnGoLive.interactable = false;
 
             if (isStreamer) //Send event to viewers to disconnect if streamer
                 SendStreamLeaveStatusToViewers();
@@ -343,9 +368,9 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     void StartStream() {
-        fluidToggle.ToggleInteractibility(false);
+        btnGoLive.interactable = false;
         agoraController.JoinOrCreateChannel(true);
-        RefreshControls();
+        RefreshControls(); //Is this call actually needed?
     }
 
     /// <summary>
@@ -430,11 +455,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     private void AnimatedFadeOutMessage(float delay = 0) {
         txtCentreMessage.DOFade(0, .5f).SetDelay(delay).SetId(tweenAnimationID);
     }
-
-    private void Awake() {
-        StreamCallBacks.onLiveStreamCreated += (data) => { currentStreamId = data.id.ToString(); RefreshControls(); };
-    }
-
+     
     private void OnDisable() {
         StopAllCoroutines();
         pnlViewingExperience.ToggleARSessionObjects(true);

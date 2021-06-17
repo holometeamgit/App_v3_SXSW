@@ -21,10 +21,7 @@ public class AgoraController : MonoBehaviour {
 
     [SerializeField]
     SecondaryServerCalls secondaryServerCalls;
-
-    [SerializeField]
-    StreamerCountUpdater streamerCountUpdater;
-
+        
     [SerializeField]
     UserWebManager userWebManager;
 
@@ -259,9 +256,7 @@ public class AgoraController : MonoBehaviour {
 
         if (IsChannelCreator && !IsRoom)//No thumbnails for rooms for now
             sendThumbnailRoutine = StartCoroutine(SendThumbnailData(true));
-
-        streamerCountUpdater.StartCheck(ChannelName);
-
+                
         IsLive = true;
         OnStreamWentLive?.Invoke();
 
@@ -286,9 +281,7 @@ public class AgoraController : MonoBehaviour {
 
         if (sendThumbnailRoutine != null && !IsRoom)//No thumbnails for rooms for now
             StopCoroutine(sendThumbnailRoutine);
-
-        streamerCountUpdater.StopCheck();
-               
+                             
         if (IsChannelCreator)
         {
             secondaryServerCalls.EndStream();
