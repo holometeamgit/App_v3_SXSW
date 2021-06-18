@@ -11,6 +11,8 @@ namespace Beem.Utility.UnityConsole {
     [RequireComponent(typeof(Text))]
     public class UnityLogView : MonoBehaviour {
 
+        private const int MAX_LETTER = 65000;
+
         private Text _text = default;
 
         private void Awake() {
@@ -27,7 +29,12 @@ namespace Beem.Utility.UnityConsole {
         }
 
         private void Refresh() {
-            _text.text = LogData.CurrentLog;
+            if (LogData.CurrentLog.Length < MAX_LETTER) {
+                _text.text = LogData.CurrentLog;
+            } else {
+
+                _text.text = LogData.CurrentLog.Substring(LogData.CurrentLog.Length - MAX_LETTER, LogData.CurrentLog.Length);
+            }
         }
     }
 }
