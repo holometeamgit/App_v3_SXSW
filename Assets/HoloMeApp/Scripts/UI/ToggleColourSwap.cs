@@ -9,15 +9,26 @@ public class ToggleColourSwap : MonoBehaviour {
     Color colourToggledOff;
     Color originalColorRef;
 
+    [SerializeField]
+    bool resetOnEnable;
+    bool initialOnValue;
+    Toggle toggleRef;
+
+    private void OnEnable() {
+        if (resetOnEnable) {
+            toggleRef.isOn = initialOnValue;
+        }
+    }
 
     private void Awake() {
         if (referenceImage == null) {
             HelperFunctions.DevLogError(nameof(ToggleColourSwap) + " was missing image assignment, please assign for the component to work");
         } else {
-            var toggle = GetComponent<Toggle>();
-            originalColorRef = toggle.image.color;
-            toggle.onValueChanged.AddListener(x => { ToggleColour(x, toggle); });
-            ToggleColour(toggle.isOn, toggle);
+            toggleRef = GetComponent<Toggle>();
+            initialOnValue = toggleRef.isOn;
+            originalColorRef = toggleRef.image.color;
+            toggleRef.onValueChanged.AddListener(x => { ToggleColour(x, toggleRef); });
+            ToggleColour(toggleRef.isOn, toggleRef);
         }
     }
 

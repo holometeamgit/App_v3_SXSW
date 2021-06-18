@@ -10,13 +10,25 @@ public class ToggleSpriteSwap : MonoBehaviour {
     [SerializeField]
     Sprite imgToggleOff;
 
+    [SerializeField]
+    bool resetOnEnable;
+    bool initialOnValue;
+    Toggle toggleRef;
+
+    private void OnEnable() {
+        if (resetOnEnable) {
+            toggleRef.isOn = initialOnValue;
+        }
+    }
+
     private void Awake() {
         if (imgToggleOn == null || imgToggleOff == null) {
             HelperFunctions.DevLogError(nameof(ToggleSpriteSwap) + " was missing image assignment, please assign for the component to work");
         } else {
-            var toggle = GetComponent<Toggle>();
-            toggle.onValueChanged.AddListener(x => { ToggleSprite(x, toggle); });
-            ToggleSprite(toggle.isOn, toggle);
+            toggleRef = GetComponent<Toggle>();
+            initialOnValue = toggleRef.isOn;
+            toggleRef.onValueChanged.AddListener(x => { ToggleSprite(x, toggleRef); });
+            ToggleSprite(toggleRef.isOn, toggleRef);
         }
     }
 
