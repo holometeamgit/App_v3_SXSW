@@ -40,9 +40,6 @@ public class PnlPostRecord : MonoBehaviour {
     [SerializeField]
     HologramHandler hologramHandler;
 
-    [SerializeField]
-    PnlShareOptions pnlShareOptions;
-
     static string lastRecordingPath;
     public static string LastRecordingPath { get { return lastRecordingPath; } }
     private Texture2D screenShot;
@@ -60,10 +57,7 @@ public class PnlPostRecord : MonoBehaviour {
         }
     }
 
-    private void Start()
-    {
-        btnShare.onClick.AddListener(()=>pnlShareOptions.Activate(!screenshotWasTaken, screenShot, hologramHandler.GetVideoFileName));
-
+    private void Start() {
         imgSavingCanvasGroup = imgSaving.GetComponent<CanvasGroup>();
         imgDownloadSuccessCanvasGroup = imgDownloadSuccess.GetComponent<CanvasGroup>();
     }
@@ -107,11 +101,9 @@ public class PnlPostRecord : MonoBehaviour {
         lastRecordingPath = lastRecordPath;
     }
 
-    public void Share()
-    {
+    public void Share() {
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareHologramMediaPressed, AnalyticParameters.ParamVideoName, hologramHandler.GetVideoFileName);
-        if (screenshotWasTaken)
-        {
+        if (screenshotWasTaken) {
             ShareScreenshot();
         } else {
             ShareVideo();
