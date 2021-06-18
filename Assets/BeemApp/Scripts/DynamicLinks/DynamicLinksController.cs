@@ -49,7 +49,7 @@ namespace Beem.Firebase.DynamicLink {
         }
 
         private void CreateShortLink(string prefix, string parameterName, string id, string url) {
-            string baseLink = prefix + "/"+ parameterName+"/" + id;
+            string baseLink = prefix + "/" + parameterName + "/" + id;
             var components = new DynamicLinkComponents(
          // The base Link.
          new Uri(baseLink),
@@ -61,10 +61,10 @@ namespace Beem.Firebase.DynamicLink {
                 AndroidParameters = new AndroidParameters(Application.identifier),
             };
 
-            Uri desktopLink = new Uri(components.LongDynamicLink.AbsoluteUri + "&ofl="+ url);
+            Uri desktopLink = new Uri(components.LongDynamicLink.AbsoluteUri + "&ofl=" + url);
 
             var options = new DynamicLinkOptions {
-                PathLength = DynamicLinkPathLength.Short
+                PathLength = DynamicLinkPathLength.Unguessable
             };
 
             var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
