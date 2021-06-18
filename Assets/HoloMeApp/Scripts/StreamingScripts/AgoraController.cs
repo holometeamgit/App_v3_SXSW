@@ -67,7 +67,7 @@ public class AgoraController : MonoBehaviour {
         LoadEngine(AppId);
         frameRate = 30;
         agoraRTMChatController.Init(AppId);
-        secondaryServerCalls.OnStreamStarted += (x, y) => SecondaryServerCallsComplete(x, y);
+        secondaryServerCalls.OnStreamStarted += (x, y, z) => SecondaryServerCallsComplete(x, y, z);
 
         //iRtcEngine.OnUserEnableVideo = OnUserEnableVideoHandler;
         //iRtcEngine.OnUserEnableLocalVideo = OnUserEnableVideoHandler;
@@ -209,7 +209,7 @@ public class AgoraController : MonoBehaviour {
         }
     }
 
-    public void SecondaryServerCallsComplete(string viewerBroadcasterToken, string rtmToken) {
+    public void SecondaryServerCallsComplete(string viewerBroadcasterToken, string rtmToken, int streamID = -1) {
         agoraRTMChatController.Login(rtmToken);
 
         iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
@@ -217,6 +217,7 @@ public class AgoraController : MonoBehaviour {
         if (IsChannelCreator) {
                 iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
                 SetEncoderSettings();
+                AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[]{ AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance} ,AnalyticKeys.KeyLiveStarted, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID },{ AnalyticParameters.ParamPerformanceID, streamID.ToString() } });
         } else {
                 liveStreamQuad.SetActive(true);
                 iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_AUDIENCE);
@@ -235,7 +236,7 @@ public class AgoraController : MonoBehaviour {
 
         //print("JOINED");
 
-        if (IsChannelCreator)
+        if (IsChannelCreator && !IsRoom)//No thumbnails for rooms for now
             sendThumbnailRoutine = StartCoroutine(SendThumbnailData(true));
 
         streamerCountUpdater.StartCheck(ChannelName);
@@ -268,7 +269,7 @@ public class AgoraController : MonoBehaviour {
         //iRtcEngine.SendStreamMessage(streamID, "CreatorLeft");
         //}
 
-        if (sendThumbnailRoutine != null)
+        if (sendThumbnailRoutine != null && !IsRoom)//No thumbnails for rooms for now
             StopCoroutine(sendThumbnailRoutine);
 
         streamerCountUpdater.StopCheck();

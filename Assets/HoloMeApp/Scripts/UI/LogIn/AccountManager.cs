@@ -25,49 +25,6 @@ public class AccountManager : MonoBehaviour {
         HelperFunctions.DevLog("Cancel Log In");
     }
 
-    public void QuickLogInWithDelay() {
-        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(QUICK_LOGIN_DELAY_TIME).ContinueWith((_) => QuickLogIn(), taskScheduler);
-    }
-
-    private void QuickLogIn() {
-        if (!canLogIn) {
-            LogOut(); // hotfix v4.9
-            return;
-        }
-
-        HelperFunctions.DevLog("try QuickLogIn");
-        if (GetLogInType() == LogInType.Facebook) {
-            LogOut();
-        }
-
-        ServerAccessToken accessToken = GetAccessToken();
-
-        HelperFunctions.DevLog("QuickLogIn ServerAccessToken is null = " + (accessToken == null));
-
-        if (accessToken == null && !authController.HasUser()) {
-            ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
-            //errorTypeCallBack?.Invoke();
-            LogOut();
-            return;
-        } else if (accessToken == null && authController.HasUser() && GetLogInType() != LogInType.None) {
-            HelperFunctions.DevLog("has firebase user. QuickLogIn Firebase");
-            authController.DoAfterReloadUser(() => CallBacks.onFirebaseSignInSuccess(GetLogInType())); //TODO need test 
-            return;
-        } else if (accessToken == null && authController.HasUser() && GetLogInType() == LogInType.None) {
-            HelperFunctions.DevLog("has firebase user but doesn't have LogInType");
-            LogOut();
-            ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
-            return;
-        }
-
-        canLogIn = false;
-        webRequestHandler.PostRequest(GetRequestRefreshTokenURL(),
-            accessToken, WebRequestHandler.BodyType.JSON,
-            (code, body) => { UpdateAccessToken(body); SuccessRequestAccessTokenCallBack(code, body); },
-            ErrorRequestAccessTokenCallBack, onCancel: onCancelLogIn);
-    }
-
     public void LogOut() {
         Debug.Log("LogOut");
         RemoveAccessToken();
@@ -112,6 +69,50 @@ public class AccountManager : MonoBehaviour {
             FileAccountManager.ServerAccessToken);
     }
 
+    private void Awake() {
+        canLogIn = true;
+        CallBacks.onQuickLogInRequest += QuickLogInWithDelay;
+        CallBacks.onLogOutRequest += LogOut;
+    }
+
+    private void QuickLogIn() {
+        if (!canLogIn) {
+            LogOut(); // hotfix v4.9
+            return;
+        }
+
+        HelperFunctions.DevLog("try QuickLogIn");
+        if (GetLogInType() == LogInType.Facebook) {
+            LogOut();
+        }
+
+        ServerAccessToken accessToken = GetAccessToken();
+
+        HelperFunctions.DevLog("QuickLogIn ServerAccessToken is null = " + (accessToken == null));
+
+        if (accessToken == null && !authController.HasUser()) {
+            ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
+            //errorTypeCallBack?.Invoke();
+            LogOut();
+            return;
+        } else if (accessToken == null && authController.HasUser() && GetLogInType() != LogInType.None) {
+            HelperFunctions.DevLog("has firebase user. QuickLogIn Firebase");
+            authController.DoAfterReloadUser(() => CallBacks.onFirebaseSignInSuccess(GetLogInType())); //TODO need test 
+            return;
+        } else if (accessToken == null && authController.HasUser() && GetLogInType() == LogInType.None) {
+            HelperFunctions.DevLog("has firebase user but doesn't have LogInType");
+            LogOut();
+            ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
+            return;
+        }
+
+        canLogIn = false;
+        webRequestHandler.PostRequest(GetRequestRefreshTokenURL(),
+            accessToken, WebRequestHandler.BodyType.JSON,
+            (code, body) => { UpdateAccessToken(body); SuccessRequestAccessTokenCallBack(code, body); },
+            ErrorRequestAccessTokenCallBack, onCancel: onCancelLogIn);
+    }
+
     private void UpdateAccessToken(string serverAccessToken) {
         try {
             ServerAccessToken currentAccessToken = GetAccessToken();
@@ -135,10 +136,15 @@ public class AccountManager : MonoBehaviour {
     #endregion
 
     private void SignUpSuccessCallBack() {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete);
         SaveLogInType(LogInType.Email);
     }
 
     private void LogInToServer(LogInType logInType) {
+
+        if(authController.IsNewUser())
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete);
+
         SaveLogInType(logInType);
 
         HelperFunctions.DevLog("LogInToServer " + logInType + " IsVerifiried " + authController.IsVerifiried());
@@ -183,18 +189,9 @@ public class AccountManager : MonoBehaviour {
         CallBacks.onFail?.Invoke(data);
     }
 
-    private void Awake() {
-        canLogIn = true;
-    }
-
-    private void OnEnable() {
-        CallBacks.onFirebaseSignInSuccess += LogInToServer;
-        CallBacks.onSignUpSuccess += SignUpSuccessCallBack;
-    }
-
-    private void OnDisable() {
-        CallBacks.onFirebaseSignInSuccess -= LogInToServer;
-        CallBacks.onSignUpSuccess -= SignUpSuccessCallBack;
+    private void QuickLogInWithDelay() {
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        Task.Delay(QUICK_LOGIN_DELAY_TIME).ContinueWith((_) => QuickLogIn(), taskScheduler);
     }
 
     #region request urls
@@ -207,4 +204,19 @@ public class AccountManager : MonoBehaviour {
     }
 
     #endregion
+
+    private void OnEnable() {
+        CallBacks.onFirebaseSignInSuccess += LogInToServer;
+        CallBacks.onSignUpSuccess += SignUpSuccessCallBack;
+    }
+
+    private void OnDisable() {
+        CallBacks.onFirebaseSignInSuccess -= LogInToServer;
+        CallBacks.onSignUpSuccess -= SignUpSuccessCallBack;
+    }
+
+    private void OnDestroy() {
+        CallBacks.onQuickLogInRequest -= QuickLogInWithDelay;
+        CallBacks.onLogOutRequest -= LogOut;
+    }
 }

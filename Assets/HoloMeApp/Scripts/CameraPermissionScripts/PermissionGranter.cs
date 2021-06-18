@@ -23,6 +23,11 @@ public class PermissionGranter : MonoBehaviour, IPermissionGranter {
         permissionGranter.RequestMicAccess();
     }
 
+    public void RequestSettings()
+    {
+        permissionGranter.RequestSettings();
+    }
+
     public void RequestWriteAccess() {
         permissionGranter.RequestWriteAccess();
     }

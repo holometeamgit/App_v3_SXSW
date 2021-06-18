@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Threading;
 
 public class WebRequestHandler : MonoBehaviour {
+
     public enum BodyType {
         None,
         JSON,
@@ -19,6 +20,7 @@ public class WebRequestHandler : MonoBehaviour {
     public string ServerProvidersAPI { get { return serverURLAPI.ServerProvidersAPI; } private set { } }
 
     [SerializeField] ServerURLAPIScriptableObject serverURLAPI;
+    [SerializeField] AccountManager accountManager;
 
     private const int REQUEST_CHECK_COOLDOWN = 250;
     private const int MAX_TIMES_BEFORE_STOP_REQUEST = 20;
@@ -34,6 +36,14 @@ public class WebRequestHandler : MonoBehaviour {
     public void ErrorLogCallback(long code, string body) {
         HelperFunctions.DevLogError($"An Error Occurred! Code {code} Message {body}");
     }
+
+    public void Get(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
+        bool needHeaderAccessToken = true, Action onCancel = null, Action<float> progress = null) {
+        GetRequest(url, responseDelegate, errorTypeDelegate,
+            needHeaderAccessToken ? accountManager.GetAccessToken().access : null,
+            onCancel, progress);
+    }
+
 
     public void GetRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
         string headerAccessToken = null, Action onCancel = null, Action<float> progress = null) {
@@ -51,7 +61,15 @@ public class WebRequestHandler : MonoBehaviour {
         }, taskScheduler);
     }
 
-    public void PostRequest<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
+    public void Post<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
+        bool needHeaderAccessToken = true, Action onCancel = null, Action<float> progress = null) {
+
+        PostRequest(url, body, bodyType, responseDelegate, errorTypeDelegate,
+            needHeaderAccessToken ? accountManager.GetAccessToken().access : null,
+            onCancel, progress);
+    }
+
+        public void PostRequest<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
         string headerAccessToken = null, Action onCancel = null, Action<float> progress = null) {
 
         Func<UnityWebRequest> createWebRequest = () => {
@@ -68,6 +86,16 @@ public class WebRequestHandler : MonoBehaviour {
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel: onCancel, progress).ContinueWith((taskWebRequestData) => {
         }, taskScheduler);
+    }
+
+    /// <summary>
+    /// Delete webrequest
+    /// </summary>
+    public void Delete(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
+        bool needHeaderAccessToken = true, Action onCancel = null, Action<float> progress = null) {
+        DeleteRequest(url, responseDelegate, errorTypeDelegate,
+            needHeaderAccessToken ? accountManager.GetAccessToken().access : null,
+            onCancel, progress);
     }
 
     public void DeleteRequest(string url, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,

@@ -9,8 +9,6 @@ public class PnlProfile : MonoBehaviour {
     [SerializeField] UserWebManager userWebManager;
     [SerializeField] GameObject InputDataArea;
     [SerializeField] InputFieldController usernameInputField;
-    [SerializeField] InputFieldController firstnameInputField;
-    [SerializeField] InputFieldController surnameInputField;
     [SerializeField] int userNameLimit;
     [SerializeField] Switcher switchToMainMenu;
     [SerializeField] Switcher switchLogOut;
@@ -20,11 +18,19 @@ public class PnlProfile : MonoBehaviour {
     [SerializeField] PnlGenericError pnlGenericError;
     [SerializeField] ExternalLinkRedirector externalLinkRedirector;
 
+    [SerializeField]
+    Toggle isPolicyConfirmed;
+    [SerializeField]
+    Button continueBtn;
+
+
+    public void OnPolicyConfirmationChanged(bool isPolicyConfirmed) {
+        continueBtn.interactable = isPolicyConfirmed;
+    }
+
     public void ChooseUsername() {
         if (LocalDataVerification())
-            userWebManager.UpdateUserData(userName: usernameInputField.text,
-            first_name: firstnameInputField.text,
-            last_name: surnameInputField.text);
+            userWebManager.UpdateUserData(userName: usernameInputField.text);
     }
 
     private void Start() {
@@ -34,11 +40,7 @@ public class PnlProfile : MonoBehaviour {
 
     private void UserInfoLoadedCallBack() {
         usernameInputField.text = string.IsNullOrWhiteSpace(usernameInputField.text) ? userWebManager.GetUsername() ?? "" : usernameInputField.text;
-        firstnameInputField.text = string.IsNullOrWhiteSpace(firstnameInputField.text) ? userWebManager.GetFirstName() ?? "" : firstnameInputField.text;
-        surnameInputField.text = string.IsNullOrWhiteSpace(surnameInputField.text) ? userWebManager.GetLastName() ?? "" : surnameInputField.text;
-        if (userWebManager.GetUsername() == null ||
-            userWebManager.GetFirstName() == null ||
-            userWebManager.GetLastName() == null) {
+        if (userWebManager.GetUsername() == null) {
             InputDataArea.SetActive(true);
         } else {
             SwitchToMainMenu();
@@ -74,21 +76,12 @@ public class PnlProfile : MonoBehaviour {
             usernameInputField.ShowWarning(badRequestData.username);
         }
 
-        if (badRequestData.first_name.Count > 0)
-            firstnameInputField.ShowWarning(badRequestData.first_name[0]);
-
-
-        if (badRequestData.last_name.Count > 0)
-            surnameInputField.ShowWarning(badRequestData.last_name[0]);
-
         if (!string.IsNullOrEmpty(badRequestData.detail))
             usernameInputField.ShowWarning(badRequestData.detail);
     }
 
     private void ClearInputFieldData() {
         usernameInputField.text = "";
-        firstnameInputField.text = "";
-        surnameInputField.text = "";
     }
 
     private bool LocalDataVerification() {
@@ -96,14 +89,8 @@ public class PnlProfile : MonoBehaviour {
             usernameInputField.ShowWarning("This field is compulsory");
         else if (usernameInputField.text.Length > 20)
             usernameInputField.ShowWarning("Username must be 20 characters or less");
-        if (string.IsNullOrWhiteSpace(firstnameInputField.text))
-            firstnameInputField.ShowWarning("This field is compulsory");
-        if (string.IsNullOrWhiteSpace(surnameInputField.text))
-            surnameInputField.ShowWarning("This field is compulsory");
 
         return !string.IsNullOrWhiteSpace(usernameInputField.text) &&
-            !string.IsNullOrWhiteSpace(firstnameInputField.text) &&
-            !string.IsNullOrWhiteSpace(surnameInputField.text) &&
             usernameInputField.text.Length <= 20;
     }
 
@@ -123,6 +110,12 @@ public class PnlProfile : MonoBehaviour {
 
         InputDataArea.SetActive(false);
         userWebManager.LoadUserInfo();
+
+        isPolicyConfirmed.isOn = true;
+        isPolicyConfirmed.enabled = false;
+        isPolicyConfirmed.enabled = true;
+
+        continueBtn.interactable = isPolicyConfirmed.isOn;
     }
 
     private void OnDisable() {

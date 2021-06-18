@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using System;
+using Beem.SSO;
 
 public class UserWebManager : MonoBehaviour {
+    public Action OnLoadUserDataAfterLogIn;
     public Action OnUserInfoLoaded;
     public Action OnErrorUserInfoLoaded;
 
@@ -22,9 +24,6 @@ public class UserWebManager : MonoBehaviour {
     [SerializeField] AuthorizationAPIScriptableObject authorizationAPI;
 
     private UserJsonData userData;
-
-    [HideInInspector]
-
 
     public void LoadUserInfo() {
         webRequestHandler.GetRequest(GetRequestGetUserURL(), LoadUserInfoCallBack,
@@ -65,9 +64,9 @@ public class UserWebManager : MonoBehaviour {
         return userData.pk;
     }
 
-    public string GetUnituniqueName() {
+   /* public string GetUnituniqueName() {
         return GetEmail();
-    }
+    }*/
 
     public string GetFullName() {
         if (userData == null || string.IsNullOrEmpty(userData.first_name))
@@ -99,16 +98,16 @@ public class UserWebManager : MonoBehaviour {
         return userData.profile.bio;
     }
 
-    public bool IsBroadcaster() {
+    public bool CanGoLive() {
         if (userData == null || userData.profile == null)
             return false;
-        return userData.profile.is_creator;
+        return userData.profile.go_live_feature;
     }
 
-    public bool IsEnterpriseBroadcaster() {
+    public bool CanStartRoom() {
         if (userData == null || userData.profile == null)
             return false;
-        return !string.IsNullOrWhiteSpace(userData.profile.enterprise);
+        return userData.profile.room_feature;
     }
 
     public void LoadUserInfo(Action loadUserInfoCallBack) {
@@ -116,7 +115,7 @@ public class UserWebManager : MonoBehaviour {
             ErrorMsgCallBack, accountManager.GetAccessToken().access);
     }
 
-    private string GetEmail() {
+    public string GetEmail() {
         if (userData == null || string.IsNullOrEmpty(userData.email))
             return null;
         return userData.email;
@@ -141,6 +140,7 @@ public class UserWebManager : MonoBehaviour {
 
     #region download user data
     private void LoadUserInfoCallBack(long code, string body) {
+        bool isLoadUserDataAfterLogIn = userData == null;
         try {
             userData = JsonUtility.FromJson<UserJsonData>(body);
             OnUserInfoLoaded?.Invoke();
@@ -150,6 +150,10 @@ public class UserWebManager : MonoBehaviour {
 
         if (userData == null)
             userData = new UserJsonData();
+
+        if (isLoadUserDataAfterLogIn) {
+            OnLoadUserDataAfterLogIn?.Invoke();
+        }
     }
 
     private void ErrorLoadUserInfoCallBack(long code, string body) {
@@ -185,6 +189,10 @@ public class UserWebManager : MonoBehaviour {
 
     #endregion
 
+    private void RemoveUserData() {
+        userData = null;
+    }
+
     #region delete and disable user
     private void DeleteUserInfoCallBack(long code, string body) {
         Debug.Log("DeleteUserInfoCallBack " + code + " " + body);
@@ -219,4 +227,12 @@ public class UserWebManager : MonoBehaviour {
     }
 
     #endregion
+
+    private void OnEnable() {
+        CallBacks.onSignOut += RemoveUserData;
+    }
+
+    private void OnDisable() {
+        CallBacks.onSignOut -= RemoveUserData;
+    }
 }

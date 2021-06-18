@@ -16,6 +16,18 @@ public class VideoUploader : ScriptableObject { //TODO rename class this StreamA
 
     public string UploadPreview = "/stream/{id}/preview/";
 
+    [Header("Like")]
+    public string PostLike = "/stream/{id}/like/";
+    public string DeleteLike = "/stream/{id}/like/";
+
+    [Header("views")]
+    public string PostView = "/stream/{id}/view/";
+
+    [Header("Comments")]
+    public string GetComments = "/stream/{id}/comments/";
+    public string PostComments = "/stream/{id}/comments/";
+    public string DeleteComments = "/stream/{id}/comments/";
+
     [Header("Room")]
     public string GetRoom = "/room/";
     public string PutRoom = "/room/";

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Beem.Firebase.DynamicLink;
+using Beem.SSO;
 
 public class UIThumbnailsController : MonoBehaviour {
     public Action OnUpdated;
@@ -9,7 +11,6 @@ public class UIThumbnailsController : MonoBehaviour {
 
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] PnlViewingExperience pnlViewingExperience;
-    [SerializeField] ShareManager shareManager;
     [SerializeField] PnlStreamOverlay pnlStreamOverlay;
     [SerializeField] GameObject btnThumbnailPrefab;
     [SerializeField] Transform content;
@@ -24,6 +25,24 @@ public class UIThumbnailsController : MonoBehaviour {
     List<StreamJsonData.Data> dataList;
 
     StreamDataEqualityComparer streamDataEqualityComparer;
+
+    //void OnEnable()
+    //{
+    //    pnlViewingExperience.ToggleARSessionObjects(false);
+    //}
+
+    public void Buy(StreamJsonData.Data data) {
+        purchaseManager.SetPurchaseStreamData(data);
+        purchaseManager.Purchase();
+    }
+
+    public void Play(StreamJsonData.Data data) {
+        if (data.is_bought && data.IsStarted) {
+            PlayStream(data);
+        } else if (data.HasTeaser) {
+            PlayTeaser(data);
+        }
+    }
 
     public void SetStreamJsonData(List<StreamJsonData.Data> data) {
         dataList = data;
@@ -59,9 +78,11 @@ public class UIThumbnailsController : MonoBehaviour {
     /// <summary>
     /// Play live stream from user 
     /// </summary>
-   
-    public void PlayLiveStream(string user, string agoraChannel) { //TODO split it to ather class
-        pnlStreamOverlay.OpenAsViewer(agoraChannel);
+
+    public void PlayLiveStream(string user, string agoraChannel, string streamID, bool isRoom) { //TODO split it to ather class
+        if (!permissionController.CheckCameraAccess())
+            return;
+        pnlStreamOverlay.OpenAsViewer(agoraChannel, streamID, isRoom);
         OnPlayFromUser?.Invoke(user);
     }
 
@@ -71,10 +92,23 @@ public class UIThumbnailsController : MonoBehaviour {
         btnThumbnailItemsDictionary = new Dictionary<long, UIThumbnail>();
         btnThumbnailItems = new List<UIThumbnail>();
         streamDataEqualityComparer = new StreamDataEqualityComparer();
+
+        CallBacks.onClickLike += SetLike;
+        CallBacks.onClickUnlike += SetUnlike;
+        CallBacks.onGetLikeState += GetLikeState;
     }
 
     #region Prepare thumbnails
     private void PrepareBtnThumbnails() {
+
+        if(dataList.Count == 0) {
+            HelperFunctions.DevLog("Deactivate all thumbnails count = " + btnThumbnailItems.Count);
+            foreach(var btn in btnThumbnailItems) {
+                btn.Deactivate();
+            }
+            return;
+        }
+
         int quantityDifference = btnThumbnailItems.Count - dataList.Count;
         for (int i = 0; i < -quantityDifference; i++) {
             GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
@@ -87,7 +121,7 @@ public class UIThumbnailsController : MonoBehaviour {
         if (dataList.Count == btnThumbnailItems.Count)
             return;
         for (int i = dataList.Count - 1; i < btnThumbnailItems.Count; i++) {
-            if (i <= 0) 
+            if (i <= 0)
                 continue;
             btnThumbnailItems[i].Deactivate();
         }
@@ -111,7 +145,11 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetPlayAction(Play);
             btnThumbnailItems[i].SetTeaserPlayAction(PlayTeaser);
             btnThumbnailItems[i].SetBuyAction(Buy);
-            btnThumbnailItems[i].SetShareAction((_) => shareManager.ShareStream());
+            btnThumbnailItems[i].SetShareAction( (data) => {
+                    //btnThumbnailItems[i]
+                    StreamCallBacks.onGetStreamLink?.Invoke(data.id.ToString());
+                    AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
+                });
             btnThumbnailItems[i].LockToPress(false);
         }
         OnUpdated?.Invoke();
@@ -119,28 +157,17 @@ public class UIThumbnailsController : MonoBehaviour {
 
     #endregion
 
-    private void Buy(StreamJsonData.Data data) {
-        purchaseManager.SetPurchaseStreamData(data);
-        purchaseManager.Purchase();
-    }
-
-    private void Play(StreamJsonData.Data data) {
-        if(data.is_bought && data.IsStarted) {
-            PlayStream(data);
-        } else if(data.HasTeaser) {
-            PlayTeaser(data);
-        }
-    }
-
     private void PlayStream(StreamJsonData.Data data) {
         if (!permissionController.CheckCameraAccess())
             return;
 
-        if(data.HasStreamUrl) {
-            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, null,false);
+        if (data.HasStreamUrl) {
+            pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, data, null, false);
             OnPlayFromUser?.Invoke(data.user);
-        } else if(data.HasAgoraChannel) {
-            PlayLiveStream(data.user, data.agora_channel);
+        } else if (data.HasAgoraChannel) {
+            if (data.agora_channel == "0" || string.IsNullOrWhiteSpace(data.agora_channel))
+                return;
+            PlayLiveStream(data.user, data.agora_channel, data.id.ToString(), false);
         }
     }
 
@@ -148,8 +175,49 @@ public class UIThumbnailsController : MonoBehaviour {
         if (!permissionController.CheckCameraAccess())
             return;
 
-        pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, null, data.HasTeaser);
+        pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, data, null, data.HasTeaser);
         OnPlayFromUser?.Invoke(data.user);
         purchaseManager.SetPurchaseStreamData(data);
+    }
+
+    private void SetLike(long streamId, bool isLike) {
+        var stream = GetStreamElement(streamId);
+        if (stream == null)
+            return;
+
+        stream.Data.is_liked = isLike;
+
+        stream.Data.count_of_likes = isLike ? ++stream.Data.count_of_likes : Math.Max(--stream.Data.count_of_likes,0);
+
+        CallBacks.onGetLikeStateCallBack?.Invoke(streamId, stream.Data.is_liked, stream.Data.count_of_likes);
+    }
+
+    private void SetLike(long streamId) {
+        SetLike(streamId, true);
+    }
+
+    private void SetUnlike(long streamId) {
+        SetLike(streamId, false);
+    }
+
+    private void GetLikeState(long streamId) {
+        var stream = GetStreamElement(streamId);
+        if (stream == null)
+            return;
+
+        CallBacks.onGetLikeStateCallBack?.Invoke(streamId, stream.Data.is_liked, stream.Data.count_of_likes);
+    }
+
+    private ThumbnailElement GetStreamElement(long streamId) {
+        if (!thumbnailElementsDictionary.ContainsKey(streamId))
+            return null;
+
+        return thumbnailElementsDictionary[streamId];
+    }
+
+    private void OnDestroy() {
+        CallBacks.onClickLike -= SetLike;
+        CallBacks.onClickUnlike -= SetUnlike;
+        CallBacks.onGetLikeState -= GetLikeState;
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using Beem.SSO;
 
 public class PnlHomeScreenV2 : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
 
     bool dataLoaded;
     bool initialized;
+    bool needRefresh;
 
     public UnityEvent OnPlay;
 
@@ -49,7 +51,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
         uiThumbnailsController.SetStreamJsonData(thumbnailsDataFetcher.GetDataList());
         uiThumbnailsController.OnPlayFromUser += OnPlayCallBack;
 
-        
+        CallBacks.onSignOut += ClearData;
     }
 
     private void DataUpdateCallBack() {
@@ -64,6 +66,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
     }
 
     private void RefreshItems() {
+        needRefresh = false;
         Resources.UnloadUnusedAssets();
         dataLoaded = false;
         uiThumbnailsController.LockToPressElements();
@@ -87,9 +90,13 @@ public class PnlHomeScreenV2 : MonoBehaviour
         OnAllDataLoaded.Invoke();//temp
     }
 
-    private void OnDisable() {
-        StopAllCoroutines();
-        pullRefreshController.EndRefreshing();
+    private void ClearData() {
+        HelperFunctions.DevLog("Clear home page");
+        thumbnailsDataFetcher.ClearData();
+        uiThumbnailsController.UpdateData();
+        initialized = false;
+        SetDefaultState();
+        needRefresh = true;
     }
 
     private void OnPlayCallBack(string user) {
@@ -100,5 +107,17 @@ public class PnlHomeScreenV2 : MonoBehaviour
         pullRefreshController.EndRefreshing();
         pullRefreshController.RefreshLayout();
         pullRefreshController.RefreshLayout();
+    }
+
+    private void OnEnable() {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticParameters.ParamHomeScreen);
+
+        if (needRefresh)
+            RefreshItems();
+    }
+
+    private void OnDisable() {
+        StopAllCoroutines();
+        pullRefreshController.EndRefreshing();
     }
 }

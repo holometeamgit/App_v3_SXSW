@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 2069229954043959417}
   - component: {fileID: 2069229954043959418}
   m_Layer: 0
-  m_Name: CleverTap
+  m_Name: CleverTapUnity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -106,6 +106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cleverTapUnityComponent: {fileID: 2069229954043959418}
+  userWebManager: {fileID: 0}
 --- !u!114 &2069229954043959418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,6 +135,7 @@ GameObject:
   - component: {fileID: 2069229955383226209}
   - component: {fileID: 2069229955383226223}
   - component: {fileID: 2069229955383226208}
+  - component: {fileID: 8404306546858460694}
   m_Layer: 0
   m_Name: AnalyticsTracker
   m_TagString: Untagged
@@ -171,7 +173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 915b695b94efb544193d82b1b554973a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableDebugTracking: 0
+  enableDebugTracking: 1
   analyticsLibraryAbstractions:
   - {fileID: 2069229954043959417}
   - {fileID: 2069229953964525282}
@@ -188,6 +190,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 975031555763a264bbac7dfe90dccaa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8404306546858460694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2069229955383226210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f51d2431ce89398448ef754517677760, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4260403663117418681

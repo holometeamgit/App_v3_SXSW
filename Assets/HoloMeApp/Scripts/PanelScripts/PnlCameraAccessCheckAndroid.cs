@@ -89,4 +89,8 @@ public class PnlCameraAccessCheckAndroid : MonoBehaviour, IPermissionGranter {
         }
     }
 
+    public void RequestSettings()
+    {
+        NativeRequestSettings();
+    }
 }

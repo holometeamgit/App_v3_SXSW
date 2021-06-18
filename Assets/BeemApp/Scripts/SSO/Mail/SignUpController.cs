@@ -14,12 +14,20 @@ namespace Beem.SSO {
     public class SignUpController : AbstractFirebaseController {
 
         private void SignUp(string profileName, string email, string password, string repeatPassword) {
-            if (password != repeatPassword) {
+            if (!EmailChecker.IsEmail(email))
+            {
+                CallBacks.onFail?.Invoke("InvalidEmail");
+            }
+            else if (password != repeatPassword)
+            {
                 CallBacks.onFail?.Invoke("Passwords do not match");
-            } else {
+            }
+            else
+            {
                 var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
-                _auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWith(task => {
+                _auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWith(task =>
+                {
                     CheckTask(task, () => { FirebaseSignUp(task, profileName); }, CallBacks.onFail);
                 }, taskScheduler);
             }

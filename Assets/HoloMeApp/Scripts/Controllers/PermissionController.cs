@@ -44,4 +44,28 @@ public class PermissionController : MonoBehaviour {
 
         return false;
     }
+
+    public void CheckSettings(string settingsTitle, string settingsDescription) {
+            pnlGenericError.ActivateDoubleButton(settingsTitle,
+                settingsDescription,
+                "Allow",
+                "Don’t Allow",
+                () => permissionGranter.RequestSettings(),
+                () => pnlGenericError.gameObject.SetActive(false));
+    }
+
+    public void InformAboutNotification(string settingsTitle, string settingsDescription)
+    {
+        pnlGenericError.ActivateDoubleButton(settingsTitle,
+            settingsDescription,
+            "Settings",
+            "Cancel",
+            () => permissionGranter.RequestSettings(),
+            () => pnlGenericError.gameObject.SetActive(false));
+    }
+
+    public void CheckPushNotifications() {
+        HelperFunctions.DevLog("CheckPushNotifications permission");
+        CheckSettings("‘Beem’ Would Like To Send You Notifications", "Notifications may include alerts and sounds, and icon badget. These can be configure in Settings.");
+    }
 }

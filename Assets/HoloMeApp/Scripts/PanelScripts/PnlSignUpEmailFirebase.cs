@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Beem.SSO;
+using UnityEngine.UI;
 
 public class PnlSignUpEmailFirebase : MonoBehaviour {
     [SerializeField]
@@ -14,9 +15,25 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     Switcher switcherToVerification;
     [SerializeField]
     GameObject LogInLoadingBackground;
+    [SerializeField]
+    bool isNeedConfirmationPassword = true;
+    [SerializeField]
+    Toggle isPolicyConfirmed;
+    [SerializeField]
+    Button continueBtn;
+    [SerializeField]
+    Animator animator;
 
     private const float COOLDOWN = 0.5f;
     private float nextTimeCanClick = 0;
+
+    public void OnPolicyConfirmationChanged(bool isPolicyConfirmed) {
+        continueBtn.interactable = isPolicyConfirmed;
+    }
+
+    public void StopAnimation() {
+        animator.enabled = false;
+    }
 
     private void Awake() {
         CallBacks.onSignInSuccess += ClearInputFieldData;
@@ -27,6 +44,9 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
         if (Time.time < nextTimeCanClick)
             return;
         nextTimeCanClick = (Time.time + COOLDOWN);
+
+        if (!isNeedConfirmationPassword)
+            inputFieldConfirmPassword.text = inputFieldPassword.text;
 
         if (!LocalDataVerification()) {
             return;
@@ -42,6 +62,7 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     private void SignUpCallBack() {
         switcherToVerification.Switch();
         ClearInputFieldData();
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete);
     }
 
     private void ErrorSignUpCallBack(string msg) {
@@ -58,12 +79,12 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
             inputFieldEmail.ShowWarning("This field is compulsory");
         if (string.IsNullOrWhiteSpace(inputFieldPassword.text))
             inputFieldPassword.ShowWarning("This field is compulsory");
-        if (string.IsNullOrWhiteSpace(inputFieldConfirmPassword.text))
+        if (isNeedConfirmationPassword && string.IsNullOrWhiteSpace(inputFieldConfirmPassword.text))
             inputFieldConfirmPassword.ShowWarning("This field is compulsory");
 
         return !string.IsNullOrWhiteSpace(inputFieldEmail.text) &&
             !string.IsNullOrWhiteSpace(inputFieldPassword.text) &&
-            !string.IsNullOrWhiteSpace(inputFieldConfirmPassword.text);
+            (!isNeedConfirmationPassword || !string.IsNullOrWhiteSpace(inputFieldConfirmPassword.text));
     }
 
     private void ClearInputFieldData() {
@@ -93,6 +114,12 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
         CallBacks.onFail += HideBackground;
         CallBacks.onSignUpSuccess += HideBackground;
         CallBacks.onNeedVerification += HideBackground;
+
+        isPolicyConfirmed.isOn = false;
+        isPolicyConfirmed.enabled = false;
+        isPolicyConfirmed.enabled = true;
+
+        continueBtn.interactable = isPolicyConfirmed.isOn;
     }
 
     private void OnDisable() {

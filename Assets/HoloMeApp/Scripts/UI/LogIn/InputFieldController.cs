@@ -4,10 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public class InputFieldController : MonoBehaviour {
     public bool IsClearOnDisable = true;
     public bool IsLowercase;
+
+    [SerializeField]
+    private bool isEmail;
 
     public int characterLimit {
         get { return inputField.characterLimit; }
@@ -34,22 +38,42 @@ public class InputFieldController : MonoBehaviour {
 
     [SerializeField] UnityEvent OnEndEditPassword;
 
+    private bool showWarning;
+
     private void Awake() {
         inputField.onEndEdit.AddListener((_) => OnEndEditPassword.Invoke());
+#if UNITY_IOS
         inputField.shouldHideMobileInput = true;
+        if (isEmail)
+        {
+            inputField.contentType = InputField.ContentType.EmailAddress;
+        }
+#elif UNITY_ANDROID
+        inputField.shouldHideMobileInput = false;
+#endif
+
         //        inputField.onEndEdit.AddListener(UpdateLayout);
         if (IsLowercase)
             inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
     }
 
     public void ShowWarning(string warningMsg) {
+        animator.enabled = true;
         HelperFunctions.DevLog(warningMsg);
         warningMsgText.text = OverrideMsg(warningMsg);
-        animator.SetBool("ShowWarning", true);
+        showWarning = true;
+        animator.SetBool("ShowWarning", showWarning);
     }
 
     public void SetToDefaultState() {
-        animator.SetBool("ShowWarning", false);
+        if (!showWarning)
+            return;
+        showWarning = false;
+        animator.SetBool("ShowWarning", showWarning);
+    }
+
+    public void DisableAnimator() {
+        animator.enabled = false;
     }
 
     public void SetPasswordContentType(bool value) {
@@ -107,6 +131,7 @@ public class InputFieldController : MonoBehaviour {
         if (IsClearOnDisable) {
             SetToDefaultState();
             text = "";
+            DisableAnimator();
         }
     }
 }

@@ -33,8 +33,9 @@ public class PurchaseManager : MonoBehaviour
     public void Purchase() {
         if (streamData == null || streamData.is_bought)
             return;
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed, new Dictionary<string, string> { {AnalyticParameters.ParamProductID, streamData.product_type.product_id}, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() } } );
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed, new Dictionary<string, string> { {AnalyticParameters.ParamProductID, streamData.product_type.product_id}, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, streamData.user_id.ToString() } } );
         //TODO add chech stream available befor purchaise
+        HelperFunctions.DevLog("Start store purchasing: product id = " + streamData.product_type.product_id);
         backgroudGO.SetActive(true);
         iapController.BuyTicket(streamData.product_type.product_id);
         OnPurchaseStarted?.Invoke();
@@ -44,6 +45,7 @@ public class PurchaseManager : MonoBehaviour
         iapController.OnPurchaseHandler += OnPurchaseCallBack;
         iapController.OnPurchaseFailedHandler += OnPurchaseFailCallBack;
         purchasesSaveManager.OnAllDataSended += AllPurchasedDataSentOnServerCallBack;
+        purchasesSaveManager.OnFailSentToserver += HideBackgroud;
     }
 
     private void Start() {
@@ -59,11 +61,14 @@ public class PurchaseManager : MonoBehaviour
     private void ProductListCallBack(long code, string body) {
         ProductJsonData productJsonData = new ProductJsonData();
         try {
+            HelperFunctions.DevLog(body);
             productJsonData = JsonUtility.FromJson<ProductJsonData>(body);
             
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
-            body = "{ \"products\" :" + body + "}";
+
+
+            body = "{ \"product\" :" + body + "}";
 
             try {
                 productJsonData = JsonUtility.FromJson<ProductJsonData>(body);
@@ -74,7 +79,7 @@ public class PurchaseManager : MonoBehaviour
 
         List<string> productIdList = new List<string>();
 
-        foreach (var product in productJsonData.products) {
+        foreach (var product in productJsonData.product) {
             productIdList.Add(product.product_id);
         }
 
@@ -91,12 +96,14 @@ public class PurchaseManager : MonoBehaviour
         //streamData.is_bought = true;
         //streamData.InvokeDataUpdated();
 
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, {AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() } });
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, {AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, streamData.user_id.ToString() } });
+        AnalyticsCleverTapController.Instance.SendChargeEvent(new Dictionary<string, object> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() },{ "Currency", "USD" }, }, new List<Dictionary<string, object>>{ new Dictionary<string, object> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, streamData.user_id.ToString() } } });
 
         StreamBillingJsonData streamBillingJsonData = new StreamBillingJsonData();
         streamBillingJsonData.bill.hash = product.receipt;
 
         CallBacks.onStreamPurchasedInStore?.Invoke(streamData.id);
+        HelperFunctions.DevLog("Try send to Server " + streamData.id);
         purchasesSaveManager.SendToServer(streamData.id, streamBillingJsonData);
 
         streamData = null;
@@ -105,15 +112,19 @@ public class PurchaseManager : MonoBehaviour
         
     }
 
-    private void AllPurchasedDataSentOnServerCallBack() {
+    private void HideBackgroud() {
         backgroudGO.SetActive(false);
+    }
+
+    private void AllPurchasedDataSentOnServerCallBack() {
+        HideBackgroud();
         OnServerPurchasedDataUpdated?.Invoke();
     }
 
     private void OnPurchaseFailCallBack() {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseCancelled, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id } });
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseCancelled, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, { AnalyticParameters.ParamBroadcasterUserID, streamData.user_id.ToString() } });
         OnPurchaseCanceled?.Invoke();
-        backgroudGO.SetActive(false);
+        HideBackgroud();
     }
 
     private string GetRequestProductURL() {

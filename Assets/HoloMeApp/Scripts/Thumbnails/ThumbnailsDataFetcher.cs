@@ -40,7 +40,7 @@ public class ThumbnailsDataFetcher {
         thumbnailWebDownloadManager.OnStreamJsonDataLoaded += GetThumbnailsOnCurrentPageCallBack;
         thumbnailWebDownloadManager.OnErrorStreamJsonDataLoaded += ErrorGetThumbnailsOnCurrentPageCallBack;
 
-        thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded += AddThumbnails;
+        thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded += UpdateThumbnail;
     }
 
     public List<StreamJsonData.Data> GetDataList() {
@@ -52,9 +52,13 @@ public class ThumbnailsDataFetcher {
             return;
         isBusy = true;
         currentLoadingKey = new LoadingKey(this);
-        currentPriority = 0;
-        thumbnailsDataContainer.Refresh();
+        ClearData();
         GetPageCount();
+    }
+
+    public void ClearData() {
+        currentPriority = 0;
+        thumbnailsDataContainer.Clear();
     }
 
     public void GetNextPage() {
@@ -134,8 +138,16 @@ public class ThumbnailsDataFetcher {
             AddThumbnails(streamJsonData);
     }
 
+    private void UpdateThumbnail(StreamJsonData.Data data) {
+        if (!thumbnailsDataContainer.ContainStream(data.id))
+            return;
+
+        StreamJsonData streamJsonData = new StreamJsonData();
+        streamJsonData.results.Add(data);
+        AddThumbnails(streamJsonData);
+    }
+
     private void AddThumbnails(StreamJsonData streamJsonData) {
-        HelperFunctions.DevLog("AddThumbnails count = " + streamJsonData.results?.Count.ToString());
         thumbnailsDataContainer.AddListStreamJsonData(streamJsonData);
     }
 
