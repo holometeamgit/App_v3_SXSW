@@ -120,6 +120,11 @@ public class SecondaryServerCalls : MonoBehaviour {
         streamStartResponseJsonData = JsonUtility.FromJson<StreamStartResponseJsonData>(data);
 
         if (streamStartResponseJsonData != null) {
+
+            if (!isRoom) {
+                SetStreamStatusToLive();
+            }
+
             OnStreamStarted?.Invoke(tokenAgoraResponse.token, tokenAgoraResponse.token, streamStartResponseJsonData.id);
             StreamCallBacks.onLiveStreamCreated?.Invoke(streamStartResponseJsonData);
         } else
@@ -167,8 +172,18 @@ public class SecondaryServerCalls : MonoBehaviour {
 
     void StopSecondaryServer() {
         HelperFunctions.DevLog("STOPPING STREAM SECONDARY SERVER");
-        StreamStatusJsonData data = new StreamStatusJsonData { status = "stop" };
+        StreamStatusJsonData data = new StreamStatusJsonData { status = StreamJsonData.Data.STOP_STR };
         HelperFunctions.DevLog(webRequestHandler.ServerURLMediaAPI + videoUploader.StreamStatus.Replace("{id}", streamStartResponseJsonData.id.ToString()));
+        StreamStatusChange(data);
+    }
+
+    void SetStreamStatusToLive() {
+        StreamStatusJsonData data = new StreamStatusJsonData { status = StreamJsonData.Data.LIVE_STR };
+        StreamStatusChange(data);
+    }
+
+    void StreamStatusChange(StreamStatusJsonData data) {
+        HelperFunctions.DevLog($"Stream status changed " + data.status);
         webRequestHandler.PatchRequest(webRequestHandler.ServerURLMediaAPI + videoUploader.StreamStatus.Replace("{id}", streamStartResponseJsonData.id.ToString()), data, WebRequestHandler.BodyType.JSON, (x, y) => { webRequestHandler.LogCallback(x, y); HelperFunctions.DevLog("STREAM STOPPED SECONDARY SERVER"); }, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
         StreamCallBacks.onLiveStreamFinished?.Invoke();
     }

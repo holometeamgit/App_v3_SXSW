@@ -118,7 +118,7 @@ public class HologramHandler : MonoBehaviour {
     }
 
     private void OnApplicationPause(bool pause) {
-        if (holoMe != null) {
+        if (holoMe != null && holoMe.Initialized) {
             isPlayingBeforePause = holoMe.IsPlaying && pause;
         }
     }

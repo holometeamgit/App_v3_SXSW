@@ -11,62 +11,64 @@ using System;
 
 public class PnlStreamOverlay : MonoBehaviour {
 
-    [SerializeField]
-    GameObject controlsPresenter;
+    [Header("Views")]
 
     [SerializeField]
-    GameObject controlsViewer;
+    private GameObject controlsPresenter;
 
     [SerializeField]
-    GameObject[] hiddenControlsDuringRoomShare;
+    private GameObject controlsViewer;
 
     [SerializeField]
-    Button btnShareYourRoom;
+    private GameObject[] publicStreamsControls;
 
     [SerializeField]
-    PnlGenericError pnlGenericError;
+    private GameObject[] privateStreamsControls;
 
     [SerializeField]
-    TextMeshProUGUI txtCentreMessage;
+    private GameObject[] onlineControls;
 
     [SerializeField]
-    TextMeshProUGUI txtUserCount;
+    private GameObject[] offlineControls;
+
+    [Header("These Views")]
+    [SerializeField]
+    private RawImage cameraRenderImage;
 
     [SerializeField]
-    CanvasGroup canvasGroup;
+    private TextMeshProUGUI txtCentreMessage;
 
     [SerializeField]
-    Toggle toggleAudio;
+    private CanvasGroup canvasGroup;
 
     [SerializeField]
-    Toggle toggleVideo;
+    private FluidToggle fluidToggle;
+
+    [Header("Other Views")]
+    [SerializeField]
+    private PnlGenericError pnlGenericError;
 
     [SerializeField]
-    FluidToggle fluidToggle;
+    private AnimatedTransition chat;
 
     [SerializeField]
-    Button btnFlipCamera;
+    private PnlViewingExperience pnlViewingExperience;
+
+    [Header("Controllers")]
+    [SerializeField]
+    private AgoraController agoraController;
 
     [SerializeField]
-    AgoraController agoraController;
+    private UserWebManager userWebManager;
 
     [SerializeField]
-    UserWebManager userWebManager;
+    private PermissionGranter permissionGranter;
 
     [SerializeField]
-    PnlViewingExperience pnlViewingExperience;
+    private UnityEvent OnCloseAsViewer;
 
     [SerializeField]
-    RawImage cameraRenderImage;
-
-    [SerializeField]
-    PermissionGranter permissionGranter;
-
-    [SerializeField]
-    UnityEvent OnCloseAsViewer;
-
-    [SerializeField]
-    UnityEvent OnCloseAsStreamer;
+    private UnityEvent OnCloseAsStreamer;
 
     bool initialised;
     int countDown;
@@ -77,30 +79,25 @@ public class PnlStreamOverlay : MonoBehaviour {
     VideoSurface videoSurface;
     string currentStreamId = "";
 
+    private bool _muteAudio = false;
+    private bool _hideVideo = false;
+
     //Vector3 rawImageQuadDefaultScale;
 
     void Init() {
         if (initialised)
             return;
 
-        btnShareYourRoom.onClick.AddListener(ShareRoomStreamLink);
-
-        //if (rawImageQuadDefaultScale == Vector3.zero)
-        //    rawImageQuadDefaultScale = cameraRenderImage.transform.localScale;
-
-        agoraController.OnCountIncremented += (x) => txtUserCount.text = x.ToString();
         agoraController.OnStreamerLeft += CloseAsViewer;
         agoraController.OnCameraSwitched += () => {
             var videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
             if (videoSurface) {
                 isUsingFrontCamera = !isUsingFrontCamera;
-                //videoSurface.EnableFlipTextureApplyTransform(!isUsingFrontCamera, false, rawImageQuadDefaultScale); //This may need to be adjusted if camera flip button ever comes back
             }
         };
         agoraController.OnPreviewStopped += () => videoSurface.SetEnable(false);
         agoraController.OnStreamWentLive += () => fluidToggle.ToggleInteractibility(true);
         agoraController.OnStreamWentOffline += () => fluidToggle.ToggleInteractibility(true);
-
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
         AddVideoSurface();
@@ -109,11 +106,9 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void OnEnable() {
         FadePanel(true);
-        toggleAudio.isOn = false;
-        toggleVideo.isOn = false;
         txtCentreMessage.text = string.Empty;
-        EnableStreamControls(false);
         RequestMicAccess();
+        ChatBtn.onOpen += OpenChat;
     }
 
     private void RequestMicAccess() {
@@ -122,10 +117,36 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
     }
 
-    private void ToggleRoomShareControlObjects(bool showShareButton) {
-        btnShareYourRoom.gameObject.SetActive(showShareButton);
-        foreach (GameObject go in hiddenControlsDuringRoomShare) {
-            go.SetActive(!showShareButton);
+    public void RefreshControls() {
+        RefreshStreamControls(agoraController.IsRoom);
+        RefreshBroadcasterControls(agoraController.IsChannelCreator);
+        RefreshLiveControls(!agoraController.IsChannelCreator || agoraController.IsLive);
+        HelperFunctions.DevLog("IsRoom = " + agoraController.IsRoom);
+        HelperFunctions.DevLog("IsChannelCreator = " + agoraController.IsChannelCreator);
+        HelperFunctions.DevLog("IsLive = " + agoraController.IsLive);
+
+    }
+
+    private void RefreshStreamControls(bool room) {
+        foreach (GameObject item in privateStreamsControls) {
+            item.SetActive(room);
+        }
+        foreach (GameObject item in publicStreamsControls) {
+            item.SetActive(!room);
+        }
+    }
+
+    private void RefreshBroadcasterControls(bool broadcaster) {
+        controlsPresenter.SetActive(broadcaster);
+        controlsViewer.SetActive(!broadcaster);
+    }
+
+    private void RefreshLiveControls(bool live) {
+        foreach (GameObject item in onlineControls) {
+            item.SetActive(live);
+        }
+        foreach (GameObject item in offlineControls) {
+            item.SetActive(!live);
         }
     }
 
@@ -133,7 +154,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         Init();
         currentStreamId = "";
         agoraController.IsRoom = true;
-        ToggleRoomShareControlObjects(true);
         StreamerOpenSharedFunctions();
     }
 
@@ -141,7 +161,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         Init();
         currentStreamId = "";
         agoraController.IsRoom = false;
-        ToggleRoomShareControlObjects(false);
         StreamerOpenSharedFunctions();
     }
 
@@ -152,17 +171,16 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.ChannelName = userWebManager.GetUsername();
         isStreamer = true;
         gameObject.SetActive(true);
-        controlsPresenter.SetActive(true);
-        controlsViewer.SetActive(false);
         pnlViewingExperience.ToggleARSessionObjects(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
         StartCoroutine(OnPreviewReady());
         agoraController.StartPreview();
+        RefreshControls();
     }
 
-    public void OpenAsViewer(string channelName, string streamID) {
+    public void OpenAsViewer(string channelName, string streamID, bool isRoom) {
 
-        if(channelName == userWebManager.GetUsername()) {
+        if (channelName == userWebManager.GetUsername()) {
             pnlGenericError.ActivateSingleButton("Viewing as stream host",
                 "Please connect to the stream using a different account",
                 onBackPress: () => { CloseAsStreamer(); });
@@ -171,21 +189,32 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
 
         Init();
-        ToggleRoomShareControlObjects(false);
         agoraController.IsChannelCreator = false;
         agoraController.ChannelName = channelName;
         isStreamer = false;
         gameObject.SetActive(true);
-        controlsPresenter.SetActive(false);
-        controlsViewer.SetActive(true);
         pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName, streamID);
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
         currentStreamId = streamID;
+        agoraController.IsRoom = isRoom;
+        RefreshControls();
     }
 
     public void FadePanel(bool show) {
         canvasGroup.DOFade(show ? 1 : 0, 0.5f).OnComplete(() => { if (!show) { gameObject.SetActive(false); } });
+    }
+
+    private void OnDestroy() {
+        LeaveOnDestroy();
+    }
+
+    private void LeaveOnDestroy() {
+        if (isStreamer) {
+            CloseAsStreamer();
+        } else {
+            CloseAsViewer();
+        }
     }
 
     public void ShowLeaveWarning() {
@@ -217,11 +246,16 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void ShareStream() {
+
+        HelperFunctions.DevLog("isStreamer = " + isStreamer);
+        HelperFunctions.DevLog("agoraController.IsRoom = " + agoraController.IsRoom);
         if (isStreamer && agoraController.IsRoom) {
             ShareRoomStreamLink();
+            HelperFunctions.DevLog("SHARE_ROOM");
         } else {
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
             ShareStreamLink();
+            HelperFunctions.DevLog("SHARE_STREAM");
         }
     }
 
@@ -238,13 +272,13 @@ public class PnlStreamOverlay : MonoBehaviour {
         if (countdownRoutine != null)
             StopCoroutine(countdownRoutine);
 
-        EnableStreamControls(false);
         agoraController.Leave();
         cameraRenderImage.texture = null;
+        RefreshControls();
     }
 
 
-    void ShareRoomStreamLink() {
+    public void ShareRoomStreamLink() {
         StreamCallBacks.onGetMyRoomLink?.Invoke();
     }
 
@@ -255,11 +289,20 @@ public class PnlStreamOverlay : MonoBehaviour {
             DynamicLinksCallBacks.onShareAppLink?.Invoke();
     }
 
-    void StartStream() {
+    private void StartStream() {
         fluidToggle.ToggleInteractibility(false);
         agoraController.JoinOrCreateChannel(true);
-        EnableStreamControls(true);
-        ToggleRoomShareControlObjects(false);
+        RefreshControls();
+    }
+
+    /// <summary>
+    /// Open Chat
+    /// </summary>
+    public void OpenChat(bool value) {
+        chat.DoMenuTransition(value);
+        foreach (GameObject item in onlineControls) {
+            item.SetActive(!value && agoraController.IsLive);
+        }
     }
 
     private void AddVideoSurface() {
@@ -267,11 +310,9 @@ public class PnlStreamOverlay : MonoBehaviour {
         if (!videoSurface) {
             videoSurface = cameraRenderImage.gameObject.AddComponent<VideoSurface>();
             isUsingFrontCamera = true;
-            //videoSurface.EnableFlipTextureApplyTransform(false, true, rawImageQuadDefaultScale);
             videoSurface.EnableFilpTextureApply(false, true);
             videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
             videoSurface.SetGameFps(agoraController.frameRate);
-            //videoSurface.SetEnable(true);
         }
     }
 
@@ -291,24 +332,20 @@ public class PnlStreamOverlay : MonoBehaviour {
         cameraRenderImage.SizeToParent();
     }
 
-    private void EnableStreamControls(bool enable) {
-        toggleAudio.interactable = enable;
-        toggleVideo.interactable = enable;
-        btnFlipCamera.interactable = enable;
-    }
-
     public void ToggleAudio(bool mute) {
+        _muteAudio = mute;
         TogglePauseStream();
         agoraController.ToggleAudio(mute);
     }
 
     public void ToggleVideo(bool hideVideo) {
+        _hideVideo = hideVideo;
         TogglePauseStream();
         agoraController.ToggleVideo(hideVideo);
     }
 
     void TogglePauseStream() {
-        if (toggleVideo.isOn && toggleAudio.isOn) {
+        if (_hideVideo && _muteAudio) {
             AnimatedCentreTextMessage("Stream Paused");
         } else {
             AnimatedFadeOutMessage();
@@ -342,12 +379,13 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void Awake() {
-        StreamCallBacks.onLiveStreamCreated += (data) => { currentStreamId = data.id.ToString(); };
+        StreamCallBacks.onLiveStreamCreated += (data) => { currentStreamId = data.id.ToString();RefreshControls(); };
     }
 
     private void OnDisable() {
         StopAllCoroutines();
         pnlViewingExperience.ToggleARSessionObjects(true);
+        ChatBtn.onOpen -= OpenChat;
     }
 
     IEnumerator OnApplicationFocus(bool hasFocus) //Potential fix for bug where audio and video are re-enabled after losing focus from sharing or minimising
@@ -357,9 +395,9 @@ public class PnlStreamOverlay : MonoBehaviour {
 
             //HelperFunctions.DevLog("ON FOCUS CALLED");
 
-            if (toggleAudio.isOn)
+            if (_muteAudio)
                 ToggleAudio(true);
-            if (toggleVideo.isOn)
+            if (_hideVideo)
                 ToggleVideo(true);
         }
     }
