@@ -3137,7 +3137,6 @@ GameObject:
   - component: {fileID: 7151137965543196929}
   - component: {fileID: 50959006714722408}
   - component: {fileID: 6482814699322004641}
-  - component: {fileID: 9137589578204825572}
   m_Layer: 5
   m_Name: img
   m_TagString: Untagged
@@ -3208,54 +3207,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2568779940231905835}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb7aead3b2e5245e791835a092b2c25a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spriteTag: 
   colorTag: BtnMenuBarColor
---- !u!114 &9137589578204825572
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2568779940231905835}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69e5e8b2255bae6438d81b0c949a2fe3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  holdColour: {r: 0.45882356, g: 0.45882356, b: 0.45882356, a: 1}
-  onTouchDown:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2118979325922400105}
-        m_MethodName: ToggleLocalAudio
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  onTouchUp:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2118979325922400105}
-        m_MethodName: ToggleLocalAudio
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
 --- !u!1 &2674523417021964644
 GameObject:
   m_ObjectHideFlags: 0
@@ -4642,6 +4600,7 @@ GameObject:
   - component: {fileID: 4804103176892736985}
   - component: {fileID: 5956369270297650136}
   - component: {fileID: 1567833575071450520}
+  - component: {fileID: 1713159631734779701}
   m_Layer: 5
   m_Name: clickableField
   m_TagString: Untagged
@@ -4689,7 +4648,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.003921569}
+  m_Color: {r: 0.45882356, g: 0.45882356, b: 0.45882356, a: 0.003921569}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -4705,6 +4664,48 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1713159631734779701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3947383558645842733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69e5e8b2255bae6438d81b0c949a2fe3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  holdColour: {r: 1, g: 1, b: 1, a: 1}
+  onTouchDown:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2118979325922400105}
+        m_MethodName: ToggleLocalAudio
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onTouchUp:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2118979325922400105}
+        m_MethodName: ToggleLocalAudio
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  imageToAnimate: {fileID: 50959006714722408}
 --- !u!1 &3980291903013252196
 GameObject:
   m_ObjectHideFlags: 0

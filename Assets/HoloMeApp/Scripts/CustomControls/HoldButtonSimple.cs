@@ -14,26 +14,30 @@ public class HoldButtonSimple : MonoBehaviour, IPointerDownHandler, IPointerUpHa
     public UnityEvent onTouchDown;
     public UnityEvent onTouchUp;
 
-    Image image;
+    [SerializeField]
+    Image imageToAnimate;
+
     private void Awake() {
-        image = transform.GetComponent<Image>();
-        originalColour = image.color;
+        if (imageToAnimate == null) {
+            imageToAnimate = transform.GetComponent<Image>();
+        }
+        originalColour = imageToAnimate.color;
     }
 
     private void OnEnable() {
-        image.transform.localScale = Vector3.one;
-        image.color = holdColour;
+        imageToAnimate.transform.localScale = Vector3.one;
+        imageToAnimate.color = originalColour;
     }
 
     public void OnPointerDown(PointerEventData eventData) {
         onTouchDown?.Invoke();
-        image.transform.DOBlendableScaleBy(Vector3.one, .1f);
-        image.color = holdColour;
+        imageToAnimate.transform.DOBlendableScaleBy(new Vector3(.25f, .25f, .25f), .1f);
+        imageToAnimate.color = holdColour;
     }
 
     public void OnPointerUp(PointerEventData eventData) {
         onTouchUp?.Invoke();
-        image.transform.DOBlendableScaleBy(-Vector3.one, .1f);
-        image.color = originalColour;
+        imageToAnimate.transform.DOBlendableScaleBy(-new Vector3(.25f, .25f, .25f), .1f);
+        imageToAnimate.color = originalColour;
     }
 }
