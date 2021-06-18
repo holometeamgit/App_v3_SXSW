@@ -15,7 +15,7 @@ namespace Beem.Utility.UnityConsole {
         private static Dictionary<LogType, bool> logStatus = new Dictionary<LogType, bool>();
 
         private static bool isStackTraceStatus = default;
-        
+
         /// <summary>
         /// Stack Trace
         /// </summary>
@@ -29,14 +29,26 @@ namespace Beem.Utility.UnityConsole {
             }
         }
 
+        private static string currentTag = "Default";
+
+        /// <summary>
+        /// Stack Trace
+        /// </summary>
+        public static string CurrentTag {
+            get {
+                return currentTag;
+            }
+            set {
+                currentTag = value;
+                LogCallBacks.OnRefresh?.Invoke();
+            }
+        }
+
         public static void SetToggleLogType(List<LogType> logType, bool status) {
             foreach (LogType item in logType) {
-                if (logStatus.ContainsKey(item))
-                {
+                if (logStatus.ContainsKey(item)) {
                     logStatus[item] = status;
-                }
-                else
-                {
+                } else {
                     logStatus.Add(item, status);
                 }
             }
@@ -61,64 +73,61 @@ namespace Beem.Utility.UnityConsole {
             public string Value;
             public string StackTrace;
             public DateTime Date;
+            public string Tag;
         }
 
         /// <summary>
         /// Initialise Data
         /// </summary>
-        public static void Init()
-        {
+        public static void Init() {
             string[] PieceTypeNames = Enum.GetNames(typeof(LogType));
-            foreach (string item in PieceTypeNames)
-            {
+            foreach (string item in PieceTypeNames) {
                 LogType logType = (LogType)Enum.Parse(typeof(LogType), item);
-                for (int i = 0; i < GetLogNumber(logType); i++)
-                {
+                for (int i = 0; i < GetLogNumber(logType); i++) {
                     AddLog(LoadLogs(logType, i));
                 }
             }
 
-            
-            _log.Sort(delegate (UnityLog x, UnityLog y)
-            {
+
+            _log.Sort(delegate (UnityLog x, UnityLog y) {
                 return DateTime.Compare(x.Date, y.Date);
             });
-            
+
         }
 
         private static void SaveLogs(UnityLog log) {
-            PlayerPrefs.SetString(log.Key+":"+"Log Value", log.Value.ToString());
+            PlayerPrefs.SetString(log.Key + ":" + "Log Value", log.Value.ToString());
             DateTimePrefs.Set(log.Key + ":" + "Log Date", log.Date);
             PlayerPrefs.SetString(log.Key + ":" + "Log StackTrace", log.StackTrace.ToString());
+            PlayerPrefs.SetString(log.Key + ":" + "Log Tag", log.Tag);
         }
 
         private static void ClearLogs(LogType logType, int logNumber) {
             PlayerPrefs.DeleteKey(logType + logNumber + ":" + "Log Value");
             DateTimePrefs.DeleteKey(logType + logNumber + ":" + "Log Date");
             PlayerPrefs.DeleteKey(logType + logNumber + ":" + "Log StackTrace");
+            PlayerPrefs.DeleteKey(logType + logNumber + ":" + "Log Tag");
         }
 
         private static int GetLogNumber(LogType logType) {
             return PlayerPrefs.GetInt(logType + ":" + "Log Number");
         }
 
-        private static void SetLogNumber(LogType logType, int value)
-        {
+        private static void SetLogNumber(LogType logType, int value) {
             PlayerPrefs.SetInt(logType + ":" + "Log Number", value);
         }
 
-        private static void ClearLogNumber(LogType logType)
-        {
+        private static void ClearLogNumber(LogType logType) {
             PlayerPrefs.DeleteKey(logType + ":" + "Log Number");
         }
 
         private static UnityLog LoadLogs(LogType logType, int logNumber) {
-            UnityLog unityLog = new UnityLog
-            {
+            UnityLog unityLog = new UnityLog {
                 Key = logType,
-                Value = PlayerPrefs.GetString(logType+logNumber + ":" + "Log Value"),
+                Value = PlayerPrefs.GetString(logType + logNumber + ":" + "Log Value"),
                 Date = DateTimePrefs.Get(logType + logNumber + ":" + "Log Date"),
-                StackTrace = PlayerPrefs.GetString(logType + logNumber + ":" + "Log StackTrace")
+                StackTrace = PlayerPrefs.GetString(logType + logNumber + ":" + "Log StackTrace"),
+                Tag = PlayerPrefs.GetString(logType + logNumber + ":" + "Log Tag")
             };
             return unityLog;
         }
@@ -129,14 +138,15 @@ namespace Beem.Utility.UnityConsole {
         /// <param name="logType"></param>
         /// <param name="log"></param>
         /// <param name="stackTrace"></param>
-        public static void AddLog(string log, string stackTrace, LogType logType) {
+        public static void AddLog(string log, string stackTrace, LogType logType, string tag) {
             UnityLog unityLog = new UnityLog {
                 Key = logType,
                 Value = log,
-                Date = DateTime.Now, 
+                Date = DateTime.Now,
                 StackTrace = stackTrace,
+                Tag = tag
             };
-            SetLogNumber(logType, GetLogNumber(logType)+1);
+            SetLogNumber(logType, GetLogNumber(logType) + 1);
             SaveLogs(unityLog);
             _log.Add(unityLog);
             LogCallBacks.OnRefresh?.Invoke();
@@ -146,8 +156,7 @@ namespace Beem.Utility.UnityConsole {
         /// Add Loading Log
         /// </summary>
         /// <param name="unityLog"></param>
-        public static void AddLog(UnityLog unityLog)
-        {
+        public static void AddLog(UnityLog unityLog) {
             _log.Add(unityLog);
             LogCallBacks.OnRefresh?.Invoke();
         }
@@ -165,17 +174,26 @@ namespace Beem.Utility.UnityConsole {
         /// </summary>
         public static void Clear() {
             string[] PieceTypeNames = Enum.GetNames(typeof(LogType));
-            foreach (string item in PieceTypeNames)
-            {
+            foreach (string item in PieceTypeNames) {
                 LogType logType = (LogType)Enum.Parse(typeof(LogType), item);
-                for (int i = 0; i < GetLogNumber(logType); i++)
-                {
+                for (int i = 0; i < GetLogNumber(logType); i++) {
                     ClearLogs(logType, i);
                 }
                 ClearLogNumber(logType);
             }
             _log.Clear();
             LogCallBacks.OnRefresh?.Invoke();
+        }
+
+        /// <summary>
+        /// Tags
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static List<string> GetTags() {
+            List<string> tags = new List<string>();
+            _log.ForEach((x) => tags.Add(x.Tag));
+            return tags;
         }
 
         /// <summary>
@@ -186,14 +204,16 @@ namespace Beem.Utility.UnityConsole {
                 string temp = string.Empty;
 
                 foreach (UnityLog item in _log) {
-                    if (GetToggleLogType(item.Key) && item.Value!=string.Empty) {
-                        temp += RecolorLog.StartRecolor(item.Key);
-                        string date = string.Format("{0:D2}:{1:D2}:{2:D2}", item.Date.Hour, item.Date.Minute, item.Date.Second);
-                        temp += "[" + date + "]" + "[" + item.Key + "] : " + item.Value + "\n";
-                        if (IsStackTraceStatus) {
-                            temp += "[StackTrace]" + " : " + item.StackTrace + "\n";
+                    if (GetToggleLogType(item.Key) && item.Value != string.Empty) {
+                        if (item.Tag == CurrentLog) {
+                            temp += RecolorLog.StartRecolor(item.Key);
+                            string date = string.Format("{0:D2}:{1:D2}:{2:D2}", item.Date.Hour, item.Date.Minute, item.Date.Second);
+                            temp += "[" + date + "]" + "[" + item.Key + "] : " + item.Value + "\n";
+                            if (IsStackTraceStatus) {
+                                temp += "[StackTrace]" + " : " + item.StackTrace + "\n";
+                            }
+                            temp += RecolorLog.FinishRecolor(item.Key);
                         }
-                        temp += RecolorLog.FinishRecolor(item.Key);
                     }
                 }
                 return temp;

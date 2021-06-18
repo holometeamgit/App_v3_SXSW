@@ -12,18 +12,23 @@ namespace Beem.Utility.UnityConsole {
         private void OnEnable() {
             LogData.Init();
             Application.logMessageReceived += HandleLog;
+            LogCallBacks.onLog += HandleLog;
         }
 
         private void OnDisable() {
             Application.logMessageReceived -= HandleLog;
+            LogCallBacks.onLog -= HandleLog;
         }
 
         private void HandleLog(string logString, string stackTrace, LogType type) {
-            LogData.AddLog(logString, stackTrace, type);
+            LogCallBacks.onLog?.Invoke(logString, stackTrace, type, "Default");
         }
 
-        private void OnApplicationQuit()
-        {
+        private void HandleLog(string logString, string stackTrace, LogType type, string tag) {
+            LogData.AddLog(logString, stackTrace, type, tag);
+        }
+
+        private void OnApplicationQuit() {
             LogData.SaveAll();
         }
     }
