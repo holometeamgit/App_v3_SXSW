@@ -450,7 +450,8 @@ public class AgoraController : MonoBehaviour {
 
     public void ToggleLocalAudio(bool pauseAudio) {
         if (iRtcEngine != null) {
-            iRtcEngine.EnableLocalAudio(!pauseAudio);
+            iRtcEngine.MuteLocalAudioStream(pauseAudio);
+            //iRtcEngine.EnableLocalAudio(!pauseAudio);
         }
     }
 

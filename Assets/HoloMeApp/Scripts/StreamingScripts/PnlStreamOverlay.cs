@@ -339,6 +339,10 @@ public class PnlStreamOverlay : MonoBehaviour {
     public void TogglePushToTalk() {
         isPushToTalkActive = !isPushToTalkActive;
         SendPushToTalkStatusToViewers();
+        if (isPushToTalkActive) {
+            AnimatedCentreTextMessage("Dialog is on. Listeners can talk to you now");
+            AnimatedFadeOutMessage(3);
+        }
     }
 
     void SendPushToTalkStatusToViewers() {
@@ -357,6 +361,8 @@ public class PnlStreamOverlay : MonoBehaviour {
             case MessageEnableAudio:
                 ToggleLocalAudio(true);
                 btnPushToTalk.SetActive(true);
+                AnimatedCentreTextMessage("Hold the Speak button to talk to the broadcaster");
+                AnimatedFadeOutMessage(3);
                 break;
             case MessageDisableAudio:
                 ToggleLocalAudio(true);
@@ -413,28 +419,15 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void ToggleLocalAudio(bool mute) {
         _muteAudio = mute;
-        UpdateToggleMessage();
-        //if (!UpdateToggleMessage() && mute) {
-        //    AnimatedCentreTextMessage("Audio is muted");
-        //}
-        agoraController.ToggleLocalAudio(mute);
-    }
-
-    public void ToggleAudio(bool mute) {
-        _muteAudio = mute;
-        UpdateToggleMessage();
-        //if (!UpdateToggleMessage() && mute) {
-        //    AnimatedCentreTextMessage("Audio is muted");
-        //}
+        if (isStreamer) { //Display popup only for streamers but not for 2 way audio viewers
+            UpdateToggleMessage();
+        }
         agoraController.ToggleLocalAudio(mute);
     }
 
     public void ToggleVideo(bool hideVideo) {
         _hideVideo = hideVideo;
         UpdateToggleMessage();
-        //if (!() && hideVideo) {
-        //    AnimatedCentreTextMessage("Video is paused");
-        //}
         agoraController.ToggleVideo(hideVideo);
     }
 
@@ -491,7 +484,7 @@ public class PnlStreamOverlay : MonoBehaviour {
             //HelperFunctions.DevLog("ON FOCUS CALLED");
 
             if (_muteAudio)
-                ToggleAudio(true);
+                ToggleLocalAudio(true);
             if (_hideVideo)
                 ToggleVideo(true);
         }
