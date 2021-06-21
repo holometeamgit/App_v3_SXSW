@@ -38,7 +38,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 2}
-  m_SizeDelta: {x: 0, y: 150}
+  m_SizeDelta: {x: 0, y: 552.9708}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &448384981315295641
 CanvasRenderer:
@@ -1622,7 +1622,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: Assert
 --- !u!1 &3157207746592310201
 GameObject:
   m_ObjectHideFlags: 0
@@ -2266,7 +2266,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!114 &1510247551451107111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2702,7 +2702,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4038243482193972388
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2718,8 +2718,8 @@ RectTransform:
   m_Father: {fileID: 5528650066133857828}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 168, y: 84}
   m_Pivot: {x: 0, y: 1}
@@ -3174,7 +3174,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4196172498928766715
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3190,9 +3190,9 @@ RectTransform:
   m_Father: {fileID: 5528650066133857828}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 185.66667, y: 0}
   m_SizeDelta: {x: 168, y: 84}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &3064265257903565435
@@ -3242,7 +3242,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!114 &3950512798795023362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3268,14 +3268,14 @@ GameObject:
   - component: {fileID: 2784953926207122786}
   - component: {fileID: 680409606736935948}
   - component: {fileID: 4091086700268802922}
-  - component: {fileID: 859281249905741694}
+  - component: {fileID: 3475240501156967116}
   m_Layer: 5
   m_Name: Dropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2959414938327154667
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3384,12 +3384,22 @@ MonoBehaviour:
   m_ItemImage: {fileID: 0}
   m_Value: 0
   m_Options:
-    m_Options: []
+    m_Options:
+    - m_Text: Assert
+      m_Image: {fileID: 0}
+    - m_Text: Error
+      m_Image: {fileID: 0}
+    - m_Text: Exception
+      m_Image: {fileID: 0}
+    - m_Text: Log
+      m_Image: {fileID: 0}
+    - m_Text: Warning
+      m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
   m_AlphaFadeSpeed: 0.15
---- !u!114 &859281249905741694
+--- !u!114 &3475240501156967116
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3398,7 +3408,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8738771430946202916}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8dbb57206f9d249cebb1e3da93e1c8c3, type: 3}
+  m_Script: {fileID: 11500000, guid: e2974016c830686408db33da0d2f29f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8878451835024161641
