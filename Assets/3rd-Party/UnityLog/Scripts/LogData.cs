@@ -12,58 +12,33 @@ namespace Beem.Utility.UnityConsole {
     /// </summary>
     public static class LogData {
 
-        private static Dictionary<LogType, bool> logStatus = new Dictionary<LogType, bool>();
+        private static LogType _currentLogType = LogType.Error;
 
-        private static bool isStackTraceStatus = default;
+        private static bool _isStackTraceStatus = default;
 
-        private static ILog _ILog = new LocalLog();
+        private static ILog _ILog = new PrefsLog();
+
+        private static List<UnityLog> _log = new List<UnityLog>();
 
         /// <summary>
         /// Stack Trace
         /// </summary>
         public static bool IsStackTraceStatus {
             get {
-                return isStackTraceStatus;
+                return _isStackTraceStatus;
             }
             set {
-                isStackTraceStatus = value;
+                _isStackTraceStatus = value;
                 LogCallBacks.OnRefresh?.Invoke();
             }
         }
 
-        public static void SelectLogTypes(List<LogType> logType, bool status) {
-            foreach (LogType item in logType) {
-                if (logStatus.ContainsKey(item)) {
-                    logStatus[item] = status;
-                } else {
-                    logStatus.Add(item, status);
-                }
-            }
-
-            LogCallBacks.OnRefresh?.Invoke();
-        }
-
         public static void SelectLogType(LogType logType) {
 
-            if (!logStatus.ContainsKey(logType)) {
-                logStatus.Add(logType, true);
-            }
-
-            foreach (KeyValuePair<LogType, bool> item in logStatus) {
-                logStatus[item.Key] = item.Key == logType;
-            }
+            _currentLogType = logType;
 
             LogCallBacks.OnRefresh?.Invoke();
         }
-
-        private static bool GetLogType(LogType logType) {
-            if (!logStatus.ContainsKey(logType)) {
-                logStatus.Add(logType, false);
-            }
-            return logStatus[logType];
-        }
-
-        private static List<UnityLog> _log = new List<UnityLog>();
 
         /// <summary>
         /// Unity Log
@@ -83,7 +58,9 @@ namespace Beem.Utility.UnityConsole {
             foreach (string item in PieceTypeNames) {
                 LogType logType = (LogType)Enum.Parse(typeof(LogType), item);
                 for (int i = 0; i < GetLogNumber(logType); i++) {
-                    AddLog(LoadLogs(logType, i));
+                    if (LoadLogs(logType, i).Value != string.Empty) {
+                        AddLog(LoadLogs(logType, i));
+                    }
                 }
             }
 
@@ -176,9 +153,8 @@ namespace Beem.Utility.UnityConsole {
         public static string CurrentLog {
             get {
                 string temp = string.Empty;
-
                 foreach (UnityLog item in _log) {
-                    if (GetLogType(item.Key) && item.Value != string.Empty) {
+                    if (_currentLogType == item.Key) {
                         temp += RecolorLog.StartRecolor(item.Key);
                         string date = string.Format("{0:D2}:{1:D2}:{2:D2}", item.Date.Hour, item.Date.Minute, item.Date.Second);
                         temp += "[" + date + "]" + "[" + item.Key + "] : " + item.Value + "\n";
