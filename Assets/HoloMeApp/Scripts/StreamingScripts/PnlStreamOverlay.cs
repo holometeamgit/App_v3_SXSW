@@ -213,13 +213,12 @@ public class PnlStreamOverlay : MonoBehaviour {
         gameObject.SetActive(true);
         pnlViewingExperience.ToggleARSessionObjects(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
-        RefreshControls();
         StartCoroutine(OnPreviewReady());
         agoraController.StartPreview();
         isPushToTalkActive = false;
     }
 
-    public void OpenAsViewer(string channelName, string streamID) {
+    public void OpenAsViewer(string channelName, string streamID, bool isRoom) {
 
         if (channelName == userWebManager.GetUsername()) {
             pnlGenericError.ActivateSingleButton("Viewing as stream host",
@@ -239,6 +238,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
         currentStreamId = streamID;
+        agoraController.IsRoom = isRoom;
         RefreshControls();
         StartStreamCountUpdaters();
     }

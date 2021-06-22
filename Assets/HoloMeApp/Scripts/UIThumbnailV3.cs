@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using TMPro;
 using Beem.SSO;
 using Beem;
+using Beem.UI;
+using System.Globalization;
 
 public class UIThumbnailV3 : UIThumbnail {
     [SerializeField] RawImage rawImage;
@@ -26,6 +28,13 @@ public class UIThumbnailV3 : UIThumbnail {
     [SerializeField] TMP_Text txtDescription;
     [SerializeField] TMP_Text txtInfoText;
     [SerializeField] TMP_Text txtPrice;
+
+    [Header("Like")]
+    [SerializeField] UIBtnLikes btnLikes;
+
+    [Header("Views")]
+    [SerializeField] TMP_Text txtViews;
+
     [Space]
     [SerializeField] AspectRatioFitterByMinSide aspectRatioFitter;
 
@@ -127,6 +136,7 @@ public class UIThumbnailV3 : UIThumbnail {
         txtDate.text = "";
         txtTime.text = "";
         txtTitle.text = "";
+        txtViews.text = "";
         txtDescription.text = "";
         txtInfoText.text = "";
         txtPrice.text = "";
@@ -152,6 +162,8 @@ public class UIThumbnailV3 : UIThumbnail {
         txtTime.text = thumbnailElement.Data.StartDate.ToString("HH:mm");
         txtTitle.text = thumbnailElement.Data.title;
         txtDescription.text = thumbnailElement.Data.description;
+
+        txtViews.text = DataStringConverter.GetItems(thumbnailElement.Data.count_of_views, "view", "views");
 
         btnWatchNow.SetActive(false);
         btnPlayTeaser.SetActive(false);
@@ -179,6 +191,8 @@ public class UIThumbnailV3 : UIThumbnail {
 
             btnPlayTeaser.SetActive(thumbnailElement.Data.HasTeaser);
         }
+
+        btnLikes.SetStreamId(thumbnailElement.Data.id);
 
         _streamTimerView.View(thumbnailElement.Data);
     }

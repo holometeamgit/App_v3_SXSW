@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Beem.Firebase.DynamicLink;
+using Beem.SSO;
 
 public class UIThumbnailsController : MonoBehaviour {
     public Action OnUpdated;
@@ -78,10 +79,10 @@ public class UIThumbnailsController : MonoBehaviour {
     /// Play live stream from user 
     /// </summary>
 
-    public void PlayLiveStream(string user, string agoraChannel, string streamID) { //TODO split it to ather class
+    public void PlayLiveStream(string user, string agoraChannel, string streamID, bool isRoom) { //TODO split it to ather class
         if (!permissionController.CheckCameraAccess())
             return;
-        pnlStreamOverlay.OpenAsViewer(agoraChannel, streamID);
+        pnlStreamOverlay.OpenAsViewer(agoraChannel, streamID, isRoom);
         OnPlayFromUser?.Invoke(user);
     }
 
@@ -91,6 +92,10 @@ public class UIThumbnailsController : MonoBehaviour {
         btnThumbnailItemsDictionary = new Dictionary<long, UIThumbnail>();
         btnThumbnailItems = new List<UIThumbnail>();
         streamDataEqualityComparer = new StreamDataEqualityComparer();
+
+        CallBacks.onClickLike += SetLike;
+        CallBacks.onClickUnlike += SetUnlike;
+        CallBacks.onGetLikeState += GetLikeState;
     }
 
     #region Prepare thumbnails
@@ -162,7 +167,7 @@ public class UIThumbnailsController : MonoBehaviour {
         } else if (data.HasAgoraChannel) {
             if (data.agora_channel == "0" || string.IsNullOrWhiteSpace(data.agora_channel))
                 return;
-            PlayLiveStream(data.user, data.agora_channel, data.id.ToString());
+            PlayLiveStream(data.user, data.agora_channel, data.id.ToString(), false);
         }
     }
 
@@ -173,5 +178,46 @@ public class UIThumbnailsController : MonoBehaviour {
         pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, data, null, data.HasTeaser);
         OnPlayFromUser?.Invoke(data.user);
         purchaseManager.SetPurchaseStreamData(data);
+    }
+
+    private void SetLike(long streamId, bool isLike) {
+        var stream = GetStreamElement(streamId);
+        if (stream == null)
+            return;
+
+        stream.Data.is_liked = isLike;
+
+        stream.Data.count_of_likes = isLike ? ++stream.Data.count_of_likes : Math.Max(--stream.Data.count_of_likes,0);
+
+        CallBacks.onGetLikeStateCallBack?.Invoke(streamId, stream.Data.is_liked, stream.Data.count_of_likes);
+    }
+
+    private void SetLike(long streamId) {
+        SetLike(streamId, true);
+    }
+
+    private void SetUnlike(long streamId) {
+        SetLike(streamId, false);
+    }
+
+    private void GetLikeState(long streamId) {
+        var stream = GetStreamElement(streamId);
+        if (stream == null)
+            return;
+
+        CallBacks.onGetLikeStateCallBack?.Invoke(streamId, stream.Data.is_liked, stream.Data.count_of_likes);
+    }
+
+    private ThumbnailElement GetStreamElement(long streamId) {
+        if (!thumbnailElementsDictionary.ContainsKey(streamId))
+            return null;
+
+        return thumbnailElementsDictionary[streamId];
+    }
+
+    private void OnDestroy() {
+        CallBacks.onClickLike -= SetLike;
+        CallBacks.onClickUnlike -= SetUnlike;
+        CallBacks.onGetLikeState -= GetLikeState;
     }
 }
