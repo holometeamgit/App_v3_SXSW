@@ -144,10 +144,11 @@ public class AgoraController : MonoBehaviour {
 
         if (EnableVideoPlayback() == 0)
         {          
-                if (iRtcEngine.StartPreview() == 0)
-                {
+                if (iRtcEngine.StartPreview() == 0) {
                     HelperFunctions.DevLog("Agora Preview Started");
-                    VideoIsReady = true;
+                    if(iRtcEngine.EnableLocalVideo(true) ==0){
+                        VideoIsReady = true;
+                    }
                 }
                 else
                 {
