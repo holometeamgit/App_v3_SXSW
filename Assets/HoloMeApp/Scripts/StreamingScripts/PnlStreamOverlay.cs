@@ -112,8 +112,6 @@ public class PnlStreamOverlay : MonoBehaviour {
             }
         };
         agoraController.OnPreviewStopped += () => videoSurface.SetEnable(false);
-        //agoraController.OnStreamWentLive += x => btnGoLive.interactable = false;
-        //agoraController.OnStreamWentLive += StartStreamCountUpdaters;
         agoraController.OnStreamWentOffline += StopStreamCountUpdaters;
         agoraController.OnStreamWentOffline += () => btnGoLive.interactable = true;
         agoraController.OnMessageRecieved += StreamMessageResponse;
@@ -324,7 +322,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         RefreshControls();
     }
 
-
     public void ShareRoomStreamLink() {
         StreamCallBacks.onGetMyRoomLink?.Invoke();
     }
@@ -336,6 +333,9 @@ public class PnlStreamOverlay : MonoBehaviour {
             DynamicLinksCallBacks.onShareAppLink?.Invoke();
     }
 
+    /// <summary>
+    /// Call this to grant viewers ability to speak
+    /// </summary>
     public void TogglePushToTalk() {
         isPushToTalkActive = !isPushToTalkActive;
         SendPushToTalkStatusToViewers();

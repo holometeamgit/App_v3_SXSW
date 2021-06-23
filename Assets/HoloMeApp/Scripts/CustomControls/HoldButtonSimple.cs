@@ -4,6 +4,9 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DG.Tweening;
 
+/// <summary>
+/// Use this class for press and hold buttons. It will auto scale button on hold and change the sprite colour to the holdColour
+/// </summary>
 [RequireComponent(typeof(Image))]
 public class HoldButtonSimple : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
 

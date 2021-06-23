@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Use this component to change and image's colour property based on a toggle component status
+/// </summary>
 [RequireComponent(typeof(Toggle))]
 public class ToggleColourSwap : MonoBehaviour {
     [SerializeField]

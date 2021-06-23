@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Use this component to change sprite image based on a toggle component status
+/// </summary>
 [RequireComponent(typeof(Toggle))]
 public class ToggleSpriteSwap : MonoBehaviour {
 
