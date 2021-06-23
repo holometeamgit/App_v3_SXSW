@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Beem.Utility.UnityConsole {
 
     /// <summary>
-    /// LocalPrefs
+    /// Local Prefs. Work without saving from session to session
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class LocalPrefs<T> {

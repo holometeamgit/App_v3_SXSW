@@ -41,16 +41,6 @@ namespace Beem.Utility.UnityConsole {
         }
 
         /// <summary>
-        /// Unity Log
-        /// </summary>
-        public class UnityLog {
-            public LogType Key;
-            public string Value;
-            public string StackTrace;
-            public DateTime Date;
-        }
-
-        /// <summary>
         /// Initialise Data
         /// </summary>
         public static void Init() {
@@ -101,7 +91,7 @@ namespace Beem.Utility.UnityConsole {
         /// <param name="logType"></param>
         /// <param name="log"></param>
         /// <param name="stackTrace"></param>
-        public static void AddLog(string log, string stackTrace, LogType logType, string tag) {
+        public static void AddLog(string log, string stackTrace, LogType logType) {
             UnityLog unityLog = new UnityLog {
                 Key = logType,
                 Value = log,
@@ -166,13 +156,6 @@ namespace Beem.Utility.UnityConsole {
                 }
                 return temp;
             }
-        }
-
-        /// <summary>
-        /// Save all item
-        /// </summary>
-        public static void SaveAll() {
-            _ILog.SaveAll();
         }
 
     }

@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Beem.Utility.UnityConsole.LogData;
 
 namespace Beem.Utility.UnityConsole {
+
+    /// <summary>
+    /// Logs with PlayerPrefs
+    /// </summary>
     public class PrefsLog : ILog {
         public void ClearLogNumber(LogType logType) {
             PlayerPrefs.DeleteKey(logType + ":" + "Log Number");
@@ -29,18 +32,16 @@ namespace Beem.Utility.UnityConsole {
             return unityLog;
         }
 
-        public void SaveAll() {
-            PlayerPrefs.Save();
-        }
-
         public void SaveLogs(UnityLog unityLog) {
             PlayerPrefs.SetString(unityLog.Key + ":" + "Log Value", unityLog.Value.ToString());
             DateTimePrefs.Set(unityLog.Key + ":" + "Log Date", unityLog.Date);
             PlayerPrefs.SetString(unityLog.Key + ":" + "Log StackTrace", unityLog.StackTrace.ToString());
+            PlayerPrefs.Save();
         }
 
         public void SetLogNumber(LogType logType, int value) {
             PlayerPrefs.SetInt(logType + ":" + "Log Number", value);
+            PlayerPrefs.Save();
         }
     }
 }

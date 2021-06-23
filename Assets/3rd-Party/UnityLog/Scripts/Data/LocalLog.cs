@@ -2,12 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Beem.Utility.UnityConsole.LogData;
 
 namespace Beem.Utility.UnityConsole {
 
     /// <summary>
-    /// Local Logs
+    /// Local Logs without PlayerPrefs
     /// </summary>
     public class LocalLog : ILog {
 
@@ -33,10 +32,6 @@ namespace Beem.Utility.UnityConsole {
                 StackTrace = LocalPrefs<string>.Get(logType + logNumber + ":" + "Log StackTrace", string.Empty),
             };
             return unityLog;
-        }
-
-        public void SaveAll() {
-
         }
 
         public void SaveLogs(UnityLog unityLog) {

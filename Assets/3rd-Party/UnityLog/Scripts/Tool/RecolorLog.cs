@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Beem.Utility.UnityConsole
-{
+namespace Beem.Utility.UnityConsole {
 
     /// <summary>
     /// RecolorLog
     /// </summary>
-    public static class RecolorLog
-    {
+    public static class RecolorLog {
+        /// <summary>
+        /// Start recolor
+        /// </summary>
+        /// <param name="logType"></param>
+        /// <returns></returns>
         public static string StartRecolor(LogType logType) {
             switch (logType) {
                 case LogType.Warning:
@@ -22,10 +25,13 @@ namespace Beem.Utility.UnityConsole
             }
         }
 
-        public static string FinishRecolor(LogType logType)
-        {
-            switch (logType)
-            {
+        /// <summary>
+        /// Finish Recolor
+        /// </summary>
+        /// <param name="logType"></param>
+        /// <returns></returns>
+        public static string FinishRecolor(LogType logType) {
+            switch (logType) {
                 case LogType.Warning:
                 case LogType.Exception:
                 case LogType.Error:

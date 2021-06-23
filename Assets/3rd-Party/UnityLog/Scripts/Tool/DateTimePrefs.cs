@@ -3,14 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Beem.Utility.UnityConsole
-{
+namespace Beem.Utility.UnityConsole {
 
     /// <summary>
     /// DateTimePrefs
     /// </summary>
-    public static class DateTimePrefs
-    {
+    public static class DateTimePrefs {
+        /// <summary>
+        /// DateTime Set
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="dateTime"></param>
         public static void Set(string key, DateTime dateTime) {
             PlayerPrefs.SetInt("Year" + key, dateTime.Year);
             PlayerPrefs.SetInt("Month" + key, dateTime.Month);
@@ -22,6 +25,11 @@ namespace Beem.Utility.UnityConsole
             PlayerPrefs.Save();
         }
 
+        /// <summary>
+        /// DateTime Get
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static DateTime Get(string key) {
             int year = PlayerPrefs.GetInt("Year" + key, DateTime.MinValue.Year);
             int month = PlayerPrefs.GetInt("Month" + key, DateTime.MinValue.Month);
@@ -34,6 +42,10 @@ namespace Beem.Utility.UnityConsole
             return date;
         }
 
+        /// <summary>
+        /// Delete Key
+        /// </summary>
+        /// <param name="key"></param>
         public static void DeleteKey(string key) {
             PlayerPrefs.DeleteKey("Year" + key);
             PlayerPrefs.DeleteKey("Month" + key);

@@ -3,34 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Beem.Utility.UnityConsole
-{
+namespace Beem.Utility.UnityConsole {
     /// <summary>
-    /// Change Unity Log Type
+    /// Change StackTrace Status
     /// </summary>
     [RequireComponent(typeof(Toggle))]
-    public class StackTraceToggle : MonoBehaviour
-    {
+    public class StackTraceToggle : MonoBehaviour {
         private Toggle toggle;
 
-        private void Awake()
-        {
+        private void Awake() {
             toggle = GetComponent<Toggle>();
         }
 
-        private void OnEnable()
-        {
+        private void OnEnable() {
             Toggle(toggle.isOn);
             toggle.onValueChanged.AddListener(Toggle);
         }
 
-        private void OnDisable()
-        {
+        private void OnDisable() {
             toggle.onValueChanged.RemoveListener(Toggle);
         }
 
-        public void Toggle(bool value)
-        {
+        public void Toggle(bool value) {
             LogData.IsStackTraceStatus = value;
         }
     }
