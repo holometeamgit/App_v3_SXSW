@@ -145,13 +145,11 @@ namespace Beem.Utility.UnityConsole {
                 string temp = string.Empty;
                 foreach (UnityLog item in _log) {
                     if (_currentLogType == item.Key) {
-                        temp += RecolorLog.StartRecolor(item.Key);
                         string date = string.Format("{0:D2}:{1:D2}:{2:D2}", item.Date.Hour, item.Date.Minute, item.Date.Second);
                         temp += "[" + date + "]" + "[" + item.Key + "] : " + item.Value + "\n";
                         if (IsStackTraceStatus) {
                             temp += "[StackTrace]" + " : " + item.StackTrace + "\n";
                         }
-                        temp += RecolorLog.FinishRecolor(item.Key);
                     }
                 }
                 return temp;
