@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,9 +7,9 @@ using UnityEngine;
 /// <summary>
 /// Preprocessing for Build Version
 /// </summary>
-public class CloudBuildVersion {
+public class CloudBuildVersion : IPreprocessBuild {
 
-    /*private static string _versionNumber;
+    private static string _versionNumber;
     private static string _buildNumber;
 
     public int callbackOrder { get { return 0; } }
@@ -35,7 +34,7 @@ public class CloudBuildVersion {
         }
 
         Debug.Log("_buildNumber = " + _buildNumber);
-    }*/
+    }
 
 #if UNITY_CLOUD_BUILD
     public static void PreExport(UnityEngine.CloudBuild.BuildManifestObject manifest)
@@ -45,6 +44,8 @@ public class CloudBuildVersion {
         Debug.LogWarning("Setting build number to " + buildNumber);
         PlayerSettings.Android.bundleVersionCode = int.Parse(buildNumber);
         PlayerSettings.iOS.buildNumber = buildNumber;
+        Debug.Log("PlayerSettings.iOS.buildNumber = "+PlayerSettings.iOS.buildNumber);
+        Debug.Log("PlayerSettings.Android.bundleVersionCode = "+PlayerSettings.Android.bundleVersionCode);
     }
 #endif
 }
