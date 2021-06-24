@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Beem.Utility.UnityConsole {
 
     /// <summary>
-    /// LogData
+    /// LogData for searching current Log System
     /// </summary>
     public static class LogData {
 
@@ -21,22 +21,20 @@ namespace Beem.Utility.UnityConsole {
         private static List<UnityLog> _log = new List<UnityLog>();
 
         /// <summary>
-        /// Set Stack Trace
+        /// Current Log
         /// </summary>
-        public static void SetStackTrace(bool status) {
-            _isStackTraceStatus = status;
-            LogCallBacks.onRefreshLog?.Invoke();
-        }
-
-        /// <summary>
-        /// Set Log Type
-        /// </summary>
-        /// <param name="logType"></param>
-        public static void SetLogType(LogType logType) {
-
-            _currentLogType = logType;
-
-            LogCallBacks.onRefreshLog?.Invoke();
+        public static string GetLog() {
+            string temp = string.Empty;
+            foreach (UnityLog item in _log) {
+                if (_currentLogType == item.Key) {
+                    string date = string.Format("{0:D2}:{1:D2}:{2:D2}", item.Date.Hour, item.Date.Minute, item.Date.Second);
+                    temp += "[" + date + "]" + "[" + item.Key + "] : " + item.Value + "\n";
+                    if (_isStackTraceStatus) {
+                        temp += "[StackTrace]" + " : " + item.StackTrace + "\n";
+                    }
+                }
+            }
+            return temp;
         }
 
         /// <summary>
@@ -60,29 +58,25 @@ namespace Beem.Utility.UnityConsole {
 
         }
 
-        private static void SaveLogs(UnityLog log) {
-            _ILog.SaveLogs(log);
+        /// <summary>
+        /// Set Stack Trace
+        /// </summary>
+        public static void SetStackTrace(bool status) {
+            _isStackTraceStatus = status;
+            LogCallBacks.onRefreshLog?.Invoke();
         }
 
-        private static void ClearLogs(LogType logType, int logNumber) {
-            _ILog.ClearLogs(logType, logNumber);
+        /// <summary>
+        /// Set Log Type
+        /// </summary>
+        /// <param name="logType"></param>
+        public static void SetLogType(LogType logType) {
+
+            _currentLogType = logType;
+
+            LogCallBacks.onRefreshLog?.Invoke();
         }
 
-        private static int GetLogNumber(LogType logType) {
-            return _ILog.GetLogNumber(logType);
-        }
-
-        private static void SetLogNumber(LogType logType, int value) {
-            _ILog.SetLogNumber(logType, value);
-        }
-
-        private static void ClearLogNumber(LogType logType) {
-            _ILog.ClearLogNumber(logType);
-        }
-
-        private static UnityLog LoadLogs(LogType logType, int logNumber) {
-            return _ILog.LoadLogs(logType, logNumber);
-        }
 
         /// <summary>
         /// Add new Log
@@ -136,23 +130,28 @@ namespace Beem.Utility.UnityConsole {
             LogCallBacks.onRefreshLog?.Invoke();
         }
 
-        /// <summary>
-        /// Current Log
-        /// </summary>
-        public static string CurrentLog {
-            get {
-                string temp = string.Empty;
-                foreach (UnityLog item in _log) {
-                    if (_currentLogType == item.Key) {
-                        string date = string.Format("{0:D2}:{1:D2}:{2:D2}", item.Date.Hour, item.Date.Minute, item.Date.Second);
-                        temp += "[" + date + "]" + "[" + item.Key + "] : " + item.Value + "\n";
-                        if (_isStackTraceStatus) {
-                            temp += "[StackTrace]" + " : " + item.StackTrace + "\n";
-                        }
-                    }
-                }
-                return temp;
-            }
+        private static void ClearLogNumber(LogType logType) {
+            _ILog.ClearLogNumber(logType);
+        }
+
+        private static void ClearLogs(LogType logType, int logNumber) {
+            _ILog.ClearLogs(logType, logNumber);
+        }
+
+        private static int GetLogNumber(LogType logType) {
+            return _ILog.GetLogNumber(logType);
+        }
+
+        private static UnityLog LoadLogs(LogType logType, int logNumber) {
+            return _ILog.LoadLogs(logType, logNumber);
+        }
+
+        private static void SaveLogs(UnityLog log) {
+            _ILog.SaveLogs(log);
+        }
+
+        private static void SetLogNumber(LogType logType, int value) {
+            _ILog.SetLogNumber(logType, value);
         }
 
     }

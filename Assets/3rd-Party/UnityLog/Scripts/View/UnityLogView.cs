@@ -29,7 +29,7 @@ namespace Beem.Utility.UnityConsole {
         }
 
         private void Refresh() {
-            _text.text = LogData.CurrentLog.Length < MAX_LENGHT ? LogData.CurrentLog : "Too much symbols. Please, clear logs";
+            _text.text = LogData.GetLog().Length < MAX_LENGHT ? LogData.GetLog() : "Too much symbols. Please, clear logs";
         }
     }
 }

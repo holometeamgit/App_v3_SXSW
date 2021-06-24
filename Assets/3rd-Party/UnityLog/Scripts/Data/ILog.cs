@@ -7,11 +7,12 @@ namespace Beem.Utility.UnityConsole {
     /// Interface for Data Types and Methods
     /// </summary>
     public interface ILog {
+
         /// <summary>
-        /// Save Logs From Unity UnityLog
+        /// Clear Log Number
         /// </summary>
-        /// <param name="unityLog"></param>
-        void SaveLogs(UnityLog unityLog);
+        /// <param name="logType"></param>
+        void ClearLogNumber(LogType logType);
 
         /// <summary>
         /// Clear Logs on logNumber and Log Type
@@ -25,8 +26,21 @@ namespace Beem.Utility.UnityConsole {
         /// </summary>
         /// <param name="logType"></param>
         /// <returns></returns>
-
         int GetLogNumber(LogType logType);
+
+        /// <summary>
+        /// LoadLogs from Data
+        /// </summary>
+        /// <param name="logType"></param>
+        /// <param name="logNumber"></param>
+        /// <returns></returns>
+        UnityLog LoadLogs(LogType logType, int logNumber);
+
+        /// <summary>
+        /// Save Logs From Unity UnityLog
+        /// </summary>
+        /// <param name="unityLog"></param>
+        void SaveLogs(UnityLog unityLog);
 
         /// <summary>
         /// Set logNumber
@@ -35,21 +49,5 @@ namespace Beem.Utility.UnityConsole {
         /// <param name="value"></param>
 
         void SetLogNumber(LogType logType, int value);
-
-        /// <summary>
-        /// Clear Log Number
-        /// </summary>
-        /// <param name="logType"></param>
-
-        void ClearLogNumber(LogType logType);
-
-        /// <summary>
-        /// LoadLogs from Data
-        /// </summary>
-        /// <param name="logType"></param>
-        /// <param name="logNumber"></param>
-        /// <returns></returns>
-
-        UnityLog LoadLogs(LogType logType, int logNumber);
     }
 }
