@@ -13,6 +13,7 @@ public class ToggleSpriteSwap : MonoBehaviour {
     [SerializeField]
     Sprite imgToggleOff;
 
+    [Tooltip("Reset to the default status when gameobject is enabled")]
     [SerializeField]
     bool resetOnEnable;
     bool initialOnValue;
