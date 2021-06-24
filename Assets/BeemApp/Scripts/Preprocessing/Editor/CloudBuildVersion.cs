@@ -25,7 +25,7 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
 
         Debug.Log("_versionNumber = " + _versionNumber);
 
-        if (string.IsNullOrEmpty(_buildNumber)) {
+        if (!string.IsNullOrEmpty(_buildNumber)) {
             if (target == BuildTarget.iOS) {
                 PlayerSettings.iOS.buildNumber = _buildNumber;
             } else if (target == BuildTarget.Android) {
