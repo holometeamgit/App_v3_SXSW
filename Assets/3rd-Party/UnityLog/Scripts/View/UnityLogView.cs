@@ -21,11 +21,11 @@ namespace Beem.Utility.UnityConsole {
         }
 
         private void OnEnable() {
-            LogCallBacks.OnRefresh += Refresh;
+            LogCallBacks.onRefreshLog += Refresh;
         }
 
         private void OnDisable() {
-            LogCallBacks.OnRefresh -= Refresh;
+            LogCallBacks.onRefreshLog -= Refresh;
         }
 
         private void Refresh() {

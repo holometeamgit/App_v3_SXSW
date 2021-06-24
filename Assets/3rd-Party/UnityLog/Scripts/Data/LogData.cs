@@ -21,23 +21,22 @@ namespace Beem.Utility.UnityConsole {
         private static List<UnityLog> _log = new List<UnityLog>();
 
         /// <summary>
-        /// Stack Trace
+        /// Set Stack Trace
         /// </summary>
-        public static bool IsStackTraceStatus {
-            get {
-                return _isStackTraceStatus;
-            }
-            set {
-                _isStackTraceStatus = value;
-                LogCallBacks.OnRefresh?.Invoke();
-            }
+        public static void SetStackTrace(bool status) {
+            _isStackTraceStatus = status;
+            LogCallBacks.onRefreshLog?.Invoke();
         }
 
-        public static void SelectLogType(LogType logType) {
+        /// <summary>
+        /// Set Log Type
+        /// </summary>
+        /// <param name="logType"></param>
+        public static void SetLogType(LogType logType) {
 
             _currentLogType = logType;
 
-            LogCallBacks.OnRefresh?.Invoke();
+            LogCallBacks.onRefreshLog?.Invoke();
         }
 
         /// <summary>
@@ -101,7 +100,7 @@ namespace Beem.Utility.UnityConsole {
             SetLogNumber(logType, GetLogNumber(logType) + 1);
             SaveLogs(unityLog);
             _log.Add(unityLog);
-            LogCallBacks.OnRefresh?.Invoke();
+            LogCallBacks.onRefreshLog?.Invoke();
         }
 
         /// <summary>
@@ -110,7 +109,7 @@ namespace Beem.Utility.UnityConsole {
         /// <param name="unityLog"></param>
         public static void AddLog(UnityLog unityLog) {
             _log.Add(unityLog);
-            LogCallBacks.OnRefresh?.Invoke();
+            LogCallBacks.onRefreshLog?.Invoke();
         }
 
         /// <summary>
@@ -134,7 +133,7 @@ namespace Beem.Utility.UnityConsole {
                 ClearLogNumber(logType);
             }
             _log.Clear();
-            LogCallBacks.OnRefresh?.Invoke();
+            LogCallBacks.onRefreshLog?.Invoke();
         }
 
         /// <summary>
@@ -147,7 +146,7 @@ namespace Beem.Utility.UnityConsole {
                     if (_currentLogType == item.Key) {
                         string date = string.Format("{0:D2}:{1:D2}:{2:D2}", item.Date.Hour, item.Date.Minute, item.Date.Second);
                         temp += "[" + date + "]" + "[" + item.Key + "] : " + item.Value + "\n";
-                        if (IsStackTraceStatus) {
+                        if (_isStackTraceStatus) {
                             temp += "[StackTrace]" + " : " + item.StackTrace + "\n";
                         }
                     }

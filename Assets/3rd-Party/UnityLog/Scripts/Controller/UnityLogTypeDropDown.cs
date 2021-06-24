@@ -26,8 +26,8 @@ namespace Beem.Utility.UnityConsole {
             dropDown.onValueChanged.RemoveListener(DropDown);
         }
 
-        public void DropDown(int value = 0) {
-            LogData.SelectLogType((LogType)value);
+        private void DropDown(int value = 0) {
+            LogData.SetLogType((LogType)value);
         }
     }
 }

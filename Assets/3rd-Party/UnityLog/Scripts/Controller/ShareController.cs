@@ -11,11 +11,11 @@ namespace Beem.Utility.UnityConsole {
     public class ShareController : MonoBehaviour {
 
         private void OnEnable() {
-            LogCallBacks.OnShare += Share;
+            LogCallBacks.onShareLog += Share;
         }
 
         private void OnDisable() {
-            LogCallBacks.OnShare -= Share;
+            LogCallBacks.onShareLog -= Share;
         }
 
         private void Share() {

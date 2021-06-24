@@ -24,8 +24,8 @@ namespace Beem.Utility.UnityConsole {
             toggle.onValueChanged.RemoveListener(Toggle);
         }
 
-        public void Toggle(bool value) {
-            LogData.IsStackTraceStatus = value;
+        private void Toggle(bool value) {
+            LogData.SetStackTrace(value);
         }
     }
 }
