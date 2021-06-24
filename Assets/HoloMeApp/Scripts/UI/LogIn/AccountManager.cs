@@ -13,6 +13,10 @@ public class AccountManager : MonoBehaviour {
     [SerializeField]
     WebRequestHandler webRequestHandler;
 
+    [Tooltip("Use this to test multiple editor logins on the same PC")]
+    [SerializeField]
+    bool disablePersistance;
+
     private Action onCancelLogIn;
 
     private bool canLogIn = true;
@@ -52,6 +56,9 @@ public class AccountManager : MonoBehaviour {
     #endregion
 
     #region server access token
+
+    ServerAccessToken temporaryEditorTestingAccessToken;
+
     public void SaveAccessToken(string serverAccessToken) {
         try {
             //            Debug.Log("Try Save Access Token \n" + serverAccessToken);
@@ -59,12 +66,20 @@ public class AccountManager : MonoBehaviour {
             HelperFunctions.DevLog("Save serverAccessToken " + serverAccessToken);
             FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), accessToken, FileAccountManager.ServerAccessToken);
             //            Debug.Log("Access Token Saved");
+
+            if (Application.isEditor && disablePersistance) {
+                temporaryEditorTestingAccessToken = accessToken;
+            }
         } catch (System.Exception e) {
             HelperFunctions.DevLogError(e.Message);
         }
     }
 
     public ServerAccessToken GetAccessToken() {
+        if (Application.isEditor && disablePersistance) {
+            return temporaryEditorTestingAccessToken;
+        }
+
         return FileAccountManager.ReadFile<ServerAccessToken>(nameof(FileAccountManager.ServerAccessToken),
             FileAccountManager.ServerAccessToken);
     }
