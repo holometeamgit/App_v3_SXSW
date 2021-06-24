@@ -7,21 +7,32 @@ using UnityEngine;
 /// <summary>
 /// Preprocessing for Build Version
 /// </summary>
-public class CloudBuildVersion {
+public class CloudBuildVersionpublic : IPreprocessBuild {
 
-#if UNITY_CLOUD_BUILD
-    public static void PreExport(UnityEngine.CloudBuild.BuildManifestObject manifest) {
-        string buildNumber = manifest.GetValue("buildNumber", "0");
+    private static string _versionNumber;
+    private static string _buildNumber;
 
-        Debug.LogWarning("Setting build number to " + buildNumber);
+    public int callbackOrder { get { return 0; } }
+    public void OnPreprocessBuild(BuildTarget target, string path) {
+        _versionNumber = Environment.GetEnvironmentVariable("BEEM_VERSION");
 
-        if (string.IsNullOrEmpty(buildNumber)) {
-            PlayerSettings.iOS.buildNumber = buildNumber;
-            PlayerSettings.Android.bundleVersionCode = int.Parse(buildNumber);
+        _buildNumber = Environment.GetEnvironmentVariable("BEEM_BUILD");
+
+        Debug.Log("Preprocessing...");
+        if (!string.IsNullOrEmpty(_versionNumber)) {
+            PlayerSettings.bundleVersion = _versionNumber;
         }
 
-        Debug.Log("PlayerSettings.iOS.buildNumber = " + PlayerSettings.iOS.buildNumber);
-        Debug.Log("PlayerSettings.Android.bundleVersionCode = " + PlayerSettings.Android.bundleVersionCode);
+        Debug.Log("_versionNumber = " + _versionNumber);
+
+        if (string.IsNullOrEmpty(_buildNumber)) {
+            if (target == BuildTarget.iOS) {
+                PlayerSettings.iOS.buildNumber = _buildNumber;
+            } else if (target == BuildTarget.Android) {
+                PlayerSettings.Android.bundleVersionCode = int.Parse(_buildNumber);
+            }
+        }
+
+        Debug.Log("_buildNumber = " + _buildNumber);
     }
-#endif
 }
