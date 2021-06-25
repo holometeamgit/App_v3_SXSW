@@ -1,14 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 namespace Beem.Utility.UnityConsole {
     /// <summary>
-    /// Clear Log
+    /// Test Logs
     /// </summary>
-    public class ClearBtn : MonoBehaviour, IPointerClickHandler {
+    public class TestDebugBtn : MonoBehaviour, IPointerClickHandler {
         public void OnPointerClick(PointerEventData eventData) {
-            LogCallBacks.OnClear?.Invoke();
+            Debug.Log("Test Log");
+            Debug.LogError("Test LogError");
         }
     }
 }

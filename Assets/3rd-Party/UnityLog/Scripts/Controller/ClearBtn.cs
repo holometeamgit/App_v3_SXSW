@@ -4,13 +4,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 namespace Beem.Utility.UnityConsole {
     /// <summary>
-    /// Test Logs
+    /// Clear Log
     /// </summary>
-    public class TestDebugBtn : MonoBehaviour, IPointerClickHandler {
+    public class ClearBtn : MonoBehaviour, IPointerClickHandler {
         public void OnPointerClick(PointerEventData eventData) {
-            Debug.Log("Log");
-            Debug.LogError("LogError");
-            Debug.LogWarning("LogWarning");
+            LogData.Clear();
         }
     }
 }
