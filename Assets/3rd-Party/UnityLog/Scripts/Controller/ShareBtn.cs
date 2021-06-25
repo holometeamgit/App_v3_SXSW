@@ -10,7 +10,7 @@ namespace Beem.Utility.UnityConsole {
     /// </summary>
     public class ShareBtn : MonoBehaviour, IPointerClickHandler {
         public void OnPointerClick(PointerEventData eventData) {
-            LogCallBacks.OnShare?.Invoke();
+            LogCallBacks.onShareLog?.Invoke();
         }
     }
 }

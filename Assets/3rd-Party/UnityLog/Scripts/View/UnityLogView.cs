@@ -11,7 +11,8 @@ namespace Beem.Utility.UnityConsole {
     [RequireComponent(typeof(Text))]
     public class UnityLogView : MonoBehaviour {
 
-        private LogData _logData = new LogData();
+        private const int MAX_LENGHT = 65000;
+
         private Text _text = default;
 
         private void Awake() {
@@ -20,15 +21,15 @@ namespace Beem.Utility.UnityConsole {
         }
 
         private void OnEnable() {
-            LogCallBacks.OnRefresh += Refresh;
+            LogCallBacks.onRefreshLog += Refresh;
         }
 
         private void OnDisable() {
-            LogCallBacks.OnRefresh -= Refresh;
+            LogCallBacks.onRefreshLog -= Refresh;
         }
 
         private void Refresh() {
-            _text.text = _logData.CurrentLog;
+            _text.text = LogData.GetLog().Length < MAX_LENGHT ? LogData.GetLog() : "Too much symbols. Please, clear logs";
         }
     }
 }
