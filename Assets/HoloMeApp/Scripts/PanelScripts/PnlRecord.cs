@@ -50,11 +50,6 @@ public class PnlRecord : MonoBehaviour {
     CanvasGroup canvasGroup;
 
     [SerializeField]
-    Button btnBuyTickets;
-    [SerializeField]
-    PurchaseManager purchaseManager;
-
-    [SerializeField]
     UnityEvent OnRecordStarted;
     [SerializeField]
     UnityEvent OnRecordStopped;
@@ -116,20 +111,14 @@ public class PnlRecord : MonoBehaviour {
         videoButtonContainerPosition = rtButtonContainer.anchoredPosition;
         canvasGroup.alpha = 0;
 
-        purchaseManager.OnPurchaseSuccessful += RefreshBuyBtnState;
         uiThumbnailsController.OnPlayFromUser += user => txtWaterMarkText.text = "@" + user; //Gameobject must be active in the editor for this to work correctly
         gameObject.SetActive(false);
     }
 
-    public void EnableRecordPanel(bool isTeaser, StreamJsonData.Data data, bool openForStream = false) {
+    public void EnableRecordPanel() {
 
-        btnBuyTickets?.gameObject?.SetActive(isTeaser && !purchaseManager.IsBought());
         gameObject.SetActive(true);
         canvasGroup?.DOFade(1, .5f);
-    }
-
-    private void RefreshBuyBtnState() {
-        btnBuyTickets.gameObject.SetActive(purchaseManager.IsBought() ? false : btnBuyTickets.gameObject.activeSelf);
     }
 
     private void OnDisable() {
