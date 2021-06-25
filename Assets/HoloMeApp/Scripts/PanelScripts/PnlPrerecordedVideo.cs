@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Beem.Firebase.DynamicLink;
+using Beem.UI;
 using UnityEngine;
 
 /// <summary>
@@ -15,6 +16,10 @@ public class PnlPrerecordedVideo : MonoBehaviour {
     [Header("View for video")]
     [SerializeField]
     private GameObject _videoView;
+
+    [Header("Btn Likes")]
+    [SerializeField]
+    private UIBtnLikes _uiBtnLikes;
 
     private StreamJsonData.Data _streamData = default;
 
@@ -57,9 +62,13 @@ public class PnlPrerecordedVideo : MonoBehaviour {
     /// <param name="streamID"></param>
     public void Init(StreamJsonData.Data streamData) {
         _streamData = streamData;
-
+        _uiBtnLikes.SetStreamId(streamData.id);
+#if !UNITY_EDITOR
         _teaserView.SetActive(false);
         _videoView.SetActive(false);
+#else
+        Refresh();
+#endif
 
         gameObject.SetActive(true);
 
