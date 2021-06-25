@@ -8,9 +8,6 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Toggle))]
 public class ToggleColourSwap : MonoBehaviour {
 
-    [Tooltip("Assign this if you need text to change colour as well")]
-    [SerializeField]
-    TextMeshProUGUI referenceText;
     [SerializeField]
     Color colourToggledOff;
     Color originalColorRef;
@@ -41,8 +38,5 @@ public class ToggleColourSwap : MonoBehaviour {
 
     private void ToggleColour(bool isOn, Toggle toggle) {
         toggle.image.color = isOn ? originalColorRef : colourToggledOff;
-        if (referenceText) {
-            referenceText.color = toggle.image.color;
-        }
     }
 }

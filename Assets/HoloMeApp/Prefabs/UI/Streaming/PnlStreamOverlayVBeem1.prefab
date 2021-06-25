@@ -147,6 +147,7 @@ GameObject:
   - component: {fileID: 4333991353694086465}
   - component: {fileID: 4590197666527176391}
   - component: {fileID: 2733327223344326065}
+  - component: {fileID: 4814149175675770770}
   m_Layer: 5
   m_Name: btnToggleAudio
   m_TagString: Untagged
@@ -274,6 +275,21 @@ MonoBehaviour:
   textComponentReference: {fileID: 3701329685626661221}
   txtToggledOn: AUDIO IS MUTED
   txtToggledOff: AUDIO IS ON
+  resetOnEnable: 0
+--- !u!114 &4814149175675770770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 304431767313220190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3cf31e415d247f44838978c620d8c49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  referenceText: {fileID: 3701329685626661221}
+  colourToggledOff: {r: 1, g: 1, b: 1, a: 1}
   resetOnEnable: 0
 --- !u!1 &457660003600165475
 GameObject:
@@ -1221,6 +1237,7 @@ GameObject:
   - component: {fileID: 1417696734699277290}
   - component: {fileID: 2883370833708333583}
   - component: {fileID: 7849557589811501414}
+  - component: {fileID: 2950547576580699400}
   m_Layer: 5
   m_Name: btnToggleVideo
   m_TagString: Untagged
@@ -1349,6 +1366,21 @@ MonoBehaviour:
   txtToggledOn: VIDEO IS PAUSED
   txtToggledOff: VIDEO IS ON
   resetOnEnable: 0
+--- !u!114 &2950547576580699400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1162479955158111351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3cf31e415d247f44838978c620d8c49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  referenceText: {fileID: 8067807616311396542}
+  colourToggledOff: {r: 1, g: 1, b: 1, a: 1}
+  resetOnEnable: 0
 --- !u!1 &1268990594780851070
 GameObject:
   m_ObjectHideFlags: 0
@@ -1424,8 +1456,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4285887861
+  m_fontColor: {r: 0.45882353, g: 0.45882353, b: 0.45882353, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3441,6 +3473,7 @@ GameObject:
   - component: {fileID: 2463621843026824841}
   - component: {fileID: 4168744909904600673}
   - component: {fileID: 4348848536311255607}
+  - component: {fileID: 8113146393620444734}
   m_Layer: 5
   m_Name: btnChat
   m_TagString: Untagged
@@ -3550,9 +3583,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 099282be55955f846a653241c449597a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  referenceText: {fileID: 8514990150082462122}
   colourToggledOff: {r: 0.45882356, g: 0.45882356, b: 0.45882356, a: 1}
   resetOnEnable: 1
+--- !u!114 &8113146393620444734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3643827667181645024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3cf31e415d247f44838978c620d8c49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  referenceText: {fileID: 8514990150082462122}
+  colourToggledOff: {r: 0.45882356, g: 0.45882356, b: 0.45882356, a: 1}
+  resetOnEnable: 0
 --- !u!1 &3720826191487743291
 GameObject:
   m_ObjectHideFlags: 0
@@ -4365,6 +4412,7 @@ GameObject:
   - component: {fileID: 1715465416485472836}
   - component: {fileID: 1169502305133488219}
   - component: {fileID: 1595395113572238413}
+  - component: {fileID: 4877459936490428878}
   m_Layer: 5
   m_Name: btnChat
   m_TagString: Untagged
@@ -4474,9 +4522,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 099282be55955f846a653241c449597a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  referenceText: {fileID: 2433556326778756510}
   colourToggledOff: {r: 0.45882356, g: 0.45882356, b: 0.45882356, a: 1}
   resetOnEnable: 1
+--- !u!114 &4877459936490428878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4299638988873428036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3cf31e415d247f44838978c620d8c49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  referenceText: {fileID: 2433556326778756510}
+  colourToggledOff: {r: 0.45882356, g: 0.45882356, b: 0.45882356, a: 1}
+  resetOnEnable: 0
 --- !u!1 &4340615859710214148
 GameObject:
   m_ObjectHideFlags: 0
@@ -4489,6 +4551,7 @@ GameObject:
   - component: {fileID: 588092770666108451}
   - component: {fileID: 2153542380796029315}
   - component: {fileID: 2298370133253839351}
+  - component: {fileID: 6812547212352197626}
   m_Layer: 5
   m_Name: btnChat
   m_TagString: Untagged
@@ -4598,9 +4661,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 099282be55955f846a653241c449597a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  referenceText: {fileID: 3796828557511824217}
   colourToggledOff: {r: 0.45882356, g: 0.45882356, b: 0.45882356, a: 1}
   resetOnEnable: 1
+--- !u!114 &6812547212352197626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4340615859710214148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3cf31e415d247f44838978c620d8c49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  referenceText: {fileID: 3796828557511824217}
+  colourToggledOff: {r: 0.45882356, g: 0.45882356, b: 0.45882356, a: 1}
+  resetOnEnable: 0
 --- !u!1 &4389195917416983372
 GameObject:
   m_ObjectHideFlags: 0
@@ -6081,8 +6158,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4285887861
+  m_fontColor: {r: 0.45882353, g: 0.45882353, b: 0.45882353, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -6360,8 +6437,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4285887861
+  m_fontColor: {r: 0.45882353, g: 0.45882353, b: 0.45882353, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -6750,6 +6827,7 @@ GameObject:
   - component: {fileID: 1787834555572967215}
   - component: {fileID: 6565907291660784305}
   - component: {fileID: 462968161732220378}
+  - component: {fileID: 7597790621791154101}
   m_Layer: 5
   m_Name: btnToggleAudio
   m_TagString: Untagged
@@ -6877,6 +6955,21 @@ MonoBehaviour:
   textComponentReference: {fileID: 4213095760743539511}
   txtToggledOn: AUDIO IS MUTED
   txtToggledOff: AUDIO IS ON
+  resetOnEnable: 0
+--- !u!114 &7597790621791154101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6310141764959616920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3cf31e415d247f44838978c620d8c49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  referenceText: {fileID: 4213095760743539511}
+  colourToggledOff: {r: 1, g: 1, b: 1, a: 1}
   resetOnEnable: 0
 --- !u!1 &6346601751239490466
 GameObject:
@@ -8668,6 +8761,7 @@ GameObject:
   - component: {fileID: 3571475910422849250}
   - component: {fileID: 762045420175792157}
   - component: {fileID: 2205454064614216846}
+  - component: {fileID: 713395112971936037}
   m_Layer: 5
   m_Name: btnDialog
   m_TagString: Untagged
@@ -8795,6 +8889,21 @@ MonoBehaviour:
   textComponentReference: {fileID: 5806804426137548178}
   txtToggledOn: DIALOG IS ON
   txtToggledOff: DIALOG IS MUTED
+  resetOnEnable: 0
+--- !u!114 &713395112971936037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8259988819137190791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3cf31e415d247f44838978c620d8c49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  referenceText: {fileID: 5806804426137548178}
+  colourToggledOff: {r: 0.45882353, g: 0.45882353, b: 0.45882353, a: 1}
   resetOnEnable: 0
 --- !u!1 &8266289376539645633
 GameObject:
@@ -9533,8 +9642,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4285887861
+  m_fontColor: {r: 0.45882353, g: 0.45882353, b: 0.45882353, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -9702,7 +9811,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 099282be55955f846a653241c449597a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  referenceText: {fileID: 0}
   colourToggledOff: {r: 0.43921572, g: 0.43921572, b: 0.43921572, a: 0}
   resetOnEnable: 0
 --- !u!1 &8510884845815118415
@@ -10029,6 +10137,7 @@ GameObject:
   - component: {fileID: 1526273604466471781}
   - component: {fileID: 4930863576343257693}
   - component: {fileID: 6475089976106395651}
+  - component: {fileID: 3419856137982282614}
   m_Layer: 5
   m_Name: btnChat
   m_TagString: Untagged
@@ -10138,9 +10247,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 099282be55955f846a653241c449597a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  referenceText: {fileID: 5299378946592683814}
   colourToggledOff: {r: 0.45882356, g: 0.45882356, b: 0.45882356, a: 1}
   resetOnEnable: 1
+--- !u!114 &3419856137982282614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8813210239569638621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3cf31e415d247f44838978c620d8c49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  referenceText: {fileID: 5299378946592683814}
+  colourToggledOff: {r: 0.45882356, g: 0.45882356, b: 0.45882356, a: 1}
+  resetOnEnable: 0
 --- !u!1 &8906594050172309487
 GameObject:
   m_ObjectHideFlags: 0
@@ -10582,6 +10705,7 @@ GameObject:
   - component: {fileID: 4655271763828780228}
   - component: {fileID: 876503993722149603}
   - component: {fileID: 1207415447997549219}
+  - component: {fileID: 8141033767787253267}
   m_Layer: 5
   m_Name: btnToggleVideo
   m_TagString: Untagged
@@ -10709,6 +10833,21 @@ MonoBehaviour:
   textComponentReference: {fileID: 4356013065329288894}
   txtToggledOn: VIDEO IS PAUSED
   txtToggledOff: VIDEO IS ON
+  resetOnEnable: 0
+--- !u!114 &8141033767787253267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9124697941524688189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3cf31e415d247f44838978c620d8c49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  referenceText: {fileID: 4356013065329288894}
+  colourToggledOff: {r: 1, g: 1, b: 1, a: 1}
   resetOnEnable: 0
 --- !u!1 &9127185112957009998
 GameObject:
