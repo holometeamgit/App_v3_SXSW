@@ -139,7 +139,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void RefreshControls() {
-        RefreshStreamControls(!agoraController.IsChannelCreator || agoraController.IsRoom);
+        RefreshStreamControls(agoraController.IsRoom);
         RefreshBroadcasterControls(agoraController.IsChannelCreator);
         RefreshLiveControls(!agoraController.IsChannelCreator || agoraController.IsLive);
         HelperFunctions.DevLog("IsRoom = " + agoraController.IsRoom);
@@ -243,10 +243,6 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void FadePanel(bool show) {
         canvasGroup.DOFade(show ? 1 : 0, 0.5f).OnComplete(() => { if (!show) { gameObject.SetActive(false); } });
-    }
-
-    private void OnDestroy() {
-        LeaveOnDestroy();
     }
 
     private void LeaveOnDestroy() {

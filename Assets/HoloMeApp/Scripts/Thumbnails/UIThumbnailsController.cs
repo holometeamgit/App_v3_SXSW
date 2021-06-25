@@ -12,6 +12,7 @@ public class UIThumbnailsController : MonoBehaviour {
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] PnlViewingExperience pnlViewingExperience;
     [SerializeField] PnlStreamOverlay pnlStreamOverlay;
+    [SerializeField] PnlPrerecordedVideo pnlPrerecordedVideo;
     [SerializeField] GameObject btnThumbnailPrefab;
     [SerializeField] Transform content;
     [SerializeField] PurchaseManager purchaseManager;
@@ -101,9 +102,9 @@ public class UIThumbnailsController : MonoBehaviour {
     #region Prepare thumbnails
     private void PrepareBtnThumbnails() {
 
-        if(dataList.Count == 0) {
+        if (dataList.Count == 0) {
             HelperFunctions.DevLog("Deactivate all thumbnails count = " + btnThumbnailItems.Count);
-            foreach(var btn in btnThumbnailItems) {
+            foreach (var btn in btnThumbnailItems) {
                 btn.Deactivate();
             }
             return;
@@ -145,11 +146,11 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetPlayAction(Play);
             btnThumbnailItems[i].SetTeaserPlayAction(PlayTeaser);
             btnThumbnailItems[i].SetBuyAction(Buy);
-            btnThumbnailItems[i].SetShareAction( (data) => {
-                    //btnThumbnailItems[i]
-                    StreamCallBacks.onGetStreamLink?.Invoke(data.id.ToString());
-                    AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
-                });
+            btnThumbnailItems[i].SetShareAction((data) => {
+                //btnThumbnailItems[i]
+                StreamCallBacks.onGetStreamLink?.Invoke(data.id.ToString());
+                AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
+            });
             btnThumbnailItems[i].LockToPress(false);
         }
         OnUpdated?.Invoke();
@@ -163,6 +164,7 @@ public class UIThumbnailsController : MonoBehaviour {
 
         if (data.HasStreamUrl) {
             pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, data, null, false);
+            pnlPrerecordedVideo.Init(data);
             OnPlayFromUser?.Invoke(data.user);
         } else if (data.HasAgoraChannel) {
             if (data.agora_channel == "0" || string.IsNullOrWhiteSpace(data.agora_channel))
@@ -176,6 +178,7 @@ public class UIThumbnailsController : MonoBehaviour {
             return;
 
         pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, data, null, data.HasTeaser);
+        pnlPrerecordedVideo.Init(data);
         OnPlayFromUser?.Invoke(data.user);
         purchaseManager.SetPurchaseStreamData(data);
     }
@@ -187,7 +190,7 @@ public class UIThumbnailsController : MonoBehaviour {
 
         stream.Data.is_liked = isLike;
 
-        stream.Data.count_of_likes = isLike ? ++stream.Data.count_of_likes : Math.Max(--stream.Data.count_of_likes,0);
+        stream.Data.count_of_likes = isLike ? ++stream.Data.count_of_likes : Math.Max(--stream.Data.count_of_likes, 0);
 
         CallBacks.onGetLikeStateCallBack?.Invoke(streamId, stream.Data.is_liked, stream.Data.count_of_likes);
     }
