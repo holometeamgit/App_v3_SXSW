@@ -29,9 +29,6 @@ public class PnlPostRecord : MonoBehaviour {
     Button btnDownload;
 
     [SerializeField]
-    Button btnShare;
-
-    [SerializeField]
     PermissionGranter permissionGranter;
 
     [SerializeField]
@@ -91,7 +88,6 @@ public class PnlPostRecord : MonoBehaviour {
         imgDownloadSuccessCanvasGroup.alpha = 0;
         imgDownloadSuccess.gameObject.SetActive(false);
         btnDownload.interactable = true;
-        btnShare.interactable = true;
         btnPreview.interactable = true;
         gameObject.SetActive(true);
 

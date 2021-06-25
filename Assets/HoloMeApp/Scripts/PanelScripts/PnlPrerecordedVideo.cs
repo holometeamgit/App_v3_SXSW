@@ -17,10 +17,6 @@ public class PnlPrerecordedVideo : MonoBehaviour {
     [SerializeField]
     private GameObject _videoView;
 
-    [Header("Btn Likes")]
-    [SerializeField]
-    private UIBtnLikes _uiBtnLikes;
-
     private StreamJsonData.Data _streamData = default;
 
     private PurchaseManager _purchaseManager;
@@ -35,16 +31,25 @@ public class PnlPrerecordedVideo : MonoBehaviour {
         }
     }
 
-    private HologramHandler _hologramHandler;
+    /// <summary>
+    /// Initialization
+    /// </summary>
+    /// <param name="streamID"></param>
+    public void Init(StreamJsonData.Data streamData) {
+        _streamData = streamData;
+#if !UNITY_EDITOR
+        _teaserView.SetActive(false);
+        _videoView.SetActive(false);
+#else
+        Refresh();
+#endif
 
-    private HologramHandler hologramHandler {
-        get {
-            if (_hologramHandler == null) {
-                _hologramHandler = FindObjectOfType<HologramHandler>();
-            }
+        gameObject.SetActive(!(_streamData.HasTeaser && !purchaseManager.IsBought()));
+    }
 
-            return _hologramHandler;
-        }
+    private void Refresh() {
+        _teaserView.SetActive(_streamData.HasTeaser && !purchaseManager.IsBought());
+        _videoView.SetActive(!(_streamData.HasTeaser && !purchaseManager.IsBought()));
     }
 
     private void OnEnable() {
@@ -53,47 +58,5 @@ public class PnlPrerecordedVideo : MonoBehaviour {
 
     private void OnDisable() {
         purchaseManager.OnPurchaseSuccessful -= Refresh;
-    }
-
-
-    /// <summary>
-    /// Initialization
-    /// </summary>
-    /// <param name="streamID"></param>
-    public void Init(StreamJsonData.Data streamData) {
-        _streamData = streamData;
-        _uiBtnLikes.SetStreamId(streamData.id);
-#if !UNITY_EDITOR
-        _teaserView.SetActive(false);
-        _videoView.SetActive(false);
-#else
-        Refresh();
-#endif
-
-        gameObject.SetActive(true);
-
-        hologramHandler.SetOnPlacementUIHelperFinished(Refresh);
-    }
-
-    private void Refresh() {
-        _teaserView.SetActive(_streamData.HasTeaser && purchaseManager.IsBought());
-        _videoView.SetActive(!_streamData.HasTeaser);
-    }
-
-    /// <summary>
-    /// Share prerecorded video
-    /// </summary>
-    public void Share() {
-        if (!string.IsNullOrWhiteSpace(_streamData.id.ToString()))
-            StreamCallBacks.onGetStreamLink?.Invoke(_streamData.id.ToString());
-        else
-            DynamicLinksCallBacks.onShareAppLink?.Invoke();
-    }
-
-    /// <summary>
-    /// Open Comment
-    /// </summary>
-    public void OpenComment() {
-        StreamCallBacks.onOpenComment?.Invoke((int)_streamData.id);
     }
 }
