@@ -31,6 +31,9 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     [Header("These Views")]
     [SerializeField]
+    private StreamShareBtn streamShareBtn;
+
+    [SerializeField]
     private RawImage cameraRenderImage;
 
     [SerializeField]
