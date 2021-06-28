@@ -203,7 +203,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void StreamerOpenSharedFunctions() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
-        btnGoLive.interactable = true;
+        btnGoLive.gameObject.SetActive(true);
         agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
         agoraController.OnUserViewerJoined += SendPushToTalkStatusToViewers;
@@ -264,7 +264,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         else if (isStreamer)
             pnlGenericError.ActivateDoubleButton("End the live stream?",
                 "Closing this page will end the live stream and disconnect your users.",
-                onButtonOnePress: () => { StopStream(); },
+                onButtonOnePress: () => { CloseAsStreamer(); },
                 onButtonTwoPress: () => pnlGenericError.gameObject.SetActive(false));
         else
             pnlGenericError.ActivateDoubleButton("Disconnect from live stream?",
@@ -307,7 +307,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         HelperFunctions.DevLog(nameof(StopStream) + " was called");
 
         if (agoraController.IsLive) { //Check needed as Stop Stream is being called when enabled by unity events causing this to start off disabled
-            btnGoLive.interactable = false;
+            btnGoLive.gameObject.SetActive(false);
 
             if (isStreamer) //Send event to viewers to disconnect if streamer
                 SendStreamLeaveStatusToViewers();
@@ -375,7 +375,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     void StartStream() {
-        btnGoLive.interactable = false;
+        btnGoLive.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(true);
         RefreshControls(); //Is this call actually needed?
     }
