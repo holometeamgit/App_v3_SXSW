@@ -24,9 +24,6 @@ public class PnlStreamOverlay : MonoBehaviour {
     private GameObject[] privateStreamsControls;
 
     [SerializeField]
-    private GameObject[] sharedStreamsControls;
-
-    [SerializeField]
     private GameObject[] onlineControls;
 
     [SerializeField]
@@ -153,9 +150,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
         foreach (GameObject item in publicStreamsControls) {
             item.SetActive(!room);
-        }
-        foreach (GameObject item in sharedStreamsControls) {
-            item.SetActive(true);
         }
     }
 
