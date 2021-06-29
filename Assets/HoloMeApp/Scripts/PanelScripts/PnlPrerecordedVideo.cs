@@ -19,7 +19,7 @@ public class PnlPrerecordedVideo : MonoBehaviour {
 
     [Header("Bottom Bar")]
     [SerializeField]
-    private GameObject _bottomBar;
+    private PnlBottomBarPrerecordedVideo _bottomBar;
 
     private StreamJsonData.Data _streamData = default;
 
@@ -60,12 +60,13 @@ public class PnlPrerecordedVideo : MonoBehaviour {
 #endif
         gameObject.SetActive(!(_streamData.HasTeaser && !purchaseManager.IsBought()));
         hologramHandler.SetOnPlacementUIHelperFinished(Refresh);
+        _bottomBar.Init(streamData);
     }
 
     private void Activate(bool value) {
         _teaserView.SetActive(value);
         _videoView.SetActive(value);
-        _bottomBar.SetActive(value);
+        _bottomBar.gameObject.SetActive(value);
     }
 
     private void Refresh() {
@@ -73,7 +74,7 @@ public class PnlPrerecordedVideo : MonoBehaviour {
         HelperFunctions.DevLog("purchaseManager.IsBought = " + purchaseManager.IsBought());
         _teaserView.SetActive(_streamData.HasTeaser && !purchaseManager.IsBought());
         _videoView.SetActive(!(_streamData.HasTeaser && !purchaseManager.IsBought()));
-        _bottomBar.SetActive(!(_streamData.HasTeaser && !purchaseManager.IsBought()));
+        _bottomBar.gameObject.SetActive(!(_streamData.HasTeaser && !purchaseManager.IsBought()));
     }
 
     private void OnEnable() {
@@ -82,6 +83,8 @@ public class PnlPrerecordedVideo : MonoBehaviour {
 
     private void OnDisable() {
         Activate(false);
-        purchaseManager.OnPurchaseSuccessful -= Refresh;
+        if (purchaseManager != null) {
+            purchaseManager.OnPurchaseSuccessful -= Refresh;
+        }
     }
 }
