@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using Beem.SSO;
 using TMPro;
@@ -55,8 +53,12 @@ namespace Beem.UI {
         private void UpdateState(long streamId, bool isLike, long count) {
             if (streamId != _streamId)
                 return;
-            _isLike = isLike;
-            _count = count;
+
+            if (_isLike != isLike || _count != count) {
+                _isLike = isLike;
+                _count = count;
+                UpdateBtnUIState();
+            }
         }
 
         private void UpdateBtnUIState() {
