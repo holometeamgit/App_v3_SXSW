@@ -8,7 +8,6 @@ using System.Collections;
 using TMPro;
 using UnityEngine.Events;
 using System.IO;
-using Beem.Firebase.DynamicLink;
 
 public class PnlRecord : MonoBehaviour {
     [SerializeField]
@@ -27,13 +26,7 @@ public class PnlRecord : MonoBehaviour {
     Sprite spriteRecord;
 
     [SerializeField]
-    Button btnShare;
-
-    [SerializeField]
     Button btnToggleMode;
-
-    //[SerializeField]
-    //Button btnRecord;
 
     [SerializeField]
     TextMeshProUGUI txtVideo;
@@ -57,11 +50,6 @@ public class PnlRecord : MonoBehaviour {
     CanvasGroup canvasGroup;
 
     [SerializeField]
-    Button btnBuyTickets;
-    [SerializeField]
-    PurchaseManager purchaseManager;
-
-    [SerializeField]
     UnityEvent OnRecordStarted;
     [SerializeField]
     UnityEvent OnRecordStopped;
@@ -83,16 +71,12 @@ public class PnlRecord : MonoBehaviour {
     [Header("Microphone")]
     public bool recordMicrophone = true;
     public AudioSource videoSource;
-    //public AudioSource micSource;
     private MP4Recorder videoRecorder;
     private IClock recordingClock;
     private CameraInput cameraInput;
     private AudioInput audioInput;
     private Coroutine currentCoroutine;
 
-    private string currentStreamId;
-
-    //const int RecordTimeLimit = 15;
     int videoWidth;
     int videoHeight;
 
@@ -108,18 +92,15 @@ public class PnlRecord : MonoBehaviour {
                     rtButtonContainer.DOAnchorPosX(videoButtonContainerPosition.x, .25f);
                     txtPhoto.color = HelperFunctions.GetColor(176, 176, 176);
                     txtVideo.color = Color.white;
-                    //btnRecord.GetComponent<Image>().sprite = spriteRecord;
                     imgRecordFill.gameObject.SetActive(true);
                     break;
                 case Mode.Photo:
                     rtButtonContainer.DOAnchorPosX(videoButtonContainerPosition.x - rtButtonContainer.rect.width / 2, .25f);
                     txtPhoto.color = Color.white;
                     txtVideo.color = HelperFunctions.GetColor(176, 176, 176);
-                    //btnRecord.GetComponent<Image>().sprite = spriteTakeSnapshot;
                     imgRecordFill.gameObject.SetActive(false);
                     break;
             }
-            //imgFillBackground.enabled = false;
         }
     }
 
@@ -127,49 +108,17 @@ public class PnlRecord : MonoBehaviour {
         CorrectResolutionAspect();
         ChangeMode = Mode.Video;
         btnToggleMode.onClick.AddListener(() => ChangeMode = mode == Mode.Video ? Mode.Photo : Mode.Video);
-        //btnRecord.onClick.AddListener(() =>
-        //{
-        //    if (mode == Mode.Photo)
-        //    {
-        //        MakeScreenshot();
-        //    }
-        //    else
-        //    {
-        //        ToggleRecord();
-        //    }
-        //});
-        //btnRecord.GetComponent<Image>().sprite = spriteRecord;
         videoButtonContainerPosition = rtButtonContainer.anchoredPosition;
         canvasGroup.alpha = 0;
 
-        purchaseManager.OnPurchaseSuccessful += RefreshBuyBtnState;
         uiThumbnailsController.OnPlayFromUser += user => txtWaterMarkText.text = "@" + user; //Gameobject must be active in the editor for this to work correctly
         gameObject.SetActive(false);
     }
 
-    public void SharePrerecorded() {
-        if (!string.IsNullOrWhiteSpace(currentStreamId))
-            StreamCallBacks.onGetStreamLink?.Invoke(currentStreamId);
-        else
-            DynamicLinksCallBacks.onShareAppLink?.Invoke();
-    }
+    public void EnableRecordPanel() {
 
-    public void EnableRecordPanel(bool isTeaser, StreamJsonData.Data data, bool openForStream = false) {
-        //int buttonOffset = streamOffset ? 210 : 0;
-        //imgFillBackground.rectTransform.offsetMax = new Vector2(imgFillBackground.rectTransform.offsetMax.x, buttonOffset);
-        //imgFillBackground.rectTransform.offsetMin = new Vector2(imgFillBackground.rectTransform.offsetMin.x, buttonOffset);
-
-        btnBuyTickets?.gameObject?.SetActive(isTeaser && !purchaseManager.IsBought());
-        btnShare?.gameObject?.SetActive(openForStream || isTeaser ? false : true);
-        if (data != null) {
-            currentStreamId = data.id.ToString();
-        }
         gameObject.SetActive(true);
         canvasGroup?.DOFade(1, .5f);
-    }
-
-    private void RefreshBuyBtnState() {
-        btnBuyTickets.gameObject.SetActive(purchaseManager.IsBought() ? false : btnBuyTickets.gameObject.activeSelf);
     }
 
     private void OnDisable() {
@@ -179,41 +128,13 @@ public class PnlRecord : MonoBehaviour {
     private void CorrectResolutionAspect() {
         videoWidth = MakeEven(Screen.width / 2);
         videoHeight = MakeEven(Screen.height / 2);
-        //videoWidth = Screen.width;
-        //videoHeight = Screen.height;
-        //print($"{videoWidth} x {videoHeight}");
-        //videoWidth = 720;
-        //videoHeight = (int)((float)videoWidth * ratio);
-        //float ratio = (float)Screen.height / (float)Screen.width;
-        //print("RES = " + (int)((float)videoWidth * ratio));
     }
 
     public int MakeEven(int value) {
         return value % 2 == 0 ? value : value - 1;
     }
 
-    //public void ToggleRecord()
-    //{
-    //    if (Recording)
-    //    {
-    //        StopRecording();
-    //    }
-    //    else
-    //    {
-    //        StartRecording();
-    //    }
-    //}
-
     public void StartRecording() {
-        //startRecordTime = Time.time;
-        //recordTime = 0;
-
-        //if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete)
-        //{
-        //    permissionGranter.RequestMicAccess();
-        //    return;
-        //}
-
         if (!permissionGranter.MicAccessAvailable) {
             recordMicrophone = false;
         }
@@ -230,47 +151,13 @@ public class PnlRecord : MonoBehaviour {
 
         cameraInput = new CameraInput(videoRecorder, recordingClock, arCamera, canvasCamera);
         if (recordMicrophone) {
-            StartMicrophone();
             audioInput = new AudioInput(videoRecorder, recordingClock, videoSource);
         }
 
-        //imgFillBackground.enabled = true;
-        //btnRecord.GetComponent<Image>().sprite = spriteStop;
         btnToggleMode.interactable = false;
-        //InvokeRepeating("Countdown", 0, 1);
         Recording = true;
         OnRecordStarted?.Invoke();
         watermarkCanvasObject.SetActive(true);
-    }
-
-    //private void Update()
-    //{
-    //    if (Recording)
-    //    {
-    //        float timeRecording = (Time.time - startRecordTime);
-    //        imgRecordFill.fillAmount = timeRecording / RecordTimeLimit;
-    //    }
-    //}
-
-    //private void Countdown()
-    //{
-    //    recordTime += 1;
-    //    if (recordTime >= RecordTimeLimit)
-    //    {
-    //        StopRecording();
-    //    }
-    //}
-
-    void StartMicrophone() {
-#if !UNITY_WEBGL || UNITY_EDITOR // No `Microphone` API on WebGL :( 
-        //// Create a microphone clip
-        //micSource.clip = Microphone.Start(null, true, 15, 48000);
-        //while (Microphone.GetPosition(null) <= 0) { print("Looping"); } //ADD MIC ACCESS CHECK HERE
-        //// Play through audio source
-        //micSource.timeSamples = Microphone.GetPosition(null);
-        //micSource.loop = true;
-        //micSource.Play();
-#endif
     }
 
     public void RecordLengthFail() {
@@ -283,29 +170,17 @@ public class PnlRecord : MonoBehaviour {
         //CancelInvoke("Countdown");
 
         if (recordMicrophone) {
-            StopMicrophone();
             audioInput.Dispose();
         }
 
         cameraInput.Dispose();
         videoRecorder.Dispose();
-        //pnlVideoExperience.PauseExperience();
         imgRecordFill.fillAmount = 0;
-        //btnRecord.GetComponent<Image>().sprite = spriteRecord;
-        //imgFillBackground.enabled = false;
         btnToggleMode.interactable = true;
         Recording = false;
-        //print("DISABLING HERE");
 
         if (!recordLengthFailed)
             watermarkCanvasObject.SetActive(false);
-    }
-
-    void StopMicrophone() {
-#if !UNITY_WEBGL || UNITY_EDITOR
-        //Microphone.End(null);
-        //micSource.Stop();
-#endif
     }
 
     void OnRecordComplete(string outputPath) {
