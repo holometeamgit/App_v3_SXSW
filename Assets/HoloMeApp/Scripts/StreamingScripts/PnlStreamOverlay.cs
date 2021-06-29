@@ -24,15 +24,13 @@ public class PnlStreamOverlay : MonoBehaviour {
     private GameObject[] privateStreamsControls;
 
     [SerializeField]
-    private GameObject[] sharedStreamsControls;
-
-    [SerializeField]
     private GameObject[] onlineControls;
 
     [SerializeField]
     private GameObject[] offlineControls;
 
     [Header("These Views")]
+
     [SerializeField]
     private RawImage cameraRenderImage;
 
@@ -89,7 +87,8 @@ public class PnlStreamOverlay : MonoBehaviour {
     bool isPushToTalkActive;
 
     VideoSurface videoSurface;
-    string currentStreamId = "";
+    string currentStreamId = string.Empty;
+    string currentRoomId = string.Empty;
 
     private bool _muteAudio = false;
     private bool _hideVideo = false;
@@ -118,7 +117,8 @@ public class PnlStreamOverlay : MonoBehaviour {
 
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
-        StreamCallBacks.onLiveStreamCreated += (data) => { currentStreamId = data.id.ToString(); RefreshControls(); StartStreamCountUpdaters(); };
+        StreamCallBacks.onLiveStreamCreated += RefreshStream;
+        StreamCallBacks.onRoomLinkReceived += RefreshRoom;
 
         AddVideoSurface();
         initialised = true;
@@ -130,6 +130,18 @@ public class PnlStreamOverlay : MonoBehaviour {
         CentreMessage.localScale = Vector3.zero;
         RequestMicAccess();
         ChatBtn.onOpen += OpenChat;
+    }
+
+    private void RefreshStream(StreamStartResponseJsonData streamStartResponseJsonData) {
+        currentStreamId = streamStartResponseJsonData.id.ToString();
+        RefreshControls();
+        StartStreamCountUpdaters();
+    }
+
+    private void RefreshRoom(string roomID) {
+        currentRoomId = roomID;
+        RefreshControls();
+        StartStreamCountUpdaters();
     }
 
     private void RequestMicAccess() {
@@ -153,9 +165,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
         foreach (GameObject item in publicStreamsControls) {
             item.SetActive(!room);
-        }
-        foreach (GameObject item in sharedStreamsControls) {
-            item.SetActive(true);
         }
     }
 
@@ -283,16 +292,31 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void ShareStream() {
 
-        HelperFunctions.DevLog("isStreamer = " + isStreamer);
+        HelperFunctions.DevLog("agoraController.IsChannelCreator = " + agoraController.IsChannelCreator);
         HelperFunctions.DevLog("agoraController.IsRoom = " + agoraController.IsRoom);
-        if (isStreamer && agoraController.IsRoom) {
-            ShareRoomStreamLink();
-            HelperFunctions.DevLog("SHARE_ROOM");
+
+        HelperFunctions.DevLog("currentRoomId = " + currentRoomId);
+        HelperFunctions.DevLog("currentStreamId = " + currentStreamId);
+
+        if (agoraController.IsRoom) {
+            if (agoraController.IsChannelCreator) {
+                StreamCallBacks.onGetMyRoomLink?.Invoke();
+            } else {
+                if (!string.IsNullOrWhiteSpace(currentRoomId)) {
+                    StreamCallBacks.onGetRoomLink?.Invoke(currentRoomId);
+                } else {
+                    DynamicLinksCallBacks.onShareAppLink?.Invoke();
+                }
+            }
         } else {
-            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
-            ShareStreamLink();
-            HelperFunctions.DevLog("SHARE_STREAM");
+            if (!string.IsNullOrWhiteSpace(currentStreamId)) {
+                StreamCallBacks.onGetStreamLink?.Invoke(currentStreamId);
+            } else {
+                DynamicLinksCallBacks.onShareAppLink?.Invoke();
+            }
         }
+
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
     }
 
     public void StartCountdown() {
@@ -316,17 +340,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         cameraRenderImage.texture = null;
         AnimatedFadeOutMessage();
         RefreshControls();
-    }
-
-    public void ShareRoomStreamLink() {
-        StreamCallBacks.onGetMyRoomLink?.Invoke();
-    }
-
-    private void ShareStreamLink() {
-        if (!string.IsNullOrWhiteSpace(currentStreamId))
-            StreamCallBacks.onGetStreamLink?.Invoke(currentStreamId);
-        else
-            DynamicLinksCallBacks.onShareAppLink?.Invoke();
     }
 
     /// <summary>
