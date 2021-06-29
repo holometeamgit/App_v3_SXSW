@@ -72,6 +72,7 @@ public class PnlComments : MonoBehaviour
 	public void CloseComments() {
 		_isCanOpen = false;
 		_animator.SetBool("IsShowComment", _isCanOpen);
+		StreamCallBacks.onCommentsClosed?.Invoke();
 	}
 
 	/// <summary>

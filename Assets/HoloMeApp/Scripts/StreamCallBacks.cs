@@ -25,4 +25,7 @@ public class StreamCallBacks {
     public static Action onLiveStreamFinished = delegate { };
 
     public static Action<int> onOpenComment = delegate { };
+
+    public static Action onCloseComments = delegate { };
+    public static Action onCommentsClosed = delegate { };
 }
