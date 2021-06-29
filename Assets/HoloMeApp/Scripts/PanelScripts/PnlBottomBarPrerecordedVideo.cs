@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using Beem.Firebase.DynamicLink;
 using Beem.UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Panel Bottom Bar for Prerecorded Video
@@ -12,6 +11,10 @@ public class PnlBottomBarPrerecordedVideo : MonoBehaviour {
     [Header("Btn Likes")]
     [SerializeField]
     private UIBtnLikes _uiBtnLikes;
+
+    [Header("Comment toggle")]
+    [SerializeField]
+    private Toggle _uiToggleComments;
 
     private StreamJsonData.Data _streamData = default;
 
@@ -24,7 +27,10 @@ public class PnlBottomBarPrerecordedVideo : MonoBehaviour {
         _uiBtnLikes.SetStreamId(streamData.id);
 
         gameObject.SetActive(true);
+    }
 
+    private void Awake() {
+        StreamCallBacks.onCommentsClosed += ForceCommentsToggleOff;
     }
 
     /// <summary>
@@ -39,10 +45,22 @@ public class PnlBottomBarPrerecordedVideo : MonoBehaviour {
     }
 
     /// <summary>
-    /// Open Comment
+    /// Toggle comments
     /// </summary>
-    public void OpenComment() {
-        StreamCallBacks.onOpenComment?.Invoke((int)_streamData.id);
+    public void ToggleComments(bool enable) {
+        if (enable) {
+            StreamCallBacks.onOpenComment?.Invoke((int)_streamData.id);
+        } else {
+            StreamCallBacks.onCloseComments?.Invoke();
+        }
+    }
+
+    private void ForceCommentsToggleOff() {
+        _uiToggleComments.isOn = false;
+    }
+
+    private void OnDestroy() {
+        StreamCallBacks.onCommentsClosed -= ForceCommentsToggleOff;
     }
 
 }

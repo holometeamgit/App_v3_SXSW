@@ -258,9 +258,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1484107438612870469, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
-          type: 3}
-        m_TargetAssemblyTypeName: PnlPrerecordedVideo, Assembly-CSharp
+      - m_Target: {fileID: 2003006680320590638}
+        m_TargetAssemblyTypeName: PnlBottomBarPrerecordedVideo, Assembly-CSharp
         m_MethodName: Share
         m_Mode: 1
         m_Arguments:
@@ -489,7 +488,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1054317180730301806}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb7aead3b2e5245e791835a092b2c25a, type: 3}
   m_Name: 
@@ -813,9 +812,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab4e255762dc543b99588671729581ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _teaserView: {fileID: 0}
-  _videoView: {fileID: 0}
   _uiBtnLikes: {fileID: 4679758076433618834}
+  _uiToggleComments: {fileID: 5744681793058030022}
 --- !u!1 &4575393405622807001
 GameObject:
   m_ObjectHideFlags: 0
@@ -1696,7 +1694,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6005151463714261437}
   - component: {fileID: 1416197019668030484}
-  - component: {fileID: 5070305895156213710}
+  - component: {fileID: 5744681793058030022}
+  - component: {fileID: 7885699917278564499}
+  - component: {fileID: 6964049291870164684}
   m_Layer: 5
   m_Name: btnComment
   m_TagString: Untagged
@@ -1734,7 +1734,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9181899939956507500}
   m_CullTransparentMesh: 0
---- !u!114 &5070305895156213710
+--- !u!114 &5744681793058030022
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1743,7 +1743,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9181899939956507500}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -1756,10 +1756,10 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 0.78431374}
-    m_PressedColor: {r: 1, g: 1, b: 1, a: 0.5019608}
-    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.003921569}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -1775,14 +1775,16 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 1883194804345347256}
-  m_OnClick:
+  toggleTransition: 1
+  graphic: {fileID: 0}
+  m_Group: {fileID: 0}
+  onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1484107438612870469, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
-          type: 3}
-        m_TargetAssemblyTypeName: PnlPrerecordedVideo, Assembly-CSharp
-        m_MethodName: OpenComment
-        m_Mode: 1
+      - m_Target: {fileID: 2003006680320590638}
+        m_TargetAssemblyTypeName: PnlBottomBarPrerecordedVideo, Assembly-CSharp
+        m_MethodName: ToggleComments
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1791,6 +1793,36 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_IsOn: 0
+--- !u!114 &7885699917278564499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9181899939956507500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 099282be55955f846a653241c449597a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colourToggledOff: {r: 0.45882356, g: 0.45882356, b: 0.45882356, a: 1}
+  resetOnEnable: 1
+--- !u!114 &6964049291870164684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9181899939956507500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3cf31e415d247f44838978c620d8c49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  referenceText: {fileID: 4165028848908626192}
+  colourToggledOff: {r: 0.45882356, g: 0.45882356, b: 0.45882356, a: 1}
+  resetOnEnable: 0
 --- !u!1001 &268753968914959977
 PrefabInstance:
   m_ObjectHideFlags: 0
