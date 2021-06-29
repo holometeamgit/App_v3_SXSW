@@ -35,6 +35,18 @@ public class PnlPrerecordedVideo : MonoBehaviour {
         }
     }
 
+    private HologramHandler _hologramHandler;
+
+    private HologramHandler hologramHandler {
+        get {
+            if (_hologramHandler == null) {
+                _hologramHandler = FindObjectOfType<HologramHandler>();
+            }
+
+            return _hologramHandler;
+        }
+    }
+
     /// <summary>
     /// Initialization
     /// </summary>
@@ -46,8 +58,8 @@ public class PnlPrerecordedVideo : MonoBehaviour {
 #else
         Refresh();
 #endif
-
         gameObject.SetActive(!(_streamData.HasTeaser && !purchaseManager.IsBought()));
+        hologramHandler.SetOnPlacementUIHelperFinished(Refresh);
     }
 
     private void Activate(bool value) {
