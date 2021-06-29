@@ -31,10 +31,11 @@ public class PnlBottomBarPrerecordedVideo : MonoBehaviour {
     /// Share prerecorded video
     /// </summary>
     public void Share() {
-        if (!string.IsNullOrWhiteSpace(_streamData.id.ToString()))
+        if (!string.IsNullOrWhiteSpace(_streamData.id.ToString())) {
             StreamCallBacks.onGetStreamLink?.Invoke(_streamData.id.ToString());
-        else
+        } else {
             DynamicLinksCallBacks.onShareAppLink?.Invoke();
+        }
     }
 
     /// <summary>
