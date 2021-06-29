@@ -21,7 +21,7 @@ public class DeepLinkHandler : MonoBehaviour {
 
     public void CheckSettings() {
         PermissionController permissionController = FindObjectOfType<PermissionController>();
-        permissionController.InformAboutNotification("Notifications have been enabled", "Notifcations may include alerts, sounds, and icon badges. These can be configured in Settings.");
+        permissionController.InformAboutNotification("Notifications have been enabled", "Notifications may include alerts, sounds, and icon badges. These can be configured in Settings.");
     }
 
     private void Awake() {
@@ -34,42 +34,37 @@ public class DeepLinkHandler : MonoBehaviour {
 
 
     private void GetContentsParameters(Uri uri) {
-        if (IsFolder(uri, serverURLAPIScriptableObject.Room)){
+        if (IsFolder(uri, serverURLAPIScriptableObject.Room)) {
             HelperFunctions.DevLog("GetRoomParameters");
 
             string roomId = GetId(uri, serverURLAPIScriptableObject.Room);
 
             HelperFunctions.DevLog("roomId = " + roomId);
             StreamCallBacks.onRoomLinkReceived?.Invoke(roomId);
-        }
-        else if (IsFolder(uri, serverURLAPIScriptableObject.Stream)){
+        } else if (IsFolder(uri, serverURLAPIScriptableObject.Stream)) {
             HelperFunctions.DevLog("GetStreamParameters");
 
             string streamId = GetId(uri, serverURLAPIScriptableObject.Stream);
 
             HelperFunctions.DevLog("streamId = " + streamId);
             StreamCallBacks.onStreamLinkReceived?.Invoke(streamId);
-        }
-        else if (IsFolder(uri, serverURLAPIScriptableObject.NotificationAccess)) { 
+        } else if (IsFolder(uri, serverURLAPIScriptableObject.NotificationAccess)) {
             PermissionController permissionController = FindObjectOfType<PermissionController>();
             permissionController.CheckPushNotifications();
         }
     }
 
     private bool IsFolder(Uri uri, string folder) {
-          return uri.LocalPath.Contains(folder);
+        return uri.LocalPath.Contains(folder);
     }
 
-    private string GetId(Uri uri, string folder)
-    {
+    private string GetId(Uri uri, string folder) {
         string localPath = uri.LocalPath;
         localPath = localPath.Substring(1, localPath.Length - 1);
         string[] split = localPath.Split('/');
-        for (int i = 0; i < split.Length; i++)
-        {
-            if (split[i].Contains(folder) && i < split.Length-1)
-            {
-                return split[i+1];
+        for (int i = 0; i < split.Length; i++) {
+            if (split[i].Contains(folder) && i < split.Length - 1) {
+                return split[i + 1];
             }
         }
         return string.Empty;
