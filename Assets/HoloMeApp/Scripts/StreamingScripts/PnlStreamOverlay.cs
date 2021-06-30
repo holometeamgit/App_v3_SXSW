@@ -6,6 +6,7 @@ using System.Collections;
 using UnityEngine.UI;
 using agora_gaming_rtc;
 using Beem.Firebase.DynamicLink;
+using Beem.UI;
 
 public class PnlStreamOverlay : MonoBehaviour {
 
@@ -39,6 +40,9 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     [SerializeField]
     private Button btnGoLive;
+
+    [SerializeField]
+    private UIBtnLikes uiBtnLikes;
 
     [SerializeField]
     StreamerCountUpdater[] streamCountUpdaters;
@@ -82,6 +86,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     int countDown;
     string tweenAnimationID = nameof(tweenAnimationID);
     Coroutine countdownRoutine;
+    Coroutine likesUpdateRoutine;
     bool isStreamer;
     bool isUsingFrontCamera;
     bool isPushToTalkActive;
@@ -136,6 +141,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         currentStreamId = streamStartResponseJsonData.id.ToString();
         RefreshControls();
         StartStreamCountUpdaters();
+        StartLikesUpdateRoutine();
     }
 
     private void RefreshRoom(string roomID) {
@@ -245,10 +251,31 @@ public class PnlStreamOverlay : MonoBehaviour {
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
         currentStreamId = streamID;
+       
         agoraController.IsRoom = isRoom;
         RefreshControls();
+        StartLikesUpdateRoutine();
         StartStreamCountUpdaters();
     }
+
+    #region Likes Update
+    void StartLikesUpdateRoutine() {
+        likesUpdateRoutine = StartCoroutine(UpdateLikes());
+    }
+
+    void StopLikesUpdateRoutine() {
+        if(likesUpdateRoutine != null) {
+            StopCoroutine(likesUpdateRoutine);
+        }
+    }
+
+    IEnumerator UpdateLikes() {
+        while (true) {
+            uiBtnLikes.SetStreamId(int.Parse(currentStreamId));
+            yield return new WaitForSeconds(10);
+        }
+    }
+    #endregion
 
     public void FadePanel(bool show) {
         canvasGroup.DOFade(show ? 1 : 0, 0.5f).OnComplete(() => { if (!show) { gameObject.SetActive(false); } });
@@ -323,6 +350,11 @@ public class PnlStreamOverlay : MonoBehaviour {
         countdownRoutine = StartCoroutine(CountDown());
     }
 
+    public void StopCountdownRoutine() {
+        if (countdownRoutine != null)
+            StopCoroutine(countdownRoutine);
+    }
+
     public void StopStream() {
         HelperFunctions.DevLog(nameof(StopStream) + " was called");
 
@@ -333,8 +365,8 @@ public class PnlStreamOverlay : MonoBehaviour {
                 SendStreamLeaveStatusToViewers();
         }
 
-        if (countdownRoutine != null)
-            StopCoroutine(countdownRoutine);
+        StopCountdownRoutine();
+        StopLikesUpdateRoutine();
 
         agoraController.Leave();
         cameraRenderImage.texture = null;
