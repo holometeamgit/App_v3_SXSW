@@ -26,7 +26,6 @@ namespace Beem.UI {
             CallBacks.onGetLikeStateCallBack -= UpdateState;
 
             _streamId = streamId;
-            UpdateBtnUIState();
             CallBacks.onGetLikeStateCallBack += UpdateState;
 
             CallBacks.onGetLikeState?.Invoke(streamId);
