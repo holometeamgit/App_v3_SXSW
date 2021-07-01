@@ -46,6 +46,7 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
             msg.Contains("User cancelled login")) { // do nothing
         } else if (msg.Contains("WrongPassword")) {
             inputFieldPassword.ShowWarning(msg);
+            inputFieldEmail.SetToDefaultState();
         } else {
             inputFieldEmail.ShowWarning(msg);
         }
