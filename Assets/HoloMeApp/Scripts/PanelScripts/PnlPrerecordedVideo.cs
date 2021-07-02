@@ -74,7 +74,7 @@ public class PnlPrerecordedVideo : MonoBehaviour {
         HelperFunctions.DevLog("purchaseManager.IsBought = " + purchaseManager.IsBought());
         _teaserView.SetActive(_streamData.HasTeaser && !purchaseManager.IsBought());
         _videoView.SetActive(!(_streamData.HasTeaser && !purchaseManager.IsBought()));
-        _bottomBar.gameObject.SetActive(!(_streamData.HasTeaser && !purchaseManager.IsBought()));
+        _bottomBar.gameObject.SetActive(true);
     }
 
     private void OnEnable() {
