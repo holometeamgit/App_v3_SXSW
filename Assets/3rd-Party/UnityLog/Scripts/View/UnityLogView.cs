@@ -11,7 +11,7 @@ namespace Beem.Utility.UnityConsole {
     [RequireComponent(typeof(Text))]
     public class UnityLogView : MonoBehaviour {
 
-        private const int MAX_LENGHT = 65000;
+        private const int MAX_LENGHT = 50000;
 
         private Text _text = default;
 
