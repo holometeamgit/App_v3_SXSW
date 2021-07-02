@@ -93,11 +93,10 @@ public class PnlStreamOverlay : MonoBehaviour {
     private bool _muteAudio = false;
     private bool _hideVideo = false;
 
-    //Vector3 rawImageQuadDefaultScale;
-
     const string MessageDisableAudio = "DisableAudio";
     const string MessageEnableAudio = "EnableAudio";
     const string MessageStreamerLeft = "StreamerLeft";
+    const string MessageChannelCreatorUID = "StreamerUID:";
 
     void Init() {
         if (initialised)
@@ -114,6 +113,8 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.OnStreamWentOffline += StopStreamCountUpdaters;
         agoraController.OnStreamWentOffline += () => btnGoLive.interactable = true;
         agoraController.OnMessageRecieved += StreamMessageResponse;
+        agoraController.OnUserViewerJoined += SendPushToTalkStatusToViewers;
+        agoraController.OnUserViewerJoined += SendChannelCreatorUIDToViewers;
 
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
@@ -215,7 +216,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         btnGoLive.gameObject.SetActive(true);
         agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
-        agoraController.OnUserViewerJoined += SendPushToTalkStatusToViewers;
+
         isStreamer = true;
         gameObject.SetActive(true);
         pnlViewingExperience.ToggleARSessionObjects(false);
@@ -358,6 +359,10 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.SendAgoraMessage(isPushToTalkActive ? MessageEnableAudio : MessageDisableAudio);
     }
 
+    void SendChannelCreatorUIDToViewers() {
+        agoraController.SendAgoraMessage(MessageChannelCreatorUID + agoraController.ChannelCreatorUID);
+    }
+
     void SendStreamLeaveStatusToViewers() {
         agoraController.SendAgoraMessage(MessageStreamerLeft);
     }
@@ -380,6 +385,15 @@ public class PnlStreamOverlay : MonoBehaviour {
             case MessageStreamerLeft:
                 agoraController.OnStreamerLeft?.Invoke();
                 break;
+        }
+
+        if (message.Contains(MessageChannelCreatorUID)) {
+
+            uint result;
+            if (!uint.TryParse(message.Substring(12), out result)) {
+                HelperFunctions.DevLogError("Channel creator UID parse failed");
+            }
+            agoraController.ChannelCreatorUID = result;
         }
     }
 
