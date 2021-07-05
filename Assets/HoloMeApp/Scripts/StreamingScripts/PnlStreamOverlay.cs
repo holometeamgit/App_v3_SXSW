@@ -377,20 +377,20 @@ public class PnlStreamOverlay : MonoBehaviour {
                 btnPushToTalk.SetActive(true);
                 AnimatedCentreTextMessage("Hold the Speak button to talk to the broadcaster");
                 AnimatedFadeOutMessage(3);
-                break;
+                return;
             case MessageDisableAudio:
                 ToggleLocalAudio(true);
                 btnPushToTalk.SetActive(false);
-                break;
+                return;
             case MessageStreamerLeft:
                 agoraController.OnStreamerLeft?.Invoke();
-                break;
+                return;
         }
 
         if (message.Contains(MessageChannelCreatorUID)) {
 
             uint result;
-            if (!uint.TryParse(message.Substring(12), out result)) {
+            if (!uint.TryParse(message.Substring(MessageChannelCreatorUID.Length), out result)) {
                 HelperFunctions.DevLogError("Channel creator UID parse failed");
             }
             agoraController.ChannelCreatorUID = result;
