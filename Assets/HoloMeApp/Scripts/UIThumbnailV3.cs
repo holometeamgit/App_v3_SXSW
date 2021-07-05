@@ -229,6 +229,7 @@ public class UIThumbnailV3 : UIThumbnail {
 
     private void OnEnable() {
         CallBacks.onStreamPurchasedInStore += WaitServerPurchaseConfirmation;
+        UpdateData();
     }
 
     private void OnDisable() {
