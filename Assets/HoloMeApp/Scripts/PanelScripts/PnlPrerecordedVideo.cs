@@ -9,13 +9,14 @@ using UnityEngine;
 /// </summary>
 public class PnlPrerecordedVideo : MonoBehaviour {
 
-    [Header("View for teaser")]
-    [SerializeField]
-    private GameObject _teaserView;
-
     [Header("View for video")]
     [SerializeField]
     private GameObject _videoView;
+
+    [Header("Purchase for video")]
+    [SerializeField]
+    private GameObject _purchaseView;
+
 
     [Header("Bottom Bar")]
     [SerializeField]
@@ -54,7 +55,7 @@ public class PnlPrerecordedVideo : MonoBehaviour {
     public void Init(StreamJsonData.Data streamData) {
         _streamData = streamData;
 #if !UNITY_EDITOR
-        Activate(false);
+        Deactivate();
 #else
         Refresh();
 #endif
@@ -63,17 +64,17 @@ public class PnlPrerecordedVideo : MonoBehaviour {
         _bottomBar.Init(streamData);
     }
 
-    private void Activate(bool value) {
-        _teaserView.SetActive(value);
-        _videoView.SetActive(value);
-        _bottomBar.gameObject.SetActive(value);
+    private void Deactivate() {
+        _videoView.SetActive(false);
+        _purchaseView.SetActive(false);
+        _bottomBar.gameObject.SetActive(false);
     }
 
     private void Refresh() {
         HelperFunctions.DevLog("_streamData.HasTeaser = " + _streamData.HasTeaser);
         HelperFunctions.DevLog("purchaseManager.IsBought = " + purchaseManager.IsBought());
-        _teaserView.SetActive(_streamData.HasTeaser && !purchaseManager.IsBought());
-        _videoView.SetActive(!(_streamData.HasTeaser && !purchaseManager.IsBought()));
+        _videoView.SetActive(!_streamData.HasTeaser && purchaseManager.IsBought());
+        _purchaseView.SetActive(!purchaseManager.IsBought());
         _bottomBar.gameObject.SetActive(true);
     }
 
@@ -82,7 +83,7 @@ public class PnlPrerecordedVideo : MonoBehaviour {
     }
 
     private void OnDisable() {
-        Activate(false);
+        Deactivate();
         if (purchaseManager != null) {
             purchaseManager.OnPurchaseSuccessful -= Refresh;
         }
