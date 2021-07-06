@@ -59,7 +59,7 @@ public class PnlPrerecordedVideo : MonoBehaviour {
 #else
         Refresh();
 #endif
-        gameObject.SetActive(!(_streamData.HasTeaser && !purchaseManager.IsBought()));
+        gameObject.SetActive(true);
         hologramHandler.SetOnPlacementUIHelperFinished(Refresh);
         _bottomBar.Init(streamData);
     }
@@ -71,10 +71,8 @@ public class PnlPrerecordedVideo : MonoBehaviour {
     }
 
     private void Refresh() {
-        HelperFunctions.DevLog("_streamData.HasTeaser = " + _streamData.HasTeaser);
-        HelperFunctions.DevLog("purchaseManager.IsBought = " + purchaseManager.IsBought());
-        _videoView.SetActive(!_streamData.HasTeaser && purchaseManager.IsBought());
-        _purchaseView.SetActive(!purchaseManager.IsBought());
+        _videoView.SetActive(_streamData.is_bought || (!_streamData.is_bought && _streamData.IsStarted));
+        _purchaseView.SetActive(!_streamData.is_bought);
         _bottomBar.gameObject.SetActive(true);
     }
 
