@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Beem;
 using TMPro;
 using UnityEngine;
 
@@ -52,8 +53,7 @@ public class StreamTimerView : MonoBehaviour {
                 TimerTextFormat(DateTime.Now - DateTime.Parse(data.start_date));
                 await Task.Yield();
             }
-        }
-        finally {
+        } finally {
             if (cancelTokenSource != null) {
                 cancelTokenSource.Dispose();
                 cancelTokenSource = null;
@@ -84,10 +84,9 @@ public class StreamTimerView : MonoBehaviour {
     }
 
     private void TimerTextFormat(TimeSpan timeSpan) {
-        if (timeSpan.TotalMinutes > 0) {
-            _timerText.text = timeSpan.Hours > 0 ? string.Format("{0}h {1}m", timeSpan.Hours, timeSpan.Minutes) : string.Format("{0}m", timeSpan.Minutes);
-        }
-        else {
+        if (timeSpan.TotalSeconds > 0) {
+            _timerText.text = TimeSpanString.GetTimeSince(timeSpan);
+        } else {
             _timerText.text = string.Empty;
         }
     }
