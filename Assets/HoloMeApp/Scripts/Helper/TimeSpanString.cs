@@ -10,6 +10,12 @@ namespace Beem {
         public static string GetTimeSince(DateTime objDateTime) {
             // here we are going to subtract the passed in DateTime from the current time converted to UTC
             TimeSpan ts = DateTime.Now.ToUniversalTime().Subtract(objDateTime.ToUniversalTime());
+
+            return GetTimeSince(ts);
+        }
+
+        public static string GetTimeSince(TimeSpan ts) {
+            // here we are going to subtract the passed in DateTime from the current time converted to UTC
             int intDays = ts.Days;
             int intHours = ts.Hours;
             int intMinutes = ts.Minutes;
