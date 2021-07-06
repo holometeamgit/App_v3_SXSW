@@ -71,7 +71,7 @@ public class PnlPrerecordedVideo : MonoBehaviour {
     }
 
     private void Refresh() {
-        _videoView.SetActive(_streamData.is_bought || (!_streamData.is_bought && _streamData.IsStarted));
+        _videoView.SetActive(_streamData.IsStarted && _streamData.is_bought);
         _purchaseView.SetActive(!_streamData.is_bought);
         _bottomBar.gameObject.SetActive(true);
     }
