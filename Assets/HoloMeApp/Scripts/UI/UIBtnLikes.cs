@@ -38,7 +38,6 @@ namespace Beem.UI {
             HelperFunctions.DevLog("ClickLike streamId " + _streamId);
             if (_streamId < 0)
                 return;
-            Handheld.Vibrate();
             _isLike = !_isLike;
             _count = _isLike ? ++_count : --_count;
             UpdateBtnUIState();
