@@ -7,8 +7,8 @@
     public const string KeySignUpTapped = "signUpTapped";
     public const string KeyProfileCreated = "profileCreated";
     public const string KeyEmailOptIn = "emailOptIn";
-    //public const string KeyNotificationOptIn = "notificationOptIn";
-    //public const string KeyNotificationMaybeLater = "notificationMaybeLater";
+    //public const string KeyNotificationOptIn = "notificationOptIn"; //TODO future opt in notifications panel
+    //public const string KeyNotificationMaybeLater = "notificationMaybeLater"; //TODO future opt in notifications panel
 
     public const string KeyShareHologramMediaPressed = "shareHologramRecordingPressed";
     public const string KeySnapshotShared = "hologramSnapshotShared";
@@ -52,5 +52,5 @@ public class AnalyticParameters {
     public const string ParamTime = "time";
     public const string ParamDate = "date";
     public const string ParamSignUpMethod = "signUpMethod";
-    //public const string ParamNotificationsOptIn = "notificationOptIn";
+    //public const string ParamNotificationsOptIn = "notificationOptIn"; //TODO future opt in notifications panel
 }
