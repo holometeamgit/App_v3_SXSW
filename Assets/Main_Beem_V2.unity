@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.5748171, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -124,6 +124,24 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &16223473 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 343518863792234896, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
+    type: 3}
+  m_PrefabInstance: {fileID: 5170083753930010900}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &16223477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 16223473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d5ccbd42ab928241888e01fd02213c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &30566191 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4302810320313320491, guid: 74fd2c6248c674f308d632c0a2b368ed,
@@ -4841,6 +4859,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DeepLinkHandler: {fileID: 1519454387}
   linkRoomId: https://join.beem.me/room/ad11a4b0-ae8c-11eb-ad81-0242ac120002
+--- !u!1 &1114541093 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9181899939956507500, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
+    type: 3}
+  m_PrefabInstance: {fileID: 5170083753930010900}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1114541094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1114541093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 352c0fae33d13b149bccd2e27f3fe5b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1146380143
 GameObject:
   m_ObjectHideFlags: 0
@@ -11131,9 +11167,24 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1891509930059568906, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1891509930059568906, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1891509930059568906, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 5170083753930010903}
+      objectReference: {fileID: 16223477}
+    - target: {fileID: 1891509930059568906, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1891509930059568906, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -11142,7 +11193,12 @@ PrefabInstance:
     - target: {fileID: 1891509930059568906, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PnlBottomBarPrerecordedVideo, Assembly-CSharp
+      value: ShareStreamBtn, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1891509930059568906, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 2003006680320590638, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
         type: 3}
@@ -11283,6 +11339,51 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5744681793058030022, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5744681793058030022, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5744681793058030022, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1114541094}
+    - target: {fileID: 5744681793058030022, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1114541094}
+    - target: {fileID: 5744681793058030022, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5744681793058030022, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ToggleComments
+      objectReference: {fileID: 0}
+    - target: {fileID: 5744681793058030022, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: CommentsToggle, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5744681793058030022, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: CommentsToggle, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5744681793058030022, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 6005151463714261437, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
         type: 3}
@@ -12939,6 +13040,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 828987486354141712, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+        type: 3}
+      propertyPath: colourToggledOff.a
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1271459711918670295, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
         type: 3}

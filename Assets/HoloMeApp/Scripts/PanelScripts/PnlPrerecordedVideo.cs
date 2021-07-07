@@ -20,7 +20,7 @@ public class PnlPrerecordedVideo : MonoBehaviour {
 
     [Header("Bottom Bar")]
     [SerializeField]
-    private PnlBottomBarPrerecordedVideo _bottomBar;
+    private BottomBar _bottomBar;
 
     private StreamJsonData.Data _streamData = default;
 
