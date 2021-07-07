@@ -150,6 +150,9 @@ public class UIThumbnailV3 : UIThumbnail {
     }
 
     private void UpdateData() {
+        if (thumbnailElement == null)
+            return;
+
         UpdateTexture();
 
         bool isLive = thumbnailElement.Data.GetStage() == StreamJsonData.Data.Stage.Live;
@@ -229,6 +232,7 @@ public class UIThumbnailV3 : UIThumbnail {
 
     private void OnEnable() {
         CallBacks.onStreamPurchasedInStore += WaitServerPurchaseConfirmation;
+        UpdateData();
     }
 
     private void OnDisable() {

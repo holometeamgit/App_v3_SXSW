@@ -4,10 +4,10 @@ echo "Uploading IPA to Appstore Connect..."
 
 set -x
 
-export FIREBASE_BUILD="$(find -E . -regex '.*\.(ipa|apk)' -print -quit)"
+export FIREBASE_BUILD="$(find -E . -regex '.*\.(ipa)' -print -quit)"
 
 if [ -z "$FIREBASE_BUILD" ]; then
-    echo "Could not find .ipa/.apk file"
+    echo "Could not find .ipa file"
     exit 1
 else
     if xcrun altool --upload-app -f $FIREBASE_BUILD -u $ITUNES_USERNAME -p $ITUNES_PASSWORD ; then

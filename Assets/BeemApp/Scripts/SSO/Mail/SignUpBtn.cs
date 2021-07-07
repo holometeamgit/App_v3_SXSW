@@ -11,12 +11,20 @@ namespace Beem.SSO {
     /// </summary>
     public class SignUpBtn : MonoBehaviour, IPointerClickHandler {
 
+        private Button _btnComponent;
+
         public void SignUp() {
             Debug.Log("onSignUpEMailClick");
             CallBacks.onSignUpEMailClick?.Invoke();
         }
 
         public void OnPointerClick(PointerEventData eventData) {
+            if(_btnComponent == null) 
+                _btnComponent = GetComponent<Button>();
+  
+            if (!_btnComponent.interactable)
+                return;
+
             SignUp();
         }
     }

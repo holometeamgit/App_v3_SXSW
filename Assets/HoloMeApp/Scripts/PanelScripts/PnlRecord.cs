@@ -8,6 +8,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine.Events;
 using System.IO;
+using Beem.Utility;
 
 public class PnlRecord : MonoBehaviour {
     [SerializeField]
@@ -207,13 +208,13 @@ public class PnlRecord : MonoBehaviour {
         canvasGroup.alpha = 0;
         watermarkCanvasObject.SetActive(true);
         //print("ENABLED WATERMARK");
-
+        HideUI.onActivate(false);
         yield return new WaitForEndOfFrame();
 
         Texture2D screenShot = ScreenCapture.CaptureScreenshotAsTexture(1);
 
         yield return new WaitForEndOfFrame();
-
+        HideUI.onActivate(true);
         pnlPostRecord.ActivatePostScreenshot(Sprite.Create(screenShot, new Rect(0, 0, Screen.width, Screen.height), new Vector2(0.5f, 0.5f)), screenShot, lastRecordingPath);
         //pnlVideoExperience.PauseExperience();
         OnSnapshotEnded?.Invoke();

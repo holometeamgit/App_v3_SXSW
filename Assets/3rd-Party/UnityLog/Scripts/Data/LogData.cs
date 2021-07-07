@@ -16,7 +16,7 @@ namespace Beem.Utility.UnityConsole {
 
         private static bool _isStackTraceStatus = default;
 
-        private static ILog _ILog = new PrefsLog();
+        private static ILog _ILog = new LocalLog();
 
         private static List<UnityLog> _log = new List<UnityLog>();
 
