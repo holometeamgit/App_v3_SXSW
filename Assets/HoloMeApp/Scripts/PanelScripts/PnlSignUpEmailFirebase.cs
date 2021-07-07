@@ -28,6 +28,7 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     private float nextTimeCanClick = 0;
 
     public void OnPolicyConfirmationChanged(bool isPolicyConfirmed) {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyEmailOptIn, AnalyticParameters.ParamSignUpMethod, AnalyticsLoginModeTracker.Instance.LoginMethodUsed.ToString());
         continueBtn.interactable = isPolicyConfirmed;
     }
 
