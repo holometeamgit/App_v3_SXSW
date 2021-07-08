@@ -14,7 +14,7 @@ namespace Beem.Video {
 
         protected CancellationTokenSource cancelTokenSource;
 
-        private const int DELAY = 1;
+        private const int DELAY = 1000;
 
         /// <summary>
         /// Refresh data Video Player 

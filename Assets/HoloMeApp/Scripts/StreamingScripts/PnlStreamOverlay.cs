@@ -140,7 +140,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     private void RefreshStream(StreamStartResponseJsonData streamStartResponseJsonData) {
         currentStreamId = streamStartResponseJsonData.id.ToString();
         RefreshControls();
-        streamLikesRefresherView.StartCount(currentStreamId);
+        streamLikesRefresherView.StartCountAsync(currentStreamId);
         StartStreamCountUpdaters();
     }
 
@@ -254,7 +254,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
         agoraController.IsRoom = isRoom;
         RefreshControls();
-        streamLikesRefresherView.StartCount(streamID);
+        streamLikesRefresherView.StartCountAsync(streamID);
         StartStreamCountUpdaters();
     }
 

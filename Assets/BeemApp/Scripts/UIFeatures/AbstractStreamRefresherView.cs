@@ -19,7 +19,7 @@ namespace Beem.UI {
         /// <summary>
         /// Refresh data Video Player 
         /// </summary>
-        /// <param name="videoPlayer"></param>
+        /// <param name="streamID"></param>
         public abstract void Refresh(string streamID);
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Beem.UI {
         /// </summary>
         /// <param name="streamID">Id for streams</param>
         /// <param name="condition">Conditions for repeating</param>
-        public async void StartCount(string streamID, bool condition = true) {
+        public async void StartCountAsync(string streamID, bool condition = true) {
             _cancelTokenSource = new CancellationTokenSource();
             try {
                 while (condition) {

@@ -15,7 +15,7 @@ namespace Beem.UI {
         [SerializeField]
         private UIBtnLikes _uIBtnLikes;
 
-        private const int REFRESH_DELAY_FOR_LIKES = 10;
+        private const int REFRESH_DELAY_FOR_LIKES = 10000;
 
         protected override int delay => REFRESH_DELAY_FOR_LIKES;
 
