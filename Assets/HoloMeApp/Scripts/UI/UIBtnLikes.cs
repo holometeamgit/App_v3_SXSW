@@ -10,7 +10,7 @@ namespace Beem.UI {
     /// Need for demonstration count of likes
     /// can invoke like and unlike event
     /// </summary>
-    public class UIBtnLikes : MonoBehaviour, IStreamData {
+    public class UIBtnLikes : MonoBehaviour, IStreamDataView {
         [SerializeField] Image imageLike;
         [SerializeField] Image imageUnlike;
         [SerializeField] TMP_Text likesCount;

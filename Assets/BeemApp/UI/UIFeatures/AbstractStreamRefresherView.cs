@@ -4,16 +4,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Beem {
+namespace Beem.UI {
 
     /// <summary>
     /// Abstract Stream Data Refresher
     /// </summary>
     public abstract class AbstractStreamRefresherView : MonoBehaviour {
 
-        protected CancellationTokenSource cancelTokenSource;
+        protected CancellationTokenSource _cancelTokenSource;
 
-        protected abstract int refreshTimer { get; }
+        protected abstract int delay { get; }
+
 
         /// <summary>
         /// Refresh data Video Player 
@@ -21,17 +22,22 @@ namespace Beem {
         /// <param name="videoPlayer"></param>
         public abstract void Refresh(string streamID);
 
+        /// <summary>
+        /// StartCount Data
+        /// </summary>
+        /// <param name="streamID">Id for streams</param>
+        /// <param name="condition">Conditions for repeating</param>
         public async void StartCount(string streamID, bool condition = true) {
-            cancelTokenSource = new CancellationTokenSource();
+            _cancelTokenSource = new CancellationTokenSource();
             try {
                 while (condition) {
                     Refresh(streamID);
-                    await Task.Delay(refreshTimer);
+                    await Task.Delay(delay);
                 }
             } finally {
-                if (cancelTokenSource != null) {
-                    cancelTokenSource.Dispose();
-                    cancelTokenSource = null;
+                if (_cancelTokenSource != null) {
+                    _cancelTokenSource.Dispose();
+                    _cancelTokenSource = null;
                 }
             }
         }
@@ -44,9 +50,9 @@ namespace Beem {
         /// Clear Info
         /// </summary>
         public void Cancel() {
-            if (cancelTokenSource != null) {
-                cancelTokenSource.Cancel();
-                cancelTokenSource = null;
+            if (_cancelTokenSource != null) {
+                _cancelTokenSource.Cancel();
+                _cancelTokenSource = null;
             }
         }
     }
