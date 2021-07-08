@@ -110,7 +110,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
     }
 
     private void OnEnable() {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticParameters.ParamHomeScreen);
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyHomeScreen);
 
         if (needRefresh)
             RefreshItems();
