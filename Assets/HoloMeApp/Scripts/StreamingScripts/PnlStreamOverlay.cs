@@ -6,6 +6,7 @@ using System.Collections;
 using UnityEngine.UI;
 using agora_gaming_rtc;
 using Beem.Firebase.DynamicLink;
+using Beem.UI;
 
 public class PnlStreamOverlay : MonoBehaviour {
 
@@ -39,6 +40,9 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     [SerializeField]
     private Button btnGoLive;
+
+    [SerializeField]
+    private StreamLikesRefresherView streamLikesRefresherView;
 
     [SerializeField]
     StreamerCountUpdater[] streamCountUpdaters;
@@ -136,6 +140,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     private void RefreshStream(StreamStartResponseJsonData streamStartResponseJsonData) {
         currentStreamId = streamStartResponseJsonData.id.ToString();
         RefreshControls();
+        streamLikesRefresherView.StartCountAsync(currentStreamId);
         StartStreamCountUpdaters();
     }
 
@@ -246,8 +251,10 @@ public class PnlStreamOverlay : MonoBehaviour {
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
         currentStreamId = streamID;
+
         agoraController.IsRoom = isRoom;
         RefreshControls();
+        streamLikesRefresherView.StartCountAsync(streamID);
         StartStreamCountUpdaters();
     }
 
@@ -324,6 +331,11 @@ public class PnlStreamOverlay : MonoBehaviour {
         countdownRoutine = StartCoroutine(CountDown());
     }
 
+    public void StopCountdownRoutine() {
+        if (countdownRoutine != null)
+            StopCoroutine(countdownRoutine);
+    }
+
     public void StopStream() {
         HelperFunctions.DevLog(nameof(StopStream) + " was called");
 
@@ -334,8 +346,8 @@ public class PnlStreamOverlay : MonoBehaviour {
                 SendStreamLeaveStatusToViewers();
         }
 
-        if (countdownRoutine != null)
-            StopCoroutine(countdownRoutine);
+        StopCountdownRoutine();
+        streamLikesRefresherView.Cancel();
 
         agoraController.Leave();
         cameraRenderImage.texture = null;

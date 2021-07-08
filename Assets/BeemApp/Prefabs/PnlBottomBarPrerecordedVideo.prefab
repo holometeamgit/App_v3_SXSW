@@ -177,6 +177,7 @@ GameObject:
   - component: {fileID: 8241280429134442375}
   - component: {fileID: 9216767066729451868}
   - component: {fileID: 1891509930059568906}
+  - component: {fileID: 3914748923936199424}
   m_Layer: 5
   m_Name: btnShare
   m_TagString: Untagged
@@ -201,10 +202,10 @@ RectTransform:
   m_Father: {fileID: 422823273088811914}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 937.5, y: -72}
+  m_SizeDelta: {x: 375, y: 144}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9216767066729451868
 CanvasRenderer:
@@ -257,19 +258,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4400423079307987418}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2003006680320590638}
-        m_TargetAssemblyTypeName: PnlBottomBarPrerecordedVideo, Assembly-CSharp
-        m_MethodName: Share
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
+--- !u!114 &3914748923936199424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 343518863792234896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d5ccbd42ab928241888e01fd02213c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &698994731510835269
 GameObject:
   m_ObjectHideFlags: 0
@@ -767,7 +768,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5169722162683015061
 RectTransform:
   m_ObjectHideFlags: 0
@@ -812,8 +813,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab4e255762dc543b99588671729581ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiBtnLikes: {fileID: 4679758076433618834}
-  _uiToggleComments: {fileID: 5744681793058030022}
 --- !u!1 &4575393405622807001
 GameObject:
   m_ObjectHideFlags: 0
@@ -1307,10 +1306,10 @@ RectTransform:
   m_Father: {fileID: 422823273088811914}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 562.5, y: -72}
+  m_SizeDelta: {x: 375, y: 144}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5412470070527286125
 CanvasRenderer:
@@ -1697,6 +1696,7 @@ GameObject:
   - component: {fileID: 5744681793058030022}
   - component: {fileID: 7885699917278564499}
   - component: {fileID: 6964049291870164684}
+  - component: {fileID: 301656642562012626}
   m_Layer: 5
   m_Name: btnComment
   m_TagString: Untagged
@@ -1721,10 +1721,10 @@ RectTransform:
   m_Father: {fileID: 422823273088811914}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 187.5, y: -72}
+  m_SizeDelta: {x: 375, y: 144}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1416197019668030484
 CanvasRenderer:
@@ -1781,8 +1781,8 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2003006680320590638}
-        m_TargetAssemblyTypeName: PnlBottomBarPrerecordedVideo, Assembly-CSharp
+      - m_Target: {fileID: 301656642562012626}
+        m_TargetAssemblyTypeName: Beem.UI.CommentsToggle, Assembly-CSharp
         m_MethodName: ToggleComments
         m_Mode: 0
         m_Arguments:
@@ -1823,6 +1823,18 @@ MonoBehaviour:
   referenceText: {fileID: 4165028848908626192}
   colourToggledOff: {r: 0.45882356, g: 0.45882356, b: 0.45882356, a: 1}
   resetOnEnable: 0
+--- !u!114 &301656642562012626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9181899939956507500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 352c0fae33d13b149bccd2e27f3fe5b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &268753968914959977
 PrefabInstance:
   m_ObjectHideFlags: 0
