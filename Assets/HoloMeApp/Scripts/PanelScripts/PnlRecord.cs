@@ -122,6 +122,12 @@ public class PnlRecord : MonoBehaviour {
         canvasGroup?.DOFade(1, .5f);
     }
 
+    private void OnEnable() {
+        HelperFunctions.DevLogError("Enable");
+        HelperFunctions.DevLog("Enable");
+        HelperFunctions.DevLogWarning("Enable");
+    }
+
     private void OnDisable() {
         canvasGroup.alpha = 0;
     }
