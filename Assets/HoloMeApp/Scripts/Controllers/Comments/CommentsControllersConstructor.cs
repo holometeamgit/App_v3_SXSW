@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Beem.Content;
 
 namespace Beem {
@@ -28,6 +26,7 @@ namespace Beem {
             _commentsController.onFetchedTotalCommentsCount += _pnlComments.OnRefreshUpdateCommentsCount;
 
             StreamCallBacks.onOpenComment += _pnlComments.OpenComments;
+            StreamCallBacks.onCloseComments += _pnlComments.CloseComments;
         }
 
         private void OnDestroy() {
@@ -45,6 +44,7 @@ namespace Beem {
             _commentsController.onFetchedTotalCommentsCount -= _pnlComments.OnRefreshUpdateCommentsCount;
 
             StreamCallBacks.onOpenComment -= _pnlComments.OpenComments;
+            StreamCallBacks.onCloseComments -= _pnlComments.CloseComments;
         }
     }
 }

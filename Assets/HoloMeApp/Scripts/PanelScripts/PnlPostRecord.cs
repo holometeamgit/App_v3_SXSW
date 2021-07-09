@@ -29,9 +29,6 @@ public class PnlPostRecord : MonoBehaviour {
     Button btnDownload;
 
     [SerializeField]
-    Button btnShare;
-
-    [SerializeField]
     PermissionGranter permissionGranter;
 
     [SerializeField]
@@ -39,9 +36,6 @@ public class PnlPostRecord : MonoBehaviour {
 
     [SerializeField]
     HologramHandler hologramHandler;
-
-    [SerializeField]
-    PnlShareOptions pnlShareOptions;
 
     static string lastRecordingPath;
     public static string LastRecordingPath { get { return lastRecordingPath; } }
@@ -60,10 +54,7 @@ public class PnlPostRecord : MonoBehaviour {
         }
     }
 
-    private void Start()
-    {
-        btnShare.onClick.AddListener(()=>pnlShareOptions.Activate(!screenshotWasTaken, screenShot, hologramHandler.GetVideoFileName));
-
+    private void Start() {
         imgSavingCanvasGroup = imgSaving.GetComponent<CanvasGroup>();
         imgDownloadSuccessCanvasGroup = imgDownloadSuccess.GetComponent<CanvasGroup>();
     }
@@ -97,7 +88,6 @@ public class PnlPostRecord : MonoBehaviour {
         imgDownloadSuccessCanvasGroup.alpha = 0;
         imgDownloadSuccess.gameObject.SetActive(false);
         btnDownload.interactable = true;
-        btnShare.interactable = true;
         btnPreview.interactable = true;
         gameObject.SetActive(true);
 
@@ -107,11 +97,9 @@ public class PnlPostRecord : MonoBehaviour {
         lastRecordingPath = lastRecordPath;
     }
 
-    public void Share()
-    {
+    public void Share() {
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareHologramMediaPressed, AnalyticParameters.ParamVideoName, hologramHandler.GetVideoFileName);
-        if (screenshotWasTaken)
-        {
+        if (screenshotWasTaken) {
             ShareScreenshot();
         } else {
             ShareVideo();

@@ -29,8 +29,10 @@ public class PnlProfile : MonoBehaviour {
     }
 
     public void ChooseUsername() {
-        if (LocalDataVerification())
+        if (LocalDataVerification()) {
             userWebManager.UpdateUserData(userName: usernameInputField.text);
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyProfileCreated, AnalyticParameters.ParamSignUpMethod, AnalyticsSignUpModeTracker.Instance.SignUpMethodUsed.ToString());
+        }
     }
 
     private void Start() {
