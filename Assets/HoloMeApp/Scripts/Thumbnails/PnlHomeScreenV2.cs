@@ -44,7 +44,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
             thumbnailWebDownloadManager, pageSize: pageSize );
 
         thumbnailsDataFetcher.OnAllDataLoaded += AllDataLoaded;
-        thumbnailsDataFetcher.OnDataUpdated += DataUpdateCallBack;
+        CallBacks.onStreamsContainerUpdated += DataUpdateCallBack;
 
         uiThumbnailsController.OnUpdated += UIUpdated;
         //add ref to data list from fetcher for ui Thumbnails Controller
@@ -119,5 +119,9 @@ public class PnlHomeScreenV2 : MonoBehaviour
     private void OnDisable() {
         StopAllCoroutines();
         pullRefreshController.EndRefreshing();
+    }
+
+    private void OnDestroy() {
+        CallBacks.onStreamsContainerUpdated -= DataUpdateCallBack;
     }
 }

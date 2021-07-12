@@ -64,7 +64,11 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
         accountManager.GetAccessToken().access);
     }
 
-    public void DownloadStreamById(long id) {
+    private void Awake() {
+        CallBacks.onDownloadStreamById += DownloadStreamByIdWithDelay;
+    }
+
+    private void DownloadStreamById(long id) {
         webRequestHandler.GetRequest(GetRequestStreamByIdURL(id),
             (code, body) => {
                 HelperFunctions.DevLog("DownloadStreamById " + body);
@@ -159,5 +163,9 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
 
     private void OnDisable() {
         CallBacks.onStreamPurchasedAndUpdateOnServer -= DownloadStreamByIdWithDelay;
+    }
+
+    private void OnDestroy() {
+        CallBacks.onDownloadStreamById -= DownloadStreamByIdWithDelay;
     }
 }

@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using Beem.SSO;
 using TMPro;
+using System.Collections;
 
 namespace Beem.UI {
 
@@ -19,16 +20,20 @@ namespace Beem.UI {
         private long _count;
         private long _streamId = -1;
 
+
         /// <summary>
-        /// Set btn state 
+        /// Init btn state. Take data from local data container
         /// </summary>
-        public void SetStreamId(long streamId) {
+        public void Init(StreamJsonData.Data streamData) {
+            Init(streamData.id);
+        }
+
+        public void Init(long streamId) {
             CallBacks.onGetLikeStateCallBack -= UpdateState;
 
             _streamId = streamId;
             CallBacks.onGetLikeStateCallBack += UpdateState;
-
-            CallBacks.onGetLikeState?.Invoke(streamId);
+            GetLikesState();
         }
 
         /// <summary>
@@ -48,9 +53,18 @@ namespace Beem.UI {
             }
         }
 
+        private void RefreshLocalLikes(long streamId) {
+            if (_streamId != streamId)
+                return;
+
+            GetLikesState();
+        }
+
         private void UpdateState(long streamId, bool isLike, long count) {
             if (streamId != _streamId)
                 return;
+
+            HelperFunctions.DevLog("Update likes " + streamId + " " + count);
 
             if (_isLike != isLike || _count != count) {
                 _isLike = isLike;
@@ -65,12 +79,29 @@ namespace Beem.UI {
             likesCount.text = _count.ToString();
         }
 
-        private void OnDisable() {
-            _streamId = -1;
+        private void GetLikesState() {
+            if (!isActiveAndEnabled)
+                return;
+            CallBacks.onGetLikeState?.Invoke(_streamId);
         }
 
-        public void Init(StreamJsonData.Data streamData) {
-            SetStreamId(streamData.id);
+        private void OnEnable() {
+            CallBacks.onStreamByIdInContainerUpdated += RefreshLocalLikes;
+            //StartCoroutine(UpdateLikes());
         }
+
+        private void OnDisable() {
+            _streamId = -1;
+            CallBacks.onStreamByIdInContainerUpdated -= RefreshLocalLikes;
+            StopAllCoroutines();
+        }
+
+        /*IEnumerator UpdateLikes() {
+            while(true) {
+                yield return new WaitForSeconds(5);
+                HelperFunctions.DevLog("Request update Like " + _streamId);
+                CallBacks.onDownloadStreamById(_streamId);
+            }
+        }*/
     }
 }

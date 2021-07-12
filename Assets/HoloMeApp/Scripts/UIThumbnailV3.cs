@@ -110,6 +110,9 @@ public class UIThumbnailV3 : UIThumbnail {
         }
 
         thumbnailElement = element;
+#if UNITY_EDITOR
+        name = this.GetType().Name + " (" + element.Data.id + ")";
+#endif
 
         thumbnailElement.OnTextureLoaded += UpdateTexture;
         thumbnailElement.OnErrorTextureLoaded += UpdateTexture;
@@ -197,7 +200,7 @@ public class UIThumbnailV3 : UIThumbnail {
             btnShareEvent.SetActive(!thumbnailElement.Data.HasTeaser);
         }
 
-        btnLikes.SetStreamId(thumbnailElement.Data.id);
+        btnLikes.Init(thumbnailElement.Data.id);
 
         _streamTimerView.View(thumbnailElement.Data);
     }

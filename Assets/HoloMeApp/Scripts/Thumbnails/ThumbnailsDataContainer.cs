@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using Beem.SSO;
 
 public class ThumbnailsDataContainer {
-    public Action OnDataUpdated;
 
     private ThumbnailPriority thumbnailPriority;
 
@@ -16,6 +16,7 @@ public class ThumbnailsDataContainer {
         this.thumbnailPriority = thumbnailPriority;
         streamDataDictionary = new Dictionary<long, StreamJsonData.Data>();
         streamData = new List<StreamJsonData.Data>();
+        CallBacks.onGetLikeState += GetLikeState;
     }
 
     public List<StreamJsonData.Data> GetDataList() {
@@ -38,19 +39,18 @@ public class ThumbnailsDataContainer {
         }
 
         SortListByStartDate();
-        OnDataUpdated?.Invoke();
+        CallBacks.onStreamsContainerUpdated?.Invoke();
     }
 
     private void AddStreamJsonData(StreamJsonData.Data data) {
-        if (streamDataDictionary.ContainsKey(data.id)) {
+        if (ContainStream(data.id)) {
             StreamJsonData.Data prevStreamData = streamDataDictionary[data.id];
             //if (data.id == 796)
-                HelperFunctions.DevLog("ThumbnailsDataContainer AddStreamJsonData id = " + data.id + "is bought = " + data.is_bought);
 
             if (!ObjectComparer.Equals(prevStreamData, data)) {
-
                 prevStreamData.Update(data);
-            } 
+                CallBacks.onStreamByIdInContainerUpdated?.Invoke(data.id);
+            }
         } else {
             streamDataDictionary[data.id] = data;
             streamData.Add(data);
@@ -74,7 +74,21 @@ public class ThumbnailsDataContainer {
             });
     }
 
-    [Serializable]
+    private void GetLikeState(long streamId) {
+        if (!ContainStream(streamId))
+            return;
+
+
+        var streamData = streamDataDictionary[streamId];
+
+        CallBacks.onGetLikeStateCallBack?.Invoke(streamId, streamData.is_liked, streamData.count_of_likes);
+    }
+
+    ~ThumbnailsDataContainer() {
+        CallBacks.onGetLikeState -= GetLikeState;
+    }
+
+[Serializable]
     public struct Priority {
         public StreamJsonData.Data.Stage Stage;
         public bool IsPin;

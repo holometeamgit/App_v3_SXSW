@@ -72,5 +72,12 @@ namespace Beem.SSO {
         public static Action<long> onFailSentRequestViewCallback = delegate { };
 
         #endregion
+
+        #region streams
+        public static Action onStreamsContainerUpdated = delegate { };
+        public static Action<long> onStreamByIdInContainerUpdated = delegate { };
+
+        public static Action<long> onDownloadStreamById = delegate { };
+        #endregion
     }
 }
