@@ -37,6 +37,10 @@ namespace Beem.Video {
             }
         }
 
+        protected void OnDisable() {
+            Cancel();
+        }
+
         protected void OnDestroy() {
             Cancel();
         }
