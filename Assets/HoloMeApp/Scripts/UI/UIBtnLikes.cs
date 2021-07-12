@@ -53,6 +53,10 @@ namespace Beem.UI {
             }
         }
 
+        private void Start() {
+            UpdateBtnUIState();
+        }
+
         private void RefreshLocalLikes(long streamId) {
             if (_streamId != streamId)
                 return;
@@ -87,7 +91,6 @@ namespace Beem.UI {
 
         private void OnEnable() {
             CallBacks.onStreamByIdInContainerUpdated += RefreshLocalLikes;
-            //StartCoroutine(UpdateLikes());
         }
 
         private void OnDisable() {
@@ -95,13 +98,5 @@ namespace Beem.UI {
             CallBacks.onStreamByIdInContainerUpdated -= RefreshLocalLikes;
             StopAllCoroutines();
         }
-
-        /*IEnumerator UpdateLikes() {
-            while(true) {
-                yield return new WaitForSeconds(5);
-                HelperFunctions.DevLog("Request update Like " + _streamId);
-                CallBacks.onDownloadStreamById(_streamId);
-            }
-        }*/
     }
 }
