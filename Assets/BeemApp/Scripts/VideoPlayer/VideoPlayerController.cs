@@ -76,6 +76,9 @@ namespace Beem.Video {
             if (_videoPlayer != null) {
                 if (_videoPlayer.isPlaying) {
                     _videoPlayer.Stop();
+                    foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
+                        view.Cancel();
+                    }
                 }
             }
         }
