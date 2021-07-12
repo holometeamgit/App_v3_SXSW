@@ -229,6 +229,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         StartCoroutine(OnPreviewReady());
         agoraController.StartPreview();
         isPushToTalkActive = false;
+        RefreshControls();
     }
 
     public void OpenAsViewer(string channelName, string streamID, bool isRoom) {
