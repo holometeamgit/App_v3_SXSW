@@ -58,20 +58,13 @@ namespace Beem.SSO {
 
         private void OnGoogleAuthenticationFinished(Task<GoogleSignInUser> task) {
             if (task.IsCanceled) {
-                HelperFunctions.DevLogError("Task was canceled.");
-                CallBacks.onFail?.Invoke("User cancelled login");
+                HelperFunctions.DevLogError("User canceled login");
+                CallBacks.onFail?.Invoke("User canceled login");
                 return;
             }
             if (task.IsFaulted) {
-                IEnumerator<Exception> enumerator = task.Exception.InnerExceptions.GetEnumerator();
-                if (enumerator.MoveNext()) {
-                    GoogleSignIn.SignInException error = (GoogleSignIn.SignInException)enumerator.Current;
-                    CallBacks.onFail?.Invoke("Got Error: " + error.Status + " " + error.Message);
-                    HelperFunctions.DevLog("Got Error: " + error.Status + " " + error.Message);
-                } else {
-                    CallBacks.onFail?.Invoke("Got Unexpected Exception?!?" + task.Exception);
-                    HelperFunctions.DevLog("Got Unexpected Exception?!?" + task.Exception);
-                }
+                HelperFunctions.DevLogError("Task was Failed: " + task.Exception);
+                CallBacks.onFail?.Invoke(task.Exception.ToString());
                 return;
             }
 
