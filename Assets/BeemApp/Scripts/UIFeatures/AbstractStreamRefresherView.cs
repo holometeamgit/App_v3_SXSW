@@ -29,8 +29,9 @@ namespace Beem.UI {
         /// <param name="condition">Conditions for repeating</param>
         public async void StartCountAsync(string streamID, bool condition = true) {
             _cancelTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = _cancelTokenSource.Token;
             try {
-                while (condition) {
+                while (!cancellationToken.IsCancellationRequested && condition) {
                     Refresh(streamID);
                     await Task.Delay(delay);
                 }

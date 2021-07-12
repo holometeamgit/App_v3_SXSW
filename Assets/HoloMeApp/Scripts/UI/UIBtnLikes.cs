@@ -29,6 +29,9 @@ namespace Beem.UI {
         }
 
         public void Init(long streamId) {
+#if UNITY_EDITOR
+            this.gameObject.name = "BtnLikes " + streamId;
+#endif
             CallBacks.onGetLikeStateCallBack -= UpdateState;
 
             _streamId = streamId;

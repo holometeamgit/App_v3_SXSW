@@ -21,6 +21,11 @@ namespace Beem.UI {
         protected override int delay => REFRESH_DELAY_FOR_LIKES;
 
         public override void Refresh(string streamID) {
+            long streamIdLong = 0;
+            long.TryParse(streamID, out streamIdLong);
+
+            if (streamIdLong == 0)
+                return;
             CallBacks.onDownloadStreamById(long.Parse(streamID));
         }
     }
