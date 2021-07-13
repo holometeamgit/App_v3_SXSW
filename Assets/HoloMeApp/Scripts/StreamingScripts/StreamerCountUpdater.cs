@@ -11,6 +11,8 @@ public class StreamerCountUpdater : MonoBehaviour {
     private bool waitingForResponse;
     private Coroutine updateRoutine;
 
+    private const int COUNT_UPDATE_DELAY_SECONDS = 15;
+
     public void StartCheck(string channelName) {
         if (!gameObject.activeInHierarchy)
             return;
@@ -39,7 +41,7 @@ public class StreamerCountUpdater : MonoBehaviour {
     IEnumerator UpdateCountRoutine() {
         while (true) {
             UpdateCount();
-            yield return new WaitForSeconds(15);
+            yield return new WaitForSeconds(COUNT_UPDATE_DELAY_SECONDS);
         }
     }
 

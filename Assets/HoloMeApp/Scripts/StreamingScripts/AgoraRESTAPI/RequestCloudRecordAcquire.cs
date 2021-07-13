@@ -2,7 +2,7 @@
 
 public class RequestCloudRecordAcquire : RestRequest {
 
-    public static string CLOUD_RECORD_UID = "9999";
+    public const string CLOUD_RECORD_UID = "9999";
     public AgoraCloudAcquireRequest AgoraCloudAcquireRequestData { get; set; }
     public ResponseAcquire ResponseAcquiredata { get; private set; }
 
@@ -20,7 +20,7 @@ public class RequestCloudRecordAcquire : RestRequest {
     [Serializable]
     public class AgoraCloudAcquireRequest {
         public string cname;
-        public string  uid = CLOUD_RECORD_UID;
+        public string uid = CLOUD_RECORD_UID;
         public ClientRequestAcquire clientRequest = new ClientRequestAcquire();
     }
 
