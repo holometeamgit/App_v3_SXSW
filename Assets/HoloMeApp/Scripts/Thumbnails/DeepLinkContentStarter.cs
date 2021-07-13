@@ -14,6 +14,8 @@ public class DeepLinkContentStarter : MonoBehaviour
     AccountManager accountManager;
     [SerializeField]
     PnlThumbnailPopup pnlThumbnailPopup;
+    [SerializeField]
+    Switcher homePageSwitcher;
 
     bool isHomePageActive;
 
@@ -45,6 +47,8 @@ public class DeepLinkContentStarter : MonoBehaviour
 
             if (isHomePageActive)
                 pnlThumbnailPopup.OpenStream(id);
+        } else if(homePageSwitcher) {
+            homePageSwitcher.Switch();
         }
     }
 
