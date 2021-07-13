@@ -15,9 +15,7 @@ public class StreamerCountUpdater : MonoBehaviour {
         if (!gameObject.activeInHierarchy)
             return;
 
-        if (agoraRequests == null) {
-            agoraRequests = HelperFunctions.GetTypeIfNull<AgoraRequests>(agoraRequests);
-        }
+        agoraRequests = HelperFunctions.GetTypeIfNull<AgoraRequests>(agoraRequests);
 
         if (requestUserList == null) {
             requestUserList = new RequestUserList();
@@ -41,7 +39,7 @@ public class StreamerCountUpdater : MonoBehaviour {
     IEnumerator UpdateCountRoutine() {
         while (true) {
             UpdateCount();
-            yield return new WaitForSeconds(30);
+            yield return new WaitForSeconds(15);
         }
     }
 
@@ -55,13 +53,27 @@ public class StreamerCountUpdater : MonoBehaviour {
 
     void UpdateCountText() {
         var responseData = requestUserList.GetUserListResponseData;
-        //if (responseData == null)
-        //    Debug.LogError("response was null");
-        //if (responseData.data == null)
-        //    Debug.LogError("data was null");
-        txtCount.text = responseData?.data?.audience?.Count.ToString() ?? "0";
+
+        int userCount = 0;
+
+        if (responseData == null) {
+            Debug.LogError("response was null");
+        }
+        if (responseData.data == null) {
+            Debug.LogError("data was null");
+        } else {
+            userCount = responseData.data.users.Count - 1; //Subtract streamer's own value
+            foreach (string user in responseData.data.users) {
+                if (user == RequestCloudRecordAcquire.CLOUD_RECORD_UID) { //Subtract cloud record server as viewer
+                    userCount -= 1;
+                }
+            }
+            if (userCount < 0) //Set to 0 is negative value
+                userCount = 0;
+        }
+
+        txtCount.text = userCount.ToString();
         waitingForResponse = false;
         HelperFunctions.DevLog("Got user count back");
     }
-
 }
