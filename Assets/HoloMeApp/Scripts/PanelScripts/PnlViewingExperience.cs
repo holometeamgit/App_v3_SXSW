@@ -172,7 +172,6 @@ public class PnlViewingExperience : MonoBehaviour {
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
-            HelperFunctions.DevLogError("ActivateForStreaming");
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
         }
     }

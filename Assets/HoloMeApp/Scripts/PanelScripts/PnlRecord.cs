@@ -117,6 +117,7 @@ public class PnlRecord : MonoBehaviour {
     }
 
     public void EnableRecordPanel() {
+
         gameObject.SetActive(true);
         canvasGroup?.DOFade(1, .5f);
     }
