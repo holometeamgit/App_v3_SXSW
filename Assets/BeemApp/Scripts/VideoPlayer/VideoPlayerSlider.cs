@@ -22,10 +22,12 @@ namespace Beem.Video {
         }
 
         public override void Refresh(VideoPlayer videoPlayer) {
-            if (videoPlayer == null || videoPlayer.isPrepared) {
+
+            if (videoPlayer == null || !videoPlayer.isPrepared) {
                 Cancel();
                 return;
             }
+
             if (videoPlayer.frameCount > 0) {
                 progress.value = (float)videoPlayer.frame / (float)videoPlayer.frameCount;
             }

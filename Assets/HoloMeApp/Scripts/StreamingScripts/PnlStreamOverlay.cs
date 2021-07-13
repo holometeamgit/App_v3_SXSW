@@ -42,6 +42,9 @@ public class PnlStreamOverlay : MonoBehaviour {
     private Button btnGoLive;
 
     [SerializeField]
+    private UIBtnLikes uiBtnLikes;
+
+    [SerializeField]
     private StreamLikesRefresherView streamLikesRefresherView;
 
     [SerializeField]
@@ -140,6 +143,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     private void RefreshStream(StreamStartResponseJsonData streamStartResponseJsonData) {
         currentStreamId = streamStartResponseJsonData.id.ToString();
         RefreshControls();
+        uiBtnLikes.Init(streamStartResponseJsonData.id);
         streamLikesRefresherView.StartCountAsync(currentStreamId);
         StartStreamCountUpdaters();
     }
@@ -229,6 +233,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         StartCoroutine(OnPreviewReady());
         agoraController.StartPreview();
         isPushToTalkActive = false;
+        RefreshControls();
     }
 
     public void OpenAsViewer(string channelName, string streamID, bool isRoom) {
@@ -254,7 +259,12 @@ public class PnlStreamOverlay : MonoBehaviour {
 
         agoraController.IsRoom = isRoom;
         RefreshControls();
+
+        long currentStreamIdLong = 0;
+        long.TryParse(streamID, out currentStreamIdLong);
+        uiBtnLikes.Init(currentStreamIdLong);
         streamLikesRefresherView.StartCountAsync(streamID);
+
         StartStreamCountUpdaters();
     }
 
