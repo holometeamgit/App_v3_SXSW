@@ -24,6 +24,8 @@ public class PnlPrerecordedVideo : MonoBehaviour {
 
     private StreamJsonData.Data _streamData = default;
 
+    private bool isPined = false;
+
     private PurchaseManager _purchaseManager;
 
     private PurchaseManager purchaseManager {
@@ -54,11 +56,15 @@ public class PnlPrerecordedVideo : MonoBehaviour {
     /// <param name="streamID"></param>
     public void Init(StreamJsonData.Data streamData) {
         _streamData = streamData;
+        if (isPined) {
+            Refresh();
+        } else {
 #if !UNITY_EDITOR
-        Deactivate();
+            Deactivate();
 #else
-        Refresh();
+            Refresh();
 #endif
+        }
         gameObject.SetActive(true);
         hologramHandler.SetOnPlacementUIHelperFinished(Refresh);
         _bottomBar.Init(streamData);
@@ -71,6 +77,7 @@ public class PnlPrerecordedVideo : MonoBehaviour {
     }
 
     private void Refresh() {
+        isPined = true;
         _videoView.SetActive(_streamData.IsStarted && _streamData.is_bought);
         _purchaseView.SetActive(!_streamData.is_bought);
         _bottomBar.gameObject.SetActive(true);

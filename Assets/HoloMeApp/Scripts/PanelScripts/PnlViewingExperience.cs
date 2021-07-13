@@ -76,7 +76,7 @@ public class PnlViewingExperience : MonoBehaviour {
             OnPlaced();
             return;
         }
-        hologramHandler.SetOnPlacementUIHelperFinished(() => { if (viewingExperienceInFocus) StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed)); HelperFunctions.DevLogError("SetOnPlacementUIHelperFinished"); });
+        hologramHandler.SetOnPlacementUIHelperFinished(() => { if (viewingExperienceInFocus) StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed)); });
         scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         ShowMessage(scaneEnviromentStr);
         tutorialState = TutorialState.MessageTapToPlace;
@@ -156,7 +156,6 @@ public class PnlViewingExperience : MonoBehaviour {
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
-            HelperFunctions.DevLogError("ActivateForPreRecorded");
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
         }
     }
