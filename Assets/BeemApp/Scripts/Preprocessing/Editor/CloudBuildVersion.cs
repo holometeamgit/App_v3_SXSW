@@ -18,12 +18,6 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
 
         _buildNumber = Environment.GetEnvironmentVariable("BEEM_BUILD");
 
-#if DEV
-        PlayerSettings.productName = "Beem Dev";
-#else
-        PlayerSettings.productName = "Beem";
-#endif
-
         if (!string.IsNullOrEmpty(_versionNumber)) {
 
             List<int> versions = GetVersions(_versionNumber);
