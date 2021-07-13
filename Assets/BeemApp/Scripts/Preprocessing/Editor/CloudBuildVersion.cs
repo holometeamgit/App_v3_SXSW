@@ -18,6 +18,11 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
 
         _buildNumber = Environment.GetEnvironmentVariable("BEEM_BUILD");
 
+#if DEV
+        PlayerSettings.productName = "Beem Dev";
+#else
+        PlayerSettings.productName = "Beem";
+#endif
 
         if (!string.IsNullOrEmpty(_versionNumber)) {
 
@@ -33,8 +38,6 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
             }
         }
 
-        Debug.Log("_versionNumber = " + _versionNumber);
-
         if (!string.IsNullOrEmpty(_buildNumber)) {
             if (int.Parse(_buildNumber) > int.Parse(PlayerSettings.iOS.buildNumber)) {
                 PlayerSettings.iOS.buildNumber = _buildNumber;
@@ -43,8 +46,6 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
                 PlayerSettings.Android.bundleVersionCode = int.Parse(_buildNumber);
             }
         }
-
-        Debug.Log("_buildNumber = " + _buildNumber);
     }
 
     private List<int> GetVersions(string version) {
