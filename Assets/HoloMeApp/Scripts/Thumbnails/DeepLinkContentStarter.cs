@@ -16,6 +16,8 @@ public class DeepLinkContentStarter : MonoBehaviour
     PnlThumbnailPopup pnlThumbnailPopup;
     [SerializeField]
     Switcher homePageSwitcher;
+    [SerializeField]
+    PnlStreamOverlay pnlStreamOverlay;
 
     bool isHomePageActive;
 
@@ -48,7 +50,11 @@ public class DeepLinkContentStarter : MonoBehaviour
             if (isHomePageActive)
                 pnlThumbnailPopup.OpenStream(id);
         } else if(homePageSwitcher) {
-            homePageSwitcher.Switch();
+            if (!pnlStreamOverlay.isActiveAndEnabled) {
+                HelperFunctions.DevLog("Open HomePage ");
+                homePageSwitcher.Switch();
+            } else
+                HelperFunctions.DevLog("Can't open home page because stream ");
         }
     }
 

@@ -55,6 +55,8 @@ public class PnlHomeScreenV2 : MonoBehaviour
     }
 
     private void DataUpdateCallBack() {
+        if (!isActiveAndEnabled)
+            return;
         initialized = true;
         pullRefreshController.StopBottomRefreshing = false;
         uiThumbnailsController.UpdateData();
@@ -91,7 +93,6 @@ public class PnlHomeScreenV2 : MonoBehaviour
     }
 
     private void ClearData() {
-        HelperFunctions.DevLog("Clear home page");
         thumbnailsDataFetcher.ClearData();
         uiThumbnailsController.UpdateData();
         initialized = false;
@@ -111,7 +112,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
 
     private void OnEnable() {
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyHomeScreen);
-
+        pullRefreshController.EndRefreshing();
         if (needRefresh)
             RefreshItems();
     }

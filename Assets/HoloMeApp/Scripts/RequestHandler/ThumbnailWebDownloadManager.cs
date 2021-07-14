@@ -57,7 +57,6 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
     }
 
     public void GetCountThumbnails(ThumbnailWebRequestStruct thumbnailWebRequestStruct, LoadingKey loadingKey) {
-        Debug.Log("GetCountThumbnails" + GetRequestStreamURL(thumbnailWebRequestStruct));
         webRequestHandler.GetRequest(GetRequestStreamURL(thumbnailWebRequestStruct),
         (code, body) => { GetCountThumbnailsCallBack(body, loadingKey); },
         (code, body) => { ErrorGetCountThumbnailsCallBack(code, body, loadingKey); },
