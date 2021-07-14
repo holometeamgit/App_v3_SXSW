@@ -71,8 +71,6 @@ namespace Beem.UI {
             if (streamId != _streamId)
                 return;
 
-            HelperFunctions.DevLog("Update likes " + streamId + " " + count);
-
             if (_isLike != isLike || _count != count) {
                 _isLike = isLike;
                 _count = count;
