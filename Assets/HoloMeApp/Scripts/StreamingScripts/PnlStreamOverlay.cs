@@ -104,6 +104,10 @@ public class PnlStreamOverlay : MonoBehaviour {
     const string MessageEnableAudio = "EnableAudio";
     const string MessageStreamerLeft = "StreamerLeft";
     const string MessageChannelCreatorUID = "StreamerUID:";
+    const string MessageBroadcasterAudioPaused = "BroadcasterAudioPaused";
+    const string MessageBroadcasterVideoPaused = "BroadcasterVideoPaused";
+    const string MessageBroadcasterAudioAndVideoPaused = "BroadvasterAudioAndVideoPaused";
+    const string MessageBroadcasterUnpaused = "BroadvasterUnpausedVideoAndAudio";
 
     void Init() {
         if (initialised)
@@ -120,6 +124,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.OnStreamWentOffline += StopStreamCountUpdaters;
         agoraController.OnStreamWentOffline += () => btnGoLive.interactable = true;
         agoraController.OnMessageRecieved += StreamMessageResponse;
+        agoraController.OnUserViewerJoined += SendVideoAudioPauseStatusToViewers;
         agoraController.OnUserViewerJoined += SendPushToTalkStatusToViewers;
         agoraController.OnUserViewerJoined += SendChannelCreatorUIDToViewers;
 
@@ -377,15 +382,27 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
     }
 
-    void SendPushToTalkStatusToViewers() {
+    private void SendVideoAudioPauseStatusToViewers() {
+        if (_hideVideo && _muteAudio) {
+            agoraController.SendAgoraMessage(MessageBroadcasterAudioAndVideoPaused);
+        } else if (_hideVideo) {
+            agoraController.SendAgoraMessage(MessageBroadcasterVideoPaused);
+        } else if (_muteAudio) {
+            agoraController.SendAgoraMessage(MessageBroadcasterAudioPaused);
+        } else {
+            agoraController.SendAgoraMessage(MessageBroadcasterUnpaused);
+        }
+    }
+
+    private void SendPushToTalkStatusToViewers() {
         agoraController.SendAgoraMessage(isPushToTalkActive ? MessageEnableAudio : MessageDisableAudio);
     }
 
-    void SendChannelCreatorUIDToViewers() {
+    private void SendChannelCreatorUIDToViewers() {
         agoraController.SendAgoraMessage(MessageChannelCreatorUID + agoraController.ChannelCreatorUID);
     }
 
-    void SendStreamLeaveStatusToViewers() {
+    private void SendStreamLeaveStatusToViewers() {
         agoraController.SendAgoraMessage(MessageStreamerLeft);
     }
 
@@ -406,6 +423,18 @@ public class PnlStreamOverlay : MonoBehaviour {
                 return;
             case MessageStreamerLeft:
                 agoraController.OnStreamerLeft?.Invoke();
+                return;
+            case MessageBroadcasterAudioPaused:
+                AnimatedCentreTextMessage("Audio is muted by the broadcaster");
+                return;
+            case MessageBroadcasterVideoPaused:
+                AnimatedCentreTextMessage("Video has been paused by the broadcaster");
+                return;
+            case MessageBroadcasterAudioAndVideoPaused:
+                AnimatedCentreTextMessage("Video is paused and Audio is muted by the broadcaster");
+                return;
+            case MessageBroadcasterUnpaused:
+                AnimatedFadeOutMessage();
                 return;
         }
 
@@ -486,6 +515,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         } else {
             AnimatedFadeOutMessage();
         }
+        SendVideoAudioPauseStatusToViewers();
     }
 
     IEnumerator CountDown() {
