@@ -227,6 +227,8 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void StreamerOpenSharedFunctions() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+        ToggleLocalAudio(false);
+        ToggleVideo(false);
         btnGoLive.gameObject.SetActive(true);
         agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
@@ -383,6 +385,9 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void SendVideoAudioPauseStatusToViewers() {
+        if (!agoraController.IsLive)
+            return;
+
         if (_hideVideo && _muteAudio) {
             agoraController.SendAgoraMessage(MessageBroadcasterAudioAndVideoPaused);
         } else if (_hideVideo) {
