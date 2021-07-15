@@ -153,7 +153,7 @@ public class UIThumbnailV3 : UIThumbnail {
     }
 
     private void UpdateData() {
-        if (thumbnailElement == null)
+        if (thumbnailElement == null || thumbnailElement.Data == null)
             return;
 
         UpdateTexture();
