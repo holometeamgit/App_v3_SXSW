@@ -227,8 +227,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void StreamerOpenSharedFunctions() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
-        ToggleLocalAudio(false);
-        ToggleVideo(false);
+
         btnGoLive.gameObject.SetActive(true);
         agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
@@ -237,9 +236,13 @@ public class PnlStreamOverlay : MonoBehaviour {
         gameObject.SetActive(true);
         pnlViewingExperience.ToggleARSessionObjects(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
+
+        ToggleLocalAudio(false);
+        ToggleVideo(false);
+        isPushToTalkActive = false;
+
         StartCoroutine(OnPreviewReady());
         agoraController.StartPreview();
-        isPushToTalkActive = false;
         RefreshControls();
     }
 
@@ -385,6 +388,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void SendVideoAudioPauseStatusToViewers() {
+
         if (!agoraController.IsLive)
             return;
 
@@ -431,15 +435,19 @@ public class PnlStreamOverlay : MonoBehaviour {
                 return;
             case MessageBroadcasterAudioPaused:
                 AnimatedCentreTextMessage("Audio is muted by the broadcaster");
+                agoraController.ToggleLiveStreamQuad(false);
                 return;
             case MessageBroadcasterVideoPaused:
                 AnimatedCentreTextMessage("Video has been paused by the broadcaster");
+                agoraController.ToggleLiveStreamQuad(true);
                 return;
             case MessageBroadcasterAudioAndVideoPaused:
                 AnimatedCentreTextMessage("Video is paused and Audio is muted by the broadcaster");
+                agoraController.ToggleLiveStreamQuad(true);
                 return;
             case MessageBroadcasterUnpaused:
                 AnimatedFadeOutMessage();
+                agoraController.ToggleLiveStreamQuad(false);
                 return;
         }
 
