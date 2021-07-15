@@ -1,22 +1,44 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEngine;
 /// <summary>
-/// Preprocessing for Build Version
+/// Preprocessing for Build Version and build name
 /// </summary>
 public class CloudBuildVersionpublic : IPreprocessBuild {
 
     private static string _versionNumber;
     private static string _buildNumber;
 
+    private const string VERSION = "BEEM_VERSION";
+    private const string BUILD = "BEEM_BUILD";
+
+    private const string PROD = "PROD";
+    private const string DEV = "DEV";
+
+    private const string PROD_NAME = "Beem";
+    private const string DEV_NAME = "Beem Dev";
+
     public int callbackOrder { get { return 0; } }
     public void OnPreprocessBuild(BuildTarget target, string path) {
-        _versionNumber = Environment.GetEnvironmentVariable("BEEM_VERSION");
+        _versionNumber = Environment.GetEnvironmentVariable(VERSION);
 
-        _buildNumber = Environment.GetEnvironmentVariable("BEEM_BUILD");
+        _buildNumber = Environment.GetEnvironmentVariable(BUILD);
+
+        if (EditorUserBuildSettings.development) {
+            PlayerSettings.productName = DEV_NAME;
+
+            SwitchDefine(BuildTargetGroup.iOS, PROD, DEV);
+            SwitchDefine(BuildTargetGroup.Android, PROD, DEV);
+        } else {
+            PlayerSettings.productName = PROD_NAME;
+
+            SwitchDefine(BuildTargetGroup.iOS, DEV, PROD);
+            SwitchDefine(BuildTargetGroup.Android, DEV, PROD);
+        }
 
         if (!string.IsNullOrEmpty(_versionNumber)) {
 
@@ -54,5 +76,23 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
         }
 
         return temp;
+    }
+
+    private void SwitchDefine(BuildTargetGroup targetGroup, string firstDefine, string secondDefine) {
+        string[] currentDefines;
+        PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup, out currentDefines);
+        if (currentDefines.Contains(firstDefine)) {
+            for (int i = 0; i < currentDefines.Length; i++) {
+                if (currentDefines[i] == firstDefine) {
+                    currentDefines[i] = secondDefine;
+                    break;
+                }
+            }
+        } else {
+            int lenght = currentDefines.Length;
+            currentDefines = new string[lenght + 1];
+            currentDefines[lenght] = secondDefine;
+        }
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, currentDefines);
     }
 }
