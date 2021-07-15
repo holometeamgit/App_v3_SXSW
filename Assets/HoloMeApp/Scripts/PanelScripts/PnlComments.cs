@@ -134,6 +134,7 @@ public class PnlComments : MonoBehaviour
 		_commentInputField.text = "";
 		_postBtn.interactable = true;
 		Refresh();
+		HidePost();
 	}
 
 	/// <summary>
