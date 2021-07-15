@@ -37,6 +37,7 @@ namespace Beem.UI {
             _streamId = streamId;
             CallBacks.onGetLikeStateCallBack += UpdateState;
             GetLikesState();
+            UpdateBtnUIState();
         }
 
         /// <summary>
