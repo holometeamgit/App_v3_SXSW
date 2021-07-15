@@ -104,6 +104,10 @@ public class PnlStreamOverlay : MonoBehaviour {
     const string MessageEnableAudio = "EnableAudio";
     const string MessageStreamerLeft = "StreamerLeft";
     const string MessageChannelCreatorUID = "StreamerUID:";
+    const string MessageBroadcasterAudioPaused = "BroadcasterAudioPaused";
+    const string MessageBroadcasterVideoPaused = "BroadcasterVideoPaused";
+    const string MessageBroadcasterAudioAndVideoPaused = "BroadvasterAudioAndVideoPaused";
+    const string MessageBroadcasterUnpaused = "BroadvasterUnpausedVideoAndAudio";
 
     void Init() {
         if (initialised)
@@ -120,6 +124,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.OnStreamWentOffline += StopStreamCountUpdaters;
         agoraController.OnStreamWentOffline += () => btnGoLive.interactable = true;
         agoraController.OnMessageRecieved += StreamMessageResponse;
+        agoraController.OnUserViewerJoined += SendVideoAudioPauseStatusToViewers;
         agoraController.OnUserViewerJoined += SendPushToTalkStatusToViewers;
         agoraController.OnUserViewerJoined += SendChannelCreatorUIDToViewers;
 
@@ -222,6 +227,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void StreamerOpenSharedFunctions() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+
         btnGoLive.gameObject.SetActive(true);
         agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
@@ -230,9 +236,13 @@ public class PnlStreamOverlay : MonoBehaviour {
         gameObject.SetActive(true);
         pnlViewingExperience.ToggleARSessionObjects(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
+
+        ToggleLocalAudio(false);
+        ToggleVideo(false);
+        isPushToTalkActive = false;
+
         StartCoroutine(OnPreviewReady());
         agoraController.StartPreview();
-        isPushToTalkActive = false;
         RefreshControls();
     }
 
@@ -377,15 +387,31 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
     }
 
-    void SendPushToTalkStatusToViewers() {
+    private void SendVideoAudioPauseStatusToViewers() {
+
+        if (!agoraController.IsLive)
+            return;
+
+        if (_hideVideo && _muteAudio) {
+            agoraController.SendAgoraMessage(MessageBroadcasterAudioAndVideoPaused);
+        } else if (_hideVideo) {
+            agoraController.SendAgoraMessage(MessageBroadcasterVideoPaused);
+        } else if (_muteAudio) {
+            agoraController.SendAgoraMessage(MessageBroadcasterAudioPaused);
+        } else {
+            agoraController.SendAgoraMessage(MessageBroadcasterUnpaused);
+        }
+    }
+
+    private void SendPushToTalkStatusToViewers() {
         agoraController.SendAgoraMessage(isPushToTalkActive ? MessageEnableAudio : MessageDisableAudio);
     }
 
-    void SendChannelCreatorUIDToViewers() {
+    private void SendChannelCreatorUIDToViewers() {
         agoraController.SendAgoraMessage(MessageChannelCreatorUID + agoraController.ChannelCreatorUID);
     }
 
-    void SendStreamLeaveStatusToViewers() {
+    private void SendStreamLeaveStatusToViewers() {
         agoraController.SendAgoraMessage(MessageStreamerLeft);
     }
 
@@ -406,6 +432,22 @@ public class PnlStreamOverlay : MonoBehaviour {
                 return;
             case MessageStreamerLeft:
                 agoraController.OnStreamerLeft?.Invoke();
+                return;
+            case MessageBroadcasterAudioPaused:
+                AnimatedCentreTextMessage("Audio is muted by the broadcaster");
+                agoraController.ToggleLiveStreamQuad(false);
+                return;
+            case MessageBroadcasterVideoPaused:
+                AnimatedCentreTextMessage("Video has been paused by the broadcaster");
+                agoraController.ToggleLiveStreamQuad(true);
+                return;
+            case MessageBroadcasterAudioAndVideoPaused:
+                AnimatedCentreTextMessage("Video is paused and Audio is muted by the broadcaster");
+                agoraController.ToggleLiveStreamQuad(true);
+                return;
+            case MessageBroadcasterUnpaused:
+                AnimatedFadeOutMessage();
+                agoraController.ToggleLiveStreamQuad(false);
                 return;
         }
 
@@ -486,6 +528,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         } else {
             AnimatedFadeOutMessage();
         }
+        SendVideoAudioPauseStatusToViewers();
     }
 
     IEnumerator CountDown() {

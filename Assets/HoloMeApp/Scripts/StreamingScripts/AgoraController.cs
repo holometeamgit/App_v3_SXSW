@@ -378,6 +378,15 @@ public class AgoraController : MonoBehaviour {
     }
 
     /// <summary>
+    /// Toggle the live stream quad
+    /// </summary>
+    public void ToggleLiveStreamQuad(bool hide) {
+        if (IsLive) {
+            liveStreamQuad.SetActive(!hide);
+        }
+    }
+
+    /// <summary>
     /// Enables/Disables the local video capture.
     /// </summary>
     public void ToggleLocalVideo(bool pauseVideo) {
