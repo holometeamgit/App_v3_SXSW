@@ -86,13 +86,14 @@ namespace Beem.UI {
         }
 
         private void GetLikesState() {
-            if (!isActiveAndEnabled)
+            if (!isActiveAndEnabled && _streamId >= 0)
                 return;
             CallBacks.onGetLikeState?.Invoke(_streamId);
         }
 
         private void OnEnable() {
             CallBacks.onStreamByIdInContainerUpdated += RefreshLocalLikes;
+            GetLikesState();
         }
 
         private void OnDisable() {
