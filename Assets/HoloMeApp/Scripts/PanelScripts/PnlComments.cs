@@ -225,6 +225,7 @@ public class PnlComments : MonoBehaviour
 		_scroll.OnFill -= OnFillItem;
 		_scroll.OnHeight -= OnHeightItem;
 		_scroll.OnPull -= OnPullItem;
+		_commentInputField.text = "";
 	}
 
     private void OnRemoveItem(int index) {
