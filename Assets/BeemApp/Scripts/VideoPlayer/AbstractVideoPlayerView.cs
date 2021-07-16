@@ -26,6 +26,7 @@ namespace Beem.Video {
             cancelTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancelTokenSource.Token;
             try {
+                await Task.Delay(DELAY);
                 while (!cancellationToken.IsCancellationRequested) {
                     Refresh(videoPlayer);
                     await Task.Delay(DELAY);

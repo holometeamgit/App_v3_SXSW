@@ -51,6 +51,7 @@ namespace Beem.Video {
                     view.Refresh(_videoPlayer);
                 }
             }
+            HelperFunctions.DevLogError("EndInit");
         }
 
         private void OnPlay() {
@@ -99,8 +100,8 @@ namespace Beem.Video {
                 HelperFunctions.DevLogError("Test1");
                 _videoPlayer = videoPlayer;
                 HelperFunctions.DevLogError("Test2");
-                Init();
-                HelperFunctions.DevLogError("Test3");
+                //Init();
+                //HelperFunctions.DevLogError("Test3");
                 VideoPlayerCallBacks.onPlay?.Invoke();
                 HelperFunctions.DevLogError("OnSetVideoPlayer");
             }
