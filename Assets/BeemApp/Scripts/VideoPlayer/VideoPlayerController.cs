@@ -96,6 +96,7 @@ namespace Beem.Video {
                 _videoPlayer = videoPlayer;
                 Init();
                 VideoPlayerCallBacks.onPlay?.Invoke();
+                OnPlay();
                 HelperFunctions.DevLogError("OnSetVideoPlayer");
             }
         }
