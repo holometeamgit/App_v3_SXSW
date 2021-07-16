@@ -1530,6 +1530,7 @@ GameObject:
   - component: {fileID: 2457506614820030818}
   - component: {fileID: 2457506614820030817}
   - component: {fileID: 2457506614820030812}
+  - component: {fileID: 2016206224189813196}
   m_Layer: 5
   m_Name: inputChatMessage
   m_TagString: Untagged
@@ -1657,37 +1658,13 @@ MonoBehaviour:
   m_CharacterLimit: 150
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6090812185694790385}
-        m_TargetAssemblyTypeName: PnlComments, Assembly-CSharp
-        m_MethodName: HidePost
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
   m_OnSelect:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6090812185694790385}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: ShowPost
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnDeselect:
     m_PersistentCalls:
       m_Calls: []
@@ -1744,6 +1721,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _inputField: {fileID: 2457506614820030817}
   _txtCount: {fileID: 2457506614993901463}
+--- !u!114 &2016206224189813196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2457506614820030823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6090812185694790385}
+          m_TargetAssemblyTypeName: PnlComments, Assembly-CSharp
+          m_MethodName: ShowPost
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &2457506614972276584
 GameObject:
   m_ObjectHideFlags: 0
@@ -2698,8 +2704,7 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 5217434716734403394, guid: 90c9e82fdd5f44d098562715898ad2fc, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 90c9e82fdd5f44d098562715898ad2fc, type: 3}
 --- !u!224 &4750791641553089042 stripped
 RectTransform:
