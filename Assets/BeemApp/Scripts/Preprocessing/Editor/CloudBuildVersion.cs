@@ -28,18 +28,6 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
 
         _buildNumber = Environment.GetEnvironmentVariable(BUILD);
 
-        /*if (EditorUserBuildSettings.development) {
-            PlayerSettings.productName = DEV_NAME;
-
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, DEV);
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, DEV);
-        } else {
-            PlayerSettings.productName = PROD_NAME;
-
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, PROD);
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, PROD);
-        }*/
-
         if (!string.IsNullOrEmpty(_versionNumber)) {
 
             List<int> versions = GetVersions(_versionNumber);
