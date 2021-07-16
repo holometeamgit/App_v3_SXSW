@@ -43,8 +43,11 @@ namespace Beem.Video {
         }
 
         private void Init() {
+            HelperFunctions.DevLogError("Init");
             if (_videoPlayer != null) {
+                HelperFunctions.DevLogError("_videoPlayer = " + _videoPlayer);
                 foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
+                    HelperFunctions.DevLogError("view = " + view.gameObject.name);
                     view.Refresh(_videoPlayer);
                 }
             }
@@ -90,13 +93,15 @@ namespace Beem.Video {
         }
 
         private void OnSetVideoPlayer(VideoPlayer videoPlayer) {
-            HelperFunctions.DevLogError("videoPlayer = " + videoPlayer);
             if (videoPlayer != null) {
+                HelperFunctions.DevLogError("videoPlayer = " + videoPlayer);
                 OnStop();
+                HelperFunctions.DevLogError("Test1");
                 _videoPlayer = videoPlayer;
+                HelperFunctions.DevLogError("Test2");
                 Init();
+                HelperFunctions.DevLogError("Test3");
                 VideoPlayerCallBacks.onPlay?.Invoke();
-                OnPlay();
                 HelperFunctions.DevLogError("OnSetVideoPlayer");
             }
         }
