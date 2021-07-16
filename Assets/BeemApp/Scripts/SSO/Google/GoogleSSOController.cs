@@ -59,10 +59,12 @@ namespace Beem.SSO {
         private void OnGoogleAuthenticationFinished(Task<GoogleSignInUser> task) {
             if (task.IsCanceled) {
                 HelperFunctions.DevLogError("User canceled login");
+                CallBacks.onFail?.Invoke(string.Empty);
                 return;
             }
             if (task.IsFaulted) {
                 HelperFunctions.DevLogError("Task was Failed: " + task.Exception);
+                CallBacks.onFail?.Invoke(string.Empty);
                 return;
             }
 

@@ -31,13 +31,13 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
         if (EditorUserBuildSettings.development) {
             PlayerSettings.productName = DEV_NAME;
 
-            SwitchDefine(BuildTargetGroup.iOS, PROD, DEV);
-            SwitchDefine(BuildTargetGroup.Android, PROD, DEV);
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, DEV);
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, DEV);
         } else {
             PlayerSettings.productName = PROD_NAME;
 
-            SwitchDefine(BuildTargetGroup.iOS, DEV, PROD);
-            SwitchDefine(BuildTargetGroup.Android, DEV, PROD);
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, PROD);
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, PROD);
         }
 
         if (!string.IsNullOrEmpty(_versionNumber)) {
@@ -78,21 +78,4 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
         return temp;
     }
 
-    private void SwitchDefine(BuildTargetGroup targetGroup, string firstDefine, string secondDefine) {
-        string[] currentDefines;
-        PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup, out currentDefines);
-        if (currentDefines.Contains(firstDefine)) {
-            for (int i = 0; i < currentDefines.Length; i++) {
-                if (currentDefines[i] == firstDefine) {
-                    currentDefines[i] = secondDefine;
-                    break;
-                }
-            }
-        } else {
-            int lenght = currentDefines.Length;
-            currentDefines = new string[lenght + 1];
-            currentDefines[lenght] = secondDefine;
-        }
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, currentDefines);
-    }
 }
