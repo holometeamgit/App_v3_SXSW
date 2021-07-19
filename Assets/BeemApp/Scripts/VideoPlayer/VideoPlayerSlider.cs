@@ -28,6 +28,10 @@ namespace Beem.Video {
                 return;
             }
 
+            if (!videoPlayer.isPlaying) {
+                videoPlayer.Play();
+            }
+
             if (videoPlayer.frameCount > 0) {
                 progress.value = (float)videoPlayer.frame / (float)videoPlayer.frameCount;
             }

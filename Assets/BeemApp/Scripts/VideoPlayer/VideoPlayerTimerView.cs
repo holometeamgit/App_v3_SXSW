@@ -27,6 +27,10 @@ namespace Beem.Video {
                 return;
             }
 
+            if (!videoPlayer.isPlaying) {
+                videoPlayer.Play();
+            }
+
             TimeSpan timeSpan = TimeSpan.FromSeconds(videoPlayer.frame / videoPlayer.frameRate);
 
             if (timerText != null) {
