@@ -58,11 +58,13 @@ public class InputFieldController : MonoBehaviour {
     }
 
     public void ShowWarning(string warningMsg) {
-        animator.enabled = true;
-        HelperFunctions.DevLog(warningMsg);
-        warningMsgText.text = OverrideMsg(warningMsg);
-        showWarning = true;
-        animator.SetBool("ShowWarning", showWarning);
+        if (!string.IsNullOrEmpty(warningMsg)) {
+            animator.enabled = true;
+            HelperFunctions.DevLog(warningMsg);
+            warningMsgText.text = OverrideMsg(warningMsg);
+            showWarning = true;
+            animator.SetBool("ShowWarning", showWarning);
+        }
     }
 
     public void SetToDefaultState() {

@@ -23,7 +23,12 @@ namespace Beem.Video {
 
         public override void Refresh(VideoPlayer videoPlayer) {
             if (videoPlayer == null || !videoPlayer.isPrepared) {
+                timerText.text = string.Empty;
                 return;
+            }
+
+            if (!videoPlayer.isPlaying) {
+                videoPlayer.Play();
             }
 
             TimeSpan timeSpan = TimeSpan.FromSeconds(videoPlayer.frame / videoPlayer.frameRate);
