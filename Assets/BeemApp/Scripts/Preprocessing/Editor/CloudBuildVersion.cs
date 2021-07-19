@@ -19,14 +19,14 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
     private const string PROD = "PROD";
     private const string DEV = "DEV";
 
-    private const string PROD_NAME = "Beem";
-    private const string DEV_NAME = "Beem Dev";
-
     public int callbackOrder { get { return 0; } }
     public void OnPreprocessBuild(BuildTarget target, string path) {
         _versionNumber = Environment.GetEnvironmentVariable(VERSION);
 
         _buildNumber = Environment.GetEnvironmentVariable(BUILD);
+
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, EditorUserBuildSettings.development ? DEV : PROD);
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, EditorUserBuildSettings.development ? DEV : PROD);
 
         if (!string.IsNullOrEmpty(_versionNumber)) {
 
