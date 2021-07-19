@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using NatShare;
 using UnityEngine;
 
@@ -20,9 +21,7 @@ namespace Beem.Utility.UnityConsole {
 
         private void Share() {
 #if !UNITY_EDITOR
-            using (var payload = new SharePayload()) {
-                payload.AddText(LogData.GetLog());
-            }
+               new NativeShare().SetText(LogData.GetLog()).Share();
 #else
             Debug.Log("Share Log:" + LogData.GetLog());
 #endif
