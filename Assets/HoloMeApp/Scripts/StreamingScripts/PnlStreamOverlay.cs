@@ -95,7 +95,6 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     VideoSurface videoSurface;
     string currentStreamId = string.Empty;
-    string currentRoomId = string.Empty;
 
     private bool _muteAudio = false;
     private bool _hideVideo = false;
@@ -149,12 +148,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         RefreshControls();
         uiBtnLikes.Init(streamStartResponseJsonData.id);
         streamLikesRefresherView.StartCountAsync(currentStreamId);
-        StartStreamCountUpdaters();
-    }
-
-    private void RefreshRoom(string roomID) {
-        currentRoomId = roomID;
-        RefreshControls();
         StartStreamCountUpdaters();
     }
 
@@ -321,8 +314,6 @@ public class PnlStreamOverlay : MonoBehaviour {
 
         HelperFunctions.DevLog("agoraController.IsChannelCreator = " + agoraController.IsChannelCreator);
         HelperFunctions.DevLog("agoraController.IsRoom = " + agoraController.IsRoom);
-
-        HelperFunctions.DevLog("currentRoomId = " + currentRoomId);
         HelperFunctions.DevLog("currentStreamId = " + currentStreamId);
 
         if (agoraController.IsRoom) {
