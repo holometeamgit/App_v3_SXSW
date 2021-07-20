@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ public class StreamerCountUpdater : MonoBehaviour {
     private Coroutine updateRoutine;
 
     private const int COUNT_UPDATE_DELAY_SECONDS = 15;
+
+    public Action<int> OnCountUpdated = delegate { };
 
     public void StartCheck(string channelName) {
         if (!gameObject.activeInHierarchy)
@@ -75,6 +78,7 @@ public class StreamerCountUpdater : MonoBehaviour {
         }
 
         txtCount.text = userCount.ToString();
+        OnCountUpdated?.Invoke(userCount);
         waitingForResponse = false;
         HelperFunctions.DevLog("Got user count back");
     }
