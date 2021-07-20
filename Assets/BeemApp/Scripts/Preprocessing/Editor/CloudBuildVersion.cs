@@ -24,28 +24,6 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
     private const string PROD = "PROD";
     private const string DEV = "DEV";
 
-    private string[] iOSDevDefines = new string[] {
-        "UNITY_XR_ARKIT_LOADER_ENABLED",
-        "CT_BWF",
-        DEV
-    };
-
-    private string[] iOSProdDefines = new string[] {
-        "UNITY_XR_ARKIT_LOADER_ENABLED",
-        "CT_BWF",
-        PROD
-    };
-
-    private string[] AndroidDevDefines = new string[] {
-        "CT_BWF",
-        DEV
-    };
-
-    private string[] AndroidProdDefines = new string[] {
-        "CT_BWF",
-        PROD
-    };
-
     public int callbackOrder { get { return 0; } }
     public void OnPreprocessBuild(BuildTarget target, string path) {
         _versionNumber = Environment.GetEnvironmentVariable(VERSION);
@@ -53,9 +31,6 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
         _buildNumber = Environment.GetEnvironmentVariable(BUILD_NUMBER);
 
         _buildType = Environment.GetEnvironmentVariable(BUILD_TYPE);
-
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, EditorUserBuildSettings.development ? DEV : PROD);
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, EditorUserBuildSettings.development ? DEV : PROD);
 
         if (!string.IsNullOrEmpty(_versionNumber)) {
 
@@ -80,12 +55,40 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
             }
         }
 
+        _buildType = DEV;
+
         if (!string.IsNullOrEmpty(_buildType)) {
             PlayerSettings.productName = _buildType == DEV ? APPLICATION_NAME_DEV : APPLICATION_NAME;
             EditorUserBuildSettings.development = _buildType == DEV;
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, _buildType == DEV ? iOSDevDefines : iOSProdDefines);
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, _buildType == DEV ? AndroidDevDefines : AndroidProdDefines);
+            SwitchDefine(BuildTargetGroup.iOS, _buildType);
+            SwitchDefine(BuildTargetGroup.Android, _buildType);
+            HelperFunctions.DevLog(PlayerSettings.productName);
+            HelperFunctions.DevLog(EditorUserBuildSettings.development.ToString());
+            HelperFunctions.DevLog(PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android));
         }
+    }
+
+    private void SwitchDefine(BuildTargetGroup targetGroup, string buildType) {
+        string[] currentDefines;
+        PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup, out currentDefines);
+        if (currentDefines.Contains(PROD)) {
+            for (int i = 0; i < currentDefines.Length; i++) {
+                if (currentDefines[i] == PROD) {
+                    currentDefines[i] = buildType;
+                }
+            }
+        } else if (currentDefines.Contains(DEV)) {
+            for (int i = 0; i < currentDefines.Length; i++) {
+                if (currentDefines[i] == DEV) {
+                    currentDefines[i] = buildType;
+                }
+            }
+        } else {
+            int lenght = currentDefines.Length;
+            currentDefines = new string[lenght + 1];
+            currentDefines[lenght] = buildType;
+        }
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, currentDefines);
     }
 
     private List<int> GetVersions(string version) {
