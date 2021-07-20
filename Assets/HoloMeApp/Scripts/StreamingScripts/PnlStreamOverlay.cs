@@ -562,6 +562,8 @@ public class PnlStreamOverlay : MonoBehaviour {
         StopAllCoroutines();
         pnlViewingExperience.ToggleARSessionObjects(true);
         ChatBtn.onOpen -= OpenChat;
+        StreamCallBacks.onLiveStreamCreated -= RefreshStream;
+        StreamCallBacks.onRoomLinkReceived -= RefreshRoom;
     }
 
     IEnumerator OnApplicationFocus(bool hasFocus) //Potential fix for bug where audio and video are re-enabled after losing focus from sharing or minimising
