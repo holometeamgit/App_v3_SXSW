@@ -95,7 +95,6 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     VideoSurface videoSurface;
     string currentStreamId = string.Empty;
-    string currentRoomId = string.Empty;
 
     private bool _muteAudio = false;
     private bool _hideVideo = false;
@@ -133,7 +132,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         AssignStreamCountUpdaterAnalyticsEvent();
 
         StreamCallBacks.onLiveStreamCreated += RefreshStream;
-        StreamCallBacks.onRoomLinkReceived += RefreshRoom;
 
         AddVideoSurface();
         initialised = true;
@@ -152,12 +150,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         RefreshControls();
         uiBtnLikes.Init(streamStartResponseJsonData.id);
         streamLikesRefresherView.StartCountAsync(currentStreamId);
-        StartStreamCountUpdaters();
-    }
-
-    private void RefreshRoom(string roomID) {
-        currentRoomId = roomID;
-        RefreshControls();
         StartStreamCountUpdaters();
     }
 
@@ -330,16 +322,14 @@ public class PnlStreamOverlay : MonoBehaviour {
 
         HelperFunctions.DevLog("agoraController.IsChannelCreator = " + agoraController.IsChannelCreator);
         HelperFunctions.DevLog("agoraController.IsRoom = " + agoraController.IsRoom);
-
-        HelperFunctions.DevLog("currentRoomId = " + currentRoomId);
         HelperFunctions.DevLog("currentStreamId = " + currentStreamId);
 
         if (agoraController.IsRoom) {
             if (agoraController.IsChannelCreator) {
                 StreamCallBacks.onGetMyRoomLink?.Invoke();
             } else {
-                if (!string.IsNullOrWhiteSpace(currentRoomId)) {
-                    StreamCallBacks.onGetRoomLink?.Invoke(currentRoomId);
+                if (!string.IsNullOrWhiteSpace(currentStreamId)) {
+                    StreamCallBacks.onGetRoomLink?.Invoke(currentStreamId);
                 } else {
                     DynamicLinksCallBacks.onShareAppLink?.Invoke();
                 }
@@ -570,6 +560,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         StopAllCoroutines();
         pnlViewingExperience.ToggleARSessionObjects(true);
         ChatBtn.onOpen -= OpenChat;
+        StreamCallBacks.onLiveStreamCreated -= RefreshStream;
     }
 
     IEnumerator OnApplicationFocus(bool hasFocus) //Potential fix for bug where audio and video are re-enabled after losing focus from sharing or minimising
