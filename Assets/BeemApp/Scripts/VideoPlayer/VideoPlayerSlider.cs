@@ -17,20 +17,22 @@ namespace Beem.Video {
 
         private Slider progress;
 
+        protected override int delay => 100;
+
+        protected override bool condition => true;
+
         private void Awake() {
             progress = GetComponent<Slider>();
+            progress.value = 0f;
         }
 
         public override void Refresh(VideoPlayer videoPlayer) {
 
             if (videoPlayer == null || !videoPlayer.isPrepared) {
-                progress.value = 0f;
                 return;
             }
 
-            if (!videoPlayer.isPlaying) {
-                videoPlayer.Play();
-            }
+            Debug.Log(videoPlayer.frame + " , " + videoPlayer.frameCount);
 
             if (videoPlayer.frameCount > 0) {
                 progress.value = (float)videoPlayer.frame / (float)videoPlayer.frameCount;

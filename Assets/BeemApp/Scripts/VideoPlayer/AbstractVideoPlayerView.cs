@@ -14,7 +14,8 @@ namespace Beem.Video {
 
         protected CancellationTokenSource cancelTokenSource;
 
-        private const int DELAY = 1000;
+        protected abstract int delay { get; }
+        protected abstract bool condition { get; }
 
         /// <summary>
         /// Refresh data Video Player 
@@ -26,10 +27,10 @@ namespace Beem.Video {
             cancelTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancelTokenSource.Token;
             try {
-                await Task.Delay(DELAY);
-                while (!cancellationToken.IsCancellationRequested) {
+                await Task.Delay(delay);
+                while (!cancellationToken.IsCancellationRequested && condition) {
                     Refresh(videoPlayer);
-                    await Task.Delay(DELAY);
+                    await Task.Delay(delay);
                 }
             } finally {
                 if (cancelTokenSource != null) {

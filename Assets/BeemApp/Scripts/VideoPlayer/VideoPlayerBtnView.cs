@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Video;
@@ -13,27 +15,35 @@ namespace Beem.Video {
 
         [Header("Action On Play")]
         [SerializeField]
-        private UnityEvent onPlay;
+        private GameObject playBtn;
         [Header("Action On Pause")]
         [SerializeField]
-        private UnityEvent onPause;
+        private GameObject pauseBtn;
 
-        private void OnEnable() {
-            VideoPlayerCallBacks.onPlay += OnPlay;
-            VideoPlayerCallBacks.onPause += OnPause;
+        protected CancellationTokenSource cancelTokenSource;
+        protected int delay = 1000;
+
+        public async void Refresh(VideoPlayer videoPlayer) {
+            cancelTokenSource = new CancellationTokenSource();
+            playBtn.SetActive(!videoPlayer.isPlaying);
+            pauseBtn.SetActive(videoPlayer.isPlaying);
+            await Task.Delay(delay);
+            playBtn.SetActive(!videoPlayer.isPlaying);
+            pauseBtn.SetActive(videoPlayer.isPlaying);
         }
 
-        private void OnDisable() {
-            VideoPlayerCallBacks.onPlay -= OnPlay;
-            VideoPlayerCallBacks.onPause -= OnPause;
+        protected void OnDisable() {
+            Cancel();
         }
 
-        private void OnPlay() {
-            onPlay?.Invoke();
-        }
-
-        private void OnPause() {
-            onPause?.Invoke();
+        /// <summary>
+        /// Clear Info
+        /// </summary>
+        public void Cancel() {
+            if (cancelTokenSource != null) {
+                cancelTokenSource.Cancel();
+                cancelTokenSource = null;
+            }
         }
     }
 }
