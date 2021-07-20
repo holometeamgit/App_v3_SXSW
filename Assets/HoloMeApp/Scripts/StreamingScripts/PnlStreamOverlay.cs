@@ -131,7 +131,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
         StreamCallBacks.onLiveStreamCreated += RefreshStream;
-        StreamCallBacks.onRoomLinkReceived += RefreshRoom;
 
         AddVideoSurface();
         initialised = true;
@@ -330,8 +329,8 @@ public class PnlStreamOverlay : MonoBehaviour {
             if (agoraController.IsChannelCreator) {
                 StreamCallBacks.onGetMyRoomLink?.Invoke();
             } else {
-                if (!string.IsNullOrWhiteSpace(currentRoomId)) {
-                    StreamCallBacks.onGetRoomLink?.Invoke(currentRoomId);
+                if (!string.IsNullOrWhiteSpace(currentStreamId)) {
+                    StreamCallBacks.onGetRoomLink?.Invoke(currentStreamId);
                 } else {
                     DynamicLinksCallBacks.onShareAppLink?.Invoke();
                 }
@@ -563,7 +562,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         pnlViewingExperience.ToggleARSessionObjects(true);
         ChatBtn.onOpen -= OpenChat;
         StreamCallBacks.onLiveStreamCreated -= RefreshStream;
-        StreamCallBacks.onRoomLinkReceived -= RefreshRoom;
     }
 
     IEnumerator OnApplicationFocus(bool hasFocus) //Potential fix for bug where audio and video are re-enabled after losing focus from sharing or minimising
