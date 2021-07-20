@@ -20,6 +20,8 @@ namespace Beem.Utility.UnityConsole {
 
         private static List<UnityLog> _log = new List<UnityLog>();
 
+        public static event Action onRefreshLog = delegate { };
+
         /// <summary>
         /// Current Log
         /// </summary>
@@ -63,7 +65,7 @@ namespace Beem.Utility.UnityConsole {
         /// </summary>
         public static void SetStackTrace(bool status) {
             _isStackTraceStatus = status;
-            LogCallBacks.onRefreshLog?.Invoke();
+            onRefreshLog?.Invoke();
         }
 
         /// <summary>
@@ -74,7 +76,7 @@ namespace Beem.Utility.UnityConsole {
 
             _currentLogType = logType;
 
-            LogCallBacks.onRefreshLog?.Invoke();
+            onRefreshLog?.Invoke();
         }
 
 
@@ -94,7 +96,7 @@ namespace Beem.Utility.UnityConsole {
             SetLogNumber(logType, GetLogNumber(logType) + 1);
             SaveLogs(unityLog);
             _log.Add(unityLog);
-            LogCallBacks.onRefreshLog?.Invoke();
+            onRefreshLog?.Invoke();
         }
 
         /// <summary>
@@ -103,7 +105,7 @@ namespace Beem.Utility.UnityConsole {
         /// <param name="unityLog"></param>
         public static void AddLog(UnityLog unityLog) {
             _log.Add(unityLog);
-            LogCallBacks.onRefreshLog?.Invoke();
+            onRefreshLog?.Invoke();
         }
 
         /// <summary>
@@ -127,7 +129,7 @@ namespace Beem.Utility.UnityConsole {
                 ClearLogNumber(logType);
             }
             _log.Clear();
-            LogCallBacks.onRefreshLog?.Invoke();
+            onRefreshLog?.Invoke();
         }
 
         private static void ClearLogNumber(LogType logType) {
