@@ -16,6 +16,7 @@
 
     public const string KeyHologramViewPercentage = "hologramViewPercentage";
     public const string KeyHologramLiveViewTime = "hologramLiveViewTime";
+    public const string KeyViewerCountUpdate = "viewerCountUpdate";
 
     public const string KeyGoLive = "goLive"; //When a broadcaster clicks 'go live' from the main menu
     public const string KeyLiveStarted = "liveStarted"; //When a broadcaster clicks 'go live' from the main menu and starts to record a video
@@ -44,6 +45,7 @@ public class AnalyticParameters {
     public const string ParamPerformanceID = "performanceID";
     public const string ParamUserEmail = "userEmail";
     public const string ParamUserType = "userType";
+    public const string ParamIsRoom = "isRoom";
     public const string ParamViewer = "viewer";
     public const string ParamBroadcaster = "broadcaster";
     public const string ParamVideoName = "videoName";
@@ -52,5 +54,6 @@ public class AnalyticParameters {
     public const string ParamTime = "time";
     public const string ParamDate = "date";
     public const string ParamSignUpMethod = "signUpMethod";
+    public const string ParamViewerCount = "viewerCount";
     //public const string ParamNotificationsOptIn = "notificationOptIn"; //TODO future opt in notifications panel
 }

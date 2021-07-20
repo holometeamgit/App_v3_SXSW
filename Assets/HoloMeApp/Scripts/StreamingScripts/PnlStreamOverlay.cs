@@ -130,6 +130,8 @@ public class PnlStreamOverlay : MonoBehaviour {
 
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
+        AssignStreamCountUpdaterAnalyticsEvent();
+
         StreamCallBacks.onLiveStreamCreated += RefreshStream;
         StreamCallBacks.onRoomLinkReceived += RefreshRoom;
 
@@ -180,6 +182,12 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
         foreach (GameObject item in publicStreamsControls) {
             item.SetActive(!room);
+        }
+    }
+
+    private void AssignStreamCountUpdaterAnalyticsEvent() {
+        foreach (StreamerCountUpdater streamerCountUpdater in streamCountUpdaters) {
+            streamerCountUpdater.OnCountUpdated += agoraController.SendViewerCountAnalyticsUpdate;
         }
     }
 
