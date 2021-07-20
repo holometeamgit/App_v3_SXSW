@@ -55,8 +55,6 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
             }
         }
 
-        _buildType = DEV;
-
         if (!string.IsNullOrEmpty(_buildType)) {
             PlayerSettings.productName = _buildType == DEV ? APPLICATION_NAME_DEV : APPLICATION_NAME;
             EditorUserBuildSettings.development = _buildType == DEV;
