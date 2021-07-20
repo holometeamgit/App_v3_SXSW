@@ -18,6 +18,9 @@ namespace Beem.Video {
         [SerializeField]
         private List<AbstractVideoPlayerView> _videoPlayerViews;
 
+        [SerializeField]
+        private VideoPlayerBtnView _videoPlayerBtnViews;
+
         private void OnEnable() {
             VideoPlayerCallBacks.onPlay += OnPlay;
             VideoPlayerCallBacks.onPause += OnPause;
@@ -41,6 +44,8 @@ namespace Beem.Video {
 
         private void OnPlay() {
             if (_videoPlayer != null) {
+                _videoPlayer.Play();
+                _videoPlayerBtnViews.Refresh(_videoPlayer);
                 foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
                     view.UpdateVideo(_videoPlayer);
                 }
@@ -50,6 +55,7 @@ namespace Beem.Video {
         private void OnPause() {
             if (_videoPlayer != null) {
                 _videoPlayer.Pause();
+                _videoPlayerBtnViews.Refresh(_videoPlayer);
                 foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
                     view.Cancel();
                 }
@@ -60,6 +66,9 @@ namespace Beem.Video {
             if (_videoPlayer != null) {
                 var frame = _videoPlayer.frameCount * pct;
                 _videoPlayer.frame = (long)frame;
+                foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
+                    view.Refresh(_videoPlayer);
+                }
             }
         }
 
@@ -75,7 +84,7 @@ namespace Beem.Video {
             if (videoPlayer != null) {
                 OnStop();
                 _videoPlayer = videoPlayer;
-                VideoPlayerCallBacks.onPlay?.Invoke();
+                OnPlay();
             }
         }
 
