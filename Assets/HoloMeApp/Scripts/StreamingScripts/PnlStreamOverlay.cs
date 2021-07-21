@@ -560,6 +560,9 @@ public class PnlStreamOverlay : MonoBehaviour {
         StopAllCoroutines();
         pnlViewingExperience.ToggleARSessionObjects(true);
         ChatBtn.onOpen -= OpenChat;
+    }
+
+    private void OnDestroy() {
         StreamCallBacks.onLiveStreamCreated -= RefreshStream;
     }
 
