@@ -21,6 +21,9 @@ namespace Beem.Video {
         [SerializeField]
         private VideoPlayerBtnView _videoPlayerBtnViews;
 
+        [SerializeField]
+        private GameObject playerObjects;
+
         private void OnEnable() {
             VideoPlayerCallBacks.onPlay += OnPlay;
             VideoPlayerCallBacks.onPause += OnPause;
@@ -44,6 +47,7 @@ namespace Beem.Video {
 
         private void OnInit() {
             if (_videoPlayer != null) {
+                _videoPlayer.Prepare();
                 foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
                     view.Init(_videoPlayer);
                 }
@@ -53,10 +57,20 @@ namespace Beem.Video {
         private void OnPlay() {
             if (_videoPlayer != null) {
                 _videoPlayer.Play();
-                _videoPlayerBtnViews.Refresh(_videoPlayer);
-                foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                    view.UpdateVideo();
+                if (_videoPlayer.isPrepared) {
+                    _videoPlayer.prepareCompleted -= OnPrepare;
+                    OnPrepare(_videoPlayer);
+                } else {
+                    _videoPlayer.prepareCompleted += OnPrepare;
                 }
+            }
+        }
+
+        private void OnPrepare(VideoPlayer videoPlayer) {
+            playerObjects.SetActive(true);
+            _videoPlayerBtnViews.Refresh(videoPlayer);
+            foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
+                view.UpdateVideo();
             }
         }
 

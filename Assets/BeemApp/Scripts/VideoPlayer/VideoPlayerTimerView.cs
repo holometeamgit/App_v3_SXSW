@@ -34,7 +34,7 @@ namespace Beem.Video {
             TimeSpan timeSpan = TimeSpan.FromSeconds(_videoPlayer.frame / _videoPlayer.frameRate);
 
             if (timerText != null) {
-                if (timeSpan.TotalHours > 0) {
+                if (timeSpan.Hours > 0) {
                     timerText.text = string.Format("{0:D2}:{1:D2}:{2:D2}", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
                 } else {
                     timerText.text = string.Format("{0:D2}:{1:D2}", timeSpan.Minutes, timeSpan.Seconds);
