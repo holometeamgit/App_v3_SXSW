@@ -16,6 +16,8 @@ namespace Beem.Utility.UnityConsole {
 
         private static bool _isStackTraceStatus = default;
 
+        private static string _inputKeys = default;
+
         private static ILog _ILog = new LocalLog();
 
         private static List<UnityLog> _log = new List<UnityLog>();
@@ -29,10 +31,12 @@ namespace Beem.Utility.UnityConsole {
             string temp = string.Empty;
             foreach (UnityLog item in _log) {
                 if (_currentLogType == item.Key) {
-                    string date = string.Format("{0:D2}:{1:D2}:{2:D2}", item.Date.Hour, item.Date.Minute, item.Date.Second);
-                    temp += "[" + date + "]" + "[" + item.Key + "] : " + item.Value + "\n";
-                    if (_isStackTraceStatus) {
-                        temp += "[StackTrace]" + " : " + item.StackTrace + "\n";
+                    if (string.IsNullOrEmpty(_inputKeys) || (item.Value.Contains(_inputKeys) || item.StackTrace.Contains(_inputKeys))) {
+                        string date = string.Format("{0:D2}:{1:D2}:{2:D2}", item.Date.Hour, item.Date.Minute, item.Date.Second);
+                        temp += "[" + date + "]" + "[" + item.Key + "] : " + item.Value + "\n";
+                        if (_isStackTraceStatus) {
+                            temp += "[StackTrace]" + " : " + item.StackTrace + "\n";
+                        }
                     }
                 }
             }
@@ -58,6 +62,15 @@ namespace Beem.Utility.UnityConsole {
                 return DateTime.Compare(x.Date, y.Date);
             });
 
+        }
+
+        /// <summary>
+        /// Select symbols in Logs
+        /// </summary>
+        /// <param name="inputKeys"></param>
+        public static void SetInputKeys(string inputKeys) {
+            _inputKeys = inputKeys;
+            onRefreshLog?.Invoke();
         }
 
         /// <summary>
