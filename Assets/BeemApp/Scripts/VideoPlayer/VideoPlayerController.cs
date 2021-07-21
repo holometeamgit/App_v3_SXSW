@@ -21,6 +21,9 @@ namespace Beem.Video {
         [SerializeField]
         private VideoPlayerBtnView _videoPlayerBtnViews;
 
+        [SerializeField]
+        private GameObject playerObjects;
+
         private void OnEnable() {
             VideoPlayerCallBacks.onPlay += OnPlay;
             VideoPlayerCallBacks.onPause += OnPause;
@@ -42,13 +45,32 @@ namespace Beem.Video {
             OnStop();
         }
 
+        private void OnInit() {
+            if (_videoPlayer != null) {
+                _videoPlayer.Prepare();
+                foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
+                    view.Init(_videoPlayer);
+                }
+            }
+        }
+
         private void OnPlay() {
             if (_videoPlayer != null) {
                 _videoPlayer.Play();
-                _videoPlayerBtnViews.Refresh(_videoPlayer);
-                foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                    view.UpdateVideo(_videoPlayer);
+                if (_videoPlayer.isPrepared) {
+                    _videoPlayer.prepareCompleted -= OnPrepare;
+                    OnPrepare(_videoPlayer);
+                } else {
+                    _videoPlayer.prepareCompleted += OnPrepare;
                 }
+            }
+        }
+
+        private void OnPrepare(VideoPlayer videoPlayer) {
+            playerObjects.SetActive(true);
+            _videoPlayerBtnViews.Refresh(videoPlayer);
+            foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
+                view.UpdateVideo();
             }
         }
 
@@ -67,7 +89,7 @@ namespace Beem.Video {
                 var frame = _videoPlayer.frameCount * pct;
                 _videoPlayer.frame = (long)frame;
                 foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                    view.Refresh(_videoPlayer);
+                    view.Refresh();
                 }
             }
         }
@@ -84,6 +106,7 @@ namespace Beem.Video {
             if (videoPlayer != null) {
                 OnStop();
                 _videoPlayer = videoPlayer;
+                OnInit();
                 OnPlay();
             }
         }

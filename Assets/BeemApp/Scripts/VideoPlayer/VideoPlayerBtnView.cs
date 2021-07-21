@@ -20,30 +20,9 @@ namespace Beem.Video {
         [SerializeField]
         private GameObject pauseBtn;
 
-        protected CancellationTokenSource cancelTokenSource;
-        protected int delay = 1000;
-
-        public async void Refresh(VideoPlayer videoPlayer) {
-            cancelTokenSource = new CancellationTokenSource();
+        public void Refresh(VideoPlayer videoPlayer) {
             playBtn.SetActive(!videoPlayer.isPlaying);
             pauseBtn.SetActive(videoPlayer.isPlaying);
-            await Task.Delay(delay);
-            playBtn.SetActive(!videoPlayer.isPlaying);
-            pauseBtn.SetActive(videoPlayer.isPlaying);
-        }
-
-        protected void OnDisable() {
-            Cancel();
-        }
-
-        /// <summary>
-        /// Clear Info
-        /// </summary>
-        public void Cancel() {
-            if (cancelTokenSource != null) {
-                cancelTokenSource.Cancel();
-                cancelTokenSource = null;
-            }
         }
     }
 }
