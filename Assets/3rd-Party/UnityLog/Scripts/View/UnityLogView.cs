@@ -12,6 +12,10 @@ namespace Beem.Utility.UnityConsole {
     [RequireComponent(typeof(TextMeshProUGUI))]
     public class UnityLogView : MonoBehaviour {
 
+        [Header("Show Last symbols")]
+        [SerializeField]
+        private int characterLimit = 35000;
+
         private TextMeshProUGUI _text = default;
 
         private void Awake() {
@@ -28,7 +32,9 @@ namespace Beem.Utility.UnityConsole {
         }
 
         private void Refresh() {
-            _text.text = LogData.GetLog();
+            int lenght = LogData.GetLog().Length;
+            string part = LogData.GetLog().Substring(Mathf.Max(lenght - characterLimit, 0));
+            _text.text = part;
         }
     }
 }
