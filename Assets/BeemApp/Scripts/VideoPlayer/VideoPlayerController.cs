@@ -42,12 +42,20 @@ namespace Beem.Video {
             OnStop();
         }
 
+        private void OnInit() {
+            if (_videoPlayer != null) {
+                foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
+                    view.Init(_videoPlayer);
+                }
+            }
+        }
+
         private void OnPlay() {
             if (_videoPlayer != null) {
                 _videoPlayer.Play();
                 _videoPlayerBtnViews.Refresh(_videoPlayer);
                 foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                    view.UpdateVideo(_videoPlayer);
+                    view.UpdateVideo();
                 }
             }
         }
@@ -67,7 +75,7 @@ namespace Beem.Video {
                 var frame = _videoPlayer.frameCount * pct;
                 _videoPlayer.frame = (long)frame;
                 foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                    view.Refresh(_videoPlayer);
+                    view.Refresh();
                 }
             }
         }
@@ -84,6 +92,7 @@ namespace Beem.Video {
             if (videoPlayer != null) {
                 OnStop();
                 _videoPlayer = videoPlayer;
+                OnInit();
                 OnPlay();
             }
         }

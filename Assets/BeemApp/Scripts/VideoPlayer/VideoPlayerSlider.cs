@@ -17,7 +17,7 @@ namespace Beem.Video {
 
         private Slider progress;
 
-        protected override int delay => 100;
+        protected override int delay => 1000;
 
         protected override bool condition => true;
 
@@ -26,16 +26,14 @@ namespace Beem.Video {
             progress.value = 0f;
         }
 
-        public override void Refresh(VideoPlayer videoPlayer) {
+        public override void Refresh() {
 
-            if (videoPlayer == null || !videoPlayer.isPrepared) {
+            if (_videoPlayer == null || !_videoPlayer.isPrepared) {
                 return;
             }
 
-            Debug.Log(videoPlayer.frame + " , " + videoPlayer.frameCount);
-
-            if (videoPlayer.frameCount > 0) {
-                progress.value = (float)videoPlayer.frame / (float)videoPlayer.frameCount;
+            if (_videoPlayer.frameCount > 0) {
+                progress.value = (float)_videoPlayer.frame / (float)_videoPlayer.frameCount;
             }
         }
     }

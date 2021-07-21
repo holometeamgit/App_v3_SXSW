@@ -21,7 +21,7 @@ namespace Beem.Video {
         private GameObject pauseBtn;
 
         protected CancellationTokenSource cancelTokenSource;
-        protected int delay = 1000;
+        protected int delay = 2000;
 
         public async void Refresh(VideoPlayer videoPlayer) {
             cancelTokenSource = new CancellationTokenSource();

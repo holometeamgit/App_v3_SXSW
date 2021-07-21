@@ -17,19 +17,25 @@ namespace Beem.Video {
         protected abstract int delay { get; }
         protected abstract bool condition { get; }
 
+        protected VideoPlayer _videoPlayer;
+
+        public virtual void Init(VideoPlayer videoPlayer) {
+            _videoPlayer = videoPlayer;
+        }
+
         /// <summary>
         /// Refresh data Video Player 
         /// </summary>
         /// <param name="videoPlayer"></param>
-        public abstract void Refresh(VideoPlayer videoPlayer);
+        public abstract void Refresh();
 
-        public async void UpdateVideo(VideoPlayer videoPlayer) {
+        public async void UpdateVideo() {
             cancelTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancelTokenSource.Token;
             try {
                 await Task.Delay(delay);
                 while (!cancellationToken.IsCancellationRequested && condition) {
-                    Refresh(videoPlayer);
+                    Refresh();
                     await Task.Delay(delay);
                 }
             } finally {
