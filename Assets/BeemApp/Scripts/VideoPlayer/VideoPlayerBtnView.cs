@@ -20,8 +20,6 @@ namespace Beem.Video {
         [SerializeField]
         private GameObject pauseBtn;
 
-        protected int delay = 2000;
-
         public void Refresh(VideoPlayer videoPlayer) {
             playBtn.SetActive(!videoPlayer.isPlaying);
             pauseBtn.SetActive(videoPlayer.isPlaying);
