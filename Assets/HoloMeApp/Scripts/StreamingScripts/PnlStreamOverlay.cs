@@ -421,7 +421,7 @@ public class PnlStreamOverlay : MonoBehaviour {
             case MessageEnableAudio:
                 ToggleLocalAudio(true);
                 btnPushToTalk.SetActive(true);
-                AnimatedCentreTextMessage("Hold the Speak button to talk to the broadcaster");
+                AnimatedCentreTextMessage("Hold the Talk button to speak to the broadcaster");
                 AnimatedFadeOutMessage(3);
                 return;
             case MessageDisableAudio:
@@ -432,15 +432,15 @@ public class PnlStreamOverlay : MonoBehaviour {
                 agoraController.OnStreamerLeft?.Invoke();
                 return;
             case MessageBroadcasterAudioPaused:
-                AnimatedCentreTextMessage("Audio is muted by the broadcaster");
+                AnimatedCentreTextMessage("Audio has been turned off by the broadcaster");
                 agoraController.ToggleLiveStreamQuad(false);
                 return;
             case MessageBroadcasterVideoPaused:
-                AnimatedCentreTextMessage("Video has been paused by the broadcaster");
+                AnimatedCentreTextMessage("Video has been turned off by the broadcaster");
                 agoraController.ToggleLiveStreamQuad(true);
                 return;
             case MessageBroadcasterAudioAndVideoPaused:
-                AnimatedCentreTextMessage("Video is paused and Audio is muted by the broadcaster");
+                AnimatedCentreTextMessage("Video and Audio has been turned off by the broadcaster");
                 agoraController.ToggleLiveStreamQuad(true);
                 return;
             case MessageBroadcasterUnpaused:
@@ -518,11 +518,11 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void UpdateToggleMessage() {
         if (_hideVideo && _muteAudio) {
-            AnimatedCentreTextMessage("Audio is muted and Video is paused");
+            AnimatedCentreTextMessage("Video and Audio are off");
         } else if (_hideVideo) {
-            AnimatedCentreTextMessage("Video is paused");
+            AnimatedCentreTextMessage("Video Off");
         } else if (_muteAudio) {
-            AnimatedCentreTextMessage("Audio is muted");
+            AnimatedCentreTextMessage("Audio Off");
         } else {
             AnimatedFadeOutMessage();
         }
