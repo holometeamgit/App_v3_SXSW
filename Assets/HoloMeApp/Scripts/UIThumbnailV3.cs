@@ -133,7 +133,6 @@ public class UIThumbnailV3 : UIThumbnail {
     }
 
     public override void Deactivate() {
-        //rawImage.texture = defaultTexture;
         gameObject.SetActive(false);
 
         txtDate.text = "";
