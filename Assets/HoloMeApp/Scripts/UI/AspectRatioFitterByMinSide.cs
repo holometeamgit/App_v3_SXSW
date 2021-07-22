@@ -29,4 +29,9 @@ public class AspectRatioFitterByMinSide : AspectRatioFitter
             return default;
         return rawImage.texture.height == 0 ? 0 : rawImage.texture.width / (float)rawImage.texture.height;
     }
+
+    protected override void OnEnable() {
+        base.OnEnable();
+        Refresh();
+    }
 }
