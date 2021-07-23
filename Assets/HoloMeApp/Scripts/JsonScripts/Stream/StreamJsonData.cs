@@ -157,16 +157,16 @@ public class StreamJsonData {
             if (data.id != id)
                 return;
 
-            HelperFunctions.DevLog("Update StreamJsonData.Data id = " + id);
-
             preview_s3_url = data.preview_s3_url;
-            preview_teaser_s3_url = data.preview_teaser_s3_url;
             stream_s3_url = data.stream_s3_url;
             teaser_s3_url = data.teaser_s3_url;
-            user = data.user;
-            paid_type = data.paid_type;
+            preview_teaser_s3_url = data.preview_teaser_s3_url;
             is_bought = data.is_bought;
+            is_liked = data.is_liked;
+            user = data.user;
+            user_id = data.user_id;
             product_type = data.product_type;
+            content_category = data.content_category;
             status = data.status;
             is_pin = data.is_pin;
             agora_sid = data.agora_sid;
@@ -177,8 +177,16 @@ public class StreamJsonData {
             duration = data.duration;
             preview_s3_key = data.preview_s3_key;
             stream_s3_key = data.stream_s3_key;
+            teaser_s3_key = data.teaser_s3_key;
+            preview_teaser_s3_key = data.preview_teaser_s3_key;
             title = data.title;
             description = data.description;
+            paid_type = data.paid_type;
+            privacy_type = data.privacy_type;
+            shader_info = data.shader_info;
+            count_of_likes = data.count_of_likes;
+            count_of_views = data.count_of_views;
+
 
             startDate = new DateTime();
             endDate = new DateTime();

@@ -16,11 +16,16 @@ public class StreamCallBacks {
     #endregion
 
     public static Action onGetMyRoomLink = delegate { };
+    public static Action<string> onGetRoomLink = delegate { };
     public static Action<string> onGetStreamLink = delegate { };
 
     //when start stream on Agora
+    public static Action<StreamStartResponseJsonData> onRoomCreated = delegate { };
     public static Action<StreamStartResponseJsonData> onLiveStreamCreated = delegate { };
     public static Action onLiveStreamFinished = delegate { };
 
     public static Action<int> onOpenComment = delegate { };
+
+    public static Action onCloseComments = delegate { };
+    public static Action onCommentsClosed = delegate { };
 }

@@ -14,6 +14,12 @@ public class DeepLinkContentStarter : MonoBehaviour
     AccountManager accountManager;
     [SerializeField]
     PnlThumbnailPopup pnlThumbnailPopup;
+    [SerializeField]
+    Switcher homePageSwitcher;
+    [SerializeField]
+    PnlStreamOverlay pnlStreamOverlay;
+    [SerializeField]
+    GameObject homeScreen;
 
     bool isHomePageActive;
 
@@ -45,6 +51,14 @@ public class DeepLinkContentStarter : MonoBehaviour
 
             if (isHomePageActive)
                 pnlThumbnailPopup.OpenStream(id);
+        } else if(homePageSwitcher) {
+            if (!pnlStreamOverlay.isActiveAndEnabled) {
+                HelperFunctions.DevLog("Open HomePage ");
+                homePageSwitcher.Switch();
+            } else {
+                HelperFunctions.DevLog("Can't open home page because stream ");
+                homeScreen.SetActive(false);
+            }
         }
     }
 

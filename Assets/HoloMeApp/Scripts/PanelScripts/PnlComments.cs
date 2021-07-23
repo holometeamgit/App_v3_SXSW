@@ -7,6 +7,9 @@ using System;
 using TMPro;
 using UnityEngine.UI;
 
+/// <summary>
+/// pnl comments
+/// </summary>
 public class PnlComments : MonoBehaviour
 {
 	public delegate CommentJsonData GetItemByOrdinalID(int index);
@@ -38,6 +41,10 @@ public class PnlComments : MonoBehaviour
 	private const string NO_COMMENTS = "no comments";
 
 	#region UI
+	
+    /// <summary>
+    /// open comments for content with id
+    /// </summary>
 	public void OpenComments(int contentId) {
 		HelperFunctions.DevLog("pnlcomments OpenComments " + contentId);
 		PrepareToShowComments();
@@ -49,34 +56,54 @@ public class PnlComments : MonoBehaviour
 		onOpen?.Invoke(contentId);
 	}
 
+	/// <summary>
+	/// send comment to serber for current content 
+	/// </summary>
 	public void Post() {
 		if (string.IsNullOrWhiteSpace(_commentInputField.text))
 			return;
 		_postBtn.interactable = false;
 		onPost?.Invoke(_commentInputField.text);
-    }
-
-	public void CloseComments() {
-		_isCanOpen = false;
-		_animator.SetBool("IsShowComment", _isCanOpen);
 	}
 
+	/// <summary>
+	/// close comments
+	/// </summary>
+	public void CloseComments() {
+		_isCanOpen = false;
+		HidePost();
+		_animator.SetBool("IsShowComment", _isCanOpen);
+		StreamCallBacks.onCommentsClosed?.Invoke();
+	}
+
+	/// <summary>
+	/// disable and cleare on close event
+	/// </summary>
 	public void OnClose() {
 		gameObject.SetActive(false);
 		_scroll.RecycleAll();
 	}
 
+	/// <summary>
+	/// prepare to show comments
+	/// </summary>
 	public void PrepareToShowComments() {
 		_isCanOpen = true;
 		_animator.SetBool("IsShowComment", _isCanOpen);
 	}
 
+	/// <summary>
+	/// Hide Post 
+	/// </summary>
 	public void HidePost() {
 		_animator.SetBool("IsPostState", false);
 		_scroll.IsPullBottom = true;
 		_scroll.IsPullTop = true;
 	}
 
+	/// <summary>
+	///  Show Post 
+	/// </summary>
 	public void ShowPost() {
 		_animator.SetBool("IsPostState", true);
 		_scroll.IsPullBottom = false;
@@ -85,6 +112,9 @@ public class PnlComments : MonoBehaviour
 	#endregion
 
 	#region count comments
+	/// <summary>
+	///  do update on refresh event
+	/// </summary>
 	public void OnRefreshUpdateCommentsCount(int count) {
 		if(count == 0) {
 			_commentsCount.text = NO_COMMENTS;
@@ -97,14 +127,20 @@ public class PnlComments : MonoBehaviour
 	#endregion
 
 	#region response from model
-	//calls after posted to backend
+	/// <summary>
+	/// calls after posted to backend
+	///  do refresh on post event
+	/// </summary>
 	public void OnPost() {
 		_commentInputField.text = "";
 		_postBtn.interactable = true;
 		Refresh();
+		HidePost();
 	}
 
-	//calls after didn't post to backend
+	/// <summary>
+	/// calls after didn't post to backend
+	/// </summary>
 	public void OnFailPost() {
 		_postBtn.interactable = true;
 		//TODO show msg for user
@@ -130,6 +166,11 @@ public class PnlComments : MonoBehaviour
 		}
 	}
 
+
+	/// <summary>
+	/// on All Data Loaded 
+	/// hide btn
+	/// </summary>
 	public void OnAllDataLoaded() {
 		_scroll.IsPullBottom = false;
 	}
@@ -185,6 +226,7 @@ public class PnlComments : MonoBehaviour
 		_scroll.OnFill -= OnFillItem;
 		_scroll.OnHeight -= OnHeightItem;
 		_scroll.OnPull -= OnPullItem;
+		_commentInputField.text = "";
 	}
 
     private void OnRemoveItem(int index) {

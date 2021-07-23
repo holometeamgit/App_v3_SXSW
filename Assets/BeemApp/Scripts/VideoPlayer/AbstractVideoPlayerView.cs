@@ -14,20 +14,29 @@ namespace Beem.Video {
 
         protected CancellationTokenSource cancelTokenSource;
 
-        private const int DELAY = 1;
+        protected abstract int delay { get; }
+        protected abstract bool condition { get; }
+
+        protected VideoPlayer _videoPlayer;
+
+        public virtual void Init(VideoPlayer videoPlayer) {
+            _videoPlayer = videoPlayer;
+        }
 
         /// <summary>
         /// Refresh data Video Player 
         /// </summary>
         /// <param name="videoPlayer"></param>
-        public abstract void Refresh(VideoPlayer videoPlayer);
+        public abstract void Refresh();
 
-        public async void UpdateVideo(VideoPlayer videoPlayer) {
+        public async void UpdateVideo() {
             cancelTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancelTokenSource.Token;
             try {
-                while (true) {
-                    Refresh(videoPlayer);
-                    await Task.Delay(DELAY);
+                await Task.Delay(delay);
+                while (!cancellationToken.IsCancellationRequested && condition) {
+                    Refresh();
+                    await Task.Delay(delay);
                 }
             } finally {
                 if (cancelTokenSource != null) {
@@ -37,7 +46,7 @@ namespace Beem.Video {
             }
         }
 
-        protected void OnDestroy() {
+        protected void OnDisable() {
             Cancel();
         }
 

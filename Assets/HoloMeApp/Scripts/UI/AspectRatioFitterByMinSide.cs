@@ -12,13 +12,26 @@ public class AspectRatioFitterByMinSide : AspectRatioFitter
     }
 
     protected override void OnRectTransformDimensionsChange() {
-        aspectRatio = GetImgAspectRatio();
+        if (!isActiveAndEnabled)
+            return;
+
+        var newAspectRatio = GetImgAspectRatio();
+        if (newAspectRatio != 0)
+            aspectRatio = newAspectRatio;
+
         base.OnRectTransformDimensionsChange();
     }
 
     private float GetImgAspectRatio() {
         if (rawImage == null)
             rawImage = GetComponent<RawImage>();
+        if (rawImage == null || rawImage.texture == null)
+            return default;
         return rawImage.texture.height == 0 ? 0 : rawImage.texture.width / (float)rawImage.texture.height;
+    }
+
+    protected override void OnEnable() {
+        base.OnEnable();
+        Refresh();
     }
 }
