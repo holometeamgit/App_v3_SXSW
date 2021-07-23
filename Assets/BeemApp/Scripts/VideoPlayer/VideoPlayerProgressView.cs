@@ -37,12 +37,15 @@ namespace Beem.Video {
             }
 
             if (_videoPlayer.frameCount > 0) {
-                float pct = (float)_videoPlayer.frame / (float)_videoPlayer.frameCount;
-                progress.fillAmount = pct;
-                Vector3 pos = handle.localPosition;
-                pos.x = (progress.rectTransform.rect.xMax - progress.rectTransform.rect.xMin) * pct + progress.rectTransform.rect.xMin;
-                handle.localPosition = pos;
+                Rewind((float)_videoPlayer.frame / (float)_videoPlayer.frameCount);
             }
+        }
+
+        private void Rewind(float pct) {
+            progress.fillAmount = pct;
+            Vector3 pos = handle.localPosition;
+            pos.x = (progress.rectTransform.rect.xMax - progress.rectTransform.rect.xMin) * pct + progress.rectTransform.rect.xMin;
+            handle.localPosition = pos;
         }
     }
 }

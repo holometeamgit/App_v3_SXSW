@@ -31,7 +31,14 @@ namespace Beem.Video {
                 return;
             }
 
-            TimeSpan timeSpan = TimeSpan.FromSeconds(_videoPlayer.frame / _videoPlayer.frameRate);
+            if (_videoPlayer.frameCount > 0) {
+                Rewind((float)_videoPlayer.frame / (float)_videoPlayer.frameCount);
+            }
+        }
+
+        private void Rewind(float pct) {
+
+            TimeSpan timeSpan = TimeSpan.FromSeconds(_videoPlayer.frameCount * pct / _videoPlayer.frameRate);
 
             if (timerText != null) {
                 if (timeSpan.Hours > 0) {

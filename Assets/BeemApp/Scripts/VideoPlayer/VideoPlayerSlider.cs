@@ -33,8 +33,12 @@ namespace Beem.Video {
             }
 
             if (_videoPlayer.frameCount > 0) {
-                progress.value = (float)_videoPlayer.frame / (float)_videoPlayer.frameCount;
+                Rewind((float)_videoPlayer.frame / (float)_videoPlayer.frameCount);
             }
+        }
+
+        private void Rewind(float pct) {
+            progress.value = pct;
         }
     }
 }
