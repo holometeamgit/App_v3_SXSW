@@ -38,20 +38,22 @@ public class DeepLinkContentStarter : MonoBehaviour
     }
 
     private void ShowContent() {
+        if (!accountManager.IsAuthorized()) {
+            HelperFunctions.DevLog("Can't open room because user it not LogIn");
+            return;
+        }
+
         HelperFunctions.DevLog("check room ShowBroadcastHoldingScreen");
-        HelperFunctions.DevLog("isHomePageActive " + isHomePageActive);
         if (isHomePageActive && contentLinkHandler.HasContentId(ContentLinkHandlerType.Room)) {
-            HelperFunctions.DevLog("room ShowBroadcastHoldingScreen");
             SwitcherToRoomBroadcastHoldingScreen.Switch();
         } else if(isHomePageActive && contentLinkHandler.HasContentId(ContentLinkHandlerType.Stream)) {
             long id = 0;
-            HelperFunctions.DevLog("try parse PopContentId");
             if (!long.TryParse(contentLinkHandler.PopContentId(), out id))
                 return;
 
             if (isHomePageActive)
                 pnlThumbnailPopup.OpenStream(id);
-        } else if(homePageSwitcher) {
+        } else if(homePageSwitcher ) {
             if (!pnlStreamOverlay.isActiveAndEnabled) {
                 HelperFunctions.DevLog("Open HomePage ");
                 homePageSwitcher.Switch();
