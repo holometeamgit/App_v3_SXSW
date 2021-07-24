@@ -99,8 +99,9 @@ namespace Beem.Video {
 
         private void OnRewind(float pct) {
             if (_videoPlayer != null) {
-                var frame = _videoPlayer.frameCount * pct;
-                _videoPlayer.frame = (long)frame;
+                if (!_videoPlayer.canSetTime) return;
+                if (!_videoPlayer.isPrepared) return;
+                _videoPlayer.time = pct * (_videoPlayer.frameCount / _videoPlayer.frameRate);
             }
         }
 

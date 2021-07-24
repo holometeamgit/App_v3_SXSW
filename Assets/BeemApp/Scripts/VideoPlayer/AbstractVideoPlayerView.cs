@@ -19,6 +19,18 @@ namespace Beem.Video {
 
         protected VideoPlayer _videoPlayer;
 
+        public double Time {
+            get { return _videoPlayer.time; }
+        }
+
+        public ulong Duration {
+            get { return (ulong)(_videoPlayer.frameCount / _videoPlayer.frameRate); }
+        }
+
+        public double NTime {
+            get { return Time / Duration; }
+        }
+
         public virtual void Init(VideoPlayer videoPlayer) {
             _videoPlayer = videoPlayer;
         }

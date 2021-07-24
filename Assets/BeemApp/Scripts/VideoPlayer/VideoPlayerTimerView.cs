@@ -32,19 +32,14 @@ namespace Beem.Video {
             }
 
             if (_videoPlayer.frameCount > 0) {
-                Rewind((float)_videoPlayer.frame / (float)_videoPlayer.frameCount);
-            }
-        }
+                TimeSpan timeSpan = TimeSpan.FromSeconds((float)Time);
 
-        private void Rewind(float pct) {
-
-            TimeSpan timeSpan = TimeSpan.FromSeconds(_videoPlayer.frameCount * pct / _videoPlayer.frameRate);
-
-            if (timerText != null) {
-                if (timeSpan.Hours > 0) {
-                    timerText.text = string.Format("{0:D2}:{1:D2}:{2:D2}", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
-                } else {
-                    timerText.text = string.Format("{0:D2}:{1:D2}", timeSpan.Minutes, timeSpan.Seconds);
+                if (timerText != null) {
+                    if (timeSpan.Hours > 0) {
+                        timerText.text = string.Format("{0:D2}:{1:D2}:{2:D2}", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
+                    } else {
+                        timerText.text = string.Format("{0:D2}:{1:D2}", timeSpan.Minutes, timeSpan.Seconds);
+                    }
                 }
             }
         }
