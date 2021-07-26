@@ -128,9 +128,7 @@ public class InputFieldController : MonoBehaviour {
         return msg;
     }
 
-    //private void UpdateLayout(string str) {
-    //    inputField.ForceLabelUpdate();
-    //}
+
 
     private void OnDisable() {
         if (IsClearOnDisable) {
