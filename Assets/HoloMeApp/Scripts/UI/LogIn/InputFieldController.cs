@@ -21,7 +21,7 @@ public class InputFieldController : MonoBehaviour {
     [SerializeField]
     Animator animator;
 
-    [SerializeField] UnityEvent OnEndEditPassword;
+    public UnityEvent OnEndEditPassword;
 
     private bool showWarning;
 
