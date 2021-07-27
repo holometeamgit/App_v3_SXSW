@@ -46,6 +46,7 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
             msg.Contains("User cancelled login")) { // do nothing
         } else if (msg.Contains("WrongPassword")) {
             inputFieldPassword.ShowWarning(msg);
+            inputFieldEmail.SetToDefaultState();
         } else {
             inputFieldEmail.ShowWarning(msg);
         }
@@ -120,27 +121,12 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
         LogInLoadingBackground.SetActive(false);
     }
 
-    /// <summary>
-    /// Firebase issue as of Feb 1, 2021. If the user logged in via email,
-    /// which is also associated with the user's Facebook account,
-    /// then he will no longer be able to log in via Facebook.
-    /// </summary>
-    private void ShowSpecialErrorFacebookFirebaseMsg(string msg) {
-        if (msg.Contains("AccountExistsWithDifferentCredentials")) {
-            pnlGenericError.ActivateSingleButton(SpecificFacebookSignInMsg.Title,
-                string.Format(SpecificFacebookSignInMsg.SpecificMsg),
-                "Continue",
-                () => { pnlGenericError.gameObject.SetActive(false); }, true);
-        }
-    }
-
     private void OnEnable() {
         HideBackground();
         CallBacks.onSignInEMailClick += LogIn;
         CallBacks.onFail += ErrorLogInCallBack;
         CallBacks.onNeedVerification += NeedVerificationCallback;
         CallBacks.onSignInSuccess += LogInCallBack;
-        CallBacks.onFail += ShowSpecialErrorFacebookFirebaseMsg;
         CallBacks.onFail += AutoHideLoadingBackground;
         CallBacks.onFirebaseSignInSuccess += AutoHideLoadingBackground;
 
@@ -157,7 +143,6 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
         CallBacks.onFail -= ErrorLogInCallBack;
         CallBacks.onNeedVerification -= NeedVerificationCallback;
         CallBacks.onSignInSuccess -= LogInCallBack;
-        CallBacks.onFail -= ShowSpecialErrorFacebookFirebaseMsg;
         CallBacks.onFail -= AutoHideLoadingBackground;
         CallBacks.onFirebaseSignInSuccess -= AutoHideLoadingBackground;
 

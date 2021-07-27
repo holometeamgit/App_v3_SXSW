@@ -13,6 +13,18 @@ public class InputFieldController : MonoBehaviour {
     [SerializeField]
     private bool isEmail;
 
+    [SerializeField]
+    InputField inputField;
+
+    [SerializeField]
+    TMP_Text warningMsgText;
+    [SerializeField]
+    Animator animator;
+
+    [SerializeField] UnityEvent OnEndEditPassword;
+
+    private bool showWarning;
+
     public int characterLimit {
         get { return inputField.characterLimit; }
         set { inputField.characterLimit = value; }
@@ -27,18 +39,6 @@ public class InputFieldController : MonoBehaviour {
         get { return inputField.interactable; }
         set { inputField.interactable = value; }
     }
-
-    [SerializeField]
-    InputField inputField;
-
-    [SerializeField]
-    TMP_Text warningMsgText;
-    [SerializeField]
-    Animator animator;
-
-    [SerializeField] UnityEvent OnEndEditPassword;
-
-    private bool showWarning;
 
     private void Awake() {
         inputField.onEndEdit.AddListener((_) => OnEndEditPassword.Invoke());
@@ -58,11 +58,13 @@ public class InputFieldController : MonoBehaviour {
     }
 
     public void ShowWarning(string warningMsg) {
-        animator.enabled = true;
-        HelperFunctions.DevLog(warningMsg);
-        warningMsgText.text = OverrideMsg(warningMsg);
-        showWarning = true;
-        animator.SetBool("ShowWarning", showWarning);
+        if (!string.IsNullOrEmpty(warningMsg)) {
+            animator.enabled = true;
+            HelperFunctions.DevLog(warningMsg);
+            warningMsgText.text = OverrideMsg(warningMsg);
+            showWarning = true;
+            animator.SetBool("ShowWarning", showWarning);
+        }
     }
 
     public void SetToDefaultState() {
@@ -119,6 +121,9 @@ public class InputFieldController : MonoBehaviour {
 
         if (msg.Contains("User account is disabled") || msg.Contains("UserDisabled"))
             return "This account was previously deleted, please contact support to reinstate";
+
+        if (msg.Contains("TooManyRequest"))
+            return "Too many request";
 
         return msg;
     }

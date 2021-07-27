@@ -143,14 +143,26 @@ public class HelperFunctions
         return new Color(r / 255f, g / 255f, b / 255f);
     }
 
-    public static void DevLog(string message)
-    {
+    /// <summary>
+    /// Log message only in editor or debug builds
+    /// </summary>
+    public static void DevLog(string message) {
         if (Application.isEditor || Debug.isDebugBuild)
             Debug.Log(message);
     }
 
-    public static void DevLogError(string message)
-    {
+    /// <summary>
+    /// Log warnings only in editor or debug builds
+    /// </summary>
+    public static void DevLogWarning(string message) {
+        if (Application.isEditor || Debug.isDebugBuild)
+            Debug.LogWarning(message);
+    }
+
+    /// <summary>
+    /// Log errors only in editor or debug builds
+    /// </summary>
+    public static void DevLogError(string message) {
         if (Application.isEditor || Debug.isDebugBuild)
             Debug.LogError(message);
     }

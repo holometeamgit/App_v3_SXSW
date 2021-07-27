@@ -13,6 +13,10 @@ public class AccountManager : MonoBehaviour {
     [SerializeField]
     WebRequestHandler webRequestHandler;
 
+    [Tooltip("Use this to test multiple editor logins on the same PC")]
+    [SerializeField]
+    bool disablePersistance;
+
     private Action onCancelLogIn;
 
     private bool canLogIn = true;
@@ -25,9 +29,72 @@ public class AccountManager : MonoBehaviour {
         HelperFunctions.DevLog("Cancel Log In");
     }
 
-    public void QuickLogInWithDelay() {
-        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(QUICK_LOGIN_DELAY_TIME).ContinueWith((_) => QuickLogIn(), taskScheduler);
+    public void LogOut() {
+        Debug.Log("LogOut");
+        RemoveAccessToken();
+        CallBacks.onSignOut?.Invoke();
+        SaveLogInType(LogInType.None);
+    }
+
+    /// <summary>
+    /// check that user is Authorized
+    /// </summary>
+    public bool IsAuthorized() {
+        return GetLogInType() != LogInType.None;
+    }
+
+
+    #endregion
+
+    #region Auth Type
+
+    public void SaveLogInType(LogInType type) {
+        PlayerPrefs.SetInt(PlayerPrefsKeys.LastTypeLoginPPKey, (int)type);
+        PlayerPrefs.Save();
+    }
+
+    public LogInType GetLogInType() {
+        if (!PlayerPrefs.HasKey(PlayerPrefsKeys.LastTypeLoginPPKey)) {
+            return LogInType.None;
+        }
+        return (LogInType)PlayerPrefs.GetInt(PlayerPrefsKeys.LastTypeLoginPPKey);
+    }
+
+    #endregion
+
+    #region server access token
+
+    ServerAccessToken temporaryEditorTestingAccessToken;
+
+    public void SaveAccessToken(string serverAccessToken) {
+        try {
+            //            Debug.Log("Try Save Access Token \n" + serverAccessToken);
+            ServerAccessToken accessToken = JsonUtility.FromJson<ServerAccessToken>(serverAccessToken);
+            HelperFunctions.DevLog("Save serverAccessToken " + serverAccessToken);
+            FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), accessToken, FileAccountManager.ServerAccessToken);
+            //            Debug.Log("Access Token Saved");
+
+            if (Application.isEditor && disablePersistance) {
+                temporaryEditorTestingAccessToken = accessToken;
+            }
+        } catch (System.Exception e) {
+            HelperFunctions.DevLogError(e.Message);
+        }
+    }
+
+    public ServerAccessToken GetAccessToken() {
+        if (Application.isEditor && disablePersistance) {
+            return temporaryEditorTestingAccessToken;
+        }
+
+        return FileAccountManager.ReadFile<ServerAccessToken>(nameof(FileAccountManager.ServerAccessToken),
+            FileAccountManager.ServerAccessToken);
+    }
+
+    private void Awake() {
+        canLogIn = true;
+        CallBacks.onQuickLogInRequest += QuickLogInWithDelay;
+        CallBacks.onLogOutRequest += LogOut;
     }
 
     private void QuickLogIn() {
@@ -66,50 +133,6 @@ public class AccountManager : MonoBehaviour {
             accessToken, WebRequestHandler.BodyType.JSON,
             (code, body) => { UpdateAccessToken(body); SuccessRequestAccessTokenCallBack(code, body); },
             ErrorRequestAccessTokenCallBack, onCancel: onCancelLogIn);
-    }
-
-    public void LogOut() {
-        Debug.Log("LogOut");
-        RemoveAccessToken();
-        CallBacks.onSignOut?.Invoke();
-        SaveLogInType(LogInType.None);
-    }
-
-
-    #endregion
-
-    #region Auth Type
-
-    public void SaveLogInType(LogInType type) {
-        PlayerPrefs.SetInt(PlayerPrefsKeys.LastTypeLoginPPKey, (int)type);
-        PlayerPrefs.Save();
-    }
-
-    public LogInType GetLogInType() {
-        if (!PlayerPrefs.HasKey(PlayerPrefsKeys.LastTypeLoginPPKey)) {
-            return LogInType.None;
-        }
-        return (LogInType)PlayerPrefs.GetInt(PlayerPrefsKeys.LastTypeLoginPPKey);
-    }
-
-    #endregion
-
-    #region server access token
-    public void SaveAccessToken(string serverAccessToken) {
-        try {
-            //            Debug.Log("Try Save Access Token \n" + serverAccessToken);
-            ServerAccessToken accessToken = JsonUtility.FromJson<ServerAccessToken>(serverAccessToken);
-            HelperFunctions.DevLog("Save serverAccessToken " + serverAccessToken);
-            FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), accessToken, FileAccountManager.ServerAccessToken);
-            //            Debug.Log("Access Token Saved");
-        } catch (System.Exception e) {
-            HelperFunctions.DevLogError(e.Message);
-        }
-    }
-
-    public ServerAccessToken GetAccessToken() {
-        return FileAccountManager.ReadFile<ServerAccessToken>(nameof(FileAccountManager.ServerAccessToken),
-            FileAccountManager.ServerAccessToken);
     }
 
     private void UpdateAccessToken(string serverAccessToken) {
@@ -188,18 +211,9 @@ public class AccountManager : MonoBehaviour {
         CallBacks.onFail?.Invoke(data);
     }
 
-    private void Awake() {
-        canLogIn = true;
-    }
-
-    private void OnEnable() {
-        CallBacks.onFirebaseSignInSuccess += LogInToServer;
-        CallBacks.onSignUpSuccess += SignUpSuccessCallBack;
-    }
-
-    private void OnDisable() {
-        CallBacks.onFirebaseSignInSuccess -= LogInToServer;
-        CallBacks.onSignUpSuccess -= SignUpSuccessCallBack;
+    private void QuickLogInWithDelay() {
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        Task.Delay(QUICK_LOGIN_DELAY_TIME).ContinueWith((_) => QuickLogIn(), taskScheduler);
     }
 
     #region request urls
@@ -212,4 +226,19 @@ public class AccountManager : MonoBehaviour {
     }
 
     #endregion
+
+    private void OnEnable() {
+        CallBacks.onFirebaseSignInSuccess += LogInToServer;
+        CallBacks.onSignUpSuccess += SignUpSuccessCallBack;
+    }
+
+    private void OnDisable() {
+        CallBacks.onFirebaseSignInSuccess -= LogInToServer;
+        CallBacks.onSignUpSuccess -= SignUpSuccessCallBack;
+    }
+
+    private void OnDestroy() {
+        CallBacks.onQuickLogInRequest -= QuickLogInWithDelay;
+        CallBacks.onLogOutRequest -= LogOut;
+    }
 }

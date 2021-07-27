@@ -159,7 +159,7 @@ public class AnalyticsController : MonoBehaviour
         }
         else
         {
-            Debug.LogError(nameof(UserWebManager) + " was null");
+            HelperFunctions.DevLogWarning($"{nameof(UserWebManager)} was null, (this may be intentional if the event is before login)");
         }
 
         foreach (var analyticsController in analyticsLibraryAbstractions)

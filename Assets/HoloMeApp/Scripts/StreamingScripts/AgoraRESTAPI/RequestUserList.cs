@@ -19,9 +19,7 @@ public class GetUserListRequestData
 {
     public bool channelExist;
     public int mode;
-    public List<string> broadcasters = new List<string>();
-    public List<string> audience = new List<string>();
-    //public string audienceTotal; this doesn't parse for some reason
+    public List<string> users = new List<string>();
 }
 
 [Serializable]

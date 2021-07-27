@@ -6,30 +6,40 @@ using UnityEngine.UI;
 using TMPro;
 using Beem.SSO;
 using Beem;
+using Beem.UI;
+using System.Globalization;
 
 public class UIThumbnailV3 : UIThumbnail {
     [SerializeField] RawImage rawImage;
     [SerializeField] Texture defaultTexture;
     [Space]
+    [SerializeField] Image imgLive;
+    [Header("Btns")]
     [SerializeField] GameObject btnThumbnail;
-    [Space]
-    [SerializeField] GameObject btnShare;
     [SerializeField] GameObject btnWatchNow;
     [SerializeField] GameObject btnPlayTeaser;
-    [Space]
     [SerializeField] GameObject btnBuyTicketR;
-    [SerializeField] GameObject btnShareR;
-    [Space]
-    [SerializeField] Image imgLive;
-    [Space]
+    [SerializeField] GameObject btnShareEvent;
+
+    [Header("text info")]
     [SerializeField] TMP_Text txtDate;
     [SerializeField] TMP_Text txtTime;
     [SerializeField] TMP_Text txtTitle;
     [SerializeField] TMP_Text txtDescription;
     [SerializeField] TMP_Text txtInfoText;
     [SerializeField] TMP_Text txtPrice;
+
+    [Header("Like")]
+    [SerializeField] UIBtnLikes btnLikes;
+
+    [Header("Views")]
+    [SerializeField] TMP_Text txtViews;
+
     [Space]
     [SerializeField] AspectRatioFitterByMinSide aspectRatioFitter;
+
+    [SerializeField]
+    private StreamTimerView _streamTimerView;
 
     Action<StreamJsonData.Data> OnPlayClick;
     Action<StreamJsonData.Data> OnTeaserClick;
@@ -100,6 +110,9 @@ public class UIThumbnailV3 : UIThumbnail {
         }
 
         thumbnailElement = element;
+#if UNITY_EDITOR
+        name = this.GetType().Name + " (" + element.Data.id + ")";
+#endif
 
         thumbnailElement.OnTextureLoaded += UpdateTexture;
         thumbnailElement.OnErrorTextureLoaded += UpdateTexture;
@@ -111,26 +124,25 @@ public class UIThumbnailV3 : UIThumbnail {
     public override void LockToPress(bool isLook) {
         try {
             btnThumbnail.GetComponent<Button>().interactable = !isLook;
-            btnShare.GetComponent<Button>().interactable = !isLook;
             btnWatchNow.GetComponent<Button>().interactable = !isLook;
             btnPlayTeaser.GetComponent<Button>().interactable = !isLook;
             btnBuyTicketR.GetComponent<Button>().interactable = !isLook;
-            btnShareR.GetComponent<Button>().interactable = !isLook;
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
         }
     }
 
     public override void Deactivate() {
-        //rawImage.texture = defaultTexture;
         gameObject.SetActive(false);
 
         txtDate.text = "";
         txtTime.text = "";
         txtTitle.text = "";
+        txtViews.text = "";
         txtDescription.text = "";
         txtInfoText.text = "";
         txtPrice.text = "";
+        _streamTimerView.Clear();
     }
 
     public override void Activate() {
@@ -140,24 +152,28 @@ public class UIThumbnailV3 : UIThumbnail {
     }
 
     private void UpdateData() {
+        if (thumbnailElement == null || thumbnailElement.Data == null)
+            return;
+
         UpdateTexture();
 
         bool isLive = thumbnailElement.Data.GetStage() == StreamJsonData.Data.Stage.Live;
         imgLive.gameObject.SetActive(isLive);
-        txtTime.gameObject.SetActive(!isLive);
+        //txtTime.gameObject.SetActive(!isLive);
 
         string day = OrdinalNumberSuffix.AddOrdinalNumberSuffixDat(thumbnailElement.Data.StartDate.Day);
 
         txtDate.text = thumbnailElement.Data.StartDate.ToString("MMM ") + day;
-        txtTime.text = thumbnailElement.Data.StartDate.ToString("HH:mm");
+        txtTime.text = !isLive ? thumbnailElement.Data.StartDate.ToString("HH:mm") : "";
         txtTitle.text = thumbnailElement.Data.title;
         txtDescription.text = thumbnailElement.Data.description;
 
-        btnShare.SetActive(false);
+        txtViews.text = DataStringConverter.GetItems(thumbnailElement.Data.count_of_views, "view", "views");
+
         btnWatchNow.SetActive(false);
         btnPlayTeaser.SetActive(false);
         btnBuyTicketR.SetActive(false);
-        btnShareR.SetActive(false);
+        btnShareEvent.SetActive(false);
 
         txtPrice.text = "Free";
 
@@ -165,28 +181,27 @@ public class UIThumbnailV3 : UIThumbnail {
             txtInfoText.text = "This is a free Live event";
 
             btnWatchNow.SetActive(true);
-            btnShareR.SetActive(true);
         } else if (!thumbnailElement.Data.is_bought) {
             txtInfoText.text = "Please purchase a ticket to watch full event";
             txtPrice.text = "$" + thumbnailElement.Data.product_type.price.ToString();
 
             btnPlayTeaser.SetActive(thumbnailElement.Data.HasTeaser);
-            btnShare.SetActive(!thumbnailElement.Data.HasTeaser);
-            btnBuyTicketR.SetActive(true);
+            btnBuyTicketR.SetActive(!thumbnailElement.Data.HasTeaser);
         } else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
             txtInfoText.text = "This is a free event";
             if (thumbnailElement.Data.is_bought && thumbnailElement.Data.HasProduct)
                 txtInfoText.text = "Ticket purchased for event";
-
                 btnWatchNow.SetActive(true);
-                btnShareR.SetActive(true);
         } else {
             txtInfoText.text = "Ticket purchased for event scheduled on " + thumbnailElement.Data.StartDate.ToString("ddd d MMM");
 
             btnPlayTeaser.SetActive(thumbnailElement.Data.HasTeaser);
-            btnShareR.SetActive(thumbnailElement.Data.HasTeaser);
-            btnShare.SetActive(!thumbnailElement.Data.HasTeaser);
+            btnShareEvent.SetActive(!thumbnailElement.Data.HasTeaser);
         }
+
+        btnLikes.Init(thumbnailElement.Data.id);
+
+        _streamTimerView.View(thumbnailElement.Data);
     }
 
     private void WaitServerPurchaseConfirmation(long id) {
@@ -219,6 +234,7 @@ public class UIThumbnailV3 : UIThumbnail {
 
     private void OnEnable() {
         CallBacks.onStreamPurchasedInStore += WaitServerPurchaseConfirmation;
+        UpdateData();
     }
 
     private void OnDisable() {

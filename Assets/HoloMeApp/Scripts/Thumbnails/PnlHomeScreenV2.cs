@@ -44,7 +44,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
             thumbnailWebDownloadManager, pageSize: pageSize );
 
         thumbnailsDataFetcher.OnAllDataLoaded += AllDataLoaded;
-        thumbnailsDataFetcher.OnDataUpdated += DataUpdateCallBack;
+        CallBacks.onStreamsContainerUpdated += DataUpdateCallBack;
 
         uiThumbnailsController.OnUpdated += UIUpdated;
         //add ref to data list from fetcher for ui Thumbnails Controller
@@ -55,6 +55,8 @@ public class PnlHomeScreenV2 : MonoBehaviour
     }
 
     private void DataUpdateCallBack() {
+        if (!isActiveAndEnabled)
+            return;
         initialized = true;
         pullRefreshController.StopBottomRefreshing = false;
         uiThumbnailsController.UpdateData();
@@ -91,7 +93,6 @@ public class PnlHomeScreenV2 : MonoBehaviour
     }
 
     private void ClearData() {
-        HelperFunctions.DevLog("Clear home page");
         thumbnailsDataFetcher.ClearData();
         uiThumbnailsController.UpdateData();
         initialized = false;
@@ -110,8 +111,8 @@ public class PnlHomeScreenV2 : MonoBehaviour
     }
 
     private void OnEnable() {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticParameters.ParamHomeScreen);
-
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyHomeScreen);
+        pullRefreshController.EndRefreshing();
         if (needRefresh)
             RefreshItems();
     }
@@ -121,5 +122,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
         pullRefreshController.EndRefreshing();
     }
 
-
+    private void OnDestroy() {
+        CallBacks.onStreamsContainerUpdated -= DataUpdateCallBack;
+    }
 }
