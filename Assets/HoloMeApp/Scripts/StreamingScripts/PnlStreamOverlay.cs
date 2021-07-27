@@ -96,6 +96,9 @@ public class PnlStreamOverlay : MonoBehaviour {
     VideoSurface videoSurface;
     string currentStreamId = string.Empty;
 
+    private Coroutine delayToggleAudioOffRoutine;
+    private const int PUSH_TO_TALK_MUTE_DELAY = 1;
+
     private bool _muteAudio = false;
     private bool _hideVideo = false;
 
@@ -517,7 +520,26 @@ public class PnlStreamOverlay : MonoBehaviour {
         cameraRenderImage.SizeToParent();
     }
 
+    /// <summary>
+    /// This toggle audio off with a delay, intended for push to talk users once letting go of button
+    /// </summary>
+    public void ToggleOffLocalAudioPushToTalkWithDelay()
+    {
+        delayToggleAudioOffRoutine = StartCoroutine(DelayToggleAudioOff());
+    }
+
+    private IEnumerator DelayToggleAudioOff()
+    {
+        yield return new WaitForSeconds(PUSH_TO_TALK_MUTE_DELAY);
+        ToggleLocalAudio(true);
+    }
+
     public void ToggleLocalAudio(bool mute) {
+
+        if (delayToggleAudioOffRoutine != null) {
+            StopCoroutine(delayToggleAudioOffRoutine);
+        }
+
         _muteAudio = mute;
         if (isStreamer) { //Display popup only for streamers but not for 2 way audio viewers
             UpdateToggleMessage();
