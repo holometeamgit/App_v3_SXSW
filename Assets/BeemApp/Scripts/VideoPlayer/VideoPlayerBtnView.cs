@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Video;
@@ -13,27 +15,14 @@ namespace Beem.Video {
 
         [Header("Action On Play")]
         [SerializeField]
-        private UnityEvent onPlay;
+        private GameObject playBtn;
         [Header("Action On Pause")]
         [SerializeField]
-        private UnityEvent onPause;
+        private GameObject pauseBtn;
 
-        private void OnEnable() {
-            VideoPlayerCallBacks.onPlay += OnPlay;
-            VideoPlayerCallBacks.onPause += OnPause;
-        }
-
-        private void OnDisable() {
-            VideoPlayerCallBacks.onPlay -= OnPlay;
-            VideoPlayerCallBacks.onPause -= OnPause;
-        }
-
-        private void OnPlay() {
-            onPlay?.Invoke();
-        }
-
-        private void OnPause() {
-            onPause?.Invoke();
+        public void Refresh(VideoPlayer videoPlayer) {
+            playBtn.SetActive(!videoPlayer.isPlaying);
+            pauseBtn.SetActive(videoPlayer.isPlaying);
         }
     }
 }

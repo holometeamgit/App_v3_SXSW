@@ -61,7 +61,7 @@ public class PnlThumbnailPopup : UIThumbnail {
             isSubscribed = true;
         }
         currentId = id;
-        thumbnailWebDownloadManager.DownloadStreamById(id);
+        CallBacks.onDownloadStreamById?.Invoke(id);
     }
 
     public override void AddData(ThumbnailElement element) {

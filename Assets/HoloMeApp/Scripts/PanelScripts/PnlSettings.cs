@@ -13,6 +13,6 @@ public class PnlSettings : MonoBehaviour
 
     private void OnEnable() {
         changePassword.SetActive(accountManager.GetLogInType() == LogInType.Email);
-        txtNickname.text = "@" + userWebManager.GetUsername();
+        txtNickname.text = userWebManager.GetUsername();
     }
 }

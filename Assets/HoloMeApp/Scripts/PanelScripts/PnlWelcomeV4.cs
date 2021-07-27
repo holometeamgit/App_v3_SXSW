@@ -19,24 +19,6 @@ public class PnlWelcomeV4 : MonoBehaviour {
     private const int TIME_FOR_AUTOHIDINGBG = 10000;
     private int HIDE_BACKGROUND_DELAY_TIME = 500;
 
-    private DeepLinkHandler deepLinkHandler;
-    private const string IS_CHECKED_PUSH_KEY = "pushIsChecked";
-
-
-    private void Awake() {
-        deepLinkHandler = FindObjectOfType<DeepLinkHandler>();
-    }
-
-    private void Start() {
-#if UNITY_ANDROID
-        if (deepLinkHandler != null && !PlayerPrefs.HasKey(IS_CHECKED_PUSH_KEY)) {
-            deepLinkHandler.CheckSettings();
-            PlayerPrefs.SetInt(IS_CHECKED_PUSH_KEY, 1);
-            PlayerPrefs.Save();
-        }
-#endif
-    }
-
     private void ShowBackground() {
         HelperFunctions.DevLog("Show Background");
         LogInBackground.SetActive(true);

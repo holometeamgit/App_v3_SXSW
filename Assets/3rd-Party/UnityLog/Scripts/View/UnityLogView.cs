@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,28 +9,32 @@ namespace Beem.Utility.UnityConsole {
     /// <summary>
     /// For unity log 
     /// </summary>
-    [RequireComponent(typeof(Text))]
+    [RequireComponent(typeof(TextMeshProUGUI))]
     public class UnityLogView : MonoBehaviour {
 
-        private const int MAX_LENGHT = 65000;
+        [Header("Show Last symbols")]
+        [SerializeField]
+        private int characterLimit = 35000;
 
-        private Text _text = default;
+        private TextMeshProUGUI _text = default;
 
         private void Awake() {
-            _text = GetComponent<Text>();
+            _text = GetComponent<TextMeshProUGUI>();
             Refresh();
         }
 
         private void OnEnable() {
-            LogCallBacks.onRefreshLog += Refresh;
+            LogData.onRefreshLog += Refresh;
         }
 
         private void OnDisable() {
-            LogCallBacks.onRefreshLog -= Refresh;
+            LogData.onRefreshLog -= Refresh;
         }
 
         private void Refresh() {
-            _text.text = LogData.GetLog().Length < MAX_LENGHT ? LogData.GetLog() : "Too much symbols. Please, clear logs";
+            int lenght = LogData.GetLog().Length;
+            string part = LogData.GetLog().Substring(Mathf.Max(lenght - characterLimit, 0));
+            _text.text = part;
         }
     }
 }

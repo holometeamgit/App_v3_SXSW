@@ -6,6 +6,7 @@ using System.Collections;
 using UnityEngine.UI;
 using agora_gaming_rtc;
 using Beem.Firebase.DynamicLink;
+using Beem.UI;
 
 public class PnlStreamOverlay : MonoBehaviour {
 
@@ -24,15 +25,13 @@ public class PnlStreamOverlay : MonoBehaviour {
     private GameObject[] privateStreamsControls;
 
     [SerializeField]
-    private GameObject[] sharedStreamsControls;
-
-    [SerializeField]
     private GameObject[] onlineControls;
 
     [SerializeField]
     private GameObject[] offlineControls;
 
     [Header("These Views")]
+
     [SerializeField]
     private RawImage cameraRenderImage;
 
@@ -41,6 +40,12 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     [SerializeField]
     private Button btnGoLive;
+
+    [SerializeField]
+    private UIBtnLikes uiBtnLikes;
+
+    [SerializeField]
+    private StreamLikesRefresherView streamLikesRefresherView;
 
     [SerializeField]
     StreamerCountUpdater[] streamCountUpdaters;
@@ -89,16 +94,19 @@ public class PnlStreamOverlay : MonoBehaviour {
     bool isPushToTalkActive;
 
     VideoSurface videoSurface;
-    string currentStreamId = "";
+    string currentStreamId = string.Empty;
 
     private bool _muteAudio = false;
     private bool _hideVideo = false;
 
-    //Vector3 rawImageQuadDefaultScale;
-
-    const string MessageDisableAudio = "DisableAudio";
-    const string MessageEnableAudio = "EnableAudio";
+    const string MessageDisableTwoWayAudio = "DisableTwoWayAudio";
+    const string MessageEnableTwoWayAudio = "EnableTwoWayAudio";
     const string MessageStreamerLeft = "StreamerLeft";
+    const string MessageChannelCreatorUID = "StreamerUID:";
+    const string MessageBroadcasterAudioPaused = "BroadcasterAudioPaused";
+    const string MessageBroadcasterVideoPaused = "BroadcasterVideoPaused";
+    const string MessageBroadcasterAudioAndVideoPaused = "BroadcasterAudioAndVideoPaused";
+    const string MessageBroadcasterUnpaused = "BroadcasterUnpausedVideoAndAudio";
 
     void Init() {
         if (initialised)
@@ -115,10 +123,15 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.OnStreamWentOffline += StopStreamCountUpdaters;
         agoraController.OnStreamWentOffline += () => btnGoLive.interactable = true;
         agoraController.OnMessageRecieved += StreamMessageResponse;
+        agoraController.OnUserViewerJoined += SendVideoAudioPauseStatusToViewers;
+        agoraController.OnUserViewerJoined += SendPushToTalkStatusToViewers;
+        agoraController.OnUserViewerJoined += SendChannelCreatorUIDToViewers;
 
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
-        StreamCallBacks.onLiveStreamCreated += (data) => { currentStreamId = data.id.ToString(); RefreshControls(); StartStreamCountUpdaters(); };
+        AssignStreamCountUpdaterAnalyticsEvent();
+
+        StreamCallBacks.onLiveStreamCreated += RefreshStream;
 
         AddVideoSurface();
         initialised = true;
@@ -132,6 +145,14 @@ public class PnlStreamOverlay : MonoBehaviour {
         ChatBtn.onOpen += OpenChat;
     }
 
+    private void RefreshStream(StreamStartResponseJsonData streamStartResponseJsonData) {
+        currentStreamId = streamStartResponseJsonData.id.ToString();
+        RefreshControls();
+        uiBtnLikes.Init(streamStartResponseJsonData.id);
+        streamLikesRefresherView.StartCountAsync(currentStreamId);
+        StartStreamCountUpdaters();
+    }
+
     private void RequestMicAccess() {
         if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete) {
             permissionGranter.RequestMicAccess();
@@ -139,7 +160,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void RefreshControls() {
-        RefreshStreamControls(!agoraController.IsChannelCreator || agoraController.IsRoom);
+        RefreshStreamControls(agoraController.IsRoom);
         RefreshBroadcasterControls(agoraController.IsChannelCreator);
         RefreshLiveControls(!agoraController.IsChannelCreator || agoraController.IsLive);
         HelperFunctions.DevLog("IsRoom = " + agoraController.IsRoom);
@@ -154,8 +175,11 @@ public class PnlStreamOverlay : MonoBehaviour {
         foreach (GameObject item in publicStreamsControls) {
             item.SetActive(!room);
         }
-        foreach (GameObject item in sharedStreamsControls) {
-            item.SetActive(true);
+    }
+
+    private void AssignStreamCountUpdaterAnalyticsEvent() {
+        foreach (StreamerCountUpdater streamerCountUpdater in streamCountUpdaters) {
+            streamerCountUpdater.OnCountUpdated += agoraController.SendViewerCountAnalyticsUpdate;
         }
     }
 
@@ -203,17 +227,23 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void StreamerOpenSharedFunctions() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+
         btnGoLive.gameObject.SetActive(true);
         agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
-        agoraController.OnUserViewerJoined += SendPushToTalkStatusToViewers;
+
         isStreamer = true;
         gameObject.SetActive(true);
         pnlViewingExperience.ToggleARSessionObjects(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
+
+        ToggleLocalAudio(false);
+        ToggleVideo(false);
+        isPushToTalkActive = false;
+
         StartCoroutine(OnPreviewReady());
         agoraController.StartPreview();
-        isPushToTalkActive = false;
+        RefreshControls();
     }
 
     public void OpenAsViewer(string channelName, string streamID, bool isRoom) {
@@ -236,17 +266,20 @@ public class PnlStreamOverlay : MonoBehaviour {
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
         currentStreamId = streamID;
+
         agoraController.IsRoom = isRoom;
         RefreshControls();
+
+        long currentStreamIdLong = 0;
+        long.TryParse(streamID, out currentStreamIdLong);
+        uiBtnLikes.Init(currentStreamIdLong);
+        streamLikesRefresherView.StartCountAsync(streamID);
+
         StartStreamCountUpdaters();
     }
 
     public void FadePanel(bool show) {
         canvasGroup.DOFade(show ? 1 : 0, 0.5f).OnComplete(() => { if (!show) { gameObject.SetActive(false); } });
-    }
-
-    private void OnDestroy() {
-        LeaveOnDestroy();
     }
 
     private void LeaveOnDestroy() {
@@ -287,20 +320,38 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void ShareStream() {
 
-        HelperFunctions.DevLog("isStreamer = " + isStreamer);
+        HelperFunctions.DevLog("agoraController.IsChannelCreator = " + agoraController.IsChannelCreator);
         HelperFunctions.DevLog("agoraController.IsRoom = " + agoraController.IsRoom);
-        if (isStreamer && agoraController.IsRoom) {
-            ShareRoomStreamLink();
-            HelperFunctions.DevLog("SHARE_ROOM");
+        HelperFunctions.DevLog("currentStreamId = " + currentStreamId);
+
+        if (agoraController.IsRoom) {
+            if (agoraController.IsChannelCreator) {
+                StreamCallBacks.onGetMyRoomLink?.Invoke();
+            } else {
+                if (!string.IsNullOrWhiteSpace(currentStreamId)) {
+                    StreamCallBacks.onGetRoomLink?.Invoke(currentStreamId);
+                } else {
+                    DynamicLinksCallBacks.onShareAppLink?.Invoke();
+                }
+            }
         } else {
-            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
-            ShareStreamLink();
-            HelperFunctions.DevLog("SHARE_STREAM");
+            if (!string.IsNullOrWhiteSpace(currentStreamId)) {
+                StreamCallBacks.onGetStreamLink?.Invoke(currentStreamId);
+            } else {
+                DynamicLinksCallBacks.onShareAppLink?.Invoke();
+            }
         }
+
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
     }
 
     public void StartCountdown() {
         countdownRoutine = StartCoroutine(CountDown());
+    }
+
+    public void StopCountdownRoutine() {
+        if (countdownRoutine != null)
+            StopCoroutine(countdownRoutine);
     }
 
     public void StopStream() {
@@ -313,24 +364,13 @@ public class PnlStreamOverlay : MonoBehaviour {
                 SendStreamLeaveStatusToViewers();
         }
 
-        if (countdownRoutine != null)
-            StopCoroutine(countdownRoutine);
+        StopCountdownRoutine();
+        streamLikesRefresherView.Cancel();
 
         agoraController.Leave();
         cameraRenderImage.texture = null;
         AnimatedFadeOutMessage();
         RefreshControls();
-    }
-
-    public void ShareRoomStreamLink() {
-        StreamCallBacks.onGetMyRoomLink?.Invoke();
-    }
-
-    private void ShareStreamLink() {
-        if (!string.IsNullOrWhiteSpace(currentStreamId))
-            StreamCallBacks.onGetStreamLink?.Invoke(currentStreamId);
-        else
-            DynamicLinksCallBacks.onShareAppLink?.Invoke();
     }
 
     /// <summary>
@@ -345,12 +385,39 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
     }
 
-    void SendPushToTalkStatusToViewers() {
-        agoraController.SendAgoraMessage(isPushToTalkActive ? MessageEnableAudio : MessageDisableAudio);
+    private void SendVideoAudioPauseStatusToViewers() {
+
+        if (!agoraController.IsLive)
+            return;
+
+        if (_hideVideo && _muteAudio) {
+            agoraController.SendAgoraMessage(MessageBroadcasterAudioAndVideoPaused);
+        } else if (_hideVideo) {
+            agoraController.SendAgoraMessage(MessageBroadcasterVideoPaused);
+        } else if (_muteAudio) {
+            agoraController.SendAgoraMessage(MessageBroadcasterAudioPaused);
+        } else {
+            agoraController.SendAgoraMessage(MessageBroadcasterUnpaused);
+        }
     }
 
-    void SendStreamLeaveStatusToViewers() {
+    private void SendPushToTalkStatusToViewers() {
+        agoraController.SendAgoraMessage(isPushToTalkActive ? MessageEnableTwoWayAudio : MessageDisableTwoWayAudio);
+    }
+
+    private void SendChannelCreatorUIDToViewers() {
+        agoraController.SendAgoraMessage(MessageChannelCreatorUID + agoraController.ChannelCreatorUID);
+    }
+
+    private void SendStreamLeaveStatusToViewers() {
         agoraController.SendAgoraMessage(MessageStreamerLeft);
+    }
+
+    private bool CheckIncorrectMessageForStreamer(string message) {
+        if (isStreamer) {
+            HelperFunctions.DevLogError($"Streamer received a message intended for viewers {message}");
+        }
+        return isStreamer;
     }
 
     public void StreamMessageResponse(string message) {
@@ -358,19 +425,52 @@ public class PnlStreamOverlay : MonoBehaviour {
         HelperFunctions.DevLog($"Stream Message Received ({message})");
 
         switch (message) {
-            case MessageEnableAudio:
+            case MessageEnableTwoWayAudio:
+                if (CheckIncorrectMessageForStreamer(message)) {
+                    return;
+                }
+
                 ToggleLocalAudio(true);
                 btnPushToTalk.SetActive(true);
-                AnimatedCentreTextMessage("Hold the Speak button to talk to the broadcaster");
+                AnimatedCentreTextMessage("Hold the Talk button to speak to the broadcaster");
                 AnimatedFadeOutMessage(3);
-                break;
-            case MessageDisableAudio:
+                return;
+            case MessageDisableTwoWayAudio:
+                if (CheckIncorrectMessageForStreamer(message)) {
+                    return;
+                }
+
                 ToggleLocalAudio(true);
                 btnPushToTalk.SetActive(false);
-                break;
+                return;
             case MessageStreamerLeft:
                 agoraController.OnStreamerLeft?.Invoke();
-                break;
+                return;
+            case MessageBroadcasterAudioPaused:
+                AnimatedCentreTextMessage("Audio has been turned off by the broadcaster");
+                agoraController.ToggleLiveStreamQuad(false);
+                return;
+            case MessageBroadcasterVideoPaused:
+                AnimatedCentreTextMessage("Video has been turned off by the broadcaster");
+                agoraController.ToggleLiveStreamQuad(true);
+                return;
+            case MessageBroadcasterAudioAndVideoPaused:
+                AnimatedCentreTextMessage("Video and Audio has been turned off by the broadcaster");
+                agoraController.ToggleLiveStreamQuad(true);
+                return;
+            case MessageBroadcasterUnpaused:
+                AnimatedFadeOutMessage();
+                agoraController.ToggleLiveStreamQuad(false);
+                return;
+        }
+
+        if (message.Contains(MessageChannelCreatorUID)) {
+
+            uint result;
+            if (!uint.TryParse(message.Substring(MessageChannelCreatorUID.Length), out result)) {
+                HelperFunctions.DevLogError("Channel creator UID parse failed");
+            }
+            agoraController.ChannelCreatorUID = result;
         }
     }
 
@@ -433,14 +533,15 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void UpdateToggleMessage() {
         if (_hideVideo && _muteAudio) {
-            AnimatedCentreTextMessage("Audio is muted and Video is paused");
+            AnimatedCentreTextMessage("Video and Audio are off");
         } else if (_hideVideo) {
-            AnimatedCentreTextMessage("Video is paused");
+            AnimatedCentreTextMessage("Video Off");
         } else if (_muteAudio) {
-            AnimatedCentreTextMessage("Audio is muted");
+            AnimatedCentreTextMessage("Audio Off");
         } else {
             AnimatedFadeOutMessage();
         }
+        SendVideoAudioPauseStatusToViewers();
     }
 
     IEnumerator CountDown() {
@@ -474,6 +575,10 @@ public class PnlStreamOverlay : MonoBehaviour {
         StopAllCoroutines();
         pnlViewingExperience.ToggleARSessionObjects(true);
         ChatBtn.onOpen -= OpenChat;
+    }
+
+    private void OnDestroy() {
+        StreamCallBacks.onLiveStreamCreated -= RefreshStream;
     }
 
     IEnumerator OnApplicationFocus(bool hasFocus) //Potential fix for bug where audio and video are re-enabled after losing focus from sharing or minimising

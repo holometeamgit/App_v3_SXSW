@@ -5,7 +5,6 @@ using UnityEngine;
 public class ThumbnailsDataFetcher {
 
     public Action OnAllDataLoaded; //all data from the server has been downloaded
-    public Action OnDataUpdated;
     public Action OnErrorGetCountThumbnails;
     public Action OnErrorGetThumbnails;
 
@@ -31,8 +30,6 @@ public class ThumbnailsDataFetcher {
         this.pageSize = pageSize;
 
         thumbnailsDataContainer = new ThumbnailsDataContainer(this.thumbnailPriority);
-
-        thumbnailsDataContainer.OnDataUpdated += DataUpdatedCallBack;
 
         thumbnailWebDownloadManager.OnCountThumbnailsLoaded += PageCountCallBack;
         thumbnailWebDownloadManager.OnErrorCountThumbnailsLoaded += ErrorPageCountCallBack;
@@ -79,10 +76,6 @@ public class ThumbnailsDataFetcher {
             }
             GetPageCount();
         }
-    }
-
-    private void DataUpdatedCallBack() {
-        OnDataUpdated?.Invoke();
     }
 
     #region page count and continue get thumbnails 

@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using Beem.SSO;
 using TMPro;
+using System.Collections;
 
 namespace Beem.UI {
 
@@ -12,7 +11,7 @@ namespace Beem.UI {
     /// Need for demonstration count of likes
     /// can invoke like and unlike event
     /// </summary>
-    public class UIBtnLikes : MonoBehaviour {
+    public class UIBtnLikes : MonoBehaviour, IStreamDataView {
         [SerializeField] Image imageLike;
         [SerializeField] Image imageUnlike;
         [SerializeField] TMP_Text likesCount;
@@ -21,17 +20,24 @@ namespace Beem.UI {
         private long _count;
         private long _streamId = -1;
 
+
         /// <summary>
-        /// Set btn state 
+        /// Init btn state. Take data from local data container
         /// </summary>
-        public void SetStreamId(long streamId) {
+        public void Init(StreamJsonData.Data streamData) {
+            Init(streamData.id);
+        }
+
+        public void Init(long streamId) {
+#if UNITY_EDITOR
+            this.gameObject.name = "BtnLikes " + streamId;
+#endif
             CallBacks.onGetLikeStateCallBack -= UpdateState;
 
             _streamId = streamId;
-            UpdateBtnUIState();
             CallBacks.onGetLikeStateCallBack += UpdateState;
-
-            CallBacks.onGetLikeState?.Invoke(streamId);
+            GetLikesState();
+            UpdateBtnUIState();
         }
 
         /// <summary>
@@ -41,7 +47,6 @@ namespace Beem.UI {
             HelperFunctions.DevLog("ClickLike streamId " + _streamId);
             if (_streamId < 0)
                 return;
-            Handheld.Vibrate();
             _isLike = !_isLike;
             _count = _isLike ? ++_count : --_count;
             UpdateBtnUIState();
@@ -52,11 +57,26 @@ namespace Beem.UI {
             }
         }
 
+        private void Start() {
+            UpdateBtnUIState();
+        }
+
+        private void RefreshLocalLikes(long streamId) {
+            if (_streamId != streamId)
+                return;
+
+            GetLikesState();
+        }
+
         private void UpdateState(long streamId, bool isLike, long count) {
             if (streamId != _streamId)
                 return;
-            _isLike = isLike;
-            _count = count;
+
+            if (_isLike != isLike || _count != count) {
+                _isLike = isLike;
+                _count = count;
+                UpdateBtnUIState();
+            }
         }
 
         private void UpdateBtnUIState() {
@@ -65,8 +85,21 @@ namespace Beem.UI {
             likesCount.text = _count.ToString();
         }
 
+        private void GetLikesState() {
+            if (!isActiveAndEnabled && _streamId >= 0)
+                return;
+            CallBacks.onGetLikeState?.Invoke(_streamId);
+        }
+
+        private void OnEnable() {
+            CallBacks.onStreamByIdInContainerUpdated += RefreshLocalLikes;
+            GetLikesState();
+        }
+
         private void OnDisable() {
             _streamId = -1;
+            CallBacks.onStreamByIdInContainerUpdated -= RefreshLocalLikes;
+            StopAllCoroutines();
         }
     }
 }

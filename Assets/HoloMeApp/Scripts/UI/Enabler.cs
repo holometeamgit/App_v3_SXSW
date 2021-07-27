@@ -32,7 +32,12 @@ public class Enabler : MonoBehaviour
 
         OnEnableEvent.Invoke();
 
-        StartCoroutine(InvokeEvent());
+        if (isActiveAndEnabled) {
+            StartCoroutine(InvokeEvent());
+        } else if(timeDelay == 0) {
+            OnDelayEvent.Invoke();
+        }
+
     }
 
     private void OnDisable() {

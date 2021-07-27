@@ -5,9 +5,9 @@ echo "Uploading Build Result to Firebase Distribution..."
 
 set -x
 
-export FIREBASE_BUILD="$(find -E . -regex '.*\.(ipa|apk)' -print -quit)"
+export FIREBASE_BUILD="$(find -E . -regex '.*\.(ipa|apk|aab)' -print -quit)"
 if [ -z "$FIREBASE_BUILD" ]; then
-    echo "Could not find .ipa/.apk file"
+    echo "Could not find .ipa/.apk/.aab file"
     exit 1
 else
     echo "Install Firebase Tools.."

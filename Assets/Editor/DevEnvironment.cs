@@ -1,44 +1,55 @@
-﻿using UnityEditor;
+﻿using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
-public class DevEnvironment : MonoBehaviour
-{
-    static string IdentifierDev = "com.HoloMe.Beem";//"com.HoloMe.BeemDev";
-    static string IdentifierProd = "com.HoloMe.Beem";
+public class DevEnvironment : MonoBehaviour {
     static string Prod = "PROD";
     static string Dev = "DEV";
 
     [MenuItem("Environment/Switch To Dev")]
-    static void SwitchToDev()
-    {
+    static void SwitchToDev() {
         PlayerSettings.productName = "Beem Dev";
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, Dev);
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, Dev);
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, Dev);
-        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, IdentifierDev);
-        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, IdentifierDev);
+
+        SwitchDefine(BuildTargetGroup.iOS, Prod, Dev);
+        SwitchDefine(BuildTargetGroup.Android, Prod, Dev);
+
         EditorUserBuildSettings.development = true;
     }
 
     [MenuItem("Environment/Switch To Prod")]
-    static void SwitchToProd()
-    {
+    static void SwitchToProd() {
         PlayerSettings.productName = "Beem";
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, Prod);
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, Prod);
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, Prod);
-        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, IdentifierProd);
-        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, IdentifierProd);
+
+        SwitchDefine(BuildTargetGroup.iOS, Dev, Prod);
+        SwitchDefine(BuildTargetGroup.Android, Dev, Prod);
+
         EditorUserBuildSettings.development = false;
     }
 
+    static void SwitchDefine(BuildTargetGroup targetGroup, string firstDefine, string secondDefine) {
+        string[] currentDefines;
+        PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup, out currentDefines);
+        if (currentDefines.Contains(firstDefine)) {
+            for (int i = 0; i < currentDefines.Length; i++) {
+                if (currentDefines[i] == firstDefine) {
+                    currentDefines[i] = secondDefine;
+                }
+            }
+        } else {
+            int lenght = currentDefines.Length;
+            currentDefines = new string[lenght + 1];
+            currentDefines[lenght] = secondDefine;
+        }
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, currentDefines);
+    }
+
 #if UNITY_CLOUD_BUILD
-    public static void SetAsCloudStaging()
+    public static void BuildDev()
     {
         SwitchToDev();
     }
 
-    public static void SetAsCloudLive()
+    public static void BuildProd()
     {
         SwitchToProd();
     }

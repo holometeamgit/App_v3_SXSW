@@ -35,7 +35,9 @@ public class AgoraController : MonoBehaviour {
     public bool IsChannelCreator { get; set; }
     public bool IsRoom { get; set; }
     public bool VideoIsReady { get; private set; }
+    public uint ChannelCreatorUID { get; set; }
 
+    int streamID = -1;
     int agoraMessageStreamID;
 
     [HideInInspector]
@@ -74,8 +76,8 @@ public class AgoraController : MonoBehaviour {
         //iRtcEngine.OnUserEnableLocalVideo = OnUserEnableVideoHandler;
 
         iRtcEngine.OnJoinChannelSuccess = OnJoinChannelSuccess;
-        iRtcEngine.OnUserJoined = OnUserJoined; //Only fired for broadcasters
-        //iRtcEngine.OnUserOffline = OnUserOffline; // TODO fix app close condition
+        iRtcEngine.OnUserJoined = OnUserJoined; //Only fired for broadcasters in broadcast profile
+        iRtcEngine.OnUserOffline = OnUserOffline;
         iRtcEngine.OnWarning += (int warn, string msg) => {
             string description = IRtcEngine.GetErrorDescription(warn);
             string warningMessage = string.Format("Agora onWarning callback {0} {1} {2}", warn, msg, description);
@@ -208,15 +210,25 @@ public class AgoraController : MonoBehaviour {
         }
     }
 
-    public void SecondaryServerCallsComplete(string viewerBroadcasterToken, string rtmToken, int streamID = -1) {
-        agoraRTMChatController.Login(rtmToken);
+    /// <summary>
+    /// Send viewer count for live stream, creator only
+    /// </summary>
+    public void SendViewerCountAnalyticsUpdate(int count) {
+        if (IsChannelCreator) {
+            AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyViewerCountUpdate, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() }, { AnalyticParameters.ParamViewerCount, count.ToString() } });
+        }
+    }
 
+    public void SecondaryServerCallsComplete(string viewerBroadcasterToken, string rtmToken, int streamID = -1) {
+        this.streamID = streamID;
+
+        agoraRTMChatController.Login(rtmToken);
         iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_COMMUNICATION);
 
         if (IsChannelCreator) {
             iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
             SetEncoderSettings();
-            AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyLiveStarted, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() } });
+            AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyLiveStarted, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() } });
         } else {
             iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_AUDIENCE);
             EnableVideoPlayback(); //Must be called for viewers to view
@@ -316,6 +328,9 @@ public class AgoraController : MonoBehaviour {
 
     private void OnJoinChannelSuccess(string channelName, uint uid, int elapsed) {
         HelperFunctions.DevLog("JoinChannelSuccessHandler: uid = " + uid);
+        if (IsChannelCreator) {
+            ChannelCreatorUID = uid;
+        }
         agoraRTMChatController.JoinChannel(channelName);
     }
 
@@ -328,38 +343,35 @@ public class AgoraController : MonoBehaviour {
             ResetVideoQuadSurface();
 
             if (defaultLiveStreamQuadScale == Vector3.zero) {
-                //print("SETTING DEFAULT QUAD SCALE");
                 defaultLiveStreamQuadScale = liveStreamQuad.transform.localScale;
             }
 
             videoSurfaceQuadRef = liveStreamQuad.GetComponent<VideoSurface>();
             if (!videoSurfaceQuadRef) {
                 videoSurfaceQuadRef = liveStreamQuad.AddComponent<VideoSurface>();
-                //print("ADDED VIDEO SURFACE");
             }
 
             videoSurfaceQuadRef.SetForUser(uid);
             videoSurfaceQuadRef.SetEnable(true);
             videoSurfaceQuadRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
-            //videoSurfaceQuadRef.EnableFlipTextureApplyTransform(false, true, defaultLiveStreamQuadScale);
-            //videoSurfaceQuadRef.EnableFilpTextureApply(false, true); //This should only be called once if used, currently the prefab live stream quad is being flipped via scale
             videoSurfaceQuadRef.SetGameFps(frameRate);
-            //liveStreamQuad.GetComponent<LiveStreamGreenCalculator>().StartBackgroundRemoval();
-            //Invoke("VideoResolution", 3);
-        } else {
+        } else if (IsChannelCreator) {
             OnUserViewerJoined?.Invoke();
         }
     }
 
-    //void OnUserOffline(uint uid, USER_OFFLINE_REASON reason) //Only called for host in broadcast profile //TODO fix for app closed during livestream
-    //{
-    //    HelperFunctions.DevLog("onUserOffline: uid = " + uid + " reason = " + reason);
+    void OnUserOffline(uint uid, USER_OFFLINE_REASON reason) //Only called for host in broadcast profile
+    {
+        HelperFunctions.DevLog("onUserOffline: uid = " + uid + " reason = " + reason);
 
-    //    //if (IsChannelCreator)//Stops channel creator from leaving when another user leaves DOESN'T stop other users leaving due to it.
-    //    //    return;
+        //if (IsChannelCreator)//Stops channel creator from leaving when another user leaves DOESN'T stop other users leaving due to it.
+        //    return;
 
-    //    OnStreamerLeft?.Invoke();
-    //}
+        if (uid == ChannelCreatorUID) {
+            HelperFunctions.DevLog($"Disconnecting channel as channel broadcaster has dropped {uid} {reason}");
+            OnStreamerLeft?.Invoke();
+        }
+    }
 
     public void UnloadEngine() {
         HelperFunctions.DevLog("calling unloadEngine");
@@ -374,6 +386,15 @@ public class AgoraController : MonoBehaviour {
         int result = iRtcEngine.SwitchCamera();
         if (result == 0)
             OnCameraSwitched?.Invoke();
+    }
+
+    /// <summary>
+    /// Toggle the live stream quad
+    /// </summary>
+    public void ToggleLiveStreamQuad(bool hide) {
+        if (IsLive) {
+            liveStreamQuad.SetActive(!hide);
+        }
     }
 
     /// <summary>
@@ -436,7 +457,7 @@ public class AgoraController : MonoBehaviour {
 
     private void OnStreamMessageRecieved(uint userId, int streamId, byte[] data, int length) {
         string result = Encoding.ASCII.GetString(data);
-        HelperFunctions.DevLog($"Message recieved {result}");
+        HelperFunctions.DevLog($"Agora Message Recieved {result}");
         OnMessageRecieved?.Invoke(result);
     }
 

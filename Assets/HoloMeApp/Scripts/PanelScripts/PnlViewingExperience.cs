@@ -30,14 +30,11 @@ public class PnlViewingExperience : MonoBehaviour {
     [Header("")]
     [SerializeField]
     RectTransform scanMessageRT;
-    //    [TextArea]
-    //    [SerializeField]
+
     string scaneEnviromentStr = "Scan the floor in front of you by moving your phone slowly from side to side";
-    //    [TextArea]
-    //    [SerializeField]
+
     string pinchToZoomStr = "Pinch to resize the hologram";
-    //    [TextArea]
-    //    [SerializeField]
+
     string tapToPlaceStr = "To see your chosen performer, tap the white circle when it appears on the floor";
     Coroutine scanAnimationRoutine;
     [SerializeField]
@@ -79,7 +76,7 @@ public class PnlViewingExperience : MonoBehaviour {
             OnPlaced();
             return;
         }
-        hologramHandler.SetOnPlacementUIHelperFinished(() => { if (viewingExperienceInFocus) StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, activatedForStreaming)); });
+        hologramHandler.SetOnPlacementUIHelperFinished(() => { if (viewingExperienceInFocus) StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed)); });
         scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         ShowMessage(scaneEnviromentStr);
         tutorialState = TutorialState.MessageTapToPlace;
@@ -131,9 +128,9 @@ public class PnlViewingExperience : MonoBehaviour {
             tutorialState = TutorialState.TutorialComplete;
         }
     }
-    IEnumerator DelayStartRecordPanel(float delay, bool streamPanel) {
+    IEnumerator DelayStartRecordPanel(float delay) {
         yield return new WaitForSeconds(delay);
-        pnlRecord.EnableRecordPanel(isTeaser, data, streamPanel);
+        pnlRecord.EnableRecordPanel();
     }
     public void ShowMessage(string message, float delay = 0) {
         scanMessageRT.localScale = Vector3.zero;
@@ -159,7 +156,7 @@ public class PnlViewingExperience : MonoBehaviour {
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
-            StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, false));
+            StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
         }
     }
     public void ActivateForStreaming(string channelName, string streamID) {
@@ -175,7 +172,7 @@ public class PnlViewingExperience : MonoBehaviour {
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
-            StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed, true));
+            StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
         }
     }
     void SharedActivationFunctions() {

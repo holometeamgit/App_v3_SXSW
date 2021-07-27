@@ -32,7 +32,7 @@ namespace Beem.Utility.UnityConsole {
         /// <returns></returns>
         public static T Get(string key, T defaultValue) {
             if (!prefs.ContainsKey(key)) {
-                prefs[key] = defaultValue;
+                prefs.Add(key, defaultValue);
             }
             return prefs[key];
         }

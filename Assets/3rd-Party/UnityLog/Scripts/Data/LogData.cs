@@ -16,9 +16,13 @@ namespace Beem.Utility.UnityConsole {
 
         private static bool _isStackTraceStatus = default;
 
-        private static ILog _ILog = new PrefsLog();
+        private static string _inputKeys = default;
+
+        private static ILog _ILog = new LocalLog();
 
         private static List<UnityLog> _log = new List<UnityLog>();
+
+        public static event Action onRefreshLog = delegate { };
 
         /// <summary>
         /// Current Log
@@ -27,10 +31,12 @@ namespace Beem.Utility.UnityConsole {
             string temp = string.Empty;
             foreach (UnityLog item in _log) {
                 if (_currentLogType == item.Key) {
-                    string date = string.Format("{0:D2}:{1:D2}:{2:D2}", item.Date.Hour, item.Date.Minute, item.Date.Second);
-                    temp += "[" + date + "]" + "[" + item.Key + "] : " + item.Value + "\n";
-                    if (_isStackTraceStatus) {
-                        temp += "[StackTrace]" + " : " + item.StackTrace + "\n";
+                    if (string.IsNullOrEmpty(_inputKeys) || (item.Value.Contains(_inputKeys) || item.StackTrace.Contains(_inputKeys))) {
+                        string date = string.Format("{0:D2}:{1:D2}:{2:D2}", item.Date.Hour, item.Date.Minute, item.Date.Second);
+                        temp += "[" + date + "]" + "[" + item.Key + "] : " + item.Value + "\n";
+                        if (_isStackTraceStatus) {
+                            temp += "[StackTrace]" + " : " + item.StackTrace + "\n";
+                        }
                     }
                 }
             }
@@ -59,11 +65,20 @@ namespace Beem.Utility.UnityConsole {
         }
 
         /// <summary>
+        /// Select symbols in Logs
+        /// </summary>
+        /// <param name="inputKeys"></param>
+        public static void SetInputKeys(string inputKeys) {
+            _inputKeys = inputKeys;
+            onRefreshLog?.Invoke();
+        }
+
+        /// <summary>
         /// Set Stack Trace
         /// </summary>
         public static void SetStackTrace(bool status) {
             _isStackTraceStatus = status;
-            LogCallBacks.onRefreshLog?.Invoke();
+            onRefreshLog?.Invoke();
         }
 
         /// <summary>
@@ -74,7 +89,7 @@ namespace Beem.Utility.UnityConsole {
 
             _currentLogType = logType;
 
-            LogCallBacks.onRefreshLog?.Invoke();
+            onRefreshLog?.Invoke();
         }
 
 
@@ -94,7 +109,7 @@ namespace Beem.Utility.UnityConsole {
             SetLogNumber(logType, GetLogNumber(logType) + 1);
             SaveLogs(unityLog);
             _log.Add(unityLog);
-            LogCallBacks.onRefreshLog?.Invoke();
+            onRefreshLog?.Invoke();
         }
 
         /// <summary>
@@ -103,7 +118,7 @@ namespace Beem.Utility.UnityConsole {
         /// <param name="unityLog"></param>
         public static void AddLog(UnityLog unityLog) {
             _log.Add(unityLog);
-            LogCallBacks.onRefreshLog?.Invoke();
+            onRefreshLog?.Invoke();
         }
 
         /// <summary>
@@ -127,7 +142,7 @@ namespace Beem.Utility.UnityConsole {
                 ClearLogNumber(logType);
             }
             _log.Clear();
-            LogCallBacks.onRefreshLog?.Invoke();
+            onRefreshLog?.Invoke();
         }
 
         private static void ClearLogNumber(LogType logType) {

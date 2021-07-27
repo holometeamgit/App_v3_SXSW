@@ -32,12 +32,18 @@ public class DeepLinkRoomController : MonoBehaviour {
         }
     }
 
+    private void GetRoomLink(string id) {
+        DynamicLinksCallBacks.onCreateShortLink?.Invoke(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Room, id, serverURLAPIScriptableObject.Url);
+    }
+
     private void Awake() {
         StreamCallBacks.onGetMyRoomLink += GetMyRoom;
+        StreamCallBacks.onGetRoomLink += GetRoomLink;
     }
 
     private void OnDestroy() {
         StreamCallBacks.onGetMyRoomLink -= GetMyRoom;
+        StreamCallBacks.onGetRoomLink -= GetRoomLink;
     }
 
     private string GetMyRoomIdUrl() {
