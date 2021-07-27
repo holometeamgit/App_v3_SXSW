@@ -33,7 +33,7 @@ namespace Beem.Video {
             }
 
             if (_videoPlayer.frameCount > 0) {
-                progress.value = (float)_videoPlayer.frame / (float)_videoPlayer.frameCount;
+                progress.value = (float)NTime;
             }
         }
     }

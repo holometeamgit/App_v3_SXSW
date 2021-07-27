@@ -31,13 +31,15 @@ namespace Beem.Video {
                 return;
             }
 
-            TimeSpan timeSpan = TimeSpan.FromSeconds(_videoPlayer.frame / _videoPlayer.frameRate);
+            if (_videoPlayer.frameCount > 0) {
+                TimeSpan timeSpan = TimeSpan.FromSeconds((float)Time);
 
-            if (timerText != null) {
-                if (timeSpan.Hours > 0) {
-                    timerText.text = string.Format("{0:D2}:{1:D2}:{2:D2}", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
-                } else {
-                    timerText.text = string.Format("{0:D2}:{1:D2}", timeSpan.Minutes, timeSpan.Seconds);
+                if (timerText != null) {
+                    if (timeSpan.Hours > 0) {
+                        timerText.text = string.Format("{0:D2}:{1:D2}:{2:D2}", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
+                    } else {
+                        timerText.text = string.Format("{0:D2}:{1:D2}", timeSpan.Minutes, timeSpan.Seconds);
+                    }
                 }
             }
         }
