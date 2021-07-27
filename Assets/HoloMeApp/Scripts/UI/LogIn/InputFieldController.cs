@@ -21,7 +21,7 @@ public class InputFieldController : MonoBehaviour {
     [SerializeField]
     Animator animator;
 
-    [SerializeField] UnityEvent OnEndEditPassword;
+    public UnityEvent OnEndEditPassword;
 
     private bool showWarning;
 
@@ -128,9 +128,7 @@ public class InputFieldController : MonoBehaviour {
         return msg;
     }
 
-    //private void UpdateLayout(string str) {
-    //    inputField.ForceLabelUpdate();
-    //}
+
 
     private void OnDisable() {
         if (IsClearOnDisable) {
