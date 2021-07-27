@@ -7,15 +7,15 @@ public class ContinueBtnChecker : MonoBehaviour
 {
     [SerializeField]
     [Tooltip("This inputFields must be filled for enable btn")]
-    List <InputFieldController> _filledInputFieldControllers;
+    private List <InputFieldController> _filledInputFieldControllers;
 
     [SerializeField]
     [Tooltip("This toggles must be is On for enable btn")]
-    List<Toggle> _isOnToggles;
+    private List<Toggle> _isOnToggles;
 
     [SerializeField]
     [Tooltip("This btn will be interactable if all requirements are met ")]
-    Button _button;
+    private Button _button;
 
     private void CheckRequirements(bool value) {
         CheckRequirements();

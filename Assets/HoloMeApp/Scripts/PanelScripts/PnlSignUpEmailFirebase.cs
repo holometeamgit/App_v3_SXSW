@@ -6,21 +6,21 @@ using UnityEngine.UI;
 
 public class PnlSignUpEmailFirebase : MonoBehaviour {
     [SerializeField]
-    InputFieldController inputFieldEmail;
+    private InputFieldController inputFieldEmail;
     [SerializeField]
-    InputFieldController inputFieldPassword;
+    private InputFieldController inputFieldPassword;
     [SerializeField]
-    InputFieldController inputFieldConfirmPassword;
+    private InputFieldController inputFieldConfirmPassword;
     [SerializeField]
-    Switcher switcherToVerification;
+    private Switcher switcherToVerification;
     [SerializeField]
-    GameObject LogInLoadingBackground;
+    private GameObject LogInLoadingBackground;
     [SerializeField]
-    bool isNeedConfirmationPassword = true;
+    private bool isNeedConfirmationPassword = true;
     [SerializeField]
-    Toggle isPolicyConfirmed;
+    private Toggle isPolicyConfirmed;
     [SerializeField]
-    Animator animator;
+    private Animator animator;
 
     private const float COOLDOWN = 0.5f;
     private float nextTimeCanClick = 0;
