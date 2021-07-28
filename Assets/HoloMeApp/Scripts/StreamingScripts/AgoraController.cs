@@ -355,7 +355,7 @@ public class AgoraController : MonoBehaviour {
             videoSurfaceQuadRef.SetEnable(true);
             videoSurfaceQuadRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
             videoSurfaceQuadRef.SetGameFps(frameRate);
-        } else {
+        } else if (IsChannelCreator) {
             OnUserViewerJoined?.Invoke();
         }
     }
@@ -457,7 +457,7 @@ public class AgoraController : MonoBehaviour {
 
     private void OnStreamMessageRecieved(uint userId, int streamId, byte[] data, int length) {
         string result = Encoding.ASCII.GetString(data);
-        HelperFunctions.DevLog($"Message recieved {result}");
+        HelperFunctions.DevLog($"Agora Message Recieved {result}");
         OnMessageRecieved?.Invoke(result);
     }
 

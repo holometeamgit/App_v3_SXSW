@@ -24,10 +24,14 @@ namespace Beem.Video {
         [SerializeField]
         private GameObject playerObjects;
 
+        private bool isPlaying = default;
+
         private void OnEnable() {
             VideoPlayerCallBacks.onPlay += OnPlay;
             VideoPlayerCallBacks.onPause += OnPause;
+            VideoPlayerCallBacks.onRewindStarted += OnRewindStarted;
             VideoPlayerCallBacks.onRewind += OnRewind;
+            VideoPlayerCallBacks.onRewindFinished += OnRewindFinished;
             VideoPlayerCallBacks.onSetVideoPlayer += OnSetVideoPlayer;
             foreach (VideoPlayer item in FindObjectsOfType<VideoPlayer>()) {
                 if (item.gameObject.name == "VideoQuad") {
@@ -40,7 +44,9 @@ namespace Beem.Video {
         private void OnDisable() {
             VideoPlayerCallBacks.onPlay -= OnPlay;
             VideoPlayerCallBacks.onPause -= OnPause;
+            VideoPlayerCallBacks.onRewindStarted -= OnRewindStarted;
             VideoPlayerCallBacks.onRewind -= OnRewind;
+            VideoPlayerCallBacks.onRewindFinished -= OnRewindFinished;
             VideoPlayerCallBacks.onSetVideoPlayer -= OnSetVideoPlayer;
             OnStop();
         }
@@ -70,7 +76,7 @@ namespace Beem.Video {
             playerObjects.SetActive(true);
             _videoPlayerBtnViews.Refresh(videoPlayer);
             foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                view.UpdateVideo();
+                view.PlayAsync();
             }
         }
 
@@ -84,13 +90,25 @@ namespace Beem.Video {
             }
         }
 
+        private void OnRewindStarted() {
+            if (_videoPlayer != null) {
+                isPlaying = _videoPlayer.isPlaying;
+            }
+            OnPause();
+        }
+
         private void OnRewind(float pct) {
             if (_videoPlayer != null) {
-                var frame = _videoPlayer.frameCount * pct;
-                _videoPlayer.frame = (long)frame;
-                foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                    view.Refresh();
-                }
+                if (!_videoPlayer.canSetTime) return;
+                if (!_videoPlayer.isPrepared) return;
+                _videoPlayer.time = pct * (_videoPlayer.frameCount / _videoPlayer.frameRate);
+            }
+        }
+
+        private void OnRewindFinished(float pct) {
+            OnRewind(pct);
+            if (isPlaying) {
+                OnPlay();
             }
         }
 

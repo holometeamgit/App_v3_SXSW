@@ -35,12 +35,10 @@ namespace Beem.Video {
             if (_videoPlayer == null || !_videoPlayer.isPrepared) {
                 return;
             }
-
             if (_videoPlayer.frameCount > 0) {
-                float pct = (float)_videoPlayer.frame / (float)_videoPlayer.frameCount;
-                progress.fillAmount = pct;
+                progress.fillAmount = (float)NTime;
                 Vector3 pos = handle.localPosition;
-                pos.x = (progress.rectTransform.rect.xMax - progress.rectTransform.rect.xMin) * pct + progress.rectTransform.rect.xMin;
+                pos.x = (progress.rectTransform.rect.xMax - progress.rectTransform.rect.xMin) * (float)NTime + progress.rectTransform.rect.xMin;
                 handle.localPosition = pos;
             }
         }

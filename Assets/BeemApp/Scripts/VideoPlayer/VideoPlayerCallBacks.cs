@@ -11,8 +11,9 @@ namespace Beem.Video {
     public class VideoPlayerCallBacks {
         public static Action<VideoPlayer> onSetVideoPlayer;
         public static Action onPlay;
-        public static Action<string> onChangedUrl;
+        public static Action onRewindStarted;
         public static Action<float> onRewind;
+        public static Action<float> onRewindFinished;
         public static Action onPause;
     }
 }

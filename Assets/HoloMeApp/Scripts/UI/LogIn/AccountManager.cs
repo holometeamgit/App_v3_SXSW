@@ -36,6 +36,13 @@ public class AccountManager : MonoBehaviour {
         SaveLogInType(LogInType.None);
     }
 
+    /// <summary>
+    /// check that user is Authorized
+    /// </summary>
+    public bool IsAuthorized() {
+        return GetLogInType() != LogInType.None;
+    }
+
 
     #endregion
 

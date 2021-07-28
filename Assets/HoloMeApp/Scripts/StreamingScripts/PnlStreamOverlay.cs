@@ -99,14 +99,14 @@ public class PnlStreamOverlay : MonoBehaviour {
     private bool _muteAudio = false;
     private bool _hideVideo = false;
 
-    const string MessageDisableAudio = "DisableAudio";
-    const string MessageEnableAudio = "EnableAudio";
+    const string MessageDisableTwoWayAudio = "DisableTwoWayAudio";
+    const string MessageEnableTwoWayAudio = "EnableTwoWayAudio";
     const string MessageStreamerLeft = "StreamerLeft";
     const string MessageChannelCreatorUID = "StreamerUID:";
     const string MessageBroadcasterAudioPaused = "BroadcasterAudioPaused";
     const string MessageBroadcasterVideoPaused = "BroadcasterVideoPaused";
-    const string MessageBroadcasterAudioAndVideoPaused = "BroadvasterAudioAndVideoPaused";
-    const string MessageBroadcasterUnpaused = "BroadvasterUnpausedVideoAndAudio";
+    const string MessageBroadcasterAudioAndVideoPaused = "BroadcasterAudioAndVideoPaused";
+    const string MessageBroadcasterUnpaused = "BroadcasterUnpausedVideoAndAudio";
 
     void Init() {
         if (initialised)
@@ -402,7 +402,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void SendPushToTalkStatusToViewers() {
-        agoraController.SendAgoraMessage(isPushToTalkActive ? MessageEnableAudio : MessageDisableAudio);
+        agoraController.SendAgoraMessage(isPushToTalkActive ? MessageEnableTwoWayAudio : MessageDisableTwoWayAudio);
     }
 
     private void SendChannelCreatorUIDToViewers() {
@@ -413,18 +413,33 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.SendAgoraMessage(MessageStreamerLeft);
     }
 
+    private bool CheckIncorrectMessageForStreamer(string message) {
+        if (isStreamer) {
+            HelperFunctions.DevLogError($"Streamer received a message intended for viewers {message}");
+        }
+        return isStreamer;
+    }
+
     public void StreamMessageResponse(string message) {
 
         HelperFunctions.DevLog($"Stream Message Received ({message})");
 
         switch (message) {
-            case MessageEnableAudio:
+            case MessageEnableTwoWayAudio:
+                if (CheckIncorrectMessageForStreamer(message)) {
+                    return;
+                }
+
                 ToggleLocalAudio(true);
                 btnPushToTalk.SetActive(true);
                 AnimatedCentreTextMessage("Hold the Talk button to speak to the broadcaster");
                 AnimatedFadeOutMessage(3);
                 return;
-            case MessageDisableAudio:
+            case MessageDisableTwoWayAudio:
+                if (CheckIncorrectMessageForStreamer(message)) {
+                    return;
+                }
+
                 ToggleLocalAudio(true);
                 btnPushToTalk.SetActive(false);
                 return;
