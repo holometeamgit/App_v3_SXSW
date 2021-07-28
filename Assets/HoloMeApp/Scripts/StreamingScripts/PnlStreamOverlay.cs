@@ -99,14 +99,17 @@ public class PnlStreamOverlay : MonoBehaviour {
     private bool _muteAudio = false;
     private bool _hideVideo = false;
 
-    const string MessageDisableTwoWayAudio = "DisableTwoWayAudio";
-    const string MessageEnableTwoWayAudio = "EnableTwoWayAudio";
-    const string MessageStreamerLeft = "StreamerLeft";
-    const string MessageChannelCreatorUID = "StreamerUID:";
-    const string MessageBroadcasterAudioPaused = "BroadcasterAudioPaused";
-    const string MessageBroadcasterVideoPaused = "BroadcasterVideoPaused";
-    const string MessageBroadcasterAudioAndVideoPaused = "BroadcasterAudioAndVideoPaused";
-    const string MessageBroadcasterUnpaused = "BroadcasterUnpausedVideoAndAudio";
+    private string LastPauseStatusMessageReceived; //Intended for viewers use only it's record state of streamers pause situation and to prevent double calls
+
+    private const string ToViewerTag = "ToViewer"; //Indicates message is for viewers only
+    private const string MessageToViewerDisableTwoWayAudio = ToViewerTag + "DisableTwoWayAudio";
+    private const string MessageToViewerEnableTwoWayAudio = ToViewerTag + "EnableTwoWayAudio";
+    private const string MessageToViewerStreamerLeft = ToViewerTag + "StreamerLeft";
+    private const string MessageToViewerChannelCreatorUID = ToViewerTag + "StreamerUID:";
+    private const string MessageToViewerBroadcasterAudioPaused = ToViewerTag + "BroadcasterAudioPaused";
+    private const string MessageToViewerBroadcasterVideoPaused = ToViewerTag + "BroadcasterVideoPaused";
+    private const string MessageToViewerBroadcasterAudioAndVideoPaused = ToViewerTag + "BroadcasterAudioAndVideoPaused";
+    private const string MessageToViewerBroadcasterUnpaused = ToViewerTag + "BroadcasterUnpausedVideoAndAudio";
 
     void Init() {
         if (initialised)
@@ -257,6 +260,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
 
         Init();
+        LastPauseStatusMessageReceived = string.Empty;
         agoraController.IsChannelCreator = false;
         agoraController.ChannelName = channelName;
         isStreamer = false;
@@ -391,30 +395,30 @@ public class PnlStreamOverlay : MonoBehaviour {
             return;
 
         if (_hideVideo && _muteAudio) {
-            agoraController.SendAgoraMessage(MessageBroadcasterAudioAndVideoPaused);
+            agoraController.SendAgoraMessage(MessageToViewerBroadcasterAudioAndVideoPaused);
         } else if (_hideVideo) {
-            agoraController.SendAgoraMessage(MessageBroadcasterVideoPaused);
+            agoraController.SendAgoraMessage(MessageToViewerBroadcasterVideoPaused);
         } else if (_muteAudio) {
-            agoraController.SendAgoraMessage(MessageBroadcasterAudioPaused);
+            agoraController.SendAgoraMessage(MessageToViewerBroadcasterAudioPaused);
         } else {
-            agoraController.SendAgoraMessage(MessageBroadcasterUnpaused);
+            agoraController.SendAgoraMessage(MessageToViewerBroadcasterUnpaused);
         }
     }
 
     private void SendPushToTalkStatusToViewers() {
-        agoraController.SendAgoraMessage(isPushToTalkActive ? MessageEnableTwoWayAudio : MessageDisableTwoWayAudio);
+        agoraController.SendAgoraMessage(isPushToTalkActive ? MessageToViewerEnableTwoWayAudio : MessageToViewerDisableTwoWayAudio);
     }
 
     private void SendChannelCreatorUIDToViewers() {
-        agoraController.SendAgoraMessage(MessageChannelCreatorUID + agoraController.ChannelCreatorUID);
+        agoraController.SendAgoraMessage(MessageToViewerChannelCreatorUID + agoraController.ChannelCreatorUID);
     }
 
     private void SendStreamLeaveStatusToViewers() {
-        agoraController.SendAgoraMessage(MessageStreamerLeft);
+        agoraController.SendAgoraMessage(MessageToViewerStreamerLeft);
     }
 
     private bool CheckIncorrectMessageForStreamer(string message) {
-        if (isStreamer) {
+        if (isStreamer && message.Contains(ToViewerTag)) {
             HelperFunctions.DevLogError($"Streamer received a message intended for viewers {message}");
         }
         return isStreamer;
@@ -424,53 +428,66 @@ public class PnlStreamOverlay : MonoBehaviour {
 
         HelperFunctions.DevLog($"Stream Message Received ({message})");
 
-        switch (message) {
-            case MessageEnableTwoWayAudio:
-                if (CheckIncorrectMessageForStreamer(message)) {
-                    return;
-                }
+        if (CheckIncorrectMessageForStreamer(message)) {
+            return;
+        }
 
+        switch (message) {
+            case MessageToViewerEnableTwoWayAudio:
                 ToggleLocalAudio(true);
                 btnPushToTalk.SetActive(true);
                 AnimatedCentreTextMessage("Hold the Talk button to speak to the broadcaster");
                 AnimatedFadeOutMessage(3);
                 return;
-            case MessageDisableTwoWayAudio:
-                if (CheckIncorrectMessageForStreamer(message)) {
-                    return;
-                }
-
+            case MessageToViewerDisableTwoWayAudio:
                 ToggleLocalAudio(true);
                 btnPushToTalk.SetActive(false);
                 return;
-            case MessageStreamerLeft:
+            case MessageToViewerStreamerLeft:
                 agoraController.OnStreamerLeft?.Invoke();
                 return;
-            case MessageBroadcasterAudioPaused:
+            case MessageToViewerBroadcasterAudioPaused:
+                if (LastPauseStatusMessageReceived == message) {//Prevent functions being called twice if receiving messages again (when a another user joins)
+                    return;
+                }
                 AnimatedCentreTextMessage("Audio has been turned off by the broadcaster");
                 agoraController.ToggleLiveStreamQuad(false);
+                LastPauseStatusMessageReceived = message;
                 return;
-            case MessageBroadcasterVideoPaused:
+            case MessageToViewerBroadcasterVideoPaused:
+                if (LastPauseStatusMessageReceived == message) {//Prevent functions being called twice if receiving messages again (when a another user joins)
+                    return;
+                }
                 AnimatedCentreTextMessage("Video has been turned off by the broadcaster");
                 agoraController.ToggleLiveStreamQuad(true);
+                LastPauseStatusMessageReceived = message;
                 return;
-            case MessageBroadcasterAudioAndVideoPaused:
+            case MessageToViewerBroadcasterAudioAndVideoPaused:
+                if (LastPauseStatusMessageReceived == message) {//Prevent functions being called twice if receiving messages again (when a another user joins)
+                    return;
+                }
                 AnimatedCentreTextMessage("Video and Audio has been turned off by the broadcaster");
                 agoraController.ToggleLiveStreamQuad(true);
+                LastPauseStatusMessageReceived = message;
                 return;
-            case MessageBroadcasterUnpaused:
+            case MessageToViewerBroadcasterUnpaused:
+                if (LastPauseStatusMessageReceived == message) {//Prevent functions being called twice if receiving messages again (when a another user joins)
+                    return;
+                }
                 AnimatedFadeOutMessage();
                 agoraController.ToggleLiveStreamQuad(false);
+                LastPauseStatusMessageReceived = message;
                 return;
         }
 
-        if (message.Contains(MessageChannelCreatorUID)) {
+        if (message.Contains(MessageToViewerChannelCreatorUID)) {
 
             uint result;
-            if (!uint.TryParse(message.Substring(MessageChannelCreatorUID.Length), out result)) {
+            if (!uint.TryParse(message.Substring(MessageToViewerChannelCreatorUID.Length), out result)) {
                 HelperFunctions.DevLogError("Channel creator UID parse failed");
             }
             agoraController.ChannelCreatorUID = result;
+            agoraController.ActivateViewerVideoSufaceFeatures();
         }
     }
 
