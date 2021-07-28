@@ -174,7 +174,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -0.000045776367, y: 103.91634}
+  m_AnchoredPosition: {x: -0.000045776367, y: 103.916016}
   m_SizeDelta: {x: 750.19995, y: 126.40402}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &378393636507904632
@@ -607,7 +607,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0.000015258789, y: 55.287388}
+  m_AnchoredPosition: {x: 0.000015258789, y: 55.287598}
   m_SizeDelta: {x: 630.19995, y: 29.146133}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4185343473003163553
@@ -736,6 +736,7 @@ GameObject:
   - component: {fileID: 4657025938435069232}
   - component: {fileID: 3181961947608742104}
   - component: {fileID: 1027484743876650404}
+  - component: {fileID: 3495133006690795256}
   m_Layer: 5
   m_Name: PnlRecord
   m_TagString: Untagged
@@ -806,17 +807,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 3495133006690795256}
+        m_TargetAssemblyTypeName: Beem.Video.VideoPlayerPauseAction, Assembly-CSharp
+        m_MethodName: OnClick
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
   OnSnapshotStarted:
     m_PersistentCalls:
@@ -860,6 +861,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 3495133006690795256}
+        m_TargetAssemblyTypeName: Beem.Video.VideoPlayerPauseAction, Assembly-CSharp
+        m_MethodName: OnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   uiThumbnailsController: {fileID: 0}
   watermarkCanvasObject: {fileID: 0}
   txtWaterMarkText: {fileID: 0}
@@ -877,6 +890,18 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &3495133006690795256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4371088341453880974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51ad4754cf22b1a43b9a2286374657b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8488015018597834120
 GameObject:
   m_ObjectHideFlags: 0
