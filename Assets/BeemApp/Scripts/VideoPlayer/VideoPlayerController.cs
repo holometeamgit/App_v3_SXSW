@@ -76,7 +76,7 @@ namespace Beem.Video {
             playerObjects.SetActive(true);
             _videoPlayerBtnViews.Refresh(videoPlayer);
             foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                view.Play();
+                view.PlayAsync();
             }
         }
 
