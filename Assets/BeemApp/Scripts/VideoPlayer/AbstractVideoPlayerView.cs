@@ -41,7 +41,7 @@ namespace Beem.Video {
         /// <param name="videoPlayer"></param>
         public abstract void Refresh();
 
-        public async void Play() {
+        public async void PlayAsync() {
             cancelTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancelTokenSource.Token;
             try {
