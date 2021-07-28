@@ -26,6 +26,14 @@ namespace Beem.Video {
             timerText.text = string.Empty;
         }
 
+        public override void Init(VideoPlayer videoPlayer) {
+            base.Init(videoPlayer);
+            if (timerText == null) {
+                timerText = GetComponent<Text>();
+            }
+            timerText.text = string.Empty;
+        }
+
         public override void Refresh() {
             if (_videoPlayer == null || !_videoPlayer.isPrepared) {
                 return;
