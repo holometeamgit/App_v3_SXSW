@@ -19,7 +19,7 @@ public class PnlProfile : MonoBehaviour {
     [SerializeField] ExternalLinkRedirector externalLinkRedirector;
 
     [SerializeField]
-    Toggle toggleEmailReceive;
+    private Toggle toggleEmailReceive;
 
     public void ChooseUsername() {
         if (LocalDataVerification()) {
