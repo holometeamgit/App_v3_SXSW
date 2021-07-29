@@ -11,7 +11,7 @@ using UnityEngine.Video;
 /// </summary>
 public class VideoPlayerSearcher : MonoBehaviour {
 
-    private void OnEnable() {
+    private void Start() {
         VideoPlayer videoPlayer = GetComponent<VideoPlayer>();
         AudioSource audioSourcer = GetComponent<AudioSource>();
         VideoPlayerCallBacks.onSetVideoPlayer?.Invoke(videoPlayer);

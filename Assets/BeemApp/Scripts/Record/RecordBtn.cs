@@ -35,20 +35,21 @@ namespace Beem.Record {
 
         public void OnPointerDown(PointerEventData eventData) {
             pressed = true;
-            Record();
+            RecordAsync();
         }
 
         public void OnPointerUp(PointerEventData eventData) {
             pressed = false;
         }
 
-        public async void Record() {
+        public async void RecordAsync() {
             cancelTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancelTokenSource.Token;
             try {
                 VideoRecordCallbacks.onRecordStarted?.Invoke();
                 Timer = 0;
                 float startTime = Time.time;
-                while (Timer < recordingTime.y && pressed) {
+                while (Timer < recordingTime.y && pressed && !cancellationToken.IsCancellationRequested) {
                     Timer = Time.time - startTime;
                     await Task.Yield();
                 }
