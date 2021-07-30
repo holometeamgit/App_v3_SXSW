@@ -1,6 +1,9 @@
-﻿using System.Threading;
+﻿using Beem.Extenject.UI;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
+using Zenject;
 
 namespace Beem.Record.SnapShot {
     /// <summary>
@@ -8,23 +11,24 @@ namespace Beem.Record.SnapShot {
     /// </summary>
     public class SnapShotController : MonoBehaviour {
 
+        [SerializeField]
+        private WindowSignal _windowSignals;
+
+        private WindowController _windowController;
+
         private CancellationTokenSource cancelTokenSource;
 
-        private void OnEnable() {
-            SnapShotCallBacks.onSnapshotStarted += CreateSnapShot;
+        [Inject]
+        public void Construct(WindowController windowController) {
+            _windowController = windowController;
         }
 
-        private void OnDisable() {
-            SnapShotCallBacks.onSnapshotStarted -= CreateSnapShot;
-        }
-
-        private async void CreateSnapShot() {
+        public async void CreateSnapShotAsync() {
             cancelTokenSource = new CancellationTokenSource();
             try {
                 Texture2D screenshot = ScreenCapture.CaptureScreenshotAsTexture(1);
                 await Task.Yield();
-                SnapShotCallBacks.onPostRecord?.Invoke();
-                SnapShotCallBacks.onSnapshotEnded?.Invoke(screenshot);
+                _windowController.OnCalledSignal(_windowSignals, screenshot);
             } finally {
                 if (cancelTokenSource != null) {
                     cancelTokenSource.Dispose();

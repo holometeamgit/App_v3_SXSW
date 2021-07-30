@@ -1,16 +1,31 @@
 ﻿using System.IO;
+using Beem.Extenject.UI;
 using Beem.Record.SnapShot;
 using Beem.Video;
 using NatCorder;
 using NatCorder.Clocks;
 using NatCorder.Inputs;
 using UnityEngine;
+using UnityEngine.Events;
+using Zenject;
 
 namespace Beem.Record.Video {
+
     /// <summary>
     /// Video Record Controller
     /// </summary>
     public class VideoRecordController : MonoBehaviour {
+
+        [SerializeField]
+        private WindowSignal _windowSignals;
+
+        [SerializeField]
+        private UnityEvent onRecordComplete;
+
+        [SerializeField]
+        private UnityEvent onSnapshotStarted;
+
+        private WindowController _windowController;
 
         private AudioSource _audioSource;
         private MP4Recorder _videoRecorder;
@@ -35,6 +50,11 @@ namespace Beem.Record.Video {
 
         private void Start() {
             CorrectResolutionAspect();
+        }
+
+        [Inject]
+        public void Construct(WindowController windowController) {
+            _windowController = windowController;
         }
 
         private void OnEnable() {
@@ -103,14 +123,13 @@ namespace Beem.Record.Video {
         private void OnRecordComplete(string outputPath) {
             if (_recordLengthFailed) {
                 File.Delete(outputPath);
-                SnapShotCallBacks.onSnapshotStarted?.Invoke();
+                onSnapshotStarted?.Invoke();
             } else {
                 _lastRecordingPath = outputPath;
-                VideoRecordCallbacks.onPostRecord?.Invoke();
-                VideoRecordCallbacks.onRecordFinished?.Invoke(_lastRecordingPath);
+                _windowController.OnCalledSignal(_windowSignals, _lastRecordingPath);
                 _recordLengthFailed = false;
             }
-            VideoPlayerCallBacks.onPause?.Invoke();
+            onRecordComplete?.Invoke();
         }
 
     }

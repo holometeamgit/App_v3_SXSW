@@ -3,23 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Beem.Extenject.UI;
 
 namespace Beem.Record.SnapShot {
 
     /// <summary>
     /// Share snapshot
     /// </summary>
-    public class ShareSnapShotBtn : MonoBehaviour, IPointerDownHandler {
+    public class ShareSnapShotBtn : MonoBehaviour, IPointerDownHandler, IShow {
 
         private Texture2D _snapshot;
-
-        private void OnEnable() {
-            SnapShotCallBacks.onSnapshotEnded += OnRecordComplete;
-        }
-
-        private void OnDisable() {
-            SnapShotCallBacks.onSnapshotEnded -= OnRecordComplete;
-        }
 
         private void OnRecordComplete(Texture2D snapshot) {
             _snapshot = snapshot;
@@ -30,6 +23,12 @@ namespace Beem.Record.SnapShot {
                 new NativeShare().AddFile(_snapshot).Share();
             } else {
                 Debug.LogError("Screenshot was null");
+            }
+        }
+
+        public void Show<T>(T parameter) {
+            if (parameter is Texture2D) {
+                OnRecordComplete(parameter as Texture2D);
             }
         }
     }

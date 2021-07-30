@@ -1,4 +1,4 @@
-﻿using Beem.Record.SnapShot;
+﻿using Beem.Extenject.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,21 +8,23 @@ namespace Beem.Record.SnapShot {
     /// </summary>
 
     [RequireComponent(typeof(RawImage))]
-    public class SnapShotView : MonoBehaviour {
+    public class SnapShotView : MonoBehaviour, IShow {
 
         private RawImage _rawImage;
 
         private void OnEnable() {
             _rawImage = GetComponent<RawImage>();
-            SnapShotCallBacks.onSnapshotEnded += OnRecordComplete;
-        }
-
-        private void OnDisable() {
-            SnapShotCallBacks.onSnapshotEnded -= OnRecordComplete;
         }
 
         private void OnRecordComplete(Texture2D screenshot) {
             _rawImage.texture = screenshot;
+        }
+
+        public void Show<T>(T parameter) {
+            Debug.Log(parameter.GetType());
+            if (parameter is Texture2D) {
+                OnRecordComplete(parameter as Texture2D);
+            }
         }
     }
 }

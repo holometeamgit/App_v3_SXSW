@@ -1,21 +1,14 @@
-﻿using UnityEngine;
+﻿using Beem.Extenject.UI;
+using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Video;
+
 namespace Beem.Record.Video {
     /// <summary>
     /// Share video record
     /// </summary>
-    public class ShareVideoRecordBtn : MonoBehaviour, IPointerDownHandler {
+    public class ShareVideoRecordBtn : MonoBehaviour, IPointerDownHandler, IShow {
 
         private string _outpath;
-
-        private void OnEnable() {
-            VideoRecordCallbacks.onRecordFinished += OnRecordComplete;
-        }
-
-        private void OnDisable() {
-            VideoRecordCallbacks.onRecordFinished -= OnRecordComplete;
-        }
 
         private void OnRecordComplete(string outpath) {
             _outpath = outpath;
@@ -26,6 +19,12 @@ namespace Beem.Record.Video {
                 new NativeShare().AddFile(_outpath).Share();
             } else {
                 Debug.LogError("Record path was empty");
+            }
+        }
+
+        public void Show<T>(T parameter) {
+            if (parameter is string) {
+                OnRecordComplete(parameter as string);
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Beem.Extenject.UI {
@@ -53,8 +54,8 @@ namespace Beem.Extenject.UI {
                 tempWindow.Element.SetActive(true);
                 _previousWindowElement = _currentWindowElement;
                 _currentWindowElement = tempWindow;
-                _escapeWindows = _currentWindowElement.Element.GetComponents<IEscape>();
-                _showWindows = _currentWindowElement.Element.GetComponents<IShow>();
+                _escapeWindows = _currentWindowElement.Element.GetComponentsInChildren<IEscape>();
+                _showWindows = _currentWindowElement.Element.GetComponentsInChildren<IShow>();
                 if (_showWindows != null && _showWindows.Length > 0) {
                     _showWindows.ToList().ForEach(x => x.Show(parameter));
                 }
@@ -70,7 +71,7 @@ namespace Beem.Extenject.UI {
                 tempWindow.Element.SetActive(true);
                 _previousWindowElement = _currentWindowElement;
                 _currentWindowElement = tempWindow;
-                _escapeWindows = _currentWindowElement.Element.GetComponents<IEscape>();
+                _escapeWindows = _currentWindowElement.Element.GetComponentsInChildren<IEscape>();
             }
         }
 
@@ -82,7 +83,7 @@ namespace Beem.Extenject.UI {
                 WindowElement tempWindow = GetWindowInPool(windowObject);
                 tempWindow.Element.SetActive(false);
                 _currentWindowElement = _previousWindowElement;
-                _escapeWindows = _currentWindowElement.Element.GetComponents<IEscape>();
+                _escapeWindows = _currentWindowElement.Element.GetComponentsInChildren<IEscape>();
             }
         }
 
