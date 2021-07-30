@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Beem.Extenject.Record.SnapShot {
+namespace Beem.Extenject.Record {
     /// <summary>
     /// SnapShot View
     /// </summary>

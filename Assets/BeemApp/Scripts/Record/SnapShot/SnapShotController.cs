@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
 
-namespace Beem.Extenject.Record.SnapShot {
+namespace Beem.Extenject.Record {
     /// <summary>
     /// Snapshot controller
     /// </summary>
@@ -25,6 +25,9 @@ namespace Beem.Extenject.Record.SnapShot {
             _windowController = windowController;
         }
 
+        /// <summary>
+        /// Create SnapShot
+        /// </summary>
         public async void CreateSnapShotAsync() {
             cancelTokenSource = new CancellationTokenSource();
             try {
@@ -44,9 +47,6 @@ namespace Beem.Extenject.Record.SnapShot {
                 cancelTokenSource.Cancel();
                 cancelTokenSource = null;
             }
-        }
-
-        public class Factory : PlaceholderFactory<WindowSignal, SnapShotController> {
         }
     }
 }

@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 using Beem.Extenject.UI;
 
-namespace Beem.Extenject.Record.SnapShot {
+namespace Beem.Extenject.Record {
 
     /// <summary>
     /// Share snapshot

@@ -1,15 +1,11 @@
 ﻿using System.IO;
 using Beem.Extenject.Hologram;
-using Beem.Extenject.Record.SnapShot;
-using Beem.Extenject.Record.Video;
 using Beem.Extenject.UI;
-using Beem.Extenject.Video;
+using Beem.Video;
 using NatCorder;
 using NatCorder.Clocks;
 using NatCorder.Inputs;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.Video;
 using Zenject;
 
 namespace Beem.Extenject.Record {
@@ -22,8 +18,6 @@ namespace Beem.Extenject.Record {
         private WindowSignal _windowSignals;
         private WindowController _windowController;
         private SnapShotController _snapShotController;
-
-        private SignalBus _signalBus;
 
         private AudioSource _audioSource;
         private MP4Recorder _videoRecorder;
@@ -48,22 +42,21 @@ namespace Beem.Extenject.Record {
         }
 
         [Inject]
-        public void Construct(SignalBus signalBus, WindowController windowController, SnapShotController snapShotController) {
+        public void Construct(WindowController windowController, SnapShotController snapShotController) {
             _windowController = windowController;
             _snapShotController = snapShotController;
-            _signalBus = signalBus;
         }
 
         public void Initialize() {
-            HologramCallbacks.onCreateHologram += OnSetVideo;
+            HologramCallbacks.onCreateHologram += OnCreateHologram;
         }
 
         public void LateDispose() {
-            HologramCallbacks.onCreateHologram -= OnSetVideo;
+            HologramCallbacks.onCreateHologram -= OnCreateHologram;
         }
 
-        public void OnSetVideo(GameObject audio) {
-            _audioSource = audio.GetComponentInChildren<AudioSource>();
+        public void OnCreateHologram(GameObject hologram) {
+            _audioSource = hologram.GetComponentInChildren<AudioSource>();
         }
 
         private void CorrectResolutionAspect() {
@@ -129,7 +122,7 @@ namespace Beem.Extenject.Record {
                 _windowController.OnCalledSignal(_windowSignals, _lastRecordingPath);
                 _recordLengthFailed = false;
             }
-            _signalBus.Fire(new RecordSignal());
+            VideoPlayerCallBacks.onPause?.Invoke();
         }
     }
 }

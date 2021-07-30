@@ -80,7 +80,7 @@ namespace Beem.Video {
             }
         }
 
-        public void OnPause() {
+        private void OnPause() {
             if (_videoPlayer != null) {
                 _videoPlayer.Pause();
                 _videoPlayerBtnViews.Refresh(_videoPlayer);

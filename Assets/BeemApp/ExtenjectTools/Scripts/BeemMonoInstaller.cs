@@ -11,7 +11,6 @@ namespace Beem.Extenject {
         /// </summary>
 
         public override void InstallBindings() {
-            Debug.Log("BeemMonoInstaller");
             SignalBusInstaller.Install(Container);
         }
     }

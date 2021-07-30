@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Beem.Extenject.Record.Video {
+namespace Beem.Extenject.Record {
 
     /// <summary>
     /// Video Progress view

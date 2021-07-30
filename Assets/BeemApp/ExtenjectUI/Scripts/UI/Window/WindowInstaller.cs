@@ -7,7 +7,6 @@ namespace Beem.Extenject.UI {
     /// </summary>
     public class WindowInstaller : MonoInstaller {
         public override void InstallBindings() {
-            Debug.Log("WindowInstaller");
             Container.DeclareSignal<WindowSignal>();
 
             Container.Bind<Transform>().FromInstance(transform);

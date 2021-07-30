@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Beem.Extenject.Record.Video {
+namespace Beem.Extenject.Record {
     /// <summary>
     /// Share video record
     /// </summary>

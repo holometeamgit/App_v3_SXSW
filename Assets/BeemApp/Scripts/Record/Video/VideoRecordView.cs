@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Video;
 
-namespace Beem.Extenject.Record.Video {
+namespace Beem.Extenject.Record {
 
     /// <summary>
     /// VideoRecord View
