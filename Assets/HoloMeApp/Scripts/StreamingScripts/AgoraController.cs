@@ -35,7 +35,9 @@ public class AgoraController : MonoBehaviour {
     public bool IsChannelCreator { get; set; }
     public bool IsRoom { get; set; }
     public bool VideoIsReady { get; private set; }
-    public uint ChannelCreatorUID { get; set; }
+    public uint? ChannelCreatorUID { get; set; } = null;
+
+    private bool videoQuadWasSetup; //Required to stop new calls from reconfiguring video surface quad
 
     int streamID = -1;
     int agoraMessageStreamID;
@@ -280,7 +282,9 @@ public class AgoraController : MonoBehaviour {
         } else {
             liveStreamQuad.SetActive(false);
             ResetVideoQuadSurface();
+            videoQuadWasSetup = false;
         }
+        ChannelCreatorUID = null;
 
         iRtcEngine.LeaveChannel();
         agoraRTMChatController.LeaveChannel();
@@ -336,28 +340,37 @@ public class AgoraController : MonoBehaviour {
 
     private void OnUserJoined(uint uid, int elapsed) {
         HelperFunctions.DevLog("onUserJoined: uid = " + uid + " elapsed = " + elapsed);
-
-        if (!IsChannelCreator && !liveStreamQuad.activeSelf) { //Live stream quad check ensures this isn't called after it's been activated more than once as other users join
-
-            liveStreamQuad.SetActive(true);
-            ResetVideoQuadSurface();
-
-            if (defaultLiveStreamQuadScale == Vector3.zero) {
-                defaultLiveStreamQuadScale = liveStreamQuad.transform.localScale;
-            }
-
-            videoSurfaceQuadRef = liveStreamQuad.GetComponent<VideoSurface>();
-            if (!videoSurfaceQuadRef) {
-                videoSurfaceQuadRef = liveStreamQuad.AddComponent<VideoSurface>();
-            }
-
-            videoSurfaceQuadRef.SetForUser(uid);
-            videoSurfaceQuadRef.SetEnable(true);
-            videoSurfaceQuadRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
-            videoSurfaceQuadRef.SetGameFps(frameRate);
-        } else if (IsChannelCreator) {
+        if (IsChannelCreator) {
             OnUserViewerJoined?.Invoke();
         }
+    }
+
+    /// <summary>
+    /// Adds and activates the video surface component onto the quad
+    /// </summary>
+    public void ActivateViewerVideoSufaceFeatures() {
+        if (videoQuadWasSetup)
+            return;
+
+        //print("AGORA MESSAGE QUAD SET");
+
+        videoQuadWasSetup = true;
+        ResetVideoQuadSurface();
+
+        if (defaultLiveStreamQuadScale == Vector3.zero) {
+            defaultLiveStreamQuadScale = liveStreamQuad.transform.localScale;
+        }
+
+        videoSurfaceQuadRef = liveStreamQuad.GetComponent<VideoSurface>();
+        if (!videoSurfaceQuadRef) {
+            videoSurfaceQuadRef = liveStreamQuad.AddComponent<VideoSurface>();
+            //print("Agora message Added video surface component");
+        }
+        //print("agora message UID = " + ChannelCreatorUID);
+        videoSurfaceQuadRef.SetForUser((uint)ChannelCreatorUID);
+        videoSurfaceQuadRef.SetEnable(true);
+        videoSurfaceQuadRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
+        videoSurfaceQuadRef.SetGameFps(frameRate);
     }
 
     void OnUserOffline(uint uid, USER_OFFLINE_REASON reason) //Only called for host in broadcast profile
