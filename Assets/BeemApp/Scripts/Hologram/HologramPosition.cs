@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-namespace Beem.Hologram {
+namespace Beem.Extenject.Hologram {
 
     /// <summary>
     /// Gologram Position

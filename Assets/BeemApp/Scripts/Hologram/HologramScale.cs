@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Beem.Hologram {
+namespace Beem.Extenject.Hologram {
 
     /// <summary>
     /// Gologram Scale

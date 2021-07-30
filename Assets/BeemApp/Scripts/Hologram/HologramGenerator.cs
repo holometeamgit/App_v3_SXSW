@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Beem.Extenject.Record;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+using Zenject;
 
-namespace Beem.Hologram {
+namespace Beem.Extenject.Hologram {
 
     /// <summary>
     /// Hologram Creator

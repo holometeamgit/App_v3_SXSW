@@ -1,10 +1,6 @@
-﻿using Beem.Record.Video;
-using Beem.Video;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Beem.Video;
 using UnityEngine;
 using UnityEngine.Video;
-
 
 /// <summary>
 /// VideoPlayer Searcher
@@ -13,9 +9,7 @@ public class VideoPlayerSearcher : MonoBehaviour {
 
     private void Start() {
         VideoPlayer videoPlayer = GetComponent<VideoPlayer>();
-        AudioSource audioSourcer = GetComponent<AudioSource>();
         VideoPlayerCallBacks.onSetVideoPlayer?.Invoke(videoPlayer);
-        VideoRecordCallbacks.onSetAudioSource?.Invoke(audioSourcer);
     }
 
 }

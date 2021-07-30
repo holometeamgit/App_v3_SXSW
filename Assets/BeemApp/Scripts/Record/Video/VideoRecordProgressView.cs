@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-namespace Beem.Record.Video {
+
+namespace Beem.Extenject.Record.Video {
 
     /// <summary>
     /// Video Progress view
@@ -14,14 +13,9 @@ namespace Beem.Record.Video {
 
         private void OnEnable() {
             OnProgress();
-            VideoRecordCallbacks.onRecordProgress += OnProgress;
         }
 
-        private void OnDisable() {
-            VideoRecordCallbacks.onRecordProgress -= OnProgress;
-        }
-
-        private void OnProgress(float value = 0f) {
+        public void OnProgress(float value = 0f) {
             if (progressBar != null) {
                 progressBar.fillAmount = value;
             }

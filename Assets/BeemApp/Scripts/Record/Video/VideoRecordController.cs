@@ -1,31 +1,29 @@
 ﻿using System.IO;
+using Beem.Extenject.Hologram;
+using Beem.Extenject.Record.SnapShot;
+using Beem.Extenject.Record.Video;
 using Beem.Extenject.UI;
-using Beem.Record.SnapShot;
-using Beem.Video;
+using Beem.Extenject.Video;
 using NatCorder;
 using NatCorder.Clocks;
 using NatCorder.Inputs;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Video;
 using Zenject;
 
-namespace Beem.Record.Video {
+namespace Beem.Extenject.Record {
 
     /// <summary>
     /// Video Record Controller
     /// </summary>
-    public class VideoRecordController : MonoBehaviour {
+    public class VideoRecordController : IInitializable, ILateDisposable {
 
-        [SerializeField]
         private WindowSignal _windowSignals;
-
-        [SerializeField]
-        private UnityEvent onRecordComplete;
-
-        [SerializeField]
-        private UnityEvent onSnapshotStarted;
-
         private WindowController _windowController;
+        private SnapShotController _snapShotController;
+
+        private SignalBus _signalBus;
 
         private AudioSource _audioSource;
         private MP4Recorder _videoRecorder;
@@ -43,36 +41,29 @@ namespace Beem.Record.Video {
         private bool _recordLengthFailed = false;
         private bool _recordMicrophone = true;
 
-        private void Awake() {
-            //permissionGranter = FindObjectOfType<PermissionGranter>();
-            _cameras = FindObjectsOfType<Camera>();
-        }
-
-        private void Start() {
+        public VideoRecordController(WindowSignal windowSignal, Camera[] cameras) {
+            _windowSignals = windowSignal;
+            _cameras = cameras;
             CorrectResolutionAspect();
         }
 
         [Inject]
-        public void Construct(WindowController windowController) {
+        public void Construct(SignalBus signalBus, WindowController windowController, SnapShotController snapShotController) {
             _windowController = windowController;
+            _snapShotController = snapShotController;
+            _signalBus = signalBus;
         }
 
-        private void OnEnable() {
-            VideoRecordCallbacks.onRecordStarted += OnRecordStart;
-            VideoRecordCallbacks.onRecordStoped += OnRecordStop;
-            VideoRecordCallbacks.onRecordFailed += OnRecordFail;
-            VideoRecordCallbacks.onSetAudioSource += OnSetAudioSource;
+        public void Initialize() {
+            HologramCallbacks.onCreateHologram += OnSetVideo;
         }
 
-        private void OnDisable() {
-            VideoRecordCallbacks.onRecordStarted -= OnRecordStart;
-            VideoRecordCallbacks.onRecordStoped -= OnRecordStop;
-            VideoRecordCallbacks.onRecordFailed -= OnRecordFail;
-            VideoRecordCallbacks.onSetAudioSource -= OnSetAudioSource;
+        public void LateDispose() {
+            HologramCallbacks.onCreateHologram -= OnSetVideo;
         }
 
-        private void OnSetAudioSource(AudioSource audioSource) {
-            _audioSource = audioSource;
+        public void OnSetVideo(GameObject audio) {
+            _audioSource = audio.GetComponentInChildren<AudioSource>();
         }
 
         private void CorrectResolutionAspect() {
@@ -84,7 +75,10 @@ namespace Beem.Record.Video {
             return value % 2 == 0 ? value : value - 1;
         }
 
-        private void OnRecordStart() {
+        /// <summary>
+        /// Record Start
+        /// </summary>
+        public void OnRecordStart() {
             /*if (!permissionGranter.MicAccessAvailable) {
                 recordMicrophone = false;
             }*/
@@ -106,12 +100,18 @@ namespace Beem.Record.Video {
             }
         }
 
-        private void OnRecordFail() {
+        /// <summary>
+        /// Record Fail
+        /// </summary>
+        public void OnRecordFail() {
             _recordLengthFailed = true;
             OnRecordStop();
         }
 
-        private void OnRecordStop() {
+        /// <summary>
+        /// Record Stop
+        /// </summary>
+        public void OnRecordStop() {
             if (_recordMicrophone) {
                 _audioInput.Dispose();
             }
@@ -123,14 +123,13 @@ namespace Beem.Record.Video {
         private void OnRecordComplete(string outputPath) {
             if (_recordLengthFailed) {
                 File.Delete(outputPath);
-                onSnapshotStarted?.Invoke();
+                _snapShotController.CreateSnapShotAsync();
             } else {
                 _lastRecordingPath = outputPath;
                 _windowController.OnCalledSignal(_windowSignals, _lastRecordingPath);
                 _recordLengthFailed = false;
             }
-            onRecordComplete?.Invoke();
+            _signalBus.Fire(new RecordSignal());
         }
-
     }
 }

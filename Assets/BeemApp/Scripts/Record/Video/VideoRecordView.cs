@@ -2,8 +2,7 @@
 using UnityEngine;
 using UnityEngine.Video;
 
-namespace Beem.Record.Video {
-
+namespace Beem.Extenject.Record.Video {
 
     /// <summary>
     /// VideoRecord View
@@ -22,7 +21,6 @@ namespace Beem.Record.Video {
         }
 
         public void Show<T>(T parameter) {
-            Debug.Log(parameter.GetType());
             if (parameter is string) {
                 OnRecordComplete(parameter as string);
             }

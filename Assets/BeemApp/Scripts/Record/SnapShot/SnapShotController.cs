@@ -2,21 +2,23 @@
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Events;
 using Zenject;
 
-namespace Beem.Record.SnapShot {
+namespace Beem.Extenject.Record.SnapShot {
     /// <summary>
     /// Snapshot controller
     /// </summary>
-    public class SnapShotController : MonoBehaviour {
+    public class SnapShotController {
 
-        [SerializeField]
         private WindowSignal _windowSignals;
 
         private WindowController _windowController;
 
         private CancellationTokenSource cancelTokenSource;
+
+        public SnapShotController(WindowSignal windowSignals) {
+            _windowSignals = windowSignals;
+        }
 
         [Inject]
         public void Construct(WindowController windowController) {
@@ -42,6 +44,9 @@ namespace Beem.Record.SnapShot {
                 cancelTokenSource.Cancel();
                 cancelTokenSource = null;
             }
+        }
+
+        public class Factory : PlaceholderFactory<WindowSignal, SnapShotController> {
         }
     }
 }

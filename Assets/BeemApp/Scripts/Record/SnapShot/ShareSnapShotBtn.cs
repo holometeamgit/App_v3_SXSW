@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using Beem.Extenject.UI;
 
-namespace Beem.Record.SnapShot {
+namespace Beem.Extenject.Record.SnapShot {
 
     /// <summary>
     /// Share snapshot

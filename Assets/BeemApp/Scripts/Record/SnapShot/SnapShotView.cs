@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Beem.Record.SnapShot {
+namespace Beem.Extenject.Record.SnapShot {
     /// <summary>
     /// SnapShot View
     /// </summary>
@@ -21,7 +21,6 @@ namespace Beem.Record.SnapShot {
         }
 
         public void Show<T>(T parameter) {
-            Debug.Log(parameter.GetType());
             if (parameter is Texture2D) {
                 OnRecordComplete(parameter as Texture2D);
             }

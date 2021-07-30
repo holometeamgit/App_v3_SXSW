@@ -1,12 +1,11 @@
-﻿using Beem.Record.Video;
-using System;
-using System.Collections;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using Zenject;
 
-namespace Beem.Record {
+namespace Beem.Extenject.Record {
     /// <summary>
     /// Record Button
     /// </summary>
@@ -16,7 +15,13 @@ namespace Beem.Record {
         [SerializeField]
         private Vector2 recordingTime = new Vector2(2, 15);
 
+        [SerializeField]
+        private UnityEvent<float> onRecordProgress;
+
+        private VideoRecordController _videoRecordController;
         private float timer = 0;
+        private CancellationTokenSource cancelTokenSource;
+        private bool pressed = false;
 
         private float Timer {
             get {
@@ -25,13 +30,15 @@ namespace Beem.Record {
             set {
                 if (Mathf.Abs(timer - value) > Mathf.Epsilon) {
                     timer = value;
-                    VideoRecordCallbacks.onRecordProgress?.Invoke(timer / (recordingTime.y));
+                    onRecordProgress?.Invoke(timer / (recordingTime.y));
                 }
             }
         }
 
-        private CancellationTokenSource cancelTokenSource;
-        private bool pressed = false;
+        [Inject]
+        public void Construct(VideoRecordController videoRecordController) {
+            _videoRecordController = videoRecordController;
+        }
 
         public void OnPointerDown(PointerEventData eventData) {
             pressed = true;
@@ -42,11 +49,14 @@ namespace Beem.Record {
             pressed = false;
         }
 
+        /// <summary>
+        /// Record Async
+        /// </summary>
         public async void RecordAsync() {
             cancelTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancelTokenSource.Token;
             try {
-                VideoRecordCallbacks.onRecordStarted?.Invoke();
+                _videoRecordController.OnRecordStart();
                 Timer = 0;
                 float startTime = Time.time;
                 while (Timer < recordingTime.y && pressed && !cancellationToken.IsCancellationRequested) {
@@ -54,9 +64,9 @@ namespace Beem.Record {
                     await Task.Yield();
                 }
                 if (Timer < recordingTime.x) {
-                    VideoRecordCallbacks.onRecordFailed?.Invoke();
+                    _videoRecordController.OnRecordFail();
                 } else {
-                    VideoRecordCallbacks.onRecordStoped?.Invoke();
+                    _videoRecordController.OnRecordStop();
                 }
                 Timer = 0;
             } finally {
@@ -67,6 +77,9 @@ namespace Beem.Record {
             }
         }
 
+        /// <summary>
+        /// Cancel
+        /// </summary>
         public void Cancel() {
             if (cancelTokenSource != null) {
                 cancelTokenSource.Cancel();

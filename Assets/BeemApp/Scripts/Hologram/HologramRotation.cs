@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
 
-namespace Beem.Hologram
-{
+namespace Beem.Extenject.Hologram {
     /// <summary>
 	/// Hologram Rotation
 	/// </summary>
-    public class HologramRotation : MonoBehaviour
-    {
+    public class HologramRotation : MonoBehaviour {
         [Header("Main Camera")]
         [SerializeField]
         private Transform lookTarget;
@@ -17,13 +15,11 @@ namespace Beem.Hologram
         [SerializeField]
         private float lerpFactorCallibration = 0.5f;
 
-        private void Awake()
-        {
+        private void Awake() {
             lookTarget = FindObjectOfType<Camera>().transform;
         }
 
-        protected void Update()
-        {
+        protected void Update() {
             if (lookTarget == null)
                 return;
 
