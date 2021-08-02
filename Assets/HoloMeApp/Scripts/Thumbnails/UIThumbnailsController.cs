@@ -147,7 +147,11 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetBuyAction(Buy);
             btnThumbnailItems[i].SetShareAction((data) => {
                 //btnThumbnailItems[i]
-                StreamCallBacks.onGetStreamLink?.Invoke(data.id.ToString(), data.user);
+                if (data.HasAgoraChannel) {
+                    StreamCallBacks.onGetStreamLink?.Invoke(data.id.ToString(), data.user);
+                } else {
+                    StreamCallBacks.onGetPrerecordedLink.Invoke(data);
+                }
                 AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
             });
             btnThumbnailItems[i].LockToPress(false);

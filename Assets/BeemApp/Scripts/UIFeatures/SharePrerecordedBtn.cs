@@ -21,7 +21,7 @@ namespace Beem.UI {
         /// </summary>
         public void Share() {
             if (!string.IsNullOrWhiteSpace(_streamData.id.ToString())) {
-                StreamCallBacks.onGetStreamLink?.Invoke(_streamData.id.ToString(), _streamData.user);
+                StreamCallBacks.onGetPrerecordedLink?.Invoke(_streamData);
             } else {
                 DynamicLinksCallBacks.onShareAppLink?.Invoke();
             }

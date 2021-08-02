@@ -8,7 +8,7 @@ public class ShareManager : MonoBehaviour {
     [SerializeField]
     private ServerURLAPIScriptableObject serverURLAPIScriptableObject;
 
-    private const string LINK_DESCRIPTION = "You have received an invite to {0} Beem\nPlease click the link to access their Room \n {1}";
+    private const string LINK_DESCRIPTION = "Here's your Beem invite from {0}\nPlease click the link to access their Room\n{1}";
 
     private void OnEnable() {
         DynamicLinksCallBacks.onGetShortLink += ShareStream;
