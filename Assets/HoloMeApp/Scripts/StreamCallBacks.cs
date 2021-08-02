@@ -15,9 +15,9 @@ public class StreamCallBacks {
     public static Action onCancelOpenContent = delegate { };
     #endregion
 
-    public static Action onGetMyRoomLink = delegate { };
-    public static Action<string> onGetRoomLink = delegate { };
-    public static Action<string> onGetStreamLink = delegate { };
+    public static Action<string> onGetMyRoomLink = delegate { };
+    public static Action<string, string> onGetRoomLink = delegate { };
+    public static Action<string, string> onGetStreamLink = delegate { };
 
     //when start stream on Agora
     public static Action<StreamStartResponseJsonData> onRoomCreated = delegate { };

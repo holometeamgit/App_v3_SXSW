@@ -330,17 +330,17 @@ public class PnlStreamOverlay : MonoBehaviour {
 
         if (agoraController.IsRoom) {
             if (agoraController.IsChannelCreator) {
-                StreamCallBacks.onGetMyRoomLink?.Invoke();
+                StreamCallBacks.onGetMyRoomLink?.Invoke(agoraController.ChannelName);
             } else {
                 if (!string.IsNullOrWhiteSpace(currentStreamId)) {
-                    StreamCallBacks.onGetRoomLink?.Invoke(currentStreamId);
+                    StreamCallBacks.onGetRoomLink?.Invoke(currentStreamId, agoraController.ChannelName);
                 } else {
                     DynamicLinksCallBacks.onShareAppLink?.Invoke();
                 }
             }
         } else {
             if (!string.IsNullOrWhiteSpace(currentStreamId)) {
-                StreamCallBacks.onGetStreamLink?.Invoke(currentStreamId);
+                StreamCallBacks.onGetStreamLink?.Invoke(currentStreamId, agoraController.ChannelName);
             } else {
                 DynamicLinksCallBacks.onShareAppLink?.Invoke();
             }

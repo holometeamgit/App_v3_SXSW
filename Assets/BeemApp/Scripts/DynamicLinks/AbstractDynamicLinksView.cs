@@ -24,7 +24,7 @@ namespace Beem.Firebase.DynamicLink {
             DynamicLinksCallBacks.onGetShortLink -= Refresh;
         }
 
-        protected abstract void Refresh(Uri value);
+        protected abstract void Refresh(Uri value, string source);
 
     }
 }

@@ -48,7 +48,7 @@ namespace Beem.Firebase.DynamicLink {
 #endif
         }
 
-        private void CreateShortLink(string prefix, string parameterName, string id, string url) {
+        private void CreateShortLink(string prefix, string parameterName, string id, string url, string source) {
             string baseLink = prefix + "/" + parameterName + "/" + id;
             var components = new DynamicLinkComponents(
          // The base Link.
@@ -81,7 +81,7 @@ namespace Beem.Firebase.DynamicLink {
                 // Short Link has been created.
                 ShortDynamicLink link = task.Result;
                 Debug.LogFormat("Generated short link: {0}", link.Url);
-                DynamicLinksCallBacks.onGetShortLink?.Invoke(link.Url);
+                DynamicLinksCallBacks.onGetShortLink?.Invoke(link.Url, source);
             }, taskScheduler);
         }
     }
