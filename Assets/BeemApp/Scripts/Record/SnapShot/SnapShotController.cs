@@ -16,13 +16,21 @@ namespace Beem.Extenject.Record {
 
         private CancellationTokenSource cancelTokenSource;
 
-        public SnapShotController(WindowSignal windowSignals) {
+        private SignalBus _signalBus;
+
+        private Camera _cameras;
+
+        private bool takeScreenshotOnNextFrame;
+
+        public SnapShotController(WindowSignal windowSignals, Camera cameras) {
             _windowSignals = windowSignals;
+            _cameras = cameras;
         }
 
         [Inject]
-        public void Construct(WindowController windowController) {
+        public void Construct(SignalBus signalBus, WindowController windowController) {
             _windowController = windowController;
+            _signalBus = signalBus;
         }
 
         /// <summary>
@@ -31,8 +39,12 @@ namespace Beem.Extenject.Record {
         public async void CreateSnapShotAsync() {
             cancelTokenSource = new CancellationTokenSource();
             try {
-                Texture2D screenshot = ScreenCapture.CaptureScreenshotAsTexture(1);
+                _signalBus.Fire(new ViewSignal(false));
+                _cameras.targetTexture = RenderTexture.GetTemporary(Mathf.FloorToInt(Screen.width / 2f), Mathf.FloorToInt(Screen.height / 2f), 16);
+                Texture2D screenshot = ToTexture2D(_cameras.targetTexture);
+                //_cameras.targetTexture = null;
                 await Task.Yield();
+                _signalBus.Fire(new ViewSignal(true));
                 _windowController.OnCalledSignal(_windowSignals, screenshot);
             } finally {
                 if (cancelTokenSource != null) {
@@ -40,6 +52,18 @@ namespace Beem.Extenject.Record {
                     cancelTokenSource = null;
                 }
             }
+        }
+
+        private Texture2D ToTexture2D(RenderTexture rTex) {
+            Texture2D tex = new Texture2D(rTex.width, rTex.height, TextureFormat.RGB24, false);
+            var old_rt = RenderTexture.active;
+            RenderTexture.active = rTex;
+
+            tex.ReadPixels(new Rect(0, 0, rTex.width, rTex.height), 0, 0);
+            tex.Apply();
+
+            RenderTexture.active = old_rt;
+            return tex;
         }
 
         public void Cancel() {

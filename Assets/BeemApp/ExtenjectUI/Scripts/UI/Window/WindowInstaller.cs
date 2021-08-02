@@ -9,6 +9,8 @@ namespace Beem.Extenject.UI {
         public override void InstallBindings() {
             Container.DeclareSignal<WindowSignal>();
 
+            Container.DeclareSignal<ViewSignal>();
+
             Container.Bind<Transform>().FromInstance(transform);
 
             Container.BindInterfacesAndSelfTo<WindowController>().AsSingle();
