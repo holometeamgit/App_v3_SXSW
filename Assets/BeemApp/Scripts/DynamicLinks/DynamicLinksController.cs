@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Beem.SSO;
 using Firebase.DynamicLinks;
 using UnityEngine;
 
@@ -48,27 +45,33 @@ namespace Beem.Firebase.DynamicLink {
 #endif
         }
 
-        private void CreateShortLink(string prefix, string parameterName, string id, string url, string source) {
-            string baseLink = prefix + "/" + parameterName + "/" + id;
+        private void CreateShortLink(DynamicLinkParameters dynamicLinkParameters, string source) {
+            string baseLink = dynamicLinkParameters.Prefix + "/" + dynamicLinkParameters.ParameterName + "/" + dynamicLinkParameters.Id;
             var components = new DynamicLinkComponents(
          // The base Link.
          new Uri(baseLink),
          // The dynamic link URI prefix.
-         prefix) {
+         dynamicLinkParameters.Prefix) {
                 IOSParameters = new IOSParameters(Application.identifier) {
                     AppStoreId = APPSTORE_ID
                 },
                 AndroidParameters = new AndroidParameters(Application.identifier),
+
             };
 
-            Uri desktopLink = new Uri(components.LongDynamicLink.AbsoluteUri + "&ofl=" + url);
+            string urlFormat = components.LongDynamicLink.AbsoluteUri;
+            if (!string.IsNullOrEmpty(dynamicLinkParameters.DesktopUrl)) {
+                urlFormat += "&ofl=" + dynamicLinkParameters.DesktopUrl;
+            }
+
+            Uri uri = new Uri(urlFormat);
 
             var options = new DynamicLinkOptions {
                 PathLength = DynamicLinkPathLength.Unguessable
             };
 
             var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            DynamicLinks.GetShortLinkAsync(desktopLink, options).ContinueWith(task => {
+            DynamicLinks.GetShortLinkAsync(uri, options).ContinueWith(task => {
                 if (task.IsCanceled) {
                     Debug.LogError("GetShortLinkAsync was canceled.");
                     return;

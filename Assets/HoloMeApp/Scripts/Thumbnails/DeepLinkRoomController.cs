@@ -26,14 +26,16 @@ public class DeepLinkRoomController : MonoBehaviour {
             RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(body);
             //room?roomid=string
             HelperFunctions.DevLog("MyRoomIdRecieved = " + body);
-            DynamicLinksCallBacks.onCreateShortLink?.Invoke(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Room, roomJsonData.id, serverURLAPIScriptableObject.Url, source);
+            DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Room, roomJsonData.id, serverURLAPIScriptableObject.Url);
+            DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters, source);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
         }
     }
 
     private void GetRoomLink(string id, string source) {
-        DynamicLinksCallBacks.onCreateShortLink?.Invoke(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Room, id, serverURLAPIScriptableObject.Url, source);
+        DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Room, id, serverURLAPIScriptableObject.Url);
+        DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters, source);
     }
 
     private void Awake() {

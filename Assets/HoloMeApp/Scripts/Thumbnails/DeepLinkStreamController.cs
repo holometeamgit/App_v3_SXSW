@@ -11,7 +11,8 @@ public class DeepLinkStreamController : MonoBehaviour {
     }
 
     private void GetStreamLink(string id, string source) {
-        DynamicLinksCallBacks.onCreateShortLink?.Invoke(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Stream, id, serverURLAPIScriptableObject.Url, source);
+        DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Stream, id, serverURLAPIScriptableObject.Url);
+        DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters, source);
     }
 
     private void OnDestroy() {
