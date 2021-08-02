@@ -147,7 +147,7 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetBuyAction(Buy);
             btnThumbnailItems[i].SetShareAction((data) => {
                 //btnThumbnailItems[i]
-                StreamCallBacks.onGetStreamLink?.Invoke(data.id.ToString());
+                StreamCallBacks.onGetStreamLink?.Invoke(data.id.ToString(), data.user);
                 AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
             });
             btnThumbnailItems[i].LockToPress(false);

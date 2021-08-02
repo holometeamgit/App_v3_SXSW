@@ -13,7 +13,7 @@ namespace Beem.Firebase.DynamicLink {
         [SerializeField]
         private InputField inputField;
 
-        protected override void Refresh(Uri value) {
+        protected override void Refresh(Uri value, string source) {
             inputField.text = value.AbsoluteUri;
         }
     }

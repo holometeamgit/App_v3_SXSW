@@ -13,27 +13,27 @@ public class DeepLinkRoomController : MonoBehaviour {
     [SerializeField] AccountManager accountManager;
     [SerializeField] DeepLinkHandler deepLinkHandler;
 
-    private void GetMyRoom() {
+    private void GetMyRoom(string source) {
         HelperFunctions.DevLog("GetMyRoom");
         webRequestHandler.GetRequest(GetMyRoomIdUrl(),
-            (code, body) => MyRoomIdRecieved(body),
+            (code, body) => MyRoomIdRecieved(body, source),
             (code, body) => HelperFunctions.DevLogError(code + " " + body),
             accountManager.GetAccessToken().access);
     }
 
-    private void MyRoomIdRecieved(string body) {
+    private void MyRoomIdRecieved(string body, string source) {
         try {
             RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(body);
             //room?roomid=string
             HelperFunctions.DevLog("MyRoomIdRecieved = " + body);
-            DynamicLinksCallBacks.onCreateShortLink?.Invoke(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Room, roomJsonData.id, serverURLAPIScriptableObject.Url);
+            DynamicLinksCallBacks.onCreateShortLink?.Invoke(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Room, roomJsonData.id, serverURLAPIScriptableObject.Url, source);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
         }
     }
 
-    private void GetRoomLink(string id) {
-        DynamicLinksCallBacks.onCreateShortLink?.Invoke(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Room, id, serverURLAPIScriptableObject.Url);
+    private void GetRoomLink(string id, string source) {
+        DynamicLinksCallBacks.onCreateShortLink?.Invoke(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Room, id, serverURLAPIScriptableObject.Url, source);
     }
 
     private void Awake() {
