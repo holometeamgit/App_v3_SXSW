@@ -6,31 +6,24 @@ using UnityEngine.UI;
 
 public class PnlSignUpEmailFirebase : MonoBehaviour {
     [SerializeField]
-    InputFieldController inputFieldEmail;
+    private InputFieldController inputFieldEmail;
     [SerializeField]
-    InputFieldController inputFieldPassword;
+    private InputFieldController inputFieldPassword;
     [SerializeField]
-    InputFieldController inputFieldConfirmPassword;
+    private InputFieldController inputFieldConfirmPassword;
     [SerializeField]
-    Switcher switcherToVerification;
+    private Switcher switcherToVerification;
     [SerializeField]
-    GameObject LogInLoadingBackground;
+    private GameObject LogInLoadingBackground;
     [SerializeField]
-    bool isNeedConfirmationPassword = true;
+    private bool isNeedConfirmationPassword = true;
     [SerializeField]
-    Toggle isPolicyConfirmed;
+    private Toggle toggleEmailReceive;
     [SerializeField]
-    Button continueBtn;
-    [SerializeField]
-    Animator animator;
+    private Animator animator;
 
     private const float COOLDOWN = 0.5f;
     private float nextTimeCanClick = 0;
-
-    public void OnPolicyConfirmationChanged(bool isPolicyConfirmed) {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyEmailOptIn, AnalyticParameters.ParamSignUpMethod, AnalyticsSignUpModeTracker.Instance.SignUpMethodUsed.ToString());
-        continueBtn.interactable = isPolicyConfirmed;
-    }
 
     public void StopAnimation() {
         animator.enabled = false;
@@ -61,6 +54,10 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     }
 
     private void SignUpCallBack() {
+        if(toggleEmailReceive.isOn) {
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyEmailOptIn, AnalyticParameters.ParamSignUpMethod, AnalyticsSignUpModeTracker.Instance.SignUpMethodUsed.ToString());
+        }
+
         switcherToVerification.Switch();
         ClearInputFieldData();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete);
@@ -106,6 +103,10 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
         LogInLoadingBackground.SetActive(false);
     }
 
+    private bool CanContinue() {
+        return inputFieldEmail.text.Length > 0 && inputFieldPassword.text.Length > 0;
+    }
+
     private void OnEnable() {
         HideBackground();
         CallBacks.onSignUpEMailClick += SignUp;
@@ -116,11 +117,9 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
         CallBacks.onSignUpSuccess += HideBackground;
         CallBacks.onNeedVerification += HideBackground;
 
-        isPolicyConfirmed.isOn = false;
-        isPolicyConfirmed.enabled = false;
-        isPolicyConfirmed.enabled = true;
-
-        continueBtn.interactable = isPolicyConfirmed.isOn;
+        toggleEmailReceive.isOn = false;
+        toggleEmailReceive.enabled = false;
+        toggleEmailReceive.enabled = true;
     }
 
     private void OnDisable() {
