@@ -40,9 +40,12 @@ namespace Beem.Extenject.Record {
             cancelTokenSource = new CancellationTokenSource();
             try {
                 _signalBus.Fire(new ViewSignal(false));
-                _cameras.targetTexture = RenderTexture.GetTemporary(Mathf.FloorToInt(Screen.width / 2f), Mathf.FloorToInt(Screen.height / 2f), 16);
-                Texture2D screenshot = ToTexture2D(_cameras.targetTexture);
-                //_cameras.targetTexture = null;
+                await Task.Yield();
+                //_cameras.targetTexture = RenderTexture.GetTemporary(Mathf.FloorToInt(Screen.width / 2f), Mathf.FloorToInt(Screen.height / 2f), 16);
+                //ScreenShot screenShot = new ScreenShot(_cameras);
+                //screenShot.TakeScreenShot();
+                //await Task.Yield();
+                Texture2D screenshot = await ToTexture2D();
                 await Task.Yield();
                 _signalBus.Fire(new ViewSignal(true));
                 _windowController.OnCalledSignal(_windowSignals, screenshot);
@@ -54,16 +57,20 @@ namespace Beem.Extenject.Record {
             }
         }
 
-        private Texture2D ToTexture2D(RenderTexture rTex) {
+        private async Task<Texture2D> ToTexture2D(RenderTexture rTex) {
             Texture2D tex = new Texture2D(rTex.width, rTex.height, TextureFormat.RGB24, false);
             var old_rt = RenderTexture.active;
             RenderTexture.active = rTex;
 
             tex.ReadPixels(new Rect(0, 0, rTex.width, rTex.height), 0, 0);
             tex.Apply();
-
+            Debug.Log("Apply");
             RenderTexture.active = old_rt;
             return tex;
+        }
+
+        private async Task<Texture2D> ToTexture2D() {
+            return ScreenCapture.CaptureScreenshotAsTexture();
         }
 
         public void Cancel() {
