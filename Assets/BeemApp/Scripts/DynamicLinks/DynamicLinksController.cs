@@ -56,7 +56,9 @@ namespace Beem.Firebase.DynamicLink {
                     AppStoreId = APPSTORE_ID
                 },
                 AndroidParameters = new AndroidParameters(Application.identifier),
+
                 SocialMetaTagParameters = dynamicLinkParameters.SocialMetaTagParameters
+
             };
 
             string urlFormat = components.LongDynamicLink.AbsoluteUri;

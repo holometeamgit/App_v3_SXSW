@@ -9,21 +9,21 @@ public class DeepLinkRoomController : MonoBehaviour {
     [SerializeField] AccountManager accountManager;
     [SerializeField] DeepLinkHandler deepLinkHandler;
 
-    private void GetMyRoom(string source) {
+    private void GetMyRoom() {
         HelperFunctions.DevLog("GetMyRoom");
         webRequestHandler.GetRequest(GetMyRoomIdUrl(),
-            (code, body) => MyRoomIdRecieved(body, source),
+            (code, body) => MyRoomIdRecieved(body),
             (code, body) => HelperFunctions.DevLogError(code + " " + body),
             accountManager.GetAccessToken().access);
     }
 
-    private void MyRoomIdRecieved(string body, string source) {
+    private void MyRoomIdRecieved(string body) {
         try {
             RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(body);
             //room?roomid=string
             HelperFunctions.DevLog("MyRoomIdRecieved = " + body);
             DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Room, roomJsonData.id, serverURLAPIScriptableObject.Url);
-            DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters, source);
+            DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters, roomJsonData.user);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
         }
