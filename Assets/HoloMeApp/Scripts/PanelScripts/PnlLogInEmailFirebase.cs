@@ -36,6 +36,10 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
         CallBacks.onSignInEMail?.Invoke(inputFieldEmail.text, inputFieldPassword.text);
     }
 
+    public void LogInBtnClick() {
+        CallBacks.onSignInEMailClick?.Invoke();
+    }
+
     private void LogInCallBack() {
         switcherToProfile.Switch();
         ClearData();

@@ -15,6 +15,10 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour
     [SerializeField]
     bool needShowWarning = true;
 
+    public void ForgotPasswordBtnClick() {
+        CallBacks.onResetPasswordClick?.Invoke();
+    }
+
     private void SendMsgOnEmailForChangePassword() {
         if (!LocalDataVerification())
             return;
