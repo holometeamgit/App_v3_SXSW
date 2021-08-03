@@ -30,6 +30,10 @@ public class PnlStreamOverlay : MonoBehaviour {
     [SerializeField]
     private GameObject[] offlineControls;
 
+    [Tooltip("Controls which interactable bool will be set to true when live")]
+    [SerializeField]
+    private Selectable[] onlineInteractableControlToggle;
+
     [Header("These Views")]
 
     [SerializeField]
@@ -206,8 +210,12 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void RefreshLiveControls(bool live) {
+
         foreach (GameObject item in onlineControls) {
             item.SetActive(live);
+        }
+        foreach (Selectable selectable in onlineInteractableControlToggle) {
+            selectable.interactable = live;
         }
         foreach (GameObject item in offlineControls) {
             item.SetActive(!live);

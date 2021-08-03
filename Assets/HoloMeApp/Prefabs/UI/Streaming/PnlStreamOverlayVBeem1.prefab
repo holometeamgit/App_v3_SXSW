@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 4333991353694086465}
   - component: {fileID: 4590197666527176391}
   - component: {fileID: 2733327223344326065}
-  - component: {fileID: 4814149175675770770}
   m_Layer: 5
   m_Name: btnToggleAudio
   m_TagString: Untagged
@@ -141,21 +140,6 @@ MonoBehaviour:
   textComponentReference: {fileID: 3701329685626661221}
   txtToggledOn: AUDIO OFF
   txtToggledOff: AUDIO ON
-  resetOnEnable: 0
---- !u!114 &4814149175675770770
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 304431767313220190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3cf31e415d247f44838978c620d8c49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  referenceText: {fileID: 3701329685626661221}
-  colourToggledOff: {r: 1, g: 1, b: 1, a: 1}
   resetOnEnable: 0
 --- !u!1 &457660003600165475
 GameObject:
@@ -311,6 +295,11 @@ MonoBehaviour:
   - {fileID: 8369593495140678971}
   offlineControls:
   - {fileID: 3738879759186859606}
+  onlineInteractableControlToggle:
+  - {fileID: 1609890207196450974}
+  - {fileID: 957201147174991031}
+  - {fileID: 3571475910422849250}
+  - {fileID: 8305157971284446628}
   cameraRenderImage: {fileID: 2271563347322070468}
   btnPushToTalk: {fileID: 6495839614750111515}
   btnGoLive: {fileID: 1807772533195957261}
@@ -971,7 +960,6 @@ GameObject:
   - component: {fileID: 1417696734699277290}
   - component: {fileID: 2883370833708333583}
   - component: {fileID: 7849557589811501414}
-  - component: {fileID: 2950547576580699400}
   m_Layer: 5
   m_Name: btnToggleVideo
   m_TagString: Untagged
@@ -1100,21 +1088,6 @@ MonoBehaviour:
   txtToggledOn: VIDEO OFF
   txtToggledOff: VIDEO ON
   resetOnEnable: 0
---- !u!114 &2950547576580699400
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1162479955158111351}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3cf31e415d247f44838978c620d8c49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  referenceText: {fileID: 8067807616311396542}
-  colourToggledOff: {r: 1, g: 1, b: 1, a: 1}
-  resetOnEnable: 0
 --- !u!1 &1268990594780851070
 GameObject:
   m_ObjectHideFlags: 0
@@ -1191,7 +1164,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4285887861
-  m_fontColor: {r: 0.45882353, g: 0.45882353, b: 0.45882353, a: 1}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2601,7 +2574,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 2371222170305507116}
+  m_TargetGraphic: {fileID: 938637522703395473}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -4413,7 +4386,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1009489494452332888}
+  m_TargetGraphic: {fileID: 2404379878709573417}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -4517,7 +4490,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1138303995418994820}
+  m_TargetGraphic: {fileID: 523713001312074883}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -5395,7 +5368,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4285887861
-  m_fontColor: {r: 0.45882353, g: 0.45882353, b: 0.45882353, a: 1}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -6077,7 +6050,6 @@ GameObject:
   - component: {fileID: 1787834555572967215}
   - component: {fileID: 6565907291660784305}
   - component: {fileID: 462968161732220378}
-  - component: {fileID: 7597790621791154101}
   m_Layer: 5
   m_Name: btnToggleAudio
   m_TagString: Untagged
@@ -6202,24 +6174,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da925d7a0e54ea4439cce9b5d160cc14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textComponentReference: {fileID: 3701329685626661221}
+  textComponentReference: {fileID: 4213095760743539511}
   txtToggledOn: AUDIO OFF
   txtToggledOff: AUDIO ON
-  resetOnEnable: 0
---- !u!114 &7597790621791154101
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6310141764959616920}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3cf31e415d247f44838978c620d8c49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  referenceText: {fileID: 4213095760743539511}
-  colourToggledOff: {r: 1, g: 1, b: 1, a: 1}
   resetOnEnable: 0
 --- !u!1 &6346601751239490466
 GameObject:
@@ -9432,7 +9389,6 @@ GameObject:
   - component: {fileID: 4655271763828780228}
   - component: {fileID: 876503993722149603}
   - component: {fileID: 1207415447997549219}
-  - component: {fileID: 8141033767787253267}
   m_Layer: 5
   m_Name: btnToggleVideo
   m_TagString: Untagged
@@ -9557,24 +9513,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da925d7a0e54ea4439cce9b5d160cc14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textComponentReference: {fileID: 8067807616311396542}
+  textComponentReference: {fileID: 4356013065329288894}
   txtToggledOn: VIDEO OFF
   txtToggledOff: VIDEO ON
-  resetOnEnable: 0
---- !u!114 &8141033767787253267
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9124697941524688189}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3cf31e415d247f44838978c620d8c49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  referenceText: {fileID: 4356013065329288894}
-  colourToggledOff: {r: 1, g: 1, b: 1, a: 1}
   resetOnEnable: 0
 --- !u!1 &9127185112957009998
 GameObject:
