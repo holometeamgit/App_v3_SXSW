@@ -35,7 +35,8 @@ namespace Beem.Firebase.DynamicLink {
         private string _prefix = "https://beemrfc.page.link";
 
         public void OnPointerClick(PointerEventData eventData) {
-            DynamicLinksCallBacks.onCreateShortLink?.Invoke(_prefix, ROOM, _roomId, _url, _source);
+            DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(_prefix, ROOM, _roomId, _url);
+            DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters, _source);
         }
     }
 }
