@@ -147,7 +147,7 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetBuyAction(Buy);
             btnThumbnailItems[i].SetShareAction((data) => {
                 //btnThumbnailItems[i]
-                if (data.HasAgoraChannel) {
+                if (data.GetStage() == StreamJsonData.Data.Stage.Live) {
                     StreamCallBacks.onGetStreamLink?.Invoke(data.id.ToString(), data.user);
                 } else {
                     StreamCallBacks.onGetPrerecordedLink.Invoke(data);

@@ -66,7 +66,7 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     }
 
     [SerializeField]
-    private string logoLink = "https://s3.eu-west-2.amazonaws.com/prod.previews/Logo-Deep-Link.png";
+    private string logoLink = "https://s3.eu-west-2.amazonaws.com/prod.previews/Logo-Deep-Link-black.png";
     public string LogoLink {
         get {
             return logoLink;
