@@ -40,7 +40,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     private RawImage cameraRenderImage;
 
     [SerializeField]
-    private GameObject btnPushToTalk;
+    private HoldButtonSimple btnPushToTalk;
 
     [SerializeField]
     private Button btnGoLive;
@@ -273,7 +273,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.ChannelName = channelName;
         isStreamer = false;
         gameObject.SetActive(true);
-        btnPushToTalk.SetActive(false);
+        btnPushToTalk.Interactable = false;
         pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName, streamID);
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
@@ -443,13 +443,13 @@ public class PnlStreamOverlay : MonoBehaviour {
         switch (message) {
             case MessageToViewerEnableTwoWayAudio:
                 ToggleLocalAudio(true);
-                btnPushToTalk.SetActive(true);
+                btnPushToTalk.Interactable = true;
                 AnimatedCentreTextMessage("Hold the Talk button to speak to the broadcaster");
                 AnimatedFadeOutMessage(3);
                 return;
             case MessageToViewerDisableTwoWayAudio:
                 ToggleLocalAudio(true);
-                btnPushToTalk.SetActive(false);
+                btnPushToTalk.Interactable = false;
                 return;
             case MessageToViewerStreamerLeft:
                 agoraController.OnStreamerLeft?.Invoke();

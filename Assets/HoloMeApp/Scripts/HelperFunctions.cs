@@ -138,9 +138,9 @@ public class HelperFunctions
         return false;
     }
 
-    public static Color GetColor(int r, int g, int b)
+    public static Color GetColor(int r, int g, int b, int a = 1)
     {
-        return new Color(r / 255f, g / 255f, b / 255f);
+        return new Color(r / 255f, g / 255f, b / 255f, a / 255f);
     }
 
     /// <summary>
