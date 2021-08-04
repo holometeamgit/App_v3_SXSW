@@ -48,6 +48,9 @@ public class PnlStreamOverlay : MonoBehaviour {
     [SerializeField]
     private UIBtnLikes uiBtnLikes;
 
+    [SerializeReference]
+    private UITextLabelLikes uiTextLabelLikes;
+
     [SerializeField]
     private StreamLikesRefresherView streamLikesRefresherView;
 
@@ -156,6 +159,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         currentStreamId = streamStartResponseJsonData.id.ToString();
         RefreshControls();
         uiBtnLikes.Init(streamStartResponseJsonData.id);
+        uiTextLabelLikes.Init(streamStartResponseJsonData.id);
         streamLikesRefresherView.StartCountAsync(currentStreamId);
         StartStreamCountUpdaters();
     }
@@ -285,6 +289,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         long currentStreamIdLong = 0;
         long.TryParse(streamID, out currentStreamIdLong);
         uiBtnLikes.Init(currentStreamIdLong);
+        uiTextLabelLikes.Init(currentStreamIdLong);
         streamLikesRefresherView.StartCountAsync(streamID);
 
         StartStreamCountUpdaters();
