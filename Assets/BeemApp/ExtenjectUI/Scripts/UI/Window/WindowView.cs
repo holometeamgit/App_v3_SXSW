@@ -16,11 +16,11 @@ namespace Beem.Extenject.UI {
 
         private void OnEnable() {
             _canvasGroup = GetComponent<CanvasGroup>();
-            _signalBus.Subscribe<ViewSignal>(ChangeStatus);
+            //_signalBus.Subscribe<ViewSignal>(ChangeStatus);
         }
 
         private void OnDisable() {
-            _signalBus.Unsubscribe<ViewSignal>(ChangeStatus);
+            //_signalBus.Unsubscribe<ViewSignal>(ChangeStatus);
         }
 
         private void ChangeStatus(ViewSignal viewSignal) {

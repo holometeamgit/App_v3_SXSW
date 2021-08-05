@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class ScreenShot {
@@ -23,7 +25,7 @@ public class ScreenShot {
     //Initialize Directory
     public ScreenShot(Camera camera) {
         _camera = camera;
-        outputFolder = Application.persistentDataPath + "/Screenshots/";
+        outputFolder = Application.persistentDataPath + "/Screenshots";
         if (!Directory.Exists(outputFolder)) {
             Directory.CreateDirectory(outputFolder);
             Debug.Log("Save Path will be : " + outputFolder);
@@ -39,7 +41,7 @@ public class ScreenShot {
         return filename;
     }
 
-    private void CaptureScreenshot() {
+    private async void CaptureScreenshot(Action<string> outPath) {
         isProcessing = true;
         // create screenshot objects
         if (renderTexture == null) {
@@ -57,6 +59,7 @@ public class ScreenShot {
         // reset the textures and remove the render texture from the Camera since were done reading the screen data
         _camera.targetTexture = null;
         RenderTexture.active = null;
+
         // get our filename
         string filename = CreateFileName((int)rect.width, (int)rect.height);
         // get file header/data bytes for the specified image format
@@ -77,24 +80,26 @@ public class ScreenShot {
             fileData = screenShot.GetRawTextureData();
         }
         // create new thread to offload the saving from the main thread
-        new System.Threading.Thread(() => {
+        new Thread(() => {
             var file = File.Create(filename);
             if (fileHeader != null) {
                 file.Write(fileHeader, 0, fileHeader.Length);
             }
             file.Write(fileData, 0, fileData.Length);
-            file.Close();
             Debug.Log(string.Format("Screenshot Saved {0}, size {1}", filename, fileData.Length));
             isProcessing = false;
         }).Start();
         //Cleanup
+
+        Debug.Log(string.Format("Screenshot Saved {0}, size {1}", filename, fileData.Length));
+        outPath?.Invoke(filename);
         renderTexture = null;
         screenShot = null;
     }
 
-    public void TakeScreenShot() {
+    public void TakeScreenShot(Action<string> outPath) {
         if (!isProcessing) {
-            CaptureScreenshot();
+            CaptureScreenshot(outPath);
         } else {
             Debug.Log("Currently Processing");
         }

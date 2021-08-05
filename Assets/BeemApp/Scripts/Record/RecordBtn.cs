@@ -19,6 +19,7 @@ namespace Beem.Extenject.Record {
         private UnityEvent<float> onRecordProgress;
 
         private VideoRecordController _videoRecordController;
+
         private float timer = 0;
         private CancellationTokenSource cancelTokenSource;
         private bool pressed = false;

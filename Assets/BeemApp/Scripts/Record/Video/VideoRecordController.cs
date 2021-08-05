@@ -20,7 +20,7 @@ namespace Beem.Extenject.Record {
         private SnapShotController _snapShotController;
 
         private AudioSource _audioSource;
-        private MP4Recorder _videoRecorder;
+        private IMediaRecorder _mediaRecorder;
         private IClock _recordingClock;
         private CameraInput _cameraInput;
         private AudioInput _audioInput;
@@ -78,7 +78,7 @@ namespace Beem.Extenject.Record {
 
             _recordLengthFailed = false;
             _recordingClock = new RealtimeClock();
-            _videoRecorder = new MP4Recorder(
+            _mediaRecorder = new MP4Recorder(
                 _videoWidth,
                 _videoHeight,
                 25,
@@ -87,9 +87,9 @@ namespace Beem.Extenject.Record {
                 OnRecordComplete
             );
 
-            _cameraInput = new CameraInput(_videoRecorder, _recordingClock, _cameras);
+            _cameraInput = new CameraInput(_mediaRecorder, _recordingClock, _cameras);
             if (_recordMicrophone) {
-                _audioInput = new AudioInput(_videoRecorder, _recordingClock, _audioSource);
+                _audioInput = new AudioInput(_mediaRecorder, _recordingClock, _audioSource);
             }
         }
 
@@ -110,7 +110,7 @@ namespace Beem.Extenject.Record {
             }
 
             _cameraInput.Dispose();
-            _videoRecorder.Dispose();
+            _mediaRecorder.Dispose();
         }
 
         private void OnRecordComplete(string outputPath) {

@@ -15,7 +15,7 @@ namespace Beem.Extenject.Record {
         public override void InstallBindings() {
             Camera[] cameras = FindObjectsOfType<Camera>();
             Container.BindInterfacesAndSelfTo<VideoRecordController>().AsSingle().WithArguments(_videoRecordWindow, cameras);
-            Container.BindInterfacesAndSelfTo<SnapShotController>().AsSingle().WithArguments(_snapShotWindow, cameras[0]);
+            Container.BindInterfacesAndSelfTo<SnapShotController>().AsSingle().WithArguments(_snapShotWindow, cameras);
         }
     }
 }

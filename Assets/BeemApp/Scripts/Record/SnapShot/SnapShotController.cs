@@ -1,7 +1,12 @@
 ﻿using Beem.Extenject.UI;
+using NatCorder;
+using NatCorder.Clocks;
+using NatCorder.Inputs;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Networking;
 using Zenject;
 
 namespace Beem.Extenject.Record {
@@ -14,41 +19,54 @@ namespace Beem.Extenject.Record {
 
         private WindowController _windowController;
 
+        private Camera[] _cameras;
+
         private CancellationTokenSource cancelTokenSource;
 
-        private SignalBus _signalBus;
-
-        private Camera _cameras;
-
-        private bool takeScreenshotOnNextFrame;
-
-        public SnapShotController(WindowSignal windowSignals, Camera cameras) {
+        public SnapShotController(WindowSignal windowSignals, Camera[] cameras) {
             _windowSignals = windowSignals;
             _cameras = cameras;
         }
 
         [Inject]
-        public void Construct(SignalBus signalBus, WindowController windowController) {
+        public void Construct(WindowController windowController) {
             _windowController = windowController;
-            _signalBus = signalBus;
         }
 
         /// <summary>
         /// Create SnapShot
         /// </summary>
         public async void CreateSnapShotAsync() {
+            Debug.Log("CreateSnapShot");
+
+            ScreenShot screenShot = new ScreenShot(_cameras[0]);
+            screenShot.TakeScreenShot((outputPath) => GetTextureAsync(outputPath, (tex) => _windowController.OnCalledSignal(_windowSignals, tex)));
+        }
+
+        private void OnRecordComplete(string outputPath) {
+            Debug.Log("OnRecordComplete = " + outputPath);
+
+            GetTextureAsync(outputPath, (tex) => _windowController.OnCalledSignal(_windowSignals, tex));
+        }
+
+        private async void GetTextureAsync(string url, Action<Texture2D> onSuccess) {
             cancelTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancelTokenSource.Token;
             try {
-                _signalBus.Fire(new ViewSignal(false));
                 await Task.Yield();
-                //_cameras.targetTexture = RenderTexture.GetTemporary(Mathf.FloorToInt(Screen.width / 2f), Mathf.FloorToInt(Screen.height / 2f), 16);
-                //ScreenShot screenShot = new ScreenShot(_cameras);
-                //screenShot.TakeScreenShot();
-                //await Task.Yield();
-                Texture2D screenshot = await ToTexture2D();
-                await Task.Yield();
-                _signalBus.Fire(new ViewSignal(true));
-                _windowController.OnCalledSignal(_windowSignals, screenshot);
+                UnityWebRequest request = UnityWebRequest.Get(url);
+                var operation = request.SendWebRequest();
+                Debug.Log("GetTextureAsync");
+                while (!operation.isDone && !cancellationToken.IsCancellationRequested) {
+                    await Task.Yield();
+                    Debug.Log("operation progress = " + operation.progress);
+                }
+
+                Debug.Log("request.result = " + request.result);
+                Debug.Log(DownloadHandlerTexture.GetContent(request));
+                if (request.result == UnityWebRequest.Result.Success) {
+                    onSuccess?.Invoke(DownloadHandlerTexture.GetContent(request));
+                }
             } finally {
                 if (cancelTokenSource != null) {
                     cancelTokenSource.Dispose();
@@ -57,22 +75,9 @@ namespace Beem.Extenject.Record {
             }
         }
 
-        private async Task<Texture2D> ToTexture2D(RenderTexture rTex) {
-            Texture2D tex = new Texture2D(rTex.width, rTex.height, TextureFormat.RGB24, false);
-            var old_rt = RenderTexture.active;
-            RenderTexture.active = rTex;
-
-            tex.ReadPixels(new Rect(0, 0, rTex.width, rTex.height), 0, 0);
-            tex.Apply();
-            Debug.Log("Apply");
-            RenderTexture.active = old_rt;
-            return tex;
-        }
-
-        private async Task<Texture2D> ToTexture2D() {
-            return ScreenCapture.CaptureScreenshotAsTexture();
-        }
-
+        /// <summary>
+        /// Cancel
+        /// </summary>
         public void Cancel() {
             if (cancelTokenSource != null) {
                 cancelTokenSource.Cancel();
