@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Video;
 
@@ -24,15 +26,10 @@ namespace Beem.Video {
         [SerializeField]
         private GameObject playerObjects;
 
-        private bool isPlaying = default;
+        public static Action<VideoPlayer> onSetVideoPlayer;
 
         private void OnEnable() {
-            VideoPlayerCallBacks.onPlay += OnPlay;
-            VideoPlayerCallBacks.onPause += OnPause;
-            VideoPlayerCallBacks.onRewindStarted += OnRewindStarted;
-            VideoPlayerCallBacks.onRewind += OnRewind;
-            VideoPlayerCallBacks.onRewindFinished += OnRewindFinished;
-            VideoPlayerCallBacks.onSetVideoPlayer += OnSetVideoPlayer;
+            onSetVideoPlayer += OnSetVideoPlayer;
             foreach (VideoPlayer item in FindObjectsOfType<VideoPlayer>()) {
                 if (item.gameObject.name == "VideoQuad") {
                     OnSetVideoPlayer(item);
@@ -42,45 +39,49 @@ namespace Beem.Video {
         }
 
         private void OnDisable() {
-            VideoPlayerCallBacks.onPlay -= OnPlay;
-            VideoPlayerCallBacks.onPause -= OnPause;
-            VideoPlayerCallBacks.onRewindStarted -= OnRewindStarted;
-            VideoPlayerCallBacks.onRewind -= OnRewind;
-            VideoPlayerCallBacks.onRewindFinished -= OnRewindFinished;
-            VideoPlayerCallBacks.onSetVideoPlayer -= OnSetVideoPlayer;
+            onSetVideoPlayer -= OnSetVideoPlayer;
             OnStop();
         }
 
-        private void OnInit() {
+        /// <summary>
+        /// Play Video
+        /// </summary>
+
+        public void OnPlay() {
             if (_videoPlayer != null) {
-                _videoPlayer.Prepare();
-                foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                    view.Init(_videoPlayer);
+                if (!_videoPlayer.isPrepared) {
+                    _videoPlayer.prepareCompleted += OnPrepare;
+                    _videoPlayer.Prepare();
+                } else {
+                    OnPrepare(_videoPlayer);
                 }
-                _videoPlayer.seekCompleted += SeekCompleted;
+                _videoPlayerBtnViews.Refresh(_videoPlayer);
             }
         }
 
-        private void OnPlay() {
-            if (_videoPlayer != null) {
-                _videoPlayer.Play();
-                if (_videoPlayer.isPrepared) {
-                    OnPrepare(_videoPlayer);
-                } else {
-                    _videoPlayer.prepareCompleted += OnPrepare;
-                }
-            }
-        }
+        /// <summary>
+        /// Prepare Video
+        /// </summary>
+        /// <param name="videoPlayer"></param>
 
         private void OnPrepare(VideoPlayer videoPlayer) {
-            playerObjects.SetActive(true);
-            _videoPlayerBtnViews.Refresh(videoPlayer);
-            foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                view.PlayAsync();
+            if (_videoPlayer != null) {
+                _videoPlayer.prepareCompleted -= OnPrepare;
+                _videoPlayer.seekCompleted += OnSeekCompleted;
+                playerObjects.SetActive(true);
+                _videoPlayerBtnViews.Refresh(videoPlayer);
+                _videoPlayer.Play();
+                foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
+                    view.PlayAsync();
+                }
             }
         }
 
-        private void OnPause() {
+        /// <summary>
+        /// Pause Video
+        /// </summary>
+
+        public void OnPause() {
             if (_videoPlayer != null) {
                 _videoPlayer.Pause();
                 _videoPlayerBtnViews.Refresh(_videoPlayer);
@@ -90,14 +91,19 @@ namespace Beem.Video {
             }
         }
 
-        private void OnRewindStarted() {
-            if (_videoPlayer != null) {
-                isPlaying = _videoPlayer.isPlaying;
-            }
+        /// <summary>
+        /// Rewind Start
+        /// </summary>
+
+        public void OnRewindStarted() {
             OnPause();
         }
 
-        private void OnRewind(float pct) {
+        /// <summary>
+        /// Rewind Video
+        /// </summary>
+        /// <param name="pct"></param>
+        public void OnRewind(float pct) {
             if (_videoPlayer != null) {
                 if (!_videoPlayer.canSetTime) return;
                 if (!_videoPlayer.isPrepared) return;
@@ -105,21 +111,49 @@ namespace Beem.Video {
             }
         }
 
-        private void SeekCompleted(VideoPlayer videoPlayer) {
-            Debug.Log("Seek Completed");
-            foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                view.Refresh();
+        /// <summary>
+        /// Seek Completed
+        /// </summary>
+        /// <param name="videoPlayer"></param>
+
+        private void OnSeekCompleted(VideoPlayer videoPlayer) {
+            if (_videoPlayer != null) {
+                _videoPlayer.sendFrameReadyEvents = true;
+                _videoPlayer.seekCompleted -= OnSeekCompleted;
+                _videoPlayer.frameReady += OnFrameReady;
             }
         }
 
-        private void OnRewindFinished(float pct) {
-            //OnRewind(pct);
-            //if (isPlaying) {
-            //    OnPlay();
-            //}
+        /// <summary>
+        /// Frame Ready
+        /// </summary>
+        /// <param name="videoPlayer"></param>
+        /// <param name="frame"></param>
+
+        private void OnFrameReady(VideoPlayer videoPlayer, long frame) {
+            if (_videoPlayer != null) {
+                _videoPlayer.sendFrameReadyEvents = false;
+                _videoPlayer.frameReady -= OnFrameReady;
+                foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
+                    view.Refresh();
+                }
+            }
         }
 
-        private void OnStop() {
+        /// <summary>
+        /// Rewind Finished
+        /// </summary>
+        /// <param name="pct"></param>
+
+        public void OnRewindFinished(float pct) {
+            OnRewind(pct);
+        }
+
+        /// <summary>
+        /// Stop Video
+        /// </summary>
+
+        public void OnStop() {
             if (_videoPlayer != null) {
                 if (_videoPlayer.isPlaying) {
                     _videoPlayer.Stop();
@@ -131,14 +165,16 @@ namespace Beem.Video {
             if (videoPlayer != null) {
                 OnStop();
                 if (_videoPlayer != videoPlayer) {
-                    _videoPlayer.seekCompleted -= SeekCompleted;
+                    _videoPlayer.seekCompleted -= OnSeekCompleted;
                     _videoPlayer.prepareCompleted -= OnPrepare;
+                    _videoPlayer.frameReady -= OnFrameReady;
                     _videoPlayer = videoPlayer;
+                    foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
+                        view.Init(_videoPlayer);
+                    }
                 }
-                OnInit();
                 OnPlay();
             }
         }
-
     }
 }
