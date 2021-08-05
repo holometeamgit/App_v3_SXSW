@@ -157,7 +157,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void RequestMicAccess() {
-        if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete) {
+        if (!permissionGranter.HasMicAccess && !permissionGranter.MicRequestComplete) {
             permissionGranter.RequestMicAccess();
         }
     }

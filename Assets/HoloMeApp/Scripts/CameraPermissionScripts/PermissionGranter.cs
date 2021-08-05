@@ -5,12 +5,12 @@ public class PermissionGranter : MonoBehaviour, IPermissionGranter {
     IPermissionGranter permissionGranter;
 
     public bool HasCameraAccess => permissionGranter.HasCameraAccess;
-    public bool MicAccessAvailable => permissionGranter.MicAccessAvailable;
-    public bool WriteAccessAvailable => permissionGranter.WriteAccessAvailable;
+    public bool HasMicAccess => permissionGranter.HasMicAccess;
+    public bool HasWriteAccess => permissionGranter.HasWriteAccess;
 
     public bool MicRequestComplete => permissionGranter.MicRequestComplete;
     public bool WriteRequestComplete => permissionGranter.WriteRequestComplete;
-    public bool CameraRequestComplete => throw new System.NotImplementedException();
+    public bool CameraRequestComplete => permissionGranter.CameraRequestComplete;
 
 
     public void RequestCameraAccess() {
@@ -23,8 +23,7 @@ public class PermissionGranter : MonoBehaviour, IPermissionGranter {
         permissionGranter.RequestMicAccess();
     }
 
-    public void RequestSettings()
-    {
+    public void RequestSettings() {
         permissionGranter.RequestSettings();
     }
 
@@ -34,11 +33,11 @@ public class PermissionGranter : MonoBehaviour, IPermissionGranter {
 
     void Awake() {
         if (Application.platform == RuntimePlatform.Android) {
-            permissionGranter = gameObject.AddComponent<PnlCameraAccessCheckAndroid>();
+            permissionGranter = new GranterForAndroid();
         } else if (Application.platform == RuntimePlatform.IPhonePlayer) {
-            permissionGranter = gameObject.AddComponent<PnlCameraAccessCheckiOS>();
+            permissionGranter = new GranterForiOS();
         } else {
-            permissionGranter = gameObject.AddComponent<PnlCameraAccessCheckEditor>();
+            permissionGranter = new GranterForEditor();
         }
     }
 }

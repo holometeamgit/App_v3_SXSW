@@ -1,8 +1,7 @@
-﻿public interface IPermissionGranter
-{
+﻿public interface IPermissionGranter {
     bool HasCameraAccess { get; }
-    bool MicAccessAvailable { get; }
-    bool WriteAccessAvailable { get; }
+    bool HasMicAccess { get; }
+    bool HasWriteAccess { get; }
 
     bool MicRequestComplete { get; }
     bool WriteRequestComplete { get; }

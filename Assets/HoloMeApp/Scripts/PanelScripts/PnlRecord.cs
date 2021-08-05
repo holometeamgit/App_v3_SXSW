@@ -136,7 +136,7 @@ public class PnlRecord : MonoBehaviour {
     }
 
     public void StartRecording() {
-        if (!permissionGranter.MicAccessAvailable) {
+        if (!permissionGranter.HasMicAccess) {
             recordMicrophone = false;
         }
         recordLengthFailed = false;

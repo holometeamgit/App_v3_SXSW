@@ -52,7 +52,7 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             yield break;
         }
 
-        if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete)
+        if (!permissionGranter.HasMicAccess && !permissionGranter.MicRequestComplete)
         {
             permissionGranter.RequestMicAccess();
             yield break;

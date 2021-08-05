@@ -9,7 +9,7 @@ public class PermissionController : MonoBehaviour {
 
     [SerializeField] PermissionGranter permissionGranter;
     [SerializeField] PnlGenericError pnlGenericError;
-    
+
     public bool CheckCameraMicAccess() {
         return CheckCameraAccess() && CheckMicAccess();
     }
@@ -29,7 +29,7 @@ public class PermissionController : MonoBehaviour {
     }
 
     public bool CheckMicAccess() {
-        if (permissionGranter.MicAccessAvailable)
+        if (permissionGranter.HasMicAccess)
             return true;
 
         if (permissionGranter.MicRequestComplete)
@@ -46,16 +46,15 @@ public class PermissionController : MonoBehaviour {
     }
 
     public void CheckSettings(string settingsTitle, string settingsDescription) {
-            pnlGenericError.ActivateDoubleButton(settingsTitle,
-                settingsDescription,
-                "Allow",
-                "Don’t Allow",
-                () => permissionGranter.RequestSettings(),
-                () => pnlGenericError.gameObject.SetActive(false));
+        pnlGenericError.ActivateDoubleButton(settingsTitle,
+            settingsDescription,
+            "Allow",
+            "Don’t Allow",
+            () => permissionGranter.RequestSettings(),
+            () => pnlGenericError.gameObject.SetActive(false));
     }
 
-    public void InformAboutNotification(string settingsTitle, string settingsDescription)
-    {
+    public void InformAboutNotification(string settingsTitle, string settingsDescription) {
         pnlGenericError.ActivateDoubleButton(settingsTitle,
             settingsDescription,
             "Settings",
