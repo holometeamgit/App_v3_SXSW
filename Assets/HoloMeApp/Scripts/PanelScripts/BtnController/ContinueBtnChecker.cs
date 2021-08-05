@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ContinueBtnChecker : MonoBehaviour
-{
+public class ContinueBtnChecker : BtnInteractionRequirementChecker {
     [SerializeField]
     [Tooltip("This inputFields must be filled for enable btn")]
     private List <InputFieldController> _filledInputFieldControllers;
@@ -13,16 +12,13 @@ public class ContinueBtnChecker : MonoBehaviour
     [Tooltip("This toggles must be is On for enable btn")]
     private List<Toggle> _isOnToggles;
 
-    [SerializeField]
-    [Tooltip("This btn will be interactable if all requirements are met ")]
-    private Button _button;
-
-    private void CheckRequirements(bool value) {
+    private void CheckContinueBtnRequirements(bool value) {
         CheckRequirements();
     }
 
-    private void CheckRequirements() {
-        _button.interactable = IsInputFieldsFilled() && IsOnToggles();
+    public void CheckContinueBtnRequirements() {
+        _canInteract = IsInputFieldsFilled() && IsOnToggles();
+        HelperFunctions.DevLog("CheckRequirements " + (IsInputFieldsFilled() && IsOnToggles()));
     }
 
     private bool IsOnToggles() {
@@ -45,25 +41,25 @@ public class ContinueBtnChecker : MonoBehaviour
 
     private void SubscribesOnEndInputFields() {
         foreach(var inputField in _filledInputFieldControllers) {
-            inputField.OnEndEditPassword.AddListener(CheckRequirements);
+            inputField.OnEndEditPassword.AddListener(CheckContinueBtnRequirements);
         }
     }
 
     private void DescribesOnEndInputFields() {
         foreach (var inputField in _filledInputFieldControllers) {
-            inputField.OnEndEditPassword.RemoveListener(CheckRequirements);
+            inputField.OnEndEditPassword.RemoveListener(CheckContinueBtnRequirements);
         }
     }
 
     private void SubscribesOnChangeToggles() {
         foreach (var toggle in _isOnToggles) {
-            toggle.onValueChanged.AddListener(CheckRequirements);
+            toggle.onValueChanged.AddListener(CheckContinueBtnRequirements);
         }
     }
 
     private void DescribesOnChangeToggles() {
         foreach (var toggle in _isOnToggles) {
-            toggle.onValueChanged.RemoveListener(CheckRequirements);
+            toggle.onValueChanged.RemoveListener(CheckContinueBtnRequirements);
         }
     }
 
