@@ -39,9 +39,6 @@ public class PnlRecord : MonoBehaviour {
     PnlPostRecord pnlPostRecord;
 
     [SerializeField]
-    PermissionGranter permissionGranter;
-
-    [SerializeField]
     RectTransform rtButtonContainer;
 
     [SerializeField]
@@ -77,6 +74,18 @@ public class PnlRecord : MonoBehaviour {
     private CameraInput cameraInput;
     private AudioInput audioInput;
     private Coroutine currentCoroutine;
+
+    private PermissionController _permissionController;
+    private PermissionController permissionController {
+        get {
+
+            if (_permissionController == null) {
+                _permissionController = FindObjectOfType<PermissionController>();
+            }
+
+            return _permissionController;
+        }
+    }
 
     int videoWidth;
     int videoHeight;
@@ -136,7 +145,7 @@ public class PnlRecord : MonoBehaviour {
     }
 
     public void StartRecording() {
-        if (!permissionGranter.HasMicAccess) {
+        if (!permissionController.CheckMicAccess()) {
             recordMicrophone = false;
         }
         recordLengthFailed = false;

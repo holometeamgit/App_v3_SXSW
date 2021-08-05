@@ -12,11 +12,7 @@ public class PnlViewingExperience : MonoBehaviour {
     [SerializeField]
     CanvasGroup canvasGroup;
     [SerializeField]
-    PermissionController permissionController;
-    [SerializeField]
     HologramHandler hologramHandler;
-    [SerializeField]
-    PermissionGranter permissionGranter;
     [SerializeField]
     ARPlaneManager arPlaneManager;
     [SerializeField]
@@ -30,6 +26,18 @@ public class PnlViewingExperience : MonoBehaviour {
     [Header("")]
     [SerializeField]
     RectTransform scanMessageRT;
+
+    private PermissionController _permissionController;
+    private PermissionController permissionController {
+        get {
+
+            if (_permissionController == null) {
+                _permissionController = FindObjectOfType<PermissionController>();
+            }
+
+            return _permissionController;
+        }
+    }
 
     string scaneEnviromentStr = "Scan the floor in front of you by moving your phone slowly from side to side";
 
@@ -51,13 +59,10 @@ public class PnlViewingExperience : MonoBehaviour {
     TutorialState tutorialState = TutorialState.MessageScan;
     void OnEnable() {
         scanAnimationItems.SetActive(false);
-        if (permissionGranter.HasCameraAccess && !tutorialDisplayed) {
-            //RunTutorial();
-            tutorialDisplayed = true;
-        } else {
-            if (permissionController == null)
-                permissionController = FindObjectOfType<PermissionController>();
-            permissionController.CheckCameraMicAccess();
+        if (permissionController.CheckCameraMicAccess()) {
+            if (!tutorialDisplayed) {
+                tutorialDisplayed = true;
+            }
         }
     }
     public void ToggleARSessionObjects(bool enable) {

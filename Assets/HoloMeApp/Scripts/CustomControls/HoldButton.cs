@@ -4,8 +4,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
-{
+public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
     public Image countdown;
     public UnityEvent onTouchDown, onTouchUp, onRecordTooShort;
     private bool pressed;
@@ -13,48 +12,49 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private const float MinRecordingTime = 2; // seconds
     private const float AccidentTapTime = 0.2f;
 
-    [SerializeField]
-    PermissionGranter permissionGranter;
+    private PermissionController _permissionController;
+    private PermissionController permissionController {
+        get {
 
-    private void Start()
-    {
+            if (_permissionController == null) {
+                _permissionController = FindObjectOfType<PermissionController>();
+            }
+
+            return _permissionController;
+        }
+    }
+
+    private void Start() {
         Reset();
     }
 
-    private void Reset()
-    {
+    private void Reset() {
         // Reset fill amounts
         if (countdown) countdown.fillAmount = 0.0f;
     }
 
-    void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
-    {
+    void IPointerDownHandler.OnPointerDown(PointerEventData eventData) {
         // Start counting
         StartCoroutine(Countdown());
     }
 
-    void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
-    {
+    void IPointerUpHandler.OnPointerUp(PointerEventData eventData) {
         // Reset pressed
         pressed = false;
     }
 
-    private IEnumerator Countdown()
-    {
+    private IEnumerator Countdown() {
         pressed = true;
 
         // First wait a short time to make sure it's not a tap
         yield return new WaitForSeconds(AccidentTapTime);
 
-        if (!pressed)
-        {
+        if (!pressed) {
             onRecordTooShort?.Invoke(); //Trying to call screenshot path is short pressed here 
             yield break;
         }
 
-        if (!permissionGranter.HasMicAccess && !permissionGranter.MicRequestComplete)
-        {
-            permissionGranter.RequestMicAccess();
+        if (!permissionController.CheckMicAccess()) {
             yield break;
         }
 
@@ -63,16 +63,14 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
         // Animate the countdown
         float startTime = Time.time, ratio = 0f;
-        while (pressed && (ratio = (Time.time - startTime) / MaxRecordingTime) < 1.0f)
-        {
+        while (pressed && (ratio = (Time.time - startTime) / MaxRecordingTime) < 1.0f) {
             countdown.fillAmount = ratio;
             yield return null;
         }
 
         Reset();
 
-        if ((Time.time - startTime) < (MinRecordingTime - AccidentTapTime))
-        {
+        if ((Time.time - startTime) < (MinRecordingTime - AccidentTapTime)) {
             onRecordTooShort?.Invoke();
         }
 

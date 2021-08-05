@@ -1,70 +1,81 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-#if PLATFORM_ANDROID || UNITY_ANDROID
-using UnityEngine.Android;
-#endif
+﻿using UnityEngine;
 
+/// <summary>
+/// Controllers for Different permissions
+/// </summary>
 public class PermissionController : MonoBehaviour {
 
-    [SerializeField] PermissionGranter permissionGranter;
-    [SerializeField] PnlGenericError pnlGenericError;
+    [SerializeField]
+    private PnlGenericError pnlGenericError;
+
+    public IPermissionGranter PermissionGranter {
+        get {
+            return _permissionGranter;
+        }
+    }
+
+    private IPermissionGranter _permissionGranter;
+
+    private void Awake() {
+        if (Application.platform == RuntimePlatform.Android) {
+            _permissionGranter = new GranterForAndroid();
+        } else if (Application.platform == RuntimePlatform.IPhonePlayer) {
+            _permissionGranter = new GranterForiOS();
+        } else {
+            _permissionGranter = new GranterForEditor();
+        }
+    }
+
+    /// <summary>
+    /// Check Camera and Mic Access
+    /// </summary>
+    /// <returns></returns>
 
     public bool CheckCameraMicAccess() {
         return CheckCameraAccess() && CheckMicAccess();
     }
 
+    /// <summary>
+    /// Check Camera Access
+    /// </summary>
+    /// <returns></returns>
     public bool CheckCameraAccess() {
-        if (permissionGranter.HasCameraAccess)
+        if (_permissionGranter.HasCameraAccess)
             return true;
 
-        pnlGenericError.ActivateDoubleButton("Camera Access Required!",
+        if (!_permissionGranter.CameraRequestComplete) {
+            _permissionGranter.RequestCameraAccess();
+        } else {
+            pnlGenericError.ActivateDoubleButton("Camera Access Required!",
             "Please enable camera access to use this app",
             "Settings",
             "Cancel",
-            () => permissionGranter.RequestCameraAccess(),
+            () => _permissionGranter.RequestSettings(),
             () => pnlGenericError.gameObject.SetActive(false));
+        }
 
         return false;
     }
 
+    /// <summary>
+    /// Check Microphone Access
+    /// </summary>
+    /// <returns></returns>
+
     public bool CheckMicAccess() {
-        if (permissionGranter.HasMicAccess)
+        if (_permissionGranter.HasMicAccess)
             return true;
 
-        if (permissionGranter.MicRequestComplete)
-            permissionGranter.RequestMicAccess();
-        else
+        if (!_permissionGranter.MicRequestComplete) {
+            _permissionGranter.RequestMicAccess();
+        } else {
             pnlGenericError.ActivateDoubleButton("Mic Access Required!",
                 "Please enable mic access to use this app",
                 "Settings",
                 "Cancel",
-                () => permissionGranter.RequestMicAccess(),
+                () => _permissionGranter.RequestSettings(),
                 () => pnlGenericError.gameObject.SetActive(false));
-
+        }
         return false;
-    }
-
-    public void CheckSettings(string settingsTitle, string settingsDescription) {
-        pnlGenericError.ActivateDoubleButton(settingsTitle,
-            settingsDescription,
-            "Allow",
-            "Don’t Allow",
-            () => permissionGranter.RequestSettings(),
-            () => pnlGenericError.gameObject.SetActive(false));
-    }
-
-    public void InformAboutNotification(string settingsTitle, string settingsDescription) {
-        pnlGenericError.ActivateDoubleButton(settingsTitle,
-            settingsDescription,
-            "Settings",
-            "Cancel",
-            () => permissionGranter.RequestSettings(),
-            () => pnlGenericError.gameObject.SetActive(false));
-    }
-
-    public void CheckPushNotifications() {
-        HelperFunctions.DevLog("CheckPushNotifications permission");
-        CheckSettings("‘Beem’ Would Like To Send You Notifications", "Notifications may include alerts and sounds, and icon badget. These can be configure in Settings.");
     }
 }
