@@ -38,9 +38,7 @@ public class GranterForAndroid : IPermissionGranter {
 
     public void RequestWriteAccess() {
         if (!MicRequestComplete) {
-            if (!HasWriteAccess) {
-                Permission.RequestUserPermission(Permission.ExternalStorageWrite);
-            }
+            Permission.RequestUserPermission(Permission.ExternalStorageWrite);
             WriteRequestComplete = true;
         } else {
             RequestSettings();
@@ -49,9 +47,7 @@ public class GranterForAndroid : IPermissionGranter {
 
     public void RequestMicAccess() {
         if (!MicRequestComplete) {
-            if (!HasMicAccess) {
-                Permission.RequestUserPermission(Permission.Microphone);
-            }
+            Permission.RequestUserPermission(Permission.Microphone);
             MicRequestComplete = true;
         } else {
             RequestSettings();
@@ -61,9 +57,7 @@ public class GranterForAndroid : IPermissionGranter {
 
     public void RequestCameraAccess() {
         if (!CameraRequestComplete) {
-            if (!HasCameraAccess) {
-                Permission.RequestUserPermission(Permission.Camera);
-            }
+            Permission.RequestUserPermission(Permission.Camera);
             CameraRequestComplete = true;
         } else {
             RequestSettings();

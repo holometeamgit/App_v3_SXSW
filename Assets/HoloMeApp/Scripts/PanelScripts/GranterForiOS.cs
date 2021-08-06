@@ -29,10 +29,8 @@ public class GranterForiOS : IPermissionGranter {
     private const string MICROPHONE_ACCESS = "Microphone";
 
     public void RequestCameraAccess() {
-        if (CameraRequestComplete) {
-            if (!HasCameraAccess) {
-                Application.RequestUserAuthorization(UserAuthorization.WebCam);
-            }
+        if (!CameraRequestComplete) {
+            Application.RequestUserAuthorization(UserAuthorization.WebCam);
             CameraRequestComplete = true;
         } else {
             RequestSettings();
@@ -41,9 +39,7 @@ public class GranterForiOS : IPermissionGranter {
 
     public void RequestMicAccess() {
         if (!MicRequestComplete) {
-            if (!HasMicAccess) {
-                Application.RequestUserAuthorization(UserAuthorization.Microphone);
-            }
+            Application.RequestUserAuthorization(UserAuthorization.Microphone);
             MicRequestComplete = true;
         } else {
             RequestSettings();
