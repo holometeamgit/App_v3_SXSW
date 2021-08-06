@@ -283,11 +283,6 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void FadePanel(bool show) {
-
-        if (!show && pnlViewingExperience != null) {
-            pnlViewingExperience.ToggleARSessionObjects(true);
-        }
-
         canvasGroup.DOFade(show ? 1 : 0, 0.5f).OnComplete(() => { if (!show) { gameObject.SetActive(false); } });
     }
 
@@ -595,6 +590,9 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void OnDisable() {
         StopAllCoroutines();
+        if (pnlViewingExperience != null) {
+            pnlViewingExperience.ToggleARSessionObjects(true);
+        }
         ChatBtn.onOpen -= OpenChat;
     }
 
