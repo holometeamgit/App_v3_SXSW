@@ -36,7 +36,7 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction {
                 cleverTapUnityComponent.CLEVERTAP_ACCOUNT_TOKEN = Token;
             }
 
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
             CleverTapBinding.RegisterPush();
 #endif
             DontDestroyOnLoad(Instance);
