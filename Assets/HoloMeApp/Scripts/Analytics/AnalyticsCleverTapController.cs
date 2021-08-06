@@ -36,6 +36,9 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction {
                 cleverTapUnityComponent.CLEVERTAP_ACCOUNT_TOKEN = Token;
             }
 
+#if UNITY_IOS
+            CleverTapBinding.RegisterPush();
+#endif
             DontDestroyOnLoad(Instance);
         } else {
             Debug.LogError($"{nameof(AnalyticsController)} Instance Already Exists!");
@@ -61,6 +64,10 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction {
         loginDetails.Add("UserID", userWebManager.GetUserID().ToString());
         loginDetails.Add("Identity", userWebManager.GetUserID().ToString());
         CleverTapBinding.OnUserLogin(loginDetails);
+
+#if UNITY_ANDROID
+        CleverTapBinding.CreateNotificationChannel("Default", "Default", "Default", 1, true);
+#endif
 
         //Debug.Log("USER LONG INFO PASSED CT2");
     }
