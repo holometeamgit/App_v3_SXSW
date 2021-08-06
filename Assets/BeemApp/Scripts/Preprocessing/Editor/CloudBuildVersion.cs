@@ -33,26 +33,12 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
         _buildType = Environment.GetEnvironmentVariable(BUILD_TYPE);
 
         if (!string.IsNullOrEmpty(_versionNumber)) {
-
-            List<int> versions = GetVersions(_versionNumber);
-
-            List<int> previousVersions = GetVersions(PlayerSettings.bundleVersion);
-
-            for (int i = 0; i < Mathf.Min(versions.Count, previousVersions.Count); i++) {
-                if (versions[i] > previousVersions[i]) {
-                    PlayerSettings.bundleVersion = _versionNumber;
-                    break;
-                }
-            }
+            PlayerSettings.bundleVersion = _versionNumber;
         }
 
         if (!string.IsNullOrEmpty(_buildNumber)) {
-            if (int.Parse(_buildNumber) > int.Parse(PlayerSettings.iOS.buildNumber)) {
-                PlayerSettings.iOS.buildNumber = _buildNumber;
-            }
-            if (int.Parse(_buildNumber) > PlayerSettings.Android.bundleVersionCode) {
-                PlayerSettings.Android.bundleVersionCode = int.Parse(_buildNumber);
-            }
+            PlayerSettings.iOS.buildNumber = _buildNumber;
+            PlayerSettings.Android.bundleVersionCode = int.Parse(_buildNumber);
         }
 
         if (!string.IsNullOrEmpty(_buildType)) {
