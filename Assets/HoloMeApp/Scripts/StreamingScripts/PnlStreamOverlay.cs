@@ -284,7 +284,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void FadePanel(bool show) {
 
-        if (!show) {
+        if (!show && pnlViewingExperience != null) {
             pnlViewingExperience.ToggleARSessionObjects(true);
         }
 
