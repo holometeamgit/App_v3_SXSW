@@ -43,6 +43,14 @@ namespace Beem.Video {
             OnStop();
         }
 
+        private void OnInit() {
+            if (_videoPlayer != null) {
+                foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
+                    view.Init(_videoPlayer);
+                }
+            }
+        }
+
         /// <summary>
         /// Play Video
         /// </summary>
@@ -69,7 +77,7 @@ namespace Beem.Video {
                 _videoPlayer.prepareCompleted -= OnPrepare;
                 _videoPlayer.seekCompleted += OnSeekCompleted;
                 playerObjects.SetActive(true);
-                _videoPlayerBtnViews.Refresh(videoPlayer);
+                _videoPlayerBtnViews.Refresh(_videoPlayer);
                 _videoPlayer.Play();
                 foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
                     view.PlayAsync();
@@ -164,15 +172,8 @@ namespace Beem.Video {
         private void OnSetVideoPlayer(VideoPlayer videoPlayer) {
             if (videoPlayer != null) {
                 OnStop();
-                if (_videoPlayer != videoPlayer) {
-                    _videoPlayer.seekCompleted -= OnSeekCompleted;
-                    _videoPlayer.prepareCompleted -= OnPrepare;
-                    _videoPlayer.frameReady -= OnFrameReady;
-                    _videoPlayer = videoPlayer;
-                    foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                        view.Init(_videoPlayer);
-                    }
-                }
+                _videoPlayer = videoPlayer;
+                OnInit();
                 OnPlay();
             }
         }
