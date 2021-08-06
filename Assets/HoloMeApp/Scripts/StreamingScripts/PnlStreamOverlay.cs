@@ -590,7 +590,9 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void OnDisable() {
         StopAllCoroutines();
-        pnlViewingExperience.ToggleARSessionObjects(true);
+        if (pnlViewingExperience != null) {
+            pnlViewingExperience.ToggleARSessionObjects(true);
+        }
         ChatBtn.onOpen -= OpenChat;
     }
 
