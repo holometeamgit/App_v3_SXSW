@@ -9,6 +9,7 @@ using TMPro;
 using UnityEngine.Events;
 using System.IO;
 using Beem.Utility;
+using Beem.Permissions;
 
 public class PnlRecord : MonoBehaviour {
     [SerializeField]

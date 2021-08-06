@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Beem.Firebase.DynamicLink;
 using Beem.SSO;
+using Beem.Permissions;
 
 public class UIThumbnailsController : MonoBehaviour {
     public Action OnUpdated;
@@ -179,7 +178,7 @@ public class UIThumbnailsController : MonoBehaviour {
 
     private void PlayStream(StreamJsonData.Data data) {
 
-        if (data.HasStreamUrl) {
+        if (data.GetStage() == StreamJsonData.Data.Stage.Prerecorded) {
             if (!permissionController.CheckCameraAccess())
                 return;
         }

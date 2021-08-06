@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Beem.Permissions;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;

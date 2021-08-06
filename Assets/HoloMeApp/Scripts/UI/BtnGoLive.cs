@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using System;
-
+using Beem.Permissions;
 
 public class BtnGoLive : MonoBehaviour {
     [SerializeField] UnityEvent OnGoLive;

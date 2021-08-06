@@ -4,6 +4,8 @@ using DG.Tweening;
 using TMPro;
 using System.Collections;
 using System;
+using Beem.Permissions;
+
 public class PnlViewingExperience : MonoBehaviour {
     [SerializeField]
     GameObject scanAnimationItems;
