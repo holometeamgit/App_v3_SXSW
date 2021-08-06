@@ -14,24 +14,49 @@ public class BtnController : MonoBehaviour
 
     public UnityEvent OnPress;
 
+    private void Awake() {
+        _onNeedCheckInteractionRequirement = new HashSet<Func<bool>>();
+    }
+
+    /// <summary>
+    /// Adds a requirements method to the set
+    /// </summary>
+    /// <param name="onCheckRequirement"></param>
     public void AddCheckInteractionRequirementListener(Func<bool> onCheckRequirement) {
         _onNeedCheckInteractionRequirement.Add(onCheckRequirement);
     }
-
+    /// <summary>
+    /// remove a requirements method to the set
+    /// </summary>
+    /// <param name="onCheckRequirement"></param>
     public void RemoveCheckInteractionRequirementListener(Func<bool> onCheckRequirement) {
         _onNeedCheckInteractionRequirement.Remove(onCheckRequirement);
     }
 
+    /// <summary>
+    /// In the future, according to a variety of requirements,
+    /// it can determine whether the button is now interactive or not
+    /// </summary>
     public void CheckInteractionRequirement() {
-        foreach(var checker in _onNeedCheckInteractionRequirement) {
-            if(checker.Invoke()) {
-
+        foreach(var isMetRequirements in _onNeedCheckInteractionRequirement) {
+            HelperFunctions.DevLog(" CheckInteractionRequirement BtnController " + isMetRequirements.Invoke());
+            if(!isMetRequirements.Invoke()) {
+                _btn.interactable = false;
+                return;
             }
         }
+        _btn.interactable = true;
     }
 
+    /// <summary>
+    /// Invole press the btn
+    /// </summary>
     public void BtnPress() {
         OnPress.Invoke();
+    }
+
+    private void OnEnable() {
+        CheckInteractionRequirement();
     }
 
 }

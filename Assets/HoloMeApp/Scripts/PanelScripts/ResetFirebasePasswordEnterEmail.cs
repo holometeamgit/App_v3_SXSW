@@ -19,6 +19,10 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour
         CallBacks.onResetPasswordClick?.Invoke();
     }
 
+    private void Awake() {
+        CallBacks.onSignOut += ClearInputField;
+    }
+
     private void SendMsgOnEmailForChangePassword() {
         if (!LocalDataVerification())
             return;
@@ -61,6 +65,10 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour
         return !string.IsNullOrWhiteSpace(emailInputField.text);
     }
 
+    private void ClearInputField() {
+        emailInputField.text = "";
+    }
+
     private void OnEnable() {
         if (string.IsNullOrWhiteSpace(emailInputField.text))
             emailInputField.text = authController.GetEmail();
@@ -75,5 +83,9 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour
         CallBacks.onResetPasswordClick -= SendMsgOnEmailForChangePassword;
         CallBacks.onFail -= ErrorMsgCallBack;
         CallBacks.onResetPasswordMsgSent -= MsgSentCallBack;
+    }
+
+    private void OnDestroy() {
+        CallBacks.onSignOut -= ClearInputField;
     }
 }

@@ -12,13 +12,35 @@ public class ContinueBtnChecker : BtnInteractionRequirementChecker {
     [Tooltip("This toggles must be is On for enable btn")]
     private List<Toggle> _isOnToggles;
 
-    private void CheckContinueBtnRequirements(bool value) {
-        CheckRequirements();
+    protected override bool CheckRequirements() {
+        return _canInteract;
     }
 
-    public void CheckContinueBtnRequirements() {
+    protected override void OnEnable() {
+        base.OnEnable();
+        SubscribesOnEndInputFields();
+        SubscribesOnChangeToggles();
+        CheckContinueBtnRequirements();
+        _onRequirementsUpdated?.Invoke();
+    }
+
+    protected override void OnDisable() {
+        base.OnDisable();
+        DescribesOnEndInputFields();
+        DescribesOnChangeToggles();
+        CheckContinueBtnRequirements();
+    }
+
+    private void CheckContinueBtnRequirements(bool value) {
+        CheckContinueBtnRequirements();
+    }
+
+    private void CheckContinueBtnRequirements() {
+        bool prevCanInteract = _canInteract;
         _canInteract = IsInputFieldsFilled() && IsOnToggles();
-        HelperFunctions.DevLog("CheckRequirements " + (IsInputFieldsFilled() && IsOnToggles()));
+
+        if(_canInteract != prevCanInteract)
+            _onRequirementsUpdated?.Invoke();
     }
 
     private bool IsOnToggles() {
@@ -41,13 +63,13 @@ public class ContinueBtnChecker : BtnInteractionRequirementChecker {
 
     private void SubscribesOnEndInputFields() {
         foreach(var inputField in _filledInputFieldControllers) {
-            inputField.OnEndEditPassword.AddListener(CheckContinueBtnRequirements);
+            inputField.onValueChanged.AddListener(CheckContinueBtnRequirements);
         }
     }
 
     private void DescribesOnEndInputFields() {
         foreach (var inputField in _filledInputFieldControllers) {
-            inputField.OnEndEditPassword.RemoveListener(CheckContinueBtnRequirements);
+            inputField.onValueChanged.RemoveListener(CheckContinueBtnRequirements);
         }
     }
 
@@ -62,17 +84,4 @@ public class ContinueBtnChecker : BtnInteractionRequirementChecker {
             toggle.onValueChanged.RemoveListener(CheckContinueBtnRequirements);
         }
     }
-
-    private void OnEnable() {
-        SubscribesOnEndInputFields();
-        SubscribesOnChangeToggles();
-        CheckRequirements();
-    }
-
-    private void OnDisable() {
-        DescribesOnEndInputFields();
-        DescribesOnChangeToggles();
-        CheckRequirements();
-    }
-
 }
