@@ -121,7 +121,6 @@ public class PnlHomeScreenV2 : MonoBehaviour {
         pullRefreshController.EndRefreshing();
         pullRefreshController.RefreshLayout();
         pullRefreshController.RefreshLayout();
-        HelperFunctions.DevLog("EndingUIUpdate");
     }
 
     private void OnEnable() {
