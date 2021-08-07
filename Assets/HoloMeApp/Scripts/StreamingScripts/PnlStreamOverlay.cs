@@ -77,9 +77,6 @@ public class PnlStreamOverlay : MonoBehaviour {
     private UserWebManager userWebManager;
 
     [SerializeField]
-    private PermissionGranter permissionGranter;
-
-    [SerializeField]
     private UnityEvent OnCloseAsViewer;
 
     [SerializeField]
@@ -144,7 +141,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         FadePanel(true);
         txtCentreMessage.text = string.Empty;
         CentreMessage.localScale = Vector3.zero;
-        RequestMicAccess();
         ChatBtn.onOpen += OpenChat;
     }
 
@@ -154,12 +150,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         uiBtnLikes.Init(streamStartResponseJsonData.id);
         streamLikesRefresherView.StartCountAsync(currentStreamId);
         StartStreamCountUpdaters();
-    }
-
-    private void RequestMicAccess() {
-        if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete) {
-            permissionGranter.RequestMicAccess();
-        }
     }
 
     public void RefreshControls() {
@@ -590,7 +580,9 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void OnDisable() {
         StopAllCoroutines();
-        pnlViewingExperience.ToggleARSessionObjects(true);
+        if (pnlViewingExperience != null) {
+            pnlViewingExperience.ToggleARSessionObjects(true);
+        }
         ChatBtn.onOpen -= OpenChat;
     }
 

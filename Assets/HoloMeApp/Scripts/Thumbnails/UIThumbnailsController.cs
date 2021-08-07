@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Beem.Firebase.DynamicLink;
 using Beem.SSO;
+using Beem.Permissions;
 
 public class UIThumbnailsController : MonoBehaviour {
     public Action OnUpdated;
@@ -16,7 +15,18 @@ public class UIThumbnailsController : MonoBehaviour {
     [SerializeField] GameObject btnThumbnailPrefab;
     [SerializeField] Transform content;
     [SerializeField] PurchaseManager purchaseManager;
-    [SerializeField] PermissionController permissionController;
+
+    private PermissionController _permissionController;
+    private PermissionController permissionController {
+        get {
+
+            if (_permissionController == null) {
+                _permissionController = FindObjectOfType<PermissionController>();
+            }
+
+            return _permissionController;
+        }
+    }
 
     Dictionary<long, ThumbnailElement> thumbnailElementsDictionary;
 
@@ -81,6 +91,11 @@ public class UIThumbnailsController : MonoBehaviour {
     /// </summary>
 
     public void PlayLiveStream(string user, string agoraChannel, string streamID, bool isRoom) { //TODO split it to ather class
+        if (isRoom) {
+            if (!permissionController.CheckCameraMicAccess())
+                return;
+        }
+
         if (!permissionController.CheckCameraAccess())
             return;
         pnlStreamOverlay.OpenAsViewer(agoraChannel, streamID, isRoom);
@@ -162,7 +177,13 @@ public class UIThumbnailsController : MonoBehaviour {
     #endregion
 
     private void PlayStream(StreamJsonData.Data data) {
-        if (!permissionController.CheckCameraAccess())
+
+        if (data.GetStage() == StreamJsonData.Data.Stage.Prerecorded) {
+            if (!permissionController.CheckCameraAccess())
+                return;
+        }
+
+        if (!permissionController.CheckCameraMicAccess())
             return;
 
         if (data.HasStreamUrl) {
