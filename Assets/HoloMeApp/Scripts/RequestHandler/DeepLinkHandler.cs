@@ -19,11 +19,6 @@ public class DeepLinkHandler : MonoBehaviour {
         GetContentsParameters(uri);
     }
 
-    public void CheckSettings() {
-        PermissionController permissionController = FindObjectOfType<PermissionController>();
-        permissionController.InformAboutNotification("Notifications have been enabled", "Notifications may include alerts, sounds, and icon badges. These can be configured in Settings.");
-    }
-
     private void Awake() {
         DynamicLinksCallBacks.onReceivedDeepLink += OnDynamicLinkActivated;
     }
@@ -48,9 +43,6 @@ public class DeepLinkHandler : MonoBehaviour {
 
             HelperFunctions.DevLog("streamId = " + streamId);
             StreamCallBacks.onStreamLinkReceived?.Invoke(streamId);
-        } else if (IsFolder(uri, serverURLAPIScriptableObject.NotificationAccess)) {
-            PermissionController permissionController = FindObjectOfType<PermissionController>();
-            permissionController.CheckPushNotifications();
         }
     }
 

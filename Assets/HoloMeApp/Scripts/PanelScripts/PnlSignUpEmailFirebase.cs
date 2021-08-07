@@ -18,16 +18,12 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     [SerializeField]
     private bool isNeedConfirmationPassword = true;
     [SerializeField]
-    private Toggle isPolicyConfirmed;
+    private Toggle toggleEmailReceive;
     [SerializeField]
     private Animator animator;
 
     private const float COOLDOWN = 0.5f;
     private float nextTimeCanClick = 0;
-
-    public void OnPolicyConfirmationChanged(bool isPolicyConfirmed) {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyEmailOptIn, AnalyticParameters.ParamSignUpMethod, AnalyticsSignUpModeTracker.Instance.SignUpMethodUsed.ToString());
-    }
 
     public void StopAnimation() {
         animator.enabled = false;
@@ -58,6 +54,10 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     }
 
     private void SignUpCallBack() {
+        if(toggleEmailReceive.isOn) {
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyEmailOptIn, AnalyticParameters.ParamSignUpMethod, AnalyticsSignUpModeTracker.Instance.SignUpMethodUsed.ToString());
+        }
+
         switcherToVerification.Switch();
         ClearInputFieldData();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete);
@@ -117,9 +117,9 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
         CallBacks.onSignUpSuccess += HideBackground;
         CallBacks.onNeedVerification += HideBackground;
 
-        isPolicyConfirmed.isOn = false;
-        isPolicyConfirmed.enabled = false;
-        isPolicyConfirmed.enabled = true;
+        toggleEmailReceive.isOn = false;
+        toggleEmailReceive.enabled = false;
+        toggleEmailReceive.enabled = true;
     }
 
     private void OnDisable() {

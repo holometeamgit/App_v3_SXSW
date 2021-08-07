@@ -19,14 +19,7 @@ public class PnlProfile : MonoBehaviour {
     [SerializeField] ExternalLinkRedirector externalLinkRedirector;
 
     [SerializeField]
-    Toggle isPolicyConfirmed;
-    [SerializeField]
-    Button continueBtn;
-
-
-    public void OnPolicyConfirmationChanged(bool isPolicyConfirmed) {
-        continueBtn.interactable = isPolicyConfirmed;
-    }
+    private Toggle toggleEmailReceive;
 
     public void ChooseUsername() {
         if (LocalDataVerification()) {
@@ -55,6 +48,11 @@ public class PnlProfile : MonoBehaviour {
     }
 
     private void UpdateUserDataCallBack() {
+
+        if(toggleEmailReceive.isOn) {
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyEmailOptIn, AnalyticParameters.ParamSignUpMethod, AnalyticsSignUpModeTracker.Instance.SignUpMethodUsed.ToString());
+        }
+
         userWebManager.LoadUserInfo();
         SwitchToMainMenu();
     }
@@ -113,11 +111,9 @@ public class PnlProfile : MonoBehaviour {
         InputDataArea.SetActive(false);
         userWebManager.LoadUserInfo();
 
-        isPolicyConfirmed.isOn = true;
-        isPolicyConfirmed.enabled = false;
-        isPolicyConfirmed.enabled = true;
-
-        continueBtn.interactable = isPolicyConfirmed.isOn;
+        toggleEmailReceive.isOn = false;
+        toggleEmailReceive.enabled = false;
+        toggleEmailReceive.enabled = true;
     }
 
     private void OnDisable() {

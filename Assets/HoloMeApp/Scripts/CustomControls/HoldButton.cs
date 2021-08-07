@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Beem.Permissions;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -12,10 +13,16 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
     private const float MinRecordingTime = 2; // seconds
     private const float AccidentTapTime = 0.2f;
 
-    private PermissionGranter permissionGranter;
+    private PermissionController _permissionController;
+    private PermissionController permissionController {
+        get {
 
-    private void Awake() {
-        permissionGranter = FindObjectOfType<PermissionGranter>();
+            if (_permissionController == null) {
+                _permissionController = FindObjectOfType<PermissionController>();
+            }
+
+            return _permissionController;
+        }
     }
 
     private void Start() {
@@ -48,8 +55,7 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
             yield break;
         }
 
-        if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete) {
-            permissionGranter.RequestMicAccess();
+        if (!permissionController.CheckMicAccess()) {
             yield break;
         }
 

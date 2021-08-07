@@ -1,20 +1,30 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using System;
+using Beem.Permissions;
 
-
-public class BtnGoLive : MonoBehaviour
-{
+public class BtnGoLive : MonoBehaviour {
     [SerializeField] UnityEvent OnGoLive;
-    [SerializeField] PermissionController permissionController;
+
+    private PermissionController _permissionController;
+    private PermissionController permissionController {
+        get {
+
+            if (_permissionController == null) {
+                _permissionController = FindObjectOfType<PermissionController>();
+            }
+
+            return _permissionController;
+        }
+    }
 
     public void GoLive() {
-        if (permissionController.CheckCameraMicAccess())
-        {
-            AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance },AnalyticKeys.KeyGoLive, new Dictionary<string, string>() { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID } });
-            OnGoLive.Invoke();
+        if (!permissionController.CheckCameraMicAccess()) {
+            return;
         }
+
+        AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyGoLive, new Dictionary<string, string>() { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID } });
+        OnGoLive.Invoke();
+
     }
 }
