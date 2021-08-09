@@ -107,6 +107,12 @@ namespace Beem.Video {
             OnPause();
         }
 
+        private void OnApplicationPause(bool pause) {
+            if (pause) {
+                OnPause();
+            }
+        }
+
         /// <summary>
         /// Rewind Video
         /// </summary>
