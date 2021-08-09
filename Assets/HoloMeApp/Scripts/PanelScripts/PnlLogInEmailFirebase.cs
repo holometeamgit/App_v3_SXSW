@@ -27,13 +27,18 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
         nextTimeCanClick = (Time.time + COOLDOWN);
 
         if (!LocalDataVerification()) {
-            HelperFunctions.DevLog("LocalDataVerification " + LocalDataVerification());
             return;
         }
 
         ShowBackground();
-        HelperFunctions.DevLog("Start login 2 ");
         CallBacks.onSignInEMail?.Invoke(inputFieldEmail.text, inputFieldPassword.text);
+    }
+
+    /// <summary>
+    /// The method do actions after pressing the LogIn button
+    /// </summary>
+    public void LogInBtnClick() {
+        CallBacks.onSignInEMailClick?.Invoke();
     }
 
     private void LogInCallBack() {

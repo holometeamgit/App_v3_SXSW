@@ -29,6 +29,13 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
         animator.enabled = false;
     }
 
+    /// <summary>
+    /// The method do actions after pressing the SignUp button
+    /// </summary>
+    public void SignUpBtnClick() {
+        CallBacks.onSignUpEMailClick?.Invoke();
+    }
+
     private void Awake() {
         CallBacks.onSignInSuccess += ClearInputFieldData;
     }
