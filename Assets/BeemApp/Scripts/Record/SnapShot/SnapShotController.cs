@@ -38,9 +38,11 @@ namespace Beem.Extenject.Record {
         /// </summary>
         public async void CreateSnapShotAsync() {
             Debug.Log("CreateSnapShot");
-
-            ScreenShot screenShot = new ScreenShot(_cameras[0]);
-            screenShot.TakeScreenShot((outputPath) => GetTextureAsync(outputPath, (tex) => _windowController.OnCalledSignal(_windowSignals, tex)));
+            Texture2D screenshot = ScreenCapture.CaptureScreenshotAsTexture();
+            Task.Yield();
+            _windowController.OnCalledSignal(_windowSignals, screenshot);
+            //ScreenShot screenShot = new ScreenShot(_cameras[0]);
+            //screenShot.TakeScreenShot((outputPath) => GetTextureAsync(outputPath, (tex) => _windowController.OnCalledSignal(_windowSignals, tex)));
         }
 
         private void OnRecordComplete(string outputPath) {
