@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// This class starts the delay timer and
+/// returns at this moment that the button should not be interactive
+/// </summary>
 public class InteractionDelayBtnChecker : BtnInteractionRequirementChecker
 {
     [SerializeField]

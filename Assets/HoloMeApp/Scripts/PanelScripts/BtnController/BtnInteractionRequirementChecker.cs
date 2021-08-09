@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 
 /// <summary>
-///     
+/// Abstract class for button interactivity checkers
 /// </summary>
 [RequireComponent(typeof(BtnController))]
 public abstract class BtnInteractionRequirementChecker : MonoBehaviour {
@@ -34,9 +34,5 @@ public abstract class BtnInteractionRequirementChecker : MonoBehaviour {
     protected virtual void OnDisable() {
         _btnController.RemoveCheckInteractionRequirementListener(CheckRequirements);
         _onRequirementsUpdated -= _btnController.CheckInteractionRequirement;
-    }
-
-    private void InitBtnController() {
-
     }
 }

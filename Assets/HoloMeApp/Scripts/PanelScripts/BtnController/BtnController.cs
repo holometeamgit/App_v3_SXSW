@@ -5,6 +5,10 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System;
 
+/// <summary>
+/// the class is responsible for the events that occur with the button when the user interacts with it
+//  for example checks the interactivity of a button
+/// </summary>
 public class BtnController : MonoBehaviour
 {
     [SerializeField] Button _btn;
