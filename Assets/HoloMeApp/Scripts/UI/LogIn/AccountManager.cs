@@ -26,11 +26,9 @@ public class AccountManager : MonoBehaviour {
 
     public void CancelLogIn() {
         onCancelLogIn?.Invoke();
-        HelperFunctions.DevLog("Cancel Log In");
     }
 
     public void LogOut() {
-        Debug.Log("LogOut");
         RemoveAccessToken();
         CallBacks.onSignOut?.Invoke();
         SaveLogInType(LogInType.None);
@@ -68,11 +66,9 @@ public class AccountManager : MonoBehaviour {
 
     public void SaveAccessToken(string serverAccessToken) {
         try {
-            //            Debug.Log("Try Save Access Token \n" + serverAccessToken);
             ServerAccessToken accessToken = JsonUtility.FromJson<ServerAccessToken>(serverAccessToken);
             HelperFunctions.DevLog("Save serverAccessToken " + serverAccessToken);
             FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), accessToken, FileAccountManager.ServerAccessToken);
-            //            Debug.Log("Access Token Saved");
 
             if (Application.isEditor && disablePersistance) {
                 temporaryEditorTestingAccessToken = accessToken;
