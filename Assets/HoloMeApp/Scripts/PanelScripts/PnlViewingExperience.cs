@@ -203,10 +203,4 @@ public class PnlViewingExperience : MonoBehaviour {
         //ToggleARSessionObjects(false);
         hologramHandler.StopVideo();
     }
-    public void PauseExperience() {
-        hologramHandler.PauseVideo();
-    }
-    public void ResumeVideo() {
-        hologramHandler.ResumeVideo();
-    }
 }
