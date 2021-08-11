@@ -28,6 +28,8 @@ namespace Beem.Video {
 
         public static Action<VideoPlayer> onSetVideoPlayer;
 
+        private bool isPlaying = default;
+
         private void OnEnable() {
             onSetVideoPlayer += OnSetVideoPlayer;
             foreach (VideoPlayer item in FindObjectsOfType<VideoPlayer>()) {
@@ -91,6 +93,7 @@ namespace Beem.Video {
 
         public void OnPause() {
             if (_videoPlayer != null) {
+                isPlaying = _videoPlayer.isPlaying;
                 _videoPlayer.Pause();
                 _videoPlayerBtnViews.Refresh(_videoPlayer);
                 foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
@@ -107,8 +110,16 @@ namespace Beem.Video {
             OnPause();
         }
 
+        public void OnResume() {
+            if (isPlaying) {
+                OnPlay();
+            }
+        }
+
         private void OnApplicationPause(bool pause) {
-            if (pause) {
+            if (!pause) {
+                OnResume();
+            } else {
                 OnPause();
             }
         }
