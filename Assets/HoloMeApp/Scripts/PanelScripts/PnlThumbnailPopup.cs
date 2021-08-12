@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Beem.SSO;
+using System.Threading.Tasks;
 
 public class PnlThumbnailPopup : UIThumbnail {
 
@@ -41,6 +42,7 @@ public class PnlThumbnailPopup : UIThumbnail {
     long currentId = 0;
 
     const long DEFAUL_STREAM_DATA_ID = 0;
+    private const int REFRESH_LAYOUT_TIME = 1000;
     bool isSubscribed;
 
     public override void Play() {
@@ -145,6 +147,12 @@ public class PnlThumbnailPopup : UIThumbnail {
         layoutGroup.enabled = !layoutGroup.enabled;
         layoutGroup.enabled = !layoutGroup.enabled;
 
+        ResetLayout();
+        Task.Delay(REFRESH_LAYOUT_TIME);
+        ResetLayout();
+    }
+
+    private void ResetLayout() {
         if (layoutGroup != null) {
             layoutGroup.CalculateLayoutInputHorizontal();
             layoutGroup.CalculateLayoutInputVertical();
