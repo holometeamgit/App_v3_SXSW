@@ -27,7 +27,7 @@ public class ShareManager : MonoBehaviour {
     }
 
     private void ShareStream(Uri link, SocialMetaTagParameters socialMetaTagParameters) {
-        string msg = socialMetaTagParameters.Title + "/n" + socialMetaTagParameters.Description + "/n" + link.AbsoluteUri;
+        string msg = socialMetaTagParameters.Title + "\n" + socialMetaTagParameters.Description + "\n" + link.AbsoluteUri;
         ShareLink(msg);
     }
 
