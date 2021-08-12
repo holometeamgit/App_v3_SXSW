@@ -148,8 +148,9 @@ public class PnlThumbnailPopup : UIThumbnail {
         layoutGroup.enabled = !layoutGroup.enabled;
 
         ResetLayout();
-        Task.Delay(REFRESH_LAYOUT_TIME);
-        ResetLayout();
+
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        Task.Delay(REFRESH_LAYOUT_TIME).ContinueWith(() => ResetLayout, taskScheduler);
     }
 
     private void ResetLayout() {
