@@ -2,13 +2,12 @@
 using NatShare;
 using Beem.Firebase.DynamicLink;
 using System;
+using Firebase.DynamicLinks;
 
 public class ShareManager : MonoBehaviour {
 
     [SerializeField]
     private ServerURLAPIScriptableObject serverURLAPIScriptableObject;
-
-    private const string LINK_DESCRIPTION = "Here's your Beem invite from {0}\nPlease click the link to access their Room\n{1}";
 
     private void OnEnable() {
         DynamicLinksCallBacks.onGetShortLink += ShareStream;
@@ -27,8 +26,8 @@ public class ShareManager : MonoBehaviour {
         ShareLink(msg);
     }
 
-    private void ShareStream(Uri link, string source) {
-        string msg = string.Format(LINK_DESCRIPTION, source, link.AbsoluteUri);
+    private void ShareStream(Uri link, SocialMetaTagParameters socialMetaTagParameters) {
+        string msg = socialMetaTagParameters.Title + "/n" + socialMetaTagParameters.Description + "/n" + link.AbsoluteUri;
         ShareLink(msg);
     }
 
