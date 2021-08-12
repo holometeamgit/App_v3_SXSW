@@ -1,4 +1,5 @@
 ﻿using System;
+using Firebase.DynamicLinks;
 
 namespace Beem.Firebase.DynamicLink {
 
@@ -7,7 +8,7 @@ namespace Beem.Firebase.DynamicLink {
     /// </summary>
     public class DynamicLinksCallBacks {
         public static Action<DynamicLinkParameters, string> onCreateShortLink = delegate { };
-        public static Action<Uri, string> onGetShortLink = delegate { };
+        public static Action<Uri, SocialMetaTagParameters> onGetShortLink = delegate { };
         public static Action onShareAppLink = delegate { };
         public static Action<string> onReceivedDeepLink = delegate { };
     }

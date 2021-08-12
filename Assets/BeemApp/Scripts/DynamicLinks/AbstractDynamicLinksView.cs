@@ -1,4 +1,5 @@
 ﻿using System;
+using Firebase.DynamicLinks;
 using UnityEngine;
 
 namespace Beem.Firebase.DynamicLink {
@@ -24,7 +25,7 @@ namespace Beem.Firebase.DynamicLink {
             DynamicLinksCallBacks.onGetShortLink -= Refresh;
         }
 
-        protected abstract void Refresh(Uri value, string source);
+        protected abstract void Refresh(Uri value, SocialMetaTagParameters socialMetaTagParameters);
 
     }
 }
