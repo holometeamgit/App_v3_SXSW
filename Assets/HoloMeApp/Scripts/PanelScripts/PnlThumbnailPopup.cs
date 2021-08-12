@@ -150,7 +150,7 @@ public class PnlThumbnailPopup : UIThumbnail {
         ResetLayout();
 
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(REFRESH_LAYOUT_TIME).ContinueWith(() => ResetLayout, taskScheduler);
+        Task.Delay(REFRESH_LAYOUT_TIME).ContinueWith((_) => ResetLayout(), taskScheduler);
     }
 
     private void ResetLayout() {
