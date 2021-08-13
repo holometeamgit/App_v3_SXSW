@@ -29,7 +29,7 @@ namespace Beem.Video {
 
         public static Action<VideoPlayer> onSetVideoPlayer;
 
-        private bool isPlaying = default;
+        private bool wasPlaying = default;
         private double currentTime = default;
         private CancellationTokenSource cancelTokenSource;
 
@@ -110,7 +110,7 @@ namespace Beem.Video {
                 return;
             }
 
-            isPlaying = _videoPlayer.isPlaying;
+            wasPlaying = _videoPlayer.isPlaying;
             _videoPlayer.Pause();
             _videoPlayerBtnViews.Refresh(_videoPlayer);
             foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
@@ -128,7 +128,12 @@ namespace Beem.Video {
         }
 
         public void OnResume() {
-            if (isPlaying) {
+
+            if (_videoPlayer == null) {
+                return;
+            }
+
+            if (wasPlaying && _videoPlayer.isPaused) {
                 OnPlay();
             }
         }
@@ -155,8 +160,6 @@ namespace Beem.Video {
             if (!_videoPlayer.isPrepared) return;
             currentTime = pct * (_videoPlayer.frameCount / _videoPlayer.frameRate);
             _videoPlayer.time = currentTime;
-            Cancel();
-
         }
 
         /// <summary>
@@ -188,7 +191,6 @@ namespace Beem.Video {
 
             _videoPlayer.sendFrameReadyEvents = false;
             _videoPlayer.frameReady -= OnFrameReady;
-            LoadVideoFrameComletedAsync();
         }
 
         private async void LoadVideoFrameComletedAsync() {
@@ -197,12 +199,18 @@ namespace Beem.Video {
                 return;
             }
 
+            Cancel();
+
             cancelTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancelTokenSource.Token;
 
             try {
-                while (!cancellationToken.IsCancellationRequested && currentTime != _videoPlayer.time) {
+                while (!cancellationToken.IsCancellationRequested && Mathf.Abs((float)(currentTime - _videoPlayer.time)) > 1f) {
                     await Task.Yield();
+                }
+
+                if (!cancellationToken.IsCancellationRequested) {
+                    OnResume();
                 }
             } finally {
                 if (cancelTokenSource != null) {
@@ -210,8 +218,6 @@ namespace Beem.Video {
                     cancelTokenSource = null;
                 }
             }
-
-            OnResume();
         }
 
         /// <summary>
@@ -231,6 +237,7 @@ namespace Beem.Video {
 
         public void OnRewindFinished(float pct) {
             OnRewind(pct);
+            LoadVideoFrameComletedAsync();
         }
 
         /// <summary>
@@ -245,6 +252,7 @@ namespace Beem.Video {
             if (_videoPlayer.isPlaying) {
                 _videoPlayer.Stop();
             }
+            Cancel();
         }
 
         private void OnSetVideoPlayer(VideoPlayer videoPlayer) {
