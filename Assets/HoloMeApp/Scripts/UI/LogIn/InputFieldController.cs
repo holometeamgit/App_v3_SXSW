@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using System;
 
 public class InputFieldController : MonoBehaviour {
     public bool IsClearOnDisable = true;
@@ -21,9 +22,11 @@ public class InputFieldController : MonoBehaviour {
     [SerializeField]
     Animator animator;
 
-    public UnityEvent OnEndEditPassword;
-
     private bool showWarning;
+
+    [HideInInspector]
+    public UnityEvent onValueChanged;
+    public UnityEvent OnEndEditPassword;
 
     public int characterLimit {
         get { return inputField.characterLimit; }
@@ -41,7 +44,8 @@ public class InputFieldController : MonoBehaviour {
     }
 
     private void Awake() {
-        inputField.onEndEdit.AddListener((_) => OnEndEditPassword.Invoke());
+        inputField.onEndEdit.AddListener(DoOnEndEditPassword);
+        inputField.onValueChanged.AddListener(OnValueChanged);
 #if UNITY_IOS
         inputField.shouldHideMobileInput = true;
         if (isEmail)
@@ -128,7 +132,18 @@ public class InputFieldController : MonoBehaviour {
         return msg;
     }
 
+    private void DoOnEndEditPassword(string value) {
+        OnEndEditPassword.Invoke();
+    }
 
+    private void OnValueChanged(string value) {
+        onValueChanged.Invoke();
+    }
+
+    private void OnDestroy() {
+        inputField.onEndEdit.RemoveListener(DoOnEndEditPassword);
+        inputField.onValueChanged.RemoveListener(OnValueChanged);
+    }
 
     private void OnDisable() {
         if (IsClearOnDisable) {

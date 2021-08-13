@@ -92,12 +92,14 @@ public class UIThumbnailsController : MonoBehaviour {
 
     public void PlayLiveStream(string user, string agoraChannel, string streamID, bool isRoom) { //TODO split it to ather class
         if (isRoom) {
-            if (!permissionController.CheckCameraMicAccess())
+            if (!permissionController.CheckCameraMicAccess()) {
                 return;
+            }
+        } else {
+            if (!permissionController.CheckCameraAccess()) {
+                return;
+            }
         }
-
-        if (!permissionController.CheckCameraAccess())
-            return;
         pnlStreamOverlay.OpenAsViewer(agoraChannel, streamID, isRoom);
         OnPlayFromUser?.Invoke(user);
     }
@@ -179,12 +181,14 @@ public class UIThumbnailsController : MonoBehaviour {
     private void PlayStream(StreamJsonData.Data data) {
 
         if (data.GetStage() == StreamJsonData.Data.Stage.Prerecorded) {
-            if (!permissionController.CheckCameraAccess())
+            if (!permissionController.CheckCameraAccess()) {
                 return;
+            }
+        } else {
+            if (!permissionController.CheckCameraMicAccess()) {
+                return;
+            }
         }
-
-        if (!permissionController.CheckCameraMicAccess())
-            return;
 
         if (data.HasStreamUrl) {
             pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, data, null, false);
