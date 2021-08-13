@@ -122,7 +122,7 @@ namespace Beem.Extenject.Record {
                 _windowController.OnCalledSignal(_windowSignals, _lastRecordingPath);
                 _recordLengthFailed = false;
             }
-            VideoPlayerCallBacks.onPause?.Invoke();
+            //VideoPlayerCallBacks.onPause?.Invoke();
         }
     }
 }

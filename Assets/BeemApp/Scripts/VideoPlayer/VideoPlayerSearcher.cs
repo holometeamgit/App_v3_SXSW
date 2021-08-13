@@ -9,7 +9,7 @@ public class VideoPlayerSearcher : MonoBehaviour {
 
     private void Start() {
         VideoPlayer videoPlayer = GetComponent<VideoPlayer>();
-        VideoPlayerCallBacks.onSetVideoPlayer?.Invoke(videoPlayer);
+        VideoPlayerController.onSetVideoPlayer?.Invoke(videoPlayer);
     }
 
 }
