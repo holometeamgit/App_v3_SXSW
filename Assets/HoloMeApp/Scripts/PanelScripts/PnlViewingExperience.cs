@@ -29,18 +29,6 @@ public class PnlViewingExperience : MonoBehaviour {
     [SerializeField]
     RectTransform scanMessageRT;
 
-    private PermissionController _permissionController;
-    private PermissionController permissionController {
-        get {
-
-            if (_permissionController == null) {
-                _permissionController = FindObjectOfType<PermissionController>();
-            }
-
-            return _permissionController;
-        }
-    }
-
     string scaneEnviromentStr = "Scan the floor in front of you by moving your phone slowly from side to side";
 
     string pinchToZoomStr = "Pinch to resize the hologram";
@@ -61,10 +49,8 @@ public class PnlViewingExperience : MonoBehaviour {
     TutorialState tutorialState = TutorialState.MessageScan;
     void OnEnable() {
         scanAnimationItems.SetActive(false);
-        if (permissionController.CheckCameraMicAccess()) {
-            if (!tutorialDisplayed) {
-                tutorialDisplayed = true;
-            }
+        if (!tutorialDisplayed) {
+            tutorialDisplayed = true;
         }
     }
     public void ToggleARSessionObjects(bool enable) {
@@ -202,11 +188,5 @@ public class PnlViewingExperience : MonoBehaviour {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         //ToggleARSessionObjects(false);
         hologramHandler.StopVideo();
-    }
-    public void PauseExperience() {
-        hologramHandler.PauseVideo();
-    }
-    public void ResumeVideo() {
-        hologramHandler.ResumeVideo();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 namespace Beem.Video {
@@ -7,8 +8,11 @@ namespace Beem.Video {
     /// Pause Action
     /// </summary>
     public class VideoPlayerPauseAction : MonoBehaviour {
+
+        [SerializeField]
+        private UnityEvent onPause;
         public void OnClick() {
-            VideoPlayerCallBacks.onPause?.Invoke();
+            onPause?.Invoke();
         }
     }
 }

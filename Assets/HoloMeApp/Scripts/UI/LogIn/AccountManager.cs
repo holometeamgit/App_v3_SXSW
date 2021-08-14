@@ -196,13 +196,12 @@ public class AccountManager : MonoBehaviour {
     }
 
     private void SuccessRequestAccessTokenCallBack(long code, string data) {
-        HelperFunctions.DevLog("SuccessRequestAccessTokenCallBack " + code + " " + data);
         canLogIn = true;
         CallBacks.onSignInSuccess?.Invoke();
     }
 
     private void ErrorRequestAccessTokenCallBack(long code, string data) {
-        HelperFunctions.DevLogError("ErrorRequestAccessTokenCallBack " + code + " " + data);
+        HelperFunctions.DevLog("ErrorRequestAccessTokenCallBack " + code + " " + data);
         canLogIn = true;
         CallBacks.onFail?.Invoke(data);
     }

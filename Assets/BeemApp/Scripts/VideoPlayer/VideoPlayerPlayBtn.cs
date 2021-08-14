@@ -9,8 +9,10 @@ namespace Beem.Video {
     /// </summary>
     public class VideoPlayerPlayBtn : MonoBehaviour, IPointerDownHandler {
 
+        [SerializeField]
+        private UnityEvent onPlay;
         public void OnPointerDown(PointerEventData eventData) {
-            VideoPlayerCallBacks.onPlay?.Invoke();
+            onPlay?.Invoke();
         }
     }
 }
