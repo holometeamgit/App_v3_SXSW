@@ -54,8 +54,6 @@ public class WebRequestHandler : MonoBehaviour {
             return PrepareGetRequest(currentUrl, currentHeaderAccessToken);
         };
 
-        HelperFunctions.DevLog("GetRequest: " + url);
-
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, progress).ContinueWith((taskWebRequestData) => {
         }, taskScheduler);
@@ -79,9 +77,6 @@ public class WebRequestHandler : MonoBehaviour {
             BodyType currentBodyType = bodyType;
             return PreparePostRequest<T>(currentUrl, currentBody, currentBodyType, currentHeaderAccessToken);
         };
-
-
-        HelperFunctions.DevLog("PostRequest: " + url);
 
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel: onCancel, progress).ContinueWith((taskWebRequestData) => {
@@ -195,7 +190,6 @@ public class WebRequestHandler : MonoBehaviour {
 
         switch (bodyType) {
             case BodyType.XWWWFormUrlEncoded:
-                HelperFunctions.DevLog("Post XWWWFormUrlEncoded");
                 WWWForm form = new WWWForm();
                 Type listType = typeof(T);
                 if (listType == typeof(Dictionary<string, string>)) {
@@ -214,7 +208,6 @@ public class WebRequestHandler : MonoBehaviour {
                 request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 break;
             case BodyType.JSON: //only Json at this moment
-                HelperFunctions.DevLog("Post JSON");
                 string bodyString = JsonUtility.ToJson(body);
                 byte[] bodyRaw = Encoding.UTF8.GetBytes(bodyString);
                 request = new UnityWebRequest(url, "POST");

@@ -43,7 +43,6 @@ public class BtnController : MonoBehaviour
     /// </summary>
     public void CheckInteractionRequirement() {
         foreach(var isMetRequirements in _onNeedCheckInteractionRequirement) {
-            HelperFunctions.DevLog(" CheckInteractionRequirement BtnController " + isMetRequirements.Invoke());
             if(!isMetRequirements.Invoke()) {
                 _btn.interactable = false;
                 return;
