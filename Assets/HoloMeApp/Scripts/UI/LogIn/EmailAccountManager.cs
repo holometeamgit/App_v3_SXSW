@@ -45,7 +45,6 @@ public class EmailAccountManager : MonoBehaviour {
     }
 
     public void ResendVerification(ResendVerifyJsonData resendVerifyJsonData) {
-        Debug.Log(resendVerifyJsonData.email);
         ResentVerificationRequest(resendVerifyJsonData);
     }
 
@@ -82,7 +81,6 @@ public class EmailAccountManager : MonoBehaviour {
     }
 
     private void SignUpCallBack(long code, string body) {
-        Debug.Log("SignUpCallBack " + code + " " + body);
         OnSignUp?.Invoke();
     }
 
@@ -94,11 +92,9 @@ public class EmailAccountManager : MonoBehaviour {
             badRequestData = new BadRequestSignUpEmailJsonData();
             badRequestData.code = code;
             badRequestData.errorMsg = body;
-            Debug.Log("ErrorSignUpCallBack " + code + " " + body);
             OnErrorSignUp?.Invoke(badRequestData);
             return;
         } 
-        Debug.Log("ErrorSignUpCallBack " + code + " " + body);
         OnErrorSignUp?.Invoke(badRequestData);
     }
     #endregion
@@ -114,12 +110,10 @@ public class EmailAccountManager : MonoBehaviour {
     }
 
     private void ResentVerificationCallBack(long code, string body) {
-        Debug.Log("ResentVerificationCallBack " + code + " " + body);
         OnResendVerification?.Invoke();
     }
 
     private void ErrorResentVerificationBack(long code, string body) {
-        Debug.Log("ErrorResentVerificationBack " + code + " " + body);
         BadRequestResendVerificationJsonData badRequestData;
         try {
             badRequestData = JsonUtility.FromJson<BadRequestResendVerificationJsonData>(body);
@@ -158,21 +152,18 @@ public class EmailAccountManager : MonoBehaviour {
     #region Log In
     private void LogInRequest(EmailLogInJsonData emailLogInJsonData) {
         string url = GetRequestURL(authorizationAPI.EmailLogIn);
-        Debug.Log(url);
         webRequestHandler.PostRequest(url, emailLogInJsonData, WebRequestHandler.BodyType.JSON,
             LogInCallBack,
             ErrorLogInCallBack);
     }
 
     private void LogInCallBack(long code, string body) {
-        Debug.Log("Log In " + code + " : " + body);
         accountManager.SaveLogInType(LogInType.Email);
         accountManager.SaveAccessToken(body);
         OnLogIn?.Invoke();
     }
 
     private void ErrorLogInCallBack(long code, string body) {
-        Debug.Log(body);
         BadRequestLogInEmailJsonData badRequestData;
         try {
             badRequestData = JsonUtility.FromJson<BadRequestLogInEmailJsonData>(body);
@@ -197,7 +188,6 @@ public class EmailAccountManager : MonoBehaviour {
     }
 
     private void StartResetPasswordCallBack(long code, string body) {
-        HelperFunctions.DevLog("Start Reset Password " + code + " : " + body);
         OnStartResetPassword?.Invoke();
     }
 

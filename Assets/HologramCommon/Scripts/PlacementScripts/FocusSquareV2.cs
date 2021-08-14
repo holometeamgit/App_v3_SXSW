@@ -108,8 +108,8 @@ public class FocusSquareV2 : PlacementHandler {
         _stopPlaneConstructionCheckbox.onValueChanged.AddListener(x => {
             _stopPlaneConstruction = x ? 1 : -1;
             PlayerPrefs.SetInt("_stopPlaneConstruction", _stopPlaneConstruction);
-            Debug.Log("_stopPlaneConstruction PP: " + PlayerPrefs.GetInt("_stopPlaneConstruction", -1));
-            Debug.Log("_stopPlaneConstruction : " + _stopPlaneConstruction);
+            HelperFunctions.DevLog("_stopPlaneConstruction PP: " + PlayerPrefs.GetInt("_stopPlaneConstruction", -1));
+            HelperFunctions.DevLog("_stopPlaneConstruction : " + _stopPlaneConstruction);
         });
     }
 
@@ -349,7 +349,7 @@ public class FocusSquareV2 : PlacementHandler {
                         var ray = _arSessionOrigin.camera.ScreenPointToRay(touch.position);
 
                         if (Physics.Raycast(ray, out var hitObject, _maxDistanceOnSelection)) {
-                            Debug.Log(hitObject.transform.name);
+                            HelperFunctions.DevLog(hitObject.transform.name);
                             if (hitObject.transform.name.Contains("PlaceObject")) {
                                 SwitchToState(States.DRAG_AND_DROP);
                             }
