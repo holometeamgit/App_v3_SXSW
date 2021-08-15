@@ -18,12 +18,12 @@ public class InteractionDelayBtnChecker : BtnInteractionRequirementChecker
     protected override void OnEnable() {
         base.OnEnable();
         _btnController.OnPress.AddListener(StartDelayInteration);
-        _onRequirementsUpdated.Invoke();
+        _onRequirementsUpdated?.Invoke();
     }
 
     protected override void OnDisable() {
-        base.OnDisable();
         StopAllCoroutines();
+        base.OnDisable();
         _btnController.OnPress.RemoveListener(StartDelayInteration);
         _canInteract = true;
     }
