@@ -92,7 +92,7 @@ public class PnlThumbnailPopup : UIThumbnail {
     }
 
     private void ShowStreamStream(StreamJsonData.Data streamData) {
-        if (streamData.id != currentId)
+        if (streamData.id != currentId || (streamData.IsPublicLiveOrPrerecorded() || streamData.HasStreamUrl))
             return;
         HelperFunctions.DevLog("Thumbnail popup open stream id " + streamData.id);
         /* autoplay
