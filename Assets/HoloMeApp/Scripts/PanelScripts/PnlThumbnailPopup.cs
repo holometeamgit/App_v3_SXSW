@@ -83,8 +83,14 @@ public class PnlThumbnailPopup : UIThumbnail {
     }
 
     public void ClosePnl() {
-        gameObject.SetActive(false);
         currentId = DEFAUL_STREAM_DATA_ID;
+
+        if (isSubscribed) {
+            thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded -= ShowStreamStream;
+            isSubscribed = false;
+        }
+
+        gameObject.SetActive(false);
     }
 
     private void ShowPnl() {
@@ -168,8 +174,10 @@ public class PnlThumbnailPopup : UIThumbnail {
     }
 
     private void OnDestroy() {
-        if (isSubscribed)
+        if (isSubscribed) {
             thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded -= ShowStreamStream;
+            isSubscribed = false;
+        }
     }
 
     private void OnEnable() {
