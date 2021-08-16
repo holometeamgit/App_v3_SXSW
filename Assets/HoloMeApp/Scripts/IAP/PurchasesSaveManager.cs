@@ -33,7 +33,6 @@ public class PurchasesSaveManager : MonoBehaviour {
 
     private void CheckSubmittedData() {
 
-//        HelperFunctions.DevLog("Check purchased Submitted Data: isBusy " + isBusy);
         if (isBusy) {
             OnFailSentToserver?.Invoke();
             return;
@@ -41,13 +40,10 @@ public class PurchasesSaveManager : MonoBehaviour {
 
         string uniqName = authController.GetID();
 
-//        HelperFunctions.DevLog("Check purchased Submitted Data: uniqName " + isBusy);
         if (string.IsNullOrWhiteSpace(uniqName)) {
             OnFailSentToserver?.Invoke();
             return;
         }
-
-//        HelperFunctions.DevLog("Check purchased Submitted Data: has data for this user " + !PlayerPrefs.HasKey(uniqName));
 
         if (!PlayerPrefs.HasKey(uniqName)) {
             OnFailSentToserver?.Invoke();
@@ -56,8 +52,6 @@ public class PurchasesSaveManager : MonoBehaviour {
 
         try {
             PurchaseSaveJsonData purchaseSaveJsonData = JsonUtility.FromJson<PurchaseSaveJsonData>(PlayerPrefs.GetString(uniqName));
-
-//            HelperFunctions.DevLog("Check purchased Submitted Data: purchaseSaveElements.Count " + purchaseSaveJsonData.purchaseSaveElements.Count);
 
             if (purchaseSaveJsonData.purchaseSaveElements.Count > 0) {
                 isBusy = true;
@@ -74,7 +68,7 @@ public class PurchasesSaveManager : MonoBehaviour {
 
     private void AddData(string uniqName, long id, StreamBillingJsonData streamBillingJsonData) {
 
-//        HelperFunctions.DevLog("AddData purchase data for " + uniqName + " stream id = " + id);
+        //        HelperFunctions.DevLog("AddData purchase data for " + uniqName + " stream id = " + id);
         PurchaseSaveElement purchaseSaveElement = new PurchaseSaveElement(id, streamBillingJsonData);
 
         RemovePurchaseSaveElement(uniqName, id, streamBillingJsonData);

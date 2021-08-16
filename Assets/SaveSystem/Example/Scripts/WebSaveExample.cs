@@ -11,8 +11,7 @@ public class WebSaveExample : MonoBehaviour {
     private const string SERVER_USERNAME = "username-for-my-server";
 
 
-    private void Start()
-    {
+    private void Start() {
         string localFilePath = Application.persistentDataPath + "/myFile.xml";
 
         #region SAVING DATA TO FILE
@@ -33,8 +32,7 @@ public class WebSaveExample : MonoBehaviour {
         //Is the server able to respond in the next 8000 milliseconds
         bool isConnected = webSave.IsConnected();
 
-        if (isConnected)
-        {
+        if (isConnected) {
             //The time (in milliseconds) it takes the server to respond
             int ping = webSave.GetPingMilliseconds();
 
@@ -42,8 +40,7 @@ public class WebSaveExample : MonoBehaviour {
             WebSave.ProgressAction progressAction = OnProgress;
 
             //If the directory SaveExample doesn't exist
-            if (!webSave.DirectoryExists("SaveExample"))
-            {
+            if (!webSave.DirectoryExists("SaveExample")) {
                 //Create new directories
                 webSave.CreateDirectory("SaveExample", "");
             }
@@ -59,8 +56,7 @@ public class WebSaveExample : MonoBehaviour {
             //Does a file exist
             bool fileExists = webSave.FileExists("SaveExample/testfile.xml");
 
-            if(fileExists)
-            {
+            if (fileExists) {
                 //Gets the last modified date of the file.
 
 
@@ -80,13 +76,10 @@ public class WebSaveExample : MonoBehaviour {
 
     #region UPLOAD/DOWNLOAD PROGRESS
     private int currentProgress;
-    private void OnProgress(float progress)
-    {
-        if((int)(progress * 100) != currentProgress)
-        {
+    private void OnProgress(float progress) {
+        if ((int)(progress * 100) != currentProgress) {
             currentProgress = (int)(progress * 100);
         }
-        if (progress == 1) { }
     }
     #endregion
 }
