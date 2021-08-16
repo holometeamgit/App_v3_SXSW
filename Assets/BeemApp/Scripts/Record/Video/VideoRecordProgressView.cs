@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace Beem.Extenject.Record {
 
@@ -11,14 +12,32 @@ namespace Beem.Extenject.Record {
         [SerializeField]
         private Image progressBar;
 
-        private void OnEnable() {
-            OnProgress();
+        private SignalBus _signalBus;
+
+        [Inject]
+        public void Construct(SignalBus signalBus) {
+            _signalBus = signalBus;
         }
 
-        public void OnProgress(float value = 0f) {
+        private void OnEnable() {
+            OnProgress();
+            _signalBus.Subscribe<RecordProgressSignal>(OnProgress);
+            _signalBus.Subscribe<RecordEndSignal>(OnEnd);
+        }
+
+        private void OnDisable() {
+            _signalBus.Unsubscribe<RecordProgressSignal>(OnProgress);
+            _signalBus.Unsubscribe<RecordEndSignal>(OnEnd);
+        }
+
+        public void OnProgress(RecordProgressSignal recordProgressSignal = null) {
             if (progressBar != null) {
-                progressBar.fillAmount = value;
+                progressBar.fillAmount = recordProgressSignal != null ? recordProgressSignal.Progress : 0f;
             }
+        }
+
+        private void OnEnd() {
+            OnProgress();
         }
     }
 }

@@ -34,6 +34,7 @@ namespace Beem.Extenject.Record {
 
         private bool _recordLengthFailed = false;
         private bool _recordMicrophone = true;
+        private SignalBus _signalBus;
 
         public VideoRecordController(WindowSignal windowSignal, Camera[] cameras) {
             _windowSignals = windowSignal;
@@ -42,17 +43,24 @@ namespace Beem.Extenject.Record {
         }
 
         [Inject]
-        public void Construct(WindowController windowController, SnapShotController snapShotController) {
+        public void Construct(SignalBus signalBus, WindowController windowController, SnapShotController snapShotController) {
             _windowController = windowController;
             _snapShotController = snapShotController;
+            _signalBus = signalBus;
         }
+
+
 
         public void Initialize() {
             HologramCallbacks.onCreateHologram += OnCreateHologram;
+            _signalBus.Subscribe<RecordStartSignal>(OnRecordStart);
+            _signalBus.Subscribe<RecordEndSignal>(OnRecordEnd);
         }
 
         public void LateDispose() {
             HologramCallbacks.onCreateHologram -= OnCreateHologram;
+            _signalBus.Unsubscribe<RecordStartSignal>(OnRecordStart);
+            _signalBus.Unsubscribe<RecordEndSignal>(OnRecordEnd);
         }
 
         public void OnCreateHologram(GameObject hologram) {
@@ -93,11 +101,27 @@ namespace Beem.Extenject.Record {
             }
         }
 
+        private void OnRecordEnd(RecordEndSignal recordEndSignal) {
+            if (recordEndSignal.Success) {
+                OnRecordSuccess();
+            } else {
+                OnRecordFail();
+            }
+        }
+
         /// <summary>
         /// Record Fail
         /// </summary>
         public void OnRecordFail() {
             _recordLengthFailed = true;
+            OnRecordStop();
+        }
+
+        /// <summary>
+        /// Record Success
+        /// </summary>
+        public void OnRecordSuccess() {
+            _recordLengthFailed = false;
             OnRecordStop();
         }
 
@@ -122,7 +146,6 @@ namespace Beem.Extenject.Record {
                 _windowController.OnCalledSignal(_windowSignals, _lastRecordingPath);
                 _recordLengthFailed = false;
             }
-            //VideoPlayerCallBacks.onPause?.Invoke();
         }
     }
 }

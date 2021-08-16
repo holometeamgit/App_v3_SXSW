@@ -37,44 +37,9 @@ namespace Beem.Extenject.Record {
         /// Create SnapShot
         /// </summary>
         public async void CreateSnapShotAsync() {
-            Debug.Log("CreateSnapShot");
             Texture2D screenshot = ScreenCapture.CaptureScreenshotAsTexture();
-            Task.Yield();
+            await Task.Yield();
             _windowController.OnCalledSignal(_windowSignals, screenshot);
-            //ScreenShot screenShot = new ScreenShot(_cameras[0]);
-            //screenShot.TakeScreenShot((outputPath) => GetTextureAsync(outputPath, (tex) => _windowController.OnCalledSignal(_windowSignals, tex)));
-        }
-
-        private void OnRecordComplete(string outputPath) {
-            Debug.Log("OnRecordComplete = " + outputPath);
-
-            GetTextureAsync(outputPath, (tex) => _windowController.OnCalledSignal(_windowSignals, tex));
-        }
-
-        private async void GetTextureAsync(string url, Action<Texture2D> onSuccess) {
-            cancelTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancelTokenSource.Token;
-            try {
-                await Task.Yield();
-                UnityWebRequest request = UnityWebRequest.Get(url);
-                var operation = request.SendWebRequest();
-                Debug.Log("GetTextureAsync");
-                while (!operation.isDone && !cancellationToken.IsCancellationRequested) {
-                    await Task.Yield();
-                    Debug.Log("operation progress = " + operation.progress);
-                }
-
-                Debug.Log("request.result = " + request.result);
-                Debug.Log(DownloadHandlerTexture.GetContent(request));
-                if (request.result == UnityWebRequest.Result.Success) {
-                    onSuccess?.Invoke(DownloadHandlerTexture.GetContent(request));
-                }
-            } finally {
-                if (cancelTokenSource != null) {
-                    cancelTokenSource.Dispose();
-                    cancelTokenSource = null;
-                }
-            }
         }
 
         /// <summary>
