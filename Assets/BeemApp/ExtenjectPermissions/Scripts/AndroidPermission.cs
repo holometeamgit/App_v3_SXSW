@@ -6,43 +6,10 @@ namespace Beem.Extenject.Permissions {
     /// <summary>
     /// Permission for Android
     /// </summary>
-    public class AndroidPermission : IPermissionGranter {
-
-        public bool HasCameraAccess => Permission.HasUserAuthorizedPermission(Permission.Camera);
-        public bool HasMicAccess => Permission.HasUserAuthorizedPermission(Permission.Microphone);
-
-        public bool CameraRequestComplete {
-            get {
-                return PlayerPrefs.GetString("Access for " + CameraKey, "false") == "true";
-            }
-            set {
-                PlayerPrefs.SetString("Access for " + CameraKey, value ? "true" : "false");
-            }
-        }
-
-        public bool MicRequestComplete {
-            get {
-                return PlayerPrefs.GetString("Access for " + MicKey, "false") == "true";
-            }
-            set {
-                PlayerPrefs.SetString("Access for " + MicKey, value ? "true" : "false");
-            }
-        }
-
-        public string CameraKey => "Camera";
-
-        public string MicKey => "Microphone";
-
-        public void RequestMicAccess() {
-            Permission.RequestUserPermission(Permission.Microphone);
-        }
-
-        public void RequestCameraAccess() {
-            Permission.RequestUserPermission(Permission.Camera);
-        }
+    public class AndroidPermission : ISettingsPermission {
 
         public void RequestSettings() {
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
             try {
                 using (var unityClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
                 using (AndroidJavaObject currentActivityObject = unityClass.GetStatic<AndroidJavaObject>("currentActivity")) {

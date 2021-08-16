@@ -14,13 +14,17 @@ namespace Beem.Extenject.Permissions {
             _windowObject = windowObject;
         }
 
-        private IPermissionGranter _permissionGranter;
+        private ISettingsPermission _settingsPermission;
+        private IMicrophonePermission _microphonePermission;
+        private ICameraPermission _cameraPermission;
         private WindowController _windowController;
         private WindowObject _windowObject;
 
         [Inject]
-        public void Construct(IPermissionGranter permissionGranter, WindowController windowController) {
-            _permissionGranter = permissionGranter;
+        public void Construct(ISettingsPermission settingsPermission, ICameraPermission cameraPermission, IMicrophonePermission microphonePermission, WindowController windowController) {
+            _cameraPermission = cameraPermission;
+            _microphonePermission = microphonePermission;
+            _settingsPermission = settingsPermission;
             _windowController = windowController;
         }
 
@@ -38,14 +42,14 @@ namespace Beem.Extenject.Permissions {
         /// </summary>
         /// <returns></returns>
         public bool CheckCameraAccess() {
-            if (_permissionGranter.HasCameraAccess)
+            if (_cameraPermission.HasCameraAccess)
                 return true;
 
-            if (!_permissionGranter.CameraRequestComplete) {
-                _permissionGranter.RequestCameraAccess();
-                _permissionGranter.CameraRequestComplete = true;
+            if (!_cameraPermission.CameraRequestComplete) {
+                _cameraPermission.RequestCameraAccess();
+                _cameraPermission.CameraRequestComplete = true;
             } else {
-                OpenNotification(_permissionGranter.CameraKey);
+                OpenNotification(_cameraPermission.CameraKey);
             }
 
             return false;
@@ -57,14 +61,14 @@ namespace Beem.Extenject.Permissions {
         /// <returns></returns>
 
         public bool CheckMicAccess() {
-            if (_permissionGranter.HasMicAccess)
+            if (_microphonePermission.HasMicAccess)
                 return true;
 
-            if (!_permissionGranter.MicRequestComplete) {
-                _permissionGranter.RequestMicAccess();
-                _permissionGranter.MicRequestComplete = true;
+            if (!_microphonePermission.MicRequestComplete) {
+                _microphonePermission.RequestMicAccess();
+                _microphonePermission.MicRequestComplete = true;
             } else {
-                OpenNotification(_permissionGranter.MicKey);
+                OpenNotification(_microphonePermission.MicKey);
             }
             return false;
         }
@@ -82,7 +86,7 @@ namespace Beem.Extenject.Permissions {
         }
 
         private void OpenSettings() {
-            _permissionGranter.RequestSettings();
+            _settingsPermission.RequestSettings();
         }
 
         private void CloseNotification() {

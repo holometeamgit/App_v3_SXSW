@@ -15,14 +15,19 @@ namespace Beem.Extenject.Permissions {
         private WindowObject _windowObject;
 
         public override void InstallBindings() {
-            if (Application.platform == RuntimePlatform.Android) {
-                Container.Bind<IPermissionGranter>().To<AndroidPermission>().AsSingle();
-            } else if (Application.platform == RuntimePlatform.IPhonePlayer) {
-                Container.Bind<IPermissionGranter>().To<iOSPermission>().AsSingle();
-            } else {
-                Container.Bind<IPermissionGranter>().To<EditorPermission>().AsSingle();
-            }
-
+#if UNITY_IOS && !UNITY_EDITOR
+            Container.Bind<ICameraPermission>().To<iOSCameraPermission>().AsSingle();
+            Container.Bind<IMicrophonePermission>().To<iOSMicPermission>().AsSingle();
+            Container.Bind<ISettingsPermission>().To<iOSPermission>().AsSingle();
+#elif UNITY_ANDROID && !UNITY_EDITOR
+            Container.Bind<ICameraPermission>().To<AndroidCameraPermission>().AsSingle();
+            Container.Bind<IMicrophonePermission>().To<AndroidMicPermission>().AsSingle();
+            Container.Bind<ISettingsPermission>().To<AndroidPermission>().AsSingle();
+#else
+            Container.Bind<ICameraPermission>().To<EditorCameraPermission>().AsSingle();
+            Container.Bind<IMicrophonePermission>().To<EditorMicPermission>().AsSingle();
+            Container.Bind<ISettingsPermission>().To<EditorPermission>().AsSingle();
+#endif
             Container.BindInterfacesAndSelfTo<PermissionController>().AsSingle().WithArguments(_windowObject);
 
         }
