@@ -9,25 +9,11 @@ namespace Beem.Extenject.Record {
     /// <summary>
     /// Record Button
     /// </summary>
-    public class RecordController : IInitializable, ILateDisposable {
+    public class VideoRecordController : IInitializable, ILateDisposable {
 
-        private VideoRecordController _videoRecordController;
-
+        private RecordSystem _videoRecordController;
         private SignalBus _signalBus;
-
-        private float timer = 0;
         private CancellationTokenSource cancelTokenSource;
-
-        private float Timer {
-            get {
-                return timer;
-            }
-            set {
-                if (Mathf.Abs(timer - value) > Mathf.Epsilon) {
-                    timer = value;
-                }
-            }
-        }
 
         [Inject]
         public void Construct(SignalBus signalBus) {
@@ -37,21 +23,21 @@ namespace Beem.Extenject.Record {
         /// <summary>
         /// Record Async
         /// </summary>
-        private async void RecordAsync(RecordStartSignal recordStartSignal) {
+        private async void RecordAsync(VideoRecordStartSignal recordStartSignal) {
             cancelTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancelTokenSource.Token;
             try {
-                Timer = 0;
+                float timer = 0;
                 float startTime = Time.time;
-                while (Timer < recordStartSignal.RecordingTime.y && !cancellationToken.IsCancellationRequested) {
-                    Timer = Time.time - startTime;
-                    _signalBus.Fire(new RecordProgressSignal(Timer / recordStartSignal.RecordingTime.y));
+                VideoRecordProgressSignal recordProgressSignal = new VideoRecordProgressSignal();
+                while (timer < recordStartSignal.RecordingTime.y && !cancellationToken.IsCancellationRequested) {
+                    timer = Time.time - startTime;
+                    recordProgressSignal.Progress = timer / recordStartSignal.RecordingTime.y;
+                    _signalBus.Fire(recordProgressSignal);
                     await Task.Yield();
                 }
 
-                _signalBus.Fire(new RecordEndSignal(Timer >= recordStartSignal.RecordingTime.x));
-
-                Timer = 0;
+                _signalBus.Fire(new VideoRecordEndSignal(timer >= recordStartSignal.RecordingTime.x));
             } finally {
                 if (cancelTokenSource != null) {
                     cancelTokenSource.Dispose();
@@ -71,13 +57,13 @@ namespace Beem.Extenject.Record {
         }
 
         public void Initialize() {
-            _signalBus.Subscribe<RecordStartSignal>(RecordAsync);
-            _signalBus.Subscribe<RecordStopSignal>(Cancel);
+            _signalBus.Subscribe<VideoRecordStartSignal>(RecordAsync);
+            _signalBus.Subscribe<VideoRecordStopSignal>(Cancel);
         }
 
         public void LateDispose() {
-            _signalBus.Unsubscribe<RecordStartSignal>(RecordAsync);
-            _signalBus.Unsubscribe<RecordStopSignal>(Cancel);
+            _signalBus.Unsubscribe<VideoRecordStartSignal>(RecordAsync);
+            _signalBus.Unsubscribe<VideoRecordStopSignal>(Cancel);
         }
     }
 }

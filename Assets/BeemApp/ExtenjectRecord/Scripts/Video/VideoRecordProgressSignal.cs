@@ -1,12 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace Beem.Extenject.Record {
     /// <summary>
     /// Record Progress Signal
     /// </summary>
-    public class RecordProgressSignal : BeemSignal {
+    public class VideoRecordProgressSignal : BeemSignal {
 
         private float _progress = default;
 
@@ -14,10 +10,9 @@ namespace Beem.Extenject.Record {
             get {
                 return _progress;
             }
-        }
-
-        public RecordProgressSignal(float progress) {
-            _progress = progress;
+            set {
+                _progress = value;
+            }
         }
     }
 }

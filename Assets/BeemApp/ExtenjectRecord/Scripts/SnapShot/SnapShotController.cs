@@ -1,36 +1,22 @@
 ﻿using Beem.Extenject.UI;
-using NatCorder;
-using NatCorder.Clocks;
-using NatCorder.Inputs;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Networking;
 using Zenject;
 
 namespace Beem.Extenject.Record {
     /// <summary>
     /// Snapshot controller
     /// </summary>
-    public class SnapShotController {
+    public class SnapShotController : IInitializable, ILateDisposable {
 
-        private WindowSignal _windowSignals;
-
-        private WindowController _windowController;
-
-        private Camera[] _cameras;
+        private SignalBus _signalBus;
 
         private CancellationTokenSource cancelTokenSource;
 
-        public SnapShotController(WindowSignal windowSignals, Camera[] cameras) {
-            _windowSignals = windowSignals;
-            _cameras = cameras;
-        }
-
         [Inject]
-        public void Construct(WindowController windowController) {
-            _windowController = windowController;
+        public void Construct(SignalBus signalBus) {
+            _signalBus = signalBus;
         }
 
         /// <summary>
@@ -39,7 +25,8 @@ namespace Beem.Extenject.Record {
         public async void CreateSnapShotAsync() {
             Texture2D screenshot = ScreenCapture.CaptureScreenshotAsTexture();
             await Task.Yield();
-            _windowController.OnCalledSignal(_windowSignals, screenshot);
+            _signalBus.Fire(new SnapShotEndSignal());
+            _signalBus.Fire(new SnapShotFinishSignal(screenshot));
         }
 
         /// <summary>
@@ -50,6 +37,14 @@ namespace Beem.Extenject.Record {
                 cancelTokenSource.Cancel();
                 cancelTokenSource = null;
             }
+        }
+
+        public void Initialize() {
+            _signalBus.Subscribe<SnapShotStartSignal>(CreateSnapShotAsync);
+        }
+
+        public void LateDispose() {
+            _signalBus.Unsubscribe<SnapShotStartSignal>(CreateSnapShotAsync);
         }
     }
 }

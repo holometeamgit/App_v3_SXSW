@@ -2,7 +2,7 @@ namespace Beem.Extenject.Record {
     /// <summary>
     /// Record End Signal
     /// </summary>
-    public class RecordEndSignal : BeemSignal {
+    public class VideoRecordEndSignal : BeemSignal {
 
         private bool _success;
 
@@ -12,7 +12,7 @@ namespace Beem.Extenject.Record {
             }
         }
 
-        public RecordEndSignal(bool success) {
+        public VideoRecordEndSignal(bool success) {
             _success = success;
         }
     }

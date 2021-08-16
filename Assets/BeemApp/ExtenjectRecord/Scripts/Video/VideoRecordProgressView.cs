@@ -21,16 +21,16 @@ namespace Beem.Extenject.Record {
 
         private void OnEnable() {
             OnProgress();
-            _signalBus.Subscribe<RecordProgressSignal>(OnProgress);
-            _signalBus.Subscribe<RecordEndSignal>(OnEnd);
+            _signalBus.Subscribe<VideoRecordProgressSignal>(OnProgress);
+            _signalBus.Subscribe<VideoRecordEndSignal>(OnEnd);
         }
 
         private void OnDisable() {
-            _signalBus.Unsubscribe<RecordProgressSignal>(OnProgress);
-            _signalBus.Unsubscribe<RecordEndSignal>(OnEnd);
+            _signalBus.Unsubscribe<VideoRecordProgressSignal>(OnProgress);
+            _signalBus.Unsubscribe<VideoRecordEndSignal>(OnEnd);
         }
 
-        public void OnProgress(RecordProgressSignal recordProgressSignal = null) {
+        public void OnProgress(VideoRecordProgressSignal recordProgressSignal = null) {
             if (progressBar != null) {
                 progressBar.fillAmount = recordProgressSignal != null ? recordProgressSignal.Progress : 0f;
             }

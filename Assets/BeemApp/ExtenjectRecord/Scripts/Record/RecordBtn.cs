@@ -21,11 +21,11 @@ namespace Beem.Extenject.Record {
 
         public void OnPointerDown(PointerEventData eventData) {
 
-            _signalbus.Fire(new RecordStartSignal(recordingTime));
+            _signalbus.Fire(new VideoRecordStartSignal(recordingTime));
         }
 
         public void OnPointerUp(PointerEventData eventData) {
-            _signalbus.Fire(new RecordStopSignal());
+            _signalbus.Fire(new VideoRecordStopSignal());
         }
 
     }

@@ -11,13 +11,9 @@ using Zenject;
 namespace Beem.Extenject.Record {
 
     /// <summary>
-    /// Video Record Controller
+    /// Record System
     /// </summary>
-    public class VideoRecordController : IInitializable, ILateDisposable {
-
-        private WindowSignal _windowSignals;
-        private WindowController _windowController;
-        private SnapShotController _snapShotController;
+    public class RecordSystem : IInitializable, ILateDisposable {
 
         private AudioSource _audioSource;
         private IMediaRecorder _mediaRecorder;
@@ -36,31 +32,26 @@ namespace Beem.Extenject.Record {
         private bool _recordMicrophone = true;
         private SignalBus _signalBus;
 
-        public VideoRecordController(WindowSignal windowSignal, Camera[] cameras) {
-            _windowSignals = windowSignal;
+        public RecordSystem(Camera[] cameras) {
             _cameras = cameras;
             CorrectResolutionAspect();
         }
 
         [Inject]
-        public void Construct(SignalBus signalBus, WindowController windowController, SnapShotController snapShotController) {
-            _windowController = windowController;
-            _snapShotController = snapShotController;
+        public void Construct(SignalBus signalBus) {
             _signalBus = signalBus;
         }
 
-
-
         public void Initialize() {
             HologramCallbacks.onCreateHologram += OnCreateHologram;
-            _signalBus.Subscribe<RecordStartSignal>(OnRecordStart);
-            _signalBus.Subscribe<RecordEndSignal>(OnRecordEnd);
+            _signalBus.Subscribe<VideoRecordStartSignal>(OnRecordStart);
+            _signalBus.Subscribe<VideoRecordEndSignal>(OnRecordEnd);
         }
 
         public void LateDispose() {
             HologramCallbacks.onCreateHologram -= OnCreateHologram;
-            _signalBus.Unsubscribe<RecordStartSignal>(OnRecordStart);
-            _signalBus.Unsubscribe<RecordEndSignal>(OnRecordEnd);
+            _signalBus.Unsubscribe<VideoRecordStartSignal>(OnRecordStart);
+            _signalBus.Unsubscribe<VideoRecordEndSignal>(OnRecordEnd);
         }
 
         public void OnCreateHologram(GameObject hologram) {
@@ -101,7 +92,7 @@ namespace Beem.Extenject.Record {
             }
         }
 
-        private void OnRecordEnd(RecordEndSignal recordEndSignal) {
+        private void OnRecordEnd(VideoRecordEndSignal recordEndSignal) {
             if (recordEndSignal.Success) {
                 OnRecordSuccess();
             } else {
@@ -140,12 +131,13 @@ namespace Beem.Extenject.Record {
         private void OnRecordComplete(string outputPath) {
             if (_recordLengthFailed) {
                 File.Delete(outputPath);
-                _snapShotController.CreateSnapShotAsync();
+                _signalBus.Fire(new SnapShotStartSignal());
             } else {
                 _lastRecordingPath = outputPath;
-                _windowController.OnCalledSignal(_windowSignals, _lastRecordingPath);
+                _signalBus.Fire(new VideoRecordFinishSignal(_lastRecordingPath));
                 _recordLengthFailed = false;
             }
         }
+
     }
 }

@@ -6,7 +6,7 @@ namespace Beem.Extenject.Record {
     /// <summary>
     /// Record Start Signal
     /// </summary>
-    public class RecordStartSignal : BeemSignal {
+    public class VideoRecordStartSignal : BeemSignal {
         private Vector2 _recordingTime;
 
         public Vector2 RecordingTime {
@@ -15,7 +15,7 @@ namespace Beem.Extenject.Record {
             }
         }
 
-        public RecordStartSignal(Vector2 recordingTime) {
+        public VideoRecordStartSignal(Vector2 recordingTime) {
             _recordingTime = recordingTime;
         }
     }
