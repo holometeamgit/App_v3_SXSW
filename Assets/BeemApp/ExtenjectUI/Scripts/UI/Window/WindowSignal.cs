@@ -33,6 +33,13 @@ namespace Beem.Extenject.UI {
                 return _windowObject;
             }
         }
+
+        public WindowSignal(WindowSignalsType windowSignalsType, WindowObject windowObject) {
+            _windowSignalsType = windowSignalsType;
+            _windowObject = windowObject;
+        }
+
+        public WindowSignal() { }
     }
 
 }

@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using Beem.Extenject.Hologram;
-using Beem.Extenject.UI;
-using Beem.Video;
+using Beem.Extenject.Permissions;
 using NatCorder;
 using NatCorder.Clocks;
 using NatCorder.Inputs;
@@ -20,7 +19,6 @@ namespace Beem.Extenject.Record {
         private IClock _recordingClock;
         private CameraInput _cameraInput;
         private AudioInput _audioInput;
-        //private PermissionGranter permissionGranter;
         private Camera[] _cameras;
 
         private int _videoWidth;
@@ -29,7 +27,6 @@ namespace Beem.Extenject.Record {
         private string _lastRecordingPath;
 
         private bool _recordLengthFailed = false;
-        private bool _recordMicrophone = true;
         private SignalBus _signalBus;
 
         public RecordSystem(Camera[] cameras) {
@@ -71,9 +68,6 @@ namespace Beem.Extenject.Record {
         /// Record Start
         /// </summary>
         public void OnRecordStart() {
-            /*if (!permissionGranter.MicAccessAvailable) {
-                recordMicrophone = false;
-            }*/
 
             _recordLengthFailed = false;
             _recordingClock = new RealtimeClock();
@@ -81,15 +75,13 @@ namespace Beem.Extenject.Record {
                 _videoWidth,
                 _videoHeight,
                 25,
-                _recordMicrophone ? AudioSettings.outputSampleRate : 0,
-                _recordMicrophone ? (int)AudioSettings.speakerMode : 0,
+                AudioSettings.outputSampleRate,
+                (int)AudioSettings.speakerMode,
                 OnRecordComplete
             );
 
             _cameraInput = new CameraInput(_mediaRecorder, _recordingClock, _cameras);
-            if (_recordMicrophone) {
-                _audioInput = new AudioInput(_mediaRecorder, _recordingClock, _audioSource);
-            }
+            _audioInput = new AudioInput(_mediaRecorder, _recordingClock, _audioSource);
         }
 
         private void OnRecordEnd(VideoRecordEndSignal recordEndSignal) {
@@ -120,10 +112,7 @@ namespace Beem.Extenject.Record {
         /// Record Stop
         /// </summary>
         public void OnRecordStop() {
-            if (_recordMicrophone) {
-                _audioInput.Dispose();
-            }
-
+            _audioInput.Dispose();
             _cameraInput.Dispose();
             _mediaRecorder.Dispose();
         }

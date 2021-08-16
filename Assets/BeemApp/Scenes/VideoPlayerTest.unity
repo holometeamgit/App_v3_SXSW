@@ -739,6 +739,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2009173478}
   - component: {fileID: 2009173477}
+  - component: {fileID: 2009173480}
+  - component: {fileID: 2009173479}
   m_Layer: 0
   m_Name: RecordInstaller
   m_TagString: Untagged
@@ -758,12 +760,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20d259b2e93313e41a26aba7845865d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _snapShotWindow:
-    _windowSignalsType: 1
-    _windowObject: {fileID: 11400000, guid: 4ff2ce4338cb69b48b512fda74de8144, type: 2}
-  _videoRecordWindow:
-    _windowSignalsType: 1
-    _windowObject: {fileID: 11400000, guid: 774a97360aca4be48bece01dc2b26ef1, type: 2}
 --- !u!4 &2009173478
 Transform:
   m_ObjectHideFlags: 0
@@ -778,3 +774,33 @@ Transform:
   m_Father: {fileID: 788014767}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2009173479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2009173476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 887a7897b4252ee499627f9cfda064c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _snapShotWindow:
+    _windowSignalsType: 1
+    _windowObject: {fileID: 11400000, guid: 774a97360aca4be48bece01dc2b26ef1, type: 2}
+--- !u!114 &2009173480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2009173476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 771851aa157af154692135b1621fb32b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _snapShotWindow:
+    _windowSignalsType: 1
+    _windowObject: {fileID: 11400000, guid: 4ff2ce4338cb69b48b512fda74de8144, type: 2}
