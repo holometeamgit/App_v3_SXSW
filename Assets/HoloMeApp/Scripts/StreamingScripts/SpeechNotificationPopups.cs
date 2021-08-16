@@ -62,8 +62,12 @@ public class SpeechNotificationPopups : MonoBehaviour {
     /// Disable all visible popups
     /// </summary>
     public void DeactivateAllPopups() {
+        List<string> popupKeys = new List<string>();
         foreach (KeyValuePair<string, GameObject> popup in visiblePopups) {
-            DeactivatePopup(popup.Key);
+            popupKeys.Add(popup.Key);
+        }
+        foreach (string key in popupKeys) {
+            DeactivatePopup(key);
         }
     }
 }
