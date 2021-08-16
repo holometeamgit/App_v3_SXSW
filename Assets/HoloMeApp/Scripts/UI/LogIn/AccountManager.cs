@@ -26,11 +26,9 @@ public class AccountManager : MonoBehaviour {
 
     public void CancelLogIn() {
         onCancelLogIn?.Invoke();
-        HelperFunctions.DevLog("Cancel Log In");
     }
 
     public void LogOut() {
-        Debug.Log("LogOut");
         RemoveAccessToken();
         CallBacks.onSignOut?.Invoke();
         SaveLogInType(LogInType.None);
@@ -68,11 +66,9 @@ public class AccountManager : MonoBehaviour {
 
     public void SaveAccessToken(string serverAccessToken) {
         try {
-            //            Debug.Log("Try Save Access Token \n" + serverAccessToken);
             ServerAccessToken accessToken = JsonUtility.FromJson<ServerAccessToken>(serverAccessToken);
             HelperFunctions.DevLog("Save serverAccessToken " + serverAccessToken);
             FileAccountManager.SaveFile(nameof(FileAccountManager.ServerAccessToken), accessToken, FileAccountManager.ServerAccessToken);
-            //            Debug.Log("Access Token Saved");
 
             if (Application.isEditor && disablePersistance) {
                 temporaryEditorTestingAccessToken = accessToken;
@@ -102,15 +98,11 @@ public class AccountManager : MonoBehaviour {
             LogOut(); // hotfix v4.9
             return;
         }
-
-        HelperFunctions.DevLog("try QuickLogIn");
         if (GetLogInType() == LogInType.Facebook) {
             LogOut();
         }
 
         ServerAccessToken accessToken = GetAccessToken();
-
-        HelperFunctions.DevLog("QuickLogIn ServerAccessToken is null = " + (accessToken == null));
 
         if (accessToken == null && !authController.HasUser()) {
             ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
@@ -118,11 +110,11 @@ public class AccountManager : MonoBehaviour {
             LogOut();
             return;
         } else if (accessToken == null && authController.HasUser() && GetLogInType() != LogInType.None) {
-            HelperFunctions.DevLog("has firebase user. QuickLogIn Firebase");
+            HelperFunctions.DevLog("Has firebase user. QuickLogIn Firebase");
             authController.DoAfterReloadUser(() => CallBacks.onFirebaseSignInSuccess(GetLogInType())); //TODO need test 
             return;
         } else if (accessToken == null && authController.HasUser() && GetLogInType() == LogInType.None) {
-            HelperFunctions.DevLog("has firebase user but doesn't have LogInType");
+            HelperFunctions.DevLog("Has firebase user but doesn't have LogInType");
             LogOut();
             ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
             return;
@@ -151,7 +143,6 @@ public class AccountManager : MonoBehaviour {
     }
 
     private void RemoveAccessToken() {
-        HelperFunctions.DevLog("Remove serverAccessToken");
         FileAccountManager.DeleteFile(FileAccountManager.ServerAccessToken);
     }
 
@@ -169,8 +160,6 @@ public class AccountManager : MonoBehaviour {
 
         SaveLogInType(logInType);
 
-        HelperFunctions.DevLog("LogInToServer " + logInType + " IsVerifiried " + authController.IsVerifiried());
-
         if (logInType == LogInType.Email && !authController.IsVerifiried()) {
             CallBacks.onNeedVerification?.Invoke(authController.GetEmail());
             return;
@@ -181,8 +170,6 @@ public class AccountManager : MonoBehaviour {
 
     private void GetServerAccessToken(string firebaseAccessToken) {
 
-        HelperFunctions.DevLog("try GetServerAccessToken. Is busy prev request = " + canLogIn);
-
         if (!canLogIn) {
             //  CallBacks.onFail?.Invoke("Can't Get Server Access Token");
             return;
@@ -190,7 +177,6 @@ public class AccountManager : MonoBehaviour {
         canLogIn = false;
 
         string url = GetRequestAccessTokenURL();
-        HelperFunctions.DevLog(url);
 
         FirebaseJsonToken firebaseJsonToken = new FirebaseJsonToken(firebaseAccessToken);
 

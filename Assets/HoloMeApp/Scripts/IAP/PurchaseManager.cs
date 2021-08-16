@@ -34,8 +34,6 @@ public class PurchaseManager : MonoBehaviour
         if (streamData == null || streamData.is_bought)
             return;
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed, new Dictionary<string, string> { {AnalyticParameters.ParamProductID, streamData.product_type.product_id}, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, streamData.user_id.ToString() } } );
-        //TODO add chech stream available befor purchaise
-        HelperFunctions.DevLog("Start store purchasing: product id = " + streamData.product_type.product_id);
         backgroudGO.SetActive(true);
         iapController.BuyTicket(streamData.product_type.product_id);
         OnPurchaseStarted?.Invoke();
@@ -61,7 +59,6 @@ public class PurchaseManager : MonoBehaviour
     private void ProductListCallBack(long code, string body) {
         ProductJsonData productJsonData = new ProductJsonData();
         try {
-            HelperFunctions.DevLog(body);
             productJsonData = JsonUtility.FromJson<ProductJsonData>(body);
             
         } catch (Exception e) {
@@ -103,7 +100,6 @@ public class PurchaseManager : MonoBehaviour
         streamBillingJsonData.bill.hash = product.receipt;
 
         CallBacks.onStreamPurchasedInStore?.Invoke(streamData.id);
-        HelperFunctions.DevLog("Try send to Server " + streamData.id);
         purchasesSaveManager.SendToServer(streamData.id, streamBillingJsonData);
 
         streamData = null;
@@ -133,7 +129,6 @@ public class PurchaseManager : MonoBehaviour
 
     private IEnumerator RepeatRequestProduct () {
         yield return new WaitForSeconds(1);
-        HelperFunctions.DevLog("Product list Request");
         GetProductList();
     }
 }

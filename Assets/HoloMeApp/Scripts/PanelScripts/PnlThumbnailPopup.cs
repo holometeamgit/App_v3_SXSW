@@ -83,20 +83,18 @@ public class PnlThumbnailPopup : UIThumbnail {
     }
 
     public void ClosePnl() {
-        HelperFunctions.DevLog("Close PnlThumbnailPopup");
         gameObject.SetActive(false);
         currentId = DEFAUL_STREAM_DATA_ID;
     }
 
     private void ShowPnl() {
-        HelperFunctions.DevLog("show PnlThumbnailPopup");
         gameObject.SetActive(true);
     }
 
     private void ShowStreamStream(StreamJsonData.Data streamData) {
         if (streamData.id != currentId)
             return;
-        HelperFunctions.DevLog("thumbnail popup open stream id " + streamData.id);
+        HelperFunctions.DevLog("Thumbnail popup open stream id " + streamData.id);
         /* autoplay
          * if (streamData.is_bought) {
             uiThumbnailsController.Play(streamData);
