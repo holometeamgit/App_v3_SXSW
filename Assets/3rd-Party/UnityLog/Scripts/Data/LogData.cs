@@ -25,6 +25,9 @@ namespace Beem.Utility.UnityConsole {
         private static List<UnityLog> _log = new List<UnityLog>();
 
         public static event Action onRefreshLog = delegate { };
+        public static event Action onRefreshTag = delegate { };
+
+        private static bool isInited = false;
 
         /// <summary>
         /// Current Log
@@ -33,11 +36,13 @@ namespace Beem.Utility.UnityConsole {
             string temp = string.Empty;
             foreach (UnityLog item in _log) {
                 if (_currentLogType == item.Key) {
-                    if (string.IsNullOrEmpty(_inputKeys) || (item.Value.Contains(_inputKeys) || item.StackTrace.Contains(_inputKeys))) {
-                        string date = string.Format("{0:D2}:{1:D2}:{2:D2}", item.Date.Hour, item.Date.Minute, item.Date.Second);
-                        temp += "[" + date + "]" + "[" + item.Tag + "] : " + item.Value + "\n";
-                        if (_isStackTraceStatus) {
-                            temp += "[StackTrace]" + " : " + item.StackTrace + "\n";
+                    if (_currentTag == item.Tag || _currentTag == "All") {
+                        if (string.IsNullOrEmpty(_inputKeys) || (item.Value.Contains(_inputKeys) || item.StackTrace.Contains(_inputKeys))) {
+                            string date = string.Format("{0:D2}:{1:D2}:{2:D2}", item.Date.Hour, item.Date.Minute, item.Date.Second);
+                            temp += "[" + date + "]" + "[" + item.Tag + "] : " + item.Value + "\n";
+                            if (_isStackTraceStatus) {
+                                temp += "[StackTrace]" + " : " + item.StackTrace;
+                            }
                         }
                     }
                 }
@@ -49,21 +54,23 @@ namespace Beem.Utility.UnityConsole {
         /// Initialise Data
         /// </summary>
         public static void Init() {
-            string[] PieceTypeNames = Enum.GetNames(typeof(LogType));
-            foreach (string item in PieceTypeNames) {
-                LogType logType = (LogType)Enum.Parse(typeof(LogType), item);
-                for (int i = 0; i < GetLogNumber(logType); i++) {
-                    if (LoadLogs(logType, i).Value != string.Empty) {
-                        AddLog(LoadLogs(logType, i));
+            if (!isInited) {
+                isInited = true;
+                string[] PieceTypeNames = Enum.GetNames(typeof(LogType));
+                foreach (string item in PieceTypeNames) {
+                    LogType logType = (LogType)Enum.Parse(typeof(LogType), item);
+                    for (int i = 0; i < GetLogNumber(logType); i++) {
+                        if (LoadLogs(logType, i).Value != string.Empty) {
+                            AddLog(LoadLogs(logType, i));
+                        }
                     }
                 }
+
+
+                _log.Sort(delegate (UnityLog x, UnityLog y) {
+                    return DateTime.Compare(x.Date, y.Date);
+                });
             }
-
-
-            _log.Sort(delegate (UnityLog x, UnityLog y) {
-                return DateTime.Compare(x.Date, y.Date);
-            });
-
         }
 
         /// <summary>
@@ -102,6 +109,10 @@ namespace Beem.Utility.UnityConsole {
 
             _currentTag = tag;
 
+            if (_log.Find(x => x.Tag == _currentTag) == null) {
+                onRefreshTag?.Invoke();
+            }
+
             onRefreshLog?.Invoke();
         }
 
@@ -125,20 +136,18 @@ namespace Beem.Utility.UnityConsole {
         /// <param name="logType"></param>
         /// <param name="log"></param>
         /// <param name="stackTrace"></param>
-        public static void AddLog(string log, string stackTrace, LogType logType, string tag = "Def") {
-            if (Application.isEditor || Debug.isDebugBuild) {
-                UnityLog unityLog = new UnityLog {
-                    Tag = tag,
-                    Key = logType,
-                    Value = log,
-                    Date = DateTime.Now,
-                    StackTrace = stackTrace
-                };
-                SetLogNumber(logType, GetLogNumber(logType) + 1);
-                SaveLogs(unityLog);
-                _log.Add(unityLog);
-                onRefreshLog?.Invoke();
-            }
+        public static void AddLog(string log, string stackTrace, LogType logType, string tag = "All") {
+            UnityLog unityLog = new UnityLog {
+                Tag = tag,
+                Key = logType,
+                Value = log,
+                Date = DateTime.Now,
+                StackTrace = stackTrace
+            };
+            SetLogNumber(logType, GetLogNumber(logType) + 1);
+            SaveLogs(unityLog);
+            _log.Add(unityLog);
+            onRefreshLog?.Invoke();
         }
 
         /// <summary>

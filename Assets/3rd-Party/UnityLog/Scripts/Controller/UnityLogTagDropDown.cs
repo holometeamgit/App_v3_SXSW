@@ -18,8 +18,20 @@ namespace Beem.Utility.UnityConsole {
 
         private void Awake() {
             dropdown = GetComponent<Dropdown>();
-            List<Dropdown.OptionData> datas = new List<Dropdown.OptionData>();
+            RefreshTags();
+        }
 
+        private void OnEnable() {
+            LogData.onRefreshTag += RefreshTags;
+        }
+
+        private void OnDisable() {
+            LogData.onRefreshTag -= RefreshTags;
+        }
+
+        private void RefreshTags() {
+            dropdown.ClearOptions();
+            List<Dropdown.OptionData> datas = new List<Dropdown.OptionData>();
             PieceTypeNames = LogData.GetTags();
             foreach (string item in PieceTypeNames) {
                 Dropdown.OptionData data = new Dropdown.OptionData {
