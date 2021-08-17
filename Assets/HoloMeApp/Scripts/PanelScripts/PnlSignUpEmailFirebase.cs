@@ -10,13 +10,9 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     [SerializeField]
     private InputFieldController inputFieldPassword;
     [SerializeField]
-    private InputFieldController inputFieldConfirmPassword;
-    [SerializeField]
     private Switcher switcherToVerification;
     [SerializeField]
     private GameObject LogInLoadingBackground;
-    [SerializeField]
-    private bool isNeedConfirmationPassword = true;
     [SerializeField]
     private Toggle toggleEmailReceive;
     [SerializeField]
@@ -46,9 +42,6 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
             return;
         nextTimeCanClick = (Time.time + COOLDOWN);
 
-        if (!isNeedConfirmationPassword)
-            inputFieldConfirmPassword.text = inputFieldPassword.text;
-
         if (!LocalDataVerification()) {
             return;
         }
@@ -57,7 +50,7 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
         CallBacks.onSignUp?.Invoke(inputFieldEmail.text,
             inputFieldEmail.text,
             inputFieldPassword.text,
-            inputFieldConfirmPassword.text);
+            inputFieldPassword.text);
     }
 
     private void SignUpCallBack() {
@@ -73,7 +66,6 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     private void ErrorSignUpCallBack(string msg) {
         if (msg.Contains("Password")) {
             inputFieldPassword.ShowWarning(msg);
-            inputFieldConfirmPassword.ShowWarning(msg);
         } else {
             inputFieldEmail.ShowWarning(msg);
         }
@@ -84,18 +76,14 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
             inputFieldEmail.ShowWarning("This field is compulsory");
         if (string.IsNullOrWhiteSpace(inputFieldPassword.text))
             inputFieldPassword.ShowWarning("This field is compulsory");
-        if (isNeedConfirmationPassword && string.IsNullOrWhiteSpace(inputFieldConfirmPassword.text))
-            inputFieldConfirmPassword.ShowWarning("This field is compulsory");
 
         return !string.IsNullOrWhiteSpace(inputFieldEmail.text) &&
-            !string.IsNullOrWhiteSpace(inputFieldPassword.text) &&
-            (!isNeedConfirmationPassword || !string.IsNullOrWhiteSpace(inputFieldConfirmPassword.text));
+            !string.IsNullOrWhiteSpace(inputFieldPassword.text);
     }
 
     private void ClearInputFieldData() {
         inputFieldEmail.text = "";
         inputFieldPassword.text = "";
-        inputFieldConfirmPassword.text = "";
     }
 
     private void ShowBackground() {
@@ -108,10 +96,6 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
 
     private void HideBackground(string reason) {
         LogInLoadingBackground.SetActive(false);
-    }
-
-    private bool CanContinue() {
-        return inputFieldEmail.text.Length > 0 && inputFieldPassword.text.Length > 0;
     }
 
     private void OnEnable() {
