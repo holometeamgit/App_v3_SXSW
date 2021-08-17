@@ -27,6 +27,7 @@ public class BtnController : MonoBehaviour
     /// </summary>
     /// <param name="onCheckRequirement"></param>
     public void AddCheckInteractionRequirementListener(Func<bool> onCheckRequirement) {
+        InitSetRequirements();
         _onNeedCheckInteractionRequirement.Add(onCheckRequirement);
     }
     /// <summary>
@@ -34,6 +35,7 @@ public class BtnController : MonoBehaviour
     /// </summary>
     /// <param name="onCheckRequirement"></param>
     public void RemoveCheckInteractionRequirementListener(Func<bool> onCheckRequirement) {
+        InitSetRequirements();
         _onNeedCheckInteractionRequirement.Remove(onCheckRequirement);
     }
 
@@ -43,7 +45,6 @@ public class BtnController : MonoBehaviour
     /// </summary>
     public void CheckInteractionRequirement() {
         foreach(var isMetRequirements in _onNeedCheckInteractionRequirement) {
-            HelperFunctions.DevLog(" CheckInteractionRequirement BtnController " + isMetRequirements.Invoke());
             if(!isMetRequirements.Invoke()) {
                 _btn.interactable = false;
                 return;
@@ -57,6 +58,11 @@ public class BtnController : MonoBehaviour
     /// </summary>
     public void BtnPress() {
         OnPress.Invoke();
+    }
+
+    private void InitSetRequirements() {
+        if (_onNeedCheckInteractionRequirement == null)
+            _onNeedCheckInteractionRequirement = new HashSet<Func<bool>>();
     }
 
     private void OnEnable() {

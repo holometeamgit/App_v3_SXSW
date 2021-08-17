@@ -21,12 +21,13 @@ public abstract class BtnInteractionRequirementChecker : MonoBehaviour {
     /// <returns></returns>
     protected abstract bool CheckRequirements();
 
-    protected virtual void Awake() {;
+    protected void CheckBtnController() {
         if (_btnController == null)
             _btnController = GetComponent<BtnController>();
     }
 
     protected virtual void OnEnable() {
+        CheckBtnController();
         _btnController.AddCheckInteractionRequirementListener(CheckRequirements);
         _onRequirementsUpdated += _btnController.CheckInteractionRequirement;
     }

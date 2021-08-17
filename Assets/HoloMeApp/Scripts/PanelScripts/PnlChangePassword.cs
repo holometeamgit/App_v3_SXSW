@@ -48,7 +48,6 @@ public class PnlChangePassword : MonoBehaviour {
             newPasswordInputField.ShowWarning(badRequestChangePassword.new_password1[0]);
         if (badRequestChangePassword.new_password2.Count > 0) {
             newPasswordRepeatInputField.ShowWarning(badRequestChangePassword.new_password2[0]);
-            Debug.Log(badRequestChangePassword.new_password2[0]);
         }
     }
 

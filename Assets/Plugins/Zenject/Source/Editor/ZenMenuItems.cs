@@ -209,8 +209,7 @@ namespace Zenject.Internal
             {
                 GameObject.DestroyImmediate(gameObject);
             }
-
-            Debug.Log("Created new ProjectContext at '{0}'".Fmt(prefabPath));
+            
         }
 
         public static string AddCSharpClassTemplate(
