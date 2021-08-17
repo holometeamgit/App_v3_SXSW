@@ -95,7 +95,7 @@ namespace Beem.Permissions {
 
         private void OpenNotification(string accessName) {
             pnlGenericError.ActivateDoubleButton(accessName + " access Required!",
-                      "Please enable" + accessName + " access to use this app",
+                      "Please enable " + accessName + " access to use this app",
                       "Settings",
                       "Cancel",
                       () => OpenSettings(),

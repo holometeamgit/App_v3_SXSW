@@ -20,9 +20,9 @@ namespace Beem.Video {
         [SerializeField]
         private GameObject pauseBtn;
 
-        public void Refresh(VideoPlayer videoPlayer) {
-            playBtn.SetActive(!videoPlayer.isPlaying);
-            pauseBtn.SetActive(videoPlayer.isPlaying);
+        public void Refresh(bool isPlaying) {
+            playBtn.SetActive(!isPlaying);
+            pauseBtn.SetActive(isPlaying);
         }
     }
 }
