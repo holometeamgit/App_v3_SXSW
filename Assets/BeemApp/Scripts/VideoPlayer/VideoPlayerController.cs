@@ -29,7 +29,6 @@ namespace Beem.Video {
 
         public static Action<VideoPlayer> onSetVideoPlayer;
 
-        private bool wasPlaying = default;
         private double currentTime = default;
         private CancellationTokenSource cancelTokenSource;
 
@@ -74,7 +73,6 @@ namespace Beem.Video {
             } else {
                 OnPrepare(_videoPlayer);
             }
-            _videoPlayerBtnViews.Refresh(_videoPlayer);
 
         }
 
@@ -92,7 +90,7 @@ namespace Beem.Video {
             _videoPlayer.prepareCompleted -= OnPrepare;
             _videoPlayer.seekCompleted += OnSeekCompleted;
             playerObjects.SetActive(true);
-            _videoPlayerBtnViews.Refresh(_videoPlayer);
+            _videoPlayerBtnViews.Refresh(true);
             _videoPlayer.Play();
             foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
                 view.PlayAsync();
@@ -110,10 +108,8 @@ namespace Beem.Video {
                 return;
             }
 
-            wasPlaying = _videoPlayer.isPlaying;
-            Debug.LogError(wasPlaying);
             _videoPlayer.Pause();
-            _videoPlayerBtnViews.Refresh(_videoPlayer);
+            _videoPlayerBtnViews.Refresh(false);
             foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
                 view.Cancel();
             }
@@ -133,23 +129,19 @@ namespace Beem.Video {
             if (_videoPlayer == null) {
                 return;
             }
-            HelperFunctions.DevLogError("OnResume");
-            if (wasPlaying && _videoPlayer.isPaused) {
-                HelperFunctions.DevLogError("OnPlay");
+            if (_videoPlayer.isPaused) {
                 OnPlay();
             }
         }
 
         private void OnApplicationPause(bool pause) {
             if (pause) {
-                HelperFunctions.DevLogError("Pause " + wasPlaying);
                 OnPause();
             }
         }
 
         private void OnApplicationFocus(bool focus) {
             if (focus) {
-                HelperFunctions.DevLogError("Focus " + wasPlaying);
                 OnResume();
             }
         }
@@ -180,7 +172,6 @@ namespace Beem.Video {
                 return;
             }
 
-            _videoPlayerBtnViews.Refresh(_videoPlayer);
             _videoPlayer.sendFrameReadyEvents = true;
             _videoPlayer.seekCompleted -= OnSeekCompleted;
             _videoPlayer.frameReady += OnFrameReady;
@@ -198,7 +189,6 @@ namespace Beem.Video {
                 return;
             }
 
-            _videoPlayerBtnViews.Refresh(_videoPlayer);
             _videoPlayer.sendFrameReadyEvents = false;
             _videoPlayer.frameReady -= OnFrameReady;
         }
