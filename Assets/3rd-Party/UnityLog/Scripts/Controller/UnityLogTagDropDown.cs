@@ -7,28 +7,31 @@ using UnityEngine.UI;
 
 namespace Beem.Utility.UnityConsole {
     /// <summary>
-    /// Change Unity Log Type
+    /// Change Unity Log Tag
     /// </summary>
     /// 
     [RequireComponent(typeof(Dropdown))]
-    public class UnityLogTypeDropDown : MonoBehaviour {
+    public class UnityLogTagDropDown : MonoBehaviour {
 
         private Dropdown dropdown;
+        private List<string> PieceTypeNames;
 
         private void Awake() {
             dropdown = GetComponent<Dropdown>();
             List<Dropdown.OptionData> datas = new List<Dropdown.OptionData>();
-            string[] PieceTypeNames = Enum.GetNames(typeof(LogType));
+
+            PieceTypeNames = LogData.GetTags();
             foreach (string item in PieceTypeNames) {
-                Dropdown.OptionData data = new Dropdown.OptionData();
-                data.text = item;
+                Dropdown.OptionData data = new Dropdown.OptionData {
+                    text = item
+                };
                 datas.Add(data);
             }
             dropdown.AddOptions(datas);
         }
 
         public void DropDown(int value = 0) {
-            LogData.SetLogType((LogType)value);
+            LogData.SetTag(PieceTypeNames[value]);
         }
     }
 }

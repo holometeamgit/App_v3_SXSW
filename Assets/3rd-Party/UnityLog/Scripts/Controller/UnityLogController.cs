@@ -19,7 +19,14 @@ namespace Beem.Utility.UnityConsole {
         }
 
         private void HandleLog(string logString, string stackTrace, LogType type) {
-            LogData.AddLog(logString, stackTrace, type);
+            if (!logString.Contains("#")) {
+                LogData.AddLog(logString, stackTrace, type);
+            } else {
+                int index = logString.IndexOf("#");
+                string log = logString.Substring(0, index);
+                string tag = logString.Substring(index + 1, logString.Length);
+                LogData.AddLog(log, stackTrace, type, tag);
+            }
         }
     }
 }

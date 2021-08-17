@@ -8,6 +8,7 @@ namespace Beem.Utility.UnityConsole {
     /// Unity Log
     /// </summary>
     public class UnityLog {
+        public string Tag;
         public LogType Key;
         public string Value;
         public string StackTrace;
