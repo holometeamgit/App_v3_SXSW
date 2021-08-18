@@ -7,7 +7,6 @@ namespace Beem.Extenject.Video {
 
     public class VideoPlayerInstaller : MonoInstaller {
         public override void InstallBindings() {
-            Container.DeclareSignal<InitSignal>();
             Container.DeclareSignal<PlaySignal>();
             Container.DeclareSignal<PauseSignal>();
             Container.DeclareSignal<StopSignal>();

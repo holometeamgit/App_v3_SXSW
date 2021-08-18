@@ -2,18 +2,18 @@ using UnityEngine;
 
 namespace Beem.Extenject.Hologram {
     /// <summary>
-    /// Hologram Signal
+    /// Create Holo Signal
     /// </summary>
-    public class HologramSignal : BeemSignal {
+    public class CreateHologramSignal : BeemSignal {
+        private GameObject _hologram;
+
         public GameObject Hologram {
             get {
                 return _hologram;
             }
         }
 
-        private GameObject _hologram;
-
-        public HologramSignal(GameObject hologram) {
+        public CreateHologramSignal(GameObject hologram) {
             _hologram = hologram;
         }
     }

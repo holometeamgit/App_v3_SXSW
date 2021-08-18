@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using Beem.Extenject.Hologram;
+using Beem.Extenject.UI;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Video;
@@ -9,7 +11,7 @@ namespace Beem.Extenject.Video {
     /// <summary>
     /// Abstract video player view
     /// </summary>
-    public abstract class AbstractVideoPlayerView : MonoBehaviour {
+    public abstract class AbstractVideoPlayerView : MonoBehaviour, IShow {
 
         protected CancellationTokenSource cancelTokenSource;
 
@@ -37,10 +39,6 @@ namespace Beem.Extenject.Video {
             _signalBus = signalBus;
         }
 
-        public virtual void OnInit(InitSignal initSignal) {
-            _videoPlayer = initSignal.Player;
-        }
-
         /// <summary>
         /// Refresh data Video Player 
         /// </summary>
@@ -64,14 +62,12 @@ namespace Beem.Extenject.Video {
         }
 
         private void OnEnable() {
-            _signalBus.Subscribe<InitSignal>(OnInit);
             _signalBus.Subscribe<PlaySignal>(PlayAsync);
             _signalBus.Subscribe<PauseSignal>(Cancel);
             _signalBus.Subscribe<StopSignal>(Cancel);
         }
 
         protected void OnDisable() {
-            _signalBus.Unsubscribe<InitSignal>(OnInit);
             _signalBus.Unsubscribe<PlaySignal>(PlayAsync);
             _signalBus.Unsubscribe<PauseSignal>(Cancel);
             _signalBus.Unsubscribe<StopSignal>(Cancel);
@@ -85,6 +81,13 @@ namespace Beem.Extenject.Video {
             if (cancelTokenSource != null) {
                 cancelTokenSource.Cancel();
                 cancelTokenSource = null;
+            }
+        }
+
+        public virtual void Show<T>(T parameter) {
+            if (parameter is PrerecordedVideoData) {
+                PrerecordedVideoData prerecordedVideoData = parameter as PrerecordedVideoData;
+                _videoPlayer = prerecordedVideoData.Player;
             }
         }
     }

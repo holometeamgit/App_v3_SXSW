@@ -40,19 +40,19 @@ namespace Beem.Extenject.Record {
         }
 
         public void Initialize() {
-            HologramCallbacks.onCreateHologram += OnCreateHologram;
+            _signalBus.Subscribe<CreateHologramSignal>(OnCreateHologram);
             _signalBus.Subscribe<VideoRecordStartSignal>(OnRecordStart);
             _signalBus.Subscribe<VideoRecordEndSignal>(OnRecordEnd);
         }
 
         public void LateDispose() {
-            HologramCallbacks.onCreateHologram -= OnCreateHologram;
+            _signalBus.Unsubscribe<CreateHologramSignal>(OnCreateHologram);
             _signalBus.Unsubscribe<VideoRecordStartSignal>(OnRecordStart);
             _signalBus.Unsubscribe<VideoRecordEndSignal>(OnRecordEnd);
         }
 
-        public void OnCreateHologram(GameObject hologram) {
-            _audioSource = hologram.GetComponentInChildren<AudioSource>();
+        public void OnCreateHologram(CreateHologramSignal createHologramSignal) {
+            _audioSource = createHologramSignal.Hologram.GetComponentInChildren<AudioSource>();
         }
 
         private void CorrectResolutionAspect() {

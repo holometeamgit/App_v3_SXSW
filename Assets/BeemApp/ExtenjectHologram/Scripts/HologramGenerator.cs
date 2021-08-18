@@ -28,6 +28,12 @@ namespace Beem.Extenject.Hologram {
         private ARRaycastManager _raycastManager;
 
         private TouchCounter _touchCounter = new TouchCounter();
+        private SignalBus _signalBus;
+
+        [Inject]
+        public void Construct(SignalBus signalBus) {
+            _signalBus = signalBus;
+        }
 
         private void Awake() {
             _raycastManager = FindObjectOfType<ARRaycastManager>();
@@ -37,15 +43,15 @@ namespace Beem.Extenject.Hologram {
 #if UNITY_EDITOR
             CreateHologram(_hologramPrefab, _hologramPrefab.transform.position, _hologramPrefab.transform.rotation);
 #endif
-            HologramCallbacks.onSelectHologramPrefab += SetHologram;
+            _signalBus.Subscribe<SelectHologramSignal>(SetHologram);
         }
 
         private void OnDisable() {
-            HologramCallbacks.onSelectHologramPrefab -= SetHologram;
+            _signalBus.Unsubscribe<SelectHologramSignal>(SetHologram);
         }
 
-        private void SetHologram(GameObject hologram) {
-            _hologramPrefab = hologram;
+        private void SetHologram(SelectHologramSignal selectHologramSignal) {
+            _hologramPrefab = selectHologramSignal.Hologram;
         }
 
         public void OnPointerDown(PointerEventData eventData) {
@@ -62,7 +68,7 @@ namespace Beem.Extenject.Hologram {
         private void CreateHologram(GameObject prefab, Vector3 position, Quaternion rotation) {
             if (_spawnedObject == null) {
                 _spawnedObject = Instantiate(prefab, position, rotation);
-                HologramCallbacks.onCreateHologram?.Invoke(_spawnedObject);
+                _signalBus.Fire(new CreateHologramSignal(_spawnedObject));
             }
         }
 

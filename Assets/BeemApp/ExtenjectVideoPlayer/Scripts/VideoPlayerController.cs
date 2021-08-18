@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Beem.Extenject.Hologram;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -216,19 +217,19 @@ namespace Beem.Extenject.Video {
             Cancel();
         }
 
-        private void OnInit(InitSignal videoSignal) {
+        private void OnCreateHologram(CreateHologramSignal createHologramSignal) {
 
-            if (videoSignal.Player == null) {
+            if (createHologramSignal.Hologram == null) {
                 return;
             }
 
             OnStop();
-            _videoPlayer = videoSignal.Player;
+            _videoPlayer = createHologramSignal.Hologram.GetComponentInChildren<VideoPlayer>();
             OnPlay();
         }
 
         public void Initialize() {
-            _signalBus.Subscribe<InitSignal>(OnInit);
+            _signalBus.Subscribe<CreateHologramSignal>(OnCreateHologram);
             _signalBus.Subscribe<PlaySignal>(OnPlay);
             _signalBus.Subscribe<PauseSignal>(OnPause);
             _signalBus.Subscribe<StopSignal>(OnStop);
@@ -238,7 +239,7 @@ namespace Beem.Extenject.Video {
         }
 
         public void LateDispose() {
-            _signalBus.Unsubscribe<InitSignal>(OnInit);
+            _signalBus.Unsubscribe<CreateHologramSignal>(OnCreateHologram);
             _signalBus.Unsubscribe<PlaySignal>(OnPlay);
             _signalBus.Unsubscribe<PauseSignal>(OnPause);
             _signalBus.Unsubscribe<StopSignal>(OnStop);

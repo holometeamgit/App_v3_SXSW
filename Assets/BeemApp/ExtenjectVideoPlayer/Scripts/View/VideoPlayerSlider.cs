@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Beem.Extenject.Hologram;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
@@ -20,8 +21,8 @@ namespace Beem.Extenject.Video {
             progress = GetComponent<Slider>();
         }
 
-        public override void OnInit(InitSignal initSignal) {
-            base.OnInit(initSignal);
+        public override void Show<T>(T parameter) {
+            base.Show(parameter);
             if (progress == null) {
                 progress = GetComponent<Slider>();
             }

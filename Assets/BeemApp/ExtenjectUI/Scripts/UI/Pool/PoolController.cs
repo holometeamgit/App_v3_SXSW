@@ -49,16 +49,10 @@ namespace Beem.Extenject.UI {
         /// Show Pool Element
         /// </summary>
         public void Show<T>(WindowObject windowObject, T parameter) {
-            if (ContainInPool(windowObject)) {
-                WindowElement tempWindow = GetWindowInPool(windowObject);
-                tempWindow.Element.SetActive(true);
-                _previousWindowElement = _currentWindowElement;
-                _currentWindowElement = tempWindow;
-                _escapeWindows = _currentWindowElement.Element.GetComponentsInChildren<IEscape>();
-                _showWindows = _currentWindowElement.Element.GetComponentsInChildren<IShow>();
-                if (_showWindows != null && _showWindows.Length > 0) {
-                    _showWindows.ToList().ForEach(x => x.Show(parameter));
-                }
+            Show(windowObject);
+            _showWindows = _currentWindowElement.Element.GetComponentsInChildren<IShow>();
+            if (_showWindows != null && _showWindows.Length > 0) {
+                _showWindows.ToList().ForEach(x => x.Show(parameter));
             }
         }
 

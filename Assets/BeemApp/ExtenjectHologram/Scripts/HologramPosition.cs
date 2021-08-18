@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+using Zenject;
 
 namespace Beem.Extenject.Hologram {
 
@@ -34,21 +35,27 @@ namespace Beem.Extenject.Hologram {
         private TouchCounter _touchCounter = new TouchCounter();
 
         private bool isMoved = false;
+        private SignalBus _signalBus;
 
-        private void Awake() {
-            _raycastManager = FindObjectOfType<ARRaycastManager>();
+        [Inject]
+        public void Construct(SignalBus signalBus) {
+            _signalBus = signalBus;
         }
 
         private void OnEnable() {
-            HologramCallbacks.onCreateHologram += SetHologram;
+            _signalBus.Subscribe<CreateHologramSignal>(SetHologram);
         }
 
         private void OnDisable() {
-            HologramCallbacks.onCreateHologram -= SetHologram;
+            _signalBus.Unsubscribe<CreateHologramSignal>(SetHologram);
         }
 
-        private void SetHologram(GameObject hologram) {
-            _hologram = hologram;
+        private void SetHologram(CreateHologramSignal createHologramSignal) {
+            _hologram = createHologramSignal.Hologram;
+        }
+
+        private void Awake() {
+            _raycastManager = FindObjectOfType<ARRaycastManager>();
         }
 
         public void OnPointerDown(PointerEventData eventData) {

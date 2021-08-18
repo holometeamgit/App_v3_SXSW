@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using Zenject;
 
 namespace Beem.Extenject.Hologram {
 
@@ -23,17 +24,23 @@ namespace Beem.Extenject.Hologram {
         private float _startPerimeter;
         private float _endPerimeter;
         private TouchCounter _touchCounter = new TouchCounter();
+        private SignalBus _signalBus;
+
+        [Inject]
+        public void Construct(SignalBus signalBus) {
+            _signalBus = signalBus;
+        }
 
         private void OnEnable() {
-            HologramCallbacks.onCreateHologram += SetHologram;
+            _signalBus.Subscribe<CreateHologramSignal>(SetHologram);
         }
 
         private void OnDisable() {
-            HologramCallbacks.onCreateHologram -= SetHologram;
+            _signalBus.Unsubscribe<CreateHologramSignal>(SetHologram);
         }
 
-        private void SetHologram(GameObject hologram) {
-            _hologram = hologram;
+        private void SetHologram(CreateHologramSignal createHologramSignal) {
+            _hologram = createHologramSignal.Hologram;
         }
 
         private Vector3 ClampDesiredScale(Vector3 desiredScale) {

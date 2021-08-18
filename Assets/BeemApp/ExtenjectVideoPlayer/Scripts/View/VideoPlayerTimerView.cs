@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Beem.Extenject.Hologram;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -22,8 +23,8 @@ namespace Beem.Extenject.Video {
             timerText.text = string.Empty;
         }
 
-        public override void OnInit(InitSignal initSignal) {
-            base.OnInit(initSignal);
+        public override void Show<T>(T parameter) {
+            base.Show(parameter);
             if (timerText == null) {
                 timerText = GetComponent<Text>();
             }
