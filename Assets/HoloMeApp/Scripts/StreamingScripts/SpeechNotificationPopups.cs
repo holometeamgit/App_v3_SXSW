@@ -21,7 +21,7 @@ public class SpeechNotificationPopups : MonoBehaviour {
     /// Activate popup for user with name
     /// </summary>
     public void ActivatePopup(string name) {
-        print("Activate POPUP CALLED " + name);
+        //HelperFunctions.DevLog("Activate POPUP CALLED " + name);
         if (visiblePopups.Count >= MAX_CHAT_BOX_COUNT)
             return;
 
@@ -49,7 +49,7 @@ public class SpeechNotificationPopups : MonoBehaviour {
     /// Disables popup for user with name
     /// </summary>
     public void DeactivatePopup(string name) {
-        print("Deactivate POPUP CALLED " + name);
+        //HelperFunctions.DevLog("Deactivate POPUP CALLED " + name);
         if (visiblePopups.ContainsKey(name)) {
             GameObject popupToDisable = visiblePopups[name];
             popupToDisable.SetActive(false);
