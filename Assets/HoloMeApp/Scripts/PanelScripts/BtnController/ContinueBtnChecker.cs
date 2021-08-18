@@ -54,7 +54,7 @@ public class ContinueBtnChecker : BtnInteractionRequirementChecker {
 
     private bool IsInputFieldsFilled() {
         foreach (var inputField in _filledInputFieldControllers) {
-            if (inputField.text.Length < 1)
+            if (string.IsNullOrWhiteSpace(inputField.text))
                 return false;
         }
 
