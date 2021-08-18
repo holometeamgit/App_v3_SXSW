@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Video;
+using Zenject;
 
 namespace Beem.Extenject.Video {
 
@@ -17,6 +18,8 @@ namespace Beem.Extenject.Video {
 
         protected VideoPlayer _videoPlayer;
 
+        private SignalBus _signalBus;
+
         public double Time {
             get { return _videoPlayer.time; }
         }
@@ -29,8 +32,13 @@ namespace Beem.Extenject.Video {
             get { return Time / Duration; }
         }
 
-        public virtual void Init(VideoPlayer videoPlayer) {
-            _videoPlayer = videoPlayer;
+        [Inject]
+        public void Construct(SignalBus signalBus) {
+            _signalBus = signalBus;
+        }
+
+        public virtual void OnInit(InitSignal initSignal) {
+            _videoPlayer = initSignal.Player;
         }
 
         /// <summary>
@@ -55,7 +63,18 @@ namespace Beem.Extenject.Video {
             }
         }
 
+        private void OnEnable() {
+            _signalBus.Subscribe<InitSignal>(OnInit);
+            _signalBus.Subscribe<PlaySignal>(PlayAsync);
+            _signalBus.Subscribe<PauseSignal>(Cancel);
+            _signalBus.Subscribe<StopSignal>(Cancel);
+        }
+
         protected void OnDisable() {
+            _signalBus.Unsubscribe<InitSignal>(OnInit);
+            _signalBus.Unsubscribe<PlaySignal>(PlayAsync);
+            _signalBus.Unsubscribe<PauseSignal>(Cancel);
+            _signalBus.Unsubscribe<StopSignal>(Cancel);
             Cancel();
         }
 

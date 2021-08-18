@@ -1,70 +1,48 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Video;
+using Zenject;
 
 namespace Beem.Extenject.Video {
 
     /// <summary>
     /// CurrentPlayer for video
     /// </summary>
-    public class VideoPlayerController : MonoBehaviour {
+    public class VideoPlayerController : IInitializable, ILateDisposable {
 
         [Header("Video Player")]
         [SerializeField]
         private VideoPlayer _videoPlayer;
 
-        [Header("Views for video")]
-        [SerializeField]
-        private List<AbstractVideoPlayerView> _videoPlayerViews;
+        private double currentTime = default;
+        private CancellationTokenSource cancelTokenSource;
+        private SignalBus _signalBus;
 
-        [SerializeField]
-        private VideoPlayerBtnView _videoPlayerBtnViews;
-
-        [SerializeField]
-        private GameObject playerObjects;
-
-        public static Action<VideoPlayer> onSetVideoPlayer;
-
-        private bool isPlaying = default;
-
-        private void OnEnable() {
-            onSetVideoPlayer += OnSetVideoPlayer;
-            foreach (VideoPlayer item in FindObjectsOfType<VideoPlayer>()) {
-                if (item.gameObject.name == "VideoQuad") {
-                    OnSetVideoPlayer(item);
-                    break;
-                }
-            }
-        }
-
-        private void OnDisable() {
-            onSetVideoPlayer -= OnSetVideoPlayer;
-            OnStop();
-        }
-
-        private void OnInit() {
-            if (_videoPlayer != null) {
-                foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                    view.Init(_videoPlayer);
-                }
-            }
+        [Inject]
+        public void Construct(SignalBus signalBus) {
+            _signalBus = signalBus;
         }
 
         /// <summary>
         /// Play Video
         /// </summary>
 
-        public void OnPlay() {
-            if (_videoPlayer != null) {
-                if (!_videoPlayer.isPrepared) {
-                    _videoPlayer.prepareCompleted += OnPrepare;
-                    _videoPlayer.Prepare();
-                } else {
-                    OnPrepare(_videoPlayer);
-                }
-                _videoPlayerBtnViews.Refresh(_videoPlayer);
+        private void OnPlay() {
+            if (_videoPlayer == null) {
+                return;
             }
+
+            if (!_videoPlayer.isPrepared) {
+                _videoPlayer.prepareCompleted += OnPrepare;
+                _videoPlayer.Prepare();
+            } else {
+                OnPrepare(_videoPlayer);
+            }
+
         }
 
         /// <summary>
@@ -73,52 +51,56 @@ namespace Beem.Extenject.Video {
         /// <param name="videoPlayer"></param>
 
         private void OnPrepare(VideoPlayer videoPlayer) {
-            if (_videoPlayer != null) {
-                _videoPlayer.prepareCompleted -= OnPrepare;
-                _videoPlayer.seekCompleted += OnSeekCompleted;
-                playerObjects.SetActive(true);
-                _videoPlayerBtnViews.Refresh(_videoPlayer);
-                _videoPlayer.Play();
-                foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                    view.PlayAsync();
-                }
+
+            if (_videoPlayer == null) {
+                return;
             }
+
+            _videoPlayer.prepareCompleted -= OnPrepare;
+            _videoPlayer.seekCompleted += OnSeekCompleted;
+            _videoPlayer.Play();
         }
 
         /// <summary>
         /// Pause Video
         /// </summary>
 
-        public void OnPause() {
-            if (_videoPlayer != null) {
-                isPlaying = _videoPlayer.isPlaying;
-                _videoPlayer.Pause();
-                _videoPlayerBtnViews.Refresh(_videoPlayer);
-                foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                    view.Cancel();
-                }
+        private void OnPause() {
+
+            if (_videoPlayer == null) {
+                return;
             }
+
+            _videoPlayer.Pause();
         }
 
         /// <summary>
         /// Rewind Start
         /// </summary>
 
-        public void OnRewindStarted() {
+        private void OnRewindStarted() {
             OnPause();
         }
 
-        public void OnResume() {
-            if (isPlaying) {
+        private void OnResume() {
+
+            if (_videoPlayer == null) {
+                return;
+            }
+            if (_videoPlayer.isPaused) {
                 OnPlay();
             }
         }
 
         private void OnApplicationPause(bool pause) {
-            if (!pause) {
-                OnResume();
-            } else {
+            if (pause) {
                 OnPause();
+            }
+        }
+
+        private void OnApplicationFocus(bool focus) {
+            if (focus) {
+                OnResume();
             }
         }
 
@@ -126,12 +108,16 @@ namespace Beem.Extenject.Video {
         /// Rewind Video
         /// </summary>
         /// <param name="pct"></param>
-        public void OnRewind(float pct) {
-            if (_videoPlayer != null) {
-                if (!_videoPlayer.canSetTime) return;
-                if (!_videoPlayer.isPrepared) return;
-                _videoPlayer.time = pct * (_videoPlayer.frameCount / _videoPlayer.frameRate);
+        private void OnRewind(RewindSignal rewindSignal) {
+
+            if (_videoPlayer == null) {
+                return;
             }
+
+            if (!_videoPlayer.canSetTime) return;
+            if (!_videoPlayer.isPrepared) return;
+            currentTime = rewindSignal.Percent * (_videoPlayer.frameCount / _videoPlayer.frameRate);
+            _videoPlayer.time = currentTime;
         }
 
         /// <summary>
@@ -140,11 +126,14 @@ namespace Beem.Extenject.Video {
         /// <param name="videoPlayer"></param>
 
         private void OnSeekCompleted(VideoPlayer videoPlayer) {
-            if (_videoPlayer != null) {
-                _videoPlayer.sendFrameReadyEvents = true;
-                _videoPlayer.seekCompleted -= OnSeekCompleted;
-                _videoPlayer.frameReady += OnFrameReady;
+            if (_videoPlayer == null) {
+                return;
             }
+
+            _videoPlayer.sendFrameReadyEvents = true;
+            _videoPlayer.seekCompleted -= OnSeekCompleted;
+            _videoPlayer.frameReady += OnFrameReady;
+
         }
 
         /// <summary>
@@ -154,12 +143,48 @@ namespace Beem.Extenject.Video {
         /// <param name="frame"></param>
 
         private void OnFrameReady(VideoPlayer videoPlayer, long frame) {
-            if (_videoPlayer != null) {
-                _videoPlayer.sendFrameReadyEvents = false;
-                _videoPlayer.frameReady -= OnFrameReady;
-                foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                    view.Refresh();
+            if (_videoPlayer == null) {
+                return;
+            }
+
+            _videoPlayer.sendFrameReadyEvents = false;
+            _videoPlayer.frameReady -= OnFrameReady;
+        }
+
+        private async void LoadVideoFrameComletedAsync() {
+
+            if (_videoPlayer == null) {
+                return;
+            }
+
+            Cancel();
+
+            cancelTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancelTokenSource.Token;
+
+            try {
+                while (!cancellationToken.IsCancellationRequested && Mathf.Abs((float)(currentTime - _videoPlayer.time)) > 1f) {
+                    await Task.Yield();
                 }
+
+                if (!cancellationToken.IsCancellationRequested) {
+                    OnResume();
+                }
+            } finally {
+                if (cancelTokenSource != null) {
+                    cancelTokenSource.Dispose();
+                    cancelTokenSource = null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Clear Info
+        /// </summary>
+        private void Cancel() {
+            if (cancelTokenSource != null) {
+                cancelTokenSource.Cancel();
+                cancelTokenSource = null;
             }
         }
 
@@ -168,29 +193,59 @@ namespace Beem.Extenject.Video {
         /// </summary>
         /// <param name="pct"></param>
 
-        public void OnRewindFinished(float pct) {
-            OnRewind(pct);
+        private void OnRewindFinished(FinishRewindSignal finishRewindSignal) {
+            RewindSignal rewindSignal = new RewindSignal {
+                Percent = finishRewindSignal.Percent
+            };
+            OnRewind(rewindSignal);
+            LoadVideoFrameComletedAsync();
         }
 
         /// <summary>
         /// Stop Video
         /// </summary>
 
-        public void OnStop() {
-            if (_videoPlayer != null) {
-                if (_videoPlayer.isPlaying) {
-                    _videoPlayer.Stop();
-                }
+        private void OnStop() {
+            if (_videoPlayer == null) {
+                return;
             }
+
+            if (_videoPlayer.isPlaying) {
+                _videoPlayer.Stop();
+            }
+            Cancel();
         }
 
-        private void OnSetVideoPlayer(VideoPlayer videoPlayer) {
-            if (videoPlayer != null) {
-                OnStop();
-                _videoPlayer = videoPlayer;
-                OnInit();
-                OnPlay();
+        private void OnInit(InitSignal videoSignal) {
+
+            if (videoSignal.Player == null) {
+                return;
             }
+
+            OnStop();
+            _videoPlayer = videoSignal.Player;
+            OnPlay();
+        }
+
+        public void Initialize() {
+            _signalBus.Subscribe<InitSignal>(OnInit);
+            _signalBus.Subscribe<PlaySignal>(OnPlay);
+            _signalBus.Subscribe<PauseSignal>(OnPause);
+            _signalBus.Subscribe<StopSignal>(OnStop);
+            _signalBus.Subscribe<StartRewindSignal>(OnRewindStarted);
+            _signalBus.Subscribe<RewindSignal>(OnRewind);
+            _signalBus.Subscribe<FinishRewindSignal>(OnRewindFinished);
+        }
+
+        public void LateDispose() {
+            _signalBus.Unsubscribe<InitSignal>(OnInit);
+            _signalBus.Unsubscribe<PlaySignal>(OnPlay);
+            _signalBus.Unsubscribe<PauseSignal>(OnPause);
+            _signalBus.Unsubscribe<StopSignal>(OnStop);
+            _signalBus.Unsubscribe<StartRewindSignal>(OnRewindStarted);
+            _signalBus.Unsubscribe<RewindSignal>(OnRewind);
+            _signalBus.Unsubscribe<FinishRewindSignal>(OnRewindFinished);
+            OnStop();
         }
     }
 }

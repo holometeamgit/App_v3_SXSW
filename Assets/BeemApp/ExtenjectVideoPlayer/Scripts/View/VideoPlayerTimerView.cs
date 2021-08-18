@@ -22,8 +22,8 @@ namespace Beem.Extenject.Video {
             timerText.text = string.Empty;
         }
 
-        public override void Init(VideoPlayer videoPlayer) {
-            base.Init(videoPlayer);
+        public override void OnInit(InitSignal initSignal) {
+            base.OnInit(initSignal);
             if (timerText == null) {
                 timerText = GetComponent<Text>();
             }

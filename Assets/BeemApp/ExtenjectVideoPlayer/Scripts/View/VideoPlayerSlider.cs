@@ -20,8 +20,8 @@ namespace Beem.Extenject.Video {
             progress = GetComponent<Slider>();
         }
 
-        public override void Init(VideoPlayer videoPlayer) {
-            base.Init(videoPlayer);
+        public override void OnInit(InitSignal initSignal) {
+            base.OnInit(initSignal);
             if (progress == null) {
                 progress = GetComponent<Slider>();
             }
