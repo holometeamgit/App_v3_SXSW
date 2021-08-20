@@ -65,8 +65,4 @@ public class BtnController : MonoBehaviour
             _onNeedCheckInteractionRequirement = new HashSet<Func<bool>>();
     }
 
-    private void OnEnable() {
-        CheckInteractionRequirement();
-    }
-
 }
