@@ -110,19 +110,19 @@
 	
 		private IEnumerator AuthorizeWebCam(bool isAutoPlay) {
 			if (!Application.HasUserAuthorization(UserAuthorization.WebCam)) {
-				Debug.Log("WebCamStream | webCam authorization...");
+				HelperFunctions.DevLog("WebCamStream | webCam authorization...");
 				_isAuthorization = true;
 				yield return Application.RequestUserAuthorization(UserAuthorization.WebCam);
 			}
 			_isAuthorization = false;
 			if (Application.HasUserAuthorization(UserAuthorization.WebCam)) {
-				Debug.Log("WebCamStream | webCam authorized");
+				HelperFunctions.DevLog("WebCamStream | webCam authorized");
 				CreateWebCamTexture();
 				if (isAutoPlay) {
 					Play();
 				}
 			} else {
-				Debug.LogError("WebCamStream | webCam can't authorize");
+				HelperFunctions.DevLogError("WebCamStream | webCam can't authorize");
 			}
 		}
 

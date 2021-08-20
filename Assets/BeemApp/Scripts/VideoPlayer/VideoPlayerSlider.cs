@@ -23,6 +23,13 @@ namespace Beem.Video {
 
         private void Awake() {
             progress = GetComponent<Slider>();
+        }
+
+        public override void Init(VideoPlayer videoPlayer) {
+            base.Init(videoPlayer);
+            if (progress == null) {
+                progress = GetComponent<Slider>();
+            }
             progress.value = 0f;
         }
 
@@ -33,7 +40,7 @@ namespace Beem.Video {
             }
 
             if (_videoPlayer.frameCount > 0) {
-                progress.value = (float)_videoPlayer.frame / (float)_videoPlayer.frameCount;
+                progress.value = (float)NTime;
             }
         }
     }

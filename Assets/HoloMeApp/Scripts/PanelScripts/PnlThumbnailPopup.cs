@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Beem.SSO;
+using System.Threading.Tasks;
 
 public class PnlThumbnailPopup : UIThumbnail {
 
@@ -41,6 +42,7 @@ public class PnlThumbnailPopup : UIThumbnail {
     long currentId = 0;
 
     const long DEFAUL_STREAM_DATA_ID = 0;
+    private const int REFRESH_LAYOUT_TIME = 1000;
     bool isSubscribed;
 
     public override void Play() {
@@ -81,20 +83,25 @@ public class PnlThumbnailPopup : UIThumbnail {
     }
 
     public void ClosePnl() {
-        HelperFunctions.DevLog("Close PnlThumbnailPopup");
-        gameObject.SetActive(false);
         currentId = DEFAUL_STREAM_DATA_ID;
+
+        if (isSubscribed) {
+            thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded -= ShowStreamStream;
+            isSubscribed = false;
+        }
+
+        gameObject.SetActive(false);
     }
 
     private void ShowPnl() {
-        HelperFunctions.DevLog("show PnlThumbnailPopup");
         gameObject.SetActive(true);
     }
 
     private void ShowStreamStream(StreamJsonData.Data streamData) {
-        if (streamData.id != currentId)
+        if (streamData.id != currentId ||
+            !((streamData.GetStage() == StreamJsonData.Data.Stage.Prerecorded && streamData.HasStreamUrl) || streamData.GetStage() == StreamJsonData.Data.Stage.Live))
             return;
-        HelperFunctions.DevLog("thumbnail popup open stream id " + streamData.id);
+        HelperFunctions.DevLog("Thumbnail popup open stream id " + streamData.id);
         /* autoplay
          * if (streamData.is_bought) {
             uiThumbnailsController.Play(streamData);
@@ -145,6 +152,13 @@ public class PnlThumbnailPopup : UIThumbnail {
         layoutGroup.enabled = !layoutGroup.enabled;
         layoutGroup.enabled = !layoutGroup.enabled;
 
+        ResetLayout();
+
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        Task.Delay(REFRESH_LAYOUT_TIME).ContinueWith((_) => ResetLayout(), taskScheduler);
+    }
+
+    private void ResetLayout() {
         if (layoutGroup != null) {
             layoutGroup.CalculateLayoutInputHorizontal();
             layoutGroup.CalculateLayoutInputVertical();
@@ -161,8 +175,10 @@ public class PnlThumbnailPopup : UIThumbnail {
     }
 
     private void OnDestroy() {
-        if (isSubscribed)
+        if (isSubscribed) {
             thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded -= ShowStreamStream;
+            isSubscribed = false;
+        }
     }
 
     private void OnEnable() {

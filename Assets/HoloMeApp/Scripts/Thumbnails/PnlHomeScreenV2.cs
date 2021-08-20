@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using Beem.SSO;
+using System.Threading.Tasks;
 
-public class PnlHomeScreenV2 : MonoBehaviour
-{
+public class PnlHomeScreenV2 : MonoBehaviour {
     [SerializeField] ScrollRect scrollRect;
     //Pull refresh
     [SerializeField] UIPullRefreshScrollController pullRefreshController;
@@ -19,6 +19,8 @@ public class PnlHomeScreenV2 : MonoBehaviour
 
     [Space]
     [SerializeField] int pageSize = 10;
+
+    private const int DELAY_TIME_REFRESH_LAYOUT = 50;
 
     //ThumbnailsDataFetcher take json pages with thumbnails 
     private ThumbnailsDataFetcher thumbnailsDataFetcher;
@@ -39,11 +41,7 @@ public class PnlHomeScreenV2 : MonoBehaviour
         pullRefreshController.OnRefresh += RefreshItems;
         pullRefreshController.OnReachedBottom += GetNextPage;
 
-        thumbnailsDataFetcher =
-            new ThumbnailsDataFetcher(thumbnailPriority.ThumbnailPriority,
-            thumbnailWebDownloadManager, pageSize: pageSize );
-
-        thumbnailsDataFetcher.OnAllDataLoaded += AllDataLoaded;
+        InitFetcher();
         CallBacks.onStreamsContainerUpdated += DataUpdateCallBack;
 
         uiThumbnailsController.OnUpdated += UIUpdated;
@@ -52,6 +50,17 @@ public class PnlHomeScreenV2 : MonoBehaviour
         uiThumbnailsController.OnPlayFromUser += OnPlayCallBack;
 
         CallBacks.onSignOut += ClearData;
+    }
+
+    private void InitFetcher() {
+        if (thumbnailsDataFetcher != null)
+            return;
+
+        thumbnailsDataFetcher =
+            new ThumbnailsDataFetcher(thumbnailPriority.ThumbnailPriority,
+            thumbnailWebDownloadManager, pageSize: pageSize);
+
+        thumbnailsDataFetcher.OnAllDataLoaded += AllDataLoaded;
     }
 
     private void DataUpdateCallBack() {
@@ -64,7 +73,8 @@ public class PnlHomeScreenV2 : MonoBehaviour
 
     private void UIUpdated() {
         pullRefreshController.RefreshLayout();
-        Invoke("EndingUIUpdate", 0.05f);
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        Task.Delay(DELAY_TIME_REFRESH_LAYOUT).ContinueWith((_) => EndingUIUpdate(), taskScheduler);
     }
 
     private void RefreshItems() {
@@ -72,15 +82,16 @@ public class PnlHomeScreenV2 : MonoBehaviour
         Resources.UnloadUnusedAssets();
         dataLoaded = false;
         uiThumbnailsController.LockToPressElements();
+        InitFetcher();
         thumbnailsDataFetcher.RefreshData();
     }
 
     private void GetNextPage() {
-        if (!initialized)
+        if (!initialized) {
             RefreshItems();
-        else {
-            if (!dataLoaded)
-                thumbnailsDataFetcher.GetNextPage();
+        } else if (!dataLoaded) {
+            InitFetcher();
+            thumbnailsDataFetcher.GetNextPage();
         }
     }
 
@@ -105,6 +116,8 @@ public class PnlHomeScreenV2 : MonoBehaviour
     }
 
     private void EndingUIUpdate() {
+        if (!isActiveAndEnabled)
+            return;
         pullRefreshController.EndRefreshing();
         pullRefreshController.RefreshLayout();
         pullRefreshController.RefreshLayout();
@@ -124,5 +137,8 @@ public class PnlHomeScreenV2 : MonoBehaviour
 
     private void OnDestroy() {
         CallBacks.onStreamsContainerUpdated -= DataUpdateCallBack;
+        if(thumbnailsDataFetcher != null) {
+            thumbnailsDataFetcher.OnAllDataLoaded -= AllDataLoaded;
+        }
     }
 }

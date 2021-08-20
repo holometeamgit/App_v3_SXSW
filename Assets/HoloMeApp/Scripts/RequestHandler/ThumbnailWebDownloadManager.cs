@@ -70,7 +70,7 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
     private void DownloadStreamById(long id) {
         webRequestHandler.GetRequest(GetRequestStreamByIdURL(id),
             (code, body) => {
-                HelperFunctions.DevLog("DownloadStreamById " + body);
+                HelperFunctions.DevLog("DownloadStreamById " + id + " "  + body);
 
                 StreamJsonData.Data streamJsonData = JsonUtility.FromJson<StreamJsonData.Data>(body);
                 if (streamJsonData != null) 

@@ -16,6 +16,13 @@ public class PnlEmailVerificationFirebase : MonoBehaviour
 
     private const int DELAY_TIME = 5000;
 
+    /// <summary>
+    /// The method do actions after pressing the ResendVerification button
+    /// </summary>
+    public void ResendVerificationBtnClick() {
+        CallBacks.onEmailVerification?.Invoke();
+    }
+
     private void OnEnable() {
         txtEmail.text = AuthController.GetEmail();
 

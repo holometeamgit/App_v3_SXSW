@@ -52,12 +52,10 @@ public class ThumbnailElement {
     }
 
     private void FetchTextureCallBack(long code, string body, Texture texture) {
-        HelperFunctions.DevLog("FetchTextureCallBack: " + body);
         this.texture = texture;
         OnTextureLoaded?.Invoke();
     }
     private void ErrorFetchTextureCallBack(long code, string body) {
-        HelperFunctions.DevLog("ErrorFetchTextureCallBack: " + body);
         OnErrorTextureLoaded?.Invoke();
     }
 }

@@ -29,9 +29,6 @@ public class PnlPostRecord : MonoBehaviour {
     Button btnDownload;
 
     [SerializeField]
-    PermissionGranter permissionGranter;
-
-    [SerializeField]
     GameObject pnlGenericError;
 
     [SerializeField]

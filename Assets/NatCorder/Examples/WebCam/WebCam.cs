@@ -56,7 +56,7 @@ namespace NatCorder.Examples {
         }
 
         void OnRecording (string path) {
-            Debug.Log("Saved recording to: "+path);
+            HelperFunctions.DevLog("Saved recording to: "+path);
             // Playback the video
             #if UNITY_IOS
             Handheld.PlayFullScreenMovie("file://" + path);
