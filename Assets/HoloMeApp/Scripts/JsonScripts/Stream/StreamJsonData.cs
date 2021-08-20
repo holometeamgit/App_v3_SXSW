@@ -126,8 +126,8 @@ public class StreamJsonData {
             return GetStage(status);
         }
 
-        public bool IsPublicLiveOrPrerecorded() {
-            return (GetStage() == Stage.Live || GetStage() == Stage.Prerecorded) && privacy_type == "public";
+        public bool IsPublic() {
+            return privacy_type == "public";
         }
 
         public static Stage GetStage(string status) {

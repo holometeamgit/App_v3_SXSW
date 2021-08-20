@@ -25,6 +25,7 @@ namespace Beem.Utility.UnityConsole {
                 datas.Add(data);
             }
             dropdown.AddOptions(datas);
+            DropDown();
         }
 
         public void DropDown(int value = 0) {

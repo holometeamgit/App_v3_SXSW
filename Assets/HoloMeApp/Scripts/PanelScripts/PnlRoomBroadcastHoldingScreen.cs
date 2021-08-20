@@ -58,6 +58,7 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
         } else {
             liveRoomWasFound = true;
             uiThumbnailsController.PlayLiveStream(roomJsonData.agora_channel, roomJsonData.agora_channel, roomJsonData.id, true);
+            gameObject.SetActive(false);
         }
     }
 
