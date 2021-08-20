@@ -1,0 +1,74 @@
+using UnityEngine;
+using Beem.SSO;
+using TMPro;
+
+namespace Beem.UI {
+
+    public class UITextLabelLikes : MonoBehaviour, IStreamDataView {
+        [SerializeField] TMP_Text likesCount;
+
+        private bool _isLike;
+        private long _count;
+        private long _streamId = -1;
+
+
+        /// <summary>
+        /// Init state. Take data from local data container
+        /// </summary>
+        public void Init(StreamJsonData.Data streamData) {
+            Init(streamData.id);
+        }
+
+        public void Init(long streamId) {
+            CallBacks.onGetLikeStateCallBack -= UpdateState;
+
+            _streamId = streamId;
+            CallBacks.onGetLikeStateCallBack += UpdateState;
+            GetLikesState();
+            UpdateUIState();
+        }
+
+        private void Start() {
+            UpdateUIState();
+        }
+
+        private void RefreshLocalLikes(long streamId) {
+            if (_streamId != streamId)
+                return;
+
+            GetLikesState();
+        }
+
+        private void UpdateState(long streamId, bool isLike, long count) {
+            if (streamId != _streamId)
+                return;
+
+            if (_isLike != isLike || _count != count) {
+                _isLike = isLike;
+                _count = count;
+                UpdateUIState();
+            }
+        }
+
+        private void UpdateUIState() {
+            likesCount.text = _count.ToString();
+        }
+
+        private void GetLikesState() {
+            if (!isActiveAndEnabled && _streamId >= 0)
+                return;
+            CallBacks.onGetLikeState?.Invoke(_streamId);
+        }
+
+        private void OnEnable() {
+            CallBacks.onStreamByIdInContainerUpdated += RefreshLocalLikes;
+            GetLikesState();
+        }
+
+        private void OnDisable() {
+            _streamId = -1;
+            CallBacks.onStreamByIdInContainerUpdated -= RefreshLocalLikes;
+            StopAllCoroutines();
+        }
+    }
+}
