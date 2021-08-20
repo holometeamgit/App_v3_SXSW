@@ -15,17 +15,14 @@ public class PnlDeleteAccountConfirm : MonoBehaviour
 
     private void UserAccountDeletedCallBack()
     {
-        Debug.Log("UserAccountDeletedCallBack");
         switchLogOut.Switch();
     }
 
     private void OnEnable() {
-        Debug.Log("sub UserAccountDeletedCallBack");
         userWebManager.OnUserAccountDeleted += UserAccountDeletedCallBack;
     }
 
     private void OnDisable() {
-        Debug.Log("unsub UserAccountDeletedCallBack");
         userWebManager.OnUserAccountDeleted -= UserAccountDeletedCallBack;
     }
 }

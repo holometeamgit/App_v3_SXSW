@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -14,8 +15,11 @@ namespace Beem.Video {
         [SerializeField]
         private Image progress;
 
+        [SerializeField]
+        private UnityEvent<float> onRewind;
+
         private void SkipToPercent(float pct) {
-            VideoPlayerCallBacks.onRewind?.Invoke(pct);
+            onRewind?.Invoke(pct);
         }
 
         public void OnPointerDown(PointerEventData eventData) {

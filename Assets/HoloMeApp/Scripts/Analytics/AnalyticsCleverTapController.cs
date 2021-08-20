@@ -1,9 +1,9 @@
 ﻿using CleverTap;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
-{
+public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction {
     public static AnalyticsCleverTapController Instance { get; private set; }
 
     const string AccountID = "65R-W6K-KW6Z";
@@ -17,10 +17,8 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
     [SerializeField]
     UserWebManager userWebManager;
 
-    void Awake()
-    {
-        if (Instance == null)
-        {
+    void Awake() {
+        if (Instance == null) {
             Instance = this;
             //#if DEV
             //            disableTracking = true;
@@ -30,13 +28,11 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
             cleverTapUnityComponent = HelperFunctions.GetTypeIfNull<CleverTapUnity>(cleverTapUnityComponent);
             userWebManager = HelperFunctions.GetTypeIfNull<UserWebManager>(userWebManager);
 
-            if (cleverTapUnityComponent.CLEVERTAP_ACCOUNT_ID != AccountID)
-            {
+            if (cleverTapUnityComponent.CLEVERTAP_ACCOUNT_ID != AccountID) {
                 Debug.LogError("CleverTap Account ID didn't match");
                 cleverTapUnityComponent.CLEVERTAP_ACCOUNT_ID = AccountID;
             }
-            if (cleverTapUnityComponent.CLEVERTAP_ACCOUNT_TOKEN != Token)
-            {
+            if (cleverTapUnityComponent.CLEVERTAP_ACCOUNT_TOKEN != Token) {
                 Debug.LogError("CleverTap Account Token didn't match");
                 cleverTapUnityComponent.CLEVERTAP_ACCOUNT_TOKEN = Token;
             }
@@ -44,18 +40,14 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
 #if UNITY_IOS && !UNITY_EDITOR
             CleverTapBinding.RegisterPush();
 #endif
-
             DontDestroyOnLoad(Instance);
-        }
-        else
-        {
+        } else {
             Debug.LogError($"{nameof(AnalyticsController)} Instance Already Exists!");
             Destroy(Instance);
         }
     }
 
-    void UpdateUserProfile()
-    {
+    void UpdateUserProfile() {
         //Debug.Log("USER LONG INFO PASSED CT 1");
         //if (userWebManager == null)
         //{
@@ -81,12 +73,15 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
         //Debug.Log("USER LONG INFO PASSED CT2");
     }
 
-    public override void SendCustomEvent(string eventName)
-    {
+    public override void SendCustomEvent(string eventName) {
         if (Application.isEditor) //Stops android exception
             return;
 
-        CleverTapBinding.RecordEvent(eventName);
+        try {
+            CleverTapBinding.RecordEvent(eventName);
+        } catch (Exception e) {
+            Debug.LogError("CleverTap failed to send event " + eventName + " " + e);
+        }
     }
 
     //public override void SendCustomEvent(string eventName, string dataName, object data)
@@ -96,27 +91,33 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction
     //    CleverTapBinding.RecordEvent(eventName, dataContainer);
     //}
 
-    public override void SendCustomEvent(string eventName, Dictionary<string, string> data)
-    {
+    public override void SendCustomEvent(string eventName, Dictionary<string, string> data) {
         //Without the return below the app won't login in the editor test on device for auto login tracking
         if (Application.isEditor) //Stops android exception
             return;
 
-        if (eventName.Contains(AnalyticKeys.KeyUserLogin))//Contains in case of dev_ prefix
-        {
-            UpdateUserProfile();
-        }
+        try {
+            if (eventName.Contains(AnalyticKeys.KeyUserLogin))//Contains in case of dev_ prefix
+            {
+                UpdateUserProfile();
+            }
 
-        data?.Add(AnalyticParameters.ParamUserEmail, userWebManager.GetEmail() ?? "Not specified"); //Append email for CT only
-        CleverTapBinding.RecordEvent(eventName, ConvertToStringObjectDictionary(data));
+            data?.Add(AnalyticParameters.ParamUserEmail, userWebManager.GetEmail() ?? "Not specified"); //Append email for CT only
+            CleverTapBinding.RecordEvent(eventName, ConvertToStringObjectDictionary(data));
+        } catch (Exception e) {
+            Debug.LogError("CleverTap failed to send event " + eventName + " " + e);
+        }
     }
 
-    public void SendChargeEvent(Dictionary<string, object> chargeDetails, List<Dictionary<string, object>> items)
-    {
+    public void SendChargeEvent(Dictionary<string, object> chargeDetails, List<Dictionary<string, object>> items) {
         if (Application.isEditor) //Stops android exception
             return;
 
-        chargeDetails?.Add(AnalyticParameters.ParamUserEmail, userWebManager.GetEmail() ?? "Not specified"); //Append email for CT only
-        CleverTapBinding.RecordChargedEventWithDetailsAndItems(chargeDetails, items);
+        try {
+            chargeDetails?.Add(AnalyticParameters.ParamUserEmail, userWebManager.GetEmail() ?? "Not specified"); //Append email for CT only
+            CleverTapBinding.RecordChargedEventWithDetailsAndItems(chargeDetails, items);
+        } catch (Exception e) {
+            Debug.LogError("CleverTap failed to send charge event " + e);
+        }
     }
 }

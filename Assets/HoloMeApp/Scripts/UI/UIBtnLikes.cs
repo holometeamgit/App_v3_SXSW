@@ -82,7 +82,7 @@ namespace Beem.UI {
         private void UpdateBtnUIState() {
             imageLike.enabled = _isLike;
             imageUnlike.enabled = !_isLike;
-            likesCount.text = _count.ToString();
+            likesCount.text = DataStringConverter.GetItems(_count, "", "", true);
         }
 
         private void GetLikesState() {

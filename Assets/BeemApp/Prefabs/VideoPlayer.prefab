@@ -318,6 +318,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 649ae8d0f1ab55146b1fcefe1a1f5558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onPlay:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1476515202668404970}
+        m_TargetAssemblyTypeName: Beem.Video.VideoPlayerController, Assembly-CSharp
+        m_MethodName: OnPlay
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1476515203420589786
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,6 +559,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c12a365e5c3b5094bb0091bafdb5addb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onPause:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1476515202668404970}
+        m_TargetAssemblyTypeName: Beem.Video.VideoPlayerController, Assembly-CSharp
+        m_MethodName: OnPause
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2764784095361342372
 GameObject:
   m_ObjectHideFlags: 0
@@ -750,6 +780,146 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewind.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindStarted.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindFinished.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewind.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewind.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1476515202668404970}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewind.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewind.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnRewind
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1476515202668404970}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindStarted.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindFinished.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindStarted.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1476515202668404970}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindFinished.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1476515202668404970}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnRewindClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindStarted.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindFinished.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindStarted.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnRewindStarted
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindFinished.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnRewindFinished
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewind.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Beem.Video.VideoPlayerController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Beem.Video.VideoPlayerController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindStarted.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Beem.Video.VideoPlayerController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindFinished.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Beem.Video.VideoPlayerController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewind.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindStarted.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5806257286467633265, guid: 10f6501ac2f8fb846b135f184d2d9d79,
+        type: 3}
+      propertyPath: onRewindFinished.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 10f6501ac2f8fb846b135f184d2d9d79, type: 3}

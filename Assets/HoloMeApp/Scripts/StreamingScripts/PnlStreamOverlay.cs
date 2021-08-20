@@ -84,9 +84,6 @@ public class PnlStreamOverlay : MonoBehaviour {
     private UserWebManager userWebManager;
 
     [SerializeField]
-    private PermissionGranter permissionGranter;
-
-    [SerializeField]
     private UnityEvent OnCloseAsViewer;
 
     [SerializeField]
@@ -156,7 +153,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         FadePanel(true);
         txtCentreMessage.text = string.Empty;
         CentreMessage.localScale = Vector3.zero;
-        RequestMicAccess();
         ChatBtn.onOpen += OpenChat;
     }
 
@@ -167,12 +163,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         uiTextLabelLikes.Init(streamStartResponseJsonData.id);
         streamLikesRefresherView.StartCountAsync(currentStreamId);
         StartStreamCountUpdaters();
-    }
-
-    private void RequestMicAccess() {
-        if (!permissionGranter.MicAccessAvailable && !permissionGranter.MicRequestComplete) {
-            permissionGranter.RequestMicAccess();
-        }
     }
 
     public void RefreshControls() {
@@ -351,14 +341,14 @@ public class PnlStreamOverlay : MonoBehaviour {
                 StreamCallBacks.onGetMyRoomLink?.Invoke();
             } else {
                 if (!string.IsNullOrWhiteSpace(currentStreamId)) {
-                    StreamCallBacks.onGetRoomLink?.Invoke(currentStreamId);
+                    StreamCallBacks.onGetRoomLink?.Invoke(currentStreamId, agoraController.ChannelName);
                 } else {
                     DynamicLinksCallBacks.onShareAppLink?.Invoke();
                 }
             }
         } else {
             if (!string.IsNullOrWhiteSpace(currentStreamId)) {
-                StreamCallBacks.onGetStreamLink?.Invoke(currentStreamId);
+                StreamCallBacks.onGetStreamLink?.Invoke(currentStreamId, agoraController.ChannelName);
             } else {
                 DynamicLinksCallBacks.onShareAppLink?.Invoke();
             }
@@ -633,7 +623,9 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     private void OnDisable() {
         StopAllCoroutines();
-        pnlViewingExperience.ToggleARSessionObjects(true);
+        if (pnlViewingExperience != null) {
+            pnlViewingExperience.ToggleARSessionObjects(true);
+        }
         speechNotificationPopups.DeactivateAllPopups();
         ChatBtn.onOpen -= OpenChat;
     }

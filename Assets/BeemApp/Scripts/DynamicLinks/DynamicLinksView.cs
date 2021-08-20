@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using Firebase.DynamicLinks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +12,7 @@ namespace Beem.Firebase.DynamicLink {
         [SerializeField]
         private InputField inputField;
 
-        protected override void Refresh(Uri value) {
+        protected override void Refresh(Uri value, SocialMetaTagParameters socialMetaTagParameters) {
             inputField.text = value.AbsoluteUri;
         }
     }

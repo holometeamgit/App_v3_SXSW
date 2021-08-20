@@ -164,7 +164,7 @@ public class UIThumbnailV3 : UIThumbnail {
         string day = OrdinalNumberSuffix.AddOrdinalNumberSuffixDat(thumbnailElement.Data.StartDate.Day);
 
         txtDate.text = thumbnailElement.Data.StartDate.ToString("MMM ") + day;
-        txtTime.text = !isLive ? thumbnailElement.Data.StartDate.ToString("HH:mm") : "";
+        txtTime.text = thumbnailElement.Data.StartDate.ToString("HH:mm");
         txtTitle.text = thumbnailElement.Data.title;
         txtDescription.text = thumbnailElement.Data.description;
 
