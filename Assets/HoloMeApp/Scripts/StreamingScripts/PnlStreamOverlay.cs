@@ -267,6 +267,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
 
         Init();
+        ToggleLocalAudio(true);
         LastPauseStatusMessageReceived = string.Empty;
         agoraController.IsChannelCreator = false;
         agoraController.ChannelName = channelName;
