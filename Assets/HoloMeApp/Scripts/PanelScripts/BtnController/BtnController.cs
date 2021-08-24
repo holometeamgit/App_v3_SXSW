@@ -9,7 +9,7 @@ using System;
 /// the class is responsible for the events that occur with the button when the user interacts with it
 //  for example checks the interactivity of a button
 /// </summary>
-[RequireComponent(typeof(Button))]
+
 public class BtnController : MonoBehaviour
 {
     private Button _btn;
