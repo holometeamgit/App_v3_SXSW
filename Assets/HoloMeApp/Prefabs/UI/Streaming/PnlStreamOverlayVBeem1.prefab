@@ -320,7 +320,6 @@ MonoBehaviour:
   pnlViewingExperience: {fileID: 0}
   agoraController: {fileID: 0}
   userWebManager: {fileID: 0}
-  permissionGranter: {fileID: 0}
   OnCloseAsViewer:
     m_PersistentCalls:
       m_Calls:
@@ -4287,9 +4286,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2118979325922400105}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: ToggleLocalAudio
-        m_Mode: 6
+        m_TargetAssemblyTypeName: PnlStreamOverlay, Assembly-CSharp
+        m_MethodName: ToggleOffLocalAudioPushToTalkWithDelay
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
