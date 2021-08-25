@@ -253,12 +253,13 @@ public class AgoraController : MonoBehaviour {
             sendThumbnailRoutine = StartCoroutine(SendThumbnailData(true));
 
         IsLive = true;
-        OnStreamWentLive?.Invoke();
 
         agoraMessageStreamID = iRtcEngine.CreateDataStream(true, true);
 
         iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
         iRtcEngine.OnStreamMessageError = OnStreamMessageError;
+
+        OnStreamWentLive?.Invoke();
     }
 
     public void Leave() {
