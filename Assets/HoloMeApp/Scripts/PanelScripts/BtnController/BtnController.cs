@@ -9,10 +9,10 @@ using System;
 /// the class is responsible for the events that occur with the button when the user interacts with it
 //  for example checks the interactivity of a button
 /// </summary>
+
 public class BtnController : MonoBehaviour
 {
-    [SerializeField] Button _btn;
-    [SerializeField] float _delayAfterClick = 1;
+    private Button _btn;
 
     private HashSet<Func <bool>> _onNeedCheckInteractionRequirement;
 
@@ -44,6 +44,9 @@ public class BtnController : MonoBehaviour
     /// it can determine whether the button is now interactive or not
     /// </summary>
     public void CheckInteractionRequirement() {
+        if(_btn == null) {
+            _btn = GetComponent<Button>();
+        }
         foreach(var isMetRequirements in _onNeedCheckInteractionRequirement) {
             if(!isMetRequirements.Invoke()) {
                 _btn.interactable = false;
