@@ -1,12 +1,15 @@
 using UnityEngine;
 using Beem.SSO;
 using TMPro;
+using UnityEngine.UI;
 
 namespace Beem.UI {
 
     public class UITextLabelLikes : MonoBehaviour, IStreamDataView {
         [SerializeField] TMP_Text likesCount;
-
+        [SerializeField] private bool emptyTextIfZero;
+        [SerializeField] Image imageToDisableIfZero;
+        
         private bool _isLike;
         private long _count;
         private long _streamId = -1;
@@ -20,6 +23,7 @@ namespace Beem.UI {
         }
 
         public void Init(long streamId) {
+
             CallBacks.onGetLikeStateCallBack -= UpdateState;
 
             _streamId = streamId;
@@ -51,7 +55,11 @@ namespace Beem.UI {
         }
 
         private void UpdateUIState() {
-            likesCount.text = _count.ToString();
+            likesCount.text = emptyTextIfZero && _count == 0 ? "" : _count.ToString();
+            
+            if (imageToDisableIfZero) {
+                imageToDisableIfZero.enabled = _count > 0;
+            }
         }
 
         private void GetLikesState() {
