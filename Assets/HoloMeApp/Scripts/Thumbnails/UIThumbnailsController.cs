@@ -15,6 +15,7 @@ public class UIThumbnailsController : MonoBehaviour {
     [SerializeField] GameObject btnThumbnailPrefab;
     [SerializeField] Transform content;
     [SerializeField] PurchaseManager purchaseManager;
+    [SerializeField] int _startBtnCount = 20;
 
     private PermissionController _permissionController;
     private PermissionController permissionController {
@@ -113,13 +114,35 @@ public class UIThumbnailsController : MonoBehaviour {
 
         CallBacks.onClickLike += SetLike;
         CallBacks.onClickUnlike += SetUnlike;
+
+        InstantiateBtns(_startBtnCount);
+        CheckActiveBtns();
     }
 
     #region Prepare thumbnails
+    private void InstantiateBtns(int count) {
+        for (int i = 0; i < count; i++) {
+            GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
+            UIThumbnail btnThumbnailItem = btnThumbnailItemsGO.GetComponent<UIThumbnail>();
+            btnThumbnailItems.Add(btnThumbnailItem);
+        }
+    }
+
+    private void CheckActiveBtns() {
+        for (int i = 0; i < btnThumbnailItems.Count; i++) {
+            btnThumbnailItems[i].Activate();
+        }
+        if (dataList.Count >= btnThumbnailItems.Count)
+            return;
+
+        for (int i = dataList.Count; i < btnThumbnailItems.Count; i++) {
+            btnThumbnailItems[i].Deactivate();
+        }
+    }
+
     private void PrepareBtnThumbnails() {
 
         if (dataList.Count == 0) {
-            HelperFunctions.DevLog("Deactivate all thumbnails count = " + btnThumbnailItems.Count);
             foreach (var btn in btnThumbnailItems) {
                 btn.Deactivate();
             }
@@ -127,21 +150,8 @@ public class UIThumbnailsController : MonoBehaviour {
         }
 
         int quantityDifference = btnThumbnailItems.Count - dataList.Count;
-        for (int i = 0; i < -quantityDifference; i++) {
-            GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
-            UIThumbnail btnThumbnailItem = btnThumbnailItemsGO.GetComponent<UIThumbnail>();
-            btnThumbnailItems.Add(btnThumbnailItem);
-        }
-        for (int i = 0; i < btnThumbnailItems.Count; i++) {
-            btnThumbnailItems[i].Activate();
-        }
-        if (dataList.Count == btnThumbnailItems.Count)
-            return;
-        for (int i = dataList.Count - 1; i < btnThumbnailItems.Count; i++) {
-            if (i <= 0)
-                continue;
-            btnThumbnailItems[i].Deactivate();
-        }
+        InstantiateBtns(-quantityDifference);
+        CheckActiveBtns();
     }
 
     private void PrepareThumbnailElement() {
