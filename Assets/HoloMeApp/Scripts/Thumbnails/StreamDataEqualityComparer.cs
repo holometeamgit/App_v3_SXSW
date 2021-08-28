@@ -5,10 +5,11 @@ using UnityEngine;
 public class StreamDataEqualityComparer : IEqualityComparer<StreamJsonData.Data>
 {
     public bool Equals(StreamJsonData.Data x, StreamJsonData.Data y) {
-        if (x == null && y == null)
+        if (x == null && y == null) {
             return true;
-        else if (x == null || y == null)
+        } else if (x == null || y == null) {
             return false;
+        }
 
         return x.id == y.id &&
             x.preview_s3_url == y.preview_s3_url &&
@@ -27,12 +28,9 @@ public class StreamDataEqualityComparer : IEqualityComparer<StreamJsonData.Data>
             x.is_pin == y.is_pin &&
             x.agora_sid == y.agora_sid &&
             x.agora_channel == y.agora_channel &&
-            x.file_name_prefix == y.file_name_prefix &&
             x.start_date == y.start_date &&
             x.end_date == y.end_date &&
             x.duration == y.duration &&
-            x.preview_s3_key == y.preview_s3_key &&
-            x.stream_s3_key == y.stream_s3_key &&
             x.title == y.title &&
             x.description == y.description;
     }

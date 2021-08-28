@@ -155,14 +155,20 @@ public class UIThumbnailsController : MonoBehaviour {
     }
 
     private void PrepareThumbnailElement() {
+        HelperFunctions.DevLog("PrepareThumbnailElement thumbnailElementsDictionary count " + thumbnailElementsDictionary.Count);
         foreach (var thumbnailData in dataList) {
             if (thumbnailElementsDictionary.ContainsKey(thumbnailData.id)) {
                 ThumbnailElement thumbnailElement = thumbnailElementsDictionary[thumbnailData.id];
-                if (thumbnailElement.Data == thumbnailData || streamDataEqualityComparer.Equals(thumbnailElement.Data, thumbnailData))
+                if (thumbnailElement.Data == thumbnailData || streamDataEqualityComparer.Equals(thumbnailElement.Data, thumbnailData)) {
+                    HelperFunctions.DevLog("PrepareThumbnailElement Eq data id " + thumbnailData.id);
                     continue;
+                }
             }
+
             thumbnailElementsDictionary[thumbnailData.id] = new ThumbnailElement(thumbnailData, webRequestHandler);
         }
+
+        HelperFunctions.DevLog("End PrepareThumbnailElement thumbnailElementsDictionary count " + thumbnailElementsDictionary.Count);
     }
 
     private void UpdateBtnData() {
