@@ -69,8 +69,13 @@ public class UIThumbnailsController : MonoBehaviour {
     public void RemoveUnnecessary() {
         List<long> removingListID = new List<long>();
 
+        HashSet<long> setId = new HashSet<long>();
+        foreach(var data in dataList) {
+            setId.Add(data.id);
+        }
+
         foreach (var thumbnailElement in thumbnailElementsDictionary) {
-            if (!dataList.Contains(thumbnailElement.Value.Data))
+            if (!setId.Contains(thumbnailElement.Value.Data.id))
                 removingListID.Add(thumbnailElement.Value.Data.id);
         }
         foreach (var id in removingListID) {
@@ -155,20 +160,15 @@ public class UIThumbnailsController : MonoBehaviour {
     }
 
     private void PrepareThumbnailElement() {
-        HelperFunctions.DevLog("PrepareThumbnailElement thumbnailElementsDictionary count " + thumbnailElementsDictionary.Count);
         foreach (var thumbnailData in dataList) {
             if (thumbnailElementsDictionary.ContainsKey(thumbnailData.id)) {
                 ThumbnailElement thumbnailElement = thumbnailElementsDictionary[thumbnailData.id];
-                if (thumbnailElement.Data == thumbnailData || streamDataEqualityComparer.Equals(thumbnailElement.Data, thumbnailData)) {
-                    HelperFunctions.DevLog("PrepareThumbnailElement Eq data id " + thumbnailData.id);
+                if (thumbnailElement.Data == thumbnailData || streamDataEqualityComparer.Equals(thumbnailElement.Data, thumbnailData))
                     continue;
-                }
             }
 
             thumbnailElementsDictionary[thumbnailData.id] = new ThumbnailElement(thumbnailData, webRequestHandler);
         }
-
-        HelperFunctions.DevLog("End PrepareThumbnailElement thumbnailElementsDictionary count " + thumbnailElementsDictionary.Count);
     }
 
     private void UpdateBtnData() {
