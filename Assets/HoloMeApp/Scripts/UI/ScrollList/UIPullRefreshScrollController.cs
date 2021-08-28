@@ -30,10 +30,6 @@ public class UIPullRefreshScrollController : MonoBehaviour
 
     RectTransform scrollRectTransform; 
 
-    public void RefreshLayout() {
-        LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
-    }
-
     public void EndRefreshing() {
         scrollRect.enabled = true;
         isPulled = false;
