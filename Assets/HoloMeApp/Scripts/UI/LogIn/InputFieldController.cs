@@ -79,6 +79,7 @@ public class InputFieldController : MonoBehaviour {
     }
 
     public void DisableAnimator() {
+        animator.keepAnimatorControllerStateOnDisable = false;
         animator.enabled = false;
     }
 
