@@ -159,7 +159,6 @@ public class UIThumbnailV3 : UIThumbnail {
 
         bool isLive = thumbnailElement.Data.GetStage() == StreamJsonData.Data.Stage.Live;
         imgLive.gameObject.SetActive(isLive);
-        //txtTime.gameObject.SetActive(!isLive);
 
         string day = OrdinalNumberSuffix.AddOrdinalNumberSuffixDat(thumbnailElement.Data.StartDate.Day);
 
