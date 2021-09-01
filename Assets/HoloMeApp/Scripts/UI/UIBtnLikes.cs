@@ -16,6 +16,9 @@ namespace Beem.UI {
         [SerializeField] Image imageUnlike;
         [SerializeField] TMP_Text likesCount;
 
+        [SerializeField] string customLikesOnMessage = string.Empty;
+        [SerializeField] string customLikesOffMessage = string.Empty;
+
         private bool _isLike;
         private long _count;
         private long _streamId = -1;
@@ -82,7 +85,16 @@ namespace Beem.UI {
         private void UpdateBtnUIState() {
             imageLike.enabled = _isLike;
             imageUnlike.enabled = !_isLike;
-            likesCount.text = _count < 1 ? "" : DataStringConverter.GetItems(_count, "", "", true);
+            if (likesCount != null) {
+
+                if (_isLike && customLikesOnMessage != string.Empty) {
+                    likesCount.text = customLikesOnMessage;
+                } else if (!_isLike && customLikesOffMessage != string.Empty) {
+                    likesCount.text = customLikesOffMessage;
+                } else {
+            		likesCount.text = _count < 1 ? "" : DataStringConverter.GetItems(_count, "", "", true);
+                }
+            }            
         }
 
         private void GetLikesState() {

@@ -2,12 +2,18 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StreamerCountUpdater : MonoBehaviour {
     [SerializeField]
     private AgoraRequests agoraRequests;
     [SerializeField]
     private TextMeshProUGUI txtCount;
+    [SerializeField]
+    private bool emptyTextIfZero;
+    [SerializeField]
+    Image imageToDisableIfZero;
+
     private RequestUserList requestUserList;
     private bool waitingForResponse;
     private Coroutine updateRoutine;
@@ -38,7 +44,7 @@ public class StreamerCountUpdater : MonoBehaviour {
         if (updateRoutine != null)
             StopCoroutine(updateRoutine);
 
-        txtCount.text = "0";
+        txtCount.text = emptyTextIfZero ? "" : "0";
     }
 
     IEnumerator UpdateCountRoutine() {
@@ -77,7 +83,10 @@ public class StreamerCountUpdater : MonoBehaviour {
                 userCount = 0;
         }
 
-        txtCount.text = userCount.ToString();
+        txtCount.text = emptyTextIfZero && userCount == 0 ? "" : userCount.ToString();
+        if (imageToDisableIfZero) {
+            imageToDisableIfZero.enabled = userCount > 0;
+        }
         OnCountUpdated?.Invoke(userCount);
         waitingForResponse = false;
         HelperFunctions.DevLog("Got user count back");
