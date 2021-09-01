@@ -366,7 +366,6 @@ GameObject:
   - component: {fileID: 2118979325922400105}
   - component: {fileID: 491450016157643653}
   - component: {fileID: 3708031191594971619}
-  - component: {fileID: 2066099345777725499}
   m_Layer: 5
   m_Name: PnlStreamOverlayVBeem1
   m_TagString: Untagged
@@ -444,9 +443,7 @@ MonoBehaviour:
   btnGoLive: {fileID: 1807772533195957261}
   uiBtnLikes: {fileID: 6383136043559191217}
   uiViewersTextLabelLikes: {fileID: 920402760670274374}
-  uiStreamersTextLabelLikes: {fileID: 7629044805110168278}
   streamLikesRefresherView: {fileID: 3708031191594971619}
-  bottomBar: {fileID: 2066099345777725499}
   streamCountUpdaters:
   - {fileID: 8122837133249623055}
   - {fileID: 3014118148360763844}
@@ -548,19 +545,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeed6686aa9dadb43a977ffdf49e1b9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2066099345777725499
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 491450016157643654}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab4e255762dc543b99588671729581ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  streamLikesRefresherView: {fileID: 0}
 --- !u!1 &592960765493556683
 GameObject:
   m_ObjectHideFlags: 0
@@ -10935,6 +10919,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 581e32461906f42edbebeb4843d0deb9, type: 3}
+--- !u!224 &4778808478551110401 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5693050900238983826, guid: 581e32461906f42edbebeb4843d0deb9,
+    type: 3}
+  m_PrefabInstance: {fileID: 959402357867647379}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3919372025756894473 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4266055964039861402, guid: 581e32461906f42edbebeb4843d0deb9,
@@ -10947,12 +10937,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6439298e7a369481d90dd373af950173, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &4778808478551110401 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5693050900238983826, guid: 581e32461906f42edbebeb4843d0deb9,
-    type: 3}
-  m_PrefabInstance: {fileID: 959402357867647379}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1198372753389232534
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11087,15 +11071,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7af93ea87318fe340b98791859b73cae, type: 3}
---- !u!224 &1298522978630439669 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 190345732525831011, guid: 7af93ea87318fe340b98791859b73cae,
-    type: 3}
-  m_PrefabInstance: {fileID: 1198372753389232534}
-  m_PrefabAsset: {fileID: 0}
 --- !u!95 &3896295514205020023 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 2788596285083942625, guid: 7af93ea87318fe340b98791859b73cae,
+    type: 3}
+  m_PrefabInstance: {fileID: 1198372753389232534}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1298522978630439669 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 190345732525831011, guid: 7af93ea87318fe340b98791859b73cae,
     type: 3}
   m_PrefabInstance: {fileID: 1198372753389232534}
   m_PrefabAsset: {fileID: 0}
