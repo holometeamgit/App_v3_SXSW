@@ -72,9 +72,7 @@ public class PnlHomeScreenV2 : MonoBehaviour {
     }
 
     private void UIUpdated() {
-        pullRefreshController.RefreshLayout();
-        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(DELAY_TIME_REFRESH_LAYOUT).ContinueWith((_) => EndingUIUpdate(), taskScheduler);
+        EndingUIUpdate();
     }
 
     private void RefreshItems() {
@@ -119,8 +117,6 @@ public class PnlHomeScreenV2 : MonoBehaviour {
         if (!isActiveAndEnabled)
             return;
         pullRefreshController.EndRefreshing();
-        pullRefreshController.RefreshLayout();
-        pullRefreshController.RefreshLayout();
     }
 
     private void OnEnable() {

@@ -92,9 +92,9 @@ namespace Beem.UI {
                 } else if (!_isLike && customLikesOffMessage != string.Empty) {
                     likesCount.text = customLikesOffMessage;
                 } else {
-                    likesCount.text = DataStringConverter.GetItems(_count, "", "", true);
+            		likesCount.text = _count < 1 ? "" : DataStringConverter.GetItems(_count, "", "", true);
                 }
-            }
+            }            
         }
 
         private void GetLikesState() {
