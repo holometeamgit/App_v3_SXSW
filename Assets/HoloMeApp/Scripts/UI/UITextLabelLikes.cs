@@ -9,8 +9,7 @@ namespace Beem.UI {
         [SerializeField] TMP_Text likesCount;
         [SerializeField] private bool emptyTextIfZero;
         [SerializeField] Image imageToDisableIfZero;
-        
-        private bool _isLike;
+
         private long _count;
         private long _streamId = -1;
 
@@ -47,8 +46,7 @@ namespace Beem.UI {
             if (streamId != _streamId)
                 return;
 
-            if (_isLike != isLike || _count != count) {
-                _isLike = isLike;
+            if (_count != count) {
                 _count = count;
                 UpdateUIState();
             }

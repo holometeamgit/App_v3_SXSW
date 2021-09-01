@@ -167,6 +167,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   likesCount: {fileID: 4573077782825753150}
+  emptyTextIfZero: 1
+  imageToDisableIfZero: {fileID: 2993914488475559656}
 --- !u!114 &5678549692590219660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -938,6 +940,7 @@ GameObject:
   - component: {fileID: 5169722162683015061}
   - component: {fileID: 674912596066443009}
   - component: {fileID: 2003006680320590638}
+  - component: {fileID: 8815776834576646336}
   m_Layer: 5
   m_Name: PnlBottomBarPrerecordedVideo
   m_TagString: Untagged
@@ -987,6 +990,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ab4e255762dc543b99588671729581ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  streamLikesRefresherView: {fileID: 8815776834576646336}
+--- !u!114 &8815776834576646336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4302810320313320491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeed6686aa9dadb43a977ffdf49e1b9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5393746771279981427
