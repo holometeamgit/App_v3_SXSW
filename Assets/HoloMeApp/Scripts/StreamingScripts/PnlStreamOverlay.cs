@@ -158,7 +158,6 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void OnEnable() {
-        FadePanel(true);
         txtCentreMessage.text = string.Empty;
         CentreMessage.localScale = Vector3.zero;
         ChatBtn.onOpen += OpenChat;
@@ -299,10 +298,6 @@ public class PnlStreamOverlay : MonoBehaviour {
         StartStreamCountUpdaters();
     }
 
-    public void FadePanel(bool show) {
-        canvasGroup.DOFade(show ? 1 : 0, 0.5f).OnComplete(() => { if (!show) { gameObject.SetActive(false); } });
-    }
-
     private void LeaveOnDestroy() {
         if (isChannelCreator) {
             CloseAsStreamer();
@@ -328,15 +323,15 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void CloseAsStreamer() {
-        OnCloseAsStreamer.Invoke();
         StopStream();
         agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
+        OnCloseAsStreamer.Invoke();
     }
 
     private void CloseAsViewer() {
-        OnCloseAsViewer.Invoke();
         StopStream();
+        OnCloseAsViewer.Invoke();
     }
 
     public void ShareStream() {
