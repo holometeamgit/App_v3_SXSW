@@ -111,8 +111,8 @@ public class PnlStreamOverlay : MonoBehaviour {
     private bool _muteAudio = false;
     private bool _hideVideo = false;
 
-    private string LastPauseStatusMessageReceived; //Intended for viewers use only it's record state of streamers pause situation and to prevent double calls
-    private string LastPushToTalkStatusMessageReceived; //To stop audio toggling twice
+    private string lastPauseStatusMessageReceived; //Intended for viewers use only it's record state of streamers pause situation and to prevent double calls
+    private string lastPushToTalkStatusMessageReceived; //To stop audio toggling twice
 
     private const char MessageSplitter = '+';
     private const string ToViewerTag = "ToViewer"; //Indicates message is for viewers only
@@ -275,8 +275,8 @@ public class PnlStreamOverlay : MonoBehaviour {
 
         Init();
         ToggleLocalAudio(true);
-        LastPauseStatusMessageReceived = string.Empty;
-        LastPushToTalkStatusMessageReceived = string.Empty;
+        lastPauseStatusMessageReceived = string.Empty;
+        lastPushToTalkStatusMessageReceived = string.Empty;
         agoraController.IsChannelCreator = false;
         agoraController.ChannelName = channelName;
         isChannelCreator = false;
@@ -517,7 +517,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
         switch (message) {
             case MessageToViewerEnableTwoWayAudio:
-                if (LastMessageWasRecievedAlready(ref LastPushToTalkStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
+                if (LastMessageWasRecievedAlready(ref lastPushToTalkStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
                 ToggleLocalAudio(true);
@@ -526,35 +526,35 @@ public class PnlStreamOverlay : MonoBehaviour {
                 AnimatedFadeOutMessage(3);
                 return;
             case MessageToViewerDisableTwoWayAudio:
-                if (LastMessageWasRecievedAlready(ref LastPushToTalkStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
+                if (LastMessageWasRecievedAlready(ref lastPushToTalkStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
                 ToggleLocalAudio(true);
                 btnPushToTalk.Interactable = false;
                 return;
             case MessageToViewerBroadcasterAudioPaused:
-                if (LastMessageWasRecievedAlready(ref LastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
+                if (LastMessageWasRecievedAlready(ref lastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
                 AnimatedCentreTextMessage("Audio has been turned off by the broadcaster");
                 agoraController.ToggleLiveStreamQuad(false);
                 return;
             case MessageToViewerBroadcasterVideoPaused:
-                if (LastMessageWasRecievedAlready(ref LastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
+                if (LastMessageWasRecievedAlready(ref lastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
                 AnimatedCentreTextMessage("Video has been turned off by the broadcaster");
                 agoraController.ToggleLiveStreamQuad(true);
                 return;
             case MessageToViewerBroadcasterAudioAndVideoPaused:
-                if (LastMessageWasRecievedAlready(ref LastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
+                if (LastMessageWasRecievedAlready(ref lastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
                 AnimatedCentreTextMessage("Video and Audio has been turned off by the broadcaster");
                 agoraController.ToggleLiveStreamQuad(true);
                 return;
             case MessageToViewerBroadcasterUnpaused:
-                if (LastMessageWasRecievedAlready(ref LastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
+                if (LastMessageWasRecievedAlready(ref lastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
                 AnimatedFadeOutMessage();
