@@ -32,7 +32,11 @@ public class PnlEmailVerificationFirebase : MonoBehaviour
 
         StartCoroutine(UpdateResendText());
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(DELAY_TIME).ContinueWith((_) => _goToLogInBtn.SetActive(true), taskScheduler);
+        Task.Delay(DELAY_TIME).ContinueWith((_) => {
+            _goToLogInBtn.SetActive(true);
+        }, taskScheduler);
+
+        EmailVerificationTimer.onFinishTimer += RefreshTestTimer;
     }
 
 
@@ -41,6 +45,11 @@ public class PnlEmailVerificationFirebase : MonoBehaviour
         _goToLogInBtn.SetActive(false);
         StopAllCoroutines();
         EmailVerificationTimer.Cancel();
+        RefreshTestTimer();
+        EmailVerificationTimer.onFinishTimer -= RefreshTestTimer;
+    }
+
+    private void RefreshTestTimer() {
         _resendMsgMin.text = "1";
         _resendMsgSec.text = "00";
     }
