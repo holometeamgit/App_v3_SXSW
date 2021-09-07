@@ -66,6 +66,9 @@ public class PnlStreamOverlay : MonoBehaviour {
     [SerializeField]
     private CanvasGroup canvasGroup;
 
+    [SerializeField]
+    private SpeechNotificationPopups speechNotificationPopups;
+
     [Header("Other Views")]
     [SerializeField]
     private PnlGenericError pnlGenericError;
@@ -88,10 +91,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     [SerializeField]
     private UnityEvent OnCloseAsStreamer;
-
-    [SerializeField]
-    private SpeechNotificationPopups speechNotificationPopups;
-
+       
     private bool initialised;
     private int countDown;
     private string tweenAnimationID = nameof(tweenAnimationID);

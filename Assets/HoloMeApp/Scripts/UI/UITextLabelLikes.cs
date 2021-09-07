@@ -8,7 +8,7 @@ namespace Beem.UI {
     public class UITextLabelLikes : MonoBehaviour, IStreamDataView {
         [SerializeField] TMP_Text likesCount;
         [SerializeField] private bool emptyTextIfZero;
-        [SerializeField] Image imageToDisableIfZero;
+        [SerializeField] GameObject imageToDisableIfZero;
 
         private long _count;
         private long _streamId = -1;
@@ -56,7 +56,7 @@ namespace Beem.UI {
             likesCount.text = emptyTextIfZero && _count == 0 ? "" : _count.ToString();
             
             if (imageToDisableIfZero) {
-                imageToDisableIfZero.enabled = _count > 0;
+                imageToDisableIfZero.gameObject.SetActive(_count > 0);
             }
         }
 
