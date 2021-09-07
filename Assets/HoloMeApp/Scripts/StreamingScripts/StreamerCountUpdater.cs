@@ -12,7 +12,7 @@ public class StreamerCountUpdater : MonoBehaviour {
     [SerializeField]
     private bool emptyTextIfZero;
     [SerializeField]
-    Image imageToDisableIfZero;
+    GameObject imageToDisableIfZero;
 
     private RequestUserList requestUserList;
     private bool waitingForResponse;
@@ -85,7 +85,7 @@ public class StreamerCountUpdater : MonoBehaviour {
 
         txtCount.text = emptyTextIfZero && userCount == 0 ? "" : userCount.ToString();
         if (imageToDisableIfZero) {
-            imageToDisableIfZero.enabled = userCount > 0;
+            imageToDisableIfZero.gameObject.SetActive(userCount > 0);
         }
         OnCountUpdated?.Invoke(userCount);
         waitingForResponse = false;
