@@ -31,6 +31,8 @@ namespace Beem.Video {
 
         private double currentTime = default;
         private CancellationTokenSource cancelTokenSource;
+        private bool wasPlaying = false;
+        private bool autoPlayAfterPause = false;
 
         private void OnEnable() {
             onSetVideoPlayer += OnSetVideoPlayer;
@@ -92,6 +94,7 @@ namespace Beem.Video {
             playerObjects.SetActive(true);
             _videoPlayerBtnViews.Refresh(true);
             _videoPlayer.Play();
+            wasPlaying = true;
             foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
                 view.PlayAsync();
             }
@@ -109,6 +112,8 @@ namespace Beem.Video {
             }
 
             _videoPlayer.Pause();
+            autoPlayAfterPause = wasPlaying;
+            wasPlaying = false;
             _videoPlayerBtnViews.Refresh(false);
             foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
                 view.Cancel();
@@ -129,20 +134,19 @@ namespace Beem.Video {
             if (_videoPlayer == null) {
                 return;
             }
-            if (_videoPlayer.isPaused) {
+
+            if (autoPlayAfterPause) {
+                autoPlayAfterPause = false;
                 OnPlay();
             }
-        }
 
-        private void OnApplicationPause(bool pause) {
-            if (pause) {
-                OnPause();
-            }
         }
 
         private void OnApplicationFocus(bool focus) {
             if (focus) {
                 OnResume();
+            } else {
+                OnPause();
             }
         }
 
