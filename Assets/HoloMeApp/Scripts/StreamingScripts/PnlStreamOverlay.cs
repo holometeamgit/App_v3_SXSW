@@ -609,7 +609,10 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.SendAgoraMessage(MessageToAllViewerSpeakingStopped + userWebManager.GetUsername());
     }
 
-    private void StartStream() {
+    /// <summary>
+    /// Starts the stream, use countdown coroutine to start with delay
+    /// </summary>
+    public void StartStream() {
         TogglePreLiveControls(false);
         agoraController.JoinOrCreateChannel(true);
         RefreshControls(); //Is this call actually needed?
