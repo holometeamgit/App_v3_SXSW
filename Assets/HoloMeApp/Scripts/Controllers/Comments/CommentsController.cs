@@ -85,7 +85,7 @@ namespace Beem.Content {
         }
 
         public void Post(PostCommentJsonData postComment) {
-            _webRequestHandler.Post(GetRequestUrl(), postComment, WebRequestHandler.BodyType.JSON,
+            _webRequestHandler.Post(PostRequestUrl(), postComment, WebRequestHandler.BodyType.JSON,
                 (code, body) => OnPost(),
                 (code, body) => OnFailPost(code, body));
         }

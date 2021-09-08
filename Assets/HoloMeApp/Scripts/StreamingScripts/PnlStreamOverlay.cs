@@ -30,19 +30,26 @@ public class PnlStreamOverlay : MonoBehaviour {
     [SerializeField]
     private GameObject[] offlineControls;
 
+    [Tooltip("Controls which interactable bool will be set to true when live")]
+    [SerializeField]
+    private Selectable[] onlineInteractableControlToggle;
+
     [Header("These Views")]
 
     [SerializeField]
     private RawImage cameraRenderImage;
 
     [SerializeField]
-    private GameObject btnPushToTalk;
+    private HoldButtonSimple btnPushToTalk;
 
     [SerializeField]
     private Button btnGoLive;
 
     [SerializeField]
     private UIBtnLikes uiBtnLikes;
+
+    [SerializeReference]
+    private UITextLabelLikes uiViewersTextLabelLikes;
 
     [SerializeField]
     private StreamLikesRefresherView streamLikesRefresherView;
@@ -58,6 +65,9 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     [SerializeField]
     private CanvasGroup canvasGroup;
+
+    [SerializeField]
+    private SpeechNotificationPopups speechNotificationPopups;
 
     [Header("Other Views")]
     [SerializeField]
@@ -81,23 +91,30 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     [SerializeField]
     private UnityEvent OnCloseAsStreamer;
-
-    bool initialised;
-    int countDown;
-    string tweenAnimationID = nameof(tweenAnimationID);
-    Coroutine countdownRoutine;
-    bool isStreamer;
-    bool isUsingFrontCamera;
-    bool isPushToTalkActive;
+       
+    private bool initialised;
+    private int countDown;
+    private string tweenAnimationID = nameof(tweenAnimationID);
+    private Coroutine countdownRoutine;
+    private bool isChannelCreator;
+    private bool isUsingFrontCamera;
+    private bool isPushToTalkActive;
 
     VideoSurface videoSurface;
     string currentStreamId = string.Empty;
 
+    private Coroutine delayToggleAudioOffRoutine;
+    private const int PUSH_TO_TALK_MUTE_DELAY = 1;
+
+    private Coroutine statusUpdateRoutine;
+
     private bool _muteAudio = false;
     private bool _hideVideo = false;
 
-    private string LastPauseStatusMessageReceived; //Intended for viewers use only it's record state of streamers pause situation and to prevent double calls
+    private string lastPauseStatusMessageReceived; //Intended for viewers use only it's record state of streamers pause situation and to prevent double calls
+    private string lastPushToTalkStatusMessageReceived; //To stop audio toggling twice
 
+    private const char MessageSplitter = '+';
     private const string ToViewerTag = "ToViewer"; //Indicates message is for viewers only
     private const string MessageToViewerDisableTwoWayAudio = ToViewerTag + "DisableTwoWayAudio";
     private const string MessageToViewerEnableTwoWayAudio = ToViewerTag + "EnableTwoWayAudio";
@@ -107,6 +124,8 @@ public class PnlStreamOverlay : MonoBehaviour {
     private const string MessageToViewerBroadcasterVideoPaused = ToViewerTag + "BroadcasterVideoPaused";
     private const string MessageToViewerBroadcasterAudioAndVideoPaused = ToViewerTag + "BroadcasterAudioAndVideoPaused";
     private const string MessageToViewerBroadcasterUnpaused = ToViewerTag + "BroadcasterUnpausedVideoAndAudio";
+    private const string MessageToAllViewerIsSpeaking = "ViewerSpeakingStarted";
+    private const string MessageToAllViewerSpeakingStopped = "ViewerSpeakingStopped";
 
     void Init() {
         if (initialised)
@@ -123,6 +142,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.OnStreamWentOffline += StopStreamCountUpdaters;
         agoraController.OnStreamWentOffline += () => btnGoLive.interactable = true;
         agoraController.OnMessageRecieved += StreamMessageResponse;
+        agoraController.OnStreamWentLive += StartStatusUpdateRoutine;
         agoraController.OnUserViewerJoined += SendVideoAudioPauseStatusToViewers;
         agoraController.OnUserViewerJoined += SendPushToTalkStatusToViewers;
         agoraController.OnUserViewerJoined += SendChannelCreatorUIDToViewers;
@@ -138,7 +158,6 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void OnEnable() {
-        FadePanel(true);
         txtCentreMessage.text = string.Empty;
         CentreMessage.localScale = Vector3.zero;
         ChatBtn.onOpen += OpenChat;
@@ -148,7 +167,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         currentStreamId = streamStartResponseJsonData.id.ToString();
         RefreshControls();
         uiBtnLikes.Init(streamStartResponseJsonData.id);
-        streamLikesRefresherView.StartCountAsync(currentStreamId);
+        uiViewersTextLabelLikes.Init(streamStartResponseJsonData.id);
         StartStreamCountUpdaters();
     }
 
@@ -196,8 +215,12 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void RefreshLiveControls(bool live) {
+
         foreach (GameObject item in onlineControls) {
             item.SetActive(live);
+        }
+        foreach (Selectable selectable in onlineInteractableControlToggle) {
+            selectable.interactable = live;
         }
         foreach (GameObject item in offlineControls) {
             item.SetActive(!live);
@@ -225,7 +248,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
 
-        isStreamer = true;
+        isChannelCreator = true;
         gameObject.SetActive(true);
         pnlViewingExperience.ToggleARSessionObjects(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
@@ -250,12 +273,14 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
 
         Init();
-        LastPauseStatusMessageReceived = string.Empty;
+        ToggleLocalAudio(true);
+        lastPauseStatusMessageReceived = string.Empty;
+        lastPushToTalkStatusMessageReceived = string.Empty;
         agoraController.IsChannelCreator = false;
         agoraController.ChannelName = channelName;
-        isStreamer = false;
+        isChannelCreator = false;
         gameObject.SetActive(true);
-        btnPushToTalk.SetActive(false);
+        btnPushToTalk.Interactable = false;
         pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName, streamID);
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
@@ -267,17 +292,14 @@ public class PnlStreamOverlay : MonoBehaviour {
         long currentStreamIdLong = 0;
         long.TryParse(streamID, out currentStreamIdLong);
         uiBtnLikes.Init(currentStreamIdLong);
+        uiViewersTextLabelLikes.Init(currentStreamIdLong);
         streamLikesRefresherView.StartCountAsync(streamID);
 
         StartStreamCountUpdaters();
     }
 
-    public void FadePanel(bool show) {
-        canvasGroup.DOFade(show ? 1 : 0, 0.5f).OnComplete(() => { if (!show) { gameObject.SetActive(false); } });
-    }
-
     private void LeaveOnDestroy() {
-        if (isStreamer) {
+        if (isChannelCreator) {
             CloseAsStreamer();
         } else {
             CloseAsViewer();
@@ -286,9 +308,9 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void ShowLeaveWarning() {
 
-        if (!agoraController.IsLive && isStreamer)
+        if (!agoraController.IsLive && isChannelCreator)
             StopStream();
-        else if (isStreamer)
+        else if (isChannelCreator)
             pnlGenericError.ActivateDoubleButton("End the live stream?",
                 "Closing this page will end the live stream and disconnect your users.",
                 onButtonOnePress: () => { CloseAsStreamer(); },
@@ -301,15 +323,15 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void CloseAsStreamer() {
-        OnCloseAsStreamer.Invoke();
         StopStream();
         agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
+        OnCloseAsStreamer.Invoke();
     }
 
     private void CloseAsViewer() {
-        OnCloseAsViewer.Invoke();
         StopStream();
+        OnCloseAsViewer.Invoke();
     }
 
     public void ShareStream() {
@@ -354,10 +376,10 @@ public class PnlStreamOverlay : MonoBehaviour {
         if (agoraController.IsLive) { //Check needed as Stop Stream is being called when enabled by unity events causing this to start off disabled
             btnGoLive.gameObject.SetActive(false);
 
-            if (isStreamer) //Send event to viewers to disconnect if streamer
+            if (isChannelCreator) //Send event to viewers to disconnect if streamer
                 SendStreamLeaveStatusToViewers();
         }
-
+        StopStatusUpdateRoutine();
         StopCountdownRoutine();
         streamLikesRefresherView.Cancel();
 
@@ -379,28 +401,85 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
     }
 
+    private void StartStatusUpdateRoutine() {
+        if (!isChannelCreator)
+            return;
+
+        statusUpdateRoutine = StartCoroutine(SendStatusUpdateToViewers());
+    }
+
+    private void StopStatusUpdateRoutine() {
+        if (statusUpdateRoutine != null) {
+            StopCoroutine(statusUpdateRoutine);
+        }
+    }
+
+    private IEnumerator SendStatusUpdateToViewers() {
+        while (true) {
+            HelperFunctions.DevLog("PollingStreamStatus sending status update to viewers");
+
+            if (!isChannelCreator) {
+                HelperFunctions.DevLogError("Tried to send stream status update as viewer");
+                yield break;
+            }
+
+            if (!agoraController.IsLive) {
+                HelperFunctions.DevLogError("Tried to send stream status update before live");
+                yield break;
+            }
+
+            yield return new WaitForSeconds(5);
+            agoraController.SendAgoraMessage(CreateMultiMessage(GetPushToTalkStatusMessage(), GetChannelCreatorUIDMessage(), GetVideoAudioOnOffStatusMessage()));
+        }
+    }
+
+    private string CreateMultiMessage(params string[] messages) {
+        string output = string.Empty;
+        for (int i = 0; i < messages.Length; i++) {
+            output = output + messages[i];
+
+            if (i < (messages.Length - 1)) {
+                output = output + MessageSplitter;
+            }
+        }
+        return output;
+    }
+
     private void SendVideoAudioPauseStatusToViewers() {
 
         if (!agoraController.IsLive)
             return;
 
+        agoraController.SendAgoraMessage(GetVideoAudioOnOffStatusMessage());
+    }
+
+    private string GetVideoAudioOnOffStatusMessage() {
+
         if (_hideVideo && _muteAudio) {
-            agoraController.SendAgoraMessage(MessageToViewerBroadcasterAudioAndVideoPaused);
+            return MessageToViewerBroadcasterAudioAndVideoPaused;
         } else if (_hideVideo) {
-            agoraController.SendAgoraMessage(MessageToViewerBroadcasterVideoPaused);
+            return MessageToViewerBroadcasterVideoPaused;
         } else if (_muteAudio) {
-            agoraController.SendAgoraMessage(MessageToViewerBroadcasterAudioPaused);
+            return MessageToViewerBroadcasterAudioPaused;
         } else {
-            agoraController.SendAgoraMessage(MessageToViewerBroadcasterUnpaused);
+            return MessageToViewerBroadcasterUnpaused;
         }
     }
 
     private void SendPushToTalkStatusToViewers() {
-        agoraController.SendAgoraMessage(isPushToTalkActive ? MessageToViewerEnableTwoWayAudio : MessageToViewerDisableTwoWayAudio);
+        agoraController.SendAgoraMessage(GetPushToTalkStatusMessage());
+    }
+
+    private string GetPushToTalkStatusMessage() {
+        return isPushToTalkActive ? MessageToViewerEnableTwoWayAudio : MessageToViewerDisableTwoWayAudio;
     }
 
     private void SendChannelCreatorUIDToViewers() {
-        agoraController.SendAgoraMessage(MessageToViewerChannelCreatorUID + agoraController.ChannelCreatorUID);
+        agoraController.SendAgoraMessage(GetChannelCreatorUIDMessage());
+    }
+
+    private string GetChannelCreatorUIDMessage() {
+        return MessageToViewerChannelCreatorUID + agoraController.ChannelCreatorUID;
     }
 
     private void SendStreamLeaveStatusToViewers() {
@@ -408,65 +487,76 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private bool CheckIncorrectMessageForStreamer(string message) {
-        if (isStreamer && message.Contains(ToViewerTag)) {
+        if (isChannelCreator && message.Contains(ToViewerTag)) {
             HelperFunctions.DevLogError($"Streamer received a message intended for viewers {message}");
+            return true;
         }
-        return isStreamer;
+        return false;
     }
 
     public void StreamMessageResponse(string message) {
 
         HelperFunctions.DevLog($"Stream Message Received ({message})");
 
+        string[] messages = message.Split(new char[] { MessageSplitter }, System.StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (string parsedMessage in messages) {
+            HandleReturnedMessage(parsedMessage);
+        }
+    }
+
+    private void HandleReturnedMessage(string message) {
         if (CheckIncorrectMessageForStreamer(message)) {
             return;
         }
 
         switch (message) {
             case MessageToViewerEnableTwoWayAudio:
+                if (LastMessageWasRecievedAlready(ref lastPushToTalkStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
+                    return;
+                }
                 ToggleLocalAudio(true);
-                btnPushToTalk.SetActive(true);
+                btnPushToTalk.Interactable = true;
                 AnimatedCentreTextMessage("Hold the Talk button to speak to the broadcaster");
                 AnimatedFadeOutMessage(3);
                 return;
             case MessageToViewerDisableTwoWayAudio:
+                if (LastMessageWasRecievedAlready(ref lastPushToTalkStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
+                    return;
+                }
                 ToggleLocalAudio(true);
-                btnPushToTalk.SetActive(false);
-                return;
-            case MessageToViewerStreamerLeft:
-                agoraController.OnStreamerLeft?.Invoke();
+                btnPushToTalk.Interactable = false;
                 return;
             case MessageToViewerBroadcasterAudioPaused:
-                if (LastPauseStatusMessageReceived == message) {//Prevent functions being called twice if receiving messages again (when a another user joins)
+                if (LastMessageWasRecievedAlready(ref lastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
                 AnimatedCentreTextMessage("Audio has been turned off by the broadcaster");
                 agoraController.ToggleLiveStreamQuad(false);
-                LastPauseStatusMessageReceived = message;
                 return;
             case MessageToViewerBroadcasterVideoPaused:
-                if (LastPauseStatusMessageReceived == message) {//Prevent functions being called twice if receiving messages again (when a another user joins)
+                if (LastMessageWasRecievedAlready(ref lastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
                 AnimatedCentreTextMessage("Video has been turned off by the broadcaster");
                 agoraController.ToggleLiveStreamQuad(true);
-                LastPauseStatusMessageReceived = message;
                 return;
             case MessageToViewerBroadcasterAudioAndVideoPaused:
-                if (LastPauseStatusMessageReceived == message) {//Prevent functions being called twice if receiving messages again (when a another user joins)
+                if (LastMessageWasRecievedAlready(ref lastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
                 AnimatedCentreTextMessage("Video and Audio has been turned off by the broadcaster");
                 agoraController.ToggleLiveStreamQuad(true);
-                LastPauseStatusMessageReceived = message;
                 return;
             case MessageToViewerBroadcasterUnpaused:
-                if (LastPauseStatusMessageReceived == message) {//Prevent functions being called twice if receiving messages again (when a another user joins)
+                if (LastMessageWasRecievedAlready(ref lastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
                 AnimatedFadeOutMessage();
                 agoraController.ToggleLiveStreamQuad(false);
-                LastPauseStatusMessageReceived = message;
+                return;
+            case MessageToViewerStreamerLeft:
+                agoraController.OnStreamerLeft?.Invoke();
                 return;
         }
 
@@ -479,9 +569,41 @@ public class PnlStreamOverlay : MonoBehaviour {
             agoraController.ChannelCreatorUID = result;
             agoraController.ActivateViewerVideoSufaceFeatures();
         }
+
+        if (message.Contains(MessageToAllViewerIsSpeaking)) {
+            speechNotificationPopups.ActivatePopup(message.Replace(MessageToAllViewerIsSpeaking, "")); //Name is concatenated in string temporarily
+        }
+
+        if (message.Contains(MessageToAllViewerSpeakingStopped)) {
+            speechNotificationPopups.DeactivatePopup(message.Replace(MessageToAllViewerSpeakingStopped, "")); //Name is concatenated in string temporarily
+        }
     }
 
-    void StartStream() {
+    private bool LastMessageWasRecievedAlready(ref string messageToCheck, string messageReceived) {
+        if (messageToCheck == messageReceived) {
+            return true;
+        }
+        messageToCheck = messageReceived;
+        return false;
+    }
+
+    /// <summary>
+    /// Should be called when viewers hold push to talk button, not intended to be called when messages are received.
+    /// </summary>
+    public void SendViewerIsSpeakingMessage() {
+        speechNotificationPopups.ActivatePopup(userWebManager.GetUsername());
+        agoraController.SendAgoraMessage(MessageToAllViewerIsSpeaking + userWebManager.GetUsername());
+    }
+
+    /// <summary>
+    /// Should be called when viewers lets go off push to talk button, not intended to be called when messages are received.
+    /// </summary>
+    public void DisableSpeakingMessage() {
+        speechNotificationPopups.DeactivatePopup(userWebManager.GetUsername());
+        agoraController.SendAgoraMessage(MessageToAllViewerSpeakingStopped + userWebManager.GetUsername());
+    }
+
+    private void StartStream() {
         btnGoLive.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(true);
         RefreshControls(); //Is this call actually needed?
@@ -524,9 +646,26 @@ public class PnlStreamOverlay : MonoBehaviour {
         cameraRenderImage.SizeToParent();
     }
 
+    /// <summary>
+    /// This toggle audio off with a delay, intended for push to talk users once letting go of button
+    /// </summary>
+    public void ToggleOffLocalAudioPushToTalkWithDelay() {
+        delayToggleAudioOffRoutine = StartCoroutine(DelayToggleAudioOff());
+    }
+
+    private IEnumerator DelayToggleAudioOff() {
+        yield return new WaitForSeconds(PUSH_TO_TALK_MUTE_DELAY);
+        ToggleLocalAudio(true);
+    }
+
     public void ToggleLocalAudio(bool mute) {
+
+        if (delayToggleAudioOffRoutine != null) {
+            StopCoroutine(delayToggleAudioOffRoutine);
+        }
+
         _muteAudio = mute;
-        if (isStreamer) { //Display popup only for streamers but not for 2 way audio viewers
+        if (isChannelCreator) { //Display popup only for streamers but not for 2 way audio viewers
             UpdateToggleMessage();
         }
         agoraController.ToggleLocalAudio(mute);
@@ -583,6 +722,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         if (pnlViewingExperience != null) {
             pnlViewingExperience.ToggleARSessionObjects(true);
         }
+        speechNotificationPopups.DeactivateAllPopups();
         ChatBtn.onOpen -= OpenChat;
     }
 

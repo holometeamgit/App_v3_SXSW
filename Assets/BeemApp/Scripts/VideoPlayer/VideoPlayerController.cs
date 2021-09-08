@@ -29,9 +29,10 @@ namespace Beem.Video {
 
         public static Action<VideoPlayer> onSetVideoPlayer;
 
-        private bool wasPlaying = default;
         private double currentTime = default;
         private CancellationTokenSource cancelTokenSource;
+        private bool wasPlaying = false;
+        private bool autoPlayAfterPause = false;
 
         private void OnEnable() {
             onSetVideoPlayer += OnSetVideoPlayer;
@@ -74,7 +75,6 @@ namespace Beem.Video {
             } else {
                 OnPrepare(_videoPlayer);
             }
-            _videoPlayerBtnViews.Refresh(_videoPlayer);
 
         }
 
@@ -92,8 +92,9 @@ namespace Beem.Video {
             _videoPlayer.prepareCompleted -= OnPrepare;
             _videoPlayer.seekCompleted += OnSeekCompleted;
             playerObjects.SetActive(true);
-            _videoPlayerBtnViews.Refresh(_videoPlayer);
+            _videoPlayerBtnViews.Refresh(true);
             _videoPlayer.Play();
+            wasPlaying = true;
             foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
                 view.PlayAsync();
             }
@@ -110,9 +111,10 @@ namespace Beem.Video {
                 return;
             }
 
-            wasPlaying = _videoPlayer.isPlaying;
             _videoPlayer.Pause();
-            _videoPlayerBtnViews.Refresh(_videoPlayer);
+            autoPlayAfterPause = wasPlaying;
+            wasPlaying = false;
+            _videoPlayerBtnViews.Refresh(false);
             foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
                 view.Cancel();
             }
@@ -133,13 +135,15 @@ namespace Beem.Video {
                 return;
             }
 
-            if (wasPlaying && _videoPlayer.isPaused) {
+            if (autoPlayAfterPause) {
+                autoPlayAfterPause = false;
                 OnPlay();
             }
+
         }
 
-        private void OnApplicationPause(bool pause) {
-            if (!pause) {
+        private void OnApplicationFocus(bool focus) {
+            if (focus) {
                 OnResume();
             } else {
                 OnPause();

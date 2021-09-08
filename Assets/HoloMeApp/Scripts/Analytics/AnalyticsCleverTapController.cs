@@ -1,4 +1,5 @@
 ﻿using CleverTap;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -76,7 +77,11 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction {
         if (Application.isEditor) //Stops android exception
             return;
 
-        CleverTapBinding.RecordEvent(eventName);
+        try {
+            CleverTapBinding.RecordEvent(eventName);
+        } catch (Exception e) {
+            Debug.LogError("CleverTap failed to send event " + eventName + " " + e);
+        }
     }
 
     //public override void SendCustomEvent(string eventName, string dataName, object data)
@@ -91,20 +96,28 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction {
         if (Application.isEditor) //Stops android exception
             return;
 
-        if (eventName.Contains(AnalyticKeys.KeyUserLogin))//Contains in case of dev_ prefix
-        {
-            UpdateUserProfile();
-        }
+        try {
+            if (eventName.Contains(AnalyticKeys.KeyUserLogin))//Contains in case of dev_ prefix
+            {
+                UpdateUserProfile();
+            }
 
-        data?.Add(AnalyticParameters.ParamUserEmail, userWebManager.GetEmail() ?? "Not specified"); //Append email for CT only
-        CleverTapBinding.RecordEvent(eventName, ConvertToStringObjectDictionary(data));
+            data?.Add(AnalyticParameters.ParamUserEmail, userWebManager.GetEmail() ?? "Not specified"); //Append email for CT only
+            CleverTapBinding.RecordEvent(eventName, ConvertToStringObjectDictionary(data));
+        } catch (Exception e) {
+            Debug.LogError("CleverTap failed to send event " + eventName + " " + e);
+        }
     }
 
     public void SendChargeEvent(Dictionary<string, object> chargeDetails, List<Dictionary<string, object>> items) {
         if (Application.isEditor) //Stops android exception
             return;
 
-        chargeDetails?.Add(AnalyticParameters.ParamUserEmail, userWebManager.GetEmail() ?? "Not specified"); //Append email for CT only
-        CleverTapBinding.RecordChargedEventWithDetailsAndItems(chargeDetails, items);
+        try {
+            chargeDetails?.Add(AnalyticParameters.ParamUserEmail, userWebManager.GetEmail() ?? "Not specified"); //Append email for CT only
+            CleverTapBinding.RecordChargedEventWithDetailsAndItems(chargeDetails, items);
+        } catch (Exception e) {
+            Debug.LogError("CleverTap failed to send charge event " + e);
+        }
     }
 }
