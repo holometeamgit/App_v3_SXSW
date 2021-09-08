@@ -43,7 +43,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     private HoldButtonSimple btnPushToTalk;
 
     [SerializeField]
-    private Button btnGoLive;
+    private GameObject[] gameObjectsToDisableWhileGoingLive;
 
     [SerializeField]
     private UIBtnLikes uiBtnLikes;
@@ -91,7 +91,7 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     [SerializeField]
     private UnityEvent OnCloseAsStreamer;
-       
+
     private bool initialised;
     private int countDown;
     private string tweenAnimationID = nameof(tweenAnimationID);
@@ -140,7 +140,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         };
         agoraController.OnPreviewStopped += () => videoSurface.SetEnable(false);
         agoraController.OnStreamWentOffline += StopStreamCountUpdaters;
-        agoraController.OnStreamWentOffline += () => btnGoLive.interactable = true;
+        agoraController.OnStreamWentOffline += () => TogglePreLiveControls(true);
         agoraController.OnMessageRecieved += StreamMessageResponse;
         agoraController.OnStreamWentLive += StartStatusUpdateRoutine;
         agoraController.OnUserViewerJoined += SendVideoAudioPauseStatusToViewers;
@@ -186,6 +186,12 @@ public class PnlStreamOverlay : MonoBehaviour {
         }
         foreach (GameObject item in publicStreamsControls) {
             item.SetActive(!room);
+        }
+    }
+
+    private void TogglePreLiveControls(bool enable) {
+        foreach (GameObject objectToToggle in gameObjectsToDisableWhileGoingLive) {
+            objectToToggle.SetActive(enable);
         }
     }
 
@@ -244,7 +250,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     private void StreamerOpenSharedFunctions() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
 
-        btnGoLive.gameObject.SetActive(true);
+        TogglePreLiveControls(true);
         agoraController.IsChannelCreator = true;
         agoraController.ChannelName = userWebManager.GetUsername();
 
@@ -374,7 +380,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         HelperFunctions.DevLog(nameof(StopStream) + " was called");
 
         if (agoraController.IsLive) { //Check needed as Stop Stream is being called when enabled by unity events causing this to start off disabled
-            btnGoLive.gameObject.SetActive(false);
+            TogglePreLiveControls(false);
 
             if (isChannelCreator) //Send event to viewers to disconnect if streamer
                 SendStreamLeaveStatusToViewers();
@@ -604,7 +610,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     private void StartStream() {
-        btnGoLive.gameObject.SetActive(false);
+        TogglePreLiveControls(false);
         agoraController.JoinOrCreateChannel(true);
         RefreshControls(); //Is this call actually needed?
     }
