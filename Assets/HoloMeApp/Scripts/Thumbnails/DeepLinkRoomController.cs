@@ -24,18 +24,22 @@ public class DeepLinkRoomController : MonoBehaviour {
     private void MyRoomIdRecieved(string body) {
         try {
             RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(body);
-            //room?roomid=string
+
             HelperFunctions.DevLog("MyRoomIdRecieved = " + body);
-            DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Room, roomJsonData.id, serverURLAPIScriptableObject.Url, SocialParameters(roomJsonData.user));
-            DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters, roomJsonData.user);
+
+            GetRoomLink(roomJsonData.id, roomJsonData.user);
+
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
         }
     }
 
     private void GetRoomLink(string id, string source) {
-        DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Room, id, serverURLAPIScriptableObject.Url, SocialParameters(source));
-        DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters, source);
+        DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.DevFirebaseDynamicLink, serverURLAPIScriptableObject.Room, id, serverURLAPIScriptableObject.Url, SocialParameters(source));
+
+        Uri uri = new Uri(serverURLAPIScriptableObject.DevFirebaseDynamicLink + "/profile/" + source);
+        DynamicLinksCallBacks.onGetShortLink?.Invoke(uri, dynamicLinkParameters.SocialMetaTagParameters);
+        //DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters, source);
     }
 
     private void Awake() {
@@ -49,6 +53,10 @@ public class DeepLinkRoomController : MonoBehaviour {
     }
 
     private string GetMyRoomIdUrl() {
+        return serverURLAPIScriptableObject.ServerURLMediaAPI + videoUploader.GetRoom;
+    }
+
+    private string GetRoomIdUrl() {
         return serverURLAPIScriptableObject.ServerURLMediaAPI + videoUploader.GetRoom;
     }
 

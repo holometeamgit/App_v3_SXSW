@@ -135,6 +135,8 @@ public class UserWebManager : MonoBehaviour {
         userData.profile.bio = bio ?? userData.profile.bio;
         userData.profile.profile_picture_s3_url = profile_picture_s3_url ?? userData.profile.profile_picture_s3_url;
 
+        UpdateStaticLink(userData.username);
+
         UploadUserInfo();
     }
 
@@ -188,6 +190,12 @@ public class UserWebManager : MonoBehaviour {
     }
 
     #endregion
+
+    private void UpdateStaticLink(string userName) {
+        StaticLinkData staticLinkData = new StaticLinkData();
+        staticLinkData.username = userName;
+        webRequestHandler.PostRequest(webRequestHandler.FirebaseAddUserStaticLink, staticLinkData, WebRequestHandler.BodyType.JSON, (x, y) => { HelperFunctions.DevLog("Log = " + x + "," + y); webRequestHandler.LogCallback(x, y); }, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
+    }
 
     private void RemoveUserData() {
         userData = null;

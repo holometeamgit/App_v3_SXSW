@@ -10,18 +10,34 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     public string ProdServerURLAuth = "https://api.holo.me/api-auth";
     public string ProdServerURLMedia = "https://api.holo.me/api-media";
     public string ProdServerProviders = "https://api.holo.me/oauth/providers/";
+    [SerializeField]
+    private string prodFirebaseDynamicLink = "https://join.beem.me";
+    public string ProdFirebaseDynamicLink {
+        get {
+            return prodFirebaseDynamicLink;
+        }
+    }
     [Space]
     public string DevServerURLAuth = "https://devholo.me/api-auth";
     public string DevServerURLMedia = "https://devholo.me/api-media";
     public string DevServerProviders = "https://devholo.me/oauth/providers/";
-    [Space]
     [SerializeField]
-    private string firebaseDynamicLink = "https://join.beem.me";
-    public string FirebaseDynamicLink {
+    private string devFirebaseDynamicLink = "https://us-central1-test-36ceb.cloudfunctions.net";
+    public string DevFirebaseDynamicLink {
         get {
-            return firebaseDynamicLink;
+            return devFirebaseDynamicLink;
         }
     }
+
+    [SerializeField]
+    private string firebaseAddUserStaticLink = "https://us-central1-test-36ceb.cloudfunctions.net/addusername";
+
+    public string FirebaseAddUserStaticLink {
+        get {
+            return firebaseAddUserStaticLink;
+        }
+    }
+
     [SerializeField]
     private string url = "https://beem.me";
     public string Url {
@@ -98,6 +114,16 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
             return DevServerProviders;
 #else
             return ProdServerProviders;
+#endif
+        }
+    }
+
+    public string FirebaseDynamicLink {
+        get {
+#if DEV
+            return DevFirebaseDynamicLink;
+#else
+            return ProdFirebaseDynamicLink;
 #endif
         }
     }
