@@ -36,22 +36,11 @@ public class RequestCloudRecordResource : RestRequest {
     }
 
     [Serializable]
-    public class TranscodingConfig {
-        public int height = AgoraSharedVideoConfig.Height;
-        public int width = AgoraSharedVideoConfig.Width;
-        public int bitrate = AgoraSharedVideoConfig.Bitrate;
-        public int fps = AgoraSharedVideoConfig.FrameRate;
-        public int mixedVideoLayout = 1;
-        public string backgroundColor = "#000000";
-    }
-
-    [Serializable]
     public class RecordingConfig {
         public int maxIdleTime = 5;
         public int streamTypes = 2;
         public int channelType = 0;
         public int videoStreamType = 0;
-        //public TranscodingConfig transcodingConfig = new TranscodingConfig();
         public List<string> subscribeVideoUids = new List<string> { "#allstream#" };
         public List<string> subscribeAudioUids = new List<string> { "#allstream#" };
         public int subscribeUidGroup = 0;
