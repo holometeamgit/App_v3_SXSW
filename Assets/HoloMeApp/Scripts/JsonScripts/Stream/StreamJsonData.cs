@@ -40,14 +40,9 @@ public class StreamJsonData {
         public bool is_pin;
         public string agora_sid;
         public string agora_channel;
-        public string file_name_prefix;
         public string start_date;
         public string end_date;
         public long duration;
-        public string preview_s3_key;
-        public string stream_s3_key;
-        public string teaser_s3_key;
-        public string preview_teaser_s3_key;
         public string title;
         public string description;
         public string paid_type;
@@ -126,8 +121,8 @@ public class StreamJsonData {
             return GetStage(status);
         }
 
-        public bool IsPublicLiveOrPrerecorded() {
-            return (GetStage() == Stage.Live || GetStage() == Stage.Prerecorded) && privacy_type == "public";
+        public bool IsPublic() {
+            return privacy_type == "public";
         }
 
         public static Stage GetStage(string status) {
@@ -175,14 +170,9 @@ public class StreamJsonData {
             is_pin = data.is_pin;
             agora_sid = data.agora_sid;
             agora_channel = data.agora_channel;
-            file_name_prefix = data.file_name_prefix;
             start_date = data.start_date;
             end_date = data.end_date;
             duration = data.duration;
-            preview_s3_key = data.preview_s3_key;
-            stream_s3_key = data.stream_s3_key;
-            teaser_s3_key = data.teaser_s3_key;
-            preview_teaser_s3_key = data.preview_teaser_s3_key;
             title = data.title;
             description = data.description;
             paid_type = data.paid_type;

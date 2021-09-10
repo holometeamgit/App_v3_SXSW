@@ -178,12 +178,17 @@ public class PnlComments : MonoBehaviour
     #endregion
 
     private void Awake() {
+		_commentInputField.keyboardType = TouchScreenKeyboardType.Default;
+#if UNITY_IOS
 		_commentInputField.shouldHideMobileInput = true;
+#elif UNITY_ANDROID
+        _commentInputField.shouldHideMobileInput = false;
+#endif
 	}
 
-    #region response from ui
+	#region response from ui
 
-    void OnFillItem(int index, GameObject item) {
+	void OnFillItem(int index, GameObject item) {
 		//if (onGetItemByOrdinalID == null)
 		//	return;
 		CommentJsonData commentData = onGetItemByOrdinalIndex(index);

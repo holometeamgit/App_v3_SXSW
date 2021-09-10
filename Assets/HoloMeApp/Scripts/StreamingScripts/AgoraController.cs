@@ -118,7 +118,11 @@ public class AgoraController : MonoBehaviour {
         encoderConfiguration.minFrameRate = 25;
         encoderConfiguration.frameRate = (FRAME_RATE)AgoraSharedVideoConfig.FrameRate;
         encoderConfiguration.bitrate = AgoraSharedVideoConfig.Bitrate;
-        encoderConfiguration.dimensions = new VideoDimensions() { width = AgoraSharedVideoConfig.Width, height = AgoraSharedVideoConfig.Height };
+        int width;
+        int height;
+        AgoraSharedVideoConfig.GetResolution(screenWidth: Screen.width, screenHeigh: Screen.height, out width, out height);
+        encoderConfiguration.dimensions = new VideoDimensions() { width = width, height = height };
+        HelperFunctions.DevLog("w" + encoderConfiguration.dimensions.width + " h " + encoderConfiguration.dimensions.height);
         encoderConfiguration.orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT;//ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE;
         //iRtcEngine.SetVideoProfile(VIDEO_PROFILE_TYPE.VIDEO_PROFILE_PORTRAIT_720P_3,false);
         iRtcEngine.SetVideoEncoderConfiguration(encoderConfiguration);
@@ -253,12 +257,13 @@ public class AgoraController : MonoBehaviour {
             sendThumbnailRoutine = StartCoroutine(SendThumbnailData(true));
 
         IsLive = true;
-        OnStreamWentLive?.Invoke();
 
         agoraMessageStreamID = iRtcEngine.CreateDataStream(true, true);
 
         iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
         iRtcEngine.OnStreamMessageError = OnStreamMessageError;
+
+        OnStreamWentLive?.Invoke();
     }
 
     public void Leave() {

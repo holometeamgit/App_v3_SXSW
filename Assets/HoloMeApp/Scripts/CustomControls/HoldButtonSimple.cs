@@ -13,18 +13,45 @@ public class HoldButtonSimple : MonoBehaviour, IPointerDownHandler, IPointerUpHa
     [SerializeField]
     Color holdColour;
     Color originalColour;
+    Color notInteractableColour;
+    private bool coloursAssigned;
+
+    [SerializeField]
+    private Vector3 scaleByOnPress = new Vector3(.5f, .5f, .5f);
 
     public UnityEvent onTouchDown;
     public UnityEvent onTouchUp;
 
+    private bool interactable;
+    private bool isHeld;
+
+    /// <summary>
+    /// This mimics Selectable functionality of Unity UI components
+    /// </summary>
+    public bool Interactable {
+        get { return interactable; }
+        set {
+            interactable = value;
+            if (!value && isHeld) {
+                PointerUpSharedFunctions();
+            }
+            if (coloursAssigned) {
+                imageToAnimate.color = value ? originalColour : notInteractableColour;
+            }
+        }
+    }
+
     [SerializeField]
-    Image imageToAnimate;
+    private Image imageToAnimate;
 
     private void Awake() {
         if (imageToAnimate == null) {
             imageToAnimate = transform.GetComponent<Image>();
         }
+
         originalColour = imageToAnimate.color;
+        notInteractableColour = HelperFunctions.GetColor(200, 200, 200, 128);
+        coloursAssigned = true;
     }
 
     private void OnEnable() {
@@ -33,14 +60,24 @@ public class HoldButtonSimple : MonoBehaviour, IPointerDownHandler, IPointerUpHa
     }
 
     public void OnPointerDown(PointerEventData eventData) {
+        if (!interactable)
+            return;
+        isHeld = true;
         onTouchDown?.Invoke();
-        imageToAnimate.transform.DOBlendableScaleBy(new Vector3(.25f, .25f, .25f), .1f);
+        imageToAnimate.transform.DOBlendableScaleBy(scaleByOnPress, .1f);
         imageToAnimate.color = holdColour;
     }
 
     public void OnPointerUp(PointerEventData eventData) {
+        if (!interactable)
+            return;
+        isHeld = false;
+        PointerUpSharedFunctions();
+    }
+
+    private void PointerUpSharedFunctions() {
         onTouchUp?.Invoke();
-        imageToAnimate.transform.DOBlendableScaleBy(-new Vector3(.25f, .25f, .25f), .1f);
+        imageToAnimate.transform.DOBlendableScaleBy(-scaleByOnPress, .1f);
         imageToAnimate.color = originalColour;
     }
 }

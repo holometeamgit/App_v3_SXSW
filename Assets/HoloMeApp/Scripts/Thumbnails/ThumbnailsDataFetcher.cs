@@ -127,8 +127,11 @@ public class ThumbnailsDataFetcher {
         currentPage--;
         if (streamJsonData == null || streamJsonData.results.Count == 0)
             GetNextPage();
-        else
+        else {
             AddThumbnails(streamJsonData);
+            if (streamJsonData.results.Count < pageSize)
+                GetNextPage();
+        }
     }
 
     private void UpdateThumbnail(StreamJsonData.Data data) {
