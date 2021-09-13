@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace Beem.Extenject.Hologram {
     /// <summary>
-    /// Select Holo Signal
+    /// Create Holo Signal
     /// </summary>
-    public class SelectHologramSignal : BeemSignal {
+    public class CreateHologramSignal : BeemSignal {
         private GameObject _hologram;
 
         public GameObject Hologram {
@@ -13,7 +13,7 @@ namespace Beem.Extenject.Hologram {
             }
         }
 
-        public SelectHologramSignal(GameObject hologram) {
+        public CreateHologramSignal(GameObject hologram) {
             _hologram = hologram;
         }
     }

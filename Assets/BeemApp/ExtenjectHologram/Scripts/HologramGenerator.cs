@@ -11,23 +11,17 @@ namespace Beem.Extenject.Hologram {
     /// <summary>
     /// Hologram Creator
     /// </summary>
-    public class HologramGenerator : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
+    public class HologramGenerator : MonoBehaviour, IPointerClickHandler {
 
         [Header("Hologram Prefab")]
         [SerializeField]
         private GameObject _hologramPrefab;
-
-        [Header("Touch Count")]
-        [SerializeField]
-        private int _touchCount = 1;
 
         private GameObject _spawnedObject;
 
         private static List<ARRaycastHit> _hits = new List<ARRaycastHit>();
 
         private ARRaycastManager _raycastManager;
-
-        private TouchCounter _touchCounter = new TouchCounter();
         private SignalBus _signalBus;
 
         [Inject]
@@ -54,26 +48,21 @@ namespace Beem.Extenject.Hologram {
             _hologramPrefab = selectHologramSignal.Hologram;
         }
 
-        public void OnPointerDown(PointerEventData eventData) {
-
-            _touchCounter.OnPointerDown(eventData);
-            if (_touchCounter.TouchCount == _touchCount) {
-                if (_raycastManager.Raycast(eventData.pressPosition, _hits, TrackableType.PlaneWithinPolygon)) {
-                    var hitPose = _hits[0].pose;
-                    CreateHologram(_hologramPrefab, hitPose.position, hitPose.rotation);
-                }
-            }
-        }
-
         private void CreateHologram(GameObject prefab, Vector3 position, Quaternion rotation) {
             if (_spawnedObject == null) {
+                Debug.Log("Holo");
                 _spawnedObject = Instantiate(prefab, position, rotation);
                 _signalBus.Fire(new CreateHologramSignal(_spawnedObject));
             }
         }
 
-        public void OnPointerUp(PointerEventData eventData) {
-            _touchCounter.OnPointerUp(eventData);
+        public void OnPointerClick(PointerEventData eventData) {
+            Debug.Log("Raycast");
+            if (_raycastManager.Raycast(eventData.pressPosition, _hits, TrackableType.PlaneWithinPolygon)) {
+                var hitPose = _hits[0].pose;
+                Debug.Log("CreateHologram");
+                CreateHologram(_hologramPrefab, hitPose.position, hitPose.rotation);
+            }
         }
     }
 }
