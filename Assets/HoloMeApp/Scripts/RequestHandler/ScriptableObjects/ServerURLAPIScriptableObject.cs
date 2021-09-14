@@ -45,21 +45,22 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
             return url;
         }
     }
-    [SerializeField]
-    private string room = "room";
 
-    public string Room {
+    [SerializeField]
+    private string streamId = "streamId";
+
+    public string StreamId {
         get {
-            return room;
+            return streamId;
         }
     }
 
     [SerializeField]
-    private string stream = "stream";
+    private string username = "username";
 
-    public string Stream {
+    public string Username {
         get {
-            return stream;
+            return username;
         }
     }
 

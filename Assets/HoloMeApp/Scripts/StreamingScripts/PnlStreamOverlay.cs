@@ -350,11 +350,7 @@ public class PnlStreamOverlay : MonoBehaviour {
             if (agoraController.IsChannelCreator) {
                 StreamCallBacks.onGetMyRoomLink?.Invoke();
             } else {
-                if (!string.IsNullOrWhiteSpace(currentStreamId)) {
-                    StreamCallBacks.onGetRoomLink?.Invoke(currentStreamId, agoraController.ChannelName);
-                } else {
-                    DynamicLinksCallBacks.onShareAppLink?.Invoke();
-                }
+                StreamCallBacks.onGetRoomLink?.Invoke(agoraController.ChannelName);
             }
         } else {
             if (!string.IsNullOrWhiteSpace(currentStreamId)) {

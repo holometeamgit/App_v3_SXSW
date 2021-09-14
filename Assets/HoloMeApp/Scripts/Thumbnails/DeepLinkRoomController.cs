@@ -27,15 +27,15 @@ public class DeepLinkRoomController : MonoBehaviour {
 
             HelperFunctions.DevLog("MyRoomIdRecieved = " + body);
 
-            GetRoomLink(roomJsonData.id, roomJsonData.user);
+            GetRoomLink(roomJsonData.user);
 
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
         }
     }
 
-    private void GetRoomLink(string id, string source) {
-        DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.DevFirebaseDynamicLink, serverURLAPIScriptableObject.Room, id, serverURLAPIScriptableObject.Url, SocialParameters(source));
+    private void GetRoomLink(string source) {
+        DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.DevFirebaseDynamicLink, serverURLAPIScriptableObject.Url, SocialParameters(source));
 
         Uri uri = new Uri(serverURLAPIScriptableObject.DevFirebaseDynamicLink + "/profile/" + source);
         DynamicLinksCallBacks.onGetShortLink?.Invoke(uri, dynamicLinkParameters.SocialMetaTagParameters);

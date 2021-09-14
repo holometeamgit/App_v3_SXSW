@@ -29,36 +29,31 @@ public class DeepLinkHandler : MonoBehaviour {
 
 
     private void GetContentsParameters(Uri uri) {
-        if (IsFolder(uri, serverURLAPIScriptableObject.Room)) {
-            HelperFunctions.DevLog("GetRoomParameters");
-
-            string roomId = GetId(uri, serverURLAPIScriptableObject.Room);
-
-            HelperFunctions.DevLog("roomId = " + roomId);
-            StreamCallBacks.onRoomLinkReceived?.Invoke(roomId);
-        } else if (IsFolder(uri, serverURLAPIScriptableObject.Stream)) {
+        if (ContainParameter(uri, serverURLAPIScriptableObject.StreamId)) {
             HelperFunctions.DevLog("GetStreamParameters");
 
-            string streamId = GetId(uri, serverURLAPIScriptableObject.Stream);
+            string streamId = GetParameter(uri, serverURLAPIScriptableObject.StreamId);
 
             HelperFunctions.DevLog("streamId = " + streamId);
             StreamCallBacks.onStreamLinkReceived?.Invoke(streamId);
+        } else if (ContainParameter(uri, serverURLAPIScriptableObject.Username)) {
+
+            HelperFunctions.DevLog("GetRoomParameters");
+
+            string userName = GetParameter(uri, serverURLAPIScriptableObject.Username);
+
+            string roomId = ""; //todo get room id according username
+
+            HelperFunctions.DevLog("roomId = " + roomId);
+            StreamCallBacks.onRoomLinkReceived?.Invoke(roomId);
         }
     }
 
-    private bool IsFolder(Uri uri, string folder) {
-        return uri.LocalPath.Contains(folder);
+    private bool ContainParameter(Uri uri, string parameter) {
+        return !string.IsNullOrEmpty(HttpUtility.ParseQueryString(uri.Query).Get(parameter));
     }
 
-    private string GetId(Uri uri, string folder) {
-        string localPath = uri.LocalPath;
-        localPath = localPath.Substring(1, localPath.Length - 1);
-        string[] split = localPath.Split('/');
-        for (int i = 0; i < split.Length; i++) {
-            if (split[i].Contains(folder) && i < split.Length - 1) {
-                return split[i + 1];
-            }
-        }
-        return string.Empty;
+    private string GetParameter(Uri uri, string parameter) {
+        return HttpUtility.ParseQueryString(uri.Query).Get(parameter);
     }
 }
