@@ -12,22 +12,12 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     public string ProdServerProviders = "https://api.holo.me/oauth/providers/";
     [SerializeField]
     private string prodFirebaseDynamicLink = "https://join.beem.me";
-    public string ProdFirebaseDynamicLink {
-        get {
-            return prodFirebaseDynamicLink;
-        }
-    }
     [Space]
     public string DevServerURLAuth = "https://devholo.me/api-auth";
     public string DevServerURLMedia = "https://devholo.me/api-media";
     public string DevServerProviders = "https://devholo.me/oauth/providers/";
     [SerializeField]
     private string devFirebaseDynamicLink = "https://us-central1-test-36ceb.cloudfunctions.net";
-    public string DevFirebaseDynamicLink {
-        get {
-            return devFirebaseDynamicLink;
-        }
-    }
 
     [SerializeField]
     private string firebaseAddUserStaticLink = "https://us-central1-test-36ceb.cloudfunctions.net/addusername";
@@ -122,9 +112,9 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     public string FirebaseDynamicLink {
         get {
 #if DEV
-            return DevFirebaseDynamicLink;
+            return devFirebaseDynamicLink;
 #else
-            return ProdFirebaseDynamicLink;
+            return prodFirebaseDynamicLink;
 #endif
         }
     }

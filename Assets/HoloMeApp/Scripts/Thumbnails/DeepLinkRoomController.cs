@@ -35,11 +35,8 @@ public class DeepLinkRoomController : MonoBehaviour {
     }
 
     private void GetRoomLink(string source) {
-        DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.DevFirebaseDynamicLink, serverURLAPIScriptableObject.Url, SocialParameters(source));
-
-        Uri uri = new Uri(serverURLAPIScriptableObject.DevFirebaseDynamicLink + "/profile/" + source);
-        DynamicLinksCallBacks.onGetShortLink?.Invoke(uri, dynamicLinkParameters.SocialMetaTagParameters);
-        //DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters, source);
+        Uri uri = new Uri(serverURLAPIScriptableObject.FirebaseDynamicLink + "/profile/" + source);
+        DynamicLinksCallBacks.onGetShortLink?.Invoke(uri, SocialParameters(source));
     }
 
     private void Awake() {

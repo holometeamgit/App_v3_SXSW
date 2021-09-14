@@ -20,7 +20,7 @@ public class ShareManager : MonoBehaviour {
     }
 
     private void ShareApp() {
-        Uri link = new Uri(serverURLAPIScriptableObject.ProdFirebaseDynamicLink + "/" + serverURLAPIScriptableObject.App);
+        Uri link = new Uri(serverURLAPIScriptableObject.FirebaseDynamicLink + "/" + serverURLAPIScriptableObject.App);
         string msg = "Come to my App: " + link.AbsoluteUri;
         HelperFunctions.DevLog(msg);
         ShareLink(msg);
