@@ -219,13 +219,24 @@ namespace Beem.Extenject.Video {
 
         private void OnCreateHologram(CreateHologramSignal createHologramSignal) {
 
+            Debug.Log("OnCreateHologram");
+
             if (createHologramSignal.Hologram == null) {
                 return;
             }
 
-            OnStop();
+            Debug.Log("OnStop");
+
+
+            _signalBus.Fire(new StopSignal());
+
+            Debug.Log("OnPlayerSelect");
             _videoPlayer = createHologramSignal.Hologram.GetComponentInChildren<VideoPlayer>();
-            OnPlay();
+
+            Debug.Log("OnPlay");
+
+            _signalBus.Fire(new PlaySignal());
+
         }
 
         public void Initialize() {

@@ -34,9 +34,6 @@ namespace Beem.Extenject.Hologram {
         }
 
         private void OnEnable() {
-#if UNITY_EDITOR
-            CreateHologram(_hologramPrefab, _hologramPrefab.transform.position, _hologramPrefab.transform.rotation);
-#endif
             _signalBus.Subscribe<SelectHologramSignal>(SetHologram);
         }
 
@@ -57,12 +54,17 @@ namespace Beem.Extenject.Hologram {
         }
 
         public void OnPointerClick(PointerEventData eventData) {
+
+#if !UNITY_EDITOR
             Debug.Log("Raycast");
             if (_raycastManager.Raycast(eventData.pressPosition, _hits, TrackableType.PlaneWithinPolygon)) {
                 var hitPose = _hits[0].pose;
                 Debug.Log("CreateHologram");
                 CreateHologram(_hologramPrefab, hitPose.position, hitPose.rotation);
             }
+#else
+            CreateHologram(_hologramPrefab, _hologramPrefab.transform.position, _hologramPrefab.transform.rotation);
+#endif
         }
     }
 }
