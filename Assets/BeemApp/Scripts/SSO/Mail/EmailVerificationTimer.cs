@@ -24,7 +24,11 @@ namespace Beem.SSO {
         private static CancellationToken _cancelToken;
 
         private const int TIME_REFRESH = 500;
-        private static bool _isDisposed; 
+        private static bool _isDisposed;
+
+        public static CancellationToken GetToken() {
+            return _cancelToken;
+        }
 
         /// <summary>
         /// Cansel async Release
@@ -83,7 +87,7 @@ namespace Beem.SSO {
 
             try {
                 await ReleaseAsync(token, second);
-            } catch (OperationCanceledException ex){
+            } catch (OperationCanceledException ex) {
                 HelperFunctions.DevLog("OperationCanceledException");
             }
 
