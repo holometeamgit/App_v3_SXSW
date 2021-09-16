@@ -16,7 +16,6 @@ public class StreamCallBacks {
     public static Action onCancelOpenContent = delegate { };
     #endregion
 
-    public static Action onGetMyRoomLink = delegate { };
     public static Action<string> onGetRoomLink = delegate { };
     public static Action<string, string> onGetStreamLink = delegate { };
     public static Action<StreamJsonData.Data> onGetPrerecordedLink = delegate { };

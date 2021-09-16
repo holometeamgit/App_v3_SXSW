@@ -13,30 +13,21 @@ public class DeepLinkRoomController : MonoBehaviour {
     private const string TITLE = "You have been invited to {0}'s Room";
     private const string DESCRIPTION = "Click the link below to join {0}'s Room";
 
-    private void GetMyRoom() {
-        HelperFunctions.DevLog("GetMyRoom");
-        webRequestHandler.GetRequest(GetMyRoomIdUrl(),
-            (code, body) => MyRoomIdRecieved(body),
-            (code, body) => HelperFunctions.DevLogError(code + " " + body),
-            accountManager.GetAccessToken().access);
-    }
-
     private void GetRoomByUserName(string username) {
-        HelperFunctions.DevLog("GetMyRoom");
+        HelperFunctions.DevLog("Get Room By UserName");
         webRequestHandler.GetRequest(GetRoomUsernameUrl(username),
-            (code, body) => HelperFunctions.DevLog(code + " " + body),
+            (code, body) => RoomReceived(body),
             (code, body) => HelperFunctions.DevLogError(code + " " + body),
             accountManager.GetAccessToken().access);
     }
 
-    private void MyRoomIdRecieved(string body) {
+    private void RoomReceived(string body) {
         try {
             RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(body);
 
-            HelperFunctions.DevLog("MyRoomIdRecieved = " + body);
+            HelperFunctions.DevLog("Room Recieved = " + body);
 
-            GetRoomLink(roomJsonData.user);
-
+            StreamCallBacks.onRoomLinkReceived?.Invoke(roomJsonData.id);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
         }
@@ -48,19 +39,13 @@ public class DeepLinkRoomController : MonoBehaviour {
     }
 
     private void Awake() {
-        StreamCallBacks.onGetMyRoomLink += GetMyRoom;
         StreamCallBacks.onGetRoomLink += GetRoomLink;
         StreamCallBacks.onUsernameLinkReceived += GetRoomByUserName;
     }
 
     private void OnDestroy() {
-        StreamCallBacks.onGetMyRoomLink -= GetMyRoom;
         StreamCallBacks.onGetRoomLink -= GetRoomLink;
         StreamCallBacks.onUsernameLinkReceived -= GetRoomByUserName;
-    }
-
-    private string GetMyRoomIdUrl() {
-        return serverURLAPIScriptableObject.ServerURLMediaAPI + videoUploader.GetRoom;
     }
 
     private string GetRoomUsernameUrl(string username) {
