@@ -7,6 +7,7 @@
 public class StreamCallBacks {
     #region deep link
     public static Action<string> onRoomLinkReceived = delegate { };
+    public static Action<string> onUsernameLinkReceived = delegate { };
     public static Action onOpenRoom = delegate { };
 
     public static Action<string> onStreamLinkReceived = delegate { };

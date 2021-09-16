@@ -41,7 +41,7 @@ public class DeepLinkHandler : MonoBehaviour {
             HelperFunctions.DevLog("GetRoomParameters");
 
             string userName = GetParameter(uri, serverURLAPIScriptableObject.Username);
-
+            StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
             string roomId = ""; //todo get room id according username
 
             HelperFunctions.DevLog("roomId = " + roomId);

@@ -21,6 +21,14 @@ public class DeepLinkRoomController : MonoBehaviour {
             accountManager.GetAccessToken().access);
     }
 
+    private void GetRoomByUserName(string username) {
+        HelperFunctions.DevLog("GetMyRoom");
+        webRequestHandler.GetRequest(GetRoomUsernameUrl(username),
+            (code, body) => HelperFunctions.DevLog(code + " " + body),
+            (code, body) => HelperFunctions.DevLogError(code + " " + body),
+            accountManager.GetAccessToken().access);
+    }
+
     private void MyRoomIdRecieved(string body) {
         try {
             RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(body);
@@ -42,19 +50,21 @@ public class DeepLinkRoomController : MonoBehaviour {
     private void Awake() {
         StreamCallBacks.onGetMyRoomLink += GetMyRoom;
         StreamCallBacks.onGetRoomLink += GetRoomLink;
+        StreamCallBacks.onUsernameLinkReceived += GetRoomByUserName;
     }
 
     private void OnDestroy() {
         StreamCallBacks.onGetMyRoomLink -= GetMyRoom;
         StreamCallBacks.onGetRoomLink -= GetRoomLink;
+        StreamCallBacks.onUsernameLinkReceived -= GetRoomByUserName;
     }
 
     private string GetMyRoomIdUrl() {
         return serverURLAPIScriptableObject.ServerURLMediaAPI + videoUploader.GetRoom;
     }
 
-    private string GetRoomIdUrl() {
-        return serverURLAPIScriptableObject.ServerURLMediaAPI + videoUploader.GetRoom;
+    private string GetRoomUsernameUrl(string username) {
+        return serverURLAPIScriptableObject.ServerURLMediaAPI + videoUploader.GetRoom + username;
     }
 
     public SocialMetaTagParameters SocialParameters(string source) {
