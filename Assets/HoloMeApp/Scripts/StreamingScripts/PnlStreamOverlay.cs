@@ -40,7 +40,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     private RawImage cameraRenderImage;
 
     [SerializeField]
-    private HoldButtonSimple btnPushToTalk;
+    private Toggle togglePushToTalk;
 
     [SerializeField]
     private GameObject[] gameObjectsToDisableWhileGoingLive;
@@ -286,8 +286,8 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.ChannelName = channelName;
         isChannelCreator = false;
         gameObject.SetActive(true);
-        btnPushToTalk.Interactable = false;
-        pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName, streamID);
+        togglePushToTalk.interactable = false;
+        pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName, streamID, isRoom);
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
         currentStreamId = streamID;
@@ -521,8 +521,8 @@ public class PnlStreamOverlay : MonoBehaviour {
                 if (LastMessageWasRecievedAlready(ref lastPushToTalkStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
-                ToggleLocalAudio(true);
-                btnPushToTalk.Interactable = true;
+                togglePushToTalk.isOn = true; //Mute the mic
+                togglePushToTalk.interactable = true;
                 AnimatedCentreTextMessage("Hold the Talk button to speak to the broadcaster");
                 AnimatedFadeOutMessage(3);
                 return;
@@ -530,8 +530,8 @@ public class PnlStreamOverlay : MonoBehaviour {
                 if (LastMessageWasRecievedAlready(ref lastPushToTalkStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
-                ToggleLocalAudio(true);
-                btnPushToTalk.Interactable = false;
+                togglePushToTalk.isOn = true; //Mute the mic
+                togglePushToTalk.interactable = false;
                 return;
             case MessageToViewerBroadcasterAudioPaused:
                 if (LastMessageWasRecievedAlready(ref lastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)

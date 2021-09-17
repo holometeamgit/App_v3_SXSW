@@ -152,7 +152,7 @@ public class PnlViewingExperience : MonoBehaviour {
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
         }
     }
-    public void ActivateForStreaming(string channelName, string streamID) {
+    public void ActivateForStreaming(string channelName, string streamID, bool isRoom) {
         StopExperience();
         SharedActivationFunctions();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, "Live Stream: " + channelName }, { AnalyticParameters.ParamPerformanceID, streamID } });
@@ -165,7 +165,9 @@ public class PnlViewingExperience : MonoBehaviour {
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
-            StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
+            if (!isRoom) {
+                StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
+            }
         }
     }
     void SharedActivationFunctions() {
