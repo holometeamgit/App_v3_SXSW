@@ -49,7 +49,7 @@ public class DeepLinkRoomController : MonoBehaviour {
     }
 
     private string GetRoomUsernameUrl(string username) {
-        return serverURLAPIScriptableObject.ServerURLMediaAPI + videoUploader.GetRoom + username;
+        return serverURLAPIScriptableObject.ServerURLMediaAPI + videoUploader.GetRoomByUserName + username;
     }
 
     public SocialMetaTagParameters SocialParameters(string source) {
