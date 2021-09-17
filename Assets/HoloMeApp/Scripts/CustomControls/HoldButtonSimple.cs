@@ -18,6 +18,7 @@ public class HoldButtonSimple : MonoBehaviour, IPointerDownHandler, IPointerUpHa
 
     [SerializeField]
     private Vector3 scaleByOnPress = new Vector3(.5f, .5f, .5f);
+    private Vector3 defaultScale;
 
     public UnityEvent onTouchDown;
     public UnityEvent onTouchUp;
@@ -52,6 +53,7 @@ public class HoldButtonSimple : MonoBehaviour, IPointerDownHandler, IPointerUpHa
         originalColour = imageToAnimate.color;
         notInteractableColour = HelperFunctions.GetColor(200, 200, 200, 128);
         coloursAssigned = true;
+        defaultScale = transform.localScale;
     }
 
     private void OnEnable() {
@@ -64,7 +66,7 @@ public class HoldButtonSimple : MonoBehaviour, IPointerDownHandler, IPointerUpHa
             return;
         isHeld = true;
         onTouchDown?.Invoke();
-        imageToAnimate.transform.DOBlendableScaleBy(scaleByOnPress, .1f);
+        imageToAnimate.transform.DOScale(defaultScale + scaleByOnPress, .1f);
         imageToAnimate.color = holdColour;
     }
 
@@ -77,7 +79,7 @@ public class HoldButtonSimple : MonoBehaviour, IPointerDownHandler, IPointerUpHa
 
     private void PointerUpSharedFunctions() {
         onTouchUp?.Invoke();
-        imageToAnimate.transform.DOBlendableScaleBy(-scaleByOnPress, .1f);
+        imageToAnimate.transform.DOScale(defaultScale, .1f);
         imageToAnimate.color = originalColour;
     }
 }
