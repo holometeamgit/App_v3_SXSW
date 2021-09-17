@@ -12,13 +12,9 @@ namespace Beem.Utility.UnityConsole {
     /// </summary>
     public static class LogData {
 
-        private static LogType _currentLogType = LogType.Error;
-
         private static bool _isStackTraceStatus = default;
 
         private static string _inputKeys = default;
-
-        private static string _currentTag = default;
 
         private static ILog _ILog = new LocalLog();
 
@@ -29,14 +25,18 @@ namespace Beem.Utility.UnityConsole {
 
         private static bool isInited = false;
 
+        private const string LOG_TYPE_DATA = "LogTypeData";
+        private const string LOG_TAG_DATA = "LogTagData";
+        private const string DEFAULT_TAG = "All";
+
         /// <summary>
         /// Current Log
         /// </summary>
         public static string GetLog() {
             string temp = string.Empty;
             foreach (UnityLog item in _log) {
-                if (_currentLogType == item.Key) {
-                    if (_currentTag == item.Tag || _currentTag == "All") {
+                if (LogTypeData == item.Key) {
+                    if (LogTagData == item.Tag || LogTagData == DEFAULT_TAG) {
                         if (string.IsNullOrEmpty(_inputKeys) || (item.Value.Contains(_inputKeys) || item.StackTrace.Contains(_inputKeys))) {
                             string date = string.Format("{0:D2}:{1:D2}:{2:D2}", item.Date.Hour, item.Date.Minute, item.Date.Second);
                             temp += "[" + date + "]" + "[" + item.Tag + "] : " + item.Value + "\n";
@@ -91,29 +91,38 @@ namespace Beem.Utility.UnityConsole {
         }
 
         /// <summary>
-        /// Set Log Type
+        /// Log Type
         /// </summary>
-        /// <param name="logType"></param>
-        public static void SetLogType(LogType logType) {
-
-            _currentLogType = logType;
-
-            onRefreshLog?.Invoke();
+        public static LogType LogTypeData {
+            set {
+                if ((LogType)PlayerPrefs.GetInt(LOG_TYPE_DATA) != value) {
+                    PlayerPrefs.SetInt(LOG_TYPE_DATA, (int)value);
+                    onRefreshLog?.Invoke();
+                }
+            }
+            get {
+                return (LogType)PlayerPrefs.GetInt(LOG_TYPE_DATA);
+            }
         }
 
+
         /// <summary>
-        /// Set tag
+        /// Tag
         /// </summary>
-        /// <param name="logType"></param>
-        public static void SetTag(string tag) {
+        public static string LogTagData {
+            set {
+                if (PlayerPrefs.GetString(LOG_TAG_DATA) != value) {
+                    PlayerPrefs.SetString(LOG_TAG_DATA, value);
+                    if (_log.Find(x => x.Tag == LogTagData) == null) {
+                        onRefreshTag?.Invoke();
+                    }
 
-            _currentTag = tag;
-
-            if (_log.Find(x => x.Tag == _currentTag) == null) {
-                onRefreshTag?.Invoke();
+                    onRefreshLog?.Invoke();
+                }
             }
-
-            onRefreshLog?.Invoke();
+            get {
+                return PlayerPrefs.GetString(LOG_TAG_DATA, DEFAULT_TAG);
+            }
         }
 
         /// <summary>

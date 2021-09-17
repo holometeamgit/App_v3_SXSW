@@ -6,17 +6,17 @@ using TMPro;
 using System.Threading.Tasks;
 using System;
 
-public class PnlEmailVerificationFirebase : MonoBehaviour
-{
+public class PnlEmailVerificationFirebase : MonoBehaviour {
     [SerializeField]
     AuthController _authController;
     [SerializeField]
     TMP_Text _txtEmail;
     [SerializeField]
     GameObject _goToLogInBtn;
-    [SerializeField] TMP_Text _resendMsgMin;
-    [SerializeField] TMP_Text _resendMsgSec;
+    [SerializeField] TMP_Text _resendMsg;
     private const int DELAY_TIME = 5000;
+    private const int DELAY_FOR_TIMER = 1000;
+    private const string TIMER_TEXT = "You can resend the email in ";
 
     /// <summary>
     /// The method do actions after pressing the ResendVerification button
@@ -24,48 +24,42 @@ public class PnlEmailVerificationFirebase : MonoBehaviour
     public void ResendVerificationBtnClick() {
         CallBacks.onEmailVerification?.Invoke();
 
-        StartCoroutine(UpdateResendText());
+        UpdateResendTextAsync();
     }
 
     private void OnEnable() {
         _txtEmail.text = _authController.GetEmail();
 
-        StartCoroutine(UpdateResendText());
+        UpdateResendTextAsync();
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         Task.Delay(DELAY_TIME).ContinueWith((_) => {
             _goToLogInBtn.SetActive(true);
         }, taskScheduler);
-
-        EmailVerificationTimer.onFinishTimer += RefreshTestTimer;
     }
 
 
 
     private void OnDisable() {
         _goToLogInBtn.SetActive(false);
-        StopAllCoroutines();
         EmailVerificationTimer.Cancel();
-        RefreshTestTimer();
-        EmailVerificationTimer.onFinishTimer -= RefreshTestTimer;
-    }
-
-    private void RefreshTestTimer() {
-        _resendMsgMin.text = "1";
-        _resendMsgSec.text = "00";
     }
 
     private void OnApplicationFocus(bool focus) {
         _goToLogInBtn.SetActive(true);
     }
 
-    private IEnumerator UpdateResendText() {
-        yield return new WaitForSeconds(1);
+    private async void UpdateResendTextAsync() {
         TimeSpan timeSpan = EmailVerificationTimer.GetTimeLeft();
-        while (timeSpan.TotalSeconds > 1) {
-            _resendMsgMin.text = timeSpan.Minutes.ToString();
-            _resendMsgSec.text = (timeSpan.Seconds < 10 ? "0" : "") + timeSpan.Seconds.ToString();
-            timeSpan = EmailVerificationTimer.GetTimeLeft();
-            yield return new WaitForSeconds(1);
+        try {
+            while (timeSpan.TotalSeconds > 0 && !EmailVerificationTimer.GetToken().IsCancellationRequested) {
+                _resendMsg.text = string.Format(TIMER_TEXT + "{0:D1}:{1:D2}", timeSpan.Minutes, timeSpan.Seconds);
+                await Task.Delay(DELAY_FOR_TIMER);
+                timeSpan = EmailVerificationTimer.GetTimeLeft();
+            }
+
+        } catch (OperationCanceledException ex) {
+            HelperFunctions.DevLog("OperationCanceledException");
         }
+
     }
 }
