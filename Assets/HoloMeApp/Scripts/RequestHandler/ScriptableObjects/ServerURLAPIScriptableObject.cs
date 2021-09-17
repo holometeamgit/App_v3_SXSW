@@ -11,20 +11,38 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     public string ProdServerURLMedia = "https://api.holo.me/api-media";
     public string ProdServerProviders = "https://api.holo.me/oauth/providers/";
     [SerializeField]
-    private string prodFirebaseDynamicLink = "https://join.beem.me";
+    private string prodFirebaseStaticLink = "https://join.beem.me";
+
     [Space]
     public string DevServerURLAuth = "https://devholo.me/api-auth";
     public string DevServerURLMedia = "https://devholo.me/api-media";
     public string DevServerProviders = "https://devholo.me/oauth/providers/";
     [SerializeField]
-    private string devFirebaseDynamicLink = "https://us-central1-test-36ceb.cloudfunctions.net";
+    private string devFirebaseStaticLink = "https://us-central1-test-36ceb.cloudfunctions.net";
+    [Space]
+    [SerializeField]
+    private string firebaseAddUser = "/addusername/";
+
+    public string FirebaseAddUser {
+        get {
+            return firebaseAddUser;
+        }
+    }
 
     [SerializeField]
-    private string firebaseAddUserStaticLink = "https://us-central1-test-36ceb.cloudfunctions.net/addusername";
+    private string firebaseProfile = "/profile/";
 
-    public string FirebaseAddUserStaticLink {
+    public string FirebaseProfile {
         get {
-            return firebaseAddUserStaticLink;
+            return firebaseProfile;
+        }
+    }
+
+    [SerializeField]
+    private string firebaseDynamicLink = "https://join.beem.me";
+    public string FirebaseDynamicLink {
+        get {
+            return firebaseDynamicLink;
         }
     }
 
@@ -55,16 +73,7 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     }
 
     [SerializeField]
-    private string notificationAccess = "NotificationAccess";
-
-    public string NotificationAccess {
-        get {
-            return notificationAccess;
-        }
-    }
-
-    [SerializeField]
-    private string app = "App";
+    private string app = "/App/";
 
     public string App {
         get {
@@ -109,12 +118,12 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
         }
     }
 
-    public string FirebaseDynamicLink {
+    public string FirebaseStaticLink {
         get {
 #if DEV
-            return devFirebaseDynamicLink;
+            return devFirebaseStaticLink;
 #else
-            return prodFirebaseDynamicLink;
+            return prodFirebaseStaticLink;
 #endif
         }
     }

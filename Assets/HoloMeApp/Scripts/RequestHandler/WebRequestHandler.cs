@@ -18,8 +18,7 @@ public class WebRequestHandler : MonoBehaviour {
     public string ServerURLAuthAPI { get { return serverURLAPI.ServerURLAuthAPI; } private set { } }
     public string ServerURLMediaAPI { get { return serverURLAPI.ServerURLMediaAPI; } private set { } }
     public string ServerProvidersAPI { get { return serverURLAPI.ServerProvidersAPI; } private set { } }
-
-    public string FirebaseAddUserStaticLink { get { return serverURLAPI.FirebaseAddUserStaticLink; } private set { } }
+    public string FirebaseAddUser { get { return serverURLAPI.FirebaseStaticLink + serverURLAPI.FirebaseAddUser; } private set { } }
 
     [SerializeField] ServerURLAPIScriptableObject serverURLAPI;
     [SerializeField] AccountManager accountManager;

@@ -195,7 +195,7 @@ public class UserWebManager : MonoBehaviour {
     private void UpdateStaticLink(string userName) {
         StaticLinkData staticLinkData = new StaticLinkData();
         staticLinkData.username = userName;
-        webRequestHandler.PostRequest(webRequestHandler.FirebaseAddUserStaticLink, staticLinkData, WebRequestHandler.BodyType.JSON, (x, y) => { HelperFunctions.DevLog("Log = " + x + "," + y); webRequestHandler.LogCallback(x, y); }, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
+        webRequestHandler.PostRequest(webRequestHandler.FirebaseAddUser, staticLinkData, WebRequestHandler.BodyType.JSON, (x, y) => { HelperFunctions.DevLog("Log = " + x + "," + y); webRequestHandler.LogCallback(x, y); }, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
     }
 
     private void RemoveUserData() {
