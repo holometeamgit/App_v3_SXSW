@@ -384,11 +384,16 @@ public class AgoraController : MonoBehaviour {
     }
 
     private void OnVolumeIndicationHandler(AudioVolumeInfo[] speakers, int speakerNumber, int totalVolume) {
+        if (IsChannelCreator) {// Not required for channel host
+            return;
+        }
 
-        if (speakerNumber == 1 && !IsChannelCreator) {
-            if (totalVolume > 1) {
+        if (speakerNumber == 1) {
+            if (totalVolume > 2) {
+                Debug.Log("SPEECH DETECTED");
                 OnSpeechDetected?.Invoke();
             } else {
+                Debug.Log("SPEECH NOT DETECTED");
                 OnNoSpeechDetected?.Invoke();
             }
         }

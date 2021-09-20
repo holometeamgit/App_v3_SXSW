@@ -103,8 +103,8 @@ public class PnlStreamOverlay : MonoBehaviour {
     VideoSurface videoSurface;
     string currentStreamId = string.Empty;
 
-    private Coroutine delayToggleAudioOffRoutine;
-    private const int PUSH_TO_TALK_MUTE_DELAY = 1;
+    //private Coroutine delayToggleAudioOffRoutine;
+    //private const int PUSH_TO_TALK_MUTE_DELAY = 1;
 
     private Coroutine statusUpdateRoutine;
 
@@ -400,8 +400,8 @@ public class PnlStreamOverlay : MonoBehaviour {
     /// <summary>
     /// Call this to grant viewers ability to speak
     /// </summary>
-    public void TogglePushToTalk() {
-        isPushToTalkActive = !isPushToTalkActive;
+    public void TogglePushToTalk(bool enabled) {
+        isPushToTalkActive = enabled;
         SendPushToTalkStatusToViewers();
         if (isPushToTalkActive) {
             AnimatedCentreTextMessage("Dialog is on. Listeners can talk to you now");
@@ -657,24 +657,32 @@ public class PnlStreamOverlay : MonoBehaviour {
         cameraRenderImage.SizeToParent();
     }
 
-    /// <summary>
-    /// This toggle audio off with a delay, intended for push to talk users once letting go of button
-    /// </summary>
-    public void ToggleOffLocalAudioPushToTalkWithDelay() {
-        delayToggleAudioOffRoutine = StartCoroutine(DelayToggleAudioOff());
-    }
+    ///// <summary>
+    ///// This toggle audio off with a delay, intended for push to talk users once letting go of button
+    ///// </summary>
+    //public void ToggleOffLocalAudioPushToTalkWithDelay() {
+    //    delayToggleAudioOffRoutine = StartCoroutine(DelayToggleAudioOff());
+    //}
 
-    private IEnumerator DelayToggleAudioOff() {
-        yield return new WaitForSeconds(PUSH_TO_TALK_MUTE_DELAY);
-        ToggleLocalAudio(true);
-    }
+    //private IEnumerator DelayToggleAudioOff() {
+    //    yield return new WaitForSeconds(PUSH_TO_TALK_MUTE_DELAY);
+    //    ToggleLocalAudio(true);
+    //}
+
+    //public void ToggleLocalAudio(bool mute) {
+
+    //    if (delayToggleAudioOffRoutine != null) {
+    //        StopCoroutine(delayToggleAudioOffRoutine);
+    //    }
+
+    //    _muteAudio = mute;
+    //    if (isChannelCreator) { //Display popup only for streamers but not for 2 way audio viewers
+    //        UpdateToggleMessage();
+    //    }
+    //    agoraController.ToggleLocalAudio(mute);
+    //}
 
     public void ToggleLocalAudio(bool mute) {
-
-        if (delayToggleAudioOffRoutine != null) {
-            StopCoroutine(delayToggleAudioOffRoutine);
-        }
-
         _muteAudio = mute;
         if (isChannelCreator) { //Display popup only for streamers but not for 2 way audio viewers
             UpdateToggleMessage();
