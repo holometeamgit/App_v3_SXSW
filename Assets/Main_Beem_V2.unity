@@ -6396,6 +6396,7 @@ GameObject:
   - component: {fileID: 1448727841}
   - component: {fileID: 1448727840}
   - component: {fileID: 1448727839}
+  - component: {fileID: 1448727842}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -6451,6 +6452,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1448727842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1448727838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 328180f5d8bbe462d841afd8d5f52520, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1485548530
 GameObject:
   m_ObjectHideFlags: 0
@@ -7438,6 +7451,7 @@ MonoBehaviour:
   pnlThumbnailPopup: {fileID: 559953091}
   homePageSwitcher: {fileID: 1339238543}
   pnlStreamOverlay: {fileID: 6511805454453755405}
+  _pnlRoomBroadcastHoldingScreen: {fileID: 2487239809084499000}
   homeScreen: {fileID: 927424776}
 --- !u!1 &1954095375
 GameObject:
@@ -10094,6 +10108,11 @@ PrefabInstance:
       propertyPath: contentLinkHandler
       value: 
       objectReference: {fileID: 1706073008}
+    - target: {fileID: 3233687020776919270, guid: 5b7b686eefa79451380d60c2e252862e,
+        type: 3}
+      propertyPath: _permissionController
+      value: 
+      objectReference: {fileID: 977903556}
     - target: {fileID: 3233687020776919270, guid: 5b7b686eefa79451380d60c2e252862e,
         type: 3}
       propertyPath: uiThumbnailsController
