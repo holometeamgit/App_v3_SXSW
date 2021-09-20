@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// Dynamic sensitivity adjustment for different screens (different dpi)
+/// </summary>
+
 public class DragThresholdUtil : MonoBehaviour {
     private const float MIDDLE_VALUE_DPI = 160f;
 
