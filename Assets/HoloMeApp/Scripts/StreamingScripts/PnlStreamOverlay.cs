@@ -146,6 +146,8 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.OnUserViewerJoined += SendVideoAudioPauseStatusToViewers;
         agoraController.OnUserViewerJoined += SendPushToTalkStatusToViewers;
         agoraController.OnUserViewerJoined += SendChannelCreatorUIDToViewers;
+        agoraController.OnSpeechDetected += SendViewerIsSpeakingMessage;
+        agoraController.OnNoSpeechDetected += DisableSpeakingMessage;
 
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
@@ -596,7 +598,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     /// <summary>
     /// Should be called when viewers hold push to talk button, not intended to be called when messages are received.
     /// </summary>
-    public void SendViewerIsSpeakingMessage() {
+    private void SendViewerIsSpeakingMessage() {
         speechNotificationPopups.ActivatePopup(userWebManager.GetUsername());
         agoraController.SendAgoraMessage(MessageToAllViewerIsSpeaking + userWebManager.GetUsername());
     }
@@ -604,7 +606,7 @@ public class PnlStreamOverlay : MonoBehaviour {
     /// <summary>
     /// Should be called when viewers lets go off push to talk button, not intended to be called when messages are received.
     /// </summary>
-    public void DisableSpeakingMessage() {
+    private void DisableSpeakingMessage() {
         speechNotificationPopups.DeactivatePopup(userWebManager.GetUsername());
         agoraController.SendAgoraMessage(MessageToAllViewerSpeakingStopped + userWebManager.GetUsername());
     }

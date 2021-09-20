@@ -50,6 +50,8 @@ public class AgoraController : MonoBehaviour {
     public Action OnStreamWentLive;
     public Action OnStreamWentOffline;
     public Action<string> OnMessageRecieved;
+    public Action OnSpeechDetected;
+    public Action OnNoSpeechDetected;
 
     /// <summary>
     /// Called only for communication channels
@@ -90,6 +92,9 @@ public class AgoraController : MonoBehaviour {
             string errorMessage = string.Format("Agora onError callback {0} {1} {2}", error, msg, description);
             HelperFunctions.DevLogError(errorMessage);
         };
+
+        iRtcEngine.OnVolumeIndication += OnVolumeIndicationHandler;
+        iRtcEngine.EnableAudioVolumeIndication(250, 3);
 
         SetEncoderSettings();
     }
@@ -378,6 +383,17 @@ public class AgoraController : MonoBehaviour {
         videoSurfaceQuadRef.SetGameFps(frameRate);
     }
 
+    private void OnVolumeIndicationHandler(AudioVolumeInfo[] speakers, int speakerNumber, int totalVolume) {
+
+        if (speakerNumber == 1 && !IsChannelCreator) {
+            if (totalVolume > 1) {
+                OnSpeechDetected?.Invoke();
+            } else {
+                OnNoSpeechDetected?.Invoke();
+            }
+        }
+    }
+
     void OnUserOffline(uint uid, USER_OFFLINE_REASON reason) //Only called for host in broadcast profile
     {
         HelperFunctions.DevLog("onUserOffline: uid = " + uid + " reason = " + reason);
@@ -492,45 +508,4 @@ public class AgoraController : MonoBehaviour {
             UnloadEngine();
         }
     }
-
-    //IEnumerator UpdateUsers() {
-    //    if (IsChannelCreator) {
-    //        while (IsLive) {
-    //            yield return new WaitForSeconds(5);
-    //        }
-    //    }
-    //}
-
-    //bool dippedBelowPerformanceThreshold;
-    //bool previousPerformanceState;
-
-    //private void Update()
-    //{
-    //    if (isLive)
-    //    {
-    //        var fps = (1.0 / Time.deltaTime);
-
-    //        if (fps < 25)
-    //        {
-    //            dippedBelowPerformanceThreshold = true;
-    //        }
-    //        else
-    //        {
-    //            dippedBelowPerformanceThreshold = false;
-    //        }
-
-    //        if (previousPerformanceState != dippedBelowPerformanceThreshold)
-    //        {
-    //            if (dippedBelowPerformanceThreshold)
-    //            {
-    //                iRtcEngine.SetRemoteDefaultVideoStreamType(REMOTE_VIDEO_STREAM_TYPE.REMOTE_VIDEO_STREAM_LOW);
-    //            }
-    //            else
-    //            {
-    //                iRtcEngine.SetRemoteDefaultVideoStreamType(REMOTE_VIDEO_STREAM_TYPE.REMOTE_VIDEO_STREAM_HIGH);
-    //            }
-    //        }
-    //        previousPerformanceState = dippedBelowPerformanceThreshold;
-    //    }
-    //}
 }
