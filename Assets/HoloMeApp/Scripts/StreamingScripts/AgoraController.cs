@@ -37,6 +37,7 @@ public class AgoraController : MonoBehaviour {
     public bool VideoIsReady { get; private set; }
     public uint? ChannelCreatorUID { get; set; } = null;
 
+    private bool vadWasActive; //Was local speak detected
     private bool videoQuadWasSetup; //Required to stop new calls from reconfiguring video surface quad
 
     int streamID = -1;
@@ -94,7 +95,7 @@ public class AgoraController : MonoBehaviour {
         };
 
         iRtcEngine.OnVolumeIndication += OnVolumeIndicationHandler;
-        iRtcEngine.EnableAudioVolumeIndication(250, 3);
+        iRtcEngine.EnableAudioVolumeIndication(250, 3, true);
 
         SetEncoderSettings();
     }
@@ -388,13 +389,18 @@ public class AgoraController : MonoBehaviour {
             return;
         }
 
-        if (speakerNumber == 1) {
-            if (totalVolume > 2) {
-                Debug.Log("SPEECH DETECTED");
+        if (speakers.Length == 1 && speakers[0].vad == 1) {
+            vadWasActive = true;
+        }
+
+        if (vadWasActive) {
+            if (speakers[0].vad == 1) {
+                //Debug.Log("SPEECH DETECTED");
                 OnSpeechDetected?.Invoke();
             } else {
-                Debug.Log("SPEECH NOT DETECTED");
+                //Debug.Log("SPEECH NOT DETECTED");
                 OnNoSpeechDetected?.Invoke();
+                vadWasActive = false;
             }
         }
     }
