@@ -13,6 +13,7 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
     private static string _versionNumber;
     private static string _buildNumber;
     private static string _buildType;
+    private static string _releaseNotes;
 
     private const string VERSION = "BEEM_VERSION";
     private const string BUILD_NUMBER = "BEEM_BUILD";
@@ -34,6 +35,8 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
 
         _buildType = Environment.GetEnvironmentVariable(BUILD_TYPE);
 
+        _releaseNotes = Environment.GetEnvironmentVariable(FIREBASE_RELEASE_NOTES);
+
         if (!string.IsNullOrEmpty(_versionNumber)) {
             PlayerSettings.bundleVersion = _versionNumber;
         }
@@ -46,8 +49,8 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
             if (data != null) {
                 PlayerSettings.iOS.buildNumber = data.buildNumber;
                 PlayerSettings.Android.bundleVersionCode = int.Parse(data.buildNumber);
-                string releaseNotes = string.Format("Build Config Name : {0}, \n Scm Branch : {1}, \n Build Type : {2}, \n Scm Commit ID : {3}, \n Start Build Time : {4}", data.cloudBuildTargetName, data.scmBranch, _buildType, data.scmCommitId, data.buildStartTime);
-                Environment.SetEnvironmentVariable(FIREBASE_RELEASE_NOTES, releaseNotes);
+                _releaseNotes = string.Format("Build Config Name : {0}, \n Scm Branch : {1}, \n Build Type : {2}, \n Scm Commit ID : {3}, \n Start Build Time : {4}", data.cloudBuildTargetName, data.scmBranch, _buildType, data.scmCommitId, data.buildStartTime);
+                Environment.SetEnvironmentVariable(FIREBASE_RELEASE_NOTES, _releaseNotes);
             }
         }
 
