@@ -18,7 +18,7 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
     private const string VERSION = "BEEM_VERSION";
     private const string BUILD_NUMBER = "BEEM_BUILD";
     private const string BUILD_TYPE = "BEEM_BUILD_TYPE";
-    private const string FIREBASE_RELEASE_NOTES = "FIREBASE_RELEASE_NOTES";
+    private const string FIREBASE_RELEASE_NOTES = "RELEASE_NOTES";
     private const string CLOUD_BUILD_MANIFEST = "UnityCloudBuildManifest.json";
 
     private const string APPLICATION_NAME_DEV = "Beem Dev";
@@ -50,6 +50,7 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
                 PlayerSettings.iOS.buildNumber = data.buildNumber;
                 PlayerSettings.Android.bundleVersionCode = int.Parse(data.buildNumber);
                 _releaseNotes = string.Format("Build Config Name : {0}, \n Scm Branch : {1}, \n Build Type : {2}, \n Scm Commit ID : {3}, \n Start Build Time : {4}", data.cloudBuildTargetName, data.scmBranch, _buildType, data.scmCommitId, data.buildStartTime);
+                HelperFunctions.DevLog(_releaseNotes);
                 Environment.SetEnvironmentVariable(FIREBASE_RELEASE_NOTES, _releaseNotes);
             }
         }
