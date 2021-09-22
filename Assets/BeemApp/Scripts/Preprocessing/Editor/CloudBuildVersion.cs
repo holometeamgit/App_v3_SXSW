@@ -18,7 +18,7 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
     private const string VERSION = "BEEM_VERSION";
     private const string BUILD_NUMBER = "BEEM_BUILD";
     private const string BUILD_TYPE = "BEEM_BUILD_TYPE";
-    private const string FIREBASE_RELEASE_NOTES = "RELEASE_NOTES";
+    private const string FIREBASE_RELEASE_NOTES = "FIREBASE_RELEASE_NOTES";
     private const string CLOUD_BUILD_MANIFEST = "UnityCloudBuildManifest.json";
 
     private const string APPLICATION_NAME_DEV = "Beem Dev";
