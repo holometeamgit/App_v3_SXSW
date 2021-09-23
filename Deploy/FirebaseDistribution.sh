@@ -15,3 +15,9 @@ else
     echo "Firebase Distribution..."
     firebase appdistribution:distribute $FIREBASE_BUILD --app $FIREBASE_APP --release-notes $FIREBASE_RELEASE_NOTES --groups $FIREBASE_GROUPS --token $FIREBASE_TOKEN;
 fi
+
+build_target=$(jq -r 'keys[0]' < build.json)
+
+build_platform=$(jq -r ".[\"${build_target}\"].platform" < build.json)
+
+echo "Building $build_target for $build_platform"
