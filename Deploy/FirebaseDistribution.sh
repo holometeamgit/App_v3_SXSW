@@ -4,21 +4,15 @@ echo "Uploading Build Result to Firebase Distribution..."
 
 set -x
 
-export  build_json = $(jq "." < build.json)
-
 export  build_target=$(jq -r 'keys[0]' < build.json)
-export  param2=$(jq -r 'keys[1]' < build.json)
-export  param3=$(jq -r 'keys[2]' < build.json)
 
 export build_platform=$(jq -r ".[\"${build_target}\"].platform" < build.json)
+
+export  build_json = $(jq -r ".[\"${build_target}\"]" < build.json)
 
 echo "Building $build_target for $build_platform"
 
 echo "Build Json $build_json" 
-
-echo "param 2 $param2"
-
-echo "param 3 $param3"  
 
 export FIREBASE_BUILD="$(find -E . -regex '.*\.(ipa|apk|aab)' -print -quit)"
 if [ -z "$FIREBASE_BUILD" ]; then
