@@ -5,11 +5,11 @@ echo "Uploading Build Result to Firebase Distribution..."
 
 set -x
 
-build_json = $(jq . < build.json)
+export  build_json = $(jq . < build.json)
 
-build_target=$(jq -r 'keys[0]' < build.json)
+export  build_target=$(jq -r 'keys[0]' < build.json)
 
-build_platform=$(jq -r ".[\"${build_target}\"].platform" < build.json)
+export build_platform=$(jq -r ".[\"${build_target}\"].platform" < build.json)
 
 echo "Building $build_target for $build_platform"
 
