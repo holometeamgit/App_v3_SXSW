@@ -4,6 +4,8 @@ using DG.Tweening;
 using TMPro;
 using System.Collections;
 using System;
+using Beem.Permissions;
+
 public class PnlViewingExperience : MonoBehaviour {
     [SerializeField]
     GameObject scanAnimationItems;
@@ -12,11 +14,7 @@ public class PnlViewingExperience : MonoBehaviour {
     [SerializeField]
     CanvasGroup canvasGroup;
     [SerializeField]
-    PermissionController permissionController;
-    [SerializeField]
     HologramHandler hologramHandler;
-    [SerializeField]
-    PermissionGranter permissionGranter;
     [SerializeField]
     ARPlaneManager arPlaneManager;
     [SerializeField]
@@ -51,13 +49,8 @@ public class PnlViewingExperience : MonoBehaviour {
     TutorialState tutorialState = TutorialState.MessageScan;
     void OnEnable() {
         scanAnimationItems.SetActive(false);
-        if (permissionGranter.HasCameraAccess && !tutorialDisplayed) {
-            //RunTutorial();
+        if (!tutorialDisplayed) {
             tutorialDisplayed = true;
-        } else {
-            if (permissionController == null)
-                permissionController = FindObjectOfType<PermissionController>();
-            permissionController.CheckCameraMicAccess();
         }
     }
     public void ToggleARSessionObjects(bool enable) {
@@ -195,29 +188,5 @@ public class PnlViewingExperience : MonoBehaviour {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         //ToggleARSessionObjects(false);
         hologramHandler.StopVideo();
-    }
-    public void PauseExperience() {
-        hologramHandler.PauseVideo();
-    }
-    public void ResumeVideo() {
-        hologramHandler.ResumeVideo();
-    }
-    void OnApplicationFocus(bool isFocused) {
-        //if (viewingExperienceInFocus && !isFocused)
-        //{
-        //    //btnBurger.GetComponent<Button>().onClick?.Invoke();
-        //}
-        //if (!isFocused && activatedForStreaming == false)
-        //{
-        //    //print("FOCUS PAUSE CALLED");
-        //    //PauseExperience();
-        //    //hologramHandler.StopVideo();
-        //}
-        if (isFocused && activatedForStreaming == false && viewingExperienceInFocus) {
-            //yield return new WaitForSeconds(2);
-            //print("FOCUS RESUME CALLED");
-            hologramHandler.ForcePlay();
-            //ResumeVideo();
-        }
     }
 }

@@ -22,7 +22,7 @@ public class ThumbnailElement {
         Id = data.id;
         this.webRequestHandler = webRequestHandler;
 
-        if (!string.IsNullOrWhiteSpace(Data.preview_teaser_s3_key)) {
+        if (!string.IsNullOrWhiteSpace(Data.preview_teaser_s3_url)) {
             webRequestHandler.GetTextureRequest(Data.preview_teaser_s3_url,
                                          FetchTeaserTextureCallBack,
                                          ErrorFetchTeaserTextureCallBack);
@@ -42,7 +42,7 @@ public class ThumbnailElement {
     }
 
     private void FetchTexture() {
-        if (!string.IsNullOrWhiteSpace(Data.preview_s3_key)) {
+        if (!string.IsNullOrWhiteSpace(Data.preview_s3_url)) {
             webRequestHandler.GetTextureRequest(Data.preview_s3_url,
                              FetchTextureCallBack,
                              ErrorFetchTextureCallBack);
@@ -52,12 +52,10 @@ public class ThumbnailElement {
     }
 
     private void FetchTextureCallBack(long code, string body, Texture texture) {
-        HelperFunctions.DevLog("FetchTextureCallBack: " + body);
         this.texture = texture;
         OnTextureLoaded?.Invoke();
     }
     private void ErrorFetchTextureCallBack(long code, string body) {
-        HelperFunctions.DevLog("ErrorFetchTextureCallBack: " + body);
         OnErrorTextureLoaded?.Invoke();
     }
 }

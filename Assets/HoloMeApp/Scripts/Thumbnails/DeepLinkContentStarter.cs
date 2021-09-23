@@ -19,6 +19,8 @@ public class DeepLinkContentStarter : MonoBehaviour
     [SerializeField]
     PnlStreamOverlay pnlStreamOverlay;
     [SerializeField]
+    PnlRoomBroadcastHoldingScreen _pnlRoomBroadcastHoldingScreen;
+    [SerializeField]
     GameObject homeScreen;
 
     bool isHomePageActive;
@@ -43,22 +45,25 @@ public class DeepLinkContentStarter : MonoBehaviour
             return;
         }
 
-        HelperFunctions.DevLog("check room ShowBroadcastHoldingScreen");
         if (isHomePageActive && contentLinkHandler.HasContentId(ContentLinkHandlerType.Room)) {
+            HelperFunctions.DevLog("Has room deeplink. Switch to waiting room screen");
             SwitcherToRoomBroadcastHoldingScreen.Switch();
         } else if(isHomePageActive && contentLinkHandler.HasContentId(ContentLinkHandlerType.Stream)) {
+            HelperFunctions.DevLog("Has streem deeplink");
             long id = 0;
-            if (!long.TryParse(contentLinkHandler.PopContentId(), out id))
+            if (!long.TryParse(contentLinkHandler.PopContentId(), out id)) {
+                HelperFunctions.DevLog("incorrect streem deeplink ID");
                 return;
+            }
 
             if (isHomePageActive)
                 pnlThumbnailPopup.OpenStream(id);
-        } else if(homePageSwitcher ) {
-            if (!pnlStreamOverlay.isActiveAndEnabled) {
-                HelperFunctions.DevLog("Open HomePage ");
+        } else if(homePageSwitcher) {
+            if (!pnlStreamOverlay.isActiveAndEnabled && !_pnlRoomBroadcastHoldingScreen.isActiveAndEnabled) {
+                HelperFunctions.DevLog("App doesn't have deeplink. Home page will open");
                 homePageSwitcher.Switch();
             } else {
-                HelperFunctions.DevLog("Can't open home page because stream ");
+                HelperFunctions.DevLog("Can't open home page because stream is open");
                 homeScreen.SetActive(false);
             }
         }

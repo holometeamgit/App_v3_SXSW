@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Firebase.DynamicLinks;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,19 +17,15 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     [Space]
     [SerializeField]
     private string firebaseDynamicLink = "https://join.beem.me";
-    public string FirebaseDynamicLink
-    {
-        get
-        {
+    public string FirebaseDynamicLink {
+        get {
             return firebaseDynamicLink;
         }
     }
     [SerializeField]
     private string url = "https://beem.me";
-    public string Url
-    {
-        get
-        {
+    public string Url {
+        get {
             return url;
         }
     }
@@ -43,10 +41,8 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     [SerializeField]
     private string stream = "stream";
 
-    public string Stream
-    {
-        get
-        {
+    public string Stream {
+        get {
             return stream;
         }
     }
@@ -54,10 +50,8 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     [SerializeField]
     private string notificationAccess = "NotificationAccess";
 
-    public string NotificationAccess
-    {
-        get
-        {
+    public string NotificationAccess {
+        get {
             return notificationAccess;
         }
     }
@@ -68,6 +62,14 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     public string App {
         get {
             return app;
+        }
+    }
+
+    [SerializeField]
+    private string logoLink = "https://s3.eu-west-2.amazonaws.com/prod.previews/Logo-Deep-Link-black.png";
+    public string LogoLink {
+        get {
+            return logoLink;
         }
     }
 

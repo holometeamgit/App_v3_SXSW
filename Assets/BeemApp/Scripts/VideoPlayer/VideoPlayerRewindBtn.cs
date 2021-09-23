@@ -14,7 +14,16 @@ namespace Beem.Video {
     /// RewindBtn
     /// </summary>
     [RequireComponent(typeof(Slider))]
-    public class VideoPlayerRewindBtn : MonoBehaviour, IPointerClickHandler, IDragHandler, IBeginDragHandler, IEndDragHandler {
+    public class VideoPlayerRewindBtn : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler {
+
+        [SerializeField]
+        private UnityEvent onRewindStarted;
+
+        [SerializeField]
+        private UnityEvent<float> onRewind;
+
+        [SerializeField]
+        private UnityEvent<float> onRewindFinished;
 
         private Slider progress;
 
@@ -23,20 +32,16 @@ namespace Beem.Video {
         }
 
         public void OnDrag(PointerEventData eventData) {
-            VideoPlayerCallBacks.onRewind?.Invoke(progress.value);
+            onRewind?.Invoke(progress.value);
         }
 
 
         public void OnBeginDrag(PointerEventData eventData) {
-            VideoPlayerCallBacks.onRewindStarted?.Invoke();
+            onRewindStarted?.Invoke();
         }
 
         public void OnEndDrag(PointerEventData eventData) {
-            VideoPlayerCallBacks.onRewindFinished?.Invoke(progress.value);
-        }
-
-        public void OnPointerClick(PointerEventData eventData) {
-            VideoPlayerCallBacks.onRewind?.Invoke(progress.value);
+            onRewindFinished?.Invoke(progress.value);
         }
     }
 }

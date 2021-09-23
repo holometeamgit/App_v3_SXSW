@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Video;
 
@@ -24,15 +27,15 @@ namespace Beem.Video {
         [SerializeField]
         private GameObject playerObjects;
 
-        private bool isPlaying = default;
+        public static Action<VideoPlayer> onSetVideoPlayer;
+
+        private double currentTime = default;
+        private CancellationTokenSource cancelTokenSource;
+        private bool wasPlaying = false;
+        private bool autoPlayAfterPause = false;
 
         private void OnEnable() {
-            VideoPlayerCallBacks.onPlay += OnPlay;
-            VideoPlayerCallBacks.onPause += OnPause;
-            VideoPlayerCallBacks.onRewindStarted += OnRewindStarted;
-            VideoPlayerCallBacks.onRewind += OnRewind;
-            VideoPlayerCallBacks.onRewindFinished += OnRewindFinished;
-            VideoPlayerCallBacks.onSetVideoPlayer += OnSetVideoPlayer;
+            onSetVideoPlayer += OnSetVideoPlayer;
             foreach (VideoPlayer item in FindObjectsOfType<VideoPlayer>()) {
                 if (item.gameObject.name == "VideoQuad") {
                     OnSetVideoPlayer(item);
@@ -42,92 +45,230 @@ namespace Beem.Video {
         }
 
         private void OnDisable() {
-            VideoPlayerCallBacks.onPlay -= OnPlay;
-            VideoPlayerCallBacks.onPause -= OnPause;
-            VideoPlayerCallBacks.onRewindStarted -= OnRewindStarted;
-            VideoPlayerCallBacks.onRewind -= OnRewind;
-            VideoPlayerCallBacks.onRewindFinished -= OnRewindFinished;
-            VideoPlayerCallBacks.onSetVideoPlayer -= OnSetVideoPlayer;
+            onSetVideoPlayer -= OnSetVideoPlayer;
             OnStop();
         }
 
         private void OnInit() {
-            if (_videoPlayer != null) {
-                _videoPlayer.Prepare();
-                foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                    view.Init(_videoPlayer);
-                }
+
+            if (_videoPlayer == null) {
+                return;
+            }
+
+            foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
+                view.Init(_videoPlayer);
             }
         }
 
-        private void OnPlay() {
-            if (_videoPlayer != null) {
-                _videoPlayer.Play();
-                if (_videoPlayer.isPrepared) {
-                    _videoPlayer.prepareCompleted -= OnPrepare;
-                    OnPrepare(_videoPlayer);
-                } else {
-                    _videoPlayer.prepareCompleted += OnPrepare;
-                }
+        /// <summary>
+        /// Play Video
+        /// </summary>
+
+        public void OnPlay() {
+            if (_videoPlayer == null) {
+                return;
             }
+
+            if (!_videoPlayer.isPrepared) {
+                _videoPlayer.prepareCompleted += OnPrepare;
+                _videoPlayer.Prepare();
+            } else {
+                OnPrepare(_videoPlayer);
+            }
+
         }
+
+        /// <summary>
+        /// Prepare Video
+        /// </summary>
+        /// <param name="videoPlayer"></param>
 
         private void OnPrepare(VideoPlayer videoPlayer) {
+
+            if (_videoPlayer == null) {
+                return;
+            }
+
+            _videoPlayer.prepareCompleted -= OnPrepare;
+            _videoPlayer.seekCompleted += OnSeekCompleted;
             playerObjects.SetActive(true);
-            _videoPlayerBtnViews.Refresh(videoPlayer);
+            _videoPlayerBtnViews.Refresh(true);
+            _videoPlayer.Play();
+            wasPlaying = true;
             foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                view.Play();
+                view.PlayAsync();
             }
+
         }
 
-        private void OnPause() {
-            if (_videoPlayer != null) {
-                _videoPlayer.Pause();
-                _videoPlayerBtnViews.Refresh(_videoPlayer);
-                foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
-                    view.Cancel();
-                }
+        /// <summary>
+        /// Pause Video
+        /// </summary>
+
+        public void OnPause() {
+
+            if (_videoPlayer == null) {
+                return;
             }
+
+            _videoPlayer.Pause();
+            autoPlayAfterPause = wasPlaying;
+            wasPlaying = false;
+            _videoPlayerBtnViews.Refresh(false);
+            foreach (AbstractVideoPlayerView view in _videoPlayerViews) {
+                view.Cancel();
+            }
+
         }
 
-        private void OnRewindStarted() {
-            if (_videoPlayer != null) {
-                isPlaying = _videoPlayer.isPlaying;
-            }
+        /// <summary>
+        /// Rewind Start
+        /// </summary>
+
+        public void OnRewindStarted() {
             OnPause();
         }
 
-        private void OnRewind(float pct) {
-            if (_videoPlayer != null) {
-                if (!_videoPlayer.canSetTime) return;
-                if (!_videoPlayer.isPrepared) return;
-                _videoPlayer.time = pct * (_videoPlayer.frameCount / _videoPlayer.frameRate);
-            }
-        }
+        public void OnResume() {
 
-        private void OnRewindFinished(float pct) {
-            OnRewind(pct);
-            if (isPlaying) {
+            if (_videoPlayer == null) {
+                return;
+            }
+
+            if (autoPlayAfterPause) {
+                autoPlayAfterPause = false;
                 OnPlay();
             }
+
         }
 
-        private void OnStop() {
-            if (_videoPlayer != null) {
-                if (_videoPlayer.isPlaying) {
-                    _videoPlayer.Stop();
+        private void OnApplicationFocus(bool focus) {
+            if (focus) {
+                OnResume();
+            } else {
+                OnPause();
+            }
+        }
+
+        /// <summary>
+        /// Rewind Video
+        /// </summary>
+        /// <param name="pct"></param>
+        public void OnRewind(float pct) {
+
+            if (_videoPlayer == null) {
+                return;
+            }
+
+            if (!_videoPlayer.canSetTime) return;
+            if (!_videoPlayer.isPrepared) return;
+            currentTime = pct * (_videoPlayer.frameCount / _videoPlayer.frameRate);
+            _videoPlayer.time = currentTime;
+        }
+
+        /// <summary>
+        /// Seek Completed
+        /// </summary>
+        /// <param name="videoPlayer"></param>
+
+        private void OnSeekCompleted(VideoPlayer videoPlayer) {
+            if (_videoPlayer == null) {
+                return;
+            }
+
+            _videoPlayer.sendFrameReadyEvents = true;
+            _videoPlayer.seekCompleted -= OnSeekCompleted;
+            _videoPlayer.frameReady += OnFrameReady;
+
+        }
+
+        /// <summary>
+        /// Frame Ready
+        /// </summary>
+        /// <param name="videoPlayer"></param>
+        /// <param name="frame"></param>
+
+        private void OnFrameReady(VideoPlayer videoPlayer, long frame) {
+            if (_videoPlayer == null) {
+                return;
+            }
+
+            _videoPlayer.sendFrameReadyEvents = false;
+            _videoPlayer.frameReady -= OnFrameReady;
+        }
+
+        private async void LoadVideoFrameComletedAsync() {
+
+            if (_videoPlayer == null) {
+                return;
+            }
+
+            Cancel();
+
+            cancelTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancelTokenSource.Token;
+
+            try {
+                while (!cancellationToken.IsCancellationRequested && Mathf.Abs((float)(currentTime - _videoPlayer.time)) > 1f) {
+                    await Task.Yield();
+                }
+
+                if (!cancellationToken.IsCancellationRequested) {
+                    OnResume();
+                }
+            } finally {
+                if (cancelTokenSource != null) {
+                    cancelTokenSource.Dispose();
+                    cancelTokenSource = null;
                 }
             }
         }
 
-        private void OnSetVideoPlayer(VideoPlayer videoPlayer) {
-            if (videoPlayer != null) {
-                OnStop();
-                _videoPlayer = videoPlayer;
-                OnInit();
-                OnPlay();
+        /// <summary>
+        /// Clear Info
+        /// </summary>
+        public void Cancel() {
+            if (cancelTokenSource != null) {
+                cancelTokenSource.Cancel();
+                cancelTokenSource = null;
             }
         }
 
+        /// <summary>
+        /// Rewind Finished
+        /// </summary>
+        /// <param name="pct"></param>
+
+        public void OnRewindFinished(float pct) {
+            OnRewind(pct);
+            LoadVideoFrameComletedAsync();
+        }
+
+        /// <summary>
+        /// Stop Video
+        /// </summary>
+
+        public void OnStop() {
+            if (_videoPlayer == null) {
+                return;
+            }
+
+            if (_videoPlayer.isPlaying) {
+                _videoPlayer.Stop();
+            }
+            Cancel();
+        }
+
+        private void OnSetVideoPlayer(VideoPlayer videoPlayer) {
+
+            if (videoPlayer == null) {
+                return;
+            }
+
+            OnStop();
+            _videoPlayer = videoPlayer;
+            OnInit();
+            OnPlay();
+        }
     }
 }

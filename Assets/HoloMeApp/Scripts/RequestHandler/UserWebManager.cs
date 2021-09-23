@@ -195,7 +195,6 @@ public class UserWebManager : MonoBehaviour {
 
     #region delete and disable user
     private void DeleteUserInfoCallBack(long code, string body) {
-        Debug.Log("DeleteUserInfoCallBack " + code + " " + body);
         OnUserAccountDeleted?.Invoke();
     }
 
@@ -205,7 +204,6 @@ public class UserWebManager : MonoBehaviour {
     #endregion
 
     private void ErrorMsgCallBack(long code, string body) {
-        Debug.LogWarning(code + " " + body);
     }
 
 

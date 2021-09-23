@@ -6,34 +6,28 @@ using UnityEngine.UI;
 
 public class PnlSignUpEmailFirebase : MonoBehaviour {
     [SerializeField]
-    InputFieldController inputFieldEmail;
+    private InputFieldController inputFieldEmail;
     [SerializeField]
-    InputFieldController inputFieldPassword;
+    private InputFieldController inputFieldPassword;
     [SerializeField]
-    InputFieldController inputFieldConfirmPassword;
+    private Switcher switcherToVerification;
     [SerializeField]
-    Switcher switcherToVerification;
+    private GameObject LogInLoadingBackground;
     [SerializeField]
-    GameObject LogInLoadingBackground;
-    [SerializeField]
-    bool isNeedConfirmationPassword = true;
-    [SerializeField]
-    Toggle isPolicyConfirmed;
-    [SerializeField]
-    Button continueBtn;
-    [SerializeField]
-    Animator animator;
+    private Animator animator;
 
     private const float COOLDOWN = 0.5f;
     private float nextTimeCanClick = 0;
 
-    public void OnPolicyConfirmationChanged(bool isPolicyConfirmed) {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyEmailOptIn, AnalyticParameters.ParamSignUpMethod, AnalyticsSignUpModeTracker.Instance.SignUpMethodUsed.ToString());
-        continueBtn.interactable = isPolicyConfirmed;
-    }
-
     public void StopAnimation() {
         animator.enabled = false;
+    }
+
+    /// <summary>
+    /// The method do actions after pressing the SignUp button
+    /// </summary>
+    public void SignUpBtnClick() {
+        CallBacks.onSignUpEMailClick?.Invoke();
     }
 
     private void Awake() {
@@ -46,9 +40,6 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
             return;
         nextTimeCanClick = (Time.time + COOLDOWN);
 
-        if (!isNeedConfirmationPassword)
-            inputFieldConfirmPassword.text = inputFieldPassword.text;
-
         if (!LocalDataVerification()) {
             return;
         }
@@ -57,7 +48,7 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
         CallBacks.onSignUp?.Invoke(inputFieldEmail.text,
             inputFieldEmail.text,
             inputFieldPassword.text,
-            inputFieldConfirmPassword.text);
+            inputFieldPassword.text);
     }
 
     private void SignUpCallBack() {
@@ -69,7 +60,6 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     private void ErrorSignUpCallBack(string msg) {
         if (msg.Contains("Password")) {
             inputFieldPassword.ShowWarning(msg);
-            inputFieldConfirmPassword.ShowWarning(msg);
         } else {
             inputFieldEmail.ShowWarning(msg);
         }
@@ -80,18 +70,14 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
             inputFieldEmail.ShowWarning("This field is compulsory");
         if (string.IsNullOrWhiteSpace(inputFieldPassword.text))
             inputFieldPassword.ShowWarning("This field is compulsory");
-        if (isNeedConfirmationPassword && string.IsNullOrWhiteSpace(inputFieldConfirmPassword.text))
-            inputFieldConfirmPassword.ShowWarning("This field is compulsory");
 
         return !string.IsNullOrWhiteSpace(inputFieldEmail.text) &&
-            !string.IsNullOrWhiteSpace(inputFieldPassword.text) &&
-            (!isNeedConfirmationPassword || !string.IsNullOrWhiteSpace(inputFieldConfirmPassword.text));
+            !string.IsNullOrWhiteSpace(inputFieldPassword.text);
     }
 
     private void ClearInputFieldData() {
         inputFieldEmail.text = "";
         inputFieldPassword.text = "";
-        inputFieldConfirmPassword.text = "";
     }
 
     private void ShowBackground() {
@@ -115,12 +101,6 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
         CallBacks.onFail += HideBackground;
         CallBacks.onSignUpSuccess += HideBackground;
         CallBacks.onNeedVerification += HideBackground;
-
-        isPolicyConfirmed.isOn = false;
-        isPolicyConfirmed.enabled = false;
-        isPolicyConfirmed.enabled = true;
-
-        continueBtn.interactable = isPolicyConfirmed.isOn;
     }
 
     private void OnDisable() {

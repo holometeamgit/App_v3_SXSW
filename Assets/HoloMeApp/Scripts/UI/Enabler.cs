@@ -59,7 +59,6 @@ public class Enabler : MonoBehaviour
     }
 
     private void OnApplicationFocus(bool focus) {
-        HelperFunctions.DevLog("pause" + focus);
         if (!gameObject.activeInHierarchy)
             return;
         if(focus) { 

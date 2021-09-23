@@ -11,6 +11,8 @@ namespace Beem.UI {
 
         private List<IStreamDataView> _streamDataViews;
 
+        [SerializeField]
+        private StreamLikesRefresherView streamLikesRefresherView;
         /// <summary>
         /// Initialization
         /// </summary>
@@ -22,6 +24,7 @@ namespace Beem.UI {
             _streamDataViews.ForEach(x => x.Init(streamData));
 
             gameObject.SetActive(true);
+            streamLikesRefresherView?.StartCountAsync(streamData.id.ToString());
         }
     }
 }

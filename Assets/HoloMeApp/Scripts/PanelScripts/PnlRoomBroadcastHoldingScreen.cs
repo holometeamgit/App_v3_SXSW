@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
 using System.Threading.Tasks;
+using Beem.Permissions;
 
 public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
     [SerializeField] ServerURLAPIScriptableObject serverURLAPIScriptable;
     [SerializeField] UIThumbnailsController uiThumbnailsController;
     [SerializeField] ContentLinkHandler contentLinkHandler;
+    [SerializeField] PermissionController _permissionController;
 
     private string currentRoomId = "";
 
@@ -56,8 +58,14 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
         if (roomJsonData.status != StreamJsonData.Data.LIVE_ROOM_STR) {
             RepeatGetRoom(roomJsonData.user);
         } else {
+            if (!_permissionController.CheckCameraMicAccess()) {
+                RepeatGetRoom(roomJsonData.user);
+                return;
+            }
+
             liveRoomWasFound = true;
             uiThumbnailsController.PlayLiveStream(roomJsonData.agora_channel, roomJsonData.agora_channel, roomJsonData.id, true);
+            gameObject.SetActive(false);
         }
     }
 

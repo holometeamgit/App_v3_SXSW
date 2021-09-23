@@ -9,6 +9,7 @@ using TMPro;
 using UnityEngine.Events;
 using System.IO;
 using Beem.Utility;
+using Beem.Permissions;
 
 public class PnlRecord : MonoBehaviour {
     [SerializeField]
@@ -37,9 +38,6 @@ public class PnlRecord : MonoBehaviour {
 
     [SerializeField]
     PnlPostRecord pnlPostRecord;
-
-    [SerializeField]
-    PermissionGranter permissionGranter;
 
     [SerializeField]
     RectTransform rtButtonContainer;
@@ -77,6 +75,18 @@ public class PnlRecord : MonoBehaviour {
     private CameraInput cameraInput;
     private AudioInput audioInput;
     private Coroutine currentCoroutine;
+
+    private PermissionController _permissionController;
+    private PermissionController permissionController {
+        get {
+
+            if (_permissionController == null) {
+                _permissionController = FindObjectOfType<PermissionController>();
+            }
+
+            return _permissionController;
+        }
+    }
 
     int videoWidth;
     int videoHeight;
@@ -136,7 +146,7 @@ public class PnlRecord : MonoBehaviour {
     }
 
     public void StartRecording() {
-        if (!permissionGranter.MicAccessAvailable) {
+        if (!permissionController.CheckMicAccess()) {
             recordMicrophone = false;
         }
         recordLengthFailed = false;

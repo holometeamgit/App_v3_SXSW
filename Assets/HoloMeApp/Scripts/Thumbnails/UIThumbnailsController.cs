@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Beem.Firebase.DynamicLink;
 using Beem.SSO;
+using Beem.Permissions;
 
 public class UIThumbnailsController : MonoBehaviour {
     public Action OnUpdated;
@@ -16,7 +15,19 @@ public class UIThumbnailsController : MonoBehaviour {
     [SerializeField] GameObject btnThumbnailPrefab;
     [SerializeField] Transform content;
     [SerializeField] PurchaseManager purchaseManager;
-    [SerializeField] PermissionController permissionController;
+    [SerializeField] int _startBtnCount = 20;
+
+    private PermissionController _permissionController;
+    private PermissionController permissionController {
+        get {
+
+            if (_permissionController == null) {
+                _permissionController = FindObjectOfType<PermissionController>();
+            }
+
+            return _permissionController;
+        }
+    }
 
     Dictionary<long, ThumbnailElement> thumbnailElementsDictionary;
 
@@ -58,8 +69,13 @@ public class UIThumbnailsController : MonoBehaviour {
     public void RemoveUnnecessary() {
         List<long> removingListID = new List<long>();
 
+        HashSet<long> setId = new HashSet<long>();
+        foreach(var data in dataList) {
+            setId.Add(data.id);
+        }
+
         foreach (var thumbnailElement in thumbnailElementsDictionary) {
-            if (!dataList.Contains(thumbnailElement.Value.Data))
+            if (!setId.Contains(thumbnailElement.Value.Data.id))
                 removingListID.Add(thumbnailElement.Value.Data.id);
         }
         foreach (var id in removingListID) {
@@ -81,8 +97,15 @@ public class UIThumbnailsController : MonoBehaviour {
     /// </summary>
 
     public void PlayLiveStream(string user, string agoraChannel, string streamID, bool isRoom) { //TODO split it to ather class
-        if (!permissionController.CheckCameraAccess())
-            return;
+        if (isRoom) {
+            if (!permissionController.CheckCameraMicAccess()) {
+                return;
+            }
+        } else {
+            if (!permissionController.CheckCameraAccess()) {
+                return;
+            }
+        }
         pnlStreamOverlay.OpenAsViewer(agoraChannel, streamID, isRoom);
         OnPlayFromUser?.Invoke(user);
     }
@@ -96,13 +119,35 @@ public class UIThumbnailsController : MonoBehaviour {
 
         CallBacks.onClickLike += SetLike;
         CallBacks.onClickUnlike += SetUnlike;
+
+        InstantiateBtns(_startBtnCount);
+        CheckActiveBtns();
     }
 
     #region Prepare thumbnails
+    private void InstantiateBtns(int count) {
+        for (int i = 0; i < count; i++) {
+            GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
+            UIThumbnail btnThumbnailItem = btnThumbnailItemsGO.GetComponent<UIThumbnail>();
+            btnThumbnailItems.Add(btnThumbnailItem);
+        }
+    }
+
+    private void CheckActiveBtns() {
+        for (int i = 0; i < btnThumbnailItems.Count; i++) {
+            btnThumbnailItems[i].Activate();
+        }
+        if (dataList.Count >= btnThumbnailItems.Count)
+            return;
+
+        for (int i = dataList.Count; i < btnThumbnailItems.Count; i++) {
+            btnThumbnailItems[i].Deactivate();
+        }
+    }
+
     private void PrepareBtnThumbnails() {
 
         if (dataList.Count == 0) {
-            HelperFunctions.DevLog("Deactivate all thumbnails count = " + btnThumbnailItems.Count);
             foreach (var btn in btnThumbnailItems) {
                 btn.Deactivate();
             }
@@ -110,21 +155,8 @@ public class UIThumbnailsController : MonoBehaviour {
         }
 
         int quantityDifference = btnThumbnailItems.Count - dataList.Count;
-        for (int i = 0; i < -quantityDifference; i++) {
-            GameObject btnThumbnailItemsGO = Instantiate(btnThumbnailPrefab, content);
-            UIThumbnail btnThumbnailItem = btnThumbnailItemsGO.GetComponent<UIThumbnail>();
-            btnThumbnailItems.Add(btnThumbnailItem);
-        }
-        for (int i = 0; i < btnThumbnailItems.Count; i++) {
-            btnThumbnailItems[i].Activate();
-        }
-        if (dataList.Count == btnThumbnailItems.Count)
-            return;
-        for (int i = dataList.Count - 1; i < btnThumbnailItems.Count; i++) {
-            if (i <= 0)
-                continue;
-            btnThumbnailItems[i].Deactivate();
-        }
+        InstantiateBtns(-quantityDifference);
+        CheckActiveBtns();
     }
 
     private void PrepareThumbnailElement() {
@@ -134,6 +166,7 @@ public class UIThumbnailsController : MonoBehaviour {
                 if (thumbnailElement.Data == thumbnailData || streamDataEqualityComparer.Equals(thumbnailElement.Data, thumbnailData))
                     continue;
             }
+
             thumbnailElementsDictionary[thumbnailData.id] = new ThumbnailElement(thumbnailData, webRequestHandler);
         }
     }
@@ -147,7 +180,11 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetBuyAction(Buy);
             btnThumbnailItems[i].SetShareAction((data) => {
                 //btnThumbnailItems[i]
-                StreamCallBacks.onGetStreamLink?.Invoke(data.id.ToString());
+                if (data.GetStage() == StreamJsonData.Data.Stage.Live) {
+                    StreamCallBacks.onGetStreamLink?.Invoke(data.id.ToString(), data.user);
+                } else {
+                    StreamCallBacks.onGetPrerecordedLink.Invoke(data);
+                }
                 AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
             });
             btnThumbnailItems[i].LockToPress(false);
@@ -158,8 +195,16 @@ public class UIThumbnailsController : MonoBehaviour {
     #endregion
 
     private void PlayStream(StreamJsonData.Data data) {
-        if (!permissionController.CheckCameraAccess())
-            return;
+
+        if (data.GetStage() == StreamJsonData.Data.Stage.Prerecorded) {
+            if (!permissionController.CheckCameraAccess()) {
+                return;
+            }
+        } else {
+            if (!permissionController.CheckCameraMicAccess()) {
+                return;
+            }
+        }
 
         if (data.HasStreamUrl) {
             pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, data, null, false);
