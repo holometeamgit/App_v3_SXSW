@@ -19,6 +19,8 @@ public class DeepLinkContentStarter : MonoBehaviour
     [SerializeField]
     PnlStreamOverlay pnlStreamOverlay;
     [SerializeField]
+    PnlRoomBroadcastHoldingScreen _pnlRoomBroadcastHoldingScreen;
+    [SerializeField]
     GameObject homeScreen;
 
     bool isHomePageActive;
@@ -57,7 +59,7 @@ public class DeepLinkContentStarter : MonoBehaviour
             if (isHomePageActive)
                 pnlThumbnailPopup.OpenStream(id);
         } else if(homePageSwitcher) {
-            if (!pnlStreamOverlay.isActiveAndEnabled) {
+            if (!pnlStreamOverlay.isActiveAndEnabled && !_pnlRoomBroadcastHoldingScreen.isActiveAndEnabled) {
                 HelperFunctions.DevLog("App doesn't have deeplink. Home page will open");
                 homePageSwitcher.Switch();
             } else {

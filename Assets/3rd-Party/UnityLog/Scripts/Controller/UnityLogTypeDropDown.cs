@@ -25,11 +25,12 @@ namespace Beem.Utility.UnityConsole {
                 datas.Add(data);
             }
             dropdown.AddOptions(datas);
-            DropDown();
+            dropdown.value = (int)LogData.LogTypeData;
+            DropDown(dropdown.value);
         }
 
         public void DropDown(int value = 0) {
-            LogData.SetLogType((LogType)value);
+            LogData.LogTypeData = (LogType)value;
         }
     }
 }
