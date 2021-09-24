@@ -6,7 +6,7 @@ set -x
 
 export build_target=$(jq -r 'keys[0]' < build.json)
 
-export build_platform=$(jq -r ".[\"${build_target}\"].platform" < build.json)
+export build_platform=$(jq -r ".[\"${build_target}\"].artifacts" < build.json)
 
 echo "Building $build_target for $build_platform"
 
