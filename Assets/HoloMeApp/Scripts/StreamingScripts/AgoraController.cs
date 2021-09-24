@@ -40,8 +40,8 @@ public class AgoraController : MonoBehaviour {
     private bool vadWasActive; //Was local speak detected
     private bool videoQuadWasSetup; //Required to stop new calls from reconfiguring video surface quad
 
-    int streamID = -1;
-    int agoraMessageStreamID;
+    private int streamID = -1;
+    private int agoraMessageStreamID;
 
     [HideInInspector]
     public uint frameRate;
@@ -65,6 +65,9 @@ public class AgoraController : MonoBehaviour {
     Coroutine sendThumbnailRoutine;
 
     static Vector3 defaultLiveStreamQuadScale;
+
+    private const int VOICE_INDICATOR_INTERVAL = 200;
+    private const int VOICE_INDICATOR_SMOOTH = 3;
 
     //void OnUserEnableVideoHandler(uint uid, bool enabled)
     //{
@@ -95,7 +98,7 @@ public class AgoraController : MonoBehaviour {
         };
 
         iRtcEngine.OnVolumeIndication += OnVolumeIndicationHandler;
-        iRtcEngine.EnableAudioVolumeIndication(250, 3, true);
+        iRtcEngine.EnableAudioVolumeIndication(VOICE_INDICATOR_INTERVAL, VOICE_INDICATOR_SMOOTH, true);
 
         SetEncoderSettings();
     }
@@ -389,20 +392,23 @@ public class AgoraController : MonoBehaviour {
             return;
         }
 
-        if (speakers.Length == 1 && speakers[0].vad == 1) {
+        bool vadParametersAreTrue = speakers != null && speakers.Length == 1 && speakers[0].vad == 1; //vad value found when only 1 element in array so always 0
+
+        if (vadParametersAreTrue) {
             vadWasActive = true;
         }
 
         if (vadWasActive) {
-            if (speakers[0].vad == 1) {
-                //Debug.Log("SPEECH DETECTED");
-                OnSpeechDetected?.Invoke();
+            if (vadParametersAreTrue) {
+                HelperFunctions.DevLog("Speech detected", "VolumeIndicator");
+                OnSpeechDetected?.Invoke(); //TODO test if moved into block were vasWasActive is set to true to call once and fix stuttering
             } else {
-                //Debug.Log("SPEECH NOT DETECTED");
+                HelperFunctions.DevLog("Speech detection voice off", "VolumeIndicator");
                 OnNoSpeechDetected?.Invoke();
                 vadWasActive = false;
             }
         }
+
     }
 
     void OnUserOffline(uint uid, USER_OFFLINE_REASON reason) //Only called for host in broadcast profile

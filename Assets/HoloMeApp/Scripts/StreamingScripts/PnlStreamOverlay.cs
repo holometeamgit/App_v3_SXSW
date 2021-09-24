@@ -103,8 +103,8 @@ public class PnlStreamOverlay : MonoBehaviour {
     VideoSurface videoSurface;
     string currentStreamId = string.Empty;
 
-    //private Coroutine delayToggleAudioOffRoutine;
-    //private const int PUSH_TO_TALK_MUTE_DELAY = 1;
+    //private Coroutine delayToggleAudioOffRoutine;  //TODO keeping here in case we revert to push to talk
+    //private const int PUSH_TO_TALK_MUTE_DELAY = 1; //TODO keeping here in case we revert to push to talk
 
     private Coroutine statusUpdateRoutine;
 
@@ -657,6 +657,7 @@ public class PnlStreamOverlay : MonoBehaviour {
         cameraRenderImage.SizeToParent();
     }
 
+    //TODO keeping here in case we revert to push to talk
     ///// <summary>
     ///// This toggle audio off with a delay, intended for push to talk users once letting go of button
     ///// </summary>
@@ -664,11 +665,13 @@ public class PnlStreamOverlay : MonoBehaviour {
     //    delayToggleAudioOffRoutine = StartCoroutine(DelayToggleAudioOff());
     //}
 
+    //TODO keeping here in case we revert to push to talk
     //private IEnumerator DelayToggleAudioOff() {
     //    yield return new WaitForSeconds(PUSH_TO_TALK_MUTE_DELAY);
     //    ToggleLocalAudio(true);
     //}
 
+    //TODO keeping here in case we revert to push to talk
     //public void ToggleLocalAudio(bool mute) {
 
     //    if (delayToggleAudioOffRoutine != null) {
