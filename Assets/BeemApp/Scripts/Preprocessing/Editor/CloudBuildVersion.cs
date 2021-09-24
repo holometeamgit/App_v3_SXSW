@@ -111,5 +111,41 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
         public string cloudBuildTargetName;
     }
 
+    [Serializable]
+    public class BuildStatus {
+        public int build;
+        public string buildtargetid;
+        public string buildTargetName;
+        public string buildStatus;
+        public string created;
+        public string finished;
+        public string commitId;
+        public string message;
+        public string scmBranch;
+
+        /*
+    
+        "artifacts": [
+            {
+                "key": "primary",
+                "name": ".APK file",
+                "primary": true,
+                "show_download": true,
+                "files": [
+                    {
+            "filename": "FirebaseAPKDev Test Manifest.apk",
+                        "size": 177081609,
+                        "resumable": false,
+                        "md5sum": "vf8uyvyLuPaYC+T8Yy07Sw==",
+                        "href": "https://storage.googleapis.com/unitycloud-build-user-svc-live-build/10170749378847%2Fba3333ea-4845-4d5b-a4c1-896277975428%2Ffirebaseapkdev-test-manifest-10%2FFirebaseAPKDev%20Test%20Manifest.apk?GoogleAccessId=signurl-sa%40unity-cs-cloudbuild-prd.iam.gserviceaccount.com&Expires=1632486721&Signature=W%2BN4lOcwU%2FU2kiTwTvDjCG6L5%2FXQdtPUkLk5cEX3vveiP0U54tLsc%2Fn2ZPBE8%2FiNVyWlZP%2FqaeR1r4K98cDLoBY05YHjS0C6UQtipXw9zKMIf0XpIPYFOW7Ll%2FiPGbuzLxZY5fVZOcFnmawKMFcf%2FK2OCEqDLuhHJN5RMDuDVZLlulmf74LosATQwi62lF1pBwLayhxq212gqs3dMYlSU8yM%2FMgMXJdTwWlZCJNNtcZwT6z0btO8sVqnWapzL68UIRtEC4G%2BwE%2BjmnW0WNPo5ruokxo1FEyDxQq9vhQKi4MSQXI3v4Y1vJ0D3EoSObs%2BfCzClqNaIDSkcDLzuvfrOQ%3D%3D&response-content-type=application%2Foctet-stream&response-content-disposition=attachment%3B%20filename%3Dholome_beem-app_v3_sxsw-firebaseapkdev-test-manifest-10.apk"
+                    }
+                ]
+            },
+        ]
+        */
+
+    }
+
+
 
 }
