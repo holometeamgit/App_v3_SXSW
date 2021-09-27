@@ -22,8 +22,10 @@ namespace Beem.Utility.Requests {
         /// Send Request
         /// </summary>
 
-        public void Send(Action<string> Success = null, Action<string> Fail = null, Action<float> Progress = null) {
+        public async void Send(Action<string> Success = null, Action<string> Fail = null, Action<float> Progress = null) {
             using var unityWebRequest = UnityWebRequest.Get(_url);
+
+            Debug.Log(_url);
 
             unityWebRequest.SetRequestHeader("Content-Type", "application/json");
 
@@ -31,8 +33,26 @@ namespace Beem.Utility.Requests {
                 unityWebRequest.SetRequestHeader("Authorization", _headerAccessToken);
             }
 
-            IRequestDealer requestOperation = new RequestDealer();
-            requestOperation.Send(unityWebRequest, Success, Fail);
+            var operation = unityWebRequest.SendWebRequest();
+
+            while (!operation.isDone) {
+                Progress?.Invoke(operation.progress);
+                await Task.Yield();
+            }
+
+            Debug.Log(unityWebRequest);
+            Debug.Log(unityWebRequest.downloadHandler);
+            Debug.Log(unityWebRequest.downloadHandler.text);
+
+            if (unityWebRequest.result == UnityWebRequest.Result.Success) {
+                Debug.Log($"Success: {unityWebRequest.downloadHandler.text}");
+                Success?.Invoke(unityWebRequest.downloadHandler.text);
+            } else {
+                Debug.LogError($"Failed: {unityWebRequest.error}");
+                Fail?.Invoke(unityWebRequest.error);
+            }
+            //IRequestDealer requestOperation = new RequestDealer();
+            //requestOperation.Send(unityWebRequest, Success, Fail);
         }
     }
 }

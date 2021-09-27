@@ -17,6 +17,10 @@ namespace Beem.Utility.Requests {
                 await Task.Yield();
             }
 
+            Debug.Log(unityWebRequest);
+            Debug.Log(unityWebRequest.downloadHandler);
+            Debug.Log(unityWebRequest.downloadHandler.text);
+
             if (unityWebRequest.result == UnityWebRequest.Result.Success) {
                 Debug.Log($"Success: {unityWebRequest.downloadHandler.text}");
                 Success?.Invoke(unityWebRequest.downloadHandler.text);
