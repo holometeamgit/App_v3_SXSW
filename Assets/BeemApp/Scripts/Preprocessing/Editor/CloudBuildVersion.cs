@@ -48,11 +48,10 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
         return string.Empty;
     }
 
-    private string GetReleaseNotes(string buildType) {
+    private void WriteReleaseNotes(FirebaseEnviromentVariables firebaseEnviromentVariables) {
         if (GetUnityCloudBuildManifest() != null) {
-            return $"Build Config Name : {GetUnityCloudBuildManifest().cloudBuildTargetName}, \n Scm Branch : {GetUnityCloudBuildManifest().scmBranch}, \n Build Type : {buildType}, \n Scm Commit ID : {GetUnityCloudBuildManifest().scmCommitId}, \n Start Build Time : {GetUnityCloudBuildManifest().buildStartTime}";
+            firebaseEnviromentVariables.FIREBASE_RELEASE_NOTES = $"Build Config Name - {GetUnityCloudBuildManifest().cloudBuildTargetName}, \n Scm Branch - {GetUnityCloudBuildManifest().scmBranch}, \n Scm Commit ID - {GetUnityCloudBuildManifest().scmCommitId}";
         }
-        return string.Empty;
     }
     private void GetEnviromentVariables() {
         GetRequest request = new GetRequest(GetUrl(), "Basic " + API_KEY);
@@ -64,7 +63,7 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
         SetBuildNumber(firebaseEnviromentVariables.BEEM_BUILD);
         SetBuildVersion(firebaseEnviromentVariables.BEEM_VERSION);
         SetBuildType(firebaseEnviromentVariables.BEEM_BUILD_TYPE);
-        firebaseEnviromentVariables.FIREBASE_RELEASE_NOTES = GetReleaseNotes(firebaseEnviromentVariables.BEEM_BUILD_TYPE);
+        WriteReleaseNotes(firebaseEnviromentVariables);
         SetEnviromentVariables(firebaseEnviromentVariables);
     }
 

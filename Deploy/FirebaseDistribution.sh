@@ -4,12 +4,6 @@ echo "Uploading Build Result to Firebase Distribution..."
 
 set -x
 
-export build_target=$(jq -r 'keys[0]' < build.json)
-
-export build_platform=$(jq -r ".[\"${build_target}\"].scmBranch" < build.json)
-
-echo "Building $build_target for $build_platform"
-
 export FIREBASE_BUILD="$(find -E . -regex '.*\.(ipa|apk|aab)' -print -quit)"
 if [ -z "$FIREBASE_BUILD" ]; then
     echo "Could not find .ipa/.apk/.aab file"
