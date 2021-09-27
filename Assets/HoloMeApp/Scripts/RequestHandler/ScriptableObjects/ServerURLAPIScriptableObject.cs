@@ -54,6 +54,15 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     }
 
     [SerializeField]
+    private string firebaseRoom = "/room/";
+
+    public string FirebaseRoom {
+        get {
+            return firebaseRoom;
+        }
+    }
+
+    [SerializeField]
     private string url = "https://beem.me";
     public string Url {
         get {
