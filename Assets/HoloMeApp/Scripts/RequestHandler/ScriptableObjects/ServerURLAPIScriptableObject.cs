@@ -10,16 +10,31 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     public string ProdServerURLAuth = "https://api.holo.me/api-auth";
     public string ProdServerURLMedia = "https://api.holo.me/api-media";
     public string ProdServerProviders = "https://api.holo.me/oauth/providers/";
-    [SerializeField]
-    private string prodFirebaseStaticLink = "https://join.beem.me";
 
     [Space]
     public string DevServerURLAuth = "https://devholo.me/api-auth";
     public string DevServerURLMedia = "https://devholo.me/api-media";
     public string DevServerProviders = "https://devholo.me/oauth/providers/";
-    [SerializeField]
-    private string devFirebaseStaticLink = "https://us-central1-test-36ceb.cloudfunctions.net";
+
     [Space]
+
+    [SerializeField]
+    private string firebaseDynamicLink = "https://join.beem.me";
+    public string FirebaseDynamicLink {
+        get {
+            return firebaseDynamicLink;
+        }
+    }
+
+    [SerializeField]
+    private string firebaseStaticLink = "https://us-central1-test-36ceb.cloudfunctions.net";
+
+    public string FirebaseStaticLink {
+        get {
+            return firebaseStaticLink;
+        }
+    }
+
     [SerializeField]
     private string firebaseAddUser = "/addusername/";
 
@@ -35,14 +50,6 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     public string FirebaseProfile {
         get {
             return firebaseProfile;
-        }
-    }
-
-    [SerializeField]
-    private string firebaseDynamicLink = "https://join.beem.me";
-    public string FirebaseDynamicLink {
-        get {
-            return firebaseDynamicLink;
         }
     }
 
@@ -114,16 +121,6 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
             return DevServerProviders;
 #else
             return ProdServerProviders;
-#endif
-        }
-    }
-
-    public string FirebaseStaticLink {
-        get {
-#if DEV
-            return devFirebaseStaticLink;
-#else
-            return prodFirebaseStaticLink;
 #endif
         }
     }
