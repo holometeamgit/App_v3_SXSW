@@ -46,7 +46,7 @@ namespace Beem.Firebase.DynamicLink {
         }
 
         private void CreateShortLink(DynamicLinkParameters dynamicLinkParameters, string source) {
-            string baseLink = dynamicLinkParameters.Prefix + "/" + dynamicLinkParameters.ParameterName + "/" + dynamicLinkParameters.Id;
+            string baseLink = dynamicLinkParameters.Prefix + "?streamId=" + dynamicLinkParameters.Id;
             var components = new DynamicLinkComponents(
          // The base Link.
          new Uri(baseLink),

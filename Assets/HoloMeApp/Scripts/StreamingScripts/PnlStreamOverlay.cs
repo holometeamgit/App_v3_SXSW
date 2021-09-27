@@ -341,21 +341,13 @@ public class PnlStreamOverlay : MonoBehaviour {
     }
 
     public void ShareStream() {
-
         HelperFunctions.DevLog("agoraController.IsChannelCreator = " + agoraController.IsChannelCreator);
+        HelperFunctions.DevLog("agoraController.ChannelName = " + agoraController.ChannelName);
         HelperFunctions.DevLog("agoraController.IsRoom = " + agoraController.IsRoom);
         HelperFunctions.DevLog("currentStreamId = " + currentStreamId);
 
         if (agoraController.IsRoom) {
-            if (agoraController.IsChannelCreator) {
-                StreamCallBacks.onGetMyRoomLink?.Invoke();
-            } else {
-                if (!string.IsNullOrWhiteSpace(currentStreamId)) {
-                    StreamCallBacks.onGetRoomLink?.Invoke(currentStreamId, agoraController.ChannelName);
-                } else {
-                    DynamicLinksCallBacks.onShareAppLink?.Invoke();
-                }
-            }
+            StreamCallBacks.onGetRoomLink?.Invoke(agoraController.ChannelName);
         } else {
             if (!string.IsNullOrWhiteSpace(currentStreamId)) {
                 StreamCallBacks.onGetStreamLink?.Invoke(currentStreamId, agoraController.ChannelName);

@@ -10,11 +10,14 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     public string ProdServerURLAuth = "https://api.holo.me/api-auth";
     public string ProdServerURLMedia = "https://api.holo.me/api-media";
     public string ProdServerProviders = "https://api.holo.me/oauth/providers/";
+
     [Space]
     public string DevServerURLAuth = "https://devholo.me/api-auth";
     public string DevServerURLMedia = "https://devholo.me/api-media";
     public string DevServerProviders = "https://devholo.me/oauth/providers/";
+
     [Space]
+
     [SerializeField]
     private string firebaseDynamicLink = "https://join.beem.me";
     public string FirebaseDynamicLink {
@@ -22,6 +25,43 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
             return firebaseDynamicLink;
         }
     }
+
+    [SerializeField]
+    private string firebaseStaticLink = "https://us-central1-test-36ceb.cloudfunctions.net";
+
+    public string FirebaseStaticLink {
+        get {
+            return firebaseStaticLink;
+        }
+    }
+
+    [SerializeField]
+    private string firebaseAddUser = "/addusername/";
+
+    public string FirebaseAddUser {
+        get {
+            return firebaseAddUser;
+        }
+    }
+
+    [SerializeField]
+    private string firebaseProfile = "/profile/";
+
+    public string FirebaseProfile {
+        get {
+            return firebaseProfile;
+        }
+    }
+
+    [SerializeField]
+    private string firebaseRoom = "/room/";
+
+    public string FirebaseRoom {
+        get {
+            return firebaseRoom;
+        }
+    }
+
     [SerializeField]
     private string url = "https://beem.me";
     public string Url {
@@ -29,35 +69,27 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
             return url;
         }
     }
-    [SerializeField]
-    private string room = "room";
 
-    public string Room {
+    [SerializeField]
+    private string streamId = "streamId";
+
+    public string StreamId {
         get {
-            return room;
+            return streamId;
         }
     }
 
     [SerializeField]
-    private string stream = "stream";
+    private string username = "username";
 
-    public string Stream {
+    public string Username {
         get {
-            return stream;
+            return username;
         }
     }
 
     [SerializeField]
-    private string notificationAccess = "NotificationAccess";
-
-    public string NotificationAccess {
-        get {
-            return notificationAccess;
-        }
-    }
-
-    [SerializeField]
-    private string app = "App";
+    private string app = "/App/";
 
     public string App {
         get {

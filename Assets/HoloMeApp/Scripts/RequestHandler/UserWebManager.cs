@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 using Beem.SSO;
+using Beem.Firebase.DynamicLink;
 
 public class UserWebManager : MonoBehaviour {
     public Action OnLoadUserDataAfterLogIn;
@@ -64,9 +65,9 @@ public class UserWebManager : MonoBehaviour {
         return userData.pk;
     }
 
-   /* public string GetUnituniqueName() {
-        return GetEmail();
-    }*/
+    /* public string GetUnituniqueName() {
+         return GetEmail();
+     }*/
 
     public string GetFullName() {
         if (userData == null || string.IsNullOrEmpty(userData.first_name))
@@ -135,6 +136,8 @@ public class UserWebManager : MonoBehaviour {
         userData.profile.bio = bio ?? userData.profile.bio;
         userData.profile.profile_picture_s3_url = profile_picture_s3_url ?? userData.profile.profile_picture_s3_url;
 
+        UpdateStaticLink(userData.username);
+
         UploadUserInfo();
     }
 
@@ -188,6 +191,12 @@ public class UserWebManager : MonoBehaviour {
     }
 
     #endregion
+
+    private void UpdateStaticLink(string userName) {
+        StaticLinkData staticLinkData = new StaticLinkData();
+        staticLinkData.username = userName;
+        webRequestHandler.PostRequest(webRequestHandler.FirebaseAddUser, staticLinkData, WebRequestHandler.BodyType.JSON, (x, y) => { HelperFunctions.DevLog("Log = " + x + "," + y); webRequestHandler.LogCallback(x, y); }, webRequestHandler.ErrorLogCallback, accountManager.GetAccessToken().access);
+    }
 
     private void RemoveUserData() {
         userData = null;
