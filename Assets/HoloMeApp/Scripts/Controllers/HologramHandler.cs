@@ -13,9 +13,6 @@ public class HologramHandler : MonoBehaviour {
     PlacementHandler placementHandler;
 
     [SerializeField]
-    ServerDataHandler serverDataHandler;
-
-    [SerializeField]
     HologramChild[] hologramChildren;
 
     [SerializeField]
