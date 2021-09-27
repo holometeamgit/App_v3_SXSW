@@ -6,8 +6,6 @@ set -x
 
 export FIREBASE_BUILD="$(find -E . -regex '.*\.(ipa|apk|aab)' -print -quit)"
 
-echo "Release Notes: $FIREBASE_RELEASE_NOTES"
-
 if [ -z "$FIREBASE_BUILD" ]; then
     echo "Could not find .ipa/.apk/.aab file"
     exit 1
