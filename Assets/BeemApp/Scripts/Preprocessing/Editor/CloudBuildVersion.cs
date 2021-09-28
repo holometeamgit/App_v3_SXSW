@@ -50,7 +50,7 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
 
     private void WriteReleaseNotes(FirebaseEnviromentVariables firebaseEnviromentVariables) {
         if (GetUnityCloudBuildManifest() != null) {
-            firebaseEnviromentVariables.FIREBASE_RELEASE_NOTES = $"Build Config Name - {GetUnityCloudBuildManifest().cloudBuildTargetName}, \n Scm Branch - {GetUnityCloudBuildManifest().scmBranch}, \n Scm Commit ID - {GetUnityCloudBuildManifest().scmCommitId}";
+            firebaseEnviromentVariables.FIREBASE_RELEASE_NOTES = Application.dataPath + "/Resources/" + CLOUD_BUILD_MANIFEST;//$"Build Config Name - {GetUnityCloudBuildManifest().cloudBuildTargetName}, \n Scm Branch - {GetUnityCloudBuildManifest().scmBranch}, \n Scm Commit ID - {GetUnityCloudBuildManifest().scmCommitId}";
         }
     }
     private void GetEnviromentVariables() {
