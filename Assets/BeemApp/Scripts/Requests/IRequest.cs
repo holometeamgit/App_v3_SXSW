@@ -1,17 +1,11 @@
-using System;
+using UnityEngine.Networking;
 
 namespace Beem.Utility.Requests {
+
     /// <summary>
-    /// Base Request
+    /// Request
     /// </summary>
     public interface IRequest {
-
-        /// <summary>
-        /// Send request
-        /// </summary>
-        /// <param name="Success"></param>
-        /// <param name="Fail"></param>
-        /// <param name="Progress"></param>
-        void Send(Action<string> Success = null, Action<string> Fail = null);
+        UnityWebRequest Request { get; }
     }
 }

@@ -38,7 +38,7 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
             return JsonUtility.FromJson<UnityCloudBuildManifestData>(currentManifest.text);
         }
 
-        return null;
+        return new UnityCloudBuildManifestData();
     }
 
     private static string GetUrl() {
@@ -54,7 +54,7 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
         //}
     }
 
-    [MenuItem("Test/GetEnviromentVariables")]
+    [MenuItem("UCB/GetEnviromentVariables")]
     public static void GetEnviromentVariables() {
         HelperFunctions.DevLogError("GetEnviromentVariables", "CloudBuildVersion");
         GetRequest request = new GetRequest(GetUrl(), "Basic " + API_KEY);

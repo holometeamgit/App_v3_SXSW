@@ -18,30 +18,25 @@ namespace Beem.Utility.Requests {
             _headerAccessToken = headerAccessToken;
         }
 
+        public UnityWebRequest Request {
+            get {
+                UnityWebRequest webRequest = UnityWebRequest.Get(_url);
+                webRequest.SetRequestHeader("Content-Type", "application/json");
+                if (!string.IsNullOrEmpty(_headerAccessToken)) {
+                    webRequest.SetRequestHeader("Authorization", _headerAccessToken);
+                }
+
+                return webRequest;
+            }
+        }
+
         /// <summary>
         /// Send Request
         /// </summary>
 
-        public async void Send(Action<string> Success = null, Action<string> Fail = null) {
-            using var unityWebRequest = UnityWebRequest.Get(_url);
-
-            Debug.Log(_url);
-
-            unityWebRequest.SetRequestHeader("Content-Type", "application/json");
-
-            if (!string.IsNullOrEmpty(_headerAccessToken)) {
-                unityWebRequest.SetRequestHeader("Authorization", _headerAccessToken);
-            }
-
-            UnityWebRequest.Result result = await unityWebRequest.SendWebRequest();
-
-            if (result == UnityWebRequest.Result.Success) {
-                Debug.Log($"Success: {unityWebRequest.downloadHandler.text}");
-                Success?.Invoke(unityWebRequest.downloadHandler.text);
-            } else {
-                Debug.LogError($"Failed: {unityWebRequest.error}");
-                Fail?.Invoke(unityWebRequest.error);
-            }
+        public void Send(Action<string> Success = null, Action<string> Fail = null) {
+            IRequestSender requestSender = new RequestSender();
+            requestSender.Send(Request, Success, Fail);
         }
     }
 }
