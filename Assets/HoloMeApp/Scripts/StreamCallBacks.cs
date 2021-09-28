@@ -7,6 +7,7 @@
 public class StreamCallBacks {
     #region deep link
     public static Action<string> onRoomLinkReceived = delegate { };
+    public static Action<string> onUsernameLinkReceived = delegate { };
     public static Action onOpenRoom = delegate { };
 
     public static Action<string> onStreamLinkReceived = delegate { };
@@ -15,8 +16,7 @@ public class StreamCallBacks {
     public static Action onCancelOpenContent = delegate { };
     #endregion
 
-    public static Action onGetMyRoomLink = delegate { };
-    public static Action<string, string> onGetRoomLink = delegate { };
+    public static Action<string> onGetRoomLink = delegate { };
     public static Action<string, string> onGetStreamLink = delegate { };
     public static Action<StreamJsonData.Data> onGetPrerecordedLink = delegate { };
 
