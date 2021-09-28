@@ -12,6 +12,6 @@ namespace Beem.Utility.Requests {
         /// <param name="Success"></param>
         /// <param name="Fail"></param>
         /// <param name="Progress"></param>
-        void Send(Action<string> Success = null, Action<string> Fail = null, Action<float> Progress = null);
+        void Send(Action<string> Success = null, Action<string> Fail = null);
     }
 }

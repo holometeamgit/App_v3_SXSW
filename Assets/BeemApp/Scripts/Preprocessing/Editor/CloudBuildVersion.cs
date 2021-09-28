@@ -24,11 +24,11 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
     private const string SERVER = "https://build-api.cloud.unity3d.com/api/v1";
     private const string ORG_ID = "10170749378847";
 
-    private TextAsset currentManifest;
+    private static TextAsset currentManifest;
 
     public int callbackOrder => 0;
 
-    private UnityCloudBuildManifestData GetUnityCloudBuildManifest() {
+    private static UnityCloudBuildManifestData GetUnityCloudBuildManifest() {
 
         if (currentManifest == null) {
             currentManifest = (TextAsset)Resources.Load(CLOUD_BUILD_MANIFEST);
@@ -41,24 +41,28 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
         return null;
     }
 
-    private string GetUrl() {
+    private static string GetUrl() {
         if (GetUnityCloudBuildManifest() != null) {
             return $"{SERVER}/orgs/{ORG_ID}/projects/{GetUnityCloudBuildManifest().projectId}/buildtargets/{GetUnityCloudBuildManifest().cloudBuildTargetName}/envvars";
         }
         return string.Empty;
     }
 
-    private void WriteReleaseNotes(FirebaseEnviromentVariables firebaseEnviromentVariables) {
-        if (GetUnityCloudBuildManifest() != null) {
-            firebaseEnviromentVariables.FIREBASE_RELEASE_NOTES = Application.dataPath + "/Resources/" + CLOUD_BUILD_MANIFEST;//$"Build Config Name - {GetUnityCloudBuildManifest().cloudBuildTargetName}, \n Scm Branch - {GetUnityCloudBuildManifest().scmBranch}, \n Scm Commit ID - {GetUnityCloudBuildManifest().scmCommitId}";
-        }
+    private static void WriteReleaseNotes(FirebaseEnviromentVariables firebaseEnviromentVariables) {
+        //if (GetUnityCloudBuildManifest() != null) {
+        firebaseEnviromentVariables.FIREBASE_RELEASE_NOTES = Application.dataPath + "/Resources/" + CLOUD_BUILD_MANIFEST;//$"Build Config Name - {GetUnityCloudBuildManifest().cloudBuildTargetName}, \n Scm Branch - {GetUnityCloudBuildManifest().scmBranch}, \n Scm Commit ID - {GetUnityCloudBuildManifest().scmCommitId}";
+        //}
     }
-    private void GetEnviromentVariables() {
+
+    [MenuItem("Test/GetEnviromentVariables")]
+    public static void GetEnviromentVariables() {
+        HelperFunctions.DevLogError("GetEnviromentVariables", "CloudBuildVersion");
         GetRequest request = new GetRequest(GetUrl(), "Basic " + API_KEY);
         request.Send(ViewEnviromentVariables);
     }
 
-    private void ViewEnviromentVariables(string body) {
+    private static void ViewEnviromentVariables(string body) {
+        HelperFunctions.DevLogError("ViewEnviromentVariables " + body, "CloudBuildVersion");
         FirebaseEnviromentVariables firebaseEnviromentVariables = JsonUtility.FromJson<FirebaseEnviromentVariables>(body);
         SetBuildNumber(firebaseEnviromentVariables.BEEM_BUILD);
         SetBuildVersion(firebaseEnviromentVariables.BEEM_VERSION);
@@ -67,7 +71,8 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
         SetEnviromentVariables(firebaseEnviromentVariables);
     }
 
-    private void SetBuildNumber(string buildNumber) {
+    private static void SetBuildNumber(string buildNumber) {
+        HelperFunctions.DevLogError("SetBuildNumber " + buildNumber, "CloudBuildVersion");
         if (!string.IsNullOrEmpty(buildNumber)) {
             PlayerSettings.iOS.buildNumber = buildNumber;
             PlayerSettings.Android.bundleVersionCode = int.Parse(buildNumber);
@@ -79,13 +84,15 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
         }
     }
 
-    private void SetBuildVersion(string buildVersion) {
+    private static void SetBuildVersion(string buildVersion) {
+        HelperFunctions.DevLogError("SetBuildVersion " + buildVersion, "CloudBuildVersion");
         if (!string.IsNullOrEmpty(buildVersion)) {
             PlayerSettings.bundleVersion = buildVersion;
         }
     }
 
-    private void SetBuildType(string buildType) {
+    private static void SetBuildType(string buildType) {
+        HelperFunctions.DevLogError("SetBuildType " + buildType, "CloudBuildVersion");
         if (!string.IsNullOrEmpty(buildType)) {
             PlayerSettings.productName = buildType == DEV ? APPLICATION_NAME_DEV : APPLICATION_NAME;
             EditorUserBuildSettings.development = buildType == DEV;
@@ -94,12 +101,14 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
         }
     }
 
-    private void SetEnviromentVariables(FirebaseEnviromentVariables firebaseEnviromentVariables) {
+    private static void SetEnviromentVariables(FirebaseEnviromentVariables firebaseEnviromentVariables) {
+        HelperFunctions.DevLogError("SetEnviromentVariables " + firebaseEnviromentVariables.FIREBASE_RELEASE_NOTES, "CloudBuildVersion");
         PutRequest<FirebaseEnviromentVariables> request = new PutRequest<FirebaseEnviromentVariables>(GetUrl(), firebaseEnviromentVariables, "Basic " + API_KEY);
         request.Send();
     }
 
-    private void SwitchDefine(BuildTargetGroup targetGroup, string buildType) {
+    private static void SwitchDefine(BuildTargetGroup targetGroup, string buildType) {
+        HelperFunctions.DevLogError("SwitchDefine " + targetGroup + "," + buildType, "CloudBuildVersion");
         string[] currentDefines;
         PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup, out currentDefines);
         if (currentDefines.Contains(PROD)) {

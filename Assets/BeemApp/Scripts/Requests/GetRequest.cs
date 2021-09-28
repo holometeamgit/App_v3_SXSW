@@ -22,7 +22,7 @@ namespace Beem.Utility.Requests {
         /// Send Request
         /// </summary>
 
-        public async void Send(Action<string> Success = null, Action<string> Fail = null, Action<float> Progress = null) {
+        public async void Send(Action<string> Success = null, Action<string> Fail = null) {
             using var unityWebRequest = UnityWebRequest.Get(_url);
 
             Debug.Log(_url);
@@ -33,26 +33,15 @@ namespace Beem.Utility.Requests {
                 unityWebRequest.SetRequestHeader("Authorization", _headerAccessToken);
             }
 
-            var operation = unityWebRequest.SendWebRequest();
+            UnityWebRequest.Result result = await unityWebRequest.SendWebRequest();
 
-            while (!operation.isDone) {
-                Progress?.Invoke(operation.progress);
-                await Task.Yield();
-            }
-
-            Debug.Log(unityWebRequest);
-            Debug.Log(unityWebRequest.downloadHandler);
-            Debug.Log(unityWebRequest.downloadHandler.text);
-
-            if (unityWebRequest.result == UnityWebRequest.Result.Success) {
+            if (result == UnityWebRequest.Result.Success) {
                 Debug.Log($"Success: {unityWebRequest.downloadHandler.text}");
                 Success?.Invoke(unityWebRequest.downloadHandler.text);
             } else {
                 Debug.LogError($"Failed: {unityWebRequest.error}");
                 Fail?.Invoke(unityWebRequest.error);
             }
-            //IRequestDealer requestOperation = new RequestDealer();
-            //requestOperation.Send(unityWebRequest, Success, Fail);
         }
     }
 }
