@@ -56,13 +56,13 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
 
     [MenuItem("UCB/GetEnviromentVariables")]
     public static void GetEnviromentVariables() {
-        HelperFunctions.DevLogError("GetEnviromentVariables", "CloudBuildVersion");
+        Debug.LogError("GetEnviromentVariables");
         GetRequest request = new GetRequest(GetUrl(), "Basic " + API_KEY);
         request.Send(ViewEnviromentVariables);
     }
 
     private static void ViewEnviromentVariables(string body) {
-        HelperFunctions.DevLogError("ViewEnviromentVariables " + body, "CloudBuildVersion");
+        Debug.LogError("ViewEnviromentVariables " + body);
         FirebaseEnviromentVariables firebaseEnviromentVariables = JsonUtility.FromJson<FirebaseEnviromentVariables>(body);
         SetBuildNumber(firebaseEnviromentVariables.BEEM_BUILD);
         SetBuildVersion(firebaseEnviromentVariables.BEEM_VERSION);
@@ -72,7 +72,7 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
     }
 
     private static void SetBuildNumber(string buildNumber) {
-        HelperFunctions.DevLogError("SetBuildNumber " + buildNumber, "CloudBuildVersion");
+        Debug.LogError("SetBuildNumber " + buildNumber);
         if (!string.IsNullOrEmpty(buildNumber)) {
             PlayerSettings.iOS.buildNumber = buildNumber;
             PlayerSettings.Android.bundleVersionCode = int.Parse(buildNumber);
@@ -85,14 +85,14 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
     }
 
     private static void SetBuildVersion(string buildVersion) {
-        HelperFunctions.DevLogError("SetBuildVersion " + buildVersion, "CloudBuildVersion");
+        Debug.LogError("SetBuildVersion " + buildVersion);
         if (!string.IsNullOrEmpty(buildVersion)) {
             PlayerSettings.bundleVersion = buildVersion;
         }
     }
 
     private static void SetBuildType(string buildType) {
-        HelperFunctions.DevLogError("SetBuildType " + buildType, "CloudBuildVersion");
+        Debug.LogError("SetBuildType " + buildType);
         if (!string.IsNullOrEmpty(buildType)) {
             PlayerSettings.productName = buildType == DEV ? APPLICATION_NAME_DEV : APPLICATION_NAME;
             EditorUserBuildSettings.development = buildType == DEV;
@@ -102,13 +102,13 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
     }
 
     private static void SetEnviromentVariables(FirebaseEnviromentVariables firebaseEnviromentVariables) {
-        HelperFunctions.DevLogError("SetEnviromentVariables " + firebaseEnviromentVariables.FIREBASE_RELEASE_NOTES, "CloudBuildVersion");
+        Debug.LogError("SetEnviromentVariables " + firebaseEnviromentVariables.FIREBASE_RELEASE_NOTES);
         PutRequest<FirebaseEnviromentVariables> request = new PutRequest<FirebaseEnviromentVariables>(GetUrl(), firebaseEnviromentVariables, "Basic " + API_KEY);
         request.Send();
     }
 
     private static void SwitchDefine(BuildTargetGroup targetGroup, string buildType) {
-        HelperFunctions.DevLogError("SwitchDefine " + targetGroup + "," + buildType, "CloudBuildVersion");
+        Debug.LogError("SwitchDefine " + targetGroup + "," + buildType);
         string[] currentDefines;
         PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup, out currentDefines);
         if (currentDefines.Contains(PROD)) {
@@ -132,6 +132,7 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
     }
 
     public void OnPreprocessBuild(BuildReport report) {
+        Debug.LogError("OnPreprocessBuild");
         GetEnviromentVariables();
     }
 

@@ -14,6 +14,8 @@ namespace Beem.Utility.Requests {
 
             UnityWebRequest.Result result = await webRequest.SendWebRequest();
 
+            Debug.LogError("Request Completed");
+
             if (result == UnityWebRequest.Result.Success) {
                 Debug.Log($"Success: {webRequest.downloadHandler.text}");
                 Success?.Invoke(webRequest.downloadHandler.text);
