@@ -10,6 +10,10 @@ export BUILD_MANIFEST = "$(find -E . -regex '.*\UnityCloudBuildManifest.json)' -
 
 echo $BUILD_MANIFEST
 
+export BUILD_VALUE = "$(jq .<build.json)
+
+echo $BUILD_VALUE
+
 if [ -z "$FIREBASE_BUILD" ]; then
     echo "Could not find .ipa/.apk/.aab file"
     exit 1
