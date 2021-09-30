@@ -4,13 +4,26 @@ echo "Uploading Build Result to Firebase Distribution..."
 
 set -x
 
+export YOUR_API_KEY = "6c9ddff22a920c8e97a8b2449a9b366b"
+export ORG_ID = "10170749378847"
+export PROJECT_ID = "ba3333ea-4845-4d5b-a4c1-896277975428"
+export BUILD_TARGET_ID = "fbapkdev_buildmanifest"
+
+curl -X GET -H "Content-Type: application/json" -H "Authorization: Basic $YOUR_API_KEY" https://build-api.cloud.unity3d.com/api/v1/orgs/$ORG_ID/projects/$PROJECT_ID/buildtargets/$BUILD_TARGET_ID/builds
+
 export FIREBASE_BUILD="$(find -E . -regex '.*\.(ipa|apk|aab)' -print -quit)"
 
-export BUILD_MANIFEST = "$(find -E . -regex '.*\UnityCloudBuildManifest.json)' -print -quit)"
+export BUILD_MANIFEST = "$(find -E . -regex '.*\.json)' -print -quit)"
 
 echo $BUILD_MANIFEST
 
 export BUILD_VALUE = "$(jq .<build.json)"
+
+build_target=$(jq -r 'keys[0]' < build.json)
+
+build_projectid=$(jq -r ".[\"${build_target}\"].projectid" < build.json)
+
+echo "Building $build_target for $build_projectid"
 
 echo $BUILD_VALUE
 
