@@ -12,7 +12,7 @@ export BUILD_TARGET_ID="fbapkdev_buildmanifest"
 http_response=$(curl -X GET -H "Content-Type: application/json" -H "Authorization: Basic $YOUR_API_KEY" https://build-api.cloud.unity3d.com/api/v1/orgs/$ORG_ID/projects/$PROJECT_ID/buildtargets/$BUILD_TARGET_ID/builds)
 
 if [ $http_response != "200" ]; then
-    # handle error
+    echo "Error"
 else
     echo "Server returned:"
     cat response.txt    
@@ -28,7 +28,7 @@ build_projectid=$(jq -r ".[\"${build_target}\"].projectid" < build.json)
 
 echo "Building $build_target for $build_projectid"
 
-project_data=$(echo $build_projectid" | tr "/" "\n")
+project_data=$(echo $build_projectid | tr "/" "\n")
 
 for data_id in $project_data
 do
