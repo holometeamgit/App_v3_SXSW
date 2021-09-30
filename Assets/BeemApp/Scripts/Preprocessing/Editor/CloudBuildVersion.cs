@@ -58,7 +58,9 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
     public static void GetEnviromentVariables() {
         Debug.LogError("GetEnviromentVariables");
         GetRequest request = new GetRequest(GetUrl(), "Basic " + API_KEY);
+        Debug.LogError("GetRequest");
         request.Send(ViewEnviromentVariables);
+        Debug.LogError("Send");
     }
 
     private static void ViewEnviromentVariables(string body) {
