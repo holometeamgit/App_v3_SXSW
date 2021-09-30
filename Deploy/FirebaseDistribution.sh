@@ -15,11 +15,19 @@ export ORG_ID=${ADDR[0]}
 export PROJECT_ID=${ADDR[1]}
 export BUILD_TARGET_ID="${build_target}"
 
-http_response=$(curl -X GET -H "Content-Type: application/json" -H "Authorization: Basic $YOUR_API_KEY" https://build-api.cloud.unity3d.com/api/v1/orgs/$ORG_ID/projects/$PROJECT_ID/buildtargets/$BUILD_TARGET_ID/builds)
+echo "Start Response"
+
+http_response=$(curl -s -H "Content-Type: application/json" -H "Authorization: Basic $YOUR_API_KEY" https://build-api.cloud.unity3d.com/api/v1/orgs/$ORG_ID/projects/$PROJECT_ID/buildtargets/$BUILD_TARGET_ID/builds)
+
+echo "${http_response}"
+
+echo "End Response"
 
 echo "Start Response"
 
-echo "${http_response}"
+http_response2=$(curl -s -H "Accept:application/json" -H "Content-Type: application/json" -H "Authorization: Basic $YOUR_API_KEY" https://build-api.cloud.unity3d.com/api/v1/orgs/$ORG_ID/projects/$PROJECT_ID/buildtargets/$BUILD_TARGET_ID/builds)
+
+echo "${http_response2}"
 
 echo "End Response"
 

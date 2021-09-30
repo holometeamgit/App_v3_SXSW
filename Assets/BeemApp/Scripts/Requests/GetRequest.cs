@@ -35,7 +35,9 @@ namespace Beem.Utility.Requests {
         /// </summary>
 
         public void Send(Action<string> Success = null, Action<string> Fail = null) {
+            Debug.LogError("Send Request");
             IRequestSender requestSender = new RequestSender();
+            Debug.LogError("RequestSender");
             requestSender.Send(Request, Success, Fail);
         }
     }
