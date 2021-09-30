@@ -12,6 +12,8 @@ namespace Beem.Utility.Requests {
         /// </summary>
         public async void Send(UnityWebRequest webRequest, Action<string> Success = null, Action<string> Fail = null) {
 
+            Debug.LogError("Request Started");
+
             UnityWebRequest.Result result = await webRequest.SendWebRequest();
 
             Debug.LogError("Request Completed");
