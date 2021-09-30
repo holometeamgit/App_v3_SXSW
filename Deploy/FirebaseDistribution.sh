@@ -13,10 +13,6 @@ curl -X GET -H "Content-Type: application/json" -H "Authorization: Basic $YOUR_A
 
 export FIREBASE_BUILD="$(find -E . -regex '.*\.(ipa|apk|aab)' -print -quit)"
 
-export BUILD_MANIFEST = "$(find -E . -regex '.*\.json)' -print -quit)"
-
-echo $BUILD_MANIFEST
-
 export BUILD_VALUE = "$(jq .<build.json)"
 
 build_target=$(jq -r 'keys[0]' < build.json)
@@ -27,9 +23,9 @@ echo "Building $build_target for $build_projectid"
 
 project_data=$(echo $build_projectid" | tr "/" "\n")
 
-for addr in $project_data=
+for data_id in $project_data
 do
-    echo "> [$addr]"
+    echo "> [$data_id]"
 done
 
 echo $BUILD_VALUE
