@@ -23,22 +23,23 @@ build_projectid=$(jq -r ".[\"${build_target}\"].projectid" < build.json)
 
 echo "Building $build_target for $build_projectid"
 
-project_data=$(echo $build_projectid | tr "/" "\n")
+project_data=$(echo $build_projectid | tr "/" " ")
 
 echo "${project_data[0]}"
 
 echo "${project_data[1]}"
 
-arrIn=(${build_projectid//// })
+arrIn=(${project_data// / })
 
 echo ${arrIN[0]}
 
 echo ${arrIN[1]}
 
 IFS='/' read -ra ADDR <<< "$build_projectid"
-for i in "${ADDR[@]}"; do
-  echo ${ADDR[i]}
-done
+
+echo ${ADDR[0]}
+
+echo ${ADDR[1]}
 
 echo $BUILD_VALUE
 
@@ -47,7 +48,7 @@ if [ -z "$FIREBASE_BUILD" ]; then
     exit 1
 else
     echo "Install Firebase Tools.."
-    curl -s https://firebase.tools | bash
+    npm install -g firebase-tools
     echo "Firebase Distribution..."
     firebase appdistribution:distribute $FIREBASE_BUILD --app $FIREBASE_APP --release-notes $FIREBASE_RELEASE_NOTES --groups $FIREBASE_GROUPS --token $FIREBASE_TOKEN;
 fi
