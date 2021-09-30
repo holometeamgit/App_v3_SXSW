@@ -11,12 +11,7 @@ export BUILD_TARGET_ID="fbapkdev_buildmanifest"
 
 http_response=$(curl -X GET -H "Content-Type: application/json" -H "Authorization: Basic $YOUR_API_KEY" https://build-api.cloud.unity3d.com/api/v1/orgs/$ORG_ID/projects/$PROJECT_ID/buildtargets/$BUILD_TARGET_ID/builds)
 
-if [ $http_response != "200" ]; then
-    echo "Error"
-else
-    echo "Server returned:"
-    cat response.txt    
-fi
+echo $http_response
 
 export FIREBASE_BUILD="$(find -E . -regex '.*\.(ipa|apk|aab)' -print -quit)"
 
@@ -30,10 +25,9 @@ echo "Building $build_target for $build_projectid"
 
 project_data=$(echo $build_projectid | tr "/" "\n")
 
-for data_id in $project_data
-do
-    echo "> [$data_id]"
-done
+echo "${project_data[0]}"
+
+echo "${project_data[1]}"
 
 echo $BUILD_VALUE
 
@@ -42,7 +36,7 @@ if [ -z "$FIREBASE_BUILD" ]; then
     exit 1
 else
     echo "Install Firebase Tools.."
-    curl -sL https://firebase.tools | bash
+    curl -S https://firebase.tools | bash
     echo "Firebase Distribution..."
     firebase appdistribution:distribute $FIREBASE_BUILD --app $FIREBASE_APP --release-notes $FIREBASE_RELEASE_NOTES --groups $FIREBASE_GROUPS --token $FIREBASE_TOKEN;
 fi
