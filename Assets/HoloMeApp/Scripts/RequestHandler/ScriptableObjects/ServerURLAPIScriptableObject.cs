@@ -45,15 +45,6 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     }
 
     [SerializeField]
-    private string firebaseProfile = "/profile/";
-
-    public string FirebaseProfile {
-        get {
-            return firebaseProfile;
-        }
-    }
-
-    [SerializeField]
     private string firebaseRoom = "/room/";
 
     public string FirebaseRoom {
