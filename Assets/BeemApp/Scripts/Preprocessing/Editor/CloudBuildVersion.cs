@@ -20,9 +20,9 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
     private const string PROD = "PROD";
     private const string DEV = "DEV";
 
-    private const string API_KEY = "6c9ddff22a920c8e97a8b2449a9b366b";
-    private const string SERVER = "https://build-api.cloud.unity3d.com/api/v1";
-    private const string ORG_ID = "10170749378847";
+    private const string BEEM_VERSION = "BEEM_VERSION";
+    private const string BEEM_BUILD = "BEEM_BUILD";
+    private const string BEEM_BUILD_TYPE = "BEEM_BUILD_TYPE";
 
     private static TextAsset currentManifest;
 
@@ -41,19 +41,6 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
         return new UnityCloudBuildManifestData();
     }
 
-    private static string GetUrl() {
-        if (GetUnityCloudBuildManifest() != null) {
-            return $"{SERVER}/orgs/{ORG_ID}/projects/{GetUnityCloudBuildManifest().projectId}/buildtargets/{GetUnityCloudBuildManifest().cloudBuildTargetName}/envvars";
-        }
-        return string.Empty;
-    }
-
-    private static void WriteReleaseNotes(FirebaseEnviromentVariables firebaseEnviromentVariables) {
-        //if (GetUnityCloudBuildManifest() != null) {
-        firebaseEnviromentVariables.FIREBASE_RELEASE_NOTES = Application.dataPath + "/Resources/" + CLOUD_BUILD_MANIFEST;//$"Build Config Name - {GetUnityCloudBuildManifest().cloudBuildTargetName}, \n Scm Branch - {GetUnityCloudBuildManifest().scmBranch}, \n Scm Commit ID - {GetUnityCloudBuildManifest().scmCommitId}";
-        //}
-    }
-
     [MenuItem("UCB/GetEnviromentVariables")]
     public static void GetEnviromentVariables() {
         Debug.LogError("GetEnviromentVariables");
@@ -64,20 +51,13 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
             Debug.LogError(entry.Key + " " + entry.Value);
         }
 
-        GetRequest request = new GetRequest(GetUrl(), "Basic " + API_KEY);
-        Debug.LogError("GetRequest");
-        request.Send(ViewEnviromentVariables);
-        Debug.LogError("Send");
+        ViewEnviromentVariables();
     }
 
-    private static void ViewEnviromentVariables(string body) {
-        Debug.LogError("ViewEnviromentVariables " + body);
-        FirebaseEnviromentVariables firebaseEnviromentVariables = JsonUtility.FromJson<FirebaseEnviromentVariables>(body);
-        SetBuildNumber(firebaseEnviromentVariables.BEEM_BUILD);
-        SetBuildVersion(firebaseEnviromentVariables.BEEM_VERSION);
-        SetBuildType(firebaseEnviromentVariables.BEEM_BUILD_TYPE);
-        WriteReleaseNotes(firebaseEnviromentVariables);
-        SetEnviromentVariables(firebaseEnviromentVariables);
+    private static void ViewEnviromentVariables() {
+        SetBuildNumber(Environment.GetEnvironmentVariable(BEEM_BUILD));
+        SetBuildVersion(Environment.GetEnvironmentVariable(BEEM_VERSION));
+        SetBuildType(Environment.GetEnvironmentVariable(BEEM_BUILD_TYPE));
     }
 
     private static void SetBuildNumber(string buildNumber) {
@@ -108,12 +88,6 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
             SwitchDefine(BuildTargetGroup.iOS, buildType);
             SwitchDefine(BuildTargetGroup.Android, buildType);
         }
-    }
-
-    private static void SetEnviromentVariables(FirebaseEnviromentVariables firebaseEnviromentVariables) {
-        Debug.LogError("SetEnviromentVariables " + firebaseEnviromentVariables.FIREBASE_RELEASE_NOTES);
-        PutRequest<FirebaseEnviromentVariables> request = new PutRequest<FirebaseEnviromentVariables>(GetUrl(), firebaseEnviromentVariables, "Basic " + API_KEY);
-        request.Send();
     }
 
     private static void SwitchDefine(BuildTargetGroup targetGroup, string buildType) {
