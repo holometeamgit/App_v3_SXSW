@@ -52,7 +52,7 @@ COMMENT=$(git log -1 $(parse_git_branch))
 
 echo $COMMENT;
 
-export RELEASE_NOTES="Version: $BEEM_VERSION, \n Build Type: $BEEM_BUILD_TYPE, \n Branch: $GIT_BRANCH, \n Commit ID: $COMMIT_ID"
+jq -n --arg version "$BEEM_VERSION" --arg type "$BEEM_BUILD_TYPE" --arg branch "$GIT_BRANCH" --arg commitID "$COMMIT_ID" '$ARGS.named' > release_notes.json
 
 export FIREBASE_BUILD="$(find -E . -regex '.*\.(ipa|apk|aab)' -print -quit)"
 
@@ -63,5 +63,5 @@ else
     echo "Install Firebase Tools.."
     npm install -g firebase-tools
     echo "Firebase Distribution..."
-    firebase appdistribution:distribute $FIREBASE_BUILD --app $FIREBASE_APP --release-notes $RELEASE_NOTES --groups $FIREBASE_GROUPS --token $FIREBASE_TOKEN;
+    firebase appdistribution:distribute $FIREBASE_BUILD --app $FIREBASE_APP --release-notes-file "release_notes.json" --groups $FIREBASE_GROUPS --token $FIREBASE_TOKEN;
 fi
