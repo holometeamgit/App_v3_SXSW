@@ -1,10 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace Beem.Utility.Requests {
+    /// <summary>
+    /// Request Process
+    /// </summary>
     public class RequestSender : IRequestSender {
 
         /// <summary>
@@ -12,17 +12,13 @@ namespace Beem.Utility.Requests {
         /// </summary>
         public async void Send(UnityWebRequest webRequest, Action<string> Success = null, Action<string> Fail = null) {
 
-            Debug.LogError("Request Started");
-
             UnityWebRequest.Result result = await webRequest.SendWebRequest();
 
-            Debug.LogError("Request Completed");
-
             if (result == UnityWebRequest.Result.Success) {
-                Debug.Log($"Success: {webRequest.downloadHandler.text}");
+                HelperFunctions.DevLog($"Success: {webRequest.downloadHandler.text}", "Request");
                 Success?.Invoke(webRequest.downloadHandler.text);
             } else {
-                Debug.LogError($"Failed: {webRequest.error}");
+                HelperFunctions.DevLogError($"Failed: {webRequest.error}", "Request");
                 Fail?.Invoke(webRequest.error);
             }
         }

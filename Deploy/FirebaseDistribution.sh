@@ -48,6 +48,12 @@ function parse_git_hash() {
 GIT_BRANCH=$(parse_git_branch)$(parse_git_hash)
 echo ${GIT_BRANCH}
 
+COMMENT=$(git log -1 $(parse_git_branch))
+
+echo $COMMENT;
+
+export RELEASE_NOTES="Version: $BEEM_VERSION, \n Build Type: $BEEM_BUILD_TYPE, \n Branch: $GIT_BRANCH, \n Commit ID: $COMMIT_ID"
+
 export FIREBASE_BUILD="$(find -E . -regex '.*\.(ipa|apk|aab)' -print -quit)"
 
 if [ -z "$FIREBASE_BUILD" ]; then
@@ -57,5 +63,5 @@ else
     echo "Install Firebase Tools.."
     npm install -g firebase-tools
     echo "Firebase Distribution..."
-    firebase appdistribution:distribute $FIREBASE_BUILD --app $FIREBASE_APP --release-notes $FIREBASE_RELEASE_NOTES --groups $FIREBASE_GROUPS --token $FIREBASE_TOKEN;
+    firebase appdistribution:distribute $FIREBASE_BUILD --app $FIREBASE_APP --release-notes $RELEASE_NOTES --groups $FIREBASE_GROUPS --token $FIREBASE_TOKEN;
 fi
