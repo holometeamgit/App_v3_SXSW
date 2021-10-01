@@ -39,10 +39,6 @@ GIT_BRANCH=$(parse_git_branch)$(parse_git_hash)
 
 MESSAGE=$(parse_git_message)
 
-#MESSAGE=${MESSAGE// /;}
-
-#GIT_MESSAGE=${MESSAGE//$'\n'/';'}
-
 COMMIT_ID=$(git rev-parse --verify HEAD)
 
 echo "Creating Release Notes..."
@@ -60,5 +56,5 @@ else
     echo "Install Firebase Tools.."
     npm install -g firebase-tools
     echo "Firebase Distribution..."
-    firebase appdistribution:distribute $FIREBASE_BUILD --app $FIREBASE_APP --release-notes-file "release_notes.json" --groups $FIREBASE_GROUPS --token $FIREBASE_TOKEN;
+    firebase appdistribution:distribute "$FIREBASE_BUILD" --app "$FIREBASE_APP" --release-notes-file "release_notes.json" --groups "$FIREBASE_GROUPS" --token "$FIREBASE_TOKEN";
 fi
