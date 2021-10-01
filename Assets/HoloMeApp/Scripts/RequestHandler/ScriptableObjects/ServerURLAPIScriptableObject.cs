@@ -27,24 +27,6 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     }
 
     [SerializeField]
-    private string firebaseStaticLink = "https://us-central1-test-36ceb.cloudfunctions.net";
-
-    public string FirebaseStaticLink {
-        get {
-            return firebaseStaticLink;
-        }
-    }
-
-    [SerializeField]
-    private string firebaseAddUser = "/addusername/";
-
-    public string FirebaseAddUser {
-        get {
-            return firebaseAddUser;
-        }
-    }
-
-    [SerializeField]
     private string firebaseRoom = "/room/";
 
     public string FirebaseRoom {
