@@ -37,9 +37,11 @@ echo "Uploading Git Data..."
 
 GIT_BRANCH=$(parse_git_branch)$(parse_git_hash)
 
-MESSAGE=$(parse_git_message) 
+MESSAGE=$(parse_git_message)
 
-GIT_MESSAGE=$($MESSAGE | tr " " "_")
+MESSAGE=${MESSAGE// /_}
+
+GIT_MESSAGE=${MESSAGE//$'\n'/';'}
 
 COMMIT_ID=$(git rev-parse --verify HEAD)
 
