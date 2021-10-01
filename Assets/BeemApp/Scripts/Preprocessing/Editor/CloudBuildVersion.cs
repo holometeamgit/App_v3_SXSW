@@ -24,11 +24,11 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
     private const string BEEM_BUILD = "BEEM_BUILD";
     private const string BEEM_BUILD_TYPE = "BEEM_BUILD_TYPE";
 
-    private static TextAsset currentManifest;
+    private TextAsset currentManifest;
 
     public int callbackOrder => 0;
 
-    private static UnityCloudBuildManifestData GetUnityCloudBuildManifest() {
+    private UnityCloudBuildManifestData GetUnityCloudBuildManifest() {
 
         if (currentManifest == null) {
             currentManifest = (TextAsset)Resources.Load(CLOUD_BUILD_MANIFEST);
@@ -41,27 +41,13 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
         return new UnityCloudBuildManifestData();
     }
 
-    [MenuItem("UCB/GetEnviromentVariables")]
-    public static void GetEnviromentVariables() {
-        Debug.LogError("GetEnviromentVariables");
-
-        Hashtable hashtable = Environment.GetEnvironmentVariables() as Hashtable;
-
-        foreach (DictionaryEntry entry in hashtable) {
-            Debug.LogError(entry.Key + " " + entry.Value);
-        }
-
-        ViewEnviromentVariables();
-    }
-
-    private static void ViewEnviromentVariables() {
+    private void GetEnviromentVariables() {
         SetBuildNumber(Environment.GetEnvironmentVariable(BEEM_BUILD));
         SetBuildVersion(Environment.GetEnvironmentVariable(BEEM_VERSION));
         SetBuildType(Environment.GetEnvironmentVariable(BEEM_BUILD_TYPE));
     }
 
-    private static void SetBuildNumber(string buildNumber) {
-        Debug.LogError("SetBuildNumber " + buildNumber);
+    private void SetBuildNumber(string buildNumber) {
         if (!string.IsNullOrEmpty(buildNumber)) {
             PlayerSettings.iOS.buildNumber = buildNumber;
             PlayerSettings.Android.bundleVersionCode = int.Parse(buildNumber);
@@ -73,15 +59,13 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
         }
     }
 
-    private static void SetBuildVersion(string buildVersion) {
-        Debug.LogError("SetBuildVersion " + buildVersion);
+    private void SetBuildVersion(string buildVersion) {
         if (!string.IsNullOrEmpty(buildVersion)) {
             PlayerSettings.bundleVersion = buildVersion;
         }
     }
 
-    private static void SetBuildType(string buildType) {
-        Debug.LogError("SetBuildType " + buildType);
+    private void SetBuildType(string buildType) {
         if (!string.IsNullOrEmpty(buildType)) {
             PlayerSettings.productName = buildType == DEV ? APPLICATION_NAME_DEV : APPLICATION_NAME;
             EditorUserBuildSettings.development = buildType == DEV;
@@ -90,8 +74,7 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
         }
     }
 
-    private static void SwitchDefine(BuildTargetGroup targetGroup, string buildType) {
-        Debug.LogError("SwitchDefine " + targetGroup + "," + buildType);
+    private void SwitchDefine(BuildTargetGroup targetGroup, string buildType) {
         string[] currentDefines;
         PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup, out currentDefines);
         if (currentDefines.Contains(PROD)) {
@@ -115,7 +98,6 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
     }
 
     public void OnPreprocessBuild(BuildReport report) {
-        Debug.LogError("OnPreprocessBuild");
         GetEnviromentVariables();
     }
 

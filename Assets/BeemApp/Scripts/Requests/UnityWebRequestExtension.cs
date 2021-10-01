@@ -7,6 +7,9 @@ using UnityEngine.Networking;
 
 
 namespace Beem.Utility.Requests {
+    /// <summary>
+    /// Extension for Request Task
+    /// </summary>
     public static class UnityWebRequestExtension {
         public static TaskAwaiter<UnityWebRequest.Result> GetAwaiter(this UnityWebRequestAsyncOperation reqOp) {
             TaskCompletionSource<UnityWebRequest.Result> tsc = new TaskCompletionSource<UnityWebRequest.Result>();
