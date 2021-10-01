@@ -57,6 +57,13 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
     [MenuItem("UCB/GetEnviromentVariables")]
     public static void GetEnviromentVariables() {
         Debug.LogError("GetEnviromentVariables");
+
+        Hashtable hashtable = Environment.GetEnvironmentVariables() as Hashtable;
+
+        foreach (DictionaryEntry entry in hashtable) {
+            Debug.LogError(entry.Key + " " + entry.Value);
+        }
+
         GetRequest request = new GetRequest(GetUrl(), "Basic " + API_KEY);
         Debug.LogError("GetRequest");
         request.Send(ViewEnviromentVariables);

@@ -23,13 +23,13 @@ echo "${http_response}"
 
 echo "End Response"
 
-echo "Start Response"
+COMMIT_ID=$(git rev-parse --verify HEAD)
 
-http_response2=$(curl -sL -H "Accept:application/json" -H "Content-Type: application/json" -H "Authorization: Basic $YOUR_API_KEY" https://build-api.cloud.unity3d.com/api/v1/orgs/$ORG_ID/projects/$PROJECT_ID/buildtargets/$BUILD_TARGET_ID/builds)
+echo $COMMIT_ID
 
-echo "${http_response2}"
+GIT_LOGS=$(git log)
 
-echo "End Response"
+echo $GIT_LOGS
 
 export FIREBASE_BUILD="$(find -E . -regex '.*\.(ipa|apk|aab)' -print -quit)"
 
