@@ -39,15 +39,15 @@ GIT_BRANCH=$(parse_git_branch)$(parse_git_hash)
 
 MESSAGE=$(parse_git_message)
 
-MESSAGE=${MESSAGE// /_}
+#MESSAGE=${MESSAGE// /;}
 
-GIT_MESSAGE=${MESSAGE//$'\n'/';'}
+#GIT_MESSAGE=${MESSAGE//$'\n'/';'}
 
 COMMIT_ID=$(git rev-parse --verify HEAD)
 
 echo "Creating Release Notes..."
 
-jq -n --arg config "$BUILD_TARGET" --arg version "$BEEM_VERSION" --arg type "$BEEM_BUILD_TYPE" --arg branch "$GIT_BRANCH" --arg message $GIT_MESSAGE --arg commitID "$COMMIT_ID" '$ARGS.named' > release_notes.json
+jq -n --arg config "$BUILD_TARGET" --arg version "$BEEM_VERSION" --arg type "$BEEM_BUILD_TYPE" --arg branch "$GIT_BRANCH" --arg message "$MESSAGE" --arg commitID "$COMMIT_ID" '$ARGS.named' > release_notes.json
 
 echo "Uploading Build Result to Firebase Distribution..."
 
