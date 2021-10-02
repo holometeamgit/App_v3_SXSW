@@ -7,6 +7,11 @@ using System;
 
 public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler {
 
+    public class ShowSwipePopUpSignal { public int id; }
+    public class OnShowedSwipePopUpSignal { public int id; }
+    public class HideSwipePopUpSignal { public int id; }
+    public class OnHidedSwipePopUpSignal { public int id; }
+
     public enum AppearanceSide {
         Bottom,
         Top,
@@ -14,12 +19,13 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         Right
     }
 
+    [SerializeField] int id;
     [SerializeField]
     AnimationCurve _animationCurve;
     [SerializeField]
     AppearanceSide _appearanceSide;
     [SerializeField]
-    RectTransform _swipeObjectTransform;
+    RectTransform _swipedObjectTransform;
     [SerializeField]
     CanvasGroup _canvasGroup;
 
@@ -27,107 +33,137 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     [SerializeField]
     float _time = 2;
 
-
     private CanvasScaler _canvasScaler;
 
     private Vector3 _initialPosition;
     private Vector2 _minMovedDistance;
     private bool _needMoving;
+    private Vector3 _hidePosition;
+    private Vector3 _showPosition;
 
-    private const float COEFIFICIENT = 0.4f;
-    private const float COEFIFICIENT_HIDING = 1.21f;
+    private const float COEFIFICIENT = 0.3f;
+    //private const float COEFIFICIENT_HIDING = 1.21f;
     private const float MAX_DEVIATION = 60;
     private const float DEVIATION_COEFICIENT = 0.9f;
-
-    public void UpdateMinMovedDistance() {
-        _minMovedDistance = _swipeObjectTransform.rect.size * COEFIFICIENT;
-    }
 
     public void OnDrag(PointerEventData eventData) {
         float deviation = 0;
         switch (_appearanceSide) {
             case AppearanceSide.Top:
-                deviation = _swipeObjectTransform.offsetMax.y + eventData.delta.y / _canvasScaler.transform.localScale.y;
+                deviation = _swipedObjectTransform.offsetMax.y + eventData.delta.y / _canvasScaler.transform.localScale.y;
                 Debug.Log("deviation " + deviation);
                 if (deviation < -MAX_DEVIATION)
                     break;
-                VerticalMoving(eventData, Mathf.Abs(Mathf.Clamp(deviation, -MAX_DEVIATION, 0)));
+                VerticalMoving(eventData, Mathf.Abs(Mathf.Clamp((int)deviation, (int)-MAX_DEVIATION, 0)));
                 break;
             case AppearanceSide.Bottom:
-                deviation = _swipeObjectTransform.offsetMin.y + eventData.delta.y / _canvasScaler.transform.localScale.y;
+                deviation = _swipedObjectTransform.offsetMin.y + eventData.delta.y / _canvasScaler.transform.localScale.y;
                 if (deviation > MAX_DEVIATION)
                     break;
-                VerticalMoving(eventData, Mathf.Abs(Mathf.Clamp(deviation, 0, MAX_DEVIATION)));
+                VerticalMoving(eventData, Mathf.Abs(Mathf.Clamp((int)deviation, 0, (int)MAX_DEVIATION)));
                 break;
             case AppearanceSide.Right:
-                deviation = _swipeObjectTransform.offsetMax.x + eventData.delta.x / _canvasScaler.transform.localScale.x;
+                deviation = _swipedObjectTransform.offsetMax.x + eventData.delta.x / _canvasScaler.transform.localScale.x;
                 if (deviation < -MAX_DEVIATION)
                     break;
-                HorizontalMoving(eventData, Mathf.Abs(Mathf.Clamp(deviation, -MAX_DEVIATION, 0)));
+                HorizontalMoving(eventData, Mathf.Abs(Mathf.Clamp((int)deviation, (int)-MAX_DEVIATION, 0)));
                 break;
             case AppearanceSide.Left:
-                deviation = _swipeObjectTransform.offsetMin.x + eventData.delta.x / _canvasScaler.transform.localScale.x;
+                deviation = _swipedObjectTransform.offsetMin.x + eventData.delta.x / _canvasScaler.transform.localScale.x;
                 if (deviation > MAX_DEVIATION)
                     break;
-                HorizontalMoving(eventData, Mathf.Abs(Mathf.Clamp(deviation, 0, MAX_DEVIATION)));
+                HorizontalMoving(eventData, Mathf.Abs(Mathf.Clamp((int)deviation, 0, (int)MAX_DEVIATION)));
                 break;
         }
 
-        Debug.Log("init position" + _swipeObjectTransform.localPosition + " " + _swipeObjectTransform.offsetMax.y);
+//        Debug.Log("init position" + _swipedObjectTransform.localPosition + " " + _swipedObjectTransform.offsetMax.y);
     }
 
     public void OnBeginDrag(PointerEventData eventData) {
-        _initialPosition = _swipeObjectTransform.localPosition;
+        _initialPosition = _swipedObjectTransform.localPosition;
         UpdateMinMovedDistance();
-
-        Debug.Log("init position" + _swipeObjectTransform.localPosition + " " + _swipeObjectTransform.offsetMax.y);
+        CalculateTargetPoints();
+        Debug.Log("targetPosition " + _hidePosition + " offsetMin " + _swipedObjectTransform.offsetMin.y + " rect.size " + (_swipedObjectTransform.rect.size.y - _canvasScaler.referenceResolution.y/2) + " " +_swipedObjectTransform.localPosition);
+        //        Debug.Log("init position" + _swipedObjectTransform.localPosition + " " + _swipedObjectTransform.offsetMax.y);
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-        float distanceMovedX = Mathf.Abs(_swipeObjectTransform.localPosition.x - _initialPosition.x);
-        float distanceMovedY = Mathf.Abs(_swipeObjectTransform.localPosition.y - _initialPosition.y);
+        float distanceMovedX = Mathf.Abs(_swipedObjectTransform.localPosition.x - _initialPosition.x);
+        float distanceMovedY = Mathf.Abs(_swipedObjectTransform.localPosition.y - _initialPosition.y);
 
         _needMoving = distanceMovedX >= _minMovedDistance.x || distanceMovedY >= _minMovedDistance.y;
 
         if (!_needMoving) {
-            _swipeObjectTransform.localPosition = _initialPosition;
+            _swipedObjectTransform.localPosition = _initialPosition;
         } else {
-            StartCoroutine(MovedCard());
+            StartCoroutine(HideSwipedObject(_hidePosition, 0));
         }
+    }
+
+    public void Show() {
+        gameObject.SetActive(true);
     }
 
     private void Awake() {
         _canvasScaler = GetComponentInParent<CanvasScaler>();
+        CalculateTargetPoints();
     }
 
-    private void VerticalMoving(PointerEventData eventData, float deviationMultiplier) {
+    private void OnDisable() {
+        _swipedObjectTransform.localPosition = _hidePosition;
+        _canvasGroup.alpha = 0;
+    }
+
+    private void UpdateMinMovedDistance() {
+        _minMovedDistance = _swipedObjectTransform.rect.size * COEFIFICIENT;
+    }
+
+    private void CalculateTargetPoints() {
+        Debug.Log(_canvasScaler.referenceResolution.y);
+        switch (_appearanceSide) {
+            case AppearanceSide.Top:
+                _hidePosition = new Vector3(_swipedObjectTransform.localPosition.x, _canvasScaler.referenceResolution.y, 0);
+                _showPosition = new Vector3(_swipedObjectTransform.localPosition.x, _swipedObjectTransform.offsetMax.y, 0);
+                break;
+            case AppearanceSide.Bottom:
+                _hidePosition = new Vector3(_swipedObjectTransform.localPosition.x, -_canvasScaler.referenceResolution.y, 0);
+                _showPosition = new Vector3(_swipedObjectTransform.localPosition.x, _swipedObjectTransform.offsetMin.y, 0);
+                break;
+            case AppearanceSide.Right:
+                _hidePosition = new Vector3(_canvasScaler.referenceResolution.x, _swipedObjectTransform.localPosition.y, 0);
+                _showPosition = new Vector3(_swipedObjectTransform.offsetMax.x, _swipedObjectTransform.localPosition.y, 0);
+                break;
+            case AppearanceSide.Left:
+                _hidePosition = new Vector3(-_canvasScaler.referenceResolution.x, _swipedObjectTransform.localPosition.y, 0);
+                _showPosition = new Vector3(_swipedObjectTransform.offsetMin.x, _swipedObjectTransform.localPosition.y, 0);
+                break;
+        }
+    }
+
+    private void VerticalMoving(PointerEventData eventData, int deviationMultiplier) {
         float delta = eventData.delta.y / _canvasScaler.transform.localScale.y * Mathf.Pow(DEVIATION_COEFICIENT, deviationMultiplier);
-        float localPosition = _swipeObjectTransform.localPosition.y + delta;
-        _swipeObjectTransform.localPosition = new Vector2(_swipeObjectTransform.localPosition.x, localPosition);
+        float localPosition = _swipedObjectTransform.localPosition.y + delta;
+        _swipedObjectTransform.localPosition = new Vector2(_swipedObjectTransform.localPosition.x, localPosition);
     }
 
-    private void HorizontalMoving(PointerEventData eventData, float deviationMultiplier) {
+    private void HorizontalMoving(PointerEventData eventData, int deviationMultiplier) {
         float delta = eventData.delta.x / _canvasScaler.transform.localScale.x * Mathf.Pow(DEVIATION_COEFICIENT, deviationMultiplier);
-        float localPosition = _swipeObjectTransform.localPosition.x + delta;
-        _swipeObjectTransform.localPosition = new Vector2(localPosition, _swipeObjectTransform.localPosition.y);
+        float localPosition = _swipedObjectTransform.localPosition.x + delta;
+        _swipedObjectTransform.localPosition = new Vector2(localPosition, _swipedObjectTransform.localPosition.y);
     }
 
-    private IEnumerator MovedCard() {
+    private IEnumerator HideSwipedObject(Vector3 targetPosition, float targetAlpha) {
         float time = 0;
-        Vector3 startPosition = _swipeObjectTransform.localPosition;
-        while (_canvasGroup.alpha > 0) {
+        Vector3 startPosition = _swipedObjectTransform.localPosition;
+        while (time <= 1) {
             time += (Time.deltaTime / _time);
 
-
-
-            _swipeObjectTransform.localPosition = Vector3.Slerp(startPosition,
-                new Vector3(
-                    _needMoving ? ((_appearanceSide == AppearanceSide.Left ? -_canvasScaler.referenceResolution.x : _canvasScaler.referenceResolution.x)) : _swipeObjectTransform.localPosition.x,
-                    _needMoving ? ((_appearanceSide == AppearanceSide.Bottom ? -_canvasScaler.referenceResolution.y : _canvasScaler.referenceResolution.y)) : _swipeObjectTransform.localPosition.y,
-                    0)
-                    , Mathf.Clamp01(_animationCurve.Evaluate(time)));
-            _canvasGroup.alpha = Mathf.SmoothStep(1, 0, time * COEFIFICIENT_HIDING);
+            _swipedObjectTransform.localPosition = Vector3.Lerp(startPosition, targetPosition, Mathf.Clamp01(_animationCurve.Evaluate(time)));
+            _canvasGroup.alpha = Mathf.SmoothStep(1, 0, time);
             yield return null;
         }
+
+        _swipedObjectTransform.localPosition = targetPosition;
+        _canvasGroup.alpha = targetAlpha;
     }
 }
