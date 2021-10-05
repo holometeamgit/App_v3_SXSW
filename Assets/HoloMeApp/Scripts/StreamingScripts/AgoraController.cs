@@ -40,7 +40,7 @@ public class AgoraController : MonoBehaviour {
     private bool videoQuadWasSetup; //Required to stop new calls from reconfiguring video surface quad
 
     int streamID = -1;
-    int agoraMessageStreamID;
+    //int agoraMessageStreamID;
 
     [HideInInspector]
     public uint frameRate;
@@ -258,10 +258,10 @@ public class AgoraController : MonoBehaviour {
 
         IsLive = true;
 
-        agoraMessageStreamID = iRtcEngine.CreateDataStream(true, true);
+        //agoraMessageStreamID = iRtcEngine.CreateDataStream(true, true);
 
-        iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
-        iRtcEngine.OnStreamMessageError = OnStreamMessageError;
+        //iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
+        //iRtcEngine.OnStreamMessageError = OnStreamMessageError;
 
         OnStreamWentLive?.Invoke();
     }
@@ -460,24 +460,34 @@ public class AgoraController : MonoBehaviour {
 
     #region Messaging system
 
+    public void AddAgoraMessageReceiver(AgoraMessageReceiver agoraMessageReceiver)
+    {
+        agoraRTMChatController.AddMessageReceiver(agoraMessageReceiver);
+    }
+
     /// <summary>
     /// Sends string message to all users in a channel.
     /// </summary>
-    public void SendAgoraMessage(string message) {
-        HelperFunctions.DevLog($"Sending Agora Message {message}");
-        byte[] messageToBytes = Encoding.ASCII.GetBytes(message);
-        iRtcEngine.SendStreamMessage(agoraMessageStreamID, messageToBytes);
+    public void SendAgoraMessage(string message, int requestID =  AgoraMessageRequestIDs.IDStreamMessage) {
+        //HelperFunctions.DevLog($"Sending Agora Message {message}");
+        //byte[] messageToBytes = Encoding.ASCII.GetBytes(message);
+        //iRtcEngine.SendStreamMessage(agoraMessageStreamID, messageToBytes);
+
+        ChatMessageJsonData agoraStreamMessage = new ChatMessageJsonData { message = message };
+        agoraStreamMessage.requestID = requestID;
+
+        agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(agoraStreamMessage));
     }
 
-    private void OnStreamMessageError(uint userId, int streamId, int code, int missed, int cached) {
-        HelperFunctions.DevLog($"Stream message error! Code = {code}");
-    }
+    //private void OnStreamMessageError(uint userId, int streamId, int code, int missed, int cached) {
+    //    HelperFunctions.DevLog($"Stream message error! Code = {code}");
+    //}
 
-    private void OnStreamMessageRecieved(uint userId, int streamId, byte[] data, int length) {
-        string result = Encoding.ASCII.GetString(data);
-        HelperFunctions.DevLog($"Agora Message Recieved {result}");
-        OnMessageRecieved?.Invoke(result);
-    }
+    //private void OnStreamMessageRecieved(uint userId, int streamId, byte[] data, int length) {
+    //    string result = Encoding.ASCII.GetString(data);
+    //    HelperFunctions.DevLog($"Agora Message Recieved {result}");
+    //    OnMessageRecieved?.Invoke(result);
+    //}
 
     #endregion
 

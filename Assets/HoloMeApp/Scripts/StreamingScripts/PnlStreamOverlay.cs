@@ -8,7 +8,7 @@ using agora_gaming_rtc;
 using Beem.Firebase.DynamicLink;
 using Beem.UI;
 
-public class PnlStreamOverlay : MonoBehaviour {
+public class PnlStreamOverlay : AgoraMessageReceiver {
 
     [Header("Views")]
 
@@ -141,12 +141,13 @@ public class PnlStreamOverlay : MonoBehaviour {
         agoraController.OnPreviewStopped += () => videoSurface.SetEnable(false);
         agoraController.OnStreamWentOffline += StopStreamCountUpdaters;
         agoraController.OnStreamWentOffline += () => TogglePreLiveControls(true);
-        agoraController.OnMessageRecieved += StreamMessageResponse;
+        agoraController.OnMessageRecieved += ReceivedChatMessage;
         agoraController.OnStreamWentLive += StartStatusUpdateRoutine;
         agoraController.OnUserViewerJoined += SendVideoAudioPauseStatusToViewers;
         agoraController.OnUserViewerJoined += SendPushToTalkStatusToViewers;
         agoraController.OnUserViewerJoined += SendChannelCreatorUIDToViewers;
 
+        agoraController.AddAgoraMessageReceiver(this);
         //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
         AssignStreamCountUpdaterAnalyticsEvent();
@@ -492,16 +493,36 @@ public class PnlStreamOverlay : MonoBehaviour {
         return false;
     }
 
-    public void StreamMessageResponse(string message) {
+    public override void ReceivedChatMessage(string data)
+    {
+        AgoraStreamMessageCommonType agoraStreamMessage = JsonParser.CreateFromJSON<AgoraStreamMessageCommonType>(data);
+        if (agoraStreamMessage.requestID == AgoraMessageRequestIDs.IDStreamMessage)
+        {
+            var chatMessageJsonData = JsonParser.CreateFromJSON<ChatMessageJsonData>(data);
 
-        HelperFunctions.DevLog($"Stream Message Received ({message})");
+            string[] messages = chatMessageJsonData.message.Split(new char[] { MessageSplitter }, System.StringSplitOptions.RemoveEmptyEntries);
 
-        string[] messages = message.Split(new char[] { MessageSplitter }, System.StringSplitOptions.RemoveEmptyEntries);
-
-        foreach (string parsedMessage in messages) {
-            HandleReturnedMessage(parsedMessage);
+            foreach (string parsedMessage in messages)
+            {
+                HandleReturnedMessage(parsedMessage);
+            }
         }
     }
+
+    public override void OnDisconnected()
+    {
+    }
+
+    //public void StreamMessageResponse(string message) {
+
+    //    HelperFunctions.DevLog($"Stream Message Received ({message})");
+
+    //    string[] messages = message.Split(new char[] { MessageSplitter }, System.StringSplitOptions.RemoveEmptyEntries);
+
+    //    foreach (string parsedMessage in messages) {
+    //        HandleReturnedMessage(parsedMessage);
+    //    }
+    //}
 
     private void HandleReturnedMessage(string message) {
         if (CheckIncorrectMessageForStreamer(message)) {
@@ -743,5 +764,5 @@ public class PnlStreamOverlay : MonoBehaviour {
             if (_hideVideo)
                 ToggleVideo(true);
         }
-    }
+    }        
 }
