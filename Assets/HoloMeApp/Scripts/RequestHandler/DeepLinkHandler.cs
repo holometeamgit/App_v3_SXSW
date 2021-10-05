@@ -13,6 +13,8 @@ public class DeepLinkHandler : MonoBehaviour {
 
     public void OnDynamicLinkActivated(string uriStr) {
 
+        Debug.LogError("OnDynamicLinkActivated: " + uriStr);
+
         Uri uri = new Uri(uriStr);
 
         HelperFunctions.DevLog("Dynamic link: " + uriStr);
@@ -20,6 +22,7 @@ public class DeepLinkHandler : MonoBehaviour {
     }
 
     private void Awake() {
+        Debug.LogError("Subscribe on DynamicLinksCallBacks.onReceivedDeepLink");
         DynamicLinksCallBacks.onReceivedDeepLink += OnDynamicLinkActivated;
     }
 
