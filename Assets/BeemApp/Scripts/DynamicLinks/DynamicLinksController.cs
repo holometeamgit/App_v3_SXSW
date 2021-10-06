@@ -51,7 +51,7 @@ namespace Beem.Firebase.DynamicLink {
          // The base Link.
          new Uri(baseLink),
          // The dynamic link URI prefix.
-         dynamicLinkParameters.Prefix + "/stream/" + dynamicLinkParameters.Username) {
+         dynamicLinkParameters.Prefix) {
                 IOSParameters = new IOSParameters(Application.identifier) {
                     AppStoreId = APPSTORE_ID
                 },
