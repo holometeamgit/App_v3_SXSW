@@ -141,7 +141,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         agoraController.OnPreviewStopped += () => videoSurface.SetEnable(false);
         agoraController.OnStreamWentOffline += StopStreamCountUpdaters;
         agoraController.OnStreamWentOffline += () => TogglePreLiveControls(true);
-        agoraController.OnMessageRecieved += ReceivedChatMessage;
         agoraController.OnStreamWentLive += StartStatusUpdateRoutine;
         agoraController.OnUserViewerJoined += SendVideoAudioPauseStatusToViewers;
         agoraController.OnUserViewerJoined += SendPushToTalkStatusToViewers;
@@ -512,17 +511,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     public override void OnDisconnected()
     {
     }
-
-    //public void StreamMessageResponse(string message) {
-
-    //    HelperFunctions.DevLog($"Stream Message Received ({message})");
-
-    //    string[] messages = message.Split(new char[] { MessageSplitter }, System.StringSplitOptions.RemoveEmptyEntries);
-
-    //    foreach (string parsedMessage in messages) {
-    //        HandleReturnedMessage(parsedMessage);
-    //    }
-    //}
 
     private void HandleReturnedMessage(string message) {
         if (CheckIncorrectMessageForStreamer(message)) {
