@@ -12,12 +12,10 @@ namespace Beem.Firebase.DynamicLink {
         private const string APPSTORE_ID = "1532446771";
 
         private void OnEnable() {
-            Debug.LogError("Subscribe on Init");
             FirebaseCallBacks.onInit += Subscribe;
         }
 
         protected void Subscribe() {
-            Debug.LogError("Subscribe on DynamicLinkReceived");
             DynamicLinks.DynamicLinkReceived += OnDynamicLink;
             DynamicLinksCallBacks.onCreateShortLink += CreateShortLink;
 
@@ -31,9 +29,7 @@ namespace Beem.Firebase.DynamicLink {
 
         // Display the dynamic link received by the application.
         private void OnDynamicLink(object sender, EventArgs args) {
-            Debug.Log("Get Link From Firebase");
             var dynamicLinkEventArgs = args as ReceivedDynamicLinkEventArgs;
-            Debug.Log("Get Link From Firebase with details" + dynamicLinkEventArgs.ReceivedDynamicLink.Url.OriginalString);
             DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(dynamicLinkEventArgs.ReceivedDynamicLink.Url.OriginalString);
             Debug.LogFormat("Received dynamic link {0}",
                             dynamicLinkEventArgs.ReceivedDynamicLink.Url.OriginalString);
@@ -55,7 +51,7 @@ namespace Beem.Firebase.DynamicLink {
          // The base Link.
          new Uri(baseLink),
          // The dynamic link URI prefix.
-         dynamicLinkParameters.Prefix) {
+         dynamicLinkParameters.Prefix + "/stream/" + dynamicLinkParameters.Username) {
                 IOSParameters = new IOSParameters(Application.identifier) {
                     AppStoreId = APPSTORE_ID
                 },

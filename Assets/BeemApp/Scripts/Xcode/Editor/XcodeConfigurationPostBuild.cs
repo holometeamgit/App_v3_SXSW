@@ -12,7 +12,7 @@ namespace Beem.Xcode {
     public class XcodeConfigurationPostBuild {
 
         private const string DOMAIN = "https://join.beem.me";
-        private const string DOMAIN_ROOM = "https://join.beem.me/room";
+        private const string DOMAIN_ROOM = "https://join.beem.me/room/*";
 
         [PostProcessBuild]
         public static void ChangeXcodePlist(BuildTarget buildTarget, string pathToBuiltProject) {
