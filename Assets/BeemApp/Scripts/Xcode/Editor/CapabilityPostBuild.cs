@@ -17,8 +17,9 @@ namespace Beem.Xcode {
     public class CapabilityPostBuild {
 
         private static string[] applinks = new string[] {
-            "applinks:join.beem.me",
-            "applinks:beem.onelink.me"
+            "applinks:ar.beem.me",
+            //"applinks:join.beem.me",
+            //"applinks:beem.onelink.me"
         };
 
         private const int CallOrder = 2;
