@@ -19,37 +19,19 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     [Space]
 
     [SerializeField]
+    private bool useHashForRoomLink = default;
+
+    public bool UseHashForRoomLink {
+        get {
+            return useHashForRoomLink;
+        }
+    }
+
+    [SerializeField]
     private string firebaseDynamicLink = "https://join.beem.me";
     public string FirebaseDynamicLink {
         get {
             return firebaseDynamicLink;
-        }
-    }
-
-    [SerializeField]
-    private string firebaseStaticLink = "https://us-central1-test-36ceb.cloudfunctions.net";
-
-    public string FirebaseStaticLink {
-        get {
-            return firebaseStaticLink;
-        }
-    }
-
-    [SerializeField]
-    private string firebaseAddUser = "/addusername/";
-
-    public string FirebaseAddUser {
-        get {
-            return firebaseAddUser;
-        }
-    }
-
-    [SerializeField]
-    private string firebaseProfile = "/profile/";
-
-    public string FirebaseProfile {
-        get {
-            return firebaseProfile;
         }
     }
 
@@ -67,24 +49,6 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     public string Url {
         get {
             return url;
-        }
-    }
-
-    [SerializeField]
-    private string streamId = "streamId";
-
-    public string StreamId {
-        get {
-            return streamId;
-        }
-    }
-
-    [SerializeField]
-    private string username = "username";
-
-    public string Username {
-        get {
-            return username;
         }
     }
 
