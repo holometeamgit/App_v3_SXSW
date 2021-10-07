@@ -8,10 +8,9 @@ public class DeepLinkHandler : MonoBehaviour {
     public Action<string, string> PasswordResetConfirmDeepLinkActivated;
     public Action<ServerAccessToken> OnCompleteSSOLoginGetted;
 
-    [SerializeField]
-    private ServerURLAPIScriptableObject serverURLAPIScriptableObject;
-
     public void OnDynamicLinkActivated(string uriStr) {
+
+        Debug.LogError("OnDynamicLinkActivated: " + uriStr);
 
         Uri uri = new Uri(uriStr);
 
@@ -29,18 +28,18 @@ public class DeepLinkHandler : MonoBehaviour {
 
 
     private void GetContentsParameters(Uri uri) {
-        if (ContainParameter(uri, serverURLAPIScriptableObject.StreamId)) {
+        if (ContainParameter(uri, DynamicLinkParameters.Parameter.streamId.ToString())) {
             HelperFunctions.DevLog("GetStreamParameters");
 
-            string streamId = GetParameter(uri, serverURLAPIScriptableObject.StreamId);
+            string streamId = GetParameter(uri, DynamicLinkParameters.Parameter.streamId.ToString());
 
             HelperFunctions.DevLog("streamId = " + streamId);
             StreamCallBacks.onStreamLinkReceived?.Invoke(streamId);
-        } else if (ContainParameter(uri, serverURLAPIScriptableObject.Username)) {
+        } else if (ContainParameter(uri, DynamicLinkParameters.Parameter.username.ToString())) {
 
             HelperFunctions.DevLog("GetRoomParameters");
 
-            string userName = GetParameter(uri, serverURLAPIScriptableObject.Username);
+            string userName = GetParameter(uri, DynamicLinkParameters.Parameter.username.ToString());
 
             HelperFunctions.DevLog("username = " + userName);
             StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
