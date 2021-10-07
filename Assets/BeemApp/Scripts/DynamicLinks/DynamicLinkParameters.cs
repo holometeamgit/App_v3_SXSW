@@ -9,15 +9,20 @@ namespace Beem.Firebase.DynamicLink {
     /// </summary>
     public class DynamicLinkParameters {
 
+        public enum Parameter {
+            streamId,
+            username
+        }
+
         public string Prefix {
             get {
                 return _prefix;
             }
         }
 
-        public string Id {
+        public string ParameterId {
             get {
-                return _id;
+                return _parameterId;
             }
         }
 
@@ -27,9 +32,10 @@ namespace Beem.Firebase.DynamicLink {
             }
         }
 
-        public string Username {
+
+        public Parameter ParameterName {
             get {
-                return _username;
+                return _parameterName;
             }
         }
 
@@ -40,22 +46,23 @@ namespace Beem.Firebase.DynamicLink {
         }
 
         private string _prefix = default;
-        private string _id;
+        private string _parameterId;
         private string _desktopURL;
-        private string _username;
+        private Parameter _parameterName;
         private SocialMetaTagParameters _socialMetaTagParameters;
 
-        public DynamicLinkParameters(string prefix, string id, string desktopURL) {
+        public DynamicLinkParameters(string prefix, string desktopURL, Parameter parameterName, string parameterId) {
             _prefix = prefix;
-            _id = id;
+            _parameterId = parameterId;
             _desktopURL = desktopURL;
+            _parameterName = parameterName;
         }
 
-        public DynamicLinkParameters(string prefix, string id, string desktopURL, string username, SocialMetaTagParameters socialMetaTagParameters) {
+        public DynamicLinkParameters(string prefix, string desktopURL, Parameter parameterName, string parameterId, SocialMetaTagParameters socialMetaTagParameters) {
             _prefix = prefix;
-            _id = id;
+            _parameterId = parameterId;
             _desktopURL = desktopURL;
-            _username = username;
+            _parameterName = parameterName;
             _socialMetaTagParameters = socialMetaTagParameters;
         }
 

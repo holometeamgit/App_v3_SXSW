@@ -19,6 +19,15 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     [Space]
 
     [SerializeField]
+    private bool roomHashLink = default;
+
+    public bool RoomHashLink {
+        get {
+            return roomHashLink;
+        }
+    }
+
+    [SerializeField]
     private string firebaseDynamicLink = "https://join.beem.me";
     public string FirebaseDynamicLink {
         get {
@@ -40,24 +49,6 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     public string Url {
         get {
             return url;
-        }
-    }
-
-    [SerializeField]
-    private string streamId = "streamId";
-
-    public string StreamId {
-        get {
-            return streamId;
-        }
-    }
-
-    [SerializeField]
-    private string username = "username";
-
-    public string Username {
-        get {
-            return username;
         }
     }
 
