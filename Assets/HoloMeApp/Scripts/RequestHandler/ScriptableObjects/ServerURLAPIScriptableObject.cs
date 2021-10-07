@@ -19,11 +19,11 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     [Space]
 
     [SerializeField]
-    private bool roomHashLink = default;
+    private bool useHashForRoomLink = default;
 
-    public bool RoomHashLink {
+    public bool UseHashForRoomLink {
         get {
-            return roomHashLink;
+            return useHashForRoomLink;
         }
     }
 

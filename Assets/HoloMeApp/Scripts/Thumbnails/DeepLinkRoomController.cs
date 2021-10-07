@@ -34,7 +34,7 @@ public class DeepLinkRoomController : MonoBehaviour {
     }
 
     private void GetRoomLink(string source) {
-        if (!serverURLAPIScriptableObject.RoomHashLink) {
+        if (!serverURLAPIScriptableObject.UseHashForRoomLink) {
             Uri uri = new Uri(serverURLAPIScriptableObject.FirebaseDynamicLink + serverURLAPIScriptableObject.FirebaseRoom + source);
             DynamicLinksCallBacks.onGetShortLink?.Invoke(uri, SocialParameters(source));
         } else {
