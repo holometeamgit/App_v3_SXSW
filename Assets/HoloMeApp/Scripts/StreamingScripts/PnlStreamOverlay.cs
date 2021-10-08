@@ -404,7 +404,12 @@ public class PnlStreamOverlay : MonoBehaviour {
         isPushToTalkActive = enabled;
         SendPushToTalkStatusToViewers();
         if (isPushToTalkActive) {
-            AnimatedCentreTextMessage("Dialog is on. Listeners can talk to you now");
+            AnimatedCentreTextMessage("Two way audio is on. \n Listeners can talk to you now.");
+            AnimatedFadeOutMessage(3);
+        }
+        else
+        {
+            AnimatedCentreTextMessage("Two way audio is off.");
             AnimatedFadeOutMessage(3);
         }
     }
@@ -687,30 +692,52 @@ public class PnlStreamOverlay : MonoBehaviour {
 
     public void ToggleLocalAudio(bool mute) {
         _muteAudio = mute;
+
+        AnimatedCentreTextMessage("Your microphone is " + (mute ? "off" : "on") + ".");
+        AnimatedFadeOutMessage(3);
         if (isChannelCreator) { //Display popup only for streamers but not for 2 way audio viewers
-            UpdateToggleMessage();
+            SendVideoAudioPauseStatusToViewers();
         }
         agoraController.ToggleLocalAudio(mute);
     }
 
     public void ToggleVideo(bool hideVideo) {
         _hideVideo = hideVideo;
-        UpdateToggleMessage();
+
+        AnimatedCentreTextMessage("Your camera is " + (hideVideo ? "off" : "on") + ".");
+        AnimatedFadeOutMessage(3);
+        SendVideoAudioPauseStatusToViewers();
+
+        //UpdateToggleMessageOff();
         agoraController.ToggleVideo(hideVideo);
     }
 
-    private void UpdateToggleMessage() {
-        if (_hideVideo && _muteAudio) {
-            AnimatedCentreTextMessage("Video and Audio are off");
-        } else if (_hideVideo) {
-            AnimatedCentreTextMessage("Video Off");
-        } else if (_muteAudio) {
-            AnimatedCentreTextMessage("Audio Off");
-        } else {
-            AnimatedFadeOutMessage();
-        }
-        SendVideoAudioPauseStatusToViewers();
-    }
+    //private void UpdateToggleMessageOff() {
+    //    if (_hideVideo && _muteAudio) {
+    //        AnimatedCentreTextMessage("Your camera is Off. \n Your microphone is Off.");
+    //    } else if (_hideVideo) {
+    //        AnimatedCentreTextMessage("Your camera is Off.");
+    //    } else if (_muteAudio) {
+    //        AnimatedCentreTextMessage("Your microphone is Off.");
+    //    } else {
+    //        AnimatedFadeOutMessage();
+    //    }
+    //    SendVideoAudioPauseStatusToViewers();
+    //}
+
+    //private void UpdateToggleMessageOff()
+    //{
+    //    if (_hideVideo)        {
+    //        AnimatedCentreTextMessage("Your camera is On.");
+    //        AnimatedFadeOutMessage(3);
+    //    } else if (_muteAudio)        {
+    //        AnimatedCentreTextMessage("Your microphone is On.");
+    //        AnimatedFadeOutMessage(3);
+    //    } else {
+    //        AnimatedFadeOutMessage();
+    //    }
+    //    SendVideoAudioPauseStatusToViewers();
+    //}
 
     IEnumerator CountDown() {
         countDown = 0;
