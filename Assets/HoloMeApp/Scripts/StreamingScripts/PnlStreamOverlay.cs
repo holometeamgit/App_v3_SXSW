@@ -525,7 +525,7 @@ public class PnlStreamOverlay : MonoBehaviour {
                 }
                 togglePushToTalk.isOn = true; //Mute the mic
                 togglePushToTalk.interactable = true;
-                AnimatedCentreTextMessage("Hold the Talk button to speak to the broadcaster");
+                AnimatedCentreTextMessage("Tap the Talk button to enable \n your microphone");
                 AnimatedFadeOutMessage(3);
                 return;
             case MessageToViewerDisableTwoWayAudio:
@@ -539,21 +539,21 @@ public class PnlStreamOverlay : MonoBehaviour {
                 if (LastMessageWasRecievedAlready(ref lastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
-                AnimatedCentreTextMessage("Audio has been turned off by the broadcaster");
+                AnimatedCentreTextMessage("Audio has been turned off \n by the broadcaster");
                 agoraController.ToggleLiveStreamQuad(false);
                 return;
             case MessageToViewerBroadcasterVideoPaused:
                 if (LastMessageWasRecievedAlready(ref lastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
-                AnimatedCentreTextMessage("Video has been turned off by the broadcaster");
+                AnimatedCentreTextMessage("Video has been turned off \n by the broadcaster");
                 agoraController.ToggleLiveStreamQuad(true);
                 return;
             case MessageToViewerBroadcasterAudioAndVideoPaused:
                 if (LastMessageWasRecievedAlready(ref lastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
-                AnimatedCentreTextMessage("Video and Audio has been turned off by the broadcaster");
+                AnimatedCentreTextMessage("Video and Audio has been turned off \n by the broadcaster");
                 agoraController.ToggleLiveStreamQuad(true);
                 return;
             case MessageToViewerBroadcasterUnpaused:
