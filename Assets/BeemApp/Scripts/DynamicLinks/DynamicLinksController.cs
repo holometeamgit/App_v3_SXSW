@@ -46,25 +46,52 @@ namespace Beem.Firebase.DynamicLink {
         }
 
         private void CreateShortLink(DynamicLinkParameters dynamicLinkParameters) {
-            string baseLink = dynamicLinkParameters.Prefix + "?" + dynamicLinkParameters.ParameterName + "=" + dynamicLinkParameters.ParameterId;
-            var components = new DynamicLinkComponents(
-         // The base Link.
-         new Uri(baseLink),
-         // The dynamic link URI prefix.
-         dynamicLinkParameters.Prefix) {
-                IOSParameters = new IOSParameters(Application.identifier) {
-                    AppStoreId = APPSTORE_ID
-                },
-                AndroidParameters = new AndroidParameters(Application.identifier),
 
-                SocialMetaTagParameters = dynamicLinkParameters.SocialMetaTagParameters
+            HelperFunctions.DevLogError("CreateShortLink");
+            string baseLink = string.Empty;
+            string urlFormat = string.Empty;
 
-            };
+            if (dynamicLinkParameters.ParameterName == DynamicLinkParameters.Parameter.username) {
+                baseLink = dynamicLinkParameters.DesktopUrl + "?" + dynamicLinkParameters.ParameterName + "=" + dynamicLinkParameters.ParameterId;
 
-            string urlFormat = components.LongDynamicLink.AbsoluteUri;
-            if (!string.IsNullOrEmpty(dynamicLinkParameters.DesktopUrl)) {
-                urlFormat += "&ofl=" + dynamicLinkParameters.DesktopUrl;
+                var components = new DynamicLinkComponents(new Uri(baseLink), dynamicLinkParameters.Prefix);
+
+                urlFormat = components.LongDynamicLink.AbsoluteUri;
+
+                HelperFunctions.DevLogError(urlFormat);
+
+                urlFormat += $"&ofl={baseLink}";
+                urlFormat += $"&ifl={baseLink}";
+                urlFormat += $"&ipfl={baseLink}";
+                urlFormat += $"&afl={baseLink}";
+                urlFormat += $"&apn={Application.identifier}";
+                urlFormat += $"&ibi={Application.identifier}";
+                urlFormat += $"&isi={APPSTORE_ID}";
+                urlFormat += $"&st={dynamicLinkParameters.SocialMetaTagParameters.Title}";
+                urlFormat += $"&si={dynamicLinkParameters.SocialMetaTagParameters.ImageUrl}";
+                urlFormat += $"&sd={dynamicLinkParameters.SocialMetaTagParameters.Description}";
+            } else {
+                baseLink = dynamicLinkParameters.Prefix + "?" + dynamicLinkParameters.ParameterName + "=" + dynamicLinkParameters.ParameterId;
+
+                var components = new DynamicLinkComponents(new Uri(baseLink), dynamicLinkParameters.Prefix);
+
+                urlFormat = components.LongDynamicLink.AbsoluteUri;
+
+                HelperFunctions.DevLogError(urlFormat);
+
+                urlFormat += $"&ofl={dynamicLinkParameters.DesktopUrl}";
+                urlFormat += $"&ifl={dynamicLinkParameters.DesktopUrl}";
+                urlFormat += $"&ipfl={dynamicLinkParameters.DesktopUrl}";
+                urlFormat += $"&afl={dynamicLinkParameters.DesktopUrl}";
+                urlFormat += $"&apn={Application.identifier}";
+                urlFormat += $"&ibi={Application.identifier}";
+                urlFormat += $"&isi={APPSTORE_ID}";
+                urlFormat += $"&st={dynamicLinkParameters.SocialMetaTagParameters.Title}";
+                urlFormat += $"&si={dynamicLinkParameters.SocialMetaTagParameters.ImageUrl}";
+                urlFormat += $"&sd={dynamicLinkParameters.SocialMetaTagParameters.Description}";
             }
+
+            HelperFunctions.DevLogError(urlFormat);
 
             Uri uri = new Uri(urlFormat);
 
