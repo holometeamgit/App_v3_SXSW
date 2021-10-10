@@ -83,7 +83,7 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         _initialPosition = _swipedObjectTransform.localPosition;
         UpdateMinMovedDistance();
         CalculateTargetPoints();
-        Debug.Log("targetPosition " + _hidePosition + " offsetMin " + _swipedObjectTransform.offsetMin.y + " rect.size " + (_swipedObjectTransform.rect.size.y - _canvasScaler.referenceResolution.y/2) + " " +_swipedObjectTransform.localPosition);
+        Debug.Log("targetPosition " + _hidePosition + " offsetMax " + _swipedObjectTransform.offsetMax.y + " rect.size " + (_swipedObjectTransform.rect.size.y - _canvasScaler.referenceResolution.y / 2) + " " + _swipedObjectTransform.localPosition);
         //        Debug.Log("init position" + _swipedObjectTransform.localPosition + " " + _swipedObjectTransform.offsetMax.y);
     }
 
@@ -109,6 +109,11 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         CalculateTargetPoints();
     }
 
+    private void OnEnable() {
+        _swipedObjectTransform.localPosition -= Vector3.down * _swipedObjectTransform.offsetMax.y;
+        _hidePosition = _swipedObjectTransform.localPosition;
+    }
+
     private void OnDisable() {
         _swipedObjectTransform.localPosition = _hidePosition;
         _canvasGroup.alpha = 0;
@@ -123,19 +128,18 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         switch (_appearanceSide) {
             case AppearanceSide.Top:
                 _hidePosition = new Vector3(_swipedObjectTransform.localPosition.x, _canvasScaler.referenceResolution.y, 0);
-                _showPosition = new Vector3(_swipedObjectTransform.localPosition.x, _swipedObjectTransform.offsetMax.y, 0);
+                _showPosition = _hidePosition + Vector3.up * _swipedObjectTransform.offsetMin.y;
                 break;
             case AppearanceSide.Bottom:
-                _hidePosition = new Vector3(_swipedObjectTransform.localPosition.x, -_canvasScaler.referenceResolution.y, 0);
-                _showPosition = new Vector3(_swipedObjectTransform.localPosition.x, _swipedObjectTransform.offsetMin.y, 0);
+                _showPosition = new Vector3(_swipedObjectTransform.localPosition.x, _swipedObjectTransform.offsetMax.y, 0);
                 break;
             case AppearanceSide.Right:
                 _hidePosition = new Vector3(_canvasScaler.referenceResolution.x, _swipedObjectTransform.localPosition.y, 0);
-                _showPosition = new Vector3(_swipedObjectTransform.offsetMax.x, _swipedObjectTransform.localPosition.y, 0);
+                _showPosition = new Vector3(_swipedObjectTransform.offsetMin.x, _swipedObjectTransform.localPosition.y, 0);
                 break;
             case AppearanceSide.Left:
                 _hidePosition = new Vector3(-_canvasScaler.referenceResolution.x, _swipedObjectTransform.localPosition.y, 0);
-                _showPosition = new Vector3(_swipedObjectTransform.offsetMin.x, _swipedObjectTransform.localPosition.y, 0);
+                _showPosition = new Vector3(_swipedObjectTransform.offsetMax.x, _swipedObjectTransform.localPosition.y, 0);
                 break;
         }
     }
@@ -165,5 +169,7 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
 
         _swipedObjectTransform.localPosition = targetPosition;
         _canvasGroup.alpha = targetAlpha;
+
+        Debug.Log("targetPosition " + _hidePosition + " offsetMax " + _swipedObjectTransform.offsetMax.y + " rect.size " + (_swipedObjectTransform.rect.size.y - _canvasScaler.referenceResolution.y / 2) + " " + _swipedObjectTransform.localPosition);
     }
 }

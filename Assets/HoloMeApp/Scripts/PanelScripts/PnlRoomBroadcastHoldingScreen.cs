@@ -5,7 +5,7 @@ using Beem.Permissions;
 
 public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
 {
-    [SerializeField] TMP_Text title;
+ /*   [SerializeField] TMP_Text title;
     [SerializeField] GameObject RectInfo;
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] VideoUploader videoUploader;
@@ -102,5 +102,5 @@ public class PnlRoomBroadcastHoldingScreen : MonoBehaviour
 
         if(!liveRoomWasFound)
             ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
-    }
+    }*/
 }

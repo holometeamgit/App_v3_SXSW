@@ -5,17 +5,30 @@
 /// Call backs for streams
 /// </summary>
 public class StreamCallBacks {
-    #region deep link
-    public static Action<string> onRoomLinkReceived = delegate { };
+    #region deep link room
+    // from app to controller
     public static Action<string> onUsernameLinkReceived = delegate { };
-    public static Action onOpenRoom = delegate { };
+    public static Action<RoomJsonData> onRoomDataReceived = delegate { };
+    public static Action onRoomClosed = delegate { };
 
+    //from controller
+    public static Action<string> onShowPopUpRoomOnline = delegate { };
+    public static Action<string> onShowPopUpRoomOffline = delegate { };
+    public static Action<string> onShowPopUpRoomEnded = delegate { };
+
+    //from ui
+    public static Action onOpenRoom = delegate { };
+    public static Action onShareRoom = delegate { };
+    #endregion
+
+    #region deep link stream
     public static Action<string> onStreamLinkReceived = delegate { };
     public static Action onOpenStream = delegate { }; // can subscribe on stream pnl
 
     public static Action onCancelOpenContent = delegate { };
     #endregion
 
+    public static Action onGetLastRoomLink = delegate { };
     public static Action<string> onGetRoomLink = delegate { };
     public static Action<string, string> onGetStreamLink = delegate { };
     public static Action<StreamJsonData.Data> onGetPrerecordedLink = delegate { };
