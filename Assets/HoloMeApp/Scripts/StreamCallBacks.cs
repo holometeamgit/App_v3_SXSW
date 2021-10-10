@@ -13,12 +13,14 @@ public class StreamCallBacks {
 
     //from controller
     public static Action<string> onShowPopUpRoomOnline = delegate { };
+    public static Action<int> onUpdateUserCount = delegate { };
     public static Action<string> onShowPopUpRoomOffline = delegate { };
     public static Action<string> onShowPopUpRoomEnded = delegate { };
 
     //from ui
     public static Action onOpenRoom = delegate { };
     public static Action onShareRoom = delegate { };
+    public static Action onPopUpClosed = delegate { };
     #endregion
 
     #region deep link stream

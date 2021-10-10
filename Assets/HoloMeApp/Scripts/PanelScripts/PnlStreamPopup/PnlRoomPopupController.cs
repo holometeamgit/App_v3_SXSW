@@ -6,12 +6,11 @@ using System.Threading;
 using System;
 
 
-//добавить авторефреш после получения ссылки. он прерывается только если пользователь нажимает отмену на интерфейсе.
 //отдельный класс который следит открыта домашняястраница или нет.
-//если пользователь кликает вне попапа, то запрещено это делать.. наверное
 
 public class PnlRoomPopupController {
     private RoomPopupShowChecker _roomPopupShowChecker;
+    private StreamerCountUpdater _streamerCountUpdater;
 
     private RoomJsonData _receivedRoomJsonData;
     private RoomJsonData _startedRoomJsonData;
@@ -19,31 +18,26 @@ public class PnlRoomPopupController {
     private CancellationToken _cancellationToken;
 
     private bool _isWaitingOpen;
-    private const int  CHECK_COOLDOWN = 1000;
+    private const int CHECK_COOLDOWN = 1000;
 
-    public PnlRoomPopupController(RoomPopupShowChecker roomPopupShowChecker) {
-        Construct(roomPopupShowChecker);
+    public PnlRoomPopupController(RoomPopupShowChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater) {
+        Construct(roomPopupShowChecker, streamerCountUpdater);
     }
 
-    public void Construct(RoomPopupShowChecker roomPopupShowChecker) {
+    public void Construct(RoomPopupShowChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater) {
         _roomPopupShowChecker = roomPopupShowChecker;
+        _streamerCountUpdater = streamerCountUpdater;
+
+        _streamerCountUpdater.OnCountUpdated += UpdateUserCount;
+
+        //from app
         StreamCallBacks.onRoomDataReceived += OnReceivedRoomData;
         StreamCallBacks.onRoomClosed += OnRoomStreamClosed;
+
+        //from ui
         StreamCallBacks.onOpenRoom += OnOpenRoom;
         StreamCallBacks.onShareRoom += OnShareRoom;
-    }
-
-    public void Test() {
-        RoomJsonData roomJsonData = new RoomJsonData();
-        roomJsonData.agora_channel = "IVKLIM1";
-        OnReceivedRoomData(roomJsonData);
-
-        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(CHECK_COOLDOWN * 3).ContinueWith(task => {
-            Debug.Log("Request cancel ");
-            _cancellationTokenSource.Cancel(true);
-
-        }, taskScheduler);
+        StreamCallBacks.onPopUpClosed += OnPopUpClosed;
     }
 
     #region from app
@@ -61,8 +55,6 @@ public class PnlRoomPopupController {
 
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         WaitForCanShow().ContinueWith((task) => {
-
-            HelperFunctions.DevLog("IsCanceled " + task.IsCanceled + " IsCompleted " + task.IsCompleted);
             //on canceled
             if (task.IsCanceled) {
                 HelperFunctions.DevLog("Previouses room deeplink request was interrupted");
@@ -73,24 +65,28 @@ public class PnlRoomPopupController {
 
                 if (_receivedRoomJsonData.status == StreamJsonData.Data.LIVE_ROOM_STR) {
                     StreamCallBacks.onShowPopUpRoomOnline(_receivedRoomJsonData.user);
-                    //TODO щё подписать на количество пользователей в комнате
+                    _streamerCountUpdater.StartCheck(_receivedRoomJsonData.agora_channel);
                 } else {
                     StreamCallBacks.onShowPopUpRoomOffline(_receivedRoomJsonData.user);
                 }
             }
         }, taskScheduler);
-
-        //если пришло другая комната, то текущую скрыть и открыть другую! мб если понадобится
-        //если стрим закончился и нет новых входящих линков, то показывать что пользователь больше не лайф
     }
 
     private void OnRoomStreamClosed() {
+        if (_isWaitingOpen)
+            return;
+
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         WaitForCanShow().ContinueWith((task) => {
             if (_startedRoomJsonData.user != _receivedRoomJsonData.user)
                 return;
             StreamCallBacks.onShowPopUpRoomEnded(_receivedRoomJsonData.user);
         }, taskScheduler);
+    }
+
+    private void UpdateUserCount(int count) {
+        StreamCallBacks.onUpdateUserCount?.Invoke(count);
     }
     #endregion
 
@@ -102,6 +98,10 @@ public class PnlRoomPopupController {
     private void OnShareRoom() {
         StreamCallBacks.onGetRoomLink?.Invoke(_receivedRoomJsonData.user);
     }
+
+    private void OnPopUpClosed() {
+        _streamerCountUpdater.StopCheck();
+    }
     #endregion
 
     private async Task WaitForCanShow() {
@@ -112,16 +112,21 @@ public class PnlRoomPopupController {
                 _cancellationToken.ThrowIfCancellationRequested();
             }
             await Task.Delay(CHECK_COOLDOWN);
-            Debug.Log("Check room ");
         }
         _isWaitingOpen = false;
     }
 
     ~PnlRoomPopupController() {
+        _streamerCountUpdater.OnCountUpdated -= UpdateUserCount;
+
+        //from app
         StreamCallBacks.onRoomDataReceived -= OnReceivedRoomData;
         StreamCallBacks.onRoomClosed -= OnRoomStreamClosed;
+
+        //from ui
         StreamCallBacks.onOpenRoom -= OnOpenRoom;
         StreamCallBacks.onShareRoom -= OnShareRoom;
+        StreamCallBacks.onPopUpClosed -= OnPopUpClosed;
 
         if (_cancellationTokenSource != null) {
             _cancellationTokenSource.Cancel();

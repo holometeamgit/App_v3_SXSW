@@ -7,9 +7,6 @@ using System;
 
 public class PnlRoomPopup : MonoBehaviour {
 
-    public Action onClose;
-    public Action onEnterRoom;
-
     [SerializeField]
     Color _highlightMSGColor;
     [SerializeField]
@@ -32,19 +29,20 @@ public class PnlRoomPopup : MonoBehaviour {
     private RoomJsonData _lastroomJsonData;
 
     public void Close() {
-        onClose?.Invoke();
+        StreamCallBacks.onPopUpClosed?.Invoke();
     }
 
     public void Share() {
-        StreamCallBacks.onGetLastRoomLink?.Invoke();
+        StreamCallBacks.onShareRoom?.Invoke();
     }
 
     public void EnterRoom() {
-        onEnterRoom?.Invoke();
+        StreamCallBacks.onOpenRoom?.Invoke();
     }
 
     private void ShowNoLongerOnline(string username) {
-        _titleText.text = string.Format("<color=#{0}>{1}</color> is no longer live", _highlightMSGColor, username);
+        _titleText.text = string.Format("<color=#{0}>{1}</color> is no longer live",
+            ColorUtility.ToHtmlStringRGBA(_highlightMSGColor), username);
 
         _subtitle.SetActive(false);
         _usersCount.SetActive(false);
@@ -55,7 +53,8 @@ public class PnlRoomPopup : MonoBehaviour {
     }
 
     private void ShowCurrentlyOffline(string username) {
-        _titleText.text = string.Format("<color=#{0}>{1}</color>’s room is currently offline", _highlightMSGColor, username);
+        _titleText.text = string.Format("<color=#{0}>{1}</color>’s room is currently offline",
+            ColorUtility.ToHtmlStringRGBA(_highlightMSGColor), username);
 
         _subtitle.SetActive(true);
         _usersCount.SetActive(false);
@@ -66,7 +65,8 @@ public class PnlRoomPopup : MonoBehaviour {
     }
 
     private void ShowCurrentlyOnline(string username) {
-        _titleText.text = string.Format("<color=#{0}>{1}</color>’s room is online", _highlightMSGColor, username);
+        _titleText.text = string.Format("<color=#{0}>{1}</color>’s room is online",
+            ColorUtility.ToHtmlStringRGBA(_highlightMSGColor), username);
 
         _subtitle.SetActive(false);
         _usersCount.SetActive(true);
@@ -76,11 +76,25 @@ public class PnlRoomPopup : MonoBehaviour {
         _btnEnterRoom.SetActive(true);
     }
 
-    private void UpdateUserCount(long personInside) {
+    private void UpdateUserCount(int personInside) {
         if (personInside < 1)
             _usersCountText.text = "No person inside";
         else {
             _usersCountText.text = DataStringConverter.GetItems(personInside, "person", "people") + " inside";
         }
+    }
+
+    private void Awake() {
+        StreamCallBacks.onShowPopUpRoomOnline += ShowCurrentlyOnline;
+        StreamCallBacks.onUpdateUserCount += UpdateUserCount;
+        StreamCallBacks.onShowPopUpRoomOffline += ShowCurrentlyOffline;
+        StreamCallBacks.onShowPopUpRoomEnded += ShowNoLongerOnline;
+    }
+
+    private void OnDestroy() {
+        StreamCallBacks.onShowPopUpRoomOnline -= ShowCurrentlyOnline;
+        StreamCallBacks.onShowPopUpRoomOffline -= ShowCurrentlyOffline;
+        StreamCallBacks.onUpdateUserCount -= UpdateUserCount;
+        StreamCallBacks.onShowPopUpRoomEnded -= ShowNoLongerOnline;
     }
 }
