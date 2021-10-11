@@ -10,11 +10,23 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     public string ProdServerURLAuth = "https://api.holo.me/api-auth";
     public string ProdServerURLMedia = "https://api.holo.me/api-media";
     public string ProdServerProviders = "https://api.holo.me/oauth/providers/";
+
     [Space]
     public string DevServerURLAuth = "https://devholo.me/api-auth";
     public string DevServerURLMedia = "https://devholo.me/api-media";
     public string DevServerProviders = "https://devholo.me/oauth/providers/";
+
     [Space]
+
+    [SerializeField]
+    private bool useHashForRoomLink = default;
+
+    public bool UseHashForRoomLink {
+        get {
+            return useHashForRoomLink;
+        }
+    }
+
     [SerializeField]
     private string firebaseDynamicLink = "https://join.beem.me";
     public string FirebaseDynamicLink {
@@ -22,6 +34,16 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
             return firebaseDynamicLink;
         }
     }
+
+    [SerializeField]
+    private string firebaseRoom = "/room/";
+
+    public string FirebaseRoom {
+        get {
+            return firebaseRoom;
+        }
+    }
+
     [SerializeField]
     private string url = "https://beem.me";
     public string Url {
@@ -29,35 +51,9 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
             return url;
         }
     }
-    [SerializeField]
-    private string room = "room";
-
-    public string Room {
-        get {
-            return room;
-        }
-    }
 
     [SerializeField]
-    private string stream = "stream";
-
-    public string Stream {
-        get {
-            return stream;
-        }
-    }
-
-    [SerializeField]
-    private string notificationAccess = "NotificationAccess";
-
-    public string NotificationAccess {
-        get {
-            return notificationAccess;
-        }
-    }
-
-    [SerializeField]
-    private string app = "App";
+    private string app = "/App/";
 
     public string App {
         get {

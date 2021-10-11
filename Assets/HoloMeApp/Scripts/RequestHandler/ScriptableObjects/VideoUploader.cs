@@ -32,4 +32,5 @@ public class VideoUploader : ScriptableObject { //TODO rename class this StreamA
     public string GetRoom = "/room/";
     public string PutRoom = "/room/";
     public string GetRoomById = "/room/{id}/";
+    public string GetRoomByUserName = "/room/username/";
 }

@@ -16,27 +16,17 @@ namespace Beem.Firebase.DynamicLink {
         private string _roomId = "abc";
 
         [SerializeField]
-        private string _source = "Source";
-
-        [SerializeField]
         private string _url = "https://beem.me";
 
-        private const string ROOM = "room";
-
-        public void SetRoomId(string roomId) {
-            _roomId = roomId;
-        }
-
-        public void SetSource(string source) {
-            _source = source;
-        }
+        [SerializeField]
+        private DynamicLinkParameters.Parameter _parameter;
 
         [SerializeField]
         private string _prefix = "https://beemrfc.page.link";
 
         public void OnPointerClick(PointerEventData eventData) {
-            DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(_prefix, ROOM, _roomId, _url);
-            DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters, _source);
+            DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(_prefix, _url, _parameter, _roomId);
+            DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters);
         }
     }
 }

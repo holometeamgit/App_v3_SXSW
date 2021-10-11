@@ -9,27 +9,33 @@ namespace Beem.Firebase.DynamicLink {
     /// </summary>
     public class DynamicLinkParameters {
 
+        public enum Parameter {
+            streamId,
+            username
+        }
+
         public string Prefix {
             get {
                 return _prefix;
             }
         }
 
-        public string ParameterName {
+        public string ParameterId {
             get {
-                return _parameterName;
-            }
-        }
-
-        public string Id {
-            get {
-                return _id;
+                return _parameterId;
             }
         }
 
         public string DesktopUrl {
             get {
                 return _desktopURL;
+            }
+        }
+
+
+        public Parameter ParameterName {
+            get {
+                return _parameterName;
             }
         }
 
@@ -40,29 +46,23 @@ namespace Beem.Firebase.DynamicLink {
         }
 
         private string _prefix = default;
-        private string _parameterName = default;
-        private string _id;
+        private string _parameterId;
         private string _desktopURL;
+        private Parameter _parameterName;
         private SocialMetaTagParameters _socialMetaTagParameters;
 
-        public DynamicLinkParameters(string prefix, string parameterName, string id) {
+        public DynamicLinkParameters(string prefix, string desktopURL, Parameter parameterName, string parameterId) {
             _prefix = prefix;
+            _parameterId = parameterId;
+            _desktopURL = desktopURL;
             _parameterName = parameterName;
-            _id = id;
         }
 
-        public DynamicLinkParameters(string prefix, string parameterName, string id, string desktopURL) {
+        public DynamicLinkParameters(string prefix, string desktopURL, Parameter parameterName, string parameterId, SocialMetaTagParameters socialMetaTagParameters) {
             _prefix = prefix;
-            _parameterName = parameterName;
-            _id = id;
+            _parameterId = parameterId;
             _desktopURL = desktopURL;
-        }
-
-        public DynamicLinkParameters(string prefix, string parameterName, string id, string desktopURL, SocialMetaTagParameters socialMetaTagParameters) {
-            _prefix = prefix;
             _parameterName = parameterName;
-            _id = id;
-            _desktopURL = desktopURL;
             _socialMetaTagParameters = socialMetaTagParameters;
         }
 

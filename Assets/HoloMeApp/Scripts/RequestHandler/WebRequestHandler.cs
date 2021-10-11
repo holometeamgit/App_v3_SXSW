@@ -67,8 +67,8 @@ public class WebRequestHandler : MonoBehaviour {
             onCancel, progress);
     }
 
-        public void PostRequest<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
-        string headerAccessToken = null, Action onCancel = null, Action<float> progress = null) {
+    public void PostRequest<T>(string url, T body, BodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
+    string headerAccessToken = null, Action onCancel = null, Action<float> progress = null) {
 
         Func<UnityWebRequest> createWebRequest = () => {
             string currentUrl = url;
