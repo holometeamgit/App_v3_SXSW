@@ -55,9 +55,9 @@ namespace Beem.Firebase.DynamicLink {
             if (dynamicLinkParameters.ParameterName == DynamicLinkParameters.Parameter.username) {
                 dynamicLink = dynamicLinkParameters.DynamicLinkURL + "?" + dynamicLinkParameters.ParameterName + "=" + dynamicLinkParameters.ParameterId;
 
-                desktopLink = dynamicLinkParameters.DynamicLinkURL + "?" + dynamicLinkParameters.ParameterName + "=" + dynamicLinkParameters.ParameterId;
+                desktopLink = dynamicLink;
 
-                baseLink = dynamicLinkParameters.DynamicLinkURL + "?" + dynamicLinkParameters.ParameterName + "=" + dynamicLinkParameters.ParameterId;
+                baseLink = dynamicLink;
 
                 var components = new DynamicLinkComponents(new Uri(dynamicLink), dynamicLinkParameters.Prefix);
 
