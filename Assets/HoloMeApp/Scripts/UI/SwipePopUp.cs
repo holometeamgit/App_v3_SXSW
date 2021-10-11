@@ -7,10 +7,8 @@ using System;
 
 public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler {
 
-    public class ShowSwipePopUpSignal { public int id; }
-    public class OnShowedSwipePopUpSignal { public int id; }
-    public class HideSwipePopUpSignal { public int id; }
-    public class OnHidedSwipePopUpSignal { public int id; }
+    public Action onShowed;
+    public Action onHid;
 
     public enum AppearanceSide {
         Bottom,
@@ -38,11 +36,11 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     private Vector3 _initialPosition;
     private Vector2 _minMovedDistance;
     private bool _needMoving;
-    private Vector3 _hidePosition;
-    private Vector3 _showPosition;
+    private Vector3 _hideOffsetPosition;
+    private Vector3 _showOffsetPosition;
 
-    private const float COEFIFICIENT = 0.3f;
-    //private const float COEFIFICIENT_HIDING = 1.21f;
+    private const float COEFFICIENT_MIN_MOVE_DISTANCE = 0.3f;
+    private const float COEFFICIENT_HIDING = 1.21f;
     private const float MAX_DEVIATION = 60;
     private const float DEVIATION_COEFICIENT = 0.9f;
 
@@ -76,15 +74,11 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
                 break;
         }
 
-//        Debug.Log("init position" + _swipedObjectTransform.localPosition + " " + _swipedObjectTransform.offsetMax.y);
     }
 
     public void OnBeginDrag(PointerEventData eventData) {
         _initialPosition = _swipedObjectTransform.localPosition;
         UpdateMinMovedDistance();
-        CalculateTargetPoints();
-        Debug.Log("targetPosition " + _hidePosition + " offsetMax " + _swipedObjectTransform.offsetMax.y + " rect.size " + (_swipedObjectTransform.rect.size.y - _canvasScaler.referenceResolution.y / 2) + " " + _swipedObjectTransform.localPosition);
-        //        Debug.Log("init position" + _swipedObjectTransform.localPosition + " " + _swipedObjectTransform.offsetMax.y);
     }
 
     public void OnEndDrag(PointerEventData eventData) {
@@ -93,15 +87,14 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
 
         _needMoving = distanceMovedX >= _minMovedDistance.x || distanceMovedY >= _minMovedDistance.y;
 
-        if (!_needMoving) {
-            _swipedObjectTransform.localPosition = _initialPosition;
-        } else {
-            StartCoroutine(HideSwipedObject(_hidePosition, 0));
-        }
+        if (_needMoving)
+            Move(isShow: false);
+        else
+            _swipedObjectTransform.offsetMin = _showOffsetPosition;
     }
 
     public void Show() {
-        gameObject.SetActive(true);
+        Move(isShow: true);
     }
 
     private void Awake() {
@@ -109,37 +102,38 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         CalculateTargetPoints();
     }
 
-    private void OnEnable() {
-        _swipedObjectTransform.localPosition -= Vector3.down * _swipedObjectTransform.offsetMax.y;
-        _hidePosition = _swipedObjectTransform.localPosition;
+    private void OnDisable() {
+        _swipedObjectTransform.offsetMin = _hideOffsetPosition;
+        _canvasGroup.alpha = 0;
+        StopAllCoroutines();
     }
 
-    private void OnDisable() {
-        _swipedObjectTransform.localPosition = _hidePosition;
-        _canvasGroup.alpha = 0;
+    private void Move(bool isShow) {
+        StopAllCoroutines();
+        StartCoroutine(MovingObject(isShow));
     }
 
     private void UpdateMinMovedDistance() {
-        _minMovedDistance = _swipedObjectTransform.rect.size * COEFIFICIENT;
+        _minMovedDistance = _swipedObjectTransform.rect.size * COEFFICIENT_MIN_MOVE_DISTANCE;
     }
 
     private void CalculateTargetPoints() {
-        Debug.Log(_canvasScaler.referenceResolution.y);
         switch (_appearanceSide) {
             case AppearanceSide.Top:
-                _hidePosition = new Vector3(_swipedObjectTransform.localPosition.x, _canvasScaler.referenceResolution.y, 0);
-                _showPosition = _hidePosition + Vector3.up * _swipedObjectTransform.offsetMin.y;
+                _hideOffsetPosition = new Vector2(_swipedObjectTransform.offsetMin.x, _canvasScaler.referenceResolution.y * COEFFICIENT_HIDING);
+                _showOffsetPosition = new Vector2(_swipedObjectTransform.offsetMin.x, 0);
                 break;
             case AppearanceSide.Bottom:
-                _showPosition = new Vector3(_swipedObjectTransform.localPosition.x, _swipedObjectTransform.offsetMax.y, 0);
+                _hideOffsetPosition = new Vector2(_swipedObjectTransform.offsetMin.x, -_canvasScaler.referenceResolution.y * COEFFICIENT_HIDING);
+                _showOffsetPosition = new Vector2(_swipedObjectTransform.offsetMin.x, 0);
                 break;
             case AppearanceSide.Right:
-                _hidePosition = new Vector3(_canvasScaler.referenceResolution.x, _swipedObjectTransform.localPosition.y, 0);
-                _showPosition = new Vector3(_swipedObjectTransform.offsetMin.x, _swipedObjectTransform.localPosition.y, 0);
+                _hideOffsetPosition = new Vector2(_canvasScaler.referenceResolution.x * COEFFICIENT_HIDING, _swipedObjectTransform.offsetMin.y);
+                _showOffsetPosition = new Vector2(0, _swipedObjectTransform.offsetMin.y);
                 break;
             case AppearanceSide.Left:
-                _hidePosition = new Vector3(-_canvasScaler.referenceResolution.x, _swipedObjectTransform.localPosition.y, 0);
-                _showPosition = new Vector3(_swipedObjectTransform.offsetMax.x, _swipedObjectTransform.localPosition.y, 0);
+                _hideOffsetPosition = new Vector2(-_canvasScaler.referenceResolution.x * COEFFICIENT_HIDING, _swipedObjectTransform.offsetMin.y);
+                _showOffsetPosition = new Vector2(0, _swipedObjectTransform.offsetMin.y);
                 break;
         }
     }
@@ -156,20 +150,26 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         _swipedObjectTransform.localPosition = new Vector2(localPosition, _swipedObjectTransform.localPosition.y);
     }
 
-    private IEnumerator HideSwipedObject(Vector3 targetPosition, float targetAlpha) {
+    private IEnumerator MovingObject(bool isShow) {
         float time = 0;
-        Vector3 startPosition = _swipedObjectTransform.localPosition;
+        Vector2 startPosition = _swipedObjectTransform.offsetMin;
+        Vector2 targetPosition = isShow ? _showOffsetPosition : _hideOffsetPosition;
+        float startAlpha = _canvasGroup.alpha;
+        float targetAlpha = isShow ? 1 : 0;
         while (time <= 1) {
             time += (Time.deltaTime / _time);
 
-            _swipedObjectTransform.localPosition = Vector3.Lerp(startPosition, targetPosition, Mathf.Clamp01(_animationCurve.Evaluate(time)));
-            _canvasGroup.alpha = Mathf.SmoothStep(1, 0, time);
+            _swipedObjectTransform.offsetMin = Vector3.Lerp(startPosition, targetPosition, Mathf.Clamp01(_animationCurve.Evaluate(time)));
+            _canvasGroup.alpha = Mathf.SmoothStep(startAlpha, targetAlpha, time);
             yield return null;
         }
 
-        _swipedObjectTransform.localPosition = targetPosition;
+        _swipedObjectTransform.offsetMin = targetPosition;
         _canvasGroup.alpha = targetAlpha;
 
-        Debug.Log("targetPosition " + _hidePosition + " offsetMax " + _swipedObjectTransform.offsetMax.y + " rect.size " + (_swipedObjectTransform.rect.size.y - _canvasScaler.referenceResolution.y / 2) + " " + _swipedObjectTransform.localPosition);
+        if (isShow)
+            onShowed?.Invoke();
+        else
+            onHid?.Invoke();
     }
 }

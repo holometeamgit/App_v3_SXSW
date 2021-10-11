@@ -26,11 +26,8 @@ public class PnlRoomPopup : MonoBehaviour {
     [SerializeField]
     GameObject _btnClose, _btnShare, _btnEnterRoom;
 
-    private RoomJsonData _lastroomJsonData;
-
-    public void Close() {
-        StreamCallBacks.onPopUpClosed?.Invoke();
-    }
+    [SerializeField]
+    SwipePopUp _swipePopUp;
 
     public void Share() {
         StreamCallBacks.onShareRoom?.Invoke();
@@ -38,6 +35,15 @@ public class PnlRoomPopup : MonoBehaviour {
 
     public void EnterRoom() {
         StreamCallBacks.onOpenRoom?.Invoke();
+    }
+
+    private void Awake() {
+        StreamCallBacks.onShowPopUpRoomOnline += ShowCurrentlyOnline;
+        StreamCallBacks.onUpdateUserCount += UpdateUserCount;
+        StreamCallBacks.onShowPopUpRoomOffline += ShowCurrentlyOffline;
+        StreamCallBacks.onShowPopUpRoomEnded += ShowNoLongerOnline;
+
+        _swipePopUp.onHid += OnClose;
     }
 
     private void ShowNoLongerOnline(string username) {
@@ -50,6 +56,8 @@ public class PnlRoomPopup : MonoBehaviour {
         _btnClose.SetActive(true);
         _btnShare.SetActive(false);
         _btnEnterRoom.SetActive(false);
+
+        _swipePopUp.Show();
     }
 
     private void ShowCurrentlyOffline(string username) {
@@ -62,6 +70,8 @@ public class PnlRoomPopup : MonoBehaviour {
         _btnClose.SetActive(false);
         _btnShare.SetActive(true);
         _btnEnterRoom.SetActive(false);
+
+        _swipePopUp.Show();
     }
 
     private void ShowCurrentlyOnline(string username) {
@@ -74,6 +84,8 @@ public class PnlRoomPopup : MonoBehaviour {
         _btnClose.SetActive(false);
         _btnShare.SetActive(false);
         _btnEnterRoom.SetActive(true);
+
+        _swipePopUp.Show();
     }
 
     private void UpdateUserCount(int personInside) {
@@ -84,11 +96,8 @@ public class PnlRoomPopup : MonoBehaviour {
         }
     }
 
-    private void Awake() {
-        StreamCallBacks.onShowPopUpRoomOnline += ShowCurrentlyOnline;
-        StreamCallBacks.onUpdateUserCount += UpdateUserCount;
-        StreamCallBacks.onShowPopUpRoomOffline += ShowCurrentlyOffline;
-        StreamCallBacks.onShowPopUpRoomEnded += ShowNoLongerOnline;
+    private void OnClose() {
+        StreamCallBacks.onPopUpClosed?.Invoke();
     }
 
     private void OnDestroy() {

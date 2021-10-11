@@ -37,7 +37,7 @@ public class PnlRoomPopupConstructor : MonoBehaviour {
         //}, taskScheduler);
 
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(2000).ContinueWith(task => {
+        Task.Delay(5000).ContinueWith(task => {
             StreamCallBacks.onRoomDataReceived?.Invoke(roomJsonData);
 
 
@@ -45,7 +45,7 @@ public class PnlRoomPopupConstructor : MonoBehaviour {
 
         }, taskScheduler);
 
-        Task.Delay(4000).ContinueWith(task => {
+        Task.Delay(10000).ContinueWith(task => {
 
             StreamCallBacks.onOpenRoom?.Invoke();
             StreamCallBacks.onRoomClosed?.Invoke();
