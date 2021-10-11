@@ -7,7 +7,9 @@ using System;
 
 public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler {
 
+    public Action onStartShowing;
     public Action onShowed;
+    public Action onStartHiding;
     public Action onHid;
 
     public enum AppearanceSide {
@@ -88,13 +90,20 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         _needMoving = distanceMovedX >= _minMovedDistance.x || distanceMovedY >= _minMovedDistance.y;
 
         if (_needMoving)
-            Move(isShow: false);
+            Hide();
         else
             _swipedObjectTransform.offsetMin = _showOffsetPosition;
     }
 
     public void Show() {
+        onStartShowing?.Invoke();
         Move(isShow: true);
+    }
+
+
+    public void Hide() {
+        onStartHiding?.Invoke();
+        Move(isShow: false);
     }
 
     private void Awake() {

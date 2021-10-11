@@ -5,9 +5,6 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 
-
-//отдельный класс который следит открыта домашняястраница или нет.
-
 public class PnlRoomPopupController {
     private RoomPopupShowChecker _roomPopupShowChecker;
     private StreamerCountUpdater _streamerCountUpdater;
