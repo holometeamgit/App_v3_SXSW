@@ -1,4 +1,5 @@
 ﻿#if UNITY_IOS
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -11,8 +12,11 @@ namespace Beem.Xcode {
     /// </summary>
     public class XcodeConfigurationPostBuild {
 
-        private const string DOMAIN = "https://join.beem.me";
-        private const string DOMAIN_ROOM = "https://join.beem.me/room";
+        private static List<string> CustomDomains = new List<string>() {
+            "https://join.beem.me",
+            "https://join.beem.me/room/*",
+            "https://ar.beem.me/"
+        };
 
         [PostProcessBuild]
         public static void ChangeXcodePlist(BuildTarget buildTarget, string pathToBuiltProject) {
@@ -34,8 +38,9 @@ namespace Beem.Xcode {
 
             // custom domain modes
             PlistElementArray customDomain = rootDict.CreateArray("FirebaseDynamicLinksCustomDomains");
-            customDomain.AddString(DOMAIN);
-            customDomain.AddString(DOMAIN_ROOM);
+            foreach (string domain in CustomDomains) {
+                customDomain.AddString(domain);
+            }
 
             // Write to file
             File.WriteAllText(plistPath, plist.WriteToString());
