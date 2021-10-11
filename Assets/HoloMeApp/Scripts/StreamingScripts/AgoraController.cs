@@ -249,9 +249,7 @@ public class AgoraController : MonoBehaviour {
             EnableVideoPlayback(); //Must be called for viewers to view
             ToggleLocalVideo(true); //Disable local video freeze fix iOS
         }
-
-        //iRtcEngine.EnableDualStreamMode(true);
-
+      
         var result = iRtcEngine.JoinChannelByKey(viewerBroadcasterToken, ChannelName, null, Convert.ToUInt32(userWebManager.GetUserID()));
 
         if (result < 0) {
@@ -259,19 +257,12 @@ public class AgoraController : MonoBehaviour {
         } else {
             HelperFunctions.DevLog("Agora Stream Join Success!");
         }
-
-        //print("JOINED");
-
+                
         if (IsChannelCreator && !IsRoom)//No thumbnails for rooms for now
             sendThumbnailRoutine = StartCoroutine(SendThumbnailData(true));
 
         IsLive = true;
-
-        agoraMessageStreamID = iRtcEngine.CreateDataStream(true, true);
-
-        iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
-        iRtcEngine.OnStreamMessageError = OnStreamMessageError;
-
+                
         OnStreamWentLive?.Invoke();
     }
 
@@ -282,12 +273,7 @@ public class AgoraController : MonoBehaviour {
 
         if (!IsLive)
             return;
-
-        //if (isChannelCreator)
-        //{
-        //iRtcEngine.SendStreamMessage(streamID, "CreatorLeft");
-        //}
-
+   
         if (sendThumbnailRoutine != null && !IsRoom)//No thumbnails for rooms for now
             StopCoroutine(sendThumbnailRoutine);
 
@@ -492,26 +478,24 @@ public class AgoraController : MonoBehaviour {
     }
 
     #region Messaging system
+    public void AddAgoraMessageReceiver(AgoraMessageReceiver agoraMessageReceiver)
+    {
+        agoraRTMChatController.AddMessageReceiver(agoraMessageReceiver);
+    }
 
     /// <summary>
     /// Sends string message to all users in a channel.
     /// </summary>
-    public void SendAgoraMessage(string message) {
-        HelperFunctions.DevLog($"Sending Agora Message {message}");
-        byte[] messageToBytes = Encoding.ASCII.GetBytes(message);
-        iRtcEngine.SendStreamMessage(agoraMessageStreamID, messageToBytes);
-    }
+    public void SendAgoraMessage(string message, int requestID =  AgoraMessageRequestIDs.IDStreamMessage) {
+        //HelperFunctions.DevLog($"Sending Agora Message {message}");
+        //byte[] messageToBytes = Encoding.ASCII.GetBytes(message);
+        //iRtcEngine.SendStreamMessage(agoraMessageStreamID, messageToBytes);
 
-    private void OnStreamMessageError(uint userId, int streamId, int code, int missed, int cached) {
-        HelperFunctions.DevLog($"Stream message error! Code = {code}");
-    }
+        ChatMessageJsonData agoraStreamMessage = new ChatMessageJsonData { message = message };
+        agoraStreamMessage.requestID = requestID;
 
-    private void OnStreamMessageRecieved(uint userId, int streamId, byte[] data, int length) {
-        string result = Encoding.ASCII.GetString(data);
-        HelperFunctions.DevLog($"Agora Message Recieved {result}");
-        OnMessageRecieved?.Invoke(result);
+        agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(agoraStreamMessage));
     }
-
     #endregion
 
     void OnApplicationPause(bool paused) {

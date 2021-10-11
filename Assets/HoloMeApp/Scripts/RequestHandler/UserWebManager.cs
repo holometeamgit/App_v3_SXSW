@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 using Beem.SSO;
+using Beem.Firebase.DynamicLink;
 
 public class UserWebManager : MonoBehaviour {
     public Action OnLoadUserDataAfterLogIn;
@@ -64,9 +65,9 @@ public class UserWebManager : MonoBehaviour {
         return userData.pk;
     }
 
-   /* public string GetUnituniqueName() {
-        return GetEmail();
-    }*/
+    /* public string GetUnituniqueName() {
+         return GetEmail();
+     }*/
 
     public string GetFullName() {
         if (userData == null || string.IsNullOrEmpty(userData.first_name))

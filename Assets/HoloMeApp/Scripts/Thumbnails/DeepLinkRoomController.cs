@@ -13,43 +13,48 @@ public class DeepLinkRoomController : MonoBehaviour {
     private const string TITLE = "You have been invited to {0}'s Room";
     private const string DESCRIPTION = "Click the link below to join {0}'s Room";
 
-    private void GetMyRoom() {
-        HelperFunctions.DevLog("GetMyRoom");
-        webRequestHandler.GetRequest(GetMyRoomIdUrl(),
-            (code, body) => MyRoomIdRecieved(body),
+    private void GetRoomByUserName(string username) {
+        HelperFunctions.DevLog("Get Room By UserName");
+        webRequestHandler.GetRequest(GetRoomUsernameUrl(username),
+            (code, body) => RoomReceived(body),
             (code, body) => HelperFunctions.DevLogError(code + " " + body),
             accountManager.GetAccessToken().access);
     }
 
-    private void MyRoomIdRecieved(string body) {
+    private void RoomReceived(string body) {
         try {
             RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(body);
-            //room?roomid=string
-            HelperFunctions.DevLog("MyRoomIdRecieved = " + body);
-            DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Room, roomJsonData.id, serverURLAPIScriptableObject.Url, SocialParameters(roomJsonData.user));
-            DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters, roomJsonData.user);
+
+            HelperFunctions.DevLog("Room Recieved = " + body);
+
+            StreamCallBacks.onRoomLinkReceived?.Invoke(roomJsonData.id);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
         }
     }
 
-    private void GetRoomLink(string id, string source) {
-        DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Room, id, serverURLAPIScriptableObject.Url, SocialParameters(source));
-        DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters, source);
+    private void GetRoomLink(string source) {
+        if (!serverURLAPIScriptableObject.UseHashForRoomLink) {
+            Uri uri = new Uri(serverURLAPIScriptableObject.FirebaseDynamicLink + serverURLAPIScriptableObject.FirebaseRoom + source);
+            DynamicLinksCallBacks.onGetShortLink?.Invoke(uri, SocialParameters(source));
+        } else {
+            DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.Url, DynamicLinkParameters.Parameter.username, source, SocialParameters(source));
+            DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters);
+        }
     }
 
     private void Awake() {
-        StreamCallBacks.onGetMyRoomLink += GetMyRoom;
         StreamCallBacks.onGetRoomLink += GetRoomLink;
+        StreamCallBacks.onUsernameLinkReceived += GetRoomByUserName;
     }
 
     private void OnDestroy() {
-        StreamCallBacks.onGetMyRoomLink -= GetMyRoom;
         StreamCallBacks.onGetRoomLink -= GetRoomLink;
+        StreamCallBacks.onUsernameLinkReceived -= GetRoomByUserName;
     }
 
-    private string GetMyRoomIdUrl() {
-        return serverURLAPIScriptableObject.ServerURLMediaAPI + videoUploader.GetRoom;
+    private string GetRoomUsernameUrl(string username) {
+        return serverURLAPIScriptableObject.ServerURLMediaAPI + videoUploader.GetRoomByUserName + username;
     }
 
     public SocialMetaTagParameters SocialParameters(string source) {
