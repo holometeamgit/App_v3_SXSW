@@ -40,6 +40,7 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     private bool _needMoving;
     private Vector3 _hideOffsetPosition;
     private Vector3 _showOffsetPosition;
+    private bool _isInit;
 
     private const float COEFFICIENT_MIN_MOVE_DISTANCE = 0.3f;
     private const float COEFFICIENT_HIDING = 1.21f;
@@ -96,6 +97,8 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     }
 
     public void Show() {
+        gameObject.SetActive(true);
+        Init();
         onStartShowing?.Invoke();
         Move(isShow: true);
     }
@@ -107,14 +110,21 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     }
 
     private void Awake() {
-        _canvasScaler = GetComponentInParent<CanvasScaler>();
-        CalculateTargetPoints();
+        Init();
     }
 
     private void OnDisable() {
         _swipedObjectTransform.offsetMin = _hideOffsetPosition;
         _canvasGroup.alpha = 0;
         StopAllCoroutines();
+    }
+
+    private void Init() {
+        if (_isInit)
+            return;
+        _canvasScaler = GetComponentInParent<CanvasScaler>();
+        CalculateTargetPoints();
+        _isInit = true;
     }
 
     private void Move(bool isShow) {
@@ -176,9 +186,11 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         _swipedObjectTransform.offsetMin = targetPosition;
         _canvasGroup.alpha = targetAlpha;
 
-        if (isShow)
+        if (isShow) {
             onShowed?.Invoke();
-        else
+        } else {
             onHid?.Invoke();
+            gameObject.SetActive(false);
+        }
     }
 }
