@@ -45,10 +45,18 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     }
 
     [SerializeField]
-    private string url = "https://beem.me";
-    public string Url {
+    private string desktopUrl = "https://beem.me";
+    public string DesktopUrl {
         get {
-            return url;
+            return desktopUrl;
+        }
+    }
+
+    [SerializeField]
+    private string arUrl = "https://ar.beem.me";
+    public string ARUrl {
+        get {
+            return arUrl;
         }
     }
 

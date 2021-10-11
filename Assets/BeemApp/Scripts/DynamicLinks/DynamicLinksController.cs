@@ -47,51 +47,37 @@ namespace Beem.Firebase.DynamicLink {
 
         private void CreateShortLink(DynamicLinkParameters dynamicLinkParameters) {
 
-            HelperFunctions.DevLogError("CreateShortLink");
-            string baseLink = string.Empty;
+            string dynamicLink = string.Empty;
             string urlFormat = string.Empty;
+            string desktopLink = string.Empty;
+            string baseLink = string.Empty;
 
             if (dynamicLinkParameters.ParameterName == DynamicLinkParameters.Parameter.username) {
-                baseLink = dynamicLinkParameters.DesktopUrl + "?" + dynamicLinkParameters.ParameterName + "=" + dynamicLinkParameters.ParameterId;
+                dynamicLink = dynamicLinkParameters.DynamicLinkURL + "?" + dynamicLinkParameters.ParameterName + "=" + dynamicLinkParameters.ParameterId;
 
-                var components = new DynamicLinkComponents(new Uri(baseLink), dynamicLinkParameters.Prefix);
+                desktopLink = dynamicLinkParameters.DynamicLinkURL + "?" + dynamicLinkParameters.ParameterName + "=" + dynamicLinkParameters.ParameterId;
+
+                baseLink = dynamicLinkParameters.DynamicLinkURL + "?" + dynamicLinkParameters.ParameterName + "=" + dynamicLinkParameters.ParameterId;
+
+                var components = new DynamicLinkComponents(new Uri(dynamicLink), dynamicLinkParameters.Prefix);
 
                 urlFormat = components.LongDynamicLink.AbsoluteUri;
-
-                HelperFunctions.DevLogError(urlFormat);
-
-                urlFormat += $"&ofl={baseLink}";
-                urlFormat += $"&ifl={baseLink}";
-                urlFormat += $"&ipfl={baseLink}";
-                urlFormat += $"&afl={baseLink}";
-                urlFormat += $"&apn={Application.identifier}";
-                urlFormat += $"&ibi={Application.identifier}";
-                urlFormat += $"&isi={APPSTORE_ID}";
-                urlFormat += $"&st={dynamicLinkParameters.SocialMetaTagParameters.Title}";
-                urlFormat += $"&si={dynamicLinkParameters.SocialMetaTagParameters.ImageUrl}";
-                urlFormat += $"&sd={dynamicLinkParameters.SocialMetaTagParameters.Description}";
             } else {
-                baseLink = dynamicLinkParameters.Prefix + "?" + dynamicLinkParameters.ParameterName + "=" + dynamicLinkParameters.ParameterId;
+                dynamicLink = dynamicLinkParameters.Prefix + "?" + dynamicLinkParameters.ParameterName + "=" + dynamicLinkParameters.ParameterId;
+                desktopLink = dynamicLinkParameters.DynamicLinkURL;
 
-                var components = new DynamicLinkComponents(new Uri(baseLink), dynamicLinkParameters.Prefix);
+                var components = new DynamicLinkComponents(new Uri(dynamicLink), dynamicLinkParameters.Prefix);
 
                 urlFormat = components.LongDynamicLink.AbsoluteUri;
-
-                HelperFunctions.DevLogError(urlFormat);
-
-                urlFormat += $"&ofl={dynamicLinkParameters.DesktopUrl}";
-                urlFormat += $"&ifl={dynamicLinkParameters.DesktopUrl}";
-                urlFormat += $"&ipfl={dynamicLinkParameters.DesktopUrl}";
-                urlFormat += $"&afl={dynamicLinkParameters.DesktopUrl}";
-                urlFormat += $"&apn={Application.identifier}";
-                urlFormat += $"&ibi={Application.identifier}";
-                urlFormat += $"&isi={APPSTORE_ID}";
-                urlFormat += $"&st={dynamicLinkParameters.SocialMetaTagParameters.Title}";
-                urlFormat += $"&si={dynamicLinkParameters.SocialMetaTagParameters.ImageUrl}";
-                urlFormat += $"&sd={dynamicLinkParameters.SocialMetaTagParameters.Description}";
             }
 
-            HelperFunctions.DevLogError(urlFormat);
+            LinkBuilder.AndroidParameters androidLinkBuilder = new LinkBuilder.AndroidParameters(Application.identifier, baseLink);
+            LinkBuilder.iOSParameters iOSLinkBuilder = new LinkBuilder.iOSParameters(Application.identifier, baseLink, APPSTORE_ID);
+            LinkBuilder.DesktopParameters desktopLinkBuilder = new LinkBuilder.DesktopParameters(desktopLink);
+            LinkBuilder.SocialMetaTagParameters socialMetaTagBuilder = new LinkBuilder.SocialMetaTagParameters(dynamicLinkParameters.SocialMetaTagParameters.Title, dynamicLinkParameters.SocialMetaTagParameters.Description, dynamicLinkParameters.SocialMetaTagParameters.ImageUrl.ToString());
+
+            LinkBuilder linkBuilder = new LinkBuilder(androidLinkBuilder, iOSLinkBuilder, desktopLinkBuilder, socialMetaTagBuilder);
+            urlFormat += linkBuilder.Get;
 
             Uri uri = new Uri(urlFormat);
 
