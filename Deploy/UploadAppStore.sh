@@ -4,13 +4,13 @@ echo "Uploading IPA to Appstore Connect..."
 
 set -x
 
-export FIREBASE_BUILD="$(find -E . -regex '.*\.(ipa)' -print -quit)"
+export APPSTORE_BUILD="$(find -E . -regex '.*\.(ipa)' -print -quit)"
 
-if [ -z "$FIREBASE_BUILD" ]; then
+if [ -z "$APPSTORE_BUILD" ]; then
     echo "Could not find .ipa file"
     exit 1
 else
-    if xcrun altool --upload-app -f $FIREBASE_BUILD -u $ITUNES_USERNAME -p $ITUNES_PASSWORD ; then
+    if xcrun altool --upload-app -f $APPSTORE_BUILD -u $ITUNES_USERNAME -p $ITUNES_PASSWORD ; then
         echo "Upload IPA to Appstore Connect finished with success"
     else
         echo "Upload IPA to Appstore Connect failed"

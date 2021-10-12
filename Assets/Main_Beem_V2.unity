@@ -3808,7 +3808,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DeepLinkHandler: {fileID: 1519454387}
-  linkRoomId: https://join.beem.me/room/bbf66a5a-8af7-11eb-9576-0242ac120002
+  linkRoomId: https://ar.beem.me/?username=twisted3
 --- !u!1 &753422118
 GameObject:
   m_ObjectHideFlags: 0
@@ -4050,7 +4050,6 @@ RectTransform:
   - {fileID: 2343915223272068659}
   - {fileID: 30566194}
   - {fileID: 1620826360}
-  - {fileID: 8222942483911473166}
   - {fileID: 5170083753930010901}
   - {fileID: 855321823}
   - {fileID: 4612457326826483862}
@@ -4293,7 +4292,7 @@ PrefabInstance:
     - target: {fileID: 6090812185694790387, guid: 271f8d71d372c4b0b82fa4a950a62632,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6090812185694790387, guid: 271f8d71d372c4b0b82fa4a950a62632,
         type: 3}
@@ -6535,18 +6534,6 @@ MonoBehaviour:
     type: 2}
   videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
   deepLinkHandler: {fileID: 1519454387}
---- !u!114 &1316960598 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 716668698703532917, guid: de650753e65ede242ba1d0f342eea0f8,
-    type: 3}
-  m_PrefabInstance: {fileID: 1799453189606390511}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f4d69d3fb9cda445859ea9428911b63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1339238541
 GameObject:
   m_ObjectHideFlags: 0
@@ -7401,8 +7388,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3da9b72af9c87424dad400b9af57ec8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverURLAPIScriptableObject: {fileID: 11400000, guid: f753fd22d1e1d4c97803fa60aadd51bd,
-    type: 2}
 --- !u!1 &1532801973
 GameObject:
   m_ObjectHideFlags: 0
@@ -7450,6 +7435,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6511805454453755403}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1551538140 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8341207795074681941, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+    type: 3}
+  m_PrefabInstance: {fileID: 6511805454453755403}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 621436e3907fda640956e0c097e91e30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1558027634
 GameObject:
   m_ObjectHideFlags: 0
@@ -12445,7 +12442,7 @@ PrefabInstance:
     - target: {fileID: 5169722162683015061, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5169722162683015061, guid: 1ab2b024f554c4b399b58ae5bbf199a0,
         type: 3}
@@ -15208,6 +15205,16 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 498921367466670142, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+        type: 3}
+      propertyPath: agoraController
+      value: 
+      objectReference: {fileID: 1146380145}
+    - target: {fileID: 498921367466670142, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
+        type: 3}
+      propertyPath: agoraRTMChatController
+      value: 
+      objectReference: {fileID: 1399294100}
     - target: {fileID: 1271459711918670295, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -15277,7 +15284,7 @@ PrefabInstance:
         type: 3}
       propertyPath: chat
       value: 
-      objectReference: {fileID: 8769522218479384240}
+      objectReference: {fileID: 1551538140}
     - target: {fileID: 2118979325922400105, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
         type: 3}
       propertyPath: userWebManager
@@ -15307,7 +15314,7 @@ PrefabInstance:
         type: 3}
       propertyPath: OnCloseAsStreamer.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1316960598}
+      objectReference: {fileID: 0}
     - target: {fileID: 2359801939617315911, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -16076,7 +16083,7 @@ PrefabInstance:
     - target: {fileID: 3161963790696969955, guid: a171aa99dfc274b15b215493b0a73403,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3161963790696969955, guid: a171aa99dfc274b15b215493b0a73403,
         type: 3}
@@ -16911,24 +16918,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 5205695976512852293}
   m_PrefabAsset: {fileID: 0}
---- !u!224 &8222942483911473166 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8606712174516251040, guid: de650753e65ede242ba1d0f342eea0f8,
-    type: 3}
-  m_PrefabInstance: {fileID: 1799453189606390511}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &8769522218479384240 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8998038668216837918, guid: de650753e65ede242ba1d0f342eea0f8,
-    type: 3}
-  m_PrefabInstance: {fileID: 1799453189606390511}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 621436e3907fda640956e0c097e91e30, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &9113670926003805200
 PrefabInstance:
   m_ObjectHideFlags: 0
