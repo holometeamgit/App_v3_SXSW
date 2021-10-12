@@ -9,6 +9,7 @@ public class StreamCallBacks {
     // from app to controller
     public static Action<string> onUsernameLinkReceived = delegate { };
     public static Action<RoomJsonData> onRoomDataReceived = delegate { };
+    // from app to controller: notification that broadcaster stop room 
     public static Action onRoomClosed = delegate { };
 
     //from controller
@@ -16,11 +17,13 @@ public class StreamCallBacks {
     public static Action<int> onUpdateUserCount = delegate { };
     public static Action<string> onShowPopUpRoomOffline = delegate { };
     public static Action<string> onShowPopUpRoomEnded = delegate { };
+    public static Action onClosePopUp = delegate { };
 
     //from ui
     public static Action onOpenRoom = delegate { };
     public static Action onShareRoom = delegate { };
     public static Action onPopUpClosed = delegate { };
+    public static Action onPopUpStartOpen = delegate { };
     #endregion
 
     #region deep link stream

@@ -29,7 +29,7 @@ public class PnlRoomPopup : MonoBehaviour {
     [SerializeField]
     SwipePopUp _swipePopUp;
     [SerializeField]
-    CanvasGroup _swipePopUpCanvasGroup;
+    CanvasGroup _canvasGroup;
 
     public void Share() {
         StreamCallBacks.onShareRoom?.Invoke();
@@ -44,8 +44,9 @@ public class PnlRoomPopup : MonoBehaviour {
         StreamCallBacks.onUpdateUserCount += UpdateUserCount;
         StreamCallBacks.onShowPopUpRoomOffline += ShowCurrentlyOffline;
         StreamCallBacks.onShowPopUpRoomEnded += ShowNoLongerOnline;
+        StreamCallBacks.onClosePopUp += Hide;
 
-        _swipePopUp.onHid += OnClose;
+        _swipePopUp.onHid += OnPopUpClose;
         _swipePopUp.onShowed += StartInteraction;
         _swipePopUp.onStartHiding += StopInteraction;
         _swipePopUp.onStartShowing += StopInteraction;
@@ -93,6 +94,10 @@ public class PnlRoomPopup : MonoBehaviour {
         _swipePopUp.Show();
     }
 
+    private void Hide() {
+        _swipePopUp.Hide();
+    }
+
     private void UpdateUserCount(int personInside) {
         if (personInside < 1)
             _usersCountText.text = "No person inside";
@@ -102,14 +107,15 @@ public class PnlRoomPopup : MonoBehaviour {
     }
 
     private void StartInteraction() {
-        _swipePopUpCanvasGroup.interactable = true;
+        _canvasGroup.blocksRaycasts = true;
     }
 
     private void StopInteraction() {
-        _swipePopUpCanvasGroup.interactable = false;
+        _canvasGroup.blocksRaycasts = false;
+        StreamCallBacks.onPopUpStartOpen?.Invoke();
     }
 
-    private void OnClose() {
+    private void OnPopUpClose() {
         StreamCallBacks.onPopUpClosed?.Invoke();
     }
 
@@ -118,8 +124,9 @@ public class PnlRoomPopup : MonoBehaviour {
         StreamCallBacks.onShowPopUpRoomOffline -= ShowCurrentlyOffline;
         StreamCallBacks.onUpdateUserCount -= UpdateUserCount;
         StreamCallBacks.onShowPopUpRoomEnded -= ShowNoLongerOnline;
+        StreamCallBacks.onClosePopUp -= Hide;
 
-        _swipePopUp.onHid -= OnClose;
+        _swipePopUp.onHid -= OnPopUpClose;
         _swipePopUp.onShowed -= StartInteraction;
         _swipePopUp.onStartHiding -= StopInteraction;
         _swipePopUp.onStartShowing -= StopInteraction;

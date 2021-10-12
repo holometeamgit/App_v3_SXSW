@@ -17,21 +17,21 @@ public class RoomDeeplinkTester : MonoBehaviour
         DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(linkRoomId);
     }
 
-    [ContextMenu("Test by script")]
-    private void Test() {
+    [ContextMenu("send room data")]
+    private void TestRoomData() {
         RoomJsonData roomJsonData = new RoomJsonData();
         roomJsonData.agora_channel = "ivklim21";
         roomJsonData.user = "ivklim21";
         roomJsonData.status = "live_room";
 
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(1000).ContinueWith(task => {
+        Task.Delay(500).ContinueWith(task => {
             StreamCallBacks.onRoomDataReceived?.Invoke(roomJsonData);
         }, taskScheduler);
+    }
 
-        Task.Delay(5000).ContinueWith(task => {
-            StreamCallBacks.onOpenRoom?.Invoke();
-            StreamCallBacks.onRoomClosed?.Invoke();
-        }, taskScheduler);
+    [ContextMenu("send that room was close ")]
+    private void Test() {
+        StreamCallBacks.onRoomClosed?.Invoke();
     }
 }

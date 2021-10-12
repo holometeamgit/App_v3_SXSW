@@ -11,11 +11,13 @@ public class PnlRoomPopupController {
 
     private RoomJsonData _receivedRoomJsonData;
     private RoomJsonData _startedRoomJsonData;
-    private CancellationTokenSource _cancellationTokenSource;
-    private CancellationToken _cancellationToken;
+    private CancellationTokenSource _showCancellationTokenSource;
+    private CancellationToken _showCancellationToken;
 
     private bool _isWaitingOpen;
     private const int CHECK_COOLDOWN = 1000;
+
+    private bool _isShow;
 
     public PnlRoomPopupController(RoomPopupShowChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater) {
         Construct(roomPopupShowChecker, streamerCountUpdater);
@@ -35,19 +37,20 @@ public class PnlRoomPopupController {
         StreamCallBacks.onOpenRoom += OnOpenRoom;
         StreamCallBacks.onShareRoom += OnShareRoom;
         StreamCallBacks.onPopUpClosed += OnPopUpClosed;
+        StreamCallBacks.onPopUpStartOpen += OnPopUpStartOpen;
     }
 
     #region from app
     private void OnReceivedRoomData(RoomJsonData roomJsonData) {
-        if (_cancellationTokenSource != null) {
-            _cancellationTokenSource.Cancel();
-            _cancellationTokenSource.Dispose();
+        if (_showCancellationTokenSource != null) {
+            _showCancellationTokenSource.Cancel();
+            _showCancellationTokenSource.Dispose();
 
-            _cancellationTokenSource = new CancellationTokenSource();
-            _cancellationToken = _cancellationTokenSource.Token;
+            _showCancellationTokenSource = new CancellationTokenSource();
+            _showCancellationToken = _showCancellationTokenSource.Token;
         } else {
-            _cancellationTokenSource = new CancellationTokenSource();
-            _cancellationToken = _cancellationTokenSource.Token;
+            _showCancellationTokenSource = new CancellationTokenSource();
+            _showCancellationToken = _showCancellationTokenSource.Token;
         }
 
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
@@ -66,11 +69,14 @@ public class PnlRoomPopupController {
                 } else {
                     StreamCallBacks.onShowPopUpRoomOffline(_receivedRoomJsonData.user);
                 }
+
+                WaitIfNeedHide().Start();
             }
         }, taskScheduler);
     }
 
     private void OnRoomStreamClosed() {
+        //don't need invoke _cancellationTokenSource
         if (_isWaitingOpen)
             return;
 
@@ -79,6 +85,7 @@ public class PnlRoomPopupController {
             if (_startedRoomJsonData.user != _receivedRoomJsonData.user)
                 return;
             StreamCallBacks.onShowPopUpRoomEnded(_receivedRoomJsonData.user);
+            WaitIfNeedHide().Start();
         }, taskScheduler);
     }
 
@@ -98,19 +105,33 @@ public class PnlRoomPopupController {
 
     private void OnPopUpClosed() {
         _streamerCountUpdater.StopCheck();
+        _isShow = false;
+    }
+
+    private void OnPopUpStartOpen() {
+        _isShow = true;
     }
     #endregion
 
     private async Task WaitForCanShow() {
         _isWaitingOpen = true;
         while (!_roomPopupShowChecker.CanShow()) {
-            if (_cancellationToken.IsCancellationRequested) {
+            if (_showCancellationToken.IsCancellationRequested) {
                 _isWaitingOpen = false;
-                _cancellationToken.ThrowIfCancellationRequested();
+                _showCancellationToken.ThrowIfCancellationRequested();
             }
             await Task.Delay(CHECK_COOLDOWN);
         }
         _isWaitingOpen = false;
+    }
+
+    private async Task WaitIfNeedHide() {
+        while (_roomPopupShowChecker.CanShow() && _isShow) {
+            await Task.Delay(CHECK_COOLDOWN);
+            Debug.Log("WaitIfNeedHide");
+        }
+
+        StreamCallBacks.onClosePopUp?.Invoke();
     }
 
     ~PnlRoomPopupController() {
@@ -124,10 +145,13 @@ public class PnlRoomPopupController {
         StreamCallBacks.onOpenRoom -= OnOpenRoom;
         StreamCallBacks.onShareRoom -= OnShareRoom;
         StreamCallBacks.onPopUpClosed -= OnPopUpClosed;
+        StreamCallBacks.onPopUpStartOpen -= OnPopUpStartOpen;
 
-        if (_cancellationTokenSource != null) {
-            _cancellationTokenSource.Cancel();
-            _cancellationTokenSource.Dispose();
+        if (_showCancellationTokenSource != null) {
+            _showCancellationTokenSource.Cancel();
+            _showCancellationTokenSource.Dispose();
         }
+
+
     }
 }
