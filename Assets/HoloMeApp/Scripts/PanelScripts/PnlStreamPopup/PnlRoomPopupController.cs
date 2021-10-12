@@ -16,8 +16,11 @@ public class PnlRoomPopupController {
 
     private bool _isWaitingOpen;
     private const int CHECK_COOLDOWN = 1000;
+    private const int CHECK_STATE_COOLDOWN = 5000;
 
     private bool _isShow;
+    private bool _isWaitIfNeedHideStarted;
+    private bool _isCheckStateStarted;
 
     public PnlRoomPopupController(RoomPopupShowChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater) {
         Construct(roomPopupShowChecker, streamerCountUpdater);
@@ -61,6 +64,13 @@ public class PnlRoomPopupController {
                 // on complete
             } else if (task.IsCompleted) {
                 HelperFunctions.DevLog("Room popup request. Room: " + roomJsonData.agora_channel);
+
+                if (_receivedRoomJsonData == null && roomJsonData.status == StreamJsonData.Data.LIVE_ROOM_STR) {
+                    _startedRoomJsonData = roomJsonData;
+                    PlayLiveStream();
+                    return;
+                }
+
                 _receivedRoomJsonData = roomJsonData;
 
                 if (_receivedRoomJsonData.status == StreamJsonData.Data.LIVE_ROOM_STR) {
@@ -70,7 +80,15 @@ public class PnlRoomPopupController {
                     StreamCallBacks.onShowPopUpRoomOffline(_receivedRoomJsonData.user);
                 }
 
-                WaitIfNeedHide().Start();
+                if (!_isWaitIfNeedHideStarted) {
+                    _isWaitIfNeedHideStarted = true;
+                    WaitIfNeedHide().Start();
+                }
+
+                if (!_isCheckStateStarted) {
+                    _isCheckStateStarted = true;
+                    RecheckState().Start();
+                }
             }
         }, taskScheduler);
     }
@@ -97,7 +115,7 @@ public class PnlRoomPopupController {
     #region from UI
     private void OnOpenRoom() {
         _startedRoomJsonData = _receivedRoomJsonData;
-        StreamCallBacks.onPlayLiveStream?.Invoke(_startedRoomJsonData.user, _startedRoomJsonData.agora_channel, _startedRoomJsonData.id, true);
+        PlayLiveStream();
         StreamCallBacks.onClosePopUp?.Invoke();
     }
 
@@ -108,6 +126,13 @@ public class PnlRoomPopupController {
     private void OnPopUpClosed() {
         _streamerCountUpdater.StopCheck();
         _isShow = false;
+        _isCheckStateStarted = false;
+        _isWaitIfNeedHideStarted = false;
+        _receivedRoomJsonData = null;
+    }
+
+    private void PlayLiveStream() {
+        StreamCallBacks.onPlayLiveStream?.Invoke(_startedRoomJsonData.user, _startedRoomJsonData.agora_channel, _startedRoomJsonData.id, true);
     }
 
     private void OnPopUpStartOpen() {
@@ -127,10 +152,17 @@ public class PnlRoomPopupController {
         _isWaitingOpen = false;
     }
 
+    private async Task RecheckState() {
+        await Task.Delay(CHECK_STATE_COOLDOWN);
+        while (_roomPopupShowChecker.CanShow() && _isShow) {
+            StreamCallBacks.onUsernameLinkReceived?.Invoke(_receivedRoomJsonData.user);
+            await Task.Delay(CHECK_STATE_COOLDOWN);
+        }
+    }
+
     private async Task WaitIfNeedHide() {
         while (_roomPopupShowChecker.CanShow() && _isShow) {
             await Task.Delay(CHECK_COOLDOWN);
-            Debug.Log("WaitIfNeedHide");
         }
 
         StreamCallBacks.onClosePopUp?.Invoke();
