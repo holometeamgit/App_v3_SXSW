@@ -114,6 +114,8 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private string lastPauseStatusMessageReceived; //Intended for viewers use only it's record state of streamers pause situation and to prevent double calls
     private string lastPushToTalkStatusMessageReceived; //To stop audio toggling twice
 
+    const int STATUS_MESSAGE_HIDE_DELAY = 3;
+
     private const char MessageSplitter = '+';
     private const string ToViewerTag = "ToViewer"; //Indicates message is for viewers only
     private const string MessageToViewerDisableTwoWayAudio = ToViewerTag + "DisableTwoWayAudio";
@@ -397,12 +399,12 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         SendPushToTalkStatusToViewers();
         if (isPushToTalkActive) {
             AnimatedCentreTextMessage("Two way audio is on. \n Listeners can talk to you now.");
-            AnimatedFadeOutMessage(3);
+            AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
         }
         else
         {
             AnimatedCentreTextMessage("Two way audio is off.");
-            AnimatedFadeOutMessage(3);
+            AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
         }
     }
 
@@ -532,7 +534,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
                 togglePushToTalk.isOn = true; //Mute the mic
                 togglePushToTalk.interactable = true;
                 AnimatedCentreTextMessage("Tap the Talk button to enable \n your microphone");
-                AnimatedFadeOutMessage(3);
+                AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
                 return;
             case MessageToViewerDisableTwoWayAudio:
                 if (LastMessageWasRecievedAlready(ref lastPushToTalkStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
@@ -695,7 +697,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         _muteAudio = mute;
 
         AnimatedCentreTextMessage("Your microphone is " + (mute ? "off" : "on") + ".");
-        AnimatedFadeOutMessage(3);
+        AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
         if (isChannelCreator) { //Display popup only for streamers but not for 2 way audio viewers
             SendVideoAudioPauseStatusToViewers();
         }
@@ -706,7 +708,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         _hideVideo = hideVideo;
 
         AnimatedCentreTextMessage("Your camera is " + (hideVideo ? "off" : "on") + ".");
-        AnimatedFadeOutMessage(3);
+        AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
         SendVideoAudioPauseStatusToViewers();
 
         //UpdateToggleMessageOff();
