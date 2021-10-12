@@ -97,6 +97,7 @@ public class PnlRoomPopupController {
     #region from UI
     private void OnOpenRoom() {
         _startedRoomJsonData = _receivedRoomJsonData;
+        StreamCallBacks.onPlayLiveStream?.Invoke(_startedRoomJsonData.user, _startedRoomJsonData.agora_channel, _startedRoomJsonData.id, true);
     }
 
     private void OnShareRoom() {

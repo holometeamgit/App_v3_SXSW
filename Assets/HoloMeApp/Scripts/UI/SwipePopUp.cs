@@ -129,7 +129,8 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
 
     private void Move(bool isShow) {
         StopAllCoroutines();
-        StartCoroutine(MovingObject(isShow));
+        if(gameObject.activeInHierarchy)
+            StartCoroutine(MovingObject(isShow));
     }
 
     private void UpdateMinMovedDistance() {

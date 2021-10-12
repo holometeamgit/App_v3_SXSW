@@ -17,21 +17,34 @@ public class RoomDeeplinkTester : MonoBehaviour
         DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(linkRoomId);
     }
 
-    [ContextMenu("send room data")]
-    private void TestRoomData() {
+    [ContextMenu("Get test event online")]
+    private void TestOnlineRoomData() {
         RoomJsonData roomJsonData = new RoomJsonData();
         roomJsonData.agora_channel = "ivklim21";
         roomJsonData.user = "ivklim21";
         roomJsonData.status = "live_room";
 
-        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(500).ContinueWith(task => {
-            StreamCallBacks.onRoomDataReceived?.Invoke(roomJsonData);
-        }, taskScheduler);
+        StreamCallBacks.onRoomDataReceived?.Invoke(roomJsonData);
     }
 
+    [ContextMenu("Get test event ofline")]
+    private void TestOflineRoomData() {
+        RoomJsonData roomJsonData = new RoomJsonData();
+        roomJsonData.agora_channel = "ivklim21";
+        roomJsonData.user = "ivklim21";
+        roomJsonData.status = "stop";
+
+        StreamCallBacks.onRoomDataReceived?.Invoke(roomJsonData);
+    }
+
+    //see popup -> click open -> wait 5 sec -> close stream -> you will see close popup
     [ContextMenu("send that room was close ")]
-    private void Test() {
-        StreamCallBacks.onRoomClosed?.Invoke();
+    private void TestClosedRoomEvent() {
+        TestOnlineRoomData();
+
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        Task.Delay(5000).ContinueWith(task => {
+            StreamCallBacks.onRoomClosed?.Invoke();
+        }, taskScheduler);
     }
 }

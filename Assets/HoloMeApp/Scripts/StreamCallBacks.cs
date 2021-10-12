@@ -33,6 +33,10 @@ public class StreamCallBacks {
     public static Action onCancelOpenContent = delegate { };
     #endregion
 
+    #region
+    public static Action<string, string, string, bool> onPlayLiveStream = delegate { };
+    #endregion
+
     public static Action onGetLastRoomLink = delegate { };
     public static Action<string> onGetRoomLink = delegate { };
     public static Action<string, string> onGetStreamLink = delegate { };
