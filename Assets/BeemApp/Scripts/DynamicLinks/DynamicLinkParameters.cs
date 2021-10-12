@@ -26,9 +26,9 @@ namespace Beem.Firebase.DynamicLink {
             }
         }
 
-        public string DesktopUrl {
+        public string DynamicLinkURL {
             get {
-                return _desktopURL;
+                return _dynamicLinkURL;
             }
         }
 
@@ -47,21 +47,21 @@ namespace Beem.Firebase.DynamicLink {
 
         private string _prefix = default;
         private string _parameterId;
-        private string _desktopURL;
+        private string _dynamicLinkURL;
         private Parameter _parameterName;
         private SocialMetaTagParameters _socialMetaTagParameters;
 
-        public DynamicLinkParameters(string prefix, string desktopURL, Parameter parameterName, string parameterId) {
+        public DynamicLinkParameters(string prefix, string dynamicLinkURL, Parameter parameterName, string parameterId) {
             _prefix = prefix;
             _parameterId = parameterId;
-            _desktopURL = desktopURL;
+            _dynamicLinkURL = dynamicLinkURL;
             _parameterName = parameterName;
         }
 
-        public DynamicLinkParameters(string prefix, string desktopURL, Parameter parameterName, string parameterId, SocialMetaTagParameters socialMetaTagParameters) {
+        public DynamicLinkParameters(string prefix, string dynamicLinkURL, Parameter parameterName, string parameterId, SocialMetaTagParameters socialMetaTagParameters) {
             _prefix = prefix;
             _parameterId = parameterId;
-            _desktopURL = desktopURL;
+            _dynamicLinkURL = dynamicLinkURL;
             _parameterName = parameterName;
             _socialMetaTagParameters = socialMetaTagParameters;
         }
