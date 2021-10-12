@@ -49,7 +49,7 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
             PlayerSettings.iOS.buildNumber = buildNumber;
             PlayerSettings.Android.bundleVersionCode = int.Parse(buildNumber);
         } else {
-            if (GetUnityCloudBuildManifest() != null) {
+            if (GetUnityCloudBuildManifest() != null && !string.IsNullOrEmpty(GetUnityCloudBuildManifest().buildNumber)) {
                 PlayerSettings.iOS.buildNumber = GetUnityCloudBuildManifest().buildNumber;
                 PlayerSettings.Android.bundleVersionCode = int.Parse(GetUnityCloudBuildManifest().buildNumber);
             }
