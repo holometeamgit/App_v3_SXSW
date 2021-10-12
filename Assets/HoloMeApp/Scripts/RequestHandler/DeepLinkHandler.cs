@@ -10,22 +10,36 @@ public class DeepLinkHandler : MonoBehaviour {
 
     public void OnDynamicLinkActivated(string uriStr) {
 
-        Debug.LogError("OnDynamicLinkActivated: " + uriStr);
-
         Uri uri = new Uri(uriStr);
 
         HelperFunctions.DevLog("Dynamic link: " + uriStr);
         GetContentsParameters(uri);
     }
 
+    private void TestDynamicLink(string uriStr) {
+        Debug.LogError("OnDynamicLinkActivated: " + uriStr);
+        OnDynamicLinkActivated(uriStr);
+    }
+
+    private void TestDeepLink(string uriStr) {
+        Debug.LogError("OnDeepLinkActivated: " + uriStr);
+        OnDynamicLinkActivated(uriStr);
+    }
+
     private void Awake() {
-        DynamicLinksCallBacks.onReceivedDeepLink += OnDynamicLinkActivated;
+        DynamicLinksCallBacks.onReceivedDeepLink += TestDynamicLink;
+        Application.deepLinkActivated += TestDeepLink;
+        Debug.LogError("Application.absoluteURL =" + Application.absoluteURL);
+        if (!string.IsNullOrEmpty(Application.absoluteURL)) {
+            // Cold start and Application.absoluteURL not null so process Deep Link.
+            OnDynamicLinkActivated(Application.absoluteURL);
+        }
     }
 
     private void OnDestroy() {
-        DynamicLinksCallBacks.onReceivedDeepLink -= OnDynamicLinkActivated;
+        DynamicLinksCallBacks.onReceivedDeepLink -= TestDynamicLink;
+        Application.deepLinkActivated -= TestDeepLink;
     }
-
 
     private void GetContentsParameters(Uri uri) {
         if (ContainParameter(uri, DynamicLinkParameters.Parameter.streamId.ToString())) {
