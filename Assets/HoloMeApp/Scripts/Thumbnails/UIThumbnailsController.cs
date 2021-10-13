@@ -58,6 +58,7 @@ public class UIThumbnailsController : MonoBehaviour {
 
     public void SetStreamJsonData(List<StreamJsonData.Data> data) {
         dataList = data;
+        CheckActiveBtns();
     }
 
     public void UpdateData() {
@@ -111,7 +112,6 @@ public class UIThumbnailsController : MonoBehaviour {
     }
 
     private void Awake() {
-
         thumbnailElementsDictionary = new Dictionary<long, ThumbnailElement>();
         btnThumbnailItemsDictionary = new Dictionary<long, UIThumbnail>();
         btnThumbnailItems = new List<UIThumbnail>();
@@ -122,7 +122,6 @@ public class UIThumbnailsController : MonoBehaviour {
         StreamCallBacks.onPlayLiveStream += PlayLiveStream;
 
         InstantiateBtns(_startBtnCount);
-        CheckActiveBtns();
     }
 
     #region Prepare thumbnails
