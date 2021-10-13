@@ -10,8 +10,6 @@ public class DeepLinkHandler : MonoBehaviour {
 
     public void OnDynamicLinkActivated(string uriStr) {
 
-        Debug.LogError("OnDynamicLinkActivated: " + uriStr);
-
         Uri uri = new Uri(uriStr);
 
         HelperFunctions.DevLog("Dynamic link: " + uriStr);
@@ -26,31 +24,39 @@ public class DeepLinkHandler : MonoBehaviour {
         DynamicLinksCallBacks.onReceivedDeepLink -= OnDynamicLinkActivated;
     }
 
-
     private void GetContentsParameters(Uri uri) {
-        if (ContainParameter(uri, DynamicLinkParameters.Parameter.streamId.ToString())) {
+        if (ContainFolder(uri, DynamicLinkParameters.Folder.stream.ToString())) {
+
             HelperFunctions.DevLog("GetStreamParameters");
 
-            string streamId = GetParameter(uri, DynamicLinkParameters.Parameter.streamId.ToString());
+            string streamId = GetFolderId(uri, DynamicLinkParameters.Folder.stream.ToString());
 
             HelperFunctions.DevLog("streamId = " + streamId);
             StreamCallBacks.onStreamLinkReceived?.Invoke(streamId);
-        } else if (ContainParameter(uri, DynamicLinkParameters.Parameter.username.ToString())) {
+        } else if (ContainFolder(uri, DynamicLinkParameters.Folder.room.ToString())) {
 
             HelperFunctions.DevLog("GetRoomParameters");
 
-            string userName = GetParameter(uri, DynamicLinkParameters.Parameter.username.ToString());
+            string userName = GetFolderId(uri, DynamicLinkParameters.Folder.room.ToString());
 
             HelperFunctions.DevLog("username = " + userName);
             StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
         }
     }
 
-    private bool ContainParameter(Uri uri, string parameter) {
-        return !string.IsNullOrEmpty(HttpUtility.ParseQueryString(uri.Query).Get(parameter));
+    private bool ContainFolder(Uri uri, string folder) {
+        return uri.LocalPath.Contains(folder);
     }
 
-    private string GetParameter(Uri uri, string parameter) {
-        return HttpUtility.ParseQueryString(uri.Query).Get(parameter);
+    private string GetFolderId(Uri uri, string folder) {
+        string localPath = uri.LocalPath;
+        localPath = localPath.Substring(1, localPath.Length - 1);
+        string[] split = localPath.Split('/');
+        for (int i = 0; i < split.Length; i++) {
+            if (split[i].Contains(folder) && i < split.Length - 1) {
+                return split[i + 1];
+            }
+        }
+        return string.Empty;
     }
 }

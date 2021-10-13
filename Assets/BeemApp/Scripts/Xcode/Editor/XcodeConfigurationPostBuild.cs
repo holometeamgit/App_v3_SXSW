@@ -15,7 +15,10 @@ namespace Beem.Xcode {
         private static List<string> CustomDomains = new List<string>() {
             "https://join.beem.me",
             "https://join.beem.me/room/*",
-            "https://ar.beem.me/"
+             "https://join.beem.me/room",
+             "https://join.beem.me/stream",
+             "https://join.beem.me/stream/*",
+            "https://ar.beem.me"
         };
 
         [PostProcessBuild]
