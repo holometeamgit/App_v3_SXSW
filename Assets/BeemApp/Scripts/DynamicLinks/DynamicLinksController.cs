@@ -13,6 +13,11 @@ namespace Beem.Firebase.DynamicLink {
 
         private void OnEnable() {
             FirebaseCallBacks.onInit += Subscribe;
+            Application.deepLinkActivated += OnDynamicLink;
+            if (!string.IsNullOrEmpty(Application.absoluteURL)) {
+                // Cold start and Application.absoluteURL not null so process Deep Link.
+                OnDynamicLink(Application.absoluteURL);
+            }
         }
 
         protected void Subscribe() {
@@ -25,14 +30,18 @@ namespace Beem.Firebase.DynamicLink {
             DynamicLinks.DynamicLinkReceived -= OnDynamicLink;
             DynamicLinksCallBacks.onCreateShortLink -= CreateShortLink;
             FirebaseCallBacks.onInit -= Subscribe;
+            Application.deepLinkActivated -= OnDynamicLink;
+        }
+
+        private void OnDynamicLink(string url) {
+            DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(url);
+            HelperFunctions.DevLog("Received dynamic link {0}", url);
         }
 
         // Display the dynamic link received by the application.
         private void OnDynamicLink(object sender, EventArgs args) {
             var dynamicLinkEventArgs = args as ReceivedDynamicLinkEventArgs;
-            DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(dynamicLinkEventArgs.ReceivedDynamicLink.Url.OriginalString);
-            Debug.LogFormat("Received dynamic link {0}",
-                            dynamicLinkEventArgs.ReceivedDynamicLink.Url.OriginalString);
+            OnDynamicLink(dynamicLinkEventArgs.ReceivedDynamicLink.Url.OriginalString);
 
 #if UNITY_ANDROID
             using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer")) {
@@ -52,8 +61,8 @@ namespace Beem.Firebase.DynamicLink {
             string desktopLink = string.Empty;
             string baseLink = string.Empty;
 
-            if (dynamicLinkParameters.ParameterName == DynamicLinkParameters.Parameter.username) {
-                dynamicLink = dynamicLinkParameters.DynamicLinkURL + "?" + dynamicLinkParameters.ParameterName + "=" + dynamicLinkParameters.ParameterId;
+            if (dynamicLinkParameters.ParameterName == DynamicLinkParameters.Parameter.room) {
+                dynamicLink = dynamicLinkParameters.DynamicLinkURL + "/" + dynamicLinkParameters.ParameterName + "/" + dynamicLinkParameters.ParameterId;
 
                 desktopLink = dynamicLink;
 
@@ -63,7 +72,7 @@ namespace Beem.Firebase.DynamicLink {
 
                 urlFormat = components.LongDynamicLink.AbsoluteUri;
             } else {
-                dynamicLink = dynamicLinkParameters.Prefix + "?" + dynamicLinkParameters.ParameterName + "=" + dynamicLinkParameters.ParameterId;
+                dynamicLink = dynamicLinkParameters.Prefix + "/" + dynamicLinkParameters.ParameterName + "/" + dynamicLinkParameters.ParameterId;
                 desktopLink = dynamicLinkParameters.DynamicLinkURL;
 
                 var components = new DynamicLinkComponents(new Uri(dynamicLink), dynamicLinkParameters.Prefix);

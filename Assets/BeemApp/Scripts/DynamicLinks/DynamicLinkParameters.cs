@@ -10,7 +10,8 @@ namespace Beem.Firebase.DynamicLink {
     public class DynamicLinkParameters {
 
         public enum Parameter {
-            streamId,
+            stream,
+            room,
             username
         }
 

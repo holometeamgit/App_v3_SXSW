@@ -16,44 +16,27 @@ public class DeepLinkHandler : MonoBehaviour {
         GetContentsParameters(uri);
     }
 
-    private void TestDynamicLink(string uriStr) {
-        Debug.LogError("OnDynamicLinkActivated: " + uriStr);
-        OnDynamicLinkActivated(uriStr);
-    }
-
-    private void TestDeepLink(string uriStr) {
-        Debug.LogError("OnDeepLinkActivated: " + uriStr);
-        OnDynamicLinkActivated(uriStr);
-    }
-
     private void Awake() {
-        DynamicLinksCallBacks.onReceivedDeepLink += TestDynamicLink;
-        Application.deepLinkActivated += TestDeepLink;
-        Debug.LogError("Application.absoluteURL =" + Application.absoluteURL);
-        if (!string.IsNullOrEmpty(Application.absoluteURL)) {
-            // Cold start and Application.absoluteURL not null so process Deep Link.
-            OnDynamicLinkActivated(Application.absoluteURL);
-        }
+        DynamicLinksCallBacks.onReceivedDeepLink += OnDynamicLinkActivated;
     }
 
     private void OnDestroy() {
-        DynamicLinksCallBacks.onReceivedDeepLink -= TestDynamicLink;
-        Application.deepLinkActivated -= TestDeepLink;
+        DynamicLinksCallBacks.onReceivedDeepLink -= OnDynamicLinkActivated;
     }
 
     private void GetContentsParameters(Uri uri) {
-        if (ContainParameter(uri, DynamicLinkParameters.Parameter.streamId.ToString())) {
+        if (ContainParameter(uri, DynamicLinkParameters.Parameter.stream.ToString())) {
             HelperFunctions.DevLog("GetStreamParameters");
 
-            string streamId = GetParameter(uri, DynamicLinkParameters.Parameter.streamId.ToString());
+            string streamId = GetParameter(uri, DynamicLinkParameters.Parameter.stream.ToString());
 
             HelperFunctions.DevLog("streamId = " + streamId);
             StreamCallBacks.onStreamLinkReceived?.Invoke(streamId);
-        } else if (ContainParameter(uri, DynamicLinkParameters.Parameter.username.ToString())) {
+        } else if (ContainParameter(uri, DynamicLinkParameters.Parameter.room.ToString())) {
 
             HelperFunctions.DevLog("GetRoomParameters");
 
-            string userName = GetParameter(uri, DynamicLinkParameters.Parameter.username.ToString());
+            string userName = GetParameter(uri, DynamicLinkParameters.Parameter.room.ToString());
 
             HelperFunctions.DevLog("username = " + userName);
             StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
