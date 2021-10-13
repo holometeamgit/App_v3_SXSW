@@ -1163,7 +1163,6 @@ GameObject:
   - component: {fileID: 9113670926633950869}
   - component: {fileID: 9113670926633950872}
   - component: {fileID: 630276742}
-  - component: {fileID: 7367794044440984482}
   m_Layer: 5
   m_Name: PnlHomeScreenV2
   m_TagString: Untagged
@@ -1215,7 +1214,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scrollRect: {fileID: 9113670925800669937}
   pullRefreshController: {fileID: 304454058}
-  uiThumbnailsController: {fileID: 7367794044440984482}
+  uiThumbnailsController: {fileID: 0}
   thumbnailPriority: {fileID: 11400000, guid: ebc66424c49d24998a045a244ae6f9b8, type: 2}
   thumbnailWebDownloadManager: {fileID: 0}
   pageSize: 20
@@ -1237,27 +1236,6 @@ MonoBehaviour:
   OnAllDataLoaded:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &7367794044440984482
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9113670926633950868}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 814b8263dc45b405ba6722815ccc1e2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  webRequestHandler: {fileID: 0}
-  pnlViewingExperience: {fileID: 0}
-  pnlStreamOverlay: {fileID: 0}
-  pnlPrerecordedVideo: {fileID: 0}
-  btnThumbnailPrefab: {fileID: 1133644508767705508, guid: 4e1af7d2a891949b581f3f58d2c6a729,
-    type: 3}
-  content: {fileID: 9113670926264715628}
-  purchaseManager: {fileID: 0}
-  _startBtnCount: 20
 --- !u!1 &9113670926745020094
 GameObject:
   m_ObjectHideFlags: 0

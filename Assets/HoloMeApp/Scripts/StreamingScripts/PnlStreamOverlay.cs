@@ -337,6 +337,9 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         OnCloseAsStreamer.Invoke();
+
+        if (agoraController.IsRoom)
+            StreamCallBacks.onRoomClosed?.Invoke();
     }
 
     private void CloseAsViewer() {
