@@ -25,21 +25,37 @@ public class DeepLinkHandler : MonoBehaviour {
     }
 
     private void GetContentsParameters(Uri uri) {
-        if (ContainParameter(uri, DynamicLinkParameters.Parameter.stream.ToString())) {
+        if (ContainParameter(uri, DynamicLinkParameters.Parameter.slug.ToString())) {
             HelperFunctions.DevLog("GetStreamParameters");
 
-            string streamId = GetParameter(uri, DynamicLinkParameters.Parameter.stream.ToString());
+            string streamId = GetParameterId(uri, DynamicLinkParameters.Parameter.slug.ToString());
 
             HelperFunctions.DevLog("streamId = " + streamId);
             StreamCallBacks.onStreamLinkReceived?.Invoke(streamId);
-        } else if (ContainParameter(uri, DynamicLinkParameters.Parameter.room.ToString())) {
+        } else if (ContainFolder(uri, DynamicLinkParameters.Folder.stream.ToString())) {
 
             HelperFunctions.DevLog("GetRoomParameters");
 
-            string userName = GetParameter(uri, DynamicLinkParameters.Parameter.room.ToString());
+            string userName = GetFolderId(uri, DynamicLinkParameters.Folder.stream.ToString());
 
             HelperFunctions.DevLog("username = " + userName);
             StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
+        } else if (ContainParameter(uri, DynamicLinkParameters.Parameter.username.ToString())) {
+
+            HelperFunctions.DevLog("GetRoomParameters");
+
+            string userName = GetParameterId(uri, DynamicLinkParameters.Parameter.username.ToString());
+
+            HelperFunctions.DevLog("username = " + userName);
+            StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
+        } else if (ContainFolder(uri, DynamicLinkParameters.Folder.room.ToString())) {
+            HelperFunctions.DevLog("GetRoomParameters");
+
+            string userName = GetFolderId(uri, DynamicLinkParameters.Folder.room.ToString());
+
+            HelperFunctions.DevLog("username = " + userName);
+            StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
+
         }
     }
 
@@ -47,7 +63,23 @@ public class DeepLinkHandler : MonoBehaviour {
         return !string.IsNullOrEmpty(HttpUtility.ParseQueryString(uri.Query).Get(parameter));
     }
 
-    private string GetParameter(Uri uri, string parameter) {
+    private string GetParameterId(Uri uri, string parameter) {
         return HttpUtility.ParseQueryString(uri.Query).Get(parameter);
+    }
+
+    private bool ContainFolder(Uri uri, string folder) {
+        return uri.LocalPath.Contains(folder);
+    }
+
+    private string GetFolderId(Uri uri, string folder) {
+        string localPath = uri.LocalPath;
+        localPath = localPath.Substring(1, localPath.Length - 1);
+        string[] split = localPath.Split('/');
+        for (int i = 0; i < split.Length; i++) {
+            if (split[i].Contains(folder) && i < split.Length - 1) {
+                return split[i + 1];
+            }
+        }
+        return string.Empty;
     }
 }
