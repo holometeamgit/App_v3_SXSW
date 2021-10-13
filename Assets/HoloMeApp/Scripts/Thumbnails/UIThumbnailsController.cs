@@ -119,6 +119,7 @@ public class UIThumbnailsController : MonoBehaviour {
 
         CallBacks.onClickLike += SetLike;
         CallBacks.onClickUnlike += SetUnlike;
+        StreamCallBacks.onPlayLiveStream += PlayLiveStream;
 
         InstantiateBtns(_startBtnCount);
         CheckActiveBtns();
@@ -257,5 +258,6 @@ public class UIThumbnailsController : MonoBehaviour {
     private void OnDestroy() {
         CallBacks.onClickLike -= SetLike;
         CallBacks.onClickUnlike -= SetUnlike;
+        StreamCallBacks.onPlayLiveStream -= PlayLiveStream;
     }
 }
