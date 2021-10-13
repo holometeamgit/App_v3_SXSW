@@ -25,46 +25,23 @@ public class DeepLinkHandler : MonoBehaviour {
     }
 
     private void GetContentsParameters(Uri uri) {
-        if (ContainParameter(uri, DynamicLinkParameters.Parameter.slug.ToString())) {
+        if (ContainFolder(uri, DynamicLinkParameters.Folder.stream.ToString())) {
+
             HelperFunctions.DevLog("GetStreamParameters");
 
-            string streamId = GetParameterId(uri, DynamicLinkParameters.Parameter.slug.ToString());
+            string streamId = GetFolderId(uri, DynamicLinkParameters.Folder.stream.ToString());
 
             HelperFunctions.DevLog("streamId = " + streamId);
             StreamCallBacks.onStreamLinkReceived?.Invoke(streamId);
-        } else if (ContainFolder(uri, DynamicLinkParameters.Folder.stream.ToString())) {
-
-            HelperFunctions.DevLog("GetRoomParameters");
-
-            string userName = GetFolderId(uri, DynamicLinkParameters.Folder.stream.ToString());
-
-            HelperFunctions.DevLog("username = " + userName);
-            StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
-        } else if (ContainParameter(uri, DynamicLinkParameters.Parameter.username.ToString())) {
-
-            HelperFunctions.DevLog("GetRoomParameters");
-
-            string userName = GetParameterId(uri, DynamicLinkParameters.Parameter.username.ToString());
-
-            HelperFunctions.DevLog("username = " + userName);
-            StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
         } else if (ContainFolder(uri, DynamicLinkParameters.Folder.room.ToString())) {
+
             HelperFunctions.DevLog("GetRoomParameters");
 
             string userName = GetFolderId(uri, DynamicLinkParameters.Folder.room.ToString());
 
             HelperFunctions.DevLog("username = " + userName);
             StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
-
         }
-    }
-
-    private bool ContainParameter(Uri uri, string parameter) {
-        return !string.IsNullOrEmpty(HttpUtility.ParseQueryString(uri.Query).Get(parameter));
-    }
-
-    private string GetParameterId(Uri uri, string parameter) {
-        return HttpUtility.ParseQueryString(uri.Query).Get(parameter);
     }
 
     private bool ContainFolder(Uri uri, string folder) {

@@ -62,7 +62,7 @@ namespace Beem.Firebase.DynamicLink {
             string baseLink = string.Empty;
 
             if (dynamicLinkParameters.FolderName == DynamicLinkParameters.Folder.room) {
-                dynamicLink = dynamicLinkParameters.DynamicLinkURL + "/" + dynamicLinkParameters.ParameterName + "/" + dynamicLinkParameters.Id;
+                dynamicLink = dynamicLinkParameters.DynamicLinkURL + "/" + dynamicLinkParameters.FolderName + "/" + dynamicLinkParameters.Id;
 
                 desktopLink = dynamicLink;
 
@@ -72,7 +72,7 @@ namespace Beem.Firebase.DynamicLink {
 
                 urlFormat = components.LongDynamicLink.AbsoluteUri;
             } else {
-                dynamicLink = dynamicLinkParameters.Prefix + "/" + dynamicLinkParameters.ParameterName + "/" + dynamicLinkParameters.Id;
+                dynamicLink = dynamicLinkParameters.Prefix + "/" + dynamicLinkParameters.FolderName + "/" + dynamicLinkParameters.Id;
                 desktopLink = dynamicLinkParameters.DynamicLinkURL;
 
                 var components = new DynamicLinkComponents(new Uri(dynamicLink), dynamicLinkParameters.Prefix);
