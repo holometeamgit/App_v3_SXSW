@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PnlThumbnailPopupConstructor : MonoBehaviour {
     [SerializeField]
-    private GameObject _pnlThumbnailPopupGO;
     private PnlThumbnailPopup _pnlThumbnailPopup;
 
     private void Awake() {
@@ -16,16 +15,8 @@ public class PnlThumbnailPopupConstructor : MonoBehaviour {
     }
 
     private void OpenStream(string idString) {
-
-        _pnlThumbnailPopup = _pnlThumbnailPopupGO.GetComponent<PnlThumbnailPopup>();
         long id = 0;
-        Debug.Log("OpenStream id parsed: " + long.TryParse(idString, out id));
-
-        Debug.Log("OpenStream id : " + id);
-
-        Debug.Log("_pnlThumbnailPopup is null : " + (_pnlThumbnailPopup == null));
-        Debug.Log("_pnlThumbnailPopup  : " + _pnlThumbnailPopup);
-
+        long.TryParse(idString, out id);
         _pnlThumbnailPopup.OpenStream(id);
     }
 
