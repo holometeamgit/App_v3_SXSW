@@ -11,28 +11,28 @@ using System;
 public class PnlRoomPopup : MonoBehaviour {
 
     [SerializeField]
-    Color _highlightMSGColor;
+    private Color _highlightMSGColor;
     [SerializeField]
-    TMP_Text _titleText;
+    private TMP_Text _titleText;
     [SerializeField]
-    TMP_Text _subtitleText;
+    private TMP_Text _subtitleText;
     [SerializeField]
-    TMP_Text _usersCountText;
+    private TMP_Text _usersCountText;
 
     [SerializeField]
-    GameObject _title;
+    private GameObject _title;
     [SerializeField]
-    GameObject _subtitle;
+    private GameObject _subtitle;
     [SerializeField]
-    GameObject _usersCount;
+    private GameObject _usersCount;
 
     [SerializeField]
-    GameObject _btnClose, _btnShare, _btnEnterRoom;
+    private GameObject _btnClose, _btnShare, _btnEnterRoom;
 
     [SerializeField]
-    SwipePopUp _swipePopUp;
+    private SwipePopUp _swipePopUp;
     [SerializeField]
-    CanvasGroup _canvasGroup;
+    private CanvasGroup _canvasGroup;
 
     /// <summary>
     /// Call share event for current room

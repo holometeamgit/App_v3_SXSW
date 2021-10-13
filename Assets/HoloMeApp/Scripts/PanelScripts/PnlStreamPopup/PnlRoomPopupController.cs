@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 
+/// <summary>
+/// PnlRoomPopupController controller for PnlRoomPopup
+/// </summary>
 public class PnlRoomPopupController {
     private RoomPopupShowChecker _roomPopupShowChecker;
     private StreamerCountUpdater _streamerCountUpdater;
@@ -26,7 +29,7 @@ public class PnlRoomPopupController {
         Construct(roomPopupShowChecker, streamerCountUpdater);
     }
 
-    public void Construct(RoomPopupShowChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater) {
+    private void Construct(RoomPopupShowChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater) {
         _roomPopupShowChecker = roomPopupShowChecker;
         _streamerCountUpdater = streamerCountUpdater;
 

@@ -10,11 +10,11 @@ using System.Threading;
 /// </summary>
 public class PnlRoomPopupConstructor : MonoBehaviour {
     [SerializeField]
-    PnlRoomPopup _pnlRoomPopup;
+    private PnlRoomPopup _pnlRoomPopup;
     [SerializeField]
-    RoomPopupShowChecker _roomPopupShowChecker;
+    private RoomPopupShowChecker _roomPopupShowChecker;
     [SerializeField]
-    StreamerCountUpdater _streamerCountUpdater;
+    private StreamerCountUpdater _streamerCountUpdater;
     private PnlRoomPopupController _pnlRoomPopupController;
 
     private void Awake() {
