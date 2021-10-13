@@ -112,15 +112,21 @@ public class HelperFunctions {
     }
 
     /// <summary>
-    /// Use this to detect if UI is being pressed
+    /// Use this to detect if user's finger is over UI to block raycasts etc
     /// </summary>
+    /// <returns>True if over UI</returns>
     public static bool IsPointerOverUIObject() {
         if (Input.touchCount > 0) {
-            PointerEventData eventData = new PointerEventData(EventSystem.current);
-            eventData.position = Input.GetTouch(0).position;
-            List<RaycastResult> results = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(eventData, results);
-            return results.Count > 0;
+            for (int i = 0; i < Input.touchCount; i++) {
+                PointerEventData eventData = new PointerEventData(EventSystem.current);
+                eventData.position = Input.GetTouch(i).position;
+                List<RaycastResult> results = new List<RaycastResult>();
+                EventSystem.current.RaycastAll(eventData, results);
+
+                if (results.Count > 0) {
+                    return true;
+                }
+            }
         }
         return false;
     }
