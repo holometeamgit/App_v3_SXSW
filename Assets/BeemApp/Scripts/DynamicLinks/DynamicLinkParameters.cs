@@ -9,9 +9,9 @@ namespace Beem.Firebase.DynamicLink {
     /// </summary>
     public class DynamicLinkParameters {
 
-        public enum Parameter {
-            streamId,
-            username
+        public enum Folder {
+            stream,
+            room
         }
 
         public string Prefix {
@@ -20,9 +20,9 @@ namespace Beem.Firebase.DynamicLink {
             }
         }
 
-        public string ParameterId {
+        public string Id {
             get {
-                return _parameterId;
+                return _id;
             }
         }
 
@@ -32,10 +32,9 @@ namespace Beem.Firebase.DynamicLink {
             }
         }
 
-
-        public Parameter ParameterName {
+        public Folder FolderName {
             get {
-                return _parameterName;
+                return _folderName;
             }
         }
 
@@ -46,23 +45,23 @@ namespace Beem.Firebase.DynamicLink {
         }
 
         private string _prefix = default;
-        private string _parameterId;
+        private string _id;
         private string _dynamicLinkURL;
-        private Parameter _parameterName;
+        private Folder _folderName;
         private SocialMetaTagParameters _socialMetaTagParameters;
 
-        public DynamicLinkParameters(string prefix, string dynamicLinkURL, Parameter parameterName, string parameterId) {
+        public DynamicLinkParameters(string prefix, string dynamicLinkURL, Folder folderName, string id) {
             _prefix = prefix;
-            _parameterId = parameterId;
+            _id = id;
             _dynamicLinkURL = dynamicLinkURL;
-            _parameterName = parameterName;
+            _folderName = folderName;
         }
 
-        public DynamicLinkParameters(string prefix, string dynamicLinkURL, Parameter parameterName, string parameterId, SocialMetaTagParameters socialMetaTagParameters) {
+        public DynamicLinkParameters(string prefix, string dynamicLinkURL, Folder folderName, string id, SocialMetaTagParameters socialMetaTagParameters) {
             _prefix = prefix;
-            _parameterId = parameterId;
+            _id = id;
             _dynamicLinkURL = dynamicLinkURL;
-            _parameterName = parameterName;
+            _folderName = folderName;
             _socialMetaTagParameters = socialMetaTagParameters;
         }
 

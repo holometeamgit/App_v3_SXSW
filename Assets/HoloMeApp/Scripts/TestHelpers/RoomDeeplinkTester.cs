@@ -5,14 +5,11 @@ using Beem.Firebase.DynamicLink;
 using System.Threading;
 using System.Threading.Tasks;
 
-public class RoomDeeplinkTester : MonoBehaviour
-{
-    [SerializeField] DeepLinkHandler DeepLinkHandler;
+public class RoomDeeplinkTester : MonoBehaviour {
     [SerializeField] string linkRoomId;
 
     [ContextMenu("SendRoomId")]
-    public void SendRoomId()
-    {
+    public void SendRoomId() {
         Debug.Log("RoomID " + linkRoomId);
         DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(linkRoomId);
     }
