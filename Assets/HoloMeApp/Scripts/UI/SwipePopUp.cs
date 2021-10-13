@@ -5,6 +5,9 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
 
+/// <summary>
+/// controls for the movement of the popup
+/// </summary>
 public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler {
 
     public Action onStartShowing;
@@ -19,19 +22,20 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         Right
     }
 
-    [SerializeField] int id;
     [SerializeField]
-    AnimationCurve _animationCurve;
+    private int id;
     [SerializeField]
-    AppearanceSide _appearanceSide;
+    private AnimationCurve _animationCurve;
     [SerializeField]
-    RectTransform _swipedObjectTransform;
+    private AppearanceSide _appearanceSide;
     [SerializeField]
-    CanvasGroup _canvasGroup;
+    private RectTransform _swipedObjectTransform;
+    [SerializeField]
+    private CanvasGroup _canvasGroup;
 
     [Range(0.001f, 20)]
     [SerializeField]
-    float _time = 2;
+    private float _time = 2;
 
     private CanvasScaler _canvasScaler;
 
@@ -96,6 +100,9 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
             _swipedObjectTransform.offsetMin = _showOffsetPosition;
     }
 
+    /// <summary>
+    /// Show popup
+    /// </summary>
     public void Show() {
         gameObject.SetActive(true);
         Init();
@@ -103,7 +110,9 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         Move(isShow: true);
     }
 
-
+    /// <summary>
+    /// hide popup
+    /// </summary>
     public void Hide() {
         onStartHiding?.Invoke();
         Move(isShow: false);

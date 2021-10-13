@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 
+/// checks requirements for opening PnlRoomPopup
 /// </summary>
 public class RoomPopupShowChecker : MonoBehaviour {
     [SerializeField]
@@ -27,9 +27,4 @@ public class RoomPopupShowChecker : MonoBehaviour {
 
         return true;
     }
-
-    // подписаться на все события при которых будет окно закрываться (так как некоторые окна могу открываться с задержкой и нужно прервать отображения popup)
-    // добавить событие открытия стрима и добавить событие закрытие стрима
-    // добавить перепроверку в цикле в pnlroompopupcontroller на случай если пытется открыть но не может. отличать ожидание от прерывания
-    // добавить все нужные объекты с главной сцены
 }

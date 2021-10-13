@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
+/// <summary>
+/// UI popup for opening rooms
+/// </summary>
 public class PnlRoomPopup : MonoBehaviour {
 
     [SerializeField]
@@ -31,10 +34,16 @@ public class PnlRoomPopup : MonoBehaviour {
     [SerializeField]
     CanvasGroup _canvasGroup;
 
+    /// <summary>
+    /// Call share event for current room
+    /// </summary>
     public void Share() {
         StreamCallBacks.onShareRoom?.Invoke();
     }
 
+    /// <summary>
+    /// Call onOpenRoom event for open current room
+    /// </summary>
     public void EnterRoom() {
         StreamCallBacks.onOpenRoom?.Invoke();
     }

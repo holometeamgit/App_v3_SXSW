@@ -4,6 +4,10 @@ using UnityEngine;
 using System.Threading.Tasks;
 using System.Threading;
 
+/// <summary>
+/// Constructor for PnlRoomPopup and PnlRoomPopupController
+/// need for initialization
+/// </summary>
 public class PnlRoomPopupConstructor : MonoBehaviour {
     [SerializeField]
     PnlRoomPopup _pnlRoomPopup;
