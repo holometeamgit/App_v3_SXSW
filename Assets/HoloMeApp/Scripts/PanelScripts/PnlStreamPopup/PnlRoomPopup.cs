@@ -58,7 +58,8 @@ public class PnlRoomPopup : MonoBehaviour {
         _swipePopUp.onHid += OnPopUpClose;
         _swipePopUp.onShowed += StartInteraction;
         _swipePopUp.onStartHiding += StopInteraction;
-        _swipePopUp.onStartShowing += StopInteraction;
+        _swipePopUp.onStartShowing += StartInteraction;
+        _swipePopUp.onStartShowing += OnPopUpStartOpen;
     }
 
     private void ShowNoLongerOnline(string username) {
@@ -121,6 +122,9 @@ public class PnlRoomPopup : MonoBehaviour {
 
     private void StopInteraction() {
         _canvasGroup.blocksRaycasts = false;
+    }
+
+    private void OnPopUpStartOpen() {
         StreamCallBacks.onPopUpStartOpen?.Invoke();
     }
 
@@ -138,6 +142,7 @@ public class PnlRoomPopup : MonoBehaviour {
         _swipePopUp.onHid -= OnPopUpClose;
         _swipePopUp.onShowed -= StartInteraction;
         _swipePopUp.onStartHiding -= StopInteraction;
-        _swipePopUp.onStartShowing -= StopInteraction;
+        _swipePopUp.onStartShowing -= StartInteraction;
+        _swipePopUp.onStartShowing -= OnPopUpStartOpen;
     }
 }
