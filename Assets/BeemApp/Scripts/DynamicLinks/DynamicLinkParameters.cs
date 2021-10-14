@@ -11,7 +11,8 @@ namespace Beem.Firebase.DynamicLink {
 
         public enum Folder {
             stream,
-            room
+            room,
+            username
         }
 
         public string Prefix {
