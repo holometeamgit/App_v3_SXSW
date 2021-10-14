@@ -69,6 +69,7 @@ public class PnlRoomPopupController {
                 HelperFunctions.DevLog("Room popup request. Room: " + roomJsonData.agora_channel);
 
                 if (_receivedRoomJsonData == null && roomJsonData.status == StreamJsonData.Data.LIVE_ROOM_STR) {
+
                     _startedRoomJsonData = roomJsonData;
                     PlayLiveStream();
                     return;
@@ -85,12 +86,12 @@ public class PnlRoomPopupController {
 
                 if (!_isWaitIfNeedHideStarted) {
                     _isWaitIfNeedHideStarted = true;
-                    WaitIfNeedHide().Start();
-                }
+                    WaitIfNeedHide().ContinueWith((task) => { }, taskScheduler);
+                    }
 
                 if (!_isCheckStateStarted) {
                     _isCheckStateStarted = true;
-                    RecheckState().Start();
+                    RecheckState().ContinueWith((task) => { }, taskScheduler);
                 }
             }
         }, taskScheduler);
