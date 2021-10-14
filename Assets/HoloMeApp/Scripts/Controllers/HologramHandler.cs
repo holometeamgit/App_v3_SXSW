@@ -92,6 +92,11 @@ public class HologramHandler : MonoBehaviour {
 
     private void PlayOnPlace(Vector3 position) {
         //Debug.Log($"Play on Place called {videoCode}");
+
+        if (HelperFunctions.IsPointerOverUIObject()) {
+            return;
+        }
+
         if (!hasPlaced || Application.isEditor) {
             hasPlaced = true;
             PlayVideo();
