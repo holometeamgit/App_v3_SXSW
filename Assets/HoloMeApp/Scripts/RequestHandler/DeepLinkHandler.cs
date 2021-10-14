@@ -41,22 +41,38 @@ public class DeepLinkHandler : MonoBehaviour {
 
             HelperFunctions.DevLog("username = " + userName);
             StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
+        } else if (ContainParameter(uri, DynamicLinkParameters.Folder.username.ToString())) {
+
+            HelperFunctions.DevLog("GetRoomParameters");
+
+            string userName = GetParameterId(uri, DynamicLinkParameters.Folder.username.ToString());
+
+            HelperFunctions.DevLog("username = " + userName);
+            StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
         }
     }
 
-    private bool ContainFolder(Uri uri, string folder) {
-        return uri.LocalPath.Contains(folder);
+    private bool ContainFolder(Uri uri, string parameter) {
+        return uri.LocalPath.Contains(parameter);
     }
 
-    private string GetFolderId(Uri uri, string folder) {
+    private string GetFolderId(Uri uri, string parameter) {
         string localPath = uri.LocalPath;
         localPath = localPath.Substring(1, localPath.Length - 1);
         string[] split = localPath.Split('/');
         for (int i = 0; i < split.Length; i++) {
-            if (split[i].Contains(folder) && i < split.Length - 1) {
+            if (split[i].Contains(parameter) && i < split.Length - 1) {
                 return split[i + 1];
             }
         }
         return string.Empty;
+    }
+
+    private bool ContainParameter(Uri uri, string parameter) {
+        return HttpUtility.ParseQueryString(uri.Query).Get(parameter) != null;
+    }
+
+    private string GetParameterId(Uri uri, string parameter) {
+        return HttpUtility.ParseQueryString(uri.Query).Get(parameter);
     }
 }
