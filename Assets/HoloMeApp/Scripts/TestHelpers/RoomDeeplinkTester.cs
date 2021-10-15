@@ -24,7 +24,7 @@ public class RoomDeeplinkTester : MonoBehaviour {
         StreamCallBacks.onRoomDataReceived?.Invoke(roomJsonData);
     }
 
-    [ContextMenu("Get test event ofline")]
+    [ContextMenu("Get test event offline")]
     private void TestOflineRoomData() {
         RoomJsonData roomJsonData = new RoomJsonData();
         roomJsonData.agora_channel = "ivklim21";
