@@ -85,10 +85,7 @@ public class PnlRoomPopupController {
                     StreamCallBacks.onShowPopUpRoomOffline(_receivedRoomJsonData.user);
                 }
 
-                if (!_isWaitIfNeedHideStarted) {
-                    _isWaitIfNeedHideStarted = true;
-                    WaitIfNeedHide().ContinueWith((task) => { }, taskScheduler);
-                    }
+                WaitStart();
 
                 if (!_isCheckStateStarted) {
                     _isCheckStateStarted = true;
@@ -105,11 +102,19 @@ public class PnlRoomPopupController {
 
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         WaitForCanShow().ContinueWith((task) => {
-            if (_startedRoomJsonData.user != _receivedRoomJsonData.user)
+            if (_receivedRoomJsonData != null)
                 return;
-            StreamCallBacks.onShowPopUpRoomEnded(_receivedRoomJsonData.user);
-            WaitIfNeedHide().Start();
+            StreamCallBacks.onShowPopUpRoomEnded(_startedRoomJsonData.user);
+            WaitStart();
         }, taskScheduler);
+    }
+
+    private void WaitStart() {
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        if (!_isWaitIfNeedHideStarted) {
+            _isWaitIfNeedHideStarted = true;
+            WaitIfNeedHide().ContinueWith((task) => { }, taskScheduler);
+        }
     }
 
     private void UpdateUserCount(int count) {
