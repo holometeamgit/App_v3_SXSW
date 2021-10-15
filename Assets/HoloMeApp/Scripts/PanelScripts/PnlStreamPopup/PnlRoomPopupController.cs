@@ -42,6 +42,7 @@ public class PnlRoomPopupController {
         //from ui
         StreamCallBacks.onOpenRoom += OnOpenRoom;
         StreamCallBacks.onShareRoom += OnShareRoom;
+        StreamCallBacks.onPopUpStartClosing += OnPopUpStartClosing;
         StreamCallBacks.onPopUpClosed += OnPopUpClosed;
         StreamCallBacks.onPopUpStartOpen += OnPopUpStartOpen;
     }
@@ -130,8 +131,6 @@ public class PnlRoomPopupController {
     private void OnPopUpClosed() {
         _streamerCountUpdater.StopCheck();
         _isShow = false;
-        _isCheckStateStarted = false;
-        _isWaitIfNeedHideStarted = false;
         _receivedRoomJsonData = null;
     }
 
@@ -141,6 +140,11 @@ public class PnlRoomPopupController {
 
     private void OnPopUpStartOpen() {
         _isShow = true;
+    }
+
+    private void OnPopUpStartClosing() {
+        _isCheckStateStarted = false;
+        _isWaitIfNeedHideStarted = false;
     }
     #endregion
 
@@ -158,14 +162,14 @@ public class PnlRoomPopupController {
 
     private async Task RecheckState() {
         await Task.Delay(CHECK_STATE_COOLDOWN);
-        while (_roomPopupShowChecker.CanShow() && _isShow) {
+        while (_roomPopupShowChecker.CanShow() && _isShow && _isCheckStateStarted) {
             StreamCallBacks.onUsernameLinkReceived?.Invoke(_receivedRoomJsonData.user);
             await Task.Delay(CHECK_STATE_COOLDOWN);
         }
     }
 
     private async Task WaitIfNeedHide() {
-        while (_roomPopupShowChecker.CanShow() && _isShow) {
+        while (_roomPopupShowChecker.CanShow() && _isShow && _isWaitIfNeedHideStarted) {
             await Task.Delay(CHECK_COOLDOWN);
         }
 
@@ -183,13 +187,14 @@ public class PnlRoomPopupController {
         StreamCallBacks.onOpenRoom -= OnOpenRoom;
         StreamCallBacks.onShareRoom -= OnShareRoom;
         StreamCallBacks.onPopUpClosed -= OnPopUpClosed;
+        StreamCallBacks.onPopUpStartClosing -= OnPopUpStartClosing;
         StreamCallBacks.onPopUpStartOpen -= OnPopUpStartOpen;
+
+        OnPopUpStartClosing();
 
         if (_showCancellationTokenSource != null) {
             _showCancellationTokenSource.Cancel();
             _showCancellationTokenSource.Dispose();
         }
-
-
     }
 }
