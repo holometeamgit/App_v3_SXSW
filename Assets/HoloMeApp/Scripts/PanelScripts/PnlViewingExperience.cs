@@ -191,7 +191,7 @@ public class PnlViewingExperience : MonoBehaviour {
     public void StopExperience() {
         viewingExperienceInFocus = false;
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
-        //ToggleARSessionObjects(false);
+        ToggleARSessionObjects(false);
         hologramHandler.StopVideo();
     }
 }
