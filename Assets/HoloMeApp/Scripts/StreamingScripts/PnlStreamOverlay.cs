@@ -773,7 +773,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private void OnDisable() {
         StopAllCoroutines();
         if (pnlViewingExperience != null) {
-            pnlViewingExperience.ToggleARSessionObjects(true);
+            pnlViewingExperience.ToggleARSessionObjects(false);
         }
         speechNotificationPopups.DeactivateAllPopups();
         ChatBtn.onOpen -= OpenChat;
