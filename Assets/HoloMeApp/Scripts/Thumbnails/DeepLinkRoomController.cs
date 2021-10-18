@@ -13,10 +13,10 @@ public class DeepLinkRoomController : MonoBehaviour {
     private const string DESCRIPTION = "Click the link below to join {0}'s Room";
 
     private void GetRoomByUserName(string username) {
-        HelperFunctions.DevLog("Get Room By UserName");
+        HelperFunctions.DevLog("Get Room By UserName " + username);
         webRequestHandler.Get(GetRoomUsernameUrl(username),
             (code, body) => RoomReceived(body),
-            (code, body) => HelperFunctions.DevLogError(code + " " + body));
+            (code, body) => HelperFunctions.DevLogError(code + " " + body), false);
     }
 
     private void RoomReceived(string body) {
