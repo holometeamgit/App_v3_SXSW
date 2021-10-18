@@ -17,13 +17,13 @@ public class DeepLinkStreamController : MonoBehaviour {
     }
 
     private void GetStreamLink(string id, string source) {
-        DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, id, serverURLAPIScriptableObject.Url, SocialParameters(source));
-        DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters, source);
+        DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.DesktopUrl, DynamicLinkParameters.Folder.stream, id, SocialParameters(source));
+        DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters);
     }
 
     private void GetPrerecordedLink(StreamJsonData.Data data) {
-        DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, data.id.ToString(), serverURLAPIScriptableObject.Url, SocialParameters(data));
-        DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters, data.user);
+        DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.DesktopUrl, DynamicLinkParameters.Folder.stream, data.id.ToString(), SocialParameters(data));
+        DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters);
     }
 
     private void OnDestroy() {

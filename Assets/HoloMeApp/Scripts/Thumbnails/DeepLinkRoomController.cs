@@ -7,7 +7,6 @@ public class DeepLinkRoomController : MonoBehaviour {
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] ServerURLAPIScriptableObject serverURLAPIScriptableObject;
     [SerializeField] VideoUploader videoUploader;
-    [SerializeField] AccountManager accountManager;
     [SerializeField] DeepLinkHandler deepLinkHandler;
 
     private const string TITLE = "You have been invited to {0}'s Room";
@@ -15,10 +14,9 @@ public class DeepLinkRoomController : MonoBehaviour {
 
     private void GetRoomByUserName(string username) {
         HelperFunctions.DevLog("Get Room By UserName");
-        webRequestHandler.GetRequest(GetRoomUsernameUrl(username),
+        webRequestHandler.Get(GetRoomUsernameUrl(username),
             (code, body) => RoomReceived(body),
-            (code, body) => HelperFunctions.DevLogError(code + " " + body),
-            accountManager.GetAccessToken().access);
+            (code, body) => HelperFunctions.DevLogError(code + " " + body));
     }
 
     private void RoomReceived(string body) {
@@ -27,15 +25,20 @@ public class DeepLinkRoomController : MonoBehaviour {
 
             HelperFunctions.DevLog("Room Recieved = " + body);
 
-            StreamCallBacks.onRoomLinkReceived?.Invoke(roomJsonData.id);
+            StreamCallBacks.onRoomDataReceived?.Invoke(roomJsonData);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
         }
     }
 
     private void GetRoomLink(string source) {
-        Uri uri = new Uri(serverURLAPIScriptableObject.FirebaseDynamicLink + serverURLAPIScriptableObject.FirebaseRoom + source);
-        DynamicLinksCallBacks.onGetShortLink?.Invoke(uri, SocialParameters(source));
+        if (!serverURLAPIScriptableObject.UseHashForRoomLink) {
+            Uri uri = new Uri(serverURLAPIScriptableObject.FirebaseDynamicLink + serverURLAPIScriptableObject.FirebaseRoom + source);
+            DynamicLinksCallBacks.onGetShortLink?.Invoke(uri, SocialParameters(source));
+        } else {
+            DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.ARUrl, DynamicLinkParameters.Folder.room, source, SocialParameters(source));
+            DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters);
+        }
     }
 
     private void Awake() {
