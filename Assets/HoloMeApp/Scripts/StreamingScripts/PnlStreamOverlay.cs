@@ -644,7 +644,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         if (!videoSurface) {
             videoSurface = cameraRenderImage.gameObject.AddComponent<VideoSurface>();
             isUsingFrontCamera = true;
-            videoSurface.EnableFilpTextureApply(false, true);
+            videoSurface.EnableFilpTextureApply(true, true);
             videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
             videoSurface.SetGameFps(agoraController.frameRate);
         }
