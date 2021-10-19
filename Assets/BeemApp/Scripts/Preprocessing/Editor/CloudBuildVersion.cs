@@ -1,22 +1,15 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 /// <summary>
 /// Preprocessing for Build Version and build name
 /// </summary>
-public class CloudBuildVersionpublic : IPreprocessBuild {
+public class CloudBuildVersion : IPreprocessBuildWithReport {
 
-    private static string _versionNumber;
-    private static string _buildNumber;
-    private static string _buildType;
-
-    private const string VERSION = "BEEM_VERSION";
-    private const string BUILD_NUMBER = "BEEM_BUILD";
-    private const string BUILD_TYPE = "BEEM_BUILD_TYPE";
+    private const string CLOUD_BUILD_MANIFEST = "UnityCloudBuildManifest.json";
 
     private const string APPLICATION_NAME_DEV = "Beem Dev";
     private const string APPLICATION_NAME = "Beem";
@@ -24,45 +17,57 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
     private const string PROD = "PROD";
     private const string DEV = "DEV";
 
-    public int callbackOrder { get { return 0; } }
-    public void OnPreprocessBuild(BuildTarget target, string path) {
-        _versionNumber = Environment.GetEnvironmentVariable(VERSION);
+    private const string BEEM_VERSION = "BEEM_VERSION";
+    private const string BEEM_BUILD = "BEEM_BUILD";
+    private const string BEEM_BUILD_TYPE = "BEEM_BUILD_TYPE";
 
-        _buildNumber = Environment.GetEnvironmentVariable(BUILD_NUMBER);
+    private TextAsset currentManifest;
 
-        _buildType = Environment.GetEnvironmentVariable(BUILD_TYPE);
+    public int callbackOrder => 0;
 
-        if (!string.IsNullOrEmpty(_versionNumber)) {
+    private UnityCloudBuildManifestData GetUnityCloudBuildManifest() {
 
-            List<int> versions = GetVersions(_versionNumber);
-
-            List<int> previousVersions = GetVersions(PlayerSettings.bundleVersion);
-
-            for (int i = 0; i < Mathf.Min(versions.Count, previousVersions.Count); i++) {
-                if (versions[i] > previousVersions[i]) {
-                    PlayerSettings.bundleVersion = _versionNumber;
-                    break;
-                }
-            }
+        if (currentManifest == null) {
+            currentManifest = (TextAsset)Resources.Load(CLOUD_BUILD_MANIFEST);
         }
 
-        if (!string.IsNullOrEmpty(_buildNumber)) {
-            if (int.Parse(_buildNumber) > int.Parse(PlayerSettings.iOS.buildNumber)) {
-                PlayerSettings.iOS.buildNumber = _buildNumber;
-            }
-            if (int.Parse(_buildNumber) > PlayerSettings.Android.bundleVersionCode) {
-                PlayerSettings.Android.bundleVersionCode = int.Parse(_buildNumber);
-            }
+        if (currentManifest != null) {
+            return JsonUtility.FromJson<UnityCloudBuildManifestData>(currentManifest.text);
         }
 
-        if (!string.IsNullOrEmpty(_buildType)) {
-            PlayerSettings.productName = _buildType == DEV ? APPLICATION_NAME_DEV : APPLICATION_NAME;
-            EditorUserBuildSettings.development = _buildType == DEV;
-            SwitchDefine(BuildTargetGroup.iOS, _buildType);
-            SwitchDefine(BuildTargetGroup.Android, _buildType);
-            HelperFunctions.DevLog(PlayerSettings.productName);
-            HelperFunctions.DevLog(EditorUserBuildSettings.development.ToString());
-            HelperFunctions.DevLog(PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android));
+        return new UnityCloudBuildManifestData();
+    }
+
+    private void GetEnviromentVariables() {
+        SetBuildNumber(Environment.GetEnvironmentVariable(BEEM_BUILD));
+        SetBuildVersion(Environment.GetEnvironmentVariable(BEEM_VERSION));
+        SetBuildType(Environment.GetEnvironmentVariable(BEEM_BUILD_TYPE));
+    }
+
+    private void SetBuildNumber(string buildNumber) {
+        if (!string.IsNullOrEmpty(buildNumber)) {
+            PlayerSettings.iOS.buildNumber = buildNumber;
+            PlayerSettings.Android.bundleVersionCode = int.Parse(buildNumber);
+        } else {
+            if (GetUnityCloudBuildManifest() != null && !string.IsNullOrEmpty(GetUnityCloudBuildManifest().buildNumber)) {
+                PlayerSettings.iOS.buildNumber = GetUnityCloudBuildManifest().buildNumber;
+                PlayerSettings.Android.bundleVersionCode = int.Parse(GetUnityCloudBuildManifest().buildNumber);
+            }
+        }
+    }
+
+    private void SetBuildVersion(string buildVersion) {
+        if (!string.IsNullOrEmpty(buildVersion)) {
+            PlayerSettings.bundleVersion = buildVersion;
+        }
+    }
+
+    private void SetBuildType(string buildType) {
+        if (!string.IsNullOrEmpty(buildType)) {
+            PlayerSettings.productName = buildType == DEV ? APPLICATION_NAME_DEV : APPLICATION_NAME;
+            EditorUserBuildSettings.development = buildType == DEV;
+            SwitchDefine(BuildTargetGroup.iOS, buildType);
+            SwitchDefine(BuildTargetGroup.Android, buildType);
         }
     }
 
@@ -89,18 +94,8 @@ public class CloudBuildVersionpublic : IPreprocessBuild {
         PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, currentDefines);
     }
 
-    private List<int> GetVersions(string version) {
-
-        List<int> temp = new List<int>();
-
-        version = version.Trim();
-        string[] lines = version.Split('.');
-
-        for (int i = 0; i < lines.Length; i++) {
-            temp.Add(int.Parse(lines[i]));
-        }
-
-        return temp;
+    public void OnPreprocessBuild(BuildReport report) {
+        GetEnviromentVariables();
     }
 
 }

@@ -13,6 +13,7 @@ namespace Beem.Utility.UnityConsole {
         }
 
         public void ClearLogs(LogType logType, int logNumber) {
+            PlayerPrefs.DeleteKey(logType + logNumber + ":" + "Log Tag");
             PlayerPrefs.DeleteKey(logType + logNumber + ":" + "Log Value");
             DateTimePrefs.DeleteKey(logType + logNumber + ":" + "Log Date");
             PlayerPrefs.DeleteKey(logType + logNumber + ":" + "Log StackTrace");
@@ -25,6 +26,7 @@ namespace Beem.Utility.UnityConsole {
         public UnityLog LoadLogs(LogType logType, int logNumber) {
             UnityLog unityLog = new UnityLog {
                 Key = logType,
+                Tag = PlayerPrefs.GetString(logType + logNumber + ":" + "Log Tag"),
                 Value = PlayerPrefs.GetString(logType + logNumber + ":" + "Log Value"),
                 Date = DateTimePrefs.Get(logType + logNumber + ":" + "Log Date"),
                 StackTrace = PlayerPrefs.GetString(logType + logNumber + ":" + "Log StackTrace"),
@@ -33,6 +35,7 @@ namespace Beem.Utility.UnityConsole {
         }
 
         public void SaveLogs(UnityLog unityLog) {
+            PlayerPrefs.SetString(unityLog.Key + ":" + "Log Tag", unityLog.Tag);
             PlayerPrefs.SetString(unityLog.Key + ":" + "Log Value", unityLog.Value.ToString());
             DateTimePrefs.Set(unityLog.Key + ":" + "Log Date", unityLog.Date);
             PlayerPrefs.SetString(unityLog.Key + ":" + "Log StackTrace", unityLog.StackTrace.ToString());

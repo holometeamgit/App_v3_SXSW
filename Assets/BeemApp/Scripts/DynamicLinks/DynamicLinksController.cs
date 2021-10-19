@@ -13,6 +13,11 @@ namespace Beem.Firebase.DynamicLink {
 
         private void OnEnable() {
             FirebaseCallBacks.onInit += Subscribe;
+            Application.deepLinkActivated += OnDynamicLink;
+            if (!string.IsNullOrEmpty(Application.absoluteURL)) {
+                // Cold start and Application.absoluteURL not null so process Deep Link.
+                OnDynamicLink(Application.absoluteURL);
+            }
         }
 
         protected void Subscribe() {
@@ -25,14 +30,18 @@ namespace Beem.Firebase.DynamicLink {
             DynamicLinks.DynamicLinkReceived -= OnDynamicLink;
             DynamicLinksCallBacks.onCreateShortLink -= CreateShortLink;
             FirebaseCallBacks.onInit -= Subscribe;
+            Application.deepLinkActivated -= OnDynamicLink;
+        }
+
+        private void OnDynamicLink(string url) {
+            DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(url);
+            HelperFunctions.DevLog("Received dynamic link {0}", url);
         }
 
         // Display the dynamic link received by the application.
         private void OnDynamicLink(object sender, EventArgs args) {
             var dynamicLinkEventArgs = args as ReceivedDynamicLinkEventArgs;
-            DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(dynamicLinkEventArgs.ReceivedDynamicLink.Url.OriginalString);
-            Debug.LogFormat("Received dynamic link {0}",
-                            dynamicLinkEventArgs.ReceivedDynamicLink.Url.OriginalString);
+            OnDynamicLink(dynamicLinkEventArgs.ReceivedDynamicLink.Url.OriginalString);
 
 #if UNITY_ANDROID
             using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer")) {
@@ -45,26 +54,39 @@ namespace Beem.Firebase.DynamicLink {
 #endif
         }
 
-        private void CreateShortLink(DynamicLinkParameters dynamicLinkParameters, string source) {
-            string baseLink = dynamicLinkParameters.Prefix + "/" + dynamicLinkParameters.ParameterName + "/" + dynamicLinkParameters.Id;
-            var components = new DynamicLinkComponents(
-         // The base Link.
-         new Uri(baseLink),
-         // The dynamic link URI prefix.
-         dynamicLinkParameters.Prefix) {
-                IOSParameters = new IOSParameters(Application.identifier) {
-                    AppStoreId = APPSTORE_ID
-                },
-                AndroidParameters = new AndroidParameters(Application.identifier),
+        private void CreateShortLink(DynamicLinkParameters dynamicLinkParameters) {
 
-                SocialMetaTagParameters = dynamicLinkParameters.SocialMetaTagParameters
+            string dynamicLink = string.Empty;
+            string urlFormat = string.Empty;
+            string desktopLink = string.Empty;
+            string baseLink = string.Empty;
 
-            };
+            if (dynamicLinkParameters.FolderName == DynamicLinkParameters.Folder.room) {
+                dynamicLink = dynamicLinkParameters.DynamicLinkURL + "/" + dynamicLinkParameters.FolderName + "/" + dynamicLinkParameters.Id;
 
-            string urlFormat = components.LongDynamicLink.AbsoluteUri;
-            if (!string.IsNullOrEmpty(dynamicLinkParameters.DesktopUrl)) {
-                urlFormat += "&ofl=" + dynamicLinkParameters.DesktopUrl;
+                desktopLink = dynamicLink;
+
+                baseLink = dynamicLink;
+
+                var components = new DynamicLinkComponents(new Uri(dynamicLink), dynamicLinkParameters.Prefix);
+
+                urlFormat = components.LongDynamicLink.AbsoluteUri;
+            } else {
+                dynamicLink = dynamicLinkParameters.Prefix + "/" + dynamicLinkParameters.FolderName + "/" + dynamicLinkParameters.Id;
+                desktopLink = dynamicLinkParameters.DynamicLinkURL;
+
+                var components = new DynamicLinkComponents(new Uri(dynamicLink), dynamicLinkParameters.Prefix);
+
+                urlFormat = components.LongDynamicLink.AbsoluteUri;
             }
+
+            LinkBuilder.AndroidParameters androidLinkBuilder = new LinkBuilder.AndroidParameters(Application.identifier, baseLink);
+            LinkBuilder.iOSParameters iOSLinkBuilder = new LinkBuilder.iOSParameters(Application.identifier, baseLink, APPSTORE_ID);
+            LinkBuilder.DesktopParameters desktopLinkBuilder = new LinkBuilder.DesktopParameters(desktopLink);
+            LinkBuilder.SocialMetaTagParameters socialMetaTagBuilder = new LinkBuilder.SocialMetaTagParameters(dynamicLinkParameters.SocialMetaTagParameters.Title, dynamicLinkParameters.SocialMetaTagParameters.Description, dynamicLinkParameters.SocialMetaTagParameters.ImageUrl.ToString());
+
+            LinkBuilder linkBuilder = new LinkBuilder(androidLinkBuilder, iOSLinkBuilder, desktopLinkBuilder, socialMetaTagBuilder);
+            urlFormat += linkBuilder.Get;
 
             Uri uri = new Uri(urlFormat);
 
@@ -86,7 +108,7 @@ namespace Beem.Firebase.DynamicLink {
                 // Short Link has been created.
                 ShortDynamicLink link = task.Result;
                 Debug.LogFormat("Generated short link: {0}", link.Url);
-                DynamicLinksCallBacks.onGetShortLink?.Invoke(link.Url, source);
+                DynamicLinksCallBacks.onGetShortLink?.Invoke(link.Url, dynamicLinkParameters.SocialMetaTagParameters);
             }, taskScheduler);
         }
     }

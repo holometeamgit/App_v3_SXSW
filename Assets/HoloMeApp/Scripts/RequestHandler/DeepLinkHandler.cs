@@ -8,20 +8,12 @@ public class DeepLinkHandler : MonoBehaviour {
     public Action<string, string> PasswordResetConfirmDeepLinkActivated;
     public Action<ServerAccessToken> OnCompleteSSOLoginGetted;
 
-    [SerializeField]
-    private ServerURLAPIScriptableObject serverURLAPIScriptableObject;
-
     public void OnDynamicLinkActivated(string uriStr) {
 
         Uri uri = new Uri(uriStr);
 
         HelperFunctions.DevLog("Dynamic link: " + uriStr);
         GetContentsParameters(uri);
-    }
-
-    public void CheckSettings() {
-        PermissionController permissionController = FindObjectOfType<PermissionController>();
-        permissionController.InformAboutNotification("Notifications have been enabled", "Notifications may include alerts, sounds, and icon badges. These can be configured in Settings.");
     }
 
     private void Awake() {
@@ -32,41 +24,55 @@ public class DeepLinkHandler : MonoBehaviour {
         DynamicLinksCallBacks.onReceivedDeepLink -= OnDynamicLinkActivated;
     }
 
-
     private void GetContentsParameters(Uri uri) {
-        if (IsFolder(uri, serverURLAPIScriptableObject.Room)) {
-            HelperFunctions.DevLog("GetRoomParameters");
+        if (ContainFolder(uri, DynamicLinkParameters.Folder.stream.ToString())) {
 
-            string roomId = GetId(uri, serverURLAPIScriptableObject.Room);
-
-            HelperFunctions.DevLog("roomId = " + roomId);
-            StreamCallBacks.onRoomLinkReceived?.Invoke(roomId);
-        } else if (IsFolder(uri, serverURLAPIScriptableObject.Stream)) {
             HelperFunctions.DevLog("GetStreamParameters");
 
-            string streamId = GetId(uri, serverURLAPIScriptableObject.Stream);
+            string streamId = GetFolderId(uri, DynamicLinkParameters.Folder.stream.ToString());
 
             HelperFunctions.DevLog("streamId = " + streamId);
             StreamCallBacks.onStreamLinkReceived?.Invoke(streamId);
-        } else if (IsFolder(uri, serverURLAPIScriptableObject.NotificationAccess)) {
-            PermissionController permissionController = FindObjectOfType<PermissionController>();
-            permissionController.CheckPushNotifications();
+        } else if (ContainFolder(uri, DynamicLinkParameters.Folder.room.ToString())) {
+
+            HelperFunctions.DevLog("GetRoomParameters");
+
+            string userName = GetFolderId(uri, DynamicLinkParameters.Folder.room.ToString());
+
+            HelperFunctions.DevLog("username = " + userName);
+            StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
+        } else if (ContainParameter(uri, DynamicLinkParameters.Folder.username.ToString())) {
+
+            HelperFunctions.DevLog("GetRoomParameters");
+
+            string userName = GetParameterId(uri, DynamicLinkParameters.Folder.username.ToString());
+
+            HelperFunctions.DevLog("username = " + userName);
+            StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
         }
     }
 
-    private bool IsFolder(Uri uri, string folder) {
-        return uri.LocalPath.Contains(folder);
+    private bool ContainFolder(Uri uri, string parameter) {
+        return uri.LocalPath.Contains(parameter);
     }
 
-    private string GetId(Uri uri, string folder) {
+    private string GetFolderId(Uri uri, string parameter) {
         string localPath = uri.LocalPath;
         localPath = localPath.Substring(1, localPath.Length - 1);
         string[] split = localPath.Split('/');
         for (int i = 0; i < split.Length; i++) {
-            if (split[i].Contains(folder) && i < split.Length - 1) {
+            if (split[i].Contains(parameter) && i < split.Length - 1) {
                 return split[i + 1];
             }
         }
         return string.Empty;
+    }
+
+    private bool ContainParameter(Uri uri, string parameter) {
+        return HttpUtility.ParseQueryString(uri.Query).Get(parameter) != null;
+    }
+
+    private string GetParameterId(Uri uri, string parameter) {
+        return HttpUtility.ParseQueryString(uri.Query).Get(parameter);
     }
 }

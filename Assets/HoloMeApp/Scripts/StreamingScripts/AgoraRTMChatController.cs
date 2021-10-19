@@ -1,5 +1,4 @@
 ﻿using agora_rtm;
-using io.agora.rtm;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -101,7 +100,7 @@ public class AgoraRTMChatController : MonoBehaviour
 
         //TODO: Use the userName param to specify the user name as currently it's compiles in msg string via PnlStreamChat SendChatMessage 
 
-        HelperFunctions.DevLog("Message received RTM");
+        HelperFunctions.DevLog("Message received RTM " + message.GetText());
 
         foreach (AgoraMessageReceiver agoraMessageReceiver in messageReceivers)
         {
@@ -127,7 +126,7 @@ public class AgoraRTMChatController : MonoBehaviour
     {
         channel.SendMessage(rtmClient.CreateMessage(message));
         //rtm.SendChannelMessage(channelName, text);
-        HelperFunctions.DevLog("Message Sent");
+        HelperFunctions.DevLog("Message Sent " + message);
     }
 
     public void OnStreamMessageError(uint userId, int streamId, int code, int missed, int cached)
@@ -140,7 +139,7 @@ public class AgoraRTMChatController : MonoBehaviour
     {
         if (!messageReceivers.Contains(agoraMessageReceiver))
         {
-            HelperFunctions.DevLog("Message received");
+            HelperFunctions.DevLog("AddMessageReceiver added");
             messageReceivers.Add(agoraMessageReceiver);
         }
         else

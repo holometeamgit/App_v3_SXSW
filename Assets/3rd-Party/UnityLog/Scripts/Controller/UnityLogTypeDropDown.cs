@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,26 +9,28 @@ namespace Beem.Utility.UnityConsole {
     /// <summary>
     /// Change Unity Log Type
     /// </summary>
+    /// 
     [RequireComponent(typeof(Dropdown))]
     public class UnityLogTypeDropDown : MonoBehaviour {
 
-        private Dropdown dropDown;
+        private Dropdown dropdown;
 
         private void Awake() {
-            dropDown = GetComponent<Dropdown>();
+            dropdown = GetComponent<Dropdown>();
+            List<Dropdown.OptionData> datas = new List<Dropdown.OptionData>();
+            string[] PieceTypeNames = Enum.GetNames(typeof(LogType));
+            foreach (string item in PieceTypeNames) {
+                Dropdown.OptionData data = new Dropdown.OptionData();
+                data.text = item;
+                datas.Add(data);
+            }
+            dropdown.AddOptions(datas);
+            dropdown.value = (int)LogData.LogTypeData;
+            DropDown(dropdown.value);
         }
 
-        private void OnEnable() {
-            DropDown();
-            dropDown.onValueChanged.AddListener(DropDown);
-        }
-
-        private void OnDisable() {
-            dropDown.onValueChanged.RemoveListener(DropDown);
-        }
-
-        private void DropDown(int value = 0) {
-            LogData.SetLogType((LogType)value);
+        public void DropDown(int value = 0) {
+            LogData.LogTypeData = (LogType)value;
         }
     }
 }

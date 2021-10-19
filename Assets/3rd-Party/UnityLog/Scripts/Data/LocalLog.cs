@@ -15,6 +15,7 @@ namespace Beem.Utility.UnityConsole {
         }
 
         public void ClearLogs(LogType logType, int logNumber) {
+            LocalPrefs<string>.DeleteKey(logType + logNumber + ":" + "Log Tag");
             LocalPrefs<string>.DeleteKey(logType + logNumber + ":" + "Log Value");
             LocalPrefs<DateTime>.DeleteKey(logType + logNumber + ":" + "Log Date");
             LocalPrefs<string>.DeleteKey(logType + logNumber + ":" + "Log StackTrace");
@@ -27,6 +28,7 @@ namespace Beem.Utility.UnityConsole {
         public UnityLog LoadLogs(LogType logType, int logNumber) {
             UnityLog unityLog = new UnityLog {
                 Key = logType,
+                Tag = LocalPrefs<string>.Get(logType + logNumber + ":" + "Log Tag", string.Empty),
                 Value = LocalPrefs<string>.Get(logType + logNumber + ":" + "Log Value", string.Empty),
                 Date = LocalPrefs<DateTime>.Get(logType + logNumber + ":" + "Log Date", DateTime.MinValue),
                 StackTrace = LocalPrefs<string>.Get(logType + logNumber + ":" + "Log StackTrace", string.Empty),
@@ -35,6 +37,7 @@ namespace Beem.Utility.UnityConsole {
         }
 
         public void SaveLogs(UnityLog unityLog) {
+            LocalPrefs<string>.Set(unityLog.Key + ":" + "Log Tag", unityLog.Tag);
             LocalPrefs<string>.Set(unityLog.Key + ":" + "Log Value", unityLog.Value);
             LocalPrefs<DateTime>.Set(unityLog.Key + ":" + "Log Date", unityLog.Date);
             LocalPrefs<string>.Set(unityLog.Key + ":" + "Log StackTrace", unityLog.StackTrace);

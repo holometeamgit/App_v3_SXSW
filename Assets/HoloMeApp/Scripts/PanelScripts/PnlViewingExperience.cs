@@ -4,6 +4,8 @@ using DG.Tweening;
 using TMPro;
 using System.Collections;
 using System;
+using Beem.Permissions;
+
 public class PnlViewingExperience : MonoBehaviour {
     [SerializeField]
     GameObject scanAnimationItems;
@@ -12,11 +14,7 @@ public class PnlViewingExperience : MonoBehaviour {
     [SerializeField]
     CanvasGroup canvasGroup;
     [SerializeField]
-    PermissionController permissionController;
-    [SerializeField]
     HologramHandler hologramHandler;
-    [SerializeField]
-    PermissionGranter permissionGranter;
     [SerializeField]
     ARPlaneManager arPlaneManager;
     [SerializeField]
@@ -41,6 +39,7 @@ public class PnlViewingExperience : MonoBehaviour {
     bool skipTutorial;
     bool activatedForStreaming;
     bool isTeaser;
+    bool isRoom;
     StreamJsonData.Data data;
     bool viewingExperienceInFocus;
     bool tutorialDisplayed;
@@ -51,13 +50,8 @@ public class PnlViewingExperience : MonoBehaviour {
     TutorialState tutorialState = TutorialState.MessageScan;
     void OnEnable() {
         scanAnimationItems.SetActive(false);
-        if (permissionGranter.HasCameraAccess && !tutorialDisplayed) {
-            //RunTutorial();
+        if (!tutorialDisplayed) {
             tutorialDisplayed = true;
-        } else {
-            if (permissionController == null)
-                permissionController = FindObjectOfType<PermissionController>();
-            permissionController.CheckCameraMicAccess();
         }
     }
     public void ToggleARSessionObjects(bool enable) {
@@ -76,7 +70,7 @@ public class PnlViewingExperience : MonoBehaviour {
             OnPlaced();
             return;
         }
-        hologramHandler.SetOnPlacementUIHelperFinished(() => { if (viewingExperienceInFocus) StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed)); });
+        hologramHandler.SetOnPlacementUIHelperFinished(() => { if (viewingExperienceInFocus && !isRoom) StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed)); });
         scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         ShowMessage(scaneEnviromentStr);
         tutorialState = TutorialState.MessageTapToPlace;
@@ -147,6 +141,7 @@ public class PnlViewingExperience : MonoBehaviour {
         SharedActivationFunctions();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, streamJsonData.title } });
         this.isTeaser = isTeaser;
+        isRoom = false;
         this.data = streamJsonData;
         activatedForStreaming = false;
         btnBurger.SetActive(true);
@@ -159,11 +154,12 @@ public class PnlViewingExperience : MonoBehaviour {
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
         }
     }
-    public void ActivateForStreaming(string channelName, string streamID) {
+    public void ActivateForStreaming(string channelName, string streamID, bool isRoom) {
         StopExperience();
         SharedActivationFunctions();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, "Live Stream: " + channelName }, { AnalyticParameters.ParamPerformanceID, streamID } });
         isTeaser = false;
+        this.isRoom = isRoom;
         activatedForStreaming = true;
         btnBurger.SetActive(false); //Close button not required on this page
         hologramHandler.TogglePreRecordedVideoRenderer(false);
@@ -172,7 +168,9 @@ public class PnlViewingExperience : MonoBehaviour {
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
-            StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
+            if (!isRoom) {
+                StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
+            }
         }
     }
     void SharedActivationFunctions() {
@@ -193,13 +191,7 @@ public class PnlViewingExperience : MonoBehaviour {
     public void StopExperience() {
         viewingExperienceInFocus = false;
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
-        //ToggleARSessionObjects(false);
+        ToggleARSessionObjects(false);
         hologramHandler.StopVideo();
-    }
-    public void PauseExperience() {
-        hologramHandler.PauseVideo();
-    }
-    public void ResumeVideo() {
-        hologramHandler.ResumeVideo();
     }
 }

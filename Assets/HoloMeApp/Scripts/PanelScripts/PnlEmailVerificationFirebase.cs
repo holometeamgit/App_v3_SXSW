@@ -4,30 +4,62 @@ using UnityEngine;
 using Beem.SSO;
 using TMPro;
 using System.Threading.Tasks;
+using System;
 
-public class PnlEmailVerificationFirebase : MonoBehaviour
-{
+public class PnlEmailVerificationFirebase : MonoBehaviour {
     [SerializeField]
-    AuthController AuthController;
+    AuthController _authController;
     [SerializeField]
-    TMP_Text txtEmail;
+    TMP_Text _txtEmail;
     [SerializeField]
-    GameObject GoToLogInBtn;
-
+    GameObject _goToLogInBtn;
+    [SerializeField] TMP_Text _resendMsg;
     private const int DELAY_TIME = 5000;
+    private const int DELAY_FOR_TIMER = 1000;
+    private const string TIMER_TEXT = "You can resend the email in ";
 
-    private void OnEnable() {
-        txtEmail.text = AuthController.GetEmail();
+    /// <summary>
+    /// The method do actions after pressing the ResendVerification button
+    /// </summary>
+    public void ResendVerificationBtnClick() {
+        CallBacks.onEmailVerification?.Invoke();
 
-        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(DELAY_TIME).ContinueWith((_) => GoToLogInBtn.SetActive(true), taskScheduler);
+        UpdateResendTextAsync();
     }
 
+    private void OnEnable() {
+        _txtEmail.text = _authController.GetEmail();
+
+        UpdateResendTextAsync();
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        Task.Delay(DELAY_TIME).ContinueWith((_) => {
+            _goToLogInBtn.SetActive(true);
+        }, taskScheduler);
+    }
+
+
+
     private void OnDisable() {
-        GoToLogInBtn.SetActive(false);
+        _goToLogInBtn.SetActive(false);
+        EmailVerificationTimer.Cancel();
     }
 
     private void OnApplicationFocus(bool focus) {
-        GoToLogInBtn.SetActive(true);
+        _goToLogInBtn.SetActive(true);
+    }
+
+    private async void UpdateResendTextAsync() {
+        TimeSpan timeSpan = EmailVerificationTimer.GetTimeLeft();
+        try {
+            while (timeSpan.TotalSeconds > 0 && !EmailVerificationTimer.GetToken().IsCancellationRequested) {
+                _resendMsg.text = string.Format(TIMER_TEXT + "{0:D1}:{1:D2}", timeSpan.Minutes, timeSpan.Seconds);
+                await Task.Delay(DELAY_FOR_TIMER);
+                timeSpan = EmailVerificationTimer.GetTimeLeft();
+            }
+
+        } catch (OperationCanceledException ex) {
+            HelperFunctions.DevLog("OperationCanceledException");
+        }
+
     }
 }
