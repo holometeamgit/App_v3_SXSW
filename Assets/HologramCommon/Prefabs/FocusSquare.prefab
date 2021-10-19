@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 611722738044528419}
-  - component: {fileID: 3195763610776529398}
+  - component: {fileID: 1077115541}
   m_Layer: 0
   m_Name: FocusSquare
   m_TagString: Untagged
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3195763610776529398
+--- !u!114 &1077115541
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,17 +40,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 976982207438330182}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d0e6e66099456f45a6750443a6e2362, type: 3}
+  m_Script: {fileID: 11500000, guid: 78feaaa58b7614fa2aec9f1f3669ae43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_RaycastManager: {fileID: 0}
-  focusSquareTexture: {fileID: 2800000, guid: d20da142b2e65f547a8d10a65c91265a, type: 3}
-  transparencyRangeUser: 0.15
+  IsSurfaceDetected: 0
+  VideoLoading: 1
+  VideoQuadPlacing: 0
+  VideoQuadMoving: 0
+  _focusSquareRenderer: {fileID: 0}
+  _arPlaneManager: {fileID: 0}
+  _focusSquareAnimator: {fileID: 0}
   transparencyRangeHologram: 1
-  smoothFollow: 1
-  smoothFollowSpeed: 5
-  surfaceNotDetectedTexture: {fileID: 2800000, guid: 95d5f90ae2b0cc84a8f4dd4895f81a1c,
-    type: 3}
-  shader: {fileID: 10750, guid: 0000000000000000f000000000000000, type: 0}
-  arCamera: {fileID: 0}
-  keepOrientation: 1
+  _delayAfterPinch: 2
+  _delayAfterLoading: 2.5
+  _focusSquareV2Sprite: {fileID: 0}
+  _pnlViewingExperience: {fileID: 0}
+  _btnCloseViewingExperience: {fileID: 0}
+  _btnCloseStreamOverlay: {fileID: 0}
+  _arSessionOrigin: {fileID: 0}
+  _D_max: 3
+  _arPlanesLayerMaskName: ARPlanes
+  _debugCapsule: {fileID: 0}
+  _maxDistanceOnSelection: 25
+  _stopPlaneConstructionCheckbox: {fileID: 0}
+  _maxAngle: 10

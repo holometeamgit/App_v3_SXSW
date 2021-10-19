@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Beem.Utility.UnityConsole {
@@ -40,11 +37,12 @@ namespace Beem.Utility.UnityConsole {
                 datas.Add(data);
             }
             dropdown.AddOptions(datas);
-            DropDown();
+            dropdown.value = PieceTypeNames.FindIndex(x => x == LogData.LogTagData);
+            DropDown(dropdown.value);
         }
 
         public void DropDown(int value = 0) {
-            LogData.SetTag(PieceTypeNames[value]);
+            LogData.LogTagData = PieceTypeNames[value];
         }
     }
 }
