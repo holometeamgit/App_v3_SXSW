@@ -772,7 +772,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private void OnDisable() {
         StopAllCoroutines();
-        if (pnlViewingExperience != null) {
+        if (pnlViewingExperience.gameObject != null) {
             pnlViewingExperience.ToggleARSessionObjects(false);
         }
         speechNotificationPopups.DeactivateAllPopups();
