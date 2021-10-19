@@ -134,6 +134,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
             return;
 
         agoraController.OnStreamerLeft += CloseAsViewer;
+        agoraController.OnStreamerLeft += CloseRoomAsViewerWhenStreamWasStopped;
         agoraController.OnCameraSwitched += () => {
             var videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
             if (videoSurface) {
@@ -337,14 +338,17 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         OnCloseAsStreamer.Invoke();
-
-        if (agoraController.IsRoom)
-            StreamCallBacks.onRoomClosed?.Invoke();
     }
 
     private void CloseAsViewer() {
         StopStream();
         OnCloseAsViewer.Invoke();
+    }
+
+    private void CloseRoomAsViewerWhenStreamWasStopped() {
+        if (agoraController.IsRoom) {
+            StreamCallBacks.onRoomClosed?.Invoke();
+        }
     }
 
     public void ShareStream() {
@@ -403,9 +407,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         if (isPushToTalkActive) {
             AnimatedCentreTextMessage("Two way audio is on. \n Listeners can talk to you now.");
             AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
-        }
-        else
-        {
+        } else {
             AnimatedCentreTextMessage("Two way audio is off.");
             AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
         }
@@ -504,24 +506,20 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         return false;
     }
 
-    public override void ReceivedChatMessage(string data)
-    {
+    public override void ReceivedChatMessage(string data) {
         AgoraStreamMessageCommonType agoraStreamMessage = JsonParser.CreateFromJSON<AgoraStreamMessageCommonType>(data);
-        if (agoraStreamMessage.requestID == AgoraMessageRequestIDs.IDStreamMessage)
-        {
+        if (agoraStreamMessage.requestID == AgoraMessageRequestIDs.IDStreamMessage) {
             var chatMessageJsonData = JsonParser.CreateFromJSON<ChatMessageJsonData>(data);
 
             string[] messages = chatMessageJsonData.message.Split(new char[] { MessageSplitter }, System.StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (string parsedMessage in messages)
-            {
+            foreach (string parsedMessage in messages) {
                 HandleReturnedMessage(parsedMessage);
             }
         }
     }
 
-    public override void OnDisconnected()
-    {
+    public override void OnDisconnected() {
     }
 
     private void HandleReturnedMessage(string message) {
@@ -774,8 +772,13 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private void OnDisable() {
         StopAllCoroutines();
+<<<<<<< HEAD
         if (pnlViewingExperience.gameObject != null) {
             pnlViewingExperience.ToggleARSessionObjects(true);
+=======
+        if (pnlViewingExperience != null) {
+            pnlViewingExperience.ToggleARSessionObjects(false);
+>>>>>>> 44df61b0db3858a8608b5c3ec3eaa2091d371cec
         }
         speechNotificationPopups.DeactivateAllPopups();
         ChatBtn.onOpen -= OpenChat;
@@ -797,5 +800,5 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
             if (_hideVideo)
                 ToggleVideo(true);
         }
-    }        
+    }
 }

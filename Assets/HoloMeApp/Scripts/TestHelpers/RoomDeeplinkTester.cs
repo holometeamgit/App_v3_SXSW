@@ -14,6 +14,11 @@ public class RoomDeeplinkTester : MonoBehaviour {
         DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(linkRoomId);
     }
 
+    [ContextMenu("Get onUsernameLinkReceived ")]
+    private void TestOnUsernameLinkReceived() {
+        StreamCallBacks.onUsernameLinkReceived?.Invoke("ivklim21");
+    }
+
     [ContextMenu("Get test event online")]
     private void TestOnlineRoomData() {
         RoomJsonData roomJsonData = new RoomJsonData();
@@ -24,7 +29,7 @@ public class RoomDeeplinkTester : MonoBehaviour {
         StreamCallBacks.onRoomDataReceived?.Invoke(roomJsonData);
     }
 
-    [ContextMenu("Get test event ofline")]
+    [ContextMenu("Get test event offline")]
     private void TestOflineRoomData() {
         RoomJsonData roomJsonData = new RoomJsonData();
         roomJsonData.agora_channel = "ivklim21";

@@ -22,6 +22,7 @@ public class StreamCallBacks {
     //from ui
     public static Action onOpenRoom = delegate { };
     public static Action onShareRoom = delegate { };
+    public static Action onPopUpStartClosing = delegate { };
     public static Action onPopUpClosed = delegate { };
     public static Action onPopUpStartOpen = delegate { };
     #endregion

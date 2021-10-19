@@ -55,10 +55,11 @@ public class PnlRoomPopup : MonoBehaviour {
         StreamCallBacks.onShowPopUpRoomEnded += ShowNoLongerOnline;
         StreamCallBacks.onClosePopUp += Hide;
 
-        _swipePopUp.onHid += OnPopUpClose;
+        _swipePopUp.onHid += OnPopUpClosed;
         _swipePopUp.onShowed += StartInteraction;
         _swipePopUp.onStartHiding += StopInteraction;
-        _swipePopUp.onStartShowing += StopInteraction;
+        _swipePopUp.onStartShowing += StartInteraction;
+        _swipePopUp.onStartShowing += OnPopUpStartOpen;
     }
 
     private void ShowNoLongerOnline(string username) {
@@ -121,10 +122,18 @@ public class PnlRoomPopup : MonoBehaviour {
 
     private void StopInteraction() {
         _canvasGroup.blocksRaycasts = false;
+        OnPopUpStartClosing();
+    }
+
+    private void OnPopUpStartOpen() {
         StreamCallBacks.onPopUpStartOpen?.Invoke();
     }
 
-    private void OnPopUpClose() {
+    private void OnPopUpStartClosing() {
+        StreamCallBacks.onPopUpStartClosing?.Invoke();
+    }
+
+    private void OnPopUpClosed() {
         StreamCallBacks.onPopUpClosed?.Invoke();
     }
 
@@ -135,9 +144,10 @@ public class PnlRoomPopup : MonoBehaviour {
         StreamCallBacks.onShowPopUpRoomEnded -= ShowNoLongerOnline;
         StreamCallBacks.onClosePopUp -= Hide;
 
-        _swipePopUp.onHid -= OnPopUpClose;
+        _swipePopUp.onHid -= OnPopUpClosed;
         _swipePopUp.onShowed -= StartInteraction;
         _swipePopUp.onStartHiding -= StopInteraction;
-        _swipePopUp.onStartShowing -= StopInteraction;
+        _swipePopUp.onStartShowing -= StartInteraction;
+        _swipePopUp.onStartShowing -= OnPopUpStartOpen;
     }
 }
