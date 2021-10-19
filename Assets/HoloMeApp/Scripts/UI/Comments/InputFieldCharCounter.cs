@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
-public class InputFieldCharCounter : MonoBehaviour
-{
+public class InputFieldCharCounter : MonoBehaviour {
     [SerializeField]
-    TMP_InputField _inputField;
+    InputField _inputField;
 
     [SerializeField]
     TMP_Text _txtCount;
