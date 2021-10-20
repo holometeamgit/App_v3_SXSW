@@ -85,8 +85,8 @@ public class PnlStreamChat : AgoraMessageReceiver {
 
     private void CreateChatMessageGO(ChatMessageJsonData chatMessageJsonData) {
         var newMessageGO = GetChatMessage();
-        newMessageGO.transform.Find("txtUserName").GetComponent<TextMeshProUGUI>().text = chatMessageJsonData.userName;
-        newMessageGO.transform.Find("txtMessage").GetComponent<TextMeshProUGUI>().text = chatMessageJsonData.message;
+        newMessageGO.transform.Find("txtUserName").GetComponent<Text>().text = chatMessageJsonData.userName;
+        newMessageGO.transform.Find("txtMessage").GetComponent<Text>().text = chatMessageJsonData.message;
     }
 
     private GameObject GetChatMessage() {

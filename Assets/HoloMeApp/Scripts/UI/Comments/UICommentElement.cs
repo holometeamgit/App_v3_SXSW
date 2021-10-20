@@ -13,8 +13,8 @@ namespace Beem.UI {
         public Action<int> onRemoveByContentId;
 
         [Header("Comments")]
-        [SerializeField] TMP_Text _titleText;
-        [SerializeField] TMP_Text _commentText;
+        [SerializeField] Text _titleText;
+        [SerializeField] Text _commentText;
         [SerializeField] Color _commentPostedColor;
 
         [Header("Likes")]
