@@ -93,7 +93,7 @@ public class PnlViewingExperience : MonoBehaviour {
         scanAnimationItems.SetActive(true);
         scanAnimationItems.transform.DOScale(Vector3.one, animationSpeed).SetDelay(0.5f);
     }
-    private void HideScanAnimation(float animationSpeed) {
+    private void HideScanAnimation(float animationSpeed = 0) {
         scanAnimationItems.transform.DOScale(Vector3.zero, animationSpeed).OnComplete(() => {
             scanAnimationItems.SetActive(false);
         });
@@ -186,6 +186,7 @@ public class PnlViewingExperience : MonoBehaviour {
         canvasGroup.DOFade(1, .5f);
     }
     public void FadeOutCanvas() {
+        HideScanAnimation();
         canvasGroup.DOFade(0, .5f);
     }
     public void StopExperience() {
