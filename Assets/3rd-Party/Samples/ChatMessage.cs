@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +9,7 @@ public class ChatMessage : MonoBehaviour {
     private Text _userNameText;
 
     [SerializeField]
-    private Text _chatMessageText;
+    private TMP_Text _chatMessageText;
 
     public void TypeMessage(string userName, string chatMessage) {
         if (_userNameText != null) {
