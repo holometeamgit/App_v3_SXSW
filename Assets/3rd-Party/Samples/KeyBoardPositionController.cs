@@ -1,29 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(RectTransform))]
+[RequireComponent(typeof(TMP_InputField))]
 public class KeyBoardPositionController : MonoBehaviour {
-    private RectTransform rectTransform;
+    private RectTransform _rectTransform;
+    private TMP_InputField _tmpInputField;
 
-    private int height;
+    private int _height;
+    private const int INPUT_TEXT_HEIGHT = 120;
 
     private void OnEnable() {
-        rectTransform = GetComponent<RectTransform>();
+        _rectTransform = GetComponent<RectTransform>();
+        _tmpInputField = GetComponent<TMP_InputField>();
     }
 
     private void Update() {
-        if (height == KeyBoardData.GetKeyboardHeight(false)) {
+        if (_height == height) {
             return;
         }
         UpdatePosition();
     }
 
     public void UpdatePosition() {
-        height = KeyBoardData.GetKeyboardHeight(false);
-        Vector2 vector2 = rectTransform.anchoredPosition;
-        vector2.y = height;
-        rectTransform.anchoredPosition = vector2;
-        Debug.Log(rectTransform.anchoredPosition);
+        _height = height;
+        Vector2 vector2 = _rectTransform.anchoredPosition;
+        vector2.y = _height;
+        _rectTransform.anchoredPosition = vector2;
+        Debug.Log(_rectTransform.anchoredPosition);
+    }
+
+    private int height {
+        get {
+            return KeyBoardData.GetKeyboardHeight(false) - INPUT_TEXT_HEIGHT * (_tmpInputField.shouldHideMobileInput ? 1 : 0);
+        }
     }
 }
