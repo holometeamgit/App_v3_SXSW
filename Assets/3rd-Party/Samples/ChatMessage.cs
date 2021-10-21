@@ -9,15 +9,17 @@ public class ChatMessage : MonoBehaviour {
     private Text _userNameText;
 
     [SerializeField]
-    private TMP_Text _chatMessageText;
+    private TMP_Text _tmpChatMessageText;
+
+
 
     public void TypeMessage(string userName, string chatMessage) {
         if (_userNameText != null) {
             _userNameText.text = userName;
         }
 
-        if (_chatMessageText != null) {
-            _chatMessageText.text = chatMessage;
+        if (_tmpChatMessageText != null) {
+            _tmpChatMessageText.text = chatMessage;
         }
     }
 
