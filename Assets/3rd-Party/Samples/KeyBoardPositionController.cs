@@ -34,7 +34,7 @@ public class KeyBoardPositionController : MonoBehaviour {
 
     private int height {
         get {
-            return KeyBoardData.GetKeyboardHeight(false) - INPUT_TEXT_HEIGHT * (_tmpInputField.shouldHideMobileInput ? 1 : 0);
+            return KeyBoardData.GetKeyboardHeight(false);// - INPUT_TEXT_HEIGHT * (_tmpInputField.shouldHideMobileInput ? 1 : 0);
         }
     }
 }
