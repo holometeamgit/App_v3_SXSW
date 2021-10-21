@@ -359,7 +359,7 @@ namespace Mopsicus.Plugins {
         /// Prepare config
         /// </summary>
         private void PrepareNativeEdit() {
-            Text placeHolder = _inputObject.placeholder.GetComponent<Text>();
+            TMP_Text placeHolder = _inputObject.placeholder.GetComponent<TMP_Text>();
             _config.Placeholder = placeHolder.text;
             _config.PlaceholderColor = placeHolder.color;
             _config.CharacterLimit = _inputObject.characterLimit;
