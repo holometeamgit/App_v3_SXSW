@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class InputFieldCharCounter : MonoBehaviour {
     [SerializeField]
-    InputField _inputField;
+    TMP_InputField _inputField;
 
     [SerializeField]
     TMP_Text _txtCount;

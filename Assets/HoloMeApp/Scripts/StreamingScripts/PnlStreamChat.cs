@@ -17,7 +17,7 @@ public class PnlStreamChat : AgoraMessageReceiver {
     GameObject chatMessagePrefabRef;
 
     [SerializeField]
-    InputField inputField;
+    TMP_InputField inputField;
 
     [SerializeField]
     RectTransform Content;
@@ -85,8 +85,8 @@ public class PnlStreamChat : AgoraMessageReceiver {
 
     private void CreateChatMessageGO(ChatMessageJsonData chatMessageJsonData) {
         var newMessageGO = GetChatMessage();
-        newMessageGO.transform.Find("txtUserName").GetComponent<Text>().text = chatMessageJsonData.userName;
-        newMessageGO.transform.Find("txtMessage").GetComponent<Text>().text = chatMessageJsonData.message;
+        newMessageGO.transform.Find("txtUserName").GetComponent<TMP_Text>().text = chatMessageJsonData.userName;
+        newMessageGO.transform.Find("txtMessage").GetComponent<TMP_Text>().text = chatMessageJsonData.message;
     }
 
     private GameObject GetChatMessage() {

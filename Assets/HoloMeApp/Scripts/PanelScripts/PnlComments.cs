@@ -25,7 +25,7 @@ public class PnlComments : MonoBehaviour {
     [SerializeField]
     Animator _animator;
     [SerializeField]
-    InputField _commentInputField;
+    TMP_InputField _commentInputField;
     [SerializeField]
     Button _postBtn;
     [SerializeField]

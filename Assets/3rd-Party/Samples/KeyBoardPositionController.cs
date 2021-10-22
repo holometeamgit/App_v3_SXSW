@@ -34,7 +34,11 @@ public class KeyBoardPositionController : MonoBehaviour {
 
     private int height {
         get {
-            return UniSoftwareKeyboardArea.SoftwareKeyboardArea.GetHeight(false);// - INPUT_TEXT_HEIGHT * (_tmpInputField.shouldHideMobileInput ? 1 : 0);
+            return UniSoftwareKeyboardArea.SoftwareKeyboardArea.GetHeight(!_tmpInputField.shouldHideMobileInput);// - INPUT_TEXT_HEIGHT * (_tmpInputField.shouldHideMobileInput ? 1 : 0);
         }
+    }
+
+    public void LogButton(string buttonName) {
+        Debug.LogError(buttonName);
     }
 }
