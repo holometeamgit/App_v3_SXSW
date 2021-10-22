@@ -5,7 +5,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(RectTransform))]
 [RequireComponent(typeof(TMP_InputField))]
-public class KeyBoardPositionController : MonoBehaviour {
+public class TMPKeyBoardPositionController : MonoBehaviour {
     private RectTransform _rectTransform;
     private TMP_InputField _tmpInputField;
 
@@ -36,9 +36,5 @@ public class KeyBoardPositionController : MonoBehaviour {
         get {
             return UniSoftwareKeyboardArea.SoftwareKeyboardArea.GetHeight(!_tmpInputField.shouldHideMobileInput);// - INPUT_TEXT_HEIGHT * (_tmpInputField.shouldHideMobileInput ? 1 : 0);
         }
-    }
-
-    public void LogButton(string buttonName) {
-        Debug.LogError(buttonName);
     }
 }
