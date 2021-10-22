@@ -42,7 +42,9 @@ public static class KeyBoardData {
         }
 #else
             var height = Mathf.RoundToInt(TouchScreenKeyboard.area.height);
+            Debug.LogError(height);
             return height >= Display.main.systemHeight ? 0 : height;
 #endif
     }
+
 }
