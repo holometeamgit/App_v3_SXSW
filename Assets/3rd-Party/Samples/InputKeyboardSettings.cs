@@ -41,6 +41,7 @@ public class InputKeyboardSettings : MonoBehaviour {
     private void OnEnable() {
         _baseHeight = _rectTransform.sizeDelta.y;
         UpdateTextLimit();
+        _inputField.Select();
         _inputField.onValueChanged.AddListener(UpdateTextLimit);
     }
 
