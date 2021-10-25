@@ -28,12 +28,12 @@ namespace Mopsicus.Plugins {
         /// <summary>
         /// Callback on get data
         /// </summary>
-        void OnData (JsonObject data);
+        void OnData(JsonObject data);
 
         /// <summary>
         /// Callback on get error
         /// </summary>
-        void OnError (JsonObject data);
+        void OnError(JsonObject data);
     }
 
     /// <summary>
@@ -71,62 +71,65 @@ namespace Mopsicus.Plugins {
         /// </summary>
         private Dictionary<string, IPlugin> _plugins;
 
-		private void Awake () {
-			name = _dataObject;
-			DontDestroyOnLoad (gameObject);
-			InitPlugins ();
-		}
+        public static Action<string> onInit;
 
-		private void OnDestroy () {
-			_plugins = null;
-		}
+        private void Awake() {
+            name = _dataObject;
+            DontDestroyOnLoad(gameObject);
+            InitPlugins();
+        }
 
-		/// <summary>
+        private void OnDestroy() {
+            _plugins = null;
+        }
+
+        /// <summary>
         /// Init all plugins in app
         /// </summary>
-        void InitPlugins () {
-            gameObject.AddComponent<MobileInput> ();
+        void InitPlugins() {
+            gameObject.AddComponent<MobileInput>();
             //
             // other plugins
             //			
-            IPlugin[] plugins = GetComponents<IPlugin> ();
-            _plugins = new Dictionary<string, IPlugin> (plugins.Length);
+            IPlugin[] plugins = GetComponents<IPlugin>();
+            _plugins = new Dictionary<string, IPlugin>(plugins.Length);
             foreach (var item in plugins) {
-                _plugins.Add (item.Name, item);
+                _plugins.Add(item.Name, item);
             }
-            JsonObject data = new JsonObject ();
+            JsonObject data = new JsonObject();
             data["object"] = _dataObject;
             data["receiver"] = _dataReceiver;
 #if UNITY_IOS
             pluginsInit (data.ToJsonString ());
 #endif
-            Debug.Log ("Plugins init");
+            Debug.Log("Plugins init");
         }
 
         /// <summary>
         /// Handler to process data to plugin
         /// </summary>
         /// <param name="data">data from plugin</param>
-        void OnDataReceive (string data) {
-            Debug.Log ("Plugins receive data: " + data);
+        void OnDataReceive(string data) {
+            Debug.Log("Plugins receive data: " + data);
+            onInit?.Invoke(data);
             try {
-                JsonObject info = (JsonObject) JsonNode.ParseJsonString (data);
-                if (_plugins.ContainsKey (info["name"])) {
+                JsonObject info = (JsonObject)JsonNode.ParseJsonString(data);
+                if (_plugins.ContainsKey(info["name"])) {
                     IPlugin plugin = _plugins[info["name"]];
-                    if (info.ContainsKey ("error")) {
-                        plugin.OnError (info);
+                    if (info.ContainsKey("error")) {
+                        plugin.OnError(info);
                     } else {
-                        plugin.OnData (info);
+                        plugin.OnData(info);
                     }
                 } else {
-                    Debug.LogError (string.Format ("{0} plugin does not exists", info["name"]));
+                    Debug.LogError(string.Format("{0} plugin does not exists", info["name"]));
                 }
             } catch (Exception e) {
-                Debug.LogError (string.Format ("Plugins receive error: {0}, stack: {1}", e.Message, e.StackTrace));
+                Debug.LogError(string.Format("Plugins receive error: {0}, stack: {1}", e.Message, e.StackTrace));
             }
 
         }
 
-	}
+    }
 
 }
