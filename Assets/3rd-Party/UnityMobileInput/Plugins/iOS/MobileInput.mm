@@ -94,8 +94,8 @@ NSString *plugin;
     [super awakeFromNib];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(beginEditing:) name:UITextViewTextDidBeginEditingNotification object:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endEditing:) name:UITextViewTextDidEndEditingNotification object:self];
-    self.realTextColor = self.textColor;
-    self.placeholderColor = [UIColor lightGrayColor];
+    //self.realTextColor = self.textColor;
+    //self.placeholderColor = [UIColor lightGrayColor];
 }
 
 - (void)setPlaceholder:(NSString *)textPlaceholder {
@@ -111,7 +111,7 @@ NSString *plugin;
 - (void)setPlaceholderColor:(UIColor *)colorPlaceholder {
     placeholderColor = colorPlaceholder;
     if ([super.text isEqualToString:self.placeholder]) {
-        self.textColor = self.placeholderColor;
+    //    self.textColor = self.placeholderColor;
     }
 }
 
@@ -127,9 +127,9 @@ NSString *plugin;
         super.text = text;
     }
     if ([text isEqualToString:self.placeholder] || text == nil) {
-        self.textColor = self.placeholderColor;
+    //    self.textColor = self.placeholderColor;
     } else {
-        self.textColor = self.realTextColor;
+    //    self.textColor = self.realTextColor;
     }
 }
 
@@ -148,7 +148,7 @@ NSString *plugin;
     [[UIApplication sharedApplication] sendAction:@selector(resignFirstResponder) to:nil from:nil forEvent:nil];
     if ([self.realText isEqualToString:@""] || self.realText == nil) {
         super.text = self.placeholder;
-        self.textColor = self.placeholderColor;
+    //    self.textColor = self.placeholderColor;
     }
 }
 
@@ -157,10 +157,10 @@ NSString *plugin;
         if ([textColor isEqual:self.placeholderColor]) {
             [super setTextColor:textColor];
         } else {
-            self.realTextColor = textColor;
+    //        self.realTextColor = textColor;
         }
     } else {
-        self.realTextColor = textColor;
+    //    self.realTextColor = textColor;
         [super setTextColor:textColor];
     }
 }
@@ -417,13 +417,14 @@ BOOL multiline;
         textView.delegate = self;
         textView.tag = inputId;
         textView.text = @"";
-        textView.textColor = textColor;
+        //textView.textColor = textColor;
+        //textView.backgroundColor = backgroundColor;
         textView.returnKeyType = returnKeyType;
         textView.textAlignment = textAlign;
         textView.autocorrectionType = autoCorrection ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
         textView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
         textView.placeholder = placeholder;
-        textView.placeholderColor = placeHolderColor;
+        //textView.placeholderColor = placeHolderColor;
         textView.delegate = self;
         if (keyType == UIKeyboardTypeEmailAddress) {
             textView.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -440,7 +441,8 @@ BOOL multiline;
         textField.delegate = self;
         textField.tag = inputId;
         textField.text = @"";
-        textField.textColor = textColor;
+        //textField.textColor = textColor;
+        //textField.backgroundColor = backgroundColor;
         textField.returnKeyType = returnKeyType;
         textField.autocorrectionType = autoCorrection ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
         textField.contentVerticalAlignment = valign;
@@ -451,7 +453,7 @@ BOOL multiline;
         }
         NSMutableParagraphStyle *setting = [[NSMutableParagraphStyle alloc] init];
         setting.alignment = textAlign;
-        textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholder attributes:@{NSForegroundColorAttributeName: placeHolderColor, NSParagraphStyleAttributeName : setting}];        
+        //textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholder attributes:@{NSForegroundColorAttributeName: placeHolderColor, NSParagraphStyleAttributeName : setting}];        
         textField.delegate = self;
         if (keyType == UIKeyboardTypeEmailAddress) {
             textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
