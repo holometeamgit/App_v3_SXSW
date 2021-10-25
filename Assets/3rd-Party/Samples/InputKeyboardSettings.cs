@@ -13,6 +13,10 @@ public class InputKeyboardSettings : MonoBehaviour {
     private InputField _inputField;
     [SerializeField]
     private Text _textLimit;
+    [SerializeField]
+    private TMP_Text _inputText;
+    [SerializeField]
+    private GameObject _placeHolder;
 
     [Space]
     [SerializeField]
@@ -56,6 +60,8 @@ public class InputKeyboardSettings : MonoBehaviour {
         _textLimit.text = _inputField.text.Length + "/" + _inputField.characterLimit;
         _returnImg.sprite = _inputField.text.Length > 0 ? _enableReturnImg : _disableReturnImg;
         _inputImg.color = _inputField.text.Length > 0 ? _enableInputColor : _disableInputColor;
+        _placeHolder.SetActive(_inputField.text.Length == 0);
+        _inputText.text = _inputField.text;
     }
 
     private int GetLineCount(string text, int maxCharInLine) {
