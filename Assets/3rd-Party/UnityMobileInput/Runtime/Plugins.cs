@@ -71,7 +71,7 @@ namespace Mopsicus.Plugins {
         /// </summary>
         private Dictionary<string, IPlugin> _plugins;
 
-        public static Action<string> onInit;
+        public static Action<JsonObject> onJsonInit;
 
         private void Awake() {
             name = _dataObject;
@@ -110,8 +110,6 @@ namespace Mopsicus.Plugins {
         /// </summary>
         /// <param name="data">data from plugin</param>
         void OnDataReceive(string data) {
-            Debug.Log("Plugins receive data: " + data);
-            onInit?.Invoke(data);
             try {
                 JsonObject info = (JsonObject)JsonNode.ParseJsonString(data);
                 if (_plugins.ContainsKey(info["name"])) {
@@ -120,6 +118,7 @@ namespace Mopsicus.Plugins {
                         plugin.OnError(info);
                     } else {
                         plugin.OnData(info);
+                        onJsonInit?.Invoke(info);
                     }
                 } else {
                     Debug.LogError(string.Format("{0} plugin does not exists", info["name"]));

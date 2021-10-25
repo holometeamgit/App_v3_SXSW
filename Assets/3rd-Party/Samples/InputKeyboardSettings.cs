@@ -1,4 +1,5 @@
 using Mopsicus.Plugins;
+using NiceJson;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -47,12 +48,12 @@ public class InputKeyboardSettings : MonoBehaviour {
         UpdateTextLimit();
         _inputField.Select();
         _inputField.onValueChanged.AddListener(UpdateTextLimit);
-        Plugins.onInit += Init;
+        Plugins.onJsonInit += Init;
     }
 
     private void OnDisable() {
         _inputField.onValueChanged.RemoveListener(UpdateTextLimit);
-        Plugins.onInit -= Init;
+        Plugins.onJsonInit -= Init;
     }
 
     private void UpdateTextLimit(string text = "") {
@@ -66,8 +67,17 @@ public class InputKeyboardSettings : MonoBehaviour {
         //_inputText.text = _inputField.text;
     }
 
-    private void Init(string data) {
-        Debug.LogError(data);
+    private void Init(JsonObject data) {
+        if (data.ContainsKey("data")) {
+            Debug.LogError(data["data"]);
+            Debug.LogError("-----");
+        }
+        /*string dataParse = data["data"].ToJsonString();
+        JsonObject info = (JsonObject)JsonNode.ParseJsonString(dataParse) as JsonObject;
+        Debug.LogWarning(info.ToJsonString());
+        Debug.LogWarning(info["msg"]);
+        Debug.LogWarning(info["height"]);*/
+
     }
 
     private int GetLineCount(string text, int maxCharInLine) {
@@ -87,7 +97,7 @@ public class InputKeyboardSettings : MonoBehaviour {
         Vector2 position = _rectTransform.anchoredPosition;
         position.y = _basePosition;
         _rectTransform.anchoredPosition = position;
-        Debug.Log(_rectTransform.anchoredPosition);
+        //Debug.Log(_rectTransform.anchoredPosition);
     }
 
     private int basePosition {
