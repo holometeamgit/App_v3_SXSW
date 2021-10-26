@@ -43,10 +43,13 @@ public class InputKeyboardSettings : MonoBehaviour {
     private float _baseHeight = 165;
     private int _basePosition;
 
+    private const string DATA = "data";
+    private const string HEIGHT = "height";
+
     private void OnEnable() {
         _baseHeight = _rectTransform.sizeDelta.y;
         UpdateTextLimit();
-        _inputField.Select();
+        _inputField.ActivateInputField();
         _inputField.onValueChanged.AddListener(UpdateTextLimit);
         Plugins.onJsonInit += Init;
     }
@@ -63,46 +66,23 @@ public class InputKeyboardSettings : MonoBehaviour {
         _textLimit.text = _inputField.text.Length + "/" + _inputField.characterLimit;
         _returnImg.sprite = _inputField.text.Length > 0 ? _enableReturnImg : _disableReturnImg;
         _inputImg.color = _inputField.text.Length > 0 ? _enableInputColor : _disableInputColor;
-        //_placeHolder.SetActive(_inputField.text.Length == 0);
-        //_inputText.text = _inputField.text;
     }
 
     private void Init(JsonObject data) {
-        if (data.ContainsKey("data")) {
-            Debug.LogError(data["data"]);
-            Debug.LogError("-----");
+        string dataParse = data[DATA].ToString();
+        if (dataParse.Contains(HEIGHT)) {
+            JsonObject info = (JsonObject)JsonNode.ParseJsonString(dataParse);
+            UpdatePosition(int.Parse(info[HEIGHT].ToString()));
         }
-        /*string dataParse = data["data"].ToJsonString();
-        JsonObject info = (JsonObject)JsonNode.ParseJsonString(dataParse) as JsonObject;
-        Debug.LogWarning(info.ToJsonString());
-        Debug.LogWarning(info["msg"]);
-        Debug.LogWarning(info["height"]);*/
-
     }
-
     private int GetLineCount(string text, int maxCharInLine) {
         return Mathf.FloorToInt((float)text.Length / (float)maxCharInLine);
     }
 
-
-    private void Update() {
-        if (_basePosition == basePosition) {
-            return;
-        }
-        UpdatePosition();
-    }
-
-    public void UpdatePosition() {
+    public void UpdatePosition(int basePosition) {
         _basePosition = basePosition;
         Vector2 position = _rectTransform.anchoredPosition;
         position.y = _basePosition;
         _rectTransform.anchoredPosition = position;
-        //Debug.Log(_rectTransform.anchoredPosition);
-    }
-
-    private int basePosition {
-        get {
-            return UniSoftwareKeyboardArea.SoftwareKeyboardArea.GetHeight(!_inputField.shouldHideMobileInput);
-        }
     }
 }
