@@ -6,7 +6,7 @@ namespace Beem.KeyBoard {
     /// <summary>
     /// KeyBoard Facade
     /// </summary>
-    public class KeboardFacade : MonoBehaviour {
+    public class KeyBoardFacade : MonoBehaviour {
         [SerializeField]
         private RectTransform _rectTransform;
         [SerializeField]
