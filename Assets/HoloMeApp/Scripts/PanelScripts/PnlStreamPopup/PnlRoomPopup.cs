@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
-using System;
 
 /// <summary>
 /// UI popup for opening rooms
@@ -34,6 +30,8 @@ public class PnlRoomPopup : MonoBehaviour {
     [SerializeField]
     private CanvasGroup _canvasGroup;
 
+    private const long USER_NOT_FOUND_CODE = 404;
+
     /// <summary>
     /// Call share event for current room
     /// </summary>
@@ -53,6 +51,7 @@ public class PnlRoomPopup : MonoBehaviour {
         StreamCallBacks.onUpdateUserCount += UpdateUserCount;
         StreamCallBacks.onShowPopUpRoomOffline += ShowCurrentlyOffline;
         StreamCallBacks.onShowPopUpRoomEnded += ShowNoLongerOnline;
+        StreamCallBacks.onUserDoesntExist += ShowUserDoesntExist;
         StreamCallBacks.onClosePopUp += Hide;
 
         _swipePopUp.onHid += OnPopUpClosed;
@@ -60,6 +59,24 @@ public class PnlRoomPopup : MonoBehaviour {
         _swipePopUp.onStartHiding += StopInteraction;
         _swipePopUp.onStartShowing += StartInteraction;
         _swipePopUp.onStartShowing += OnPopUpStartOpen;
+    }
+
+    private void ShowUserDoesntExist(long errorCode) {
+        if(errorCode != USER_NOT_FOUND_CODE) {
+            return;
+        }
+
+        _titleText.text = "THIS USER DOES NOT EXIST";
+        _subtitleText.text = "Please make sure that the link you received is correct.";
+
+        _subtitle.SetActive(true);
+        _usersCount.SetActive(false);
+
+        _btnClose.SetActive(true);
+        _btnShare.SetActive(false);
+        _btnEnterRoom.SetActive(false);
+
+        _swipePopUp.Show();
     }
 
     private void ShowNoLongerOnline(string username) {
