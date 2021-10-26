@@ -34,6 +34,7 @@ namespace Beem.KeyBoard {
         private void Show(bool isShown) {
             _mobileInputField.SetFocus(isShown);
             _keyboardField.SetActive(isShown);
+            _positionSettingsView.UpdatePosition();
         }
 
         private void OnDestroy() {
@@ -43,14 +44,14 @@ namespace Beem.KeyBoard {
 
         private void Init(JsonObject data) {
             string dataParse = data[DATA].ToString();
-            if (dataParse.Contains(HEIGHT)) {
+            /*if (dataParse.Contains(HEIGHT)) {
                 JsonObject info = (JsonObject)JsonNode.ParseJsonString(dataParse);
                 _positionSettingsView.UpdatePosition(int.Parse(info[HEIGHT].ToString()));
             }
             if (dataParse.Contains(SHOW)) {
                 JsonObject info = (JsonObject)JsonNode.ParseJsonString(dataParse);
                 Show((bool)info[SHOW]);
-            }
+            }*/
         }
     }
 }
