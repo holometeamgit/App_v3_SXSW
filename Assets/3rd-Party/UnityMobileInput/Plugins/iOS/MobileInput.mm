@@ -417,7 +417,7 @@ BOOL multiline;
         textView.delegate = self;
         textView.tag = inputId;
         textView.text = @"";
-        /textView.textColor = textColor;
+        textView.textColor = textColor;
         //textView.backgroundColor = backgroundColor;
         textView.returnKeyType = returnKeyType;
         textView.textAlignment = textAlign;
