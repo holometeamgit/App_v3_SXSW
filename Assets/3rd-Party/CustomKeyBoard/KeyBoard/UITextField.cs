@@ -39,6 +39,7 @@ public class UITextField : MonoBehaviour, IPointerClickHandler {
         set {
             textComponent.text = value;
             placeHolder.SetActive(string.IsNullOrEmpty(textComponent.text));
+            onValueChanged?.Invoke(textComponent.text);
         }
 
     }
