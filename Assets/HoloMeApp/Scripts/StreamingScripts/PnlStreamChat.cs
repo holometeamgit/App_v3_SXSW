@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System.Collections;
 using Crosstales.BWF.Model;
 using Crosstales.BWF;
+using UnityEngine.Events;
 
 public class PnlStreamChat : AgoraMessageReceiver
 {
@@ -28,6 +29,9 @@ public class PnlStreamChat : AgoraMessageReceiver
 
     [SerializeField]
     VerticalLayoutGroup verticalLayoutGroup;
+
+    [SerializeField]
+    private UnityEvent OnMessageAdded;
 
     Stack<GameObject> chatMessagePool = new Stack<GameObject>();
 
@@ -99,6 +103,7 @@ public class PnlStreamChat : AgoraMessageReceiver
         var newMessageGO = GetChatMessage();
         newMessageGO.transform.Find("txtUserName").GetComponent<TextMeshProUGUI>().text = chatMessageJsonData.userName;
         newMessageGO.transform.Find("txtMessage").GetComponent<TextMeshProUGUI>().text = chatMessageJsonData.message;
+        OnMessageAdded?.Invoke();
     }
 
     private GameObject GetChatMessage()

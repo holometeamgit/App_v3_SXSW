@@ -1752,6 +1752,7 @@ GameObject:
   - component: {fileID: 1790000929902693113}
   - component: {fileID: 15851018558553295}
   - component: {fileID: 8652873382567398470}
+  - component: {fileID: 5321447446834606739}
   m_Layer: 5
   m_Name: btnCloseChat
   m_TagString: Untagged
@@ -1775,7 +1776,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 48, y: -116.20227}
+  m_AnchoredPosition: {x: 48, y: -913.6}
   m_SizeDelta: {x: 72, y: 72}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &1790000929902693113
@@ -1872,6 +1873,26 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &5321447446834606739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7805927701444205819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 928c46f8847f1914ab51c094574b6b97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startPosition: {x: 48, y: -913.6}
+  positions:
+  - {x: 48, y: -756}
+  - {x: 48, y: -617}
+  - {x: 48, y: -476}
+  - {x: 48, y: -337}
+  - {x: 48, y: -199}
+  - {x: 48, y: -116}
 --- !u!1 &8058592054823488572
 GameObject:
   m_ObjectHideFlags: 0
@@ -1964,6 +1985,21 @@ MonoBehaviour:
   Content: {fileID: 1790351701401955873}
   scrollRect: {fileID: 8892866678124018360}
   verticalLayoutGroup: {fileID: 1579906274563870062}
+  OnMessageAdded:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5321447446834606739}
+        m_TargetAssemblyTypeName: RaiseButtonFromScrollRect, Assembly-CSharp
+        m_MethodName: MoveNext
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8168928059271963681
 GameObject:
   m_ObjectHideFlags: 0
