@@ -19,8 +19,11 @@ public class RaiseButtonFromScrollRect : MonoBehaviour {
 
     private int moveIndex;
 
+    //[SerializeField]
+    //private Vector2[] positions;    
+    
     [SerializeField]
-    private Vector2[] positions;
+    private RectTransform[] positions;
 
     //private bool limitReached;
 
@@ -53,7 +56,10 @@ public class RaiseButtonFromScrollRect : MonoBehaviour {
     public void MoveNext() {
         print("MOVE NEXT CALLED " + moveIndex);
         if (moveIndex < positions.Length) {
-            transform.GetComponent<RectTransform>().anchoredPosition = positions[moveIndex];
+            transform.GetComponent<RectTransform>().anchorMin = positions[moveIndex].anchorMin;
+            transform.GetComponent<RectTransform>().anchorMax = positions[moveIndex].anchorMax;
+            transform.GetComponent<RectTransform>().sizeDelta = positions[moveIndex].sizeDelta;
+            transform.GetComponent<RectTransform>().anchoredPosition = positions[moveIndex].anchoredPosition;
             moveIndex++;
         }
     }
@@ -69,7 +75,10 @@ public class RaiseButtonFromScrollRect : MonoBehaviour {
         }
 
         print("UpdatePosition" + activeChatMessages);
-        transform.GetComponent<RectTransform>().anchoredPosition = positions[activeChatMessages < positions.Length ? activeChatMessages : positions.Length - 1];
+        transform.GetComponent<RectTransform>().sizeDelta = positions[activeChatMessages < positions.Length ? activeChatMessages : positions.Length - 1].sizeDelta;
+        transform.GetComponent<RectTransform>().anchoredPosition = positions[activeChatMessages < positions.Length ? activeChatMessages : positions.Length - 1].anchoredPosition;
+        transform.GetComponent<RectTransform>().anchorMin = positions[activeChatMessages < positions.Length ? activeChatMessages : positions.Length - 1].anchorMin;
+        transform.GetComponent<RectTransform>().anchorMax = positions[activeChatMessages < positions.Length ? activeChatMessages : positions.Length - 1].anchorMax;
     }
 
     //private void Update() {
