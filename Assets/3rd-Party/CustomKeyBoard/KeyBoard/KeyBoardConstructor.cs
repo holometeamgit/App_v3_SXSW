@@ -55,13 +55,13 @@ namespace Beem.KeyBoard {
                 }
                 _mobileInputField.InputField.text = string.Empty;
             } else {
-                _mobileInputField.InputField.text = string.Empty;
                 if (_currentOnChangeEvent != null) {
                     _mobileInputField.InputField.onValueChanged.RemoveListener(EventChanged);
                 }
                 if (_currentSubmitEvent != null) {
                     _mobileInputField.InputField.onEndEdit.RemoveListener(EventSubmit);
                 }
+                _mobileInputField.InputField.text = string.Empty;
                 _currentOnChangeEvent = onChangeEvent;
                 _currentSubmitEvent = submitEvent;
 
