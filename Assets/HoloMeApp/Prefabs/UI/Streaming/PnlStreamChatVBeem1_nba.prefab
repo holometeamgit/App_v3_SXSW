@@ -1885,8 +1885,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 928c46f8847f1914ab51c094574b6b97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  contentContainer: {fileID: 1790351701401955873}
   startPosition: {x: 48, y: -913.6}
   positions:
+  - {x: 48, y: -913.6}
   - {x: 48, y: -756}
   - {x: 48, y: -617}
   - {x: 48, y: -476}
@@ -1990,7 +1992,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5321447446834606739}
         m_TargetAssemblyTypeName: RaiseButtonFromScrollRect, Assembly-CSharp
-        m_MethodName: MoveNext
+        m_MethodName: UpdatePosition
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

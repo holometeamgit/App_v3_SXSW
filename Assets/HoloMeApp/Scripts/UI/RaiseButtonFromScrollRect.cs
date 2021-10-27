@@ -1,8 +1,8 @@
 using UnityEngine;
 
 public class RaiseButtonFromScrollRect : MonoBehaviour {
-    //[SerializeField]
-    //private RectTransform contentContainer;
+    [SerializeField]
+    private RectTransform contentContainer;
 
     //[SerializeField]
     //private float offsetValue;
@@ -20,9 +20,6 @@ public class RaiseButtonFromScrollRect : MonoBehaviour {
     private int moveIndex;
 
     [SerializeField]
-    private Vector2 startPosition;
-
-    [SerializeField]
     private Vector2[] positions;
 
     //private bool limitReached;
@@ -33,8 +30,9 @@ public class RaiseButtonFromScrollRect : MonoBehaviour {
         //transform.GetComponent<RectTransform>().position = defaultPosition.position;
         //lastChildCount = 0;
         //limitReached = false;
-        transform.GetComponent<RectTransform>().anchoredPosition = startPosition;
+        //transform.GetComponent<RectTransform>().anchoredPosition = startPosition;
         moveIndex = 0;
+        UpdatePosition();
     }
 
     //public void UpdateOffset(int multiplier) {
@@ -58,6 +56,20 @@ public class RaiseButtonFromScrollRect : MonoBehaviour {
             transform.GetComponent<RectTransform>().anchoredPosition = positions[moveIndex];
             moveIndex++;
         }
+    }
+
+    public void UpdatePosition() {
+
+        int activeChatMessages = 0;
+
+        for (int i = 0; i < contentContainer.childCount; i++) {
+            if (contentContainer.GetChild(i).gameObject.activeInHierarchy) {
+                activeChatMessages++;
+            }
+        }
+
+        print("UpdatePosition" + activeChatMessages);
+        transform.GetComponent<RectTransform>().anchoredPosition = positions[activeChatMessages < positions.Length ? activeChatMessages : positions.Length - 1];
     }
 
     //private void Update() {
