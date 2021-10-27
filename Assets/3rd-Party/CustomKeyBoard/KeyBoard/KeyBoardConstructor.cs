@@ -19,10 +19,8 @@ namespace Beem.KeyBoard {
         private KeyBoardPositionView _positionSettingsView;
 
         public static Action<bool, InputField.OnChangeEvent, InputField.SubmitEvent> onShow = delegate { };
-        public static Action<bool, InputField> onInputShow = delegate { };
         public static Action<bool, UITextField> onUITextShow = delegate { };
 
-        private InputField _currentInputField;
         private UITextField _currentUITextField;
         private KeyBoardSettings _inputSettings;
         private InputField.OnChangeEvent _currentOnChangeEvent;
@@ -34,8 +32,7 @@ namespace Beem.KeyBoard {
 
         private void Construct() {
             onShow += Show;
-            onInputShow += InputShow;
-            onUITextShow += UITextShow;
+            onUITextShow += Show;
         }
 
         private void Show(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
@@ -47,15 +44,6 @@ namespace Beem.KeyBoard {
             _keyBoardFacade.UpdateText();
 
             if (!isShown) {
-                if (_currentInputField != null) {
-                    _mobileInputField.InputField.onValueChanged.RemoveListener(ValueChanged);
-                    _mobileInputField.InputField.contentType = _inputSettings.contentType;
-                    _mobileInputField.InputField.inputType = _inputSettings.inputType;
-                    _mobileInputField.InputField.keyboardType = _inputSettings.keyboardType;
-                    _mobileInputField.InputField.characterValidation = _inputSettings.characterValidation;
-                    _mobileInputField.InputField.characterLimit = _inputSettings.characterLimit;
-                    _currentInputField = null;
-                }
                 if (_currentUITextField != null) {
                     _mobileInputField.InputField.onValueChanged.RemoveListener(UIValueChanged);
                     _mobileInputField.InputField.contentType = _inputSettings.contentType;
@@ -67,7 +55,7 @@ namespace Beem.KeyBoard {
                 }
                 _mobileInputField.InputField.text = string.Empty;
             } else {
-
+                _mobileInputField.InputField.text = string.Empty;
                 if (_currentOnChangeEvent != null) {
                     _mobileInputField.InputField.onValueChanged.RemoveListener(EventChanged);
                 }
@@ -86,24 +74,7 @@ namespace Beem.KeyBoard {
             }
         }
 
-        private void InputShow(bool isShown, InputField inputField) {
-
-            Show(isShown, inputField.onValueChanged, inputField.onEndEdit);
-
-            if (inputField != null && isShown) {
-                _currentInputField = inputField;
-                _inputSettings = new KeyBoardSettings(_currentInputField);
-                _mobileInputField.InputField.contentType = _currentInputField.contentType;
-                _mobileInputField.InputField.inputType = _currentInputField.inputType;
-                _mobileInputField.InputField.keyboardType = _currentInputField.keyboardType;
-                _mobileInputField.InputField.characterValidation = _currentInputField.characterValidation;
-                _mobileInputField.InputField.text = _currentInputField.text;
-                _mobileInputField.InputField.characterLimit = _currentInputField.characterLimit;
-                _mobileInputField.InputField.onValueChanged.AddListener(ValueChanged);
-            }
-        }
-
-        private void UITextShow(bool isShown, UITextField uiTextField) {
+        private void Show(bool isShown, UITextField uiTextField = null) {
 
             Show(isShown, uiTextField.onValueChanged, uiTextField.onEndEdit);
 
@@ -120,10 +91,6 @@ namespace Beem.KeyBoard {
             }
         }
 
-        private void ValueChanged(string text) {
-            _currentInputField.text = text;
-        }
-
         private void UIValueChanged(string text) {
             _currentUITextField.text = text;
         }
@@ -138,8 +105,7 @@ namespace Beem.KeyBoard {
 
         private void OnDestroy() {
             onShow -= Show;
-            onInputShow -= InputShow;
-            onUITextShow -= UITextShow;
+            onUITextShow -= Show;
         }
     }
 }

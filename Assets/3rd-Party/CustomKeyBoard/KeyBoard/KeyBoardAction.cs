@@ -9,12 +9,12 @@ namespace Beem.KeyBoard {
     public class KeyBoardAction : MonoBehaviour {
 
         [SerializeField]
-        private InputField.OnChangeEvent onChangeEvent;
+        private InputField.OnChangeEvent onValueChanged;
         [SerializeField]
-        private InputField.SubmitEvent submitEvent;
+        private InputField.SubmitEvent onEndEdit;
 
         public void OpenKeyBoard(bool isOpened) {
-            KeyBoardConstructor.onShow?.Invoke(isOpened, onChangeEvent, submitEvent);
+            KeyBoardConstructor.onShow?.Invoke(isOpened, onValueChanged, onEndEdit);
         }
     }
 }

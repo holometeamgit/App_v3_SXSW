@@ -14,14 +14,6 @@ namespace Beem.KeyBoard {
         public InputField.CharacterValidation characterValidation { private set; get; }
         public int characterLimit { private set; get; }
 
-        public KeyBoardSettings(InputField inputField) {
-            contentType = inputField.contentType;
-            inputType = inputField.inputType;
-            keyboardType = inputField.keyboardType;
-            characterValidation = inputField.characterValidation;
-            characterLimit = inputField.characterLimit;
-        }
-
         public KeyBoardSettings(UITextField uiTextField) {
             contentType = uiTextField.contentType;
             inputType = uiTextField.inputType;
