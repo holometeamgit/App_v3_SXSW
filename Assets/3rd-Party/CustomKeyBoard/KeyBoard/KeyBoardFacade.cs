@@ -24,7 +24,7 @@ namespace Beem.KeyBoard {
             _inputField.onValueChanged.RemoveListener(UpdateText);
         }
 
-        private void UpdateText(string text = "") {
+        public void UpdateText(string text = "") {
             foreach (AbstractKeyBoardSettings item in _inputFieldSettings) {
                 item.RefreshData(_inputField);
             }

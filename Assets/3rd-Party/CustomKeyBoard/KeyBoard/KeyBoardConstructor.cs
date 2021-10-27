@@ -12,15 +12,19 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private GameObject _keyboardField;
         [SerializeField]
+        private KeyBoardFacade _keyBoardFacade;
+        [SerializeField]
         private MobileInputField _mobileInputField;
         [SerializeField]
         private KeyBoardPositionView _positionSettingsView;
 
         public static Action<bool, InputField.OnChangeEvent, InputField.SubmitEvent> onShow = delegate { };
         public static Action<bool, InputField> onInputShow = delegate { };
+        public static Action<bool, UITextField> onUITextShow = delegate { };
 
         private InputField _currentInputField;
-        private InputSettings _inputSettings;
+        private UITextField _currentUITextField;
+        private KeyBoardSettings _inputSettings;
         private InputField.OnChangeEvent _currentOnChangeEvent;
         private InputField.SubmitEvent _currentSubmitEvent;
 
@@ -31,6 +35,7 @@ namespace Beem.KeyBoard {
         private void Construct() {
             onShow += Show;
             onInputShow += InputShow;
+            onUITextShow += UITextShow;
         }
 
         private void Show(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
@@ -39,9 +44,9 @@ namespace Beem.KeyBoard {
             _mobileInputField.SetFocus(isShown);
 
             _positionSettingsView.UpdatePosition();
+            _keyBoardFacade.UpdateText();
 
             if (!isShown) {
-                _mobileInputField.InputField.text = string.Empty;
                 if (_currentInputField != null) {
                     _mobileInputField.InputField.onValueChanged.RemoveListener(ValueChanged);
                     _mobileInputField.InputField.contentType = _inputSettings.contentType;
@@ -51,8 +56,18 @@ namespace Beem.KeyBoard {
                     _mobileInputField.InputField.characterLimit = _inputSettings.characterLimit;
                     _currentInputField = null;
                 }
+                if (_currentUITextField != null) {
+                    _mobileInputField.InputField.onValueChanged.RemoveListener(UIValueChanged);
+                    _mobileInputField.InputField.contentType = _inputSettings.contentType;
+                    _mobileInputField.InputField.inputType = _inputSettings.inputType;
+                    _mobileInputField.InputField.keyboardType = _inputSettings.keyboardType;
+                    _mobileInputField.InputField.characterValidation = _inputSettings.characterValidation;
+                    _mobileInputField.InputField.characterLimit = _inputSettings.characterLimit;
+                    _currentUITextField = null;
+                }
                 _mobileInputField.InputField.text = string.Empty;
             } else {
+
                 if (_currentOnChangeEvent != null) {
                     _mobileInputField.InputField.onValueChanged.RemoveListener(EventChanged);
                 }
@@ -77,7 +92,7 @@ namespace Beem.KeyBoard {
 
             if (inputField != null && isShown) {
                 _currentInputField = inputField;
-                _inputSettings = new InputSettings(_mobileInputField.InputField);
+                _inputSettings = new KeyBoardSettings(_currentInputField);
                 _mobileInputField.InputField.contentType = _currentInputField.contentType;
                 _mobileInputField.InputField.inputType = _currentInputField.inputType;
                 _mobileInputField.InputField.keyboardType = _currentInputField.keyboardType;
@@ -88,10 +103,29 @@ namespace Beem.KeyBoard {
             }
         }
 
-        private void ValueChanged(string text) {
-            if (!string.IsNullOrEmpty(text)) {
-                _currentInputField.text = text;
+        private void UITextShow(bool isShown, UITextField uiTextField) {
+
+            Show(isShown, uiTextField.onValueChanged, uiTextField.onEndEdit);
+
+            if (uiTextField != null && isShown) {
+                _currentUITextField = uiTextField;
+                _inputSettings = new KeyBoardSettings(_currentUITextField);
+                _mobileInputField.InputField.contentType = _currentUITextField.contentType;
+                _mobileInputField.InputField.inputType = _currentUITextField.inputType;
+                _mobileInputField.InputField.keyboardType = _currentUITextField.keyboardType;
+                _mobileInputField.InputField.characterValidation = _currentUITextField.characterValidation;
+                _mobileInputField.InputField.text = _currentUITextField.text;
+                _mobileInputField.InputField.characterLimit = _currentUITextField.characterLimit;
+                _mobileInputField.InputField.onValueChanged.AddListener(UIValueChanged);
             }
+        }
+
+        private void ValueChanged(string text) {
+            _currentInputField.text = text;
+        }
+
+        private void UIValueChanged(string text) {
+            _currentUITextField.text = text;
         }
 
         private void EventChanged(string text) {
@@ -105,25 +139,7 @@ namespace Beem.KeyBoard {
         private void OnDestroy() {
             onShow -= Show;
             onInputShow -= InputShow;
-        }
-
-        /// <summary>
-        /// structure for previous input Settings
-        /// </summary>
-        public struct InputSettings {
-            public InputField.ContentType contentType { private set; get; }
-            public InputField.InputType inputType { private set; get; }
-            public TouchScreenKeyboardType keyboardType { private set; get; }
-            public InputField.CharacterValidation characterValidation { private set; get; }
-            public int characterLimit { private set; get; }
-
-            public InputSettings(InputField inputField) {
-                contentType = inputField.contentType;
-                inputType = inputField.inputType;
-                keyboardType = inputField.keyboardType;
-                characterValidation = inputField.characterValidation;
-                characterLimit = inputField.characterLimit;
-            }
+            onUITextShow -= UITextShow;
         }
     }
 }
