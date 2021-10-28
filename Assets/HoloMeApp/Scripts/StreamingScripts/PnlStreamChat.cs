@@ -17,9 +17,6 @@ public class PnlStreamChat : AgoraMessageReceiver {
     GameObject chatMessagePrefabRef;
 
     [SerializeField]
-    TMP_InputField inputField;
-
-    [SerializeField]
     RectTransform Content;
 
     [SerializeField]
@@ -48,7 +45,6 @@ public class PnlStreamChat : AgoraMessageReceiver {
 
     public void SendChatMessage(string message) {
         if (string.IsNullOrWhiteSpace(message)) {
-            inputField.text = string.Empty;
             return;
         }
 
@@ -70,7 +66,6 @@ public class PnlStreamChat : AgoraMessageReceiver {
         if (agoraController.IsLive)
             agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(chatMessageJsonData));
 
-        inputField.text = "";
         StartRefreshLayoutRoutine();
     }
 

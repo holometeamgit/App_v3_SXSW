@@ -19,9 +19,12 @@ namespace Beem.KeyBoard {
             }
         }
 
+
+        [SerializeField]
+        private InputField _inputField;
         public InputField InputField {
             get {
-                return MobileInputField.InputField;
+                return _inputField;
             }
         }
 
