@@ -85,7 +85,7 @@ namespace Beem.KeyBoard {
 
         private void ShowField(UITextField uiTextField) {
             _currentUITextField = uiTextField;
-            _inputSettings = new KeyBoardSettings(_currentUITextField);
+            _inputSettings = new KeyBoardSettings(_keyBoardWindow.InputField);
             _keyBoardWindow.InputField.contentType = _currentUITextField.ContentType;
             _keyBoardWindow.InputField.lineType = _currentUITextField.LineType;
             _keyBoardWindow.InputField.inputType = _currentUITextField.InputType;
@@ -96,12 +96,12 @@ namespace Beem.KeyBoard {
         }
 
         private void HideField() {
-            _keyBoardWindow.InputField.contentType = _inputSettings.contentType;
-            _keyBoardWindow.InputField.lineType = _inputSettings.lineType;
-            _keyBoardWindow.InputField.inputType = _inputSettings.inputType;
-            _keyBoardWindow.InputField.keyboardType = _inputSettings.keyboardType;
-            _keyBoardWindow.InputField.characterValidation = _inputSettings.characterValidation;
-            _keyBoardWindow.InputField.characterLimit = _inputSettings.characterLimit;
+            _keyBoardWindow.InputField.contentType = _inputSettings.ContentType;
+            _keyBoardWindow.InputField.lineType = _inputSettings.LineType;
+            _keyBoardWindow.InputField.inputType = _inputSettings.InputType;
+            _keyBoardWindow.InputField.keyboardType = _inputSettings.KeyboardType;
+            _keyBoardWindow.InputField.characterValidation = _inputSettings.CharacterValidation;
+            _keyBoardWindow.InputField.characterLimit = _inputSettings.CharacterLimit;
             _currentUITextField = null;
         }
 

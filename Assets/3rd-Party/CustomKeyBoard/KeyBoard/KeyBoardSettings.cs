@@ -8,20 +8,56 @@ namespace Beem.KeyBoard {
     /// structure for previous input Settings
     /// </summary>
     public struct KeyBoardSettings {
-        public InputField.ContentType contentType { private set; get; }
-        public InputField.InputType inputType { private set; get; }
-        public InputField.LineType lineType { private set; get; }
-        public TouchScreenKeyboardType keyboardType { private set; get; }
-        public InputField.CharacterValidation characterValidation { private set; get; }
-        public int characterLimit { private set; get; }
 
-        public KeyBoardSettings(UITextField uiTextField) {
-            contentType = uiTextField.ContentType;
-            inputType = uiTextField.InputType;
-            lineType = uiTextField.LineType;
-            keyboardType = uiTextField.KeyboardType;
-            characterValidation = uiTextField.CharacterValidation;
-            characterLimit = uiTextField.CharacterLimit;
+        private InputField.ContentType _contentType;
+        public InputField.ContentType ContentType {
+            get {
+                return _contentType;
+            }
+        }
+
+        private InputField.InputType _inputType;
+        public InputField.InputType InputType {
+            get {
+                return _inputType;
+            }
+        }
+
+        private InputField.LineType _lineType;
+        public InputField.LineType LineType {
+            get {
+                return _lineType;
+            }
+        }
+
+        private TouchScreenKeyboardType _keyboardType;
+        public TouchScreenKeyboardType KeyboardType {
+            get {
+                return _keyboardType;
+            }
+        }
+
+        private InputField.CharacterValidation _characterValidation;
+        public InputField.CharacterValidation CharacterValidation {
+            get {
+                return _characterValidation;
+            }
+        }
+
+        private int _characterLimit;
+        public int CharacterLimit {
+            get {
+                return _characterLimit;
+            }
+        }
+
+        public KeyBoardSettings(InputField inputField) {
+            _contentType = inputField.contentType;
+            _inputType = inputField.inputType;
+            _lineType = inputField.lineType;
+            _keyboardType = inputField.keyboardType;
+            _characterValidation = inputField.characterValidation;
+            _characterLimit = inputField.characterLimit;
         }
     }
 
