@@ -25,10 +25,6 @@ public class PnlComments : MonoBehaviour {
     [SerializeField]
     Animator _animator;
     [SerializeField]
-    TMP_InputField _commentInputField;
-    [SerializeField]
-    Button _postBtn;
-    [SerializeField]
     TMP_Text _commentsCount;
 
     private bool _isCanOpen;
@@ -58,11 +54,10 @@ public class PnlComments : MonoBehaviour {
     /// <summary>
     /// send comment to serber for current content 
     /// </summary>
-    public void Post() {
-        if (string.IsNullOrWhiteSpace(_commentInputField.text))
+    public void Post(string text) {
+        if (string.IsNullOrWhiteSpace(text))
             return;
-        _postBtn.interactable = false;
-        onPost?.Invoke(_commentInputField.text);
+        onPost?.Invoke(text);
     }
 
     /// <summary>
@@ -131,8 +126,6 @@ public class PnlComments : MonoBehaviour {
     ///  do refresh on post event
     /// </summary>
     public void OnPost() {
-        _commentInputField.text = "";
-        _postBtn.interactable = true;
         Refresh();
         HidePost();
     }
@@ -141,7 +134,6 @@ public class PnlComments : MonoBehaviour {
     /// calls after didn't post to backend
     /// </summary>
     public void OnFailPost() {
-        _postBtn.interactable = true;
         //TODO show msg for user
     }
 
@@ -206,7 +198,6 @@ public class PnlComments : MonoBehaviour {
 
     private void OnOpen() {
         gameObject.SetActive(true);
-        _postBtn.interactable = true;
     }
 
     private void OnEnable() {
@@ -219,7 +210,6 @@ public class PnlComments : MonoBehaviour {
         _scroll.OnFill -= OnFillItem;
         _scroll.OnHeight -= OnHeightItem;
         _scroll.OnPull -= OnPullItem;
-        _commentInputField.text = "";
     }
 
     private void OnRemoveItem(int index) {

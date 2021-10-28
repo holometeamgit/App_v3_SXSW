@@ -14,6 +14,8 @@ namespace Beem.KeyBoard {
         private Text textComponent;
         [SerializeField]
         private GameObject placeHolder;
+        [SerializeField]
+        private Text textLimitCount;
 
         [SerializeField]
         private InputField.ContentType _contentType;
@@ -87,6 +89,7 @@ namespace Beem.KeyBoard {
 
             set {
                 textComponent.text = value;
+                textLimitCount.text = _characterLimit > 0 ? textComponent.text.Length + "/" + _characterLimit : string.Empty;
                 placeHolder.SetActive(string.IsNullOrEmpty(textComponent.text));
             }
 
