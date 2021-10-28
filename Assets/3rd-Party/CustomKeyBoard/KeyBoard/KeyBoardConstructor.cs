@@ -10,13 +10,7 @@ namespace Beem.KeyBoard {
     /// </summary>
     public class KeyBoardConstructor : MonoBehaviour {
         [SerializeField]
-        private GameObject _keyboardField;
-        [SerializeField]
-        private KeyBoardFacade _keyBoardFacade;
-        [SerializeField]
-        private MobileInputField _mobileInputField;
-        [SerializeField]
-        private KeyBoardPositionView _positionSettingsView;
+        private KeyBoardWindow _keyBoardWindow;
 
         public static Action<bool, InputField.OnChangeEvent, InputField.SubmitEvent> onShow = delegate { };
         public static Action<bool, InputField.OnChangeEvent, InputField.SubmitEvent, UITextField> onUITextShow = delegate { };
@@ -35,33 +29,26 @@ namespace Beem.KeyBoard {
             onUITextShow += ShowWithField;
         }
 
-        private void Show(bool isShown) {
-            _keyboardField.SetActive(isShown);
-
-            _positionSettingsView.UpdatePosition();
-        }
-
-
         private void Show(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
 
-            Show(isShown);
+            _keyBoardWindow.Show(isShown);
 
             if (isShown) {
                 _currentOnChangeEvent = onChangeEvent;
                 _currentSubmitEvent = submitEvent;
 
                 if (_currentOnChangeEvent != null) {
-                    _mobileInputField.InputField.onValueChanged.AddListener(EventChanged);
+                    _keyBoardWindow.InputField.onValueChanged.AddListener(EventChanged);
                 }
                 if (_currentSubmitEvent != null) {
-                    _mobileInputField.InputField.onEndEdit.AddListener(EventSubmit);
+                    _keyBoardWindow.InputField.onEndEdit.AddListener(EventSubmit);
                 }
             } else {
                 if (_currentOnChangeEvent != null) {
-                    _mobileInputField.InputField.onValueChanged.RemoveListener(EventChanged);
+                    _keyBoardWindow.InputField.onValueChanged.RemoveListener(EventChanged);
                 }
                 if (_currentSubmitEvent != null) {
-                    _mobileInputField.InputField.onEndEdit.RemoveListener(EventSubmit);
+                    _keyBoardWindow.InputField.onEndEdit.RemoveListener(EventSubmit);
                 }
 
                 _currentOnChangeEvent = null;
@@ -77,18 +64,13 @@ namespace Beem.KeyBoard {
                 return;
             }
 
-            Debug.LogError(isShown ? "Show without Field" : "Hide without Field" + " text = " + _mobileInputField.InputField.text);
-
             Show(isShown, onChangeEvent, submitEvent);
 
-            _mobileInputField.Text = string.Empty;
-            _keyBoardFacade.UpdateText();
-            _mobileInputField.SetFocus(isShown);
+            _keyBoardWindow.Text = string.Empty;
+            _keyBoardWindow.UpdateText();
         }
 
         private void ShowWithField(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent, UITextField uiTextField) {
-
-            Debug.LogError(isShown ? "Show with Field" : "Hide with Field" + " text = " + _mobileInputField.InputField.text);
 
             Show(isShown, onChangeEvent, submitEvent);
 
@@ -98,27 +80,26 @@ namespace Beem.KeyBoard {
                 HideField();
             }
 
-            _mobileInputField.SetFocus(isShown);
-            _keyBoardFacade.UpdateText();
+            _keyBoardWindow.UpdateText();
         }
 
         private void ShowField(UITextField uiTextField) {
             _currentUITextField = uiTextField;
             _inputSettings = new KeyBoardSettings(_currentUITextField);
-            _mobileInputField.InputField.contentType = _currentUITextField.contentType;
-            _mobileInputField.InputField.inputType = _currentUITextField.inputType;
-            _mobileInputField.InputField.keyboardType = _currentUITextField.keyboardType;
-            _mobileInputField.InputField.characterValidation = _currentUITextField.characterValidation;
-            _mobileInputField.Text = _currentUITextField.text;
-            _mobileInputField.InputField.characterLimit = _currentUITextField.characterLimit;
+            _keyBoardWindow.InputField.contentType = _currentUITextField.contentType;
+            _keyBoardWindow.InputField.inputType = _currentUITextField.inputType;
+            _keyBoardWindow.InputField.keyboardType = _currentUITextField.keyboardType;
+            _keyBoardWindow.InputField.characterValidation = _currentUITextField.characterValidation;
+            _keyBoardWindow.Text = _currentUITextField.text;
+            _keyBoardWindow.InputField.characterLimit = _currentUITextField.characterLimit;
         }
 
         private void HideField() {
-            _mobileInputField.InputField.contentType = _inputSettings.contentType;
-            _mobileInputField.InputField.inputType = _inputSettings.inputType;
-            _mobileInputField.InputField.keyboardType = _inputSettings.keyboardType;
-            _mobileInputField.InputField.characterValidation = _inputSettings.characterValidation;
-            _mobileInputField.InputField.characterLimit = _inputSettings.characterLimit;
+            _keyBoardWindow.InputField.contentType = _inputSettings.contentType;
+            _keyBoardWindow.InputField.inputType = _inputSettings.inputType;
+            _keyBoardWindow.InputField.keyboardType = _inputSettings.keyboardType;
+            _keyBoardWindow.InputField.characterValidation = _inputSettings.characterValidation;
+            _keyBoardWindow.InputField.characterLimit = _inputSettings.characterLimit;
             _currentUITextField = null;
         }
 

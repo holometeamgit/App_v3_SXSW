@@ -9,7 +9,7 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private float screenPercent = 826;
 
-        public void UpdatePosition(int basePosition = 0) {
+        public void UpdatePosition() {
             float _basePosition = screenPercent;
             Vector2 position = _rectTransform.anchoredPosition;
             position.y = _basePosition;
