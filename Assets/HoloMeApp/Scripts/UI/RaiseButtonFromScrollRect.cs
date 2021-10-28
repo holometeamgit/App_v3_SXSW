@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// This class is intended to raise button to specified positions in the positions array as items are added into a scroll rect in order to give a dynamic offset effect
+/// </summary>
 public class RaiseButtonFromScrollRect : MonoBehaviour {
     [SerializeField]
     private RectTransform contentContainer;
