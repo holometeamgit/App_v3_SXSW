@@ -22,9 +22,13 @@ public class RaiseButtonFromScrollRect : MonoBehaviour {
                 activeChatMessages++;
             }
         }
-        transform.GetComponent<RectTransform>().sizeDelta = positions[activeChatMessages < positions.Length ? activeChatMessages : positions.Length - 1].sizeDelta;
-        transform.GetComponent<RectTransform>().anchoredPosition = positions[activeChatMessages < positions.Length ? activeChatMessages : positions.Length - 1].anchoredPosition;
-        transform.GetComponent<RectTransform>().anchorMin = positions[activeChatMessages < positions.Length ? activeChatMessages : positions.Length - 1].anchorMin;
-        transform.GetComponent<RectTransform>().anchorMax = positions[activeChatMessages < positions.Length ? activeChatMessages : positions.Length - 1].anchorMax;
+
+        RectTransform rectReference = transform.GetComponent<RectTransform>();
+        RectTransform rectToMoveTo = positions[activeChatMessages < positions.Length ? activeChatMessages : positions.Length - 1];
+
+        rectReference.sizeDelta = rectToMoveTo.sizeDelta;
+        rectReference.anchoredPosition = rectToMoveTo.anchoredPosition;
+        rectReference.anchorMin = rectToMoveTo.anchorMin;
+        rectReference.anchorMax = rectToMoveTo.anchorMax;
     }
 }
