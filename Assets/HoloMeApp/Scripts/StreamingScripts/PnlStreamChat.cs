@@ -5,8 +5,10 @@ using UnityEngine.UI;
 using System.Collections;
 using Crosstales.BWF.Model;
 using Crosstales.BWF;
+using UnityEngine.Events;
 
-public class PnlStreamChat : AgoraMessageReceiver {
+public class PnlStreamChat : AgoraMessageReceiver
+{
     [SerializeField]
     AgoraController agoraController;
 
@@ -17,6 +19,9 @@ public class PnlStreamChat : AgoraMessageReceiver {
     GameObject chatMessagePrefabRef;
 
     [SerializeField]
+    TMP_InputField inputField;
+
+    [SerializeField]
     RectTransform Content;
 
     [SerializeField]
@@ -25,26 +30,35 @@ public class PnlStreamChat : AgoraMessageReceiver {
     [SerializeField]
     VerticalLayoutGroup verticalLayoutGroup;
 
+    [SerializeField]
+    private UnityEvent OnMessageAdded;
+
     Stack<GameObject> chatMessagePool = new Stack<GameObject>();
 
     //[SerializeField]
     //UnityEvent OnMessageRecieved; //For displaying notifications
 
-    private void Awake() {
+    private void Awake()
+    {
         agoraRTMChatController.AddMessageReceiver(this);
     }
 
-    private void OnDestroy() {
+    private void OnDestroy()
+    {
         agoraRTMChatController.RemoveMessageReceiver(this);
     }
 
-    public void OnEnable() {
+    public void OnEnable()
+    {
         StartRefreshLayoutRoutine();
         //inputField.ActivateInputField();
     }
 
-    public void SendChatMessage(string message) {
-        if (string.IsNullOrWhiteSpace(message)) {
+    public void SendChatMessage(string message)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+        {
+            inputField.text = string.Empty;
             return;
         }
 
@@ -56,9 +70,12 @@ public class PnlStreamChat : AgoraMessageReceiver {
 
         ChatMessageJsonData chatMessageJsonData;
 
-        if (!agoraController.IsLive && agoraController.IsChannelCreator) {
+        if (!agoraController.IsLive && agoraController.IsChannelCreator)
+        {
             chatMessageJsonData = new ChatMessageJsonData { userName = "", message = "Channel must be live to post comments" };
-        } else {
+        }
+        else
+        {
             chatMessageJsonData = new ChatMessageJsonData { userName = agoraRTMChatController.UserName, message = censoredText };
         }
         CreateChatMessageGO(chatMessageJsonData);
@@ -66,28 +83,37 @@ public class PnlStreamChat : AgoraMessageReceiver {
         if (agoraController.IsLive)
             agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(chatMessageJsonData));
 
+        inputField.text = "";
         StartRefreshLayoutRoutine();
     }
 
-    public override void ReceivedChatMessage(string data) {
+    public override void ReceivedChatMessage(string data)
+    {
         AgoraStreamMessageCommonType agoraStreamMessage = JsonParser.CreateFromJSON<AgoraStreamMessageCommonType>(data);
-        if (agoraStreamMessage.requestID == AgoraMessageRequestIDs.IDChatMessage) {
+        if (agoraStreamMessage.requestID == AgoraMessageRequestIDs.IDChatMessage)
+        {
             var chatMessageJsonData = JsonParser.CreateFromJSON<ChatMessageJsonData>(data);
             CreateChatMessageGO(chatMessageJsonData);
             StartRefreshLayoutRoutine();
         }
     }
 
-    private void CreateChatMessageGO(ChatMessageJsonData chatMessageJsonData) {
+    private void CreateChatMessageGO(ChatMessageJsonData chatMessageJsonData)
+    {
         var newMessageGO = GetChatMessage();
-        newMessageGO.transform.Find("txtUserName").GetComponent<TMP_Text>().text = chatMessageJsonData.userName;
-        newMessageGO.transform.Find("txtMessage").GetComponent<TMP_Text>().text = chatMessageJsonData.message;
+        newMessageGO.transform.Find("txtUserName").GetComponent<TextMeshProUGUI>().text = chatMessageJsonData.userName;
+        newMessageGO.transform.Find("txtMessage").GetComponent<TextMeshProUGUI>().text = chatMessageJsonData.message;
+        OnMessageAdded?.Invoke();
     }
 
-    private GameObject GetChatMessage() {
-        if (chatMessagePool.Count == 0) {
+    private GameObject GetChatMessage()
+    {
+        if (chatMessagePool.Count == 0)
+        {
             return Instantiate(chatMessagePrefabRef, Content, false);
-        } else {
+        }
+        else
+        {
             var returnObject = chatMessagePool.Pop();
             returnObject.GetComponent<RectTransform>().SetAsLastSibling();
             returnObject.SetActive(true);
@@ -95,7 +121,8 @@ public class PnlStreamChat : AgoraMessageReceiver {
         }
     }
 
-    private void ReturnChatMessageToPool(GameObject message) {
+    private void ReturnChatMessageToPool(GameObject message)
+    {
         if (!chatMessagePool.Contains(message))//This is neccessary for now to add messages back if the user doesn't go online but posts in the chat it stops duplicate entries
         {
             chatMessagePool.Push(message);
@@ -103,8 +130,10 @@ public class PnlStreamChat : AgoraMessageReceiver {
         }
     }
 
-    public override void OnDisconnected() {
-        for (int i = 0; i < Content.childCount; i++) {
+    public override void OnDisconnected()
+    {
+        for (int i = 0; i < Content.childCount; i++)
+        {
             ReturnChatMessageToPool(Content.GetChild(i).gameObject);
         }
 
@@ -113,14 +142,17 @@ public class PnlStreamChat : AgoraMessageReceiver {
         GetComponent<AnimatedTransition>()?.DoMenuTransition(false);
     }
 
-    void StartRefreshLayoutRoutine() {
-        if (gameObject.activeSelf) {
+    void StartRefreshLayoutRoutine()
+    {
+        if (gameObject.activeSelf)
+        {
             StopAllCoroutines();
             StartCoroutine(RefreshLayoutGroup());
         }
     }
 
-    IEnumerator RefreshLayoutGroup() {
+    IEnumerator RefreshLayoutGroup()
+    {
         verticalLayoutGroup.enabled = false;
         yield return new WaitForEndOfFrame();
         verticalLayoutGroup.enabled = true;
