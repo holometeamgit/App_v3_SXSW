@@ -732,7 +732,6 @@ GameObject:
   - component: {fileID: 795021684}
   - component: {fileID: 795021686}
   - component: {fileID: 795021687}
-  - component: {fileID: 795021689}
   m_Layer: 5
   m_Name: InputField
   m_TagString: Untagged
@@ -816,7 +815,7 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 795021689}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: KeyBoardAction, Assembly-CSharp
         m_MethodName: OpenKeyBoard
         m_Mode: 6
@@ -888,19 +887,7 @@ MonoBehaviour:
   ReturnKey: 0
   OnReturnPressedEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 795021689}
-        m_TargetAssemblyTypeName: KeyBoardAction, Assembly-CSharp
-        m_MethodName: OpenKeyBoard
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &795021687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -924,24 +911,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 795021682}
   m_CullTransparentMesh: 1
---- !u!114 &795021689
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 795021682}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0dd1120e4152f74ead124831203d026, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onValueChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  onEndEdit:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &860742453
 GameObject:
   m_ObjectHideFlags: 0
@@ -1025,19 +994,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 860742456}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 795021689}
-        m_TargetAssemblyTypeName: Beem.KeyBoard.KeyBoardAction, Assembly-CSharp
-        m_MethodName: OpenKeyBoard
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &860742456
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1626,6 +1583,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uiTextField: {fileID: 1368297930}
+  onValueChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1368297930}
+        m_TargetAssemblyTypeName: UITextField, Assembly-CSharp
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1368297930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1642,6 +1617,7 @@ MonoBehaviour:
   placeHolder: {fileID: 1177548608}
   contentType: 0
   inputType: 0
+  lineType: 0
   keyboardType: 0
   characterValidation: 0
   characterLimit: 0
@@ -1660,12 +1636,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-  onValueChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  onEndEdit:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1368297932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1799,6 +1769,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rectTransform: {fileID: 1380259749}
   _inputField: {fileID: 795021684}
+  _mobileInputField: {fileID: 795021686}
+  _returnBtn: {fileID: 860742455}
   _inputFieldSettings:
   - {fileID: 860742458}
   - {fileID: 795021687}
@@ -2375,7 +2347,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 795021689}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Beem.KeyBoard.KeyBoardAction, Assembly-CSharp
         m_MethodName: OpenKeyBoard
         m_Mode: 6

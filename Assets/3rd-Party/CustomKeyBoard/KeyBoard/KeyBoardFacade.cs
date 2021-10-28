@@ -1,5 +1,8 @@
+using Mopsicus.Plugins;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Beem.KeyBoard {
@@ -18,6 +21,13 @@ namespace Beem.KeyBoard {
         private void OnEnable() {
             UpdateText();
             _inputField.onValueChanged.AddListener(UpdateText);
+        }
+
+        /// <summary>
+        /// Return button
+        /// </summary>
+        public void Return() {
+            KeyBoardConstructor.onShow?.Invoke(false, null, null);
         }
 
         private void OnDisable() {

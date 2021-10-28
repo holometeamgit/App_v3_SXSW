@@ -11,8 +11,14 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private UITextField _uiTextField;
 
+        [SerializeField]
+        public InputField.OnChangeEvent onValueChanged;
+
+        [SerializeField]
+        public InputField.SubmitEvent onEndEdit;
+
         public void OpenKeyBoard(bool isOpened) {
-            KeyBoardConstructor.onUITextShow?.Invoke(isOpened, _uiTextField);
+            KeyBoardConstructor.onUITextShow?.Invoke(isOpened, onValueChanged, onEndEdit, _uiTextField);
         }
     }
 }

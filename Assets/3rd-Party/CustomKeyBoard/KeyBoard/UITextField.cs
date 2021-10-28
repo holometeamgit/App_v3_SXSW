@@ -18,11 +18,8 @@ public class UITextField : MonoBehaviour, IPointerClickHandler {
     public InputField.CharacterValidation characterValidation;
     public int characterLimit;
 
-    public UnityEvent onClick;
-
-    public InputField.OnChangeEvent onValueChanged;
-
-    public InputField.SubmitEvent onEndEdit;
+    [SerializeField]
+    private UnityEvent onClick;
 
     private void Awake() {
         text = string.Empty;
@@ -40,7 +37,6 @@ public class UITextField : MonoBehaviour, IPointerClickHandler {
         set {
             textComponent.text = value;
             placeHolder.SetActive(string.IsNullOrEmpty(textComponent.text));
-            onValueChanged?.Invoke(textComponent.text);
         }
 
     }
