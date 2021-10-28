@@ -16,12 +16,12 @@ namespace Beem.KeyBoard {
         public int characterLimit { private set; get; }
 
         public KeyBoardSettings(UITextField uiTextField) {
-            contentType = uiTextField.contentType;
-            inputType = uiTextField.inputType;
-            lineType = uiTextField.lineType;
-            keyboardType = uiTextField.keyboardType;
-            characterValidation = uiTextField.characterValidation;
-            characterLimit = uiTextField.characterLimit;
+            contentType = uiTextField.ContentType;
+            inputType = uiTextField.InputType;
+            lineType = uiTextField.LineType;
+            keyboardType = uiTextField.KeyboardType;
+            characterValidation = uiTextField.CharacterValidation;
+            characterLimit = uiTextField.CharacterLimit;
         }
     }
 

@@ -5,42 +5,94 @@ using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using UnityEngine;
 
-public class UITextField : MonoBehaviour, IPointerClickHandler {
-    [SerializeField]
-    private Text textComponent;
-    [SerializeField]
-    private GameObject placeHolder;
+namespace Beem.KeyBoard {
+    /// <summary>
+    /// UITextField
+    /// </summary>
+    public class UITextField : MonoBehaviour, IPointerClickHandler {
+        [SerializeField]
+        private Text textComponent;
+        [SerializeField]
+        private GameObject placeHolder;
 
-    public InputField.ContentType contentType;
-    public InputField.InputType inputType;
-    public InputField.LineType lineType;
-    public TouchScreenKeyboardType keyboardType;
-    public InputField.CharacterValidation characterValidation;
-    public int characterLimit;
+        [SerializeField]
+        private InputField.ContentType _contentType;
 
-    [SerializeField]
-    private UnityEvent onClick;
-
-    private void Awake() {
-        text = string.Empty;
-    }
-
-    public void OnPointerClick(PointerEventData eventData) {
-        onClick?.Invoke();
-    }
-
-    public string text {
-        get {
-            return textComponent.text;
+        public InputField.ContentType ContentType {
+            get {
+                return _contentType;
+            }
         }
 
-        set {
-            textComponent.text = value;
-            placeHolder.SetActive(string.IsNullOrEmpty(textComponent.text));
+        [SerializeField]
+        private InputField.InputType _inputType;
+
+        public InputField.InputType InputType {
+            get {
+                return _inputType;
+            }
         }
 
+        [SerializeField]
+        private InputField.LineType _lineType;
+
+        public InputField.LineType LineType {
+            get {
+                return _lineType;
+            }
+        }
+
+        [SerializeField]
+        private TouchScreenKeyboardType _keyboardType;
+
+        public TouchScreenKeyboardType KeyboardType {
+            get {
+                return _keyboardType;
+            }
+        }
+
+        [SerializeField]
+        private InputField.CharacterValidation _characterValidation;
+
+        public InputField.CharacterValidation CharacterValidation {
+            get {
+                return _characterValidation;
+            }
+        }
+
+        [SerializeField]
+        private int _characterLimit;
+
+        public int CharacterLimit {
+            get {
+                return _characterLimit;
+            }
+        }
+
+        [SerializeField]
+        private UnityEvent onClick;
+
+        private void Awake() {
+            Text = string.Empty;
+        }
+
+        public void OnPointerClick(PointerEventData eventData) {
+            onClick?.Invoke();
+        }
+
+        public string Text {
+            get {
+                return textComponent.text;
+            }
+
+            set {
+                textComponent.text = value;
+                placeHolder.SetActive(string.IsNullOrEmpty(textComponent.text));
+            }
+
+        }
+
+
+
     }
-
-
-
 }
