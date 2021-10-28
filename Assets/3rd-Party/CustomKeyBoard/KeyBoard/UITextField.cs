@@ -89,8 +89,12 @@ namespace Beem.KeyBoard {
 
             set {
                 textComponent.text = value;
-                textLimitCount.text = _characterLimit > 0 ? textComponent.text.Length + "/" + _characterLimit : string.Empty;
-                placeHolder.SetActive(string.IsNullOrEmpty(textComponent.text));
+                if (textLimitCount != null) {
+                    textLimitCount.text = _characterLimit > 0 ? textComponent.text.Length + "/" + _characterLimit : string.Empty;
+                }
+                if (placeHolder != null) {
+                    placeHolder.SetActive(string.IsNullOrEmpty(textComponent.text));
+                }
             }
 
         }
