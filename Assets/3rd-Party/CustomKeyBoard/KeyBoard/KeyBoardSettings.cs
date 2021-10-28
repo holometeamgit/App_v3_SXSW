@@ -10,6 +10,7 @@ namespace Beem.KeyBoard {
     public struct KeyBoardSettings {
         public InputField.ContentType contentType { private set; get; }
         public InputField.InputType inputType { private set; get; }
+        public InputField.LineType lineType { private set; get; }
         public TouchScreenKeyboardType keyboardType { private set; get; }
         public InputField.CharacterValidation characterValidation { private set; get; }
         public int characterLimit { private set; get; }
@@ -17,6 +18,7 @@ namespace Beem.KeyBoard {
         public KeyBoardSettings(UITextField uiTextField) {
             contentType = uiTextField.contentType;
             inputType = uiTextField.inputType;
+            lineType = uiTextField.lineType;
             keyboardType = uiTextField.keyboardType;
             characterValidation = uiTextField.characterValidation;
             characterLimit = uiTextField.characterLimit;

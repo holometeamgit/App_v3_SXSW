@@ -25,6 +25,7 @@ namespace Beem.KeyBoard {
         }
 
         public void UpdateText(string text = "") {
+            Debug.Log("UpdateText = " + text);
             foreach (AbstractKeyBoardSettings item in _inputFieldSettings) {
                 item.RefreshData(_inputField);
             }

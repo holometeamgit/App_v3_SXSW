@@ -13,6 +13,7 @@ public class UITextField : MonoBehaviour, IPointerClickHandler {
 
     public InputField.ContentType contentType;
     public InputField.InputType inputType;
+    public InputField.LineType lineType;
     public TouchScreenKeyboardType keyboardType;
     public InputField.CharacterValidation characterValidation;
     public int characterLimit;
