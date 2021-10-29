@@ -39,14 +39,14 @@ public class InputFieldController : MonoBehaviour {
 
     public string text {
         get {
-            if (_mobileInputField != null) {
+            if (_mobileInputField.InputField != null) {
                 return _mobileInputField.Text;
             } else {
                 return inputField.text;
             }
         }
         set {
-            if (_mobileInputField != null) {
+            if (_mobileInputField.InputField != null) {
                 _mobileInputField.Text = value;
             } else {
                 inputField.text = value;
