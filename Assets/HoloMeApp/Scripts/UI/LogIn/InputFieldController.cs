@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using System;
+using Mopsicus.Plugins;
 
 public class InputFieldController : MonoBehaviour {
     public bool IsClearOnDisable = true;
@@ -16,6 +17,9 @@ public class InputFieldController : MonoBehaviour {
 
     [SerializeField]
     InputField inputField;
+
+    [SerializeField]
+    private MobileInputField _mobileInputField;
 
     [SerializeField]
     TMP_Text warningMsgText;
@@ -34,8 +38,8 @@ public class InputFieldController : MonoBehaviour {
     }
 
     public string text {
-        get { return inputField.text; }
-        set { inputField.text = value; }
+        get { return _mobileInputField.Text; }
+        set { _mobileInputField.Text = value; }
     }
 
     public bool interactable {
@@ -46,18 +50,11 @@ public class InputFieldController : MonoBehaviour {
     private void Awake() {
         inputField.onEndEdit.AddListener(DoOnEndEditPassword);
         inputField.onValueChanged.AddListener(OnValueChanged);
-        //#if UNITY_IOS
-        inputField.shouldHideMobileInput = true;
-#if UNITY_IOS
+        _mobileInputField.OnReturnPressedEvent.AddListener(() => DoOnEndEditPassword());
         if (isEmail) {
             inputField.contentType = InputField.ContentType.EmailAddress;
         }
-#endif
-        //#elif UNITY_ANDROID
-        //        inputField.shouldHideMobileInput = false;
-        //#endif
 
-        //        inputField.onEndEdit.AddListener(UpdateLayout);
         if (IsLowercase)
             inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
     }
@@ -134,7 +131,7 @@ public class InputFieldController : MonoBehaviour {
         return msg;
     }
 
-    private void DoOnEndEditPassword(string value) {
+    private void DoOnEndEditPassword(string value = "") {
         OnEndEditPassword.Invoke();
     }
 
@@ -145,6 +142,7 @@ public class InputFieldController : MonoBehaviour {
     private void OnDestroy() {
         inputField.onEndEdit.RemoveListener(DoOnEndEditPassword);
         inputField.onValueChanged.RemoveListener(OnValueChanged);
+        _mobileInputField.OnReturnPressedEvent.RemoveListener(() => DoOnEndEditPassword());
     }
 
     private void OnDisable() {
