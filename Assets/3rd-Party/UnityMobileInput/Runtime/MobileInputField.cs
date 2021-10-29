@@ -17,7 +17,7 @@ namespace Mopsicus.Plugins {
     /// Wrapper for Unity InputField
     /// Add this component on your InputField
     /// </summary>
-    [RequireComponent (typeof (InputField))]
+    [RequireComponent(typeof(InputField))]
     public class MobileInputField : MobileInputReceiver {
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Mopsicus.Plugins {
         /// <summary>
         /// Custom font name
         /// </summary>
-        public string CustomFont = "default";        
+        public string CustomFont = "default";
 
         /// <summary>
         /// Hide and deselect input manually
@@ -97,6 +97,7 @@ namespace Mopsicus.Plugins {
         /// InputField object
         /// </summary>
         private InputField _inputObject;
+
 
         /// <summary>
         /// Text object from _inputObject
@@ -191,11 +192,11 @@ namespace Mopsicus.Plugins {
         /// <summary>
         /// Constructor
         /// </summary>
-        private void Awake () {
-            _inputObject = this.GetComponent<InputField> ();
-            if ((object) _inputObject == null) {
-                Debug.LogError (string.Format ("No found InputField for {0} MobileInput", this.name));
-                throw new MissingComponentException ();
+        private void Awake() {
+            _inputObject = this.GetComponent<InputField>();
+            if ((object)_inputObject == null) {
+                Debug.LogError(string.Format("No found InputField for {0} MobileInput", this.name));
+                throw new MissingComponentException();
             }
             _inputObjectText = _inputObject.textComponent;
         }
@@ -203,46 +204,46 @@ namespace Mopsicus.Plugins {
         /// <summary>
         /// Create mobile input on Start with coroutine
         /// </summary>
-        protected override void Start () {
-            base.Start ();
-            StartCoroutine (InitialzieOnNextFrame ());
+        protected override void Start() {
+            base.Start();
+            StartCoroutine(InitialzieOnNextFrame());
         }
 
         /// <summary>
         /// Show native on enable
         /// </summary>
-        private void OnEnable () {
+        private void OnEnable() {
             if (_isMobileInputCreated) {
-                this.SetVisible (true);
+                this.SetVisible(true);
             }
         }
 
         /// <summary>
         /// Hide native on disable
         /// </summary>
-        private void OnDisable () {
+        private void OnDisable() {
             if (_isMobileInputCreated) {
-                this.SetFocus (false);
-                this.SetVisible (false);
+                this.SetFocus(false);
+                this.SetVisible(false);
             }
         }
 
         /// <summary>
         /// Destructor
         /// </summary>
-        protected override void OnDestroy () {
-            RemoveNative ();
-            base.OnDestroy ();
+        protected override void OnDestroy() {
+            RemoveNative();
+            base.OnDestroy();
         }
 
         /// <summary>
         /// Handler for app focus lost
         /// </summary>
-        private void OnApplicationFocus (bool hasFocus) {
+        private void OnApplicationFocus(bool hasFocus) {
             if (!_isMobileInputCreated || !this.Visible) {
                 return;
             }
-            this.SetVisible (hasFocus);
+            this.SetVisible(hasFocus);
         }
 
         /// <summary>
@@ -271,16 +272,16 @@ namespace Mopsicus.Plugins {
             }
             set {
                 _inputObject.text = value;
-                SetTextNative (value);
+                SetTextNative(value);
             }
         }
 
         /// <summary>
         /// Initialization coroutine
         /// </summary>
-        private IEnumerator InitialzieOnNextFrame () {
+        private IEnumerator InitialzieOnNextFrame() {
             yield return null;
-            this.PrepareNativeEdit ();
+            this.PrepareNativeEdit();
 #if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
             this.CreateNativeEdit ();
             this.SetTextNative (this._inputObjectText.text);
@@ -295,7 +296,7 @@ namespace Mopsicus.Plugins {
         /// If changed - send to plugin
         /// It's need when app rotate on input field chage position
         /// </summary>
-        private void Update () {
+        private void Update() {
 #if UNITY_ANDROID && !UNITY_EDITOR
             this.UpdateForceKeyeventForAndroid ();
 #endif
@@ -314,77 +315,77 @@ namespace Mopsicus.Plugins {
                     }
                 }
 #endif
-                SetRectNative (this._inputObjectText.rectTransform);
+                SetRectNative(this._inputObjectText.rectTransform);
             }
         }
 
-		/// <summary>
-		/// Get sizes and convert to current screen size
-		/// </summary>
-		/// <param name="rect">RectTranform from Gameobject</param>
-		/// <returns>Rect</returns>
-		public static Rect GetScreenRectFromRectTransform (RectTransform rect) {
-			Vector3[] corners = new Vector3[4];
-			rect.GetWorldCorners (corners);
-			float xMin = float.PositiveInfinity;
-			float xMax = float.NegativeInfinity;
-			float yMin = float.PositiveInfinity;
-			float yMax = float.NegativeInfinity;
-			for (int i = 0; i < 4; i++) {
-				Vector3 screenCoord;
-				if (rect.GetComponentInParent<Canvas> ().renderMode == RenderMode.ScreenSpaceOverlay) {
-					screenCoord = corners[i];
-				} else {
-					screenCoord = RectTransformUtility.WorldToScreenPoint (Camera.main, corners[i]);
-				}
-				if (screenCoord.x < xMin) {
-					xMin = screenCoord.x;
-				}
-				if (screenCoord.x > xMax) {
-					xMax = screenCoord.x;
-				}
-				if (screenCoord.y < yMin) {
-					yMin = screenCoord.y;
-				}
-				if (screenCoord.y > yMax) {
-					yMax = screenCoord.y;
-				}
-			}
-			Rect result = new Rect (xMin, Screen.height - yMax, xMax - xMin, yMax - yMin);
-			return result;
-		}        
+        /// <summary>
+        /// Get sizes and convert to current screen size
+        /// </summary>
+        /// <param name="rect">RectTranform from Gameobject</param>
+        /// <returns>Rect</returns>
+        public static Rect GetScreenRectFromRectTransform(RectTransform rect) {
+            Vector3[] corners = new Vector3[4];
+            rect.GetWorldCorners(corners);
+            float xMin = float.PositiveInfinity;
+            float xMax = float.NegativeInfinity;
+            float yMin = float.PositiveInfinity;
+            float yMax = float.NegativeInfinity;
+            for (int i = 0; i < 4; i++) {
+                Vector3 screenCoord;
+                if (rect.GetComponentInParent<Canvas>().renderMode == RenderMode.ScreenSpaceOverlay) {
+                    screenCoord = corners[i];
+                } else {
+                    screenCoord = RectTransformUtility.WorldToScreenPoint(Camera.main, corners[i]);
+                }
+                if (screenCoord.x < xMin) {
+                    xMin = screenCoord.x;
+                }
+                if (screenCoord.x > xMax) {
+                    xMax = screenCoord.x;
+                }
+                if (screenCoord.y < yMin) {
+                    yMin = screenCoord.y;
+                }
+                if (screenCoord.y > yMax) {
+                    yMax = screenCoord.y;
+                }
+            }
+            Rect result = new Rect(xMin, Screen.height - yMax, xMax - xMin, yMax - yMin);
+            return result;
+        }
 
         /// <summary>
         /// Prepare config
         /// </summary>
-        private void PrepareNativeEdit () {
-            Text placeHolder = _inputObject.placeholder.GetComponent<Text> ();
+        private void PrepareNativeEdit() {
+            Text placeHolder = _inputObject.placeholder.GetComponent<Text>();
             _config.Placeholder = placeHolder.text;
             _config.PlaceholderColor = placeHolder.color;
             _config.CharacterLimit = _inputObject.characterLimit;
-            Rect rect = GetScreenRectFromRectTransform (this._inputObjectText.rectTransform);
+            Rect rect = GetScreenRectFromRectTransform(this._inputObjectText.rectTransform);
             float ratio = rect.height / _inputObjectText.rectTransform.rect.height;
-            _config.FontSize = ((float) _inputObjectText.fontSize) * ratio;
+            _config.FontSize = ((float)_inputObjectText.fontSize) * ratio;
             _config.TextColor = _inputObjectText.color;
-            _config.Align = _inputObjectText.alignment.ToString ();
-            _config.ContentType = _inputObject.contentType.ToString ();
+            _config.Align = _inputObjectText.alignment.ToString();
+            _config.ContentType = _inputObject.contentType.ToString();
             _config.BackgroundColor = _inputObject.colors.normalColor;
             _config.Multiline = (_inputObject.lineType == InputField.LineType.SingleLine) ? false : true;
-            _config.KeyboardType = _inputObject.keyboardType.ToString ();
-            _config.InputType = _inputObject.inputType.ToString ();
+            _config.KeyboardType = _inputObject.keyboardType.ToString();
+            _config.InputType = _inputObject.inputType.ToString();
         }
 
         /// <summary>
         /// Text change callback
         /// </summary>
         /// <param name="text">new text</param>
-        private void OnTextChange (string text) {
+        private void OnTextChange(string text) {
             if (text == this._inputObject.text) {
                 return;
             }
             this._inputObject.text = text;
             if (this._inputObject.onValueChanged != null) {
-                this._inputObject.onValueChanged.Invoke (text);
+                this._inputObject.onValueChanged.Invoke(text);
             }
         }
 
@@ -392,71 +393,71 @@ namespace Mopsicus.Plugins {
         /// Text change end callback
         /// </summary>
         /// <param name="text">text</param>
-        private void OnTextEditEnd (string text) {
+        private void OnTextEditEnd(string text) {
             this._inputObject.text = text;
             if (this._inputObject.onEndEdit != null) {
-                this._inputObject.onEndEdit.Invoke (text);
+                this._inputObject.onEndEdit.Invoke(text);
             }
-            SetFocus (false);
+            SetFocus(false);
         }
 
         /// <summary>
         /// Sending data to plugin
         /// </summary>
         /// <param name="data">JSON</param>
-        public override void Send (JsonObject data) {
-            MobileInput.Plugin.StartCoroutine (PluginsMessageRoutine (data));
+        public override void Send(JsonObject data) {
+            MobileInput.Plugin.StartCoroutine(PluginsMessageRoutine(data));
         }
 
         /// <summary>
         /// Remove focus, keyboard when app lose focus
         /// </summary>
-        public override void Hide () {
-            this.SetFocus (false);
+        public override void Hide() {
+            this.SetFocus(false);
         }
 
         /// <summary>
         /// Coroutine for send, so its not freeze main thread
         /// </summary>
         /// <param name="data">JSON</param>
-        private IEnumerator PluginsMessageRoutine (JsonObject data) {
+        private IEnumerator PluginsMessageRoutine(JsonObject data) {
             yield return null;
             string msg = data["msg"];
-            if (msg.Equals (TEXT_CHANGE)) {
+            if (msg.Equals(TEXT_CHANGE)) {
                 string text = data["text"];
-                this.OnTextChange (text);
-            } else if (msg.Equals (READY)) {
-                this.Ready ();
-            } else if (msg.Equals (ON_FOCUS)) {
-                OnFocusChanged (true);
-            } else if (msg.Equals (ON_UNFOCUS)) {
-                OnFocusChanged (false);
-            } else if (msg.Equals (TEXT_END_EDIT)) {
+                this.OnTextChange(text);
+            } else if (msg.Equals(READY)) {
+                this.Ready();
+            } else if (msg.Equals(ON_FOCUS)) {
+                OnFocusChanged(true);
+            } else if (msg.Equals(ON_UNFOCUS)) {
+                OnFocusChanged(false);
+            } else if (msg.Equals(TEXT_END_EDIT)) {
                 string text = data["text"];
-                this.OnTextEditEnd (text);
-            } else if (msg.Equals (RETURN_PRESSED)) {
-                OnReturnPressed ();
+                this.OnTextEditEnd(text);
+            } else if (msg.Equals(RETURN_PRESSED)) {
+                OnReturnPressed();
                 if (OnReturnPressedEvent != null) {
-                    OnReturnPressedEvent.Invoke ();
+                    OnReturnPressedEvent.Invoke();
                 }
             }
         }
 
-	/// <summary>
+        /// <summary>
         /// Convert float value to InvariantCulture string
         /// </summary>
         /// <param name="value">float value</param>
         /// <returns></returns>
-        private string InvariantCultureString (float value){
-            return value.ToString ("G", System.Globalization.CultureInfo.InvariantCulture);
+        private string InvariantCultureString(float value) {
+            return value.ToString("G", System.Globalization.CultureInfo.InvariantCulture);
         }
 
         /// <summary>
         /// Create native input field
         /// </summary>
-        private void CreateNativeEdit () {
-            Rect rect = GetScreenRectFromRectTransform (this._inputObjectText.rectTransform);
-            JsonObject data = new JsonObject ();
+        private void CreateNativeEdit() {
+            Rect rect = GetScreenRectFromRectTransform(this._inputObjectText.rectTransform);
+            JsonObject data = new JsonObject();
             data["msg"] = CREATE;
             data["x"] = InvariantCultureString(rect.x / Screen.width);
             data["y"] = InvariantCultureString(rect.y / Screen.height);
@@ -503,19 +504,19 @@ namespace Mopsicus.Plugins {
                     break;
             }
 
-            this.Execute (data);
+            this.Execute(data);
         }
 
         /// <summary>
         /// New field successfully added
         /// </summary>
-        void Ready () {
+        void Ready() {
             _isMobileInputCreated = true;
             if (!_isVisibleOnCreate) {
-                SetVisible (false);
+                SetVisible(false);
             }
             if (_isFocusOnCreate) {
-                SetFocus (true);
+                SetFocus(true);
             }
         }
 
@@ -523,46 +524,46 @@ namespace Mopsicus.Plugins {
         /// Set text to field
         /// </summary>
         /// <param name="text">New text</param>
-        void SetTextNative (string text) {
-            JsonObject data = new JsonObject ();
+        void SetTextNative(string text) {
+            JsonObject data = new JsonObject();
             data["msg"] = SET_TEXT;
             data["text"] = text;
-            this.Execute (data);
+            this.Execute(data);
         }
 
         /// <summary>
         /// Remove field
         /// </summary>
-        private void RemoveNative () {
-            JsonObject data = new JsonObject ();
+        private void RemoveNative() {
+            JsonObject data = new JsonObject();
             data["msg"] = REMOVE;
-            this.Execute (data);
+            this.Execute(data);
         }
 
         /// <summary>
         /// Set new size and position
         /// </summary>
         /// <param name="inputRect">RectTransform</param>
-        public void SetRectNative (RectTransform inputRect) {
-            Rect rect = GetScreenRectFromRectTransform (inputRect);
+        public void SetRectNative(RectTransform inputRect) {
+            Rect rect = GetScreenRectFromRectTransform(inputRect);
             if (_lastRect == rect) {
                 return;
             }
             _lastRect = rect;
-            JsonObject data = new JsonObject ();
+            JsonObject data = new JsonObject();
             data["msg"] = SET_RECT;
             data["x"] = InvariantCultureString(rect.x / Screen.width);
             data["y"] = InvariantCultureString(rect.y / Screen.height);
             data["width"] = InvariantCultureString(rect.width / Screen.width);
             data["height"] = InvariantCultureString(rect.height / Screen.height);
-            this.Execute (data);
+            this.Execute(data);
         }
 
         /// <summary>
         /// Set focus on field
         /// </summary>
         /// <param name="isFocus">true | false</param>
-        public void SetFocus (bool isFocus) {
+        public void SetFocus(bool isFocus) {
 #if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
             if (!_isMobileInputCreated) {
                 _isFocusOnCreate = isFocus;
@@ -575,9 +576,9 @@ namespace Mopsicus.Plugins {
 #else
             if (gameObject.activeInHierarchy) {
                 if (isFocus) {
-                    _inputObject.ActivateInputField ();
+                    _inputObject.ActivateInputField();
                 } else {
-                    _inputObject.DeactivateInputField ();
+                    _inputObject.DeactivateInputField();
                 }
             } else {
                 _isFocusOnCreate = isFocus;
@@ -590,15 +591,15 @@ namespace Mopsicus.Plugins {
         /// Set field visible
         /// </summary>
         /// <param name="isVisible">true | false</param>
-        public void SetVisible (bool isVisible) {
+        public void SetVisible(bool isVisible) {
             if (!_isMobileInputCreated) {
                 _isVisibleOnCreate = isVisible;
                 return;
             }
-            JsonObject data = new JsonObject ();
+            JsonObject data = new JsonObject();
             data["msg"] = SET_VISIBLE;
             data["is_visible"] = isVisible;
-            this.Execute (data);
+            this.Execute(data);
             this.Visible = isVisible;
         }
 

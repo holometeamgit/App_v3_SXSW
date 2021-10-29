@@ -38,8 +38,20 @@ public class InputFieldController : MonoBehaviour {
     }
 
     public string text {
-        get { return _mobileInputField.Text; }
-        set { _mobileInputField.Text = value; }
+        get {
+            if (_mobileInputField != null) {
+                return _mobileInputField.Text;
+            } else {
+                return inputField.text;
+            }
+        }
+        set {
+            if (_mobileInputField != null) {
+                _mobileInputField.Text = value;
+            } else {
+                inputField.text = value;
+            }
+        }
     }
 
     public bool interactable {
