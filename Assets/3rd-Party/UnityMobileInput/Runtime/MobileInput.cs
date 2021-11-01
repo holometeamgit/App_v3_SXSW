@@ -31,35 +31,35 @@ namespace Mopsicus.Plugins {
         /// <summary>
         /// Init input and register interface
         /// </summary>
-        protected virtual void Start () {
-            _id = MobileInput.Register (this);
+        protected virtual void Start() {
+            _id = MobileInput.Register(this);
         }
 
         /// <summary>
         /// Action on destroy
         /// </summary>
-        protected virtual void OnDestroy () {
-            MobileInput.RemoveReceiver (_id);
+        protected virtual void OnDestroy() {
+            MobileInput.RemoveReceiver(_id);
         }
 
         /// <summary>
         /// Send data to plugin
         /// </summary>
         /// <param name="data">Data</param>
-        protected void Execute (JsonObject data) {
-            MobileInput.Execute (_id, data);
+        protected void Execute(JsonObject data) {
+            MobileInput.Execute(_id, data);
         }
 
         /// <summary>
         /// Send data to plugin manually
         /// </summary>
         /// <param name="data">Data</param>
-        public abstract void Send (JsonObject data);
+        public abstract void Send(JsonObject data);
 
         /// <summary>
         /// Hide input
         /// </summary>
-        public abstract void Hide ();
+        public abstract void Hide();
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ namespace Mopsicus.Plugins {
         /// <summary>
         /// Delegate for show/hide keyboard action
         /// </summary>
-        public delegate void ShowDelegate (bool isShow, int height);
+        public delegate void ShowDelegate(bool isShow, int height);
 
         /// <summary>
         /// Handler for ShowDelegate
@@ -90,7 +90,7 @@ namespace Mopsicus.Plugins {
         /// <summary>
         /// Mobile fields dictionary
         /// </summary>
-        private Dictionary<int, MobileInputReceiver> _inputs = new Dictionary<int, MobileInputReceiver> ();
+        private Dictionary<int, MobileInputReceiver> _inputs = new Dictionary<int, MobileInputReceiver>();
 
         /// <summary>
         /// Current instance
@@ -135,10 +135,10 @@ namespace Mopsicus.Plugins {
         /// <summary>
         /// Constructor
         /// </summary>
-        private void Awake () {
-            if ((object) _instance == null) {
-                _instance = GetComponent<MobileInput> ();
-                Init ();
+        private void Awake() {
+            if ((object)_instance == null) {
+                _instance = GetComponent<MobileInput>();
+                Init();
             }
         }
 
@@ -147,7 +147,7 @@ namespace Mopsicus.Plugins {
         /// </summary>
         public string Name {
             get {
-                return GetType ().Name.ToLower ();
+                return GetType().Name.ToLower();
             }
         }
 
@@ -163,42 +163,42 @@ namespace Mopsicus.Plugins {
         /// <summary>
         /// Callback on data
         /// </summary>
-        public void OnData (JsonObject data) {
-            Debug.Log (string.Format ("{0} plugin OnData: {1}", GetType ().Name, data.ToJsonPrettyPrintString ()));
+        public void OnData(JsonObject data) {
+            //Debug.Log (string.Format ("{0} plugin OnData: {1}", GetType ().Name, data.ToJsonPrettyPrintString ()));
             _data = data;
             try {
-                JsonObject response = (JsonObject) JsonNode.ParseJsonString (data["data"]);
+                JsonObject response = (JsonObject)JsonNode.ParseJsonString(data["data"]);
                 string code = response["msg"];
                 switch (code) {
                     case KEYBOARD_ACTION:
                         bool isShow = response["show"];
                         int height = 0;
                         height = response["height"];
-                        OnShowKeyboard (isShow, height);
+                        OnShowKeyboard(isShow, height);
                         break;
                     default:
                         int id = response["id"];
-                        if (_inputs.ContainsKey (id)) {
-                            GetReceiver (id).Send (response);
+                        if (_inputs.ContainsKey(id)) {
+                            GetReceiver(id).Send(response);
                         }
                         break;
                 }
                 _data = null;
             } catch (Exception e) {
-                Debug.LogError (string.Format ("{0} plugin OnData error: {1}", GetType ().Name, e.Message));
+                Debug.LogError(string.Format("{0} plugin OnData error: {1}", GetType().Name, e.Message));
             }
         }
 
         /// <summary>
         /// Callback on error
         /// </summary>
-        public void OnError (JsonObject data) {
-            Debug.LogError (string.Format ("{0} plugin OnError: {0}", GetType ().Name, data.ToJsonPrettyPrintString ()));
+        public void OnError(JsonObject data) {
+            Debug.LogError(string.Format("{0} plugin OnError: {0}", GetType().Name, data.ToJsonPrettyPrintString()));
             _error = data;
             try {
                 _error = null;
             } catch (Exception e) {
-                Debug.LogError (string.Format ("{0} plugin OnError error: {1}", GetType ().Name, e.Message));
+                Debug.LogError(string.Format("{0} plugin OnError error: {1}", GetType().Name, e.Message));
             }
         }
 
@@ -207,7 +207,7 @@ namespace Mopsicus.Plugins {
         /// </summary>
         /// <param name="receiver">Receiver</param>
         /// <returns>Id</returns>
-        public static int Register (MobileInputReceiver receiver) {
+        public static int Register(MobileInputReceiver receiver) {
             int index = _instance._counter;
             _instance._counter++;
             _instance._inputs[index] = receiver;
@@ -218,8 +218,8 @@ namespace Mopsicus.Plugins {
         /// Remove MobileInput
         /// </summary>
         /// <param name="id">Input id</param>
-        public static void RemoveReceiver (int id) {
-            _instance._inputs.Remove (id);
+        public static void RemoveReceiver(int id) {
+            _instance._inputs.Remove(id);
         }
 
         /// <summary>
@@ -227,7 +227,7 @@ namespace Mopsicus.Plugins {
         /// </summary>
         /// <param name="id">Input id</param>
         /// <returns>Receiver</returns>
-        public static MobileInputReceiver GetReceiver (int id) {
+        public static MobileInputReceiver GetReceiver(int id) {
             return _instance._inputs[id];
         }
 
@@ -236,11 +236,11 @@ namespace Mopsicus.Plugins {
         /// </summary>
         /// <param name="id">id</param>
         /// <param name="data">json</param>
-        public static void Execute (int id, JsonObject data) {
+        public static void Execute(int id, JsonObject data) {
             data["id"] = id;
-            string json = data.ToJsonString ();
+            string json = data.ToJsonString();
 #if UNITY_EDITOR
-            Debug.Log ("MobileInput execute " + json);
+            Debug.Log("MobileInput execute " + json);
 #elif UNITY_ANDROID
             using (AndroidJavaClass plugin = new AndroidJavaClass (string.Format (Plugins.ANDROID_CLASS_MASK, _instance.Name))) {
                 plugin.CallStatic ("execute", id, json);
@@ -253,18 +253,18 @@ namespace Mopsicus.Plugins {
         /// <summary>
         /// Init plugin
         /// </summary>
-        public static void Init () {
-            int state = PlayerPrefs.GetInt (INIT_KEY, 0);
+        public static void Init() {
+            int state = PlayerPrefs.GetInt(INIT_KEY, 0);
             if (state == 0) {
                 string path = Application.streamingAssetsPath;
-                if (Directory.Exists (path)) {
-                    string[] files = Directory.GetFiles (path, "*.ttf");
+                if (Directory.Exists(path)) {
+                    string[] files = Directory.GetFiles(path, "*.ttf");
                     foreach (string filePath in files) {
-                        PrepareFontsAssets (Path.GetFileName (filePath));
+                        PrepareFontsAssets(Path.GetFileName(filePath));
                     }
                 }
-                PlayerPrefs.SetInt (INIT_KEY, 1);
-                PlayerPrefs.Save ();
+                PlayerPrefs.SetInt(INIT_KEY, 1);
+                PlayerPrefs.Save();
             }
 #if UNITY_EDITOR
 #elif UNITY_ANDROID
@@ -279,7 +279,7 @@ namespace Mopsicus.Plugins {
         /// <summary>
         /// Destructor
         /// </summary>
-        public static void Destroy () {
+        public static void Destroy() {
 #if UNITY_EDITOR
 #elif UNITY_ANDROID
             using (AndroidJavaClass plugin = new AndroidJavaClass (string.Format (Plugins.ANDROID_CLASS_MASK, _instance.Name))) {
@@ -293,12 +293,12 @@ namespace Mopsicus.Plugins {
         /// <summary>
         /// Handler to check data on focus change
         /// </summary>
-        private void OnApplicationPause (bool pauseStatus) {
+        private void OnApplicationPause(bool pauseStatus) {
             if (!pauseStatus) {
                 if (_data != null) {
-                    OnData (_data);
+                    OnData(_data);
                 } else if (_error != null) {
-                    OnError (_error);
+                    OnError(_error);
                 }
             }
         }
@@ -307,15 +307,15 @@ namespace Mopsicus.Plugins {
         /// Copy files from StreamingAssets to device path
         /// </summary>
         /// <param name="fileName">File name</param>
-        static void PrepareFontsAssets (string fileName) {
+        static void PrepareFontsAssets(string fileName) {
             string folder = Application.dataPath;
-            string filepath = string.Format ("{0}/{1}", Application.persistentDataPath, fileName);
+            string filepath = string.Format("{0}/{1}", Application.persistentDataPath, fileName);
 #if UNITY_EDITOR
-            string data = string.Format ("{0}/{1}", Application.streamingAssetsPath, fileName);
-            if (File.Exists (filepath)) {
-                File.Delete (filepath);
+            string data = string.Format("{0}/{1}", Application.streamingAssetsPath, fileName);
+            if (File.Exists(filepath)) {
+                File.Delete(filepath);
             }
-            File.Copy (data, filepath);
+            File.Copy(data, filepath);
 #elif UNITY_ANDROID
             using (UnityWebRequest www = UnityWebRequest.Get (string.Format ("jar:file://{0}!/assets/{1}", folder, fileName))) {
                 www.SendWebRequest ();
@@ -334,10 +334,10 @@ namespace Mopsicus.Plugins {
         /// <summary>
         /// Handler on app focus
         /// </summary>
-        void OnApplicationFocus (bool focusStatus) {
+        void OnApplicationFocus(bool focusStatus) {
             if (!focusStatus) {
                 foreach (var item in _instance._inputs.Values) {
-                    item.Hide ();
+                    item.Hide();
                 }
             }
         }
