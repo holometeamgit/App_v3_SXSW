@@ -6,8 +6,7 @@ using UnityEngine;
 /// This class starts the delay timer and
 /// returns at this moment that the button should not be interactive
 /// </summary>
-public class InteractionDelayBtnChecker : BtnInteractionRequirementChecker
-{
+public class InteractionDelayBtnChecker : BtnInteractionRequirementChecker {
     [SerializeField]
     float _delayAfterClick = 1;
 
@@ -18,7 +17,6 @@ public class InteractionDelayBtnChecker : BtnInteractionRequirementChecker
     protected override void OnEnable() {
         base.OnEnable();
         _btnController.OnPress.AddListener(StartDelayInteration);
-        _onRequirementsUpdated?.Invoke();
     }
 
     protected override void OnDisable() {
@@ -35,9 +33,9 @@ public class InteractionDelayBtnChecker : BtnInteractionRequirementChecker
 
     private IEnumerator InteractableDelay() {
         _canInteract = false;
-        _onRequirementsUpdated?.Invoke();
+        _onAvailableUpdated?.Invoke(_canInteract);
         yield return new WaitForSeconds(_delayAfterClick);
         _canInteract = true;
-        _onRequirementsUpdated?.Invoke();
+        _onAvailableUpdated?.Invoke(_canInteract);
     }
 }
