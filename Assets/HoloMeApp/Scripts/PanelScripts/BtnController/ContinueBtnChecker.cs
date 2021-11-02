@@ -21,7 +21,6 @@ public class ContinueBtnChecker : BtnInteractionRequirementChecker {
         SubscribesOnEndInputFields();
         SubscribesOnChangeToggles();
         CheckContinueBtnRequirements();
-        _onRequirementsUpdated?.Invoke();
     }
 
     protected override void OnDisable() {
@@ -39,8 +38,9 @@ public class ContinueBtnChecker : BtnInteractionRequirementChecker {
         bool prevCanInteract = _canInteract;
         _canInteract = IsInputFieldsFilled() && IsOnToggles();
 
-        if (_canInteract != prevCanInteract)
-            _onRequirementsUpdated?.Invoke();
+        if (_canInteract != prevCanInteract) {
+            _onAvailableUpdated?.Invoke(_canInteract);
+        }
     }
 
     private bool IsOnToggles() {
