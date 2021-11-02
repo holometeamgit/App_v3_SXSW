@@ -73,7 +73,7 @@ public class UIThumbnailV3 : UIThumbnail {
 
         if (thumbnailElement.Data.is_bought && thumbnailElement.Data.GetStage() == StreamJsonData.Data.Stage.Live) {
             Play();
-        }  else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
+        }  else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted && thumbnailElement.Data.HasStreamUrl) {
             Play();
         } else if (!thumbnailElement.Data.is_bought && !thumbnailElement.Data.HasTeaser) {
             Buy();
@@ -190,7 +190,9 @@ public class UIThumbnailV3 : UIThumbnail {
             txtInfoText.text = "This is a free event";
             if (thumbnailElement.Data.is_bought && thumbnailElement.Data.HasProduct)
                 txtInfoText.text = "Ticket purchased for event";
-                btnWatchNow.SetActive(true);
+                btnWatchNow.SetActive(thumbnailElement.Data.HasStreamUrl);
+                btnPlayTeaser.SetActive(!thumbnailElement.Data.HasStreamUrl && thumbnailElement.Data.HasTeaser);
+                btnShareEvent.SetActive(!thumbnailElement.Data.HasStreamUrl && !thumbnailElement.Data.HasTeaser);
         } else {
             txtInfoText.text = "Ticket purchased for event scheduled on " + thumbnailElement.Data.StartDate.ToString("ddd d MMM");
 
@@ -215,7 +217,7 @@ public class UIThumbnailV3 : UIThumbnail {
         if (!thumbnailElement.Data.is_bought) {
             rawImage.texture = thumbnailElement.teaserTexture ?? thumbnailElement.texture ?? defaultTexture;
         } else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
-            rawImage.texture = thumbnailElement.texture ?? defaultTexture;
+            rawImage.texture = thumbnailElement.texture ?? thumbnailElement.teaserTexture ?? defaultTexture;
         } else {
             rawImage.texture = thumbnailElement.teaserTexture ?? thumbnailElement.texture ?? defaultTexture;
         }
