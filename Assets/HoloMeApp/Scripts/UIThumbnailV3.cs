@@ -73,12 +73,12 @@ public class UIThumbnailV3 : UIThumbnail {
 
         if (thumbnailElement.Data.is_bought && thumbnailElement.Data.GetStage() == StreamJsonData.Data.Stage.Live) {
             Play();
-        } else if (!thumbnailElement.Data.is_bought && thumbnailElement.Data.HasTeaser) {
-            PlayTeaser();
-        } else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
+        }  else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted) {
             Play();
         } else if (!thumbnailElement.Data.is_bought && !thumbnailElement.Data.HasTeaser) {
             Buy();
+        } else if (thumbnailElement.Data.HasTeaser) {
+            PlayTeaser();
         }
     }
 
