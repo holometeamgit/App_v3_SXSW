@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Chat Message View
+/// </summary>
 public class ChatMessageView : MonoBehaviour {
     [SerializeField]
     private TMP_Text _userNameText;
@@ -28,6 +31,9 @@ public class ChatMessageView : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Delete Message
+    /// </summary>
     public void DestroyMessage() {
         gameObject.SetActive(false);
     }
