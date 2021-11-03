@@ -14,26 +14,35 @@ namespace Beem.Utility.UnityConsole {
 
         [Header("Show Last symbols")]
         [SerializeField]
-        private int characterLimit = 35000;
+        private int _characterLimit = 35000;
+        [Header("Subscribe on changing Log")]
+        [SerializeField]
+        private bool _subscribeOnRefreshLog = default;
 
         private TextMeshProUGUI _text = default;
 
         private void Awake() {
             _text = GetComponent<TextMeshProUGUI>();
-            Refresh();
         }
 
         private void OnEnable() {
-            LogData.onRefreshLog += Refresh;
+            Refresh();
+            LogData.onRefreshLog += RefreshOnSubscribe;
         }
 
         private void OnDisable() {
-            LogData.onRefreshLog -= Refresh;
+            LogData.onRefreshLog -= RefreshOnSubscribe;
+        }
+
+        private void RefreshOnSubscribe() {
+            if (_subscribeOnRefreshLog) {
+                Refresh();
+            }
         }
 
         private void Refresh() {
             int lenght = LogData.GetLog().Length;
-            string part = LogData.GetLog().Substring(Mathf.Max(lenght - characterLimit, 0));
+            string part = LogData.GetLog().Substring(Mathf.Max(lenght - _characterLimit, 0));
             _text.text = part;
         }
     }
