@@ -28,10 +28,12 @@ public abstract class BtnInteractionRequirementChecker : MonoBehaviour {
 
     protected virtual void OnEnable() {
         CheckBtnController();
+        _btnController.AddCheckInteractionRequirementListener(CheckRequirements);
         _onAvailableUpdated += _btnController.CheckInteractionRequirement;
     }
 
     protected virtual void OnDisable() {
+        _btnController.RemoveCheckInteractionRequirementListener(CheckRequirements);
         _onAvailableUpdated -= _btnController.CheckInteractionRequirement;
     }
 }
