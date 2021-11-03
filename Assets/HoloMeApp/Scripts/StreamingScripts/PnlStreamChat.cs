@@ -31,9 +31,6 @@ public class PnlStreamChat : AgoraMessageReceiver {
 
     Stack<GameObject> chatMessagePool = new Stack<GameObject>();
 
-    //[SerializeField]
-    //UnityEvent OnMessageRecieved; //For displaying notifications
-
     private void Awake() {
         agoraRTMChatController.AddMessageReceiver(this);
     }
@@ -44,7 +41,6 @@ public class PnlStreamChat : AgoraMessageReceiver {
 
     public void OnEnable() {
         StartRefreshLayoutRoutine();
-        //inputField.ActivateInputField();
     }
 
     public void SendChatMessage(string message) {
@@ -84,8 +80,7 @@ public class PnlStreamChat : AgoraMessageReceiver {
 
     private void CreateChatMessageGO(ChatMessageJsonData chatMessageJsonData) {
         var newMessageGO = GetChatMessage();
-        newMessageGO.transform.Find("txtUserName").GetComponent<TextMeshProUGUI>().text = chatMessageJsonData.userName;
-        newMessageGO.transform.Find("txtMessage").GetComponent<TextMeshProUGUI>().text = chatMessageJsonData.message;
+        newMessageGO.GetComponent<ChatMessageView>().TypeMessage(chatMessageJsonData.userName, chatMessageJsonData.message);
         OnMessageAdded?.Invoke();
     }
 
