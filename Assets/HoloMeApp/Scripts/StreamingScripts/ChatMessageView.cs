@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ChatMessageView : MonoBehaviour {
     [SerializeField]
@@ -17,7 +16,9 @@ public class ChatMessageView : MonoBehaviour {
     /// </summary>
     /// <param name="userName"></param>
     /// <param name="chatMessage"></param>
-    public void TypeMessage(string userName, string chatMessage) {
+    public void CreateMessage(string userName, string chatMessage) {
+        gameObject.SetActive(true);
+
         if (_userNameText != null) {
             _userNameText.text = userName;
         }
@@ -25,5 +26,9 @@ public class ChatMessageView : MonoBehaviour {
         if (_tmpChatMessageText != null) {
             _tmpChatMessageText.text = chatMessage;
         }
+    }
+
+    public void DestroyMessage() {
+        gameObject.SetActive(false);
     }
 }
