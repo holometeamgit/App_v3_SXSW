@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class ContinueBtnChecker : BtnInteractionRequirementChecker {
     [SerializeField]
     [Tooltip("This inputFields must be filled for enable btn")]
-    private List <InputFieldController> _filledInputFieldControllers;
+    private List<InputFieldController> _filledInputFieldControllers;
 
     [SerializeField]
     [Tooltip("This toggles must be is On for enable btn")]
@@ -21,7 +21,6 @@ public class ContinueBtnChecker : BtnInteractionRequirementChecker {
         SubscribesOnEndInputFields();
         SubscribesOnChangeToggles();
         CheckContinueBtnRequirements();
-        _onRequirementsUpdated?.Invoke();
     }
 
     protected override void OnDisable() {
@@ -39,8 +38,9 @@ public class ContinueBtnChecker : BtnInteractionRequirementChecker {
         bool prevCanInteract = _canInteract;
         _canInteract = IsInputFieldsFilled() && IsOnToggles();
 
-        if(_canInteract != prevCanInteract)
-            _onRequirementsUpdated?.Invoke();
+        if (_canInteract != prevCanInteract) {
+            _onAvailableUpdated?.Invoke(_canInteract);
+        }
     }
 
     private bool IsOnToggles() {
@@ -62,14 +62,16 @@ public class ContinueBtnChecker : BtnInteractionRequirementChecker {
     }
 
     private void SubscribesOnEndInputFields() {
-        foreach(var inputField in _filledInputFieldControllers) {
+        foreach (var inputField in _filledInputFieldControllers) {
             inputField.onValueChanged.AddListener(CheckContinueBtnRequirements);
+            inputField.OnEndEditPassword.AddListener(CheckContinueBtnRequirements);
         }
     }
 
     private void DescribesOnEndInputFields() {
         foreach (var inputField in _filledInputFieldControllers) {
             inputField.onValueChanged.RemoveListener(CheckContinueBtnRequirements);
+            inputField.OnEndEditPassword.RemoveListener(CheckContinueBtnRequirements);
         }
     }
 
