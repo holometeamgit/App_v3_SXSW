@@ -15,7 +15,7 @@ public class PnlStreamChat : AgoraMessageReceiver {
     AgoraRTMChatController agoraRTMChatController;
 
     [SerializeField]
-    GameObject chatMessagePrefabRef;
+    ChatMessageView chatMessagePrefabRef;
 
     [SerializeField]
     RectTransform Content;
@@ -29,10 +29,7 @@ public class PnlStreamChat : AgoraMessageReceiver {
     [SerializeField]
     private UnityEvent OnMessageAdded;
 
-    Stack<GameObject> chatMessagePool = new Stack<GameObject>();
-
-    //[SerializeField]
-    //UnityEvent OnMessageRecieved; //For displaying notifications
+    Stack<ChatMessageView> chatMessagePool = new Stack<ChatMessageView>();
 
     private void Awake() {
         agoraRTMChatController.AddMessageReceiver(this);
@@ -44,7 +41,6 @@ public class PnlStreamChat : AgoraMessageReceiver {
 
     public void OnEnable() {
         StartRefreshLayoutRoutine();
-        //inputField.ActivateInputField();
     }
 
     public void SendChatMessage(string message) {
@@ -84,36 +80,33 @@ public class PnlStreamChat : AgoraMessageReceiver {
 
     private void CreateChatMessageGO(ChatMessageJsonData chatMessageJsonData) {
         var newMessageGO = GetChatMessage();
-        newMessageGO.transform.Find("txtUserName").GetComponent<TextMeshProUGUI>().text = chatMessageJsonData.userName;
-        newMessageGO.transform.Find("txtMessage").GetComponent<TextMeshProUGUI>().text = chatMessageJsonData.message;
+        newMessageGO.CreateMessage(chatMessageJsonData.userName, chatMessageJsonData.message);
         OnMessageAdded?.Invoke();
     }
 
-    private GameObject GetChatMessage() {
+    private ChatMessageView GetChatMessage() {
         if (chatMessagePool.Count == 0) {
             return Instantiate(chatMessagePrefabRef, Content, false);
         } else {
             var returnObject = chatMessagePool.Pop();
             returnObject.GetComponent<RectTransform>().SetAsLastSibling();
-            returnObject.SetActive(true);
             return returnObject;
         }
     }
 
-    private void ReturnChatMessageToPool(GameObject message) {
+    private void ReturnChatMessageToPool(ChatMessageView message) {
         if (!chatMessagePool.Contains(message))//This is neccessary for now to add messages back if the user doesn't go online but posts in the chat it stops duplicate entries
         {
             chatMessagePool.Push(message);
-            message.gameObject.SetActive(false);
+            message.DestroyMessage();
         }
     }
 
     public override void OnDisconnected() {
-        for (int i = 0; i < Content.childCount; i++) {
-            ReturnChatMessageToPool(Content.GetChild(i).gameObject);
-        }
 
-        //print("CHAT MESSAGE POOL COUNT = " + chatMessagePool.Count);
+        foreach (ChatMessageView item in chatMessagePool) {
+            ReturnChatMessageToPool(item);
+        }
 
         GetComponent<AnimatedTransition>()?.DoMenuTransition(false);
     }
