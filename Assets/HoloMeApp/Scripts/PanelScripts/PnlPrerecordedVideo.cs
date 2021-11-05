@@ -24,6 +24,8 @@ public class PnlPrerecordedVideo : MonoBehaviour {
 
     private StreamJsonData.Data _streamData = default;
 
+    private bool newDataAssigned = false;
+
     private bool isPinned = false;
 
     private PurchaseManager _purchaseManager;
@@ -55,6 +57,7 @@ public class PnlPrerecordedVideo : MonoBehaviour {
     /// </summary>
     /// <param name="streamID"></param>
     public void Init(StreamJsonData.Data streamData) {
+        newDataAssigned = true;
         _streamData = streamData;
         if (isPinned) {
             Refresh();
@@ -77,6 +80,9 @@ public class PnlPrerecordedVideo : MonoBehaviour {
     }
 
     private void Refresh() {
+        if (!newDataAssigned) {
+            return;
+        }
         isPinned = true;
         _videoView.SetActive(_streamData.IsStarted && _streamData.is_bought);
         _purchaseView.SetActive(!_streamData.is_bought);
@@ -88,6 +94,7 @@ public class PnlPrerecordedVideo : MonoBehaviour {
     }
 
     private void OnDisable() {
+        newDataAssigned = false;
         Deactivate();
         if (purchaseManager != null) {
             purchaseManager.OnPurchaseSuccessful -= Refresh;
