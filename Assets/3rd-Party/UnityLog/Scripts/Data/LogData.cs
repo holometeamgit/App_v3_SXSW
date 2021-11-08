@@ -14,6 +14,8 @@ namespace Beem.Utility.UnityConsole {
 
         private static bool _isStackTraceStatus = default;
 
+        private static bool _isUpdatable = true;
+
         private static string _inputKeys = default;
 
         private static ILog _ILog = new LocalLog();
@@ -91,6 +93,14 @@ namespace Beem.Utility.UnityConsole {
         }
 
         /// <summary>
+        /// Set Refreshable
+        /// </summary>
+        public static void SetUpdatable(bool status) {
+            _isUpdatable = status;
+            onRefreshLog?.Invoke();
+        }
+
+        /// <summary>
         /// Log Type
         /// </summary>
         public static LogType LogTypeData {
@@ -146,17 +156,19 @@ namespace Beem.Utility.UnityConsole {
         /// <param name="log"></param>
         /// <param name="stackTrace"></param>
         public static void AddLog(string log, string stackTrace, LogType logType, string tag = "All") {
-            UnityLog unityLog = new UnityLog {
-                Tag = tag,
-                Key = logType,
-                Value = log,
-                Date = DateTime.Now,
-                StackTrace = stackTrace
-            };
-            SetLogNumber(logType, GetLogNumber(logType) + 1);
-            SaveLogs(unityLog);
-            _log.Add(unityLog);
-            onRefreshLog?.Invoke();
+            if (_isUpdatable) {
+                UnityLog unityLog = new UnityLog {
+                    Tag = tag,
+                    Key = logType,
+                    Value = log,
+                    Date = DateTime.Now,
+                    StackTrace = stackTrace
+                };
+                SetLogNumber(logType, GetLogNumber(logType) + 1);
+                SaveLogs(unityLog);
+                _log.Add(unityLog);
+                onRefreshLog?.Invoke();
+            }
         }
 
         /// <summary>
