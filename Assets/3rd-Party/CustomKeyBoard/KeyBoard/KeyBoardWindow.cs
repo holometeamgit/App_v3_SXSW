@@ -70,9 +70,9 @@ namespace Beem.KeyBoard {
             if (isShown) {
                 UpdateText();
                 _returnBtn.onClick.AddListener(Return);
-                MobileInputField.OnReturnPressedEvent.AddListener(Return);
-                InputField.onValueChanged.AddListener((text) => { UpdateText(text); onChangeEvent?.Invoke(text); });
-                InputField.onEndEdit.AddListener((text) => { submitEvent?.Invoke(text); Return(); });
+                MobileInputField.OnReturnPressedEvent.AddListener(() => { InputField.onEndEdit?.Invoke(InputField.text); Debug.LogError("RETURN"); });
+                InputField.onValueChanged.AddListener((text) => { UpdateText(text); onChangeEvent?.Invoke(text); Debug.LogError("onValueChanged"); });
+                InputField.onEndEdit.AddListener((text) => { submitEvent?.Invoke(text); Return(); Debug.LogError("onEndEdit"); });
             } else {
                 _returnBtn.onClick.RemoveAllListeners();
                 MobileInputField.OnReturnPressedEvent.RemoveAllListeners();

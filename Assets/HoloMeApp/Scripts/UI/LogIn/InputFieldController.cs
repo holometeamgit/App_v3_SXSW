@@ -62,7 +62,7 @@ public class InputFieldController : MonoBehaviour {
     private void Awake() {
         inputField.onEndEdit.AddListener(DoOnEndEditPassword);
         inputField.onValueChanged.AddListener(OnValueChanged);
-        _mobileInputField.OnReturnPressedEvent.AddListener(() => DoOnEndEditPassword());
+        _mobileInputField.OnReturnPressedEvent.AddListener(OnReturn);
         if (isEmail) {
             inputField.contentType = InputField.ContentType.EmailAddress;
         }
@@ -151,10 +151,14 @@ public class InputFieldController : MonoBehaviour {
         onValueChanged.Invoke();
     }
 
+    private void OnReturn() {
+        inputField.onEndEdit?.Invoke(inputField.text);
+    }
+
     private void OnDestroy() {
         inputField.onEndEdit.RemoveListener(DoOnEndEditPassword);
         inputField.onValueChanged.RemoveListener(OnValueChanged);
-        _mobileInputField.OnReturnPressedEvent.RemoveListener(() => DoOnEndEditPassword());
+        _mobileInputField.OnReturnPressedEvent.RemoveListener(OnReturn);
     }
 
     private void OnDisable() {
