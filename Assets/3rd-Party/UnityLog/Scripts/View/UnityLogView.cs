@@ -16,8 +16,6 @@ namespace Beem.Utility.UnityConsole {
         [SerializeField]
         private int _characterLimit = 35000;
         [Header("Subscribe on changing Log")]
-        [SerializeField]
-        private bool _subscribeOnRefreshLog = default;
 
         private TextMeshProUGUI _text = default;
 
@@ -27,17 +25,13 @@ namespace Beem.Utility.UnityConsole {
 
         private void OnEnable() {
             Refresh();
-            LogData.onRefreshLog += RefreshOnSubscribe;
+            LogData.SetUpdatable(false);
+            LogData.onRefreshLog += Refresh;
         }
 
         private void OnDisable() {
-            LogData.onRefreshLog -= RefreshOnSubscribe;
-        }
-
-        private void RefreshOnSubscribe() {
-            if (_subscribeOnRefreshLog) {
-                Refresh();
-            }
+            LogData.SetUpdatable(true);
+            LogData.onRefreshLog -= Refresh;
         }
 
         private void Refresh() {
