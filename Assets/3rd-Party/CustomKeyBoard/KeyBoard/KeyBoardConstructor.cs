@@ -17,8 +17,6 @@ namespace Beem.KeyBoard {
 
         private UITextField _currentUITextField;
         private KeyBoardSettings _inputSettings;
-        private InputField.OnChangeEvent _currentOnChangeEvent;
-        private InputField.SubmitEvent _currentSubmitEvent;
 
         private void Awake() {
             Construct();
@@ -30,31 +28,7 @@ namespace Beem.KeyBoard {
         }
 
         private void Show(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
-
-            _keyBoardWindow.Show(isShown);
-
-            if (isShown) {
-                _currentOnChangeEvent = onChangeEvent;
-                _currentSubmitEvent = submitEvent;
-
-                if (_currentOnChangeEvent != null) {
-                    _keyBoardWindow.InputField.onValueChanged.AddListener(EventChanged);
-                }
-                if (_currentSubmitEvent != null) {
-                    _keyBoardWindow.InputField.onEndEdit.AddListener(EventSubmit);
-                }
-            } else {
-                if (_currentOnChangeEvent != null) {
-                    _keyBoardWindow.InputField.onValueChanged.RemoveListener(EventChanged);
-                }
-                if (_currentSubmitEvent != null) {
-                    _keyBoardWindow.InputField.onEndEdit.RemoveListener(EventSubmit);
-                }
-
-                _currentOnChangeEvent = null;
-                _currentSubmitEvent = null;
-            }
-
+            _keyBoardWindow.Show(isShown, onChangeEvent, submitEvent);
         }
 
         private void ShowWithoutField(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
@@ -103,14 +77,6 @@ namespace Beem.KeyBoard {
             _keyBoardWindow.InputField.characterValidation = _inputSettings.CharacterValidation;
             _keyBoardWindow.InputField.characterLimit = _inputSettings.CharacterLimit;
             _currentUITextField = null;
-        }
-
-        private void EventChanged(string text) {
-            _currentOnChangeEvent?.Invoke(text);
-        }
-
-        private void EventSubmit(string text) {
-            _currentSubmitEvent?.Invoke(text);
         }
 
         private void OnDestroy() {
