@@ -13,17 +13,17 @@ namespace Beem.KeyBoard {
         private float _baseShift = 50;
         [SerializeField]
         private float _baseHeight = 165;
-        [SerializeField]
-        private int _maxCharInLine = 26;
 
         public override void RefreshData(InputField inputField) {
             Vector2 size = _rectTransform.sizeDelta;
-            size.y = _baseHeight + _baseShift * GetLineCount(inputField.text, _maxCharInLine);
+
+            size.y = _baseHeight + _baseShift * GetLineCount(inputField.textComponent);
             _rectTransform.sizeDelta = size;
         }
 
-        private int GetLineCount(string text, int maxCharInLine) {
-            return Mathf.FloorToInt((float)text.Length / (float)maxCharInLine);
+        private int GetLineCount(Text text) {
+            Canvas.ForceUpdateCanvases();
+            return text.cachedTextGenerator.lines.Count;
         }
 
     }
