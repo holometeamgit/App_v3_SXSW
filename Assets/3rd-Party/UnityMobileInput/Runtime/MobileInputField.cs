@@ -189,6 +189,8 @@ namespace Mopsicus.Plugins {
         /// </summary>
         const string READY = "READY";
 
+        private Action onReady;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -215,6 +217,8 @@ namespace Mopsicus.Plugins {
         private void OnEnable() {
             if (_isMobileInputCreated) {
                 this.SetVisible(true);
+            } else {
+                onReady += () => this.SetVisible(true);
             }
         }
 
@@ -225,6 +229,7 @@ namespace Mopsicus.Plugins {
             if (_isMobileInputCreated) {
                 this.SetFocus(false);
                 this.SetVisible(false);
+                onReady -= () => this.SetVisible(true);
             }
         }
 
@@ -369,7 +374,11 @@ namespace Mopsicus.Plugins {
             _config.TextColor = _inputObjectText.color;
             _config.Align = _inputObjectText.alignment.ToString();
             _config.ContentType = _inputObject.contentType.ToString();
-            _config.BackgroundColor = _inputObject.colors.normalColor;
+
+            Color backgroundColor = _inputObject.colors.normalColor;
+            backgroundColor.a = 0;
+            _config.BackgroundColor = backgroundColor;
+
             _config.Multiline = (_inputObject.lineType == InputField.LineType.SingleLine) ? false : true;
             _config.KeyboardType = _inputObject.keyboardType.ToString();
             _config.InputType = _inputObject.inputType.ToString();
@@ -518,6 +527,8 @@ namespace Mopsicus.Plugins {
             if (_isFocusOnCreate) {
                 SetFocus(true);
             }
+
+            onReady?.Invoke();
         }
 
         /// <summary>

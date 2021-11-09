@@ -67,12 +67,13 @@ namespace Beem.KeyBoard {
         public void Show(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
             gameObject.SetActive(isShown);
             MobileInputField.SetFocus(isShown);
+
             if (isShown) {
                 UpdateText();
                 _returnBtn.onClick.AddListener(() => { InputField.onEndEdit?.Invoke(InputField.text); });
                 MobileInputField.OnReturnPressedEvent.AddListener(() => { InputField.onEndEdit?.Invoke(InputField.text); });
                 InputField.onValueChanged.AddListener((text) => { UpdateText(text); onChangeEvent?.Invoke(text); });
-                InputField.onEndEdit.AddListener((text) => { submitEvent?.Invoke(text); Return(); });
+                InputField.onEndEdit.AddListener((text) => { submitEvent?.Invoke(text); Return(); MobileInputField.SetVisible(false); });
             } else {
                 _returnBtn.onClick.RemoveAllListeners();
                 MobileInputField.OnReturnPressedEvent.RemoveAllListeners();
