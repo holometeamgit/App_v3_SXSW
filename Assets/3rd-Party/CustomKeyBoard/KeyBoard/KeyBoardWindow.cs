@@ -13,6 +13,9 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private MobileInputField _mobileInputField;
 
+        [SerializeField]
+        private Button _returnBtn;
+
         public MobileInputField MobileInputField {
             get {
                 return _mobileInputField;
@@ -40,20 +43,11 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private List<AbstractKeyBoardSettings> _inputFieldSettings = new List<AbstractKeyBoardSettings>();
 
-        private void OnEnable() {
-            UpdateText();
-            InputField.onValueChanged.AddListener(UpdateText);
-        }
-
         /// <summary>
         /// Return button
         /// </summary>
         public void Return() {
             KeyBoardConstructor.onShow?.Invoke(false, null, null);
-        }
-
-        private void OnDisable() {
-            InputField.onValueChanged.RemoveListener(UpdateText);
         }
 
         /// <summary>
@@ -70,9 +64,22 @@ namespace Beem.KeyBoard {
         /// Show Window
         /// </summary>
         /// <param name="isShown"></param>
-        public void Show(bool isShown) {
+        public void Show(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
             gameObject.SetActive(isShown);
             MobileInputField.SetFocus(isShown);
+
+            if (isShown) {
+                UpdateText();
+                _returnBtn.onClick.AddListener(() => { InputField.onEndEdit?.Invoke(InputField.text); });
+                MobileInputField.OnReturnPressedEvent.AddListener(() => { InputField.onEndEdit?.Invoke(InputField.text); });
+                InputField.onValueChanged.AddListener((text) => { UpdateText(text); onChangeEvent?.Invoke(text); });
+                InputField.onEndEdit.AddListener((text) => { submitEvent?.Invoke(text); Return(); MobileInputField.SetVisible(false); });
+            } else {
+                _returnBtn.onClick.RemoveAllListeners();
+                MobileInputField.OnReturnPressedEvent.RemoveAllListeners();
+                InputField.onValueChanged.RemoveAllListeners();
+                InputField.onEndEdit.RemoveAllListeners();
+            }
         }
     }
 }
