@@ -34,6 +34,7 @@ namespace Beem.KeyBoard {
                 currentWidth += size.x;
                 if (currentWidth >= textTranform.sizeDelta.x) {
                     currentHeight = _baseShift * (Mathf.FloorToInt(currentWidth / textTranform.sizeDelta.x));
+                    currentWidth = size.x;
                     isChangedSize = true;
                 }
             }
