@@ -14,6 +14,9 @@ namespace Beem.KeyBoard {
         private MobileInputField _mobileInputField;
 
         [SerializeField]
+        private KeyBoardPositionView _keyBoardPositionView;
+
+        [SerializeField]
         private Button _returnBtn;
 
         [SerializeField]
@@ -74,11 +77,16 @@ namespace Beem.KeyBoard {
 
             if (isShown) {
                 UpdateText();
+                _keyBoardPositionView.UpdatePosition();
                 _returnBtn.onClick.AddListener(() => {
                     submitEvent?.Invoke(InputField.text);
                     Return();
                 });
                 _closeBtn.onClick.AddListener(() => {
+                    Return();
+                });
+                MobileInputField.OnReturnPressedEvent.AddListener(() => {
+                    submitEvent?.Invoke(InputField.text);
                     Return();
                 });
                 InputField.onValueChanged.AddListener((text) => {
@@ -89,6 +97,7 @@ namespace Beem.KeyBoard {
                 _closeBtn.onClick.RemoveAllListeners();
                 _returnBtn.onClick.RemoveAllListeners();
                 InputField.onValueChanged.RemoveAllListeners();
+                MobileInputField.OnReturnPressedEvent.RemoveAllListeners();
             }
         }
     }

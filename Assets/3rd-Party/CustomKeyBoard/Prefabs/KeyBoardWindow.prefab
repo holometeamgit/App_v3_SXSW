@@ -287,6 +287,7 @@ GameObject:
   - component: {fileID: 1992349238826754353}
   - component: {fileID: 1992349238826754352}
   - component: {fileID: 1992349238826754364}
+  - component: {fileID: 6487636502767989428}
   m_Layer: 5
   m_Name: InputFieldBackground
   m_TagString: Untagged
@@ -370,6 +371,21 @@ MonoBehaviour:
   _rectTransform: {fileID: 1992349238826754355}
   _baseShift: 60
   _baseHeight: 200
+--- !u!114 &6487636502767989428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992349238826754354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f5a8a8dc85d06b4dae0a392a3b1cd55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rectTransform: {fileID: 1992349238826754355}
+  keyBoardHeightiOS: 830
+  keyBoardHeightAndroid: 730
 --- !u!1 &1992349239379826083
 GameObject:
   m_ObjectHideFlags: 0
@@ -975,6 +991,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mobileInputField: {fileID: 1992349239584221152}
+  _keyBoardPositionView: {fileID: 6487636502767989428}
   _returnBtn: {fileID: 1992349239379826081}
   _closeBtn: {fileID: 3540881686836027702}
   _inputField: {fileID: 1992349239584221154}

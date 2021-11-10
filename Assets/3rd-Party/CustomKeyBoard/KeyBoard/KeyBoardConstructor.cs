@@ -25,6 +25,14 @@ namespace Beem.KeyBoard {
         private void Construct() {
             onShow += ShowWithoutField;
             onUITextShow += ShowWithField;
+            MobileInput.OnShowKeyboard += OnShowKeyboard;
+        }
+
+        private void OnShowKeyboard(bool isShow, int height) {
+            Debug.LogError($"Status = {isShow}, Height = {height}");
+            if (!isShow) {
+                onShow?.Invoke(false, null, null);
+            }
         }
 
         private void Show(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
@@ -82,6 +90,7 @@ namespace Beem.KeyBoard {
         private void OnDestroy() {
             onShow -= ShowWithoutField;
             onUITextShow -= ShowWithField;
+            MobileInput.OnShowKeyboard -= OnShowKeyboard;
         }
     }
 }
