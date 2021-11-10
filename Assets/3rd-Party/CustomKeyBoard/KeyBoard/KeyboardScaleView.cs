@@ -1,3 +1,4 @@
+using Mopsicus.Plugins;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +15,7 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private float _baseHeight = 165;
 
-        private const float EPSILON = 0.1f;
+        private bool isChangedSize = false;
 
         public override void RefreshData(InputField inputField) {
             var x = new GUIStyle {
@@ -22,6 +23,8 @@ namespace Beem.KeyBoard {
                 fontSize = inputField.textComponent.fontSize
             };
             var textTranform = inputField.textComponent.GetComponent<RectTransform>();
+            var mobileInputField = inputField.GetComponent<MobileInputField>();
+
             var words = inputField.text.Split(' ');
             var currentWidth = 0f;
             var currentHeight = 0f;
@@ -31,11 +34,17 @@ namespace Beem.KeyBoard {
                 currentWidth += size.x;
                 if (currentWidth >= textTranform.sizeDelta.x) {
                     currentHeight = _baseShift * (Mathf.FloorToInt(currentWidth / textTranform.sizeDelta.x));
+                    isChangedSize = true;
                 }
             }
 
             _rectTransform.sizeDelta = new Vector2(_rectTransform.sizeDelta.x, _baseHeight + currentHeight);
             textTranform.sizeDelta = new Vector2(textTranform.sizeDelta.x, _baseShift + currentHeight);
+
+            if (isChangedSize) {
+                isChangedSize = false;
+                mobileInputField.SetRectNative(textTranform);
+            }
         }
 
     }
