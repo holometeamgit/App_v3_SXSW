@@ -14,7 +14,15 @@ namespace Beem.KeyBoard {
         private MobileInputField _mobileInputField;
 
         [SerializeField]
+        private KeyBoardPositionView _keyBoardPositionView;
+
+        [SerializeField]
         private Button _returnBtn;
+
+        [SerializeField]
+        private Button _closeBtn;
+
+        private bool _isShown = false;
 
         public MobileInputField MobileInputField {
             get {
@@ -43,6 +51,7 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private List<AbstractKeyBoardSettings> _inputFieldSettings = new List<AbstractKeyBoardSettings>();
 
+
         /// <summary>
         /// Return button
         /// </summary>
@@ -60,25 +69,54 @@ namespace Beem.KeyBoard {
             }
         }
 
+        private void OnApplicationPause(bool pause) {
+            if (pause && _isShown) {
+                Return();
+            }
+        }
+
         /// <summary>
         /// Show Window
         /// </summary>
         /// <param name="isShown"></param>
-        public void Show(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
+        public void Show(bool isShown, int height, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
             gameObject.SetActive(isShown);
             MobileInputField.SetFocus(isShown);
 
+            _isShown = isShown;
+
             if (isShown) {
                 UpdateText();
-                _returnBtn.onClick.AddListener(() => { InputField.onEndEdit?.Invoke(InputField.text); });
-                MobileInputField.OnReturnPressedEvent.AddListener(() => { InputField.onEndEdit?.Invoke(InputField.text); });
-                InputField.onValueChanged.AddListener((text) => { UpdateText(text); onChangeEvent?.Invoke(text); });
-                InputField.onEndEdit.AddListener((text) => { submitEvent?.Invoke(text); Return(); MobileInputField.SetVisible(false); });
+                _keyBoardPositionView.UpdatePosition();
+                _returnBtn.onClick.AddListener(() => {
+                    string text = InputField.text;
+                    if (InputField.characterLimit == 0) {
+                        submitEvent?.Invoke(text);
+                    } else {
+                        string customText = text.Substring(0, Mathf.Min(InputField.characterLimit, text.Length));
+                        submitEvent?.Invoke(customText);
+                    }
+                    Return();
+                });
+                _closeBtn.onClick.AddListener(() => {
+                    Return();
+                });
+                MobileInputField.OnReturnPressedEvent.AddListener(() => {
+                    submitEvent?.Invoke(InputField.text);
+                    Return();
+                });
+                InputField.onValueChanged.AddListener((text) => {
+                    UpdateText(text);
+                    onChangeEvent?.Invoke(text);
+                    if (text.Contains("\n")) {
+                        _returnBtn.onClick?.Invoke();
+                    }
+                });
             } else {
+                _closeBtn.onClick.RemoveAllListeners();
                 _returnBtn.onClick.RemoveAllListeners();
-                MobileInputField.OnReturnPressedEvent.RemoveAllListeners();
                 InputField.onValueChanged.RemoveAllListeners();
-                InputField.onEndEdit.RemoveAllListeners();
+                MobileInputField.OnReturnPressedEvent.RemoveAllListeners();
             }
         }
     }
