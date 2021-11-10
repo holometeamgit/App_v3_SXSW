@@ -480,7 +480,6 @@ namespace Mopsicus.Plugins {
             data["width"] = InvariantCultureString(rect.width / Screen.width);
             data["height"] = InvariantCultureString(rect.height / Screen.height);
             data["character_limit"] = _config.CharacterLimit;
-            Debug.LogError("data[character_limit] = " + data["character_limit"]);
             data["text_color_r"] = InvariantCultureString(_config.TextColor.r);
             data["text_color_g"] = InvariantCultureString(_config.TextColor.g);
             data["text_color_b"] = InvariantCultureString(_config.TextColor.b);
