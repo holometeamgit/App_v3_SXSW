@@ -44,7 +44,6 @@ namespace Beem.KeyBoard {
 
             if (isChangedSize) {
                 isChangedSize = false;
-                mobileInputField.SetRectNative(textTranform);
             }
         }
 

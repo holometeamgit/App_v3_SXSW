@@ -103,12 +103,9 @@ public class PnlStreamChat : AgoraMessageReceiver {
     }
 
     public override void OnDisconnected() {
-
         foreach (ChatMessageView item in chatMessagePool) {
             ReturnChatMessageToPool(item);
         }
-
-        GetComponent<AnimatedTransition>()?.DoMenuTransition(false);
     }
 
     void StartRefreshLayoutRoutine() {
