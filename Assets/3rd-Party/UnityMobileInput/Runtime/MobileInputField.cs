@@ -276,8 +276,15 @@ namespace Mopsicus.Plugins {
                 return _inputObject.text;
             }
             set {
-                _inputObject.text = value;
-                SetTextNative(value);
+
+                if (_inputObject.characterLimit == 0) {
+                    _inputObject.text = value;
+                    SetTextNative(value);
+                } else {
+                    string customValue = value.Substring(0, Mathf.Min(_inputObject.characterLimit, value.Length));
+                    _inputObject.text = customValue;
+                    SetTextNative(customValue);
+                }
             }
         }
 
