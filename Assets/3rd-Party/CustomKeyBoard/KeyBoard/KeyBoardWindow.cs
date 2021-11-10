@@ -22,6 +22,8 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private Button _closeBtn;
 
+        private bool _isShown = false;
+
         public MobileInputField MobileInputField {
             get {
                 return _mobileInputField;
@@ -67,19 +69,33 @@ namespace Beem.KeyBoard {
             }
         }
 
+        private void OnApplicationPause(bool pause) {
+            if (pause && _isShown) {
+                Return();
+            }
+        }
+
         /// <summary>
         /// Show Window
         /// </summary>
         /// <param name="isShown"></param>
-        public void Show(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
+        public void Show(bool isShown, int height, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
             gameObject.SetActive(isShown);
             MobileInputField.SetFocus(isShown);
+
+            _isShown = isShown;
 
             if (isShown) {
                 UpdateText();
                 _keyBoardPositionView.UpdatePosition();
                 _returnBtn.onClick.AddListener(() => {
-                    submitEvent?.Invoke(InputField.text);
+                    string text = InputField.text;
+                    if (InputField.characterLimit == 0) {
+                        submitEvent?.Invoke(text);
+                    } else {
+                        string customText = text.Substring(0, Mathf.Min(InputField.characterLimit, text.Length));
+                        submitEvent?.Invoke(customText);
+                    }
                     Return();
                 });
                 _closeBtn.onClick.AddListener(() => {
@@ -92,6 +108,9 @@ namespace Beem.KeyBoard {
                 InputField.onValueChanged.AddListener((text) => {
                     UpdateText(text);
                     onChangeEvent?.Invoke(text);
+                    if (text.Contains("\n")) {
+                        _returnBtn.onClick?.Invoke();
+                    }
                 });
             } else {
                 _closeBtn.onClick.RemoveAllListeners();

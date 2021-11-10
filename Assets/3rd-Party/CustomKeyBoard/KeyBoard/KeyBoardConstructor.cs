@@ -17,6 +17,7 @@ namespace Beem.KeyBoard {
 
         private UITextField _currentUITextField;
         private KeyBoardSettings _inputSettings;
+        private int _height;
 
         private void Awake() {
             Construct();
@@ -28,15 +29,12 @@ namespace Beem.KeyBoard {
             MobileInput.OnShowKeyboard += OnShowKeyboard;
         }
 
-        private void OnShowKeyboard(bool isShow, int height) {
-            Debug.LogError($"Status = {isShow}, Height = {height}");
-            if (!isShow) {
-                onShow?.Invoke(false, null, null);
-            }
+        private void OnShowKeyboard(bool isShown, int height) {
+            _height = height;
         }
 
         private void Show(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
-            _keyBoardWindow.Show(isShown, onChangeEvent, submitEvent);
+            _keyBoardWindow.Show(isShown, _height, onChangeEvent, submitEvent);
         }
 
         private void ShowWithoutField(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {

@@ -23,6 +23,14 @@ namespace Beem.KeyBoard {
 
         }
 
+        /// <summary>
+        /// Update keyboard position
+        /// </summary>
+        /// <param name="height"></param>
+        public void UpdatePosition(int height) {
+            ChangePosition(height);
+        }
+
         private void ChangePosition(float height) {
             float _basePosition = height;
             Vector2 position = _rectTransform.anchoredPosition;
