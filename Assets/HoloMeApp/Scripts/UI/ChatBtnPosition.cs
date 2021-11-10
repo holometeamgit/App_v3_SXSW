@@ -26,9 +26,17 @@ public class ChatBtnPosition : MonoBehaviour {
     /// </summary>
     public void UpdatePosition() {
 
+        int activeChildCount = 0;
+
+        for (int i = 0; i < contentContainer.childCount; i++) {
+            if (contentContainer.transform.GetChild(i).gameObject.activeInHierarchy) {
+                activeChildCount++;
+            }
+        }
+
         Vector3 position = transform.localPosition;
 
-        position.y = basePosition.y + SHIFT * Mathf.Min(contentContainer.childCount, MAX_COUNT);
+        position.y = basePosition.y + SHIFT * Mathf.Min(activeChildCount, MAX_COUNT);
 
         transform.localPosition = position;
 
