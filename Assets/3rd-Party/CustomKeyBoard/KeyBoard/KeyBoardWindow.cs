@@ -16,6 +16,9 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private Button _returnBtn;
 
+        [SerializeField]
+        private Button _closeBtn;
+
         public MobileInputField MobileInputField {
             get {
                 return _mobileInputField;
@@ -42,6 +45,7 @@ namespace Beem.KeyBoard {
 
         [SerializeField]
         private List<AbstractKeyBoardSettings> _inputFieldSettings = new List<AbstractKeyBoardSettings>();
+
 
         /// <summary>
         /// Return button
@@ -70,15 +74,21 @@ namespace Beem.KeyBoard {
 
             if (isShown) {
                 UpdateText();
-                _returnBtn.onClick.AddListener(() => { InputField.onEndEdit?.Invoke(InputField.text); });
-                MobileInputField.OnReturnPressedEvent.AddListener(() => { InputField.onEndEdit?.Invoke(InputField.text); });
-                InputField.onValueChanged.AddListener((text) => { UpdateText(text); onChangeEvent?.Invoke(text); });
-                InputField.onEndEdit.AddListener((text) => { submitEvent?.Invoke(text); Return(); MobileInputField.SetVisible(false); });
+                _returnBtn.onClick.AddListener(() => {
+                    submitEvent?.Invoke(InputField.text);
+                    Return();
+                });
+                _closeBtn.onClick.AddListener(() => {
+                    Return();
+                });
+                InputField.onValueChanged.AddListener((text) => {
+                    UpdateText(text);
+                    onChangeEvent?.Invoke(text);
+                });
             } else {
+                _closeBtn.onClick.RemoveAllListeners();
                 _returnBtn.onClick.RemoveAllListeners();
-                MobileInputField.OnReturnPressedEvent.RemoveAllListeners();
                 InputField.onValueChanged.RemoveAllListeners();
-                InputField.onEndEdit.RemoveAllListeners();
             }
         }
     }
