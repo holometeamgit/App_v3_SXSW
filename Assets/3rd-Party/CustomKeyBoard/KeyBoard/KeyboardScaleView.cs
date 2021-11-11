@@ -1,4 +1,7 @@
 using Mopsicus.Plugins;
+using System.Collections;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,39 +14,51 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private RectTransform _rectTransform;
         [SerializeField]
-        private float _baseShift = 50;
-        [SerializeField]
         private float _baseHeight = 165;
+        [SerializeField]
+        private float _baseShift = 50;
 
-        private bool isChangedSize = false;
+        [SerializeField]
+        private float _speed = 10;
+
+        private CancellationTokenSource cancelTokenSource;
 
         public override void RefreshData(InputField inputField) {
-            var x = new GUIStyle {
-                font = inputField.textComponent.font,
-                fontSize = inputField.textComponent.fontSize
-            };
-            var textTranform = inputField.textComponent.GetComponent<RectTransform>();
-            var mobileInputField = inputField.GetComponent<MobileInputField>();
+            Cancel();
+            if (inputField.textComponent.text.Length > 0) {
+                ChangeInputHeight(_baseHeight + inputField.textComponent.preferredHeight - _baseShift);
+            } else {
+                ChangeInputHeight(_baseHeight);
+            }
+        }
 
-            var words = inputField.text.Split(' ');
-            var currentWidth = 0f;
-            var currentHeight = 0f;
 
-            foreach (string word in words) {
-                var size = x.CalcSize(new GUIContent(word));
-                currentWidth += size.x;
-                if (currentWidth >= textTranform.sizeDelta.x) {
-                    currentHeight = _baseShift * (Mathf.FloorToInt(currentWidth / textTranform.sizeDelta.x));
-                    currentWidth = size.x;
-                    isChangedSize = true;
+        private async void ChangeInputHeight(float height) {
+
+            cancelTokenSource = new CancellationTokenSource();
+            try {
+                while (Mathf.Abs(_rectTransform.sizeDelta.y - height) > 0.1f && !cancelTokenSource.IsCancellationRequested) {
+                    _rectTransform.sizeDelta = Vector2.Lerp(_rectTransform.sizeDelta, new Vector2(_rectTransform.sizeDelta.x, height), Time.deltaTime * _speed);
+                    await Task.Yield();
+                }
+            } finally {
+                if (cancelTokenSource != null) {
+                    cancelTokenSource.Dispose();
+                    cancelTokenSource = null;
                 }
             }
+        }
 
-            _rectTransform.sizeDelta = new Vector2(_rectTransform.sizeDelta.x, _baseHeight + currentHeight);
-            textTranform.sizeDelta = new Vector2(textTranform.sizeDelta.x, _baseShift + currentHeight);
+        private void OnDisable() {
+            Cancel();
+        }
 
-            if (isChangedSize) {
-                isChangedSize = false;
+        /// <summary>
+        /// Clear Info
+        /// </summary>
+        private void Cancel() {
+            if (cancelTokenSource != null) {
+                cancelTokenSource.Cancel();
             }
         }
 
