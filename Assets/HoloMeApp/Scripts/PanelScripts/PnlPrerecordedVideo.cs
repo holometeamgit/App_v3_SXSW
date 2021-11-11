@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Beem.Firebase.DynamicLink;
-using Beem.UI;
 using UnityEngine;
 
 /// <summary>
@@ -16,11 +12,6 @@ public class PnlPrerecordedVideo : MonoBehaviour {
     [Header("Purchase for video")]
     [SerializeField]
     private GameObject _purchaseView;
-
-
-    [Header("Bottom Bar")]
-    [SerializeField]
-    private BottomBar _bottomBar;
 
     private StreamJsonData.Data _streamData = default;
 
@@ -70,13 +61,12 @@ public class PnlPrerecordedVideo : MonoBehaviour {
         }
         gameObject.SetActive(true);
         hologramHandler.SetOnPlacementUIHelperFinished(Refresh);
-        _bottomBar.Init(streamData);
     }
 
-    private void Deactivate() {
+    public void Deactivate() {
+        gameObject.SetActive(false);
         _videoView.SetActive(false);
         _purchaseView.SetActive(false);
-        _bottomBar.gameObject.SetActive(false);
     }
 
     private void Refresh() {
@@ -86,7 +76,6 @@ public class PnlPrerecordedVideo : MonoBehaviour {
         isPinned = true;
         _videoView.SetActive(_streamData.IsStarted && _streamData.is_bought);
         _purchaseView.SetActive(!_streamData.is_bought);
-        _bottomBar.gameObject.SetActive(true);
     }
 
     private void OnEnable() {
