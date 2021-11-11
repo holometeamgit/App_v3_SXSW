@@ -2193,6 +2193,50 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4154142920050621930}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &485393186
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 485393187}
+  - component: {fileID: 485393188}
+  m_Layer: 0
+  m_Name: PnlHomeScreenConstructor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &485393187
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485393186}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 517767691}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &485393188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485393186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e031105bad91e24983a1723e8fb7332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _pnlHomeScreen: {fileID: 927424776}
 --- !u!1 &517767690
 GameObject:
   m_ObjectHideFlags: 0
@@ -2233,6 +2277,7 @@ Transform:
   - {fileID: 533452716}
   - {fileID: 781228442}
   - {fileID: 393876720}
+  - {fileID: 485393187}
   - {fileID: 7476427140802463114}
   m_Father: {fileID: 1511041754}
   m_RootOrder: 18
@@ -13695,7 +13740,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7476427140802463124
 GameObject:

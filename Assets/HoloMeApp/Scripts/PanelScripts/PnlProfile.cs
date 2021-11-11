@@ -12,7 +12,6 @@ public class PnlProfile : MonoBehaviour {
     [SerializeField] GameObject InputDataArea;
     [SerializeField] InputFieldController usernameInputField;
     [SerializeField] int userNameLimit;
-    [SerializeField] Switcher switchToMainMenu;
 
     [SerializeField] List<GameObject> backBtns;
 
@@ -58,7 +57,6 @@ public class PnlProfile : MonoBehaviour {
     }
 
     private void SwitchToMainMenu() {
-        switchToMainMenu.Switch();
         ProfileToMainMenu();
     }
 
@@ -76,6 +74,7 @@ public class PnlProfile : MonoBehaviour {
     /// </summary>
     public void ProfileToMainMenu() {
         PnlProfileConstructor._onActivated?.Invoke(false);
+        PnlHomeScreenConstructor._onActivated?.Invoke(true);
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
