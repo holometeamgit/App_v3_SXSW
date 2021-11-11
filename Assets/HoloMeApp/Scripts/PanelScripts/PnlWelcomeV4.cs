@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 public class PnlWelcomeV4 : MonoBehaviour {
     [SerializeField]
     GameObject LogInBackground;
-    [SerializeField]
-    PnlGenericError pnlGenericError;
 
     [SerializeField]
     Switcher switcherToProfile;

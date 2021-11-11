@@ -9,16 +9,12 @@ using UnityEngine.Events;
 using System;
 using UnityEngine.UI;
 
-public class PnlSignUpLive : MonoBehaviour
-{
+public class PnlSignUpLive : MonoBehaviour {
     [SerializeField]
     InputFieldController inputFieldControllerEmail;
 
     [SerializeField]
     UnityEvent OnSignUpComplete;
-
-    [SerializeField]
-    PnlGenericError pnlGenericError;
 
     [SerializeField]
     Button btnClose;
@@ -29,22 +25,18 @@ public class PnlSignUpLive : MonoBehaviour
         + @"([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
         + @"([a-zA-Z]+[\w-]+\.)+[a-zA-Z]{2,4})$";
 
-    public static bool IsEmail(string email)
-    {
+    public static bool IsEmail(string email) {
         if (!string.IsNullOrEmpty(email)) return Regex.IsMatch(email, MatchEmailPattern);
         else return false;
     }
 
-    public void Send()
-    {
-        if (!IsEmail(inputFieldControllerEmail.text))
-        {
+    public void Send() {
+        if (!IsEmail(inputFieldControllerEmail.text)) {
             inputFieldControllerEmail.ShowWarning("Please enter a valid email");
             return;
         }
 
-        try
-        {
+        try {
             MailMessage mail = new MailMessage();
             mail.From = new MailAddress("customer-success@holo.me");
             mail.To.Add("customer-success@holo.me");
@@ -55,14 +47,11 @@ public class PnlSignUpLive : MonoBehaviour
             smtpServer.Credentials = new System.Net.NetworkCredential("customer-success@holo.me", "kdudvzgzzpfuortr") as ICredentialsByHost;
             smtpServer.EnableSsl = true;
             ServicePointManager.ServerCertificateValidationCallback =
-            delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
-            { return true; };
+            delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
             smtpServer.Send(mail);
-        }
-        catch (Exception exception)
-        {
+        } catch (Exception exception) {
             Debug.LogError(exception);
-            pnlGenericError.ActivateSingleButton("Error", "An error occurred please try again later", onBackPress: () => btnClose.onClick?.Invoke());
+            PnlGenericErrorConstructor.ActivateSingleButton("Error", "An error occurred please try again later", onBackPress: () => btnClose.onClick?.Invoke());
             return;
         }
 

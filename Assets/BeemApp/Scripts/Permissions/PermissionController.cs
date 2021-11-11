@@ -7,9 +7,6 @@ namespace Beem.Permissions {
     /// </summary>
     public class PermissionController : MonoBehaviour {
 
-        [SerializeField]
-        private PnlGenericError pnlGenericError;
-
         public IPermissionGranter PermissionGranter {
             get {
                 return _permissionGranter;
@@ -94,7 +91,7 @@ namespace Beem.Permissions {
         }
 
         private void OpenNotification(string accessName) {
-            pnlGenericError.ActivateDoubleButton(accessName + " access Required!",
+            PnlGenericErrorConstructor.ActivateDoubleButton(accessName + " access Required!",
                       "Please enable " + accessName + " access to use this app",
                       "Settings",
                       "Cancel",
@@ -107,7 +104,7 @@ namespace Beem.Permissions {
         }
 
         private void CloseNotification() {
-            pnlGenericError.gameObject.SetActive(false);
+            PnlGenericErrorConstructor.Deactivate();
         }
     }
 }

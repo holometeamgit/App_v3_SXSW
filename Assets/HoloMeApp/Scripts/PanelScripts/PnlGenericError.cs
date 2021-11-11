@@ -56,13 +56,19 @@ public class PnlGenericError : MonoBehaviour
         imgWarning.gameObject.SetActive(isWarning);
     }
 
-    public void ActivateDoubleButton(string header = "", string message = "", string buttonOneText = "Yes", string buttonTwoText = "No", UnityAction onButtonOnePress = null, UnityAction onButtonTwoPress = null, bool isWarning = false)
-    {
+    public void ActivateDoubleButton(string header = "", string message = "", string buttonOneText = "Yes", string buttonTwoText = "No", UnityAction onButtonOnePress = null, UnityAction onButtonTwoPress = null, bool isWarning = false) {
         SetMessages(header, message);
         SetupButton(btnLeft, buttonOneText, onButtonOnePress);
         SetupButton(btnRight, buttonTwoText, onButtonTwoPress);
         gameObject.SetActive(true);
-        imgWarning.gameObject.SetActive(isWarning); 
+        imgWarning.gameObject.SetActive(isWarning);
+    }
+
+    /// <summary>
+    /// Deactivate
+    /// </summary>
+    public void Deactivate() {
+        gameObject.SetActive(false);
     }
 
     private void OnDisable() {

@@ -70,8 +70,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private SpeechNotificationPopups speechNotificationPopups;
 
     [Header("Other Views")]
-    [SerializeField]
-    private PnlGenericError pnlGenericError;
 
     [SerializeField]
     private AnimatedTransition chat;
@@ -276,7 +274,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     public void OpenAsViewer(string channelName, string streamID, bool isRoom) {
 
         if (channelName == userWebManager.GetUsername()) {
-            pnlGenericError.ActivateSingleButton("Viewing as stream host",
+            PnlGenericErrorConstructor.ActivateSingleButton("Viewing as stream host",
                 "Please connect to the stream using a different account",
                 onBackPress: () => { CloseAsStreamer(); });
 
@@ -322,15 +320,15 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         if (!agoraController.IsLive && isChannelCreator)
             StopStream();
         else if (isChannelCreator)
-            pnlGenericError.ActivateDoubleButton("End the live stream?",
+            PnlGenericErrorConstructor.ActivateDoubleButton("End the live stream?",
                 "Closing this page will end the live stream and disconnect your users.",
                 onButtonOnePress: () => { CloseAsStreamer(); },
-                onButtonTwoPress: () => pnlGenericError.gameObject.SetActive(false));
+                onButtonTwoPress: () => PnlGenericErrorConstructor.Deactivate());
         else
-            pnlGenericError.ActivateDoubleButton("Disconnect from live stream?",
+            PnlGenericErrorConstructor.ActivateDoubleButton("Disconnect from live stream?",
                 "Closing this page will disconnect you from the live stream",
                 onButtonOnePress: () => { CloseAsViewer(); },
-                onButtonTwoPress: () => pnlGenericError.gameObject.SetActive(false));
+                onButtonTwoPress: () => PnlGenericErrorConstructor.Deactivate());
     }
 
     public void CloseAsStreamer() {

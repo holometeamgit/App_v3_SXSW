@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Beem.SSO;
-public class ResetFirebasePasswordEnterEmail : MonoBehaviour
-{
-    [SerializeField]
-    PnlGenericError pnlGenericError;
+public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     [SerializeField]
     InputFieldController emailInputField;
     [SerializeField]
@@ -35,12 +32,12 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour
     }
 
     private void ShowWarning() {
-        pnlGenericError.ActivateDoubleButton(null,
+        PnlGenericErrorConstructor.ActivateDoubleButton(null,
             string.Format("Changing a password associated with a Facebook account will create login issues with your Beem account."),
             "Continue",
             "Cancel",
-            () => { pnlGenericError.gameObject.SetActive(false); SendMsg(); },
-            () => pnlGenericError.gameObject.SetActive(false), true);
+            () => { PnlGenericErrorConstructor.Deactivate(); SendMsg(); },
+            () => PnlGenericErrorConstructor.Deactivate(), true);
     }
 
     private void SendMsg() {
@@ -48,10 +45,10 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour
     }
 
     private void MsgSentCallBack() {
-        pnlGenericError.ActivateSingleButton("Change password",
+        PnlGenericErrorConstructor.ActivateSingleButton("Change password",
             string.Format("Password change information has been sent to email {0}", emailInputField.text),
             "Continue",
-            () => { pnlGenericError.gameObject.SetActive(false); switchToLogIn.Switch(); });
+            () => { PnlGenericErrorConstructor.Deactivate(); switchToLogIn.Switch(); });
     }
 
     private void ErrorMsgCallBack(string msg) {

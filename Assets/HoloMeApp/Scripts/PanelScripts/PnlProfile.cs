@@ -15,7 +15,6 @@ public class PnlProfile : MonoBehaviour {
 
     [SerializeField] List<GameObject> backBtns;
 
-    [SerializeField] PnlGenericError pnlGenericError;
     [SerializeField] ExternalLinkRedirector externalLinkRedirector;
 
     [SerializeField]
@@ -95,7 +94,7 @@ public class PnlProfile : MonoBehaviour {
     }
 
     private void ShowMsgForDeletedUser() {
-        pnlGenericError.ActivateDoubleButton(null,
+        PnlGenericErrorConstructor.ActivateDoubleButton(null,
             string.Format("This account has been deleted, contact support to reinstate. "),
             "Support",
             "Cancel",

@@ -24,7 +24,7 @@ public class PnlChangeUsername : MonoBehaviour
     }
 
     private void UpdateUserDataCallBack() {
-        pnlGenericError.ActivateSingleButton(" ", "Username has been successfully updated", "Continue", () => switchToSetting.Switch());
+        PnlGenericErrorConstructor.ActivateSingleButton(" ", "Username has been successfully updated", "Continue", () => switchToSetting.Switch());
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {

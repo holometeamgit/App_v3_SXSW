@@ -5,7 +5,6 @@ using Beem.SSO;
 using System.Threading.Tasks;
 
 public class PnlLogInEmailFirebase : MonoBehaviour {
-    [SerializeField] PnlGenericError pnlGenericError;
     [SerializeField] InputFieldController inputFieldEmail;
     [SerializeField] InputFieldController inputFieldPassword;
     [SerializeField] Switcher switcherToProfile;
@@ -71,7 +70,7 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
         inputFieldEmail.ShowWarning("E-mail is not verified");
 
         if (EmailVerificationTimer.IsOver) {
-            pnlGenericError.ActivateDoubleButton("Email verication",
+            PnlGenericErrorConstructor.ActivateDoubleButton("Email verication",
                 string.Format("You have not activated your account via the email, would you like us to send it again? \n {0}", email),
                 "Yes",
                 "No",
@@ -79,12 +78,12 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
                     CallBacks.onEmailVerification?.Invoke();
                     EmailVerificationTimer.Release();
                 },
-                () => { pnlGenericError.gameObject.SetActive(false); });
+                () => { PnlGenericErrorConstructor.Deactivate(); });
         } else {
-            pnlGenericError.ActivateSingleButton("Email verication",
+            PnlGenericErrorConstructor.ActivateSingleButton("Email verication",
                string.Format("You have not activated your account via the email \n {0}", email),
                "Ok",
-               () => { pnlGenericError.gameObject.SetActive(false); });
+               () => { PnlGenericErrorConstructor.Deactivate(); });
         }
     }
 
