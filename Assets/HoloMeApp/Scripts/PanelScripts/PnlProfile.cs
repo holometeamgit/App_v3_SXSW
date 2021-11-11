@@ -6,12 +6,13 @@ using UnityEngine.UI;
 using Beem.SSO;
 
 public class PnlProfile : MonoBehaviour {
+    [SerializeField]
+    private AccountManager _accountManager;
     [SerializeField] UserWebManager userWebManager;
     [SerializeField] GameObject InputDataArea;
     [SerializeField] InputFieldController usernameInputField;
     [SerializeField] int userNameLimit;
     [SerializeField] Switcher switchToMainMenu;
-    [SerializeField] Switcher switchLogOut;
 
     [SerializeField] List<GameObject> backBtns;
 
@@ -43,12 +44,12 @@ public class PnlProfile : MonoBehaviour {
 
     private void ErrorUserInfoLoadedCallBack() {
         ShowMsgForDeletedUser();
-        switchLogOut?.Switch();
+        ProfileToWelcome();
     }
 
     private void UpdateUserDataCallBack() {
 
-        if(toggleEmailReceive.isOn) {
+        if (toggleEmailReceive.isOn) {
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyEmailOptIn, AnalyticParameters.ParamSignUpMethod, AnalyticsSignUpModeTracker.Instance.SignUpMethodUsed.ToString());
         }
 
@@ -58,6 +59,23 @@ public class PnlProfile : MonoBehaviour {
 
     private void SwitchToMainMenu() {
         switchToMainMenu.Switch();
+        ProfileToMainMenu();
+    }
+
+    /// <summary>
+    /// Switch profile to welcome
+    /// </summary>
+    public void ProfileToWelcome() {
+        PnlProfileConstructor._onActivated?.Invoke(false);
+        PnlWelcomeConstructor._onActivated?.Invoke(true);
+        _accountManager.LogOut();
+    }
+
+    /// <summary>
+    /// Switch profile to main menu
+    /// </summary>
+    public void ProfileToMainMenu() {
+        PnlProfileConstructor._onActivated?.Invoke(false);
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {

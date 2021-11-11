@@ -6,11 +6,11 @@ using UnityEngine.UI;
 
 public class PnlSignUpEmailFirebase : MonoBehaviour {
     [SerializeField]
+    private AccountManager _accountManager;
+    [SerializeField]
     private InputFieldController inputFieldEmail;
     [SerializeField]
     private InputFieldController inputFieldPassword;
-    [SerializeField]
-    private Switcher switcherToVerification;
     [SerializeField]
     private GameObject LogInLoadingBackground;
     [SerializeField]
@@ -52,9 +52,19 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     }
 
     private void SignUpCallBack() {
-        switcherToVerification.Switch();
+        PnlEmailVerificationConstructor._onActivated?.Invoke(true);
+        PnlSignUpEmailConstructor._onActivated?.Invoke(false);
         ClearInputFieldData();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete);
+    }
+
+    /// <summary>
+    /// Sign Up To Welcome
+    /// </summary>
+    public void SignUpToWelcome() {
+        PnlWelcomeConstructor._onActivated?.Invoke(true);
+        PnlSignUpEmailConstructor._onActivated?.Invoke(false);
+        _accountManager.LogOut();
     }
 
     private void ErrorSignUpCallBack(string msg) {

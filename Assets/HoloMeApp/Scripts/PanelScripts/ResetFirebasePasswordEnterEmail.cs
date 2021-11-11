@@ -7,8 +7,7 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     InputFieldController emailInputField;
     [SerializeField]
     AuthController authController;
-    [SerializeField]
-    Switcher switchToLogIn;
+
     [SerializeField]
     bool needShowWarning = true;
 
@@ -48,7 +47,7 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
         PnlGenericErrorConstructor.ActivateSingleButton("Change password",
             string.Format("Password change information has been sent to email {0}", emailInputField.text),
             "Continue",
-            () => { PnlGenericErrorConstructor.Deactivate(); switchToLogIn.Switch(); });
+            () => { PnlGenericErrorConstructor.Deactivate(); ResetPasswordToSignIn(); });
     }
 
     private void ErrorMsgCallBack(string msg) {
@@ -64,6 +63,14 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
 
     private void ClearInputField() {
         emailInputField.text = "";
+    }
+
+    /// <summary>
+    /// Switch reset password to sign in
+    /// </summary>
+    public void ResetPasswordToSignIn() {
+        PnlResetPasswordConstructor._onActivated?.Invoke(false);
+        PnlSignInEmailConstructor._onActivated?.Invoke(true);
     }
 
     private void OnEnable() {

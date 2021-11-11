@@ -9,11 +9,6 @@ public class PnlWelcomeV4 : MonoBehaviour {
     [SerializeField]
     GameObject LogInBackground;
 
-    [SerializeField]
-    Switcher switcherToProfile;
-    [SerializeField]
-    Switcher switcherToLigIn;
-
     private const int TIME_FOR_AUTOHIDINGBG = 10000;
     private int HIDE_BACKGROUND_DELAY_TIME = 500;
 
@@ -34,7 +29,26 @@ public class PnlWelcomeV4 : MonoBehaviour {
 
     private void SwitchToProfile() {
         HelperFunctions.DevLog("Welcome SwitchToProfile");
-        switcherToProfile.Switch();
+        PnlProfileConstructor._onActivated?.Invoke(true);
+        PnlWelcomeConstructor._onActivated?.Invoke(false);
+    }
+
+    /// <summary>
+    /// Switch To Sign Up
+    /// </summary>
+    public void SwitchToSignUp() {
+        HelperFunctions.DevLog("Welcome SwitchToSignUp");
+        PnlSignUpEmailConstructor._onActivated?.Invoke(true);
+        PnlWelcomeConstructor._onActivated?.Invoke(false);
+    }
+
+    /// <summary>
+    /// Switch To Sign In
+    /// </summary>
+    public void SwitchToSignIn() {
+        HelperFunctions.DevLog("Welcome SwitchToSignIn");
+        PnlSignInEmailConstructor._onActivated?.Invoke(true);
+        PnlWelcomeConstructor._onActivated?.Invoke(false);
     }
 
     private void OnEnable() {

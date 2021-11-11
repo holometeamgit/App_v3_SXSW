@@ -149,62 +149,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorTag: TextColor
---- !u!1 &443201525219783381
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 845861683859324850}
-  - component: {fileID: 8724539700487039759}
-  m_Layer: 5
-  m_Name: SwitchToLogIn
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &845861683859324850
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 443201525219783381}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5081376361843746956}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.00006103699}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8724539700487039759
+--- !u!114 &4606770872739845741
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 443201525219783381}
+  m_GameObject: {fileID: 835601131623761952}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6439298e7a369481d90dd373af950173, type: 3}
+  m_Script: {fileID: 11500000, guid: d3ccf13f8c95b45239f9e6a367126280, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  doOnlyWithActiveObject: 0
-  switchOnList:
-  - {fileID: 0}
-  switchOffList:
-  - {fileID: 5081376361560725216}
-  OnSwitch:
+  OnPress:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3509012359521019736}
+        m_TargetAssemblyTypeName: PnlEmailVerificationFirebase, Assembly-CSharp
+        m_MethodName: EmailVerificationToSignUp
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1095701395042120112
 GameObject:
   m_ObjectHideFlags: 0
@@ -697,62 +668,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!1 &5081376360544434005
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5081376360544434007}
-  - component: {fileID: 5081376360544434004}
-  m_Layer: 5
-  m_Name: SwitchToProfile
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &5081376360544434007
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5081376360544434005}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 5081376361843746956}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.00006103699}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5081376360544434004
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5081376360544434005}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6439298e7a369481d90dd373af950173, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  doOnlyWithActiveObject: 0
-  switchOnList:
-  - {fileID: 0}
-  switchOffList:
-  - {fileID: 5081376361560725216}
-  OnSwitch:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &5081376360696301440
 GameObject:
   m_ObjectHideFlags: 0
@@ -923,7 +838,7 @@ RectTransform:
   m_Children:
   - {fileID: 5081376361203790347}
   m_Father: {fileID: 5081376361560725219}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1063,7 +978,6 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 5081376361843746956}
   - {fileID: 5081376361047207768}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -1109,8 +1023,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87449b38d3afd4dacbff87d1ddee76df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  switchToProfile: {fileID: 5081376360544434004}
-  accountManager: {fileID: 0}
 --- !u!114 &7467641468196286924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1401,43 +1313,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorTag: TextColor
---- !u!1 &5081376361843746957
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5081376361843746956}
-  m_Layer: 5
-  m_Name: Switchers
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &5081376361843746956
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5081376361843746957}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.99999, y: 0.99999, z: 0.99999}
-  m_Children:
-  - {fileID: 5081376360544434007}
-  - {fileID: 845861683859324850}
-  m_Father: {fileID: 5081376361560725219}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -0.000061035156}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &6033615974396132587
 GameObject:
   m_ObjectHideFlags: 0
@@ -1985,6 +1860,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7403401948572929407}
     m_Modifications:
+    - target: {fileID: 1212884299180171318, guid: 90c9e82fdd5f44d098562715898ad2fc,
+        type: 3}
+      propertyPath: OnPress.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3509012359521019736}
+    - target: {fileID: 1212884299180171318, guid: 90c9e82fdd5f44d098562715898ad2fc,
+        type: 3}
+      propertyPath: OnPress.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ResendVerificationBtnClick
+      objectReference: {fileID: 0}
+    - target: {fileID: 1212884299180171318, guid: 90c9e82fdd5f44d098562715898ad2fc,
+        type: 3}
+      propertyPath: OnPress.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PnlEmailVerificationFirebase, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 1764171360871568519, guid: 90c9e82fdd5f44d098562715898ad2fc,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.size
@@ -2195,17 +2085,19 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1764171360871568519, guid: 90c9e82fdd5f44d098562715898ad2fc, type: 3}
+    - {fileID: 7145239361449009796, guid: 90c9e82fdd5f44d098562715898ad2fc, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 90c9e82fdd5f44d098562715898ad2fc, type: 3}
---- !u!224 &4905882122603767680 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 7202631213276189542, guid: 90c9e82fdd5f44d098562715898ad2fc,
-    type: 3}
-  m_PrefabInstance: {fileID: 2873810176610890982}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4905882122603767681 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7202631213276189543, guid: 90c9e82fdd5f44d098562715898ad2fc,
+    type: 3}
+  m_PrefabInstance: {fileID: 2873810176610890982}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &4905882122603767680 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7202631213276189542, guid: 90c9e82fdd5f44d098562715898ad2fc,
     type: 3}
   m_PrefabInstance: {fileID: 2873810176610890982}
   m_PrefabAsset: {fileID: 0}
@@ -2398,6 +2290,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6844714239399834910}
     m_Modifications:
+    - target: {fileID: 5556327232602475088, guid: 0a9653ecbe5d8456eabf055b4f156fcb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3509012359521019736}
+    - target: {fileID: 5556327232602475088, guid: 0a9653ecbe5d8456eabf055b4f156fcb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: EmailVerificationToSignUp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5556327232602475088, guid: 0a9653ecbe5d8456eabf055b4f156fcb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PnlEmailVerificationFirebase, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 5556327232602475101, guid: 0a9653ecbe5d8456eabf055b4f156fcb,
         type: 3}
       propertyPath: m_Name
@@ -2533,8 +2440,15 @@ PrefabInstance:
       propertyPath: switchOffList.Array.data[0]
       value: 
       objectReference: {fileID: 5081376361560725216}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5556327232602475103, guid: 0a9653ecbe5d8456eabf055b4f156fcb, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 0a9653ecbe5d8456eabf055b4f156fcb, type: 3}
+--- !u!1 &835601131623761952 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5556327232602475101, guid: 0a9653ecbe5d8456eabf055b4f156fcb,
+    type: 3}
+  m_PrefabInstance: {fileID: 5081376360794997373}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8537286998940587043
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2542,6 +2456,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3873960989848574532}
     m_Modifications:
+    - target: {fileID: 2541751197515369450, guid: ce56f1a19f7b349718ef499dd33f8335,
+        type: 3}
+      propertyPath: OnPress.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3509012359521019736}
+    - target: {fileID: 2541751197515369450, guid: ce56f1a19f7b349718ef499dd33f8335,
+        type: 3}
+      propertyPath: OnPress.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: EmailVerificationToSignIn
+      objectReference: {fileID: 0}
+    - target: {fileID: 2541751197515369450, guid: ce56f1a19f7b349718ef499dd33f8335,
+        type: 3}
+      propertyPath: OnPress.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PnlEmailVerificationFirebase, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 3131814062730923482, guid: ce56f1a19f7b349718ef499dd33f8335,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.size
@@ -2556,7 +2485,7 @@ PrefabInstance:
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 8724539700487039759}
+      objectReference: {fileID: 0}
     - target: {fileID: 3131814062730923482, guid: ce56f1a19f7b349718ef499dd33f8335,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -2712,7 +2641,9 @@ PrefabInstance:
       propertyPath: m_HorizontalAlignment
       value: 2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3131814062730923482, guid: ce56f1a19f7b349718ef499dd33f8335, type: 3}
+    - {fileID: 379247981858148046, guid: ce56f1a19f7b349718ef499dd33f8335, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: ce56f1a19f7b349718ef499dd33f8335, type: 3}
 --- !u!1 &6705007753754860031 stripped
 GameObject:

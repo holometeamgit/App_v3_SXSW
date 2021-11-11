@@ -44,6 +44,22 @@ public class PnlEmailVerificationFirebase : MonoBehaviour {
         EmailVerificationTimer.Cancel();
     }
 
+    /// <summary>
+    /// Email Verification To Sign Up
+    /// </summary>
+    public void EmailVerificationToSignUp() {
+        PnlEmailVerificationConstructor._onActivated?.Invoke(false);
+        PnlSignUpEmailConstructor._onActivated?.Invoke(true);
+    }
+
+    /// <summary>
+    /// Email Verification To Sign In
+    /// </summary>
+    public void EmailVerificationToSignIn() {
+        PnlEmailVerificationConstructor._onActivated?.Invoke(false);
+        PnlSignInEmailConstructor._onActivated?.Invoke(true);
+    }
+
     private void OnApplicationFocus(bool focus) {
         _goToLogInBtn.SetActive(true);
     }

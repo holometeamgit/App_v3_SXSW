@@ -5,19 +5,13 @@ using Beem.SSO;
 using TMPro;
 
 public class SwitchToProfileOnLogIn : MonoBehaviour {
-    [SerializeField]
-    Switcher switchToProfile;
-    [SerializeField]
-    AccountManager accountManager;
-
-    private void OnApplicationFocus(bool focus) {
-        if (focus) {
-//            accountManager.QuickLogInWithDelay(); //hotfix v4.9
-        }
-    }
 
     private void SwitchToProfile() {
-        switchToProfile.Switch();
+        PnlProfileConstructor._onActivated?.Invoke(true);
+        PnlWelcomeConstructor._onActivated?.Invoke(false);
+        PnlSignUpEmailConstructor._onActivated?.Invoke(false);
+        PnlEmailVerificationConstructor._onActivated?.Invoke(false);
+        PnlSignInEmailConstructor._onActivated?.Invoke(false);
     }
 
     private void OnEnable() {

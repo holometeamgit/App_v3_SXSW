@@ -5,9 +5,10 @@ using Beem.SSO;
 using System.Threading.Tasks;
 
 public class PnlLogInEmailFirebase : MonoBehaviour {
+
+    [SerializeField] AccountManager _accountManager;
     [SerializeField] InputFieldController inputFieldEmail;
     [SerializeField] InputFieldController inputFieldPassword;
-    [SerializeField] Switcher switcherToProfile;
 
     [SerializeField]
     GameObject LogInLoadingBackground;
@@ -41,7 +42,7 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     }
 
     private void LogInCallBack() {
-        switcherToProfile.Switch();
+        SignInToProfile();
         ClearData();
     }
 
@@ -123,6 +124,39 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
 
     private void HideBackground(string reason) {
         LogInLoadingBackground.SetActive(false);
+    }
+
+    /// <summary>
+    /// Switch sign in to profile
+    /// </summary>
+    public void SignInToProfile() {
+        PnlSignInEmailConstructor._onActivated?.Invoke(false);
+        PnlProfileConstructor._onActivated?.Invoke(true);
+    }
+
+    /// <summary>
+    /// Switch sign in to sign up
+    /// </summary>
+    public void SignInToSignUp() {
+        PnlSignInEmailConstructor._onActivated?.Invoke(false);
+        PnlSignUpEmailConstructor._onActivated?.Invoke(true);
+    }
+
+    /// <summary>
+    /// Switch sign in to reset password
+    /// </summary>
+    public void SignInToResetPassword() {
+        PnlSignInEmailConstructor._onActivated?.Invoke(false);
+        PnlResetPasswordConstructor._onActivated?.Invoke(true);
+    }
+
+    /// <summary>
+    /// Switch sign in to welcome
+    /// </summary>
+    public void SignInToWelcome() {
+        PnlSignInEmailConstructor._onActivated?.Invoke(false);
+        PnlWelcomeConstructor._onActivated?.Invoke(true);
+        _accountManager.LogOut();
     }
 
     private void OnEnable() {
