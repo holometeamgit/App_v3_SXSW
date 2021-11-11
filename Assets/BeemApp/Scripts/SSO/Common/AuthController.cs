@@ -65,6 +65,7 @@ namespace Beem.SSO {
             foreach (AbstractFirebaseController item in abstractFirebaseControllers) {
                 item.InitializeFirebase(_auth);
             }
+            HelperFunctions.DevLog("Firebase Init Success", "Firebase");
         }
 
         private void SignOutCallBack() {

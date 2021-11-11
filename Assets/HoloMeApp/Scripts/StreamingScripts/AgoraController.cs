@@ -37,10 +37,11 @@ public class AgoraController : MonoBehaviour {
     public bool VideoIsReady { get; private set; }
     public uint? ChannelCreatorUID { get; set; } = null;
 
+    private bool vadWasActive; //Was local speak detected
     private bool videoQuadWasSetup; //Required to stop new calls from reconfiguring video surface quad
 
-    int streamID = -1;
-    int agoraMessageStreamID;
+    private int streamID = -1;
+    private int agoraMessageStreamID;
 
     [HideInInspector]
     public uint frameRate;
@@ -50,6 +51,8 @@ public class AgoraController : MonoBehaviour {
     public Action OnStreamWentLive;
     public Action OnStreamWentOffline;
     public Action<string> OnMessageRecieved;
+    public Action OnSpeechDetected;
+    public Action OnNoSpeechDetected;
 
     /// <summary>
     /// Called only for communication channels
@@ -62,6 +65,9 @@ public class AgoraController : MonoBehaviour {
     Coroutine sendThumbnailRoutine;
 
     static Vector3 defaultLiveStreamQuadScale;
+
+    private const int VOICE_INDICATOR_INTERVAL = 200;
+    private const int VOICE_INDICATOR_SMOOTH = 3;
 
     //void OnUserEnableVideoHandler(uint uid, bool enabled)
     //{
@@ -90,6 +96,9 @@ public class AgoraController : MonoBehaviour {
             string errorMessage = string.Format("Agora onError callback {0} {1} {2}", error, msg, description);
             HelperFunctions.DevLogError(errorMessage);
         };
+
+        iRtcEngine.OnVolumeIndication += OnVolumeIndicationHandler;
+        iRtcEngine.EnableAudioVolumeIndication(VOICE_INDICATOR_INTERVAL, VOICE_INDICATOR_SMOOTH, true);
 
         SetEncoderSettings();
     }
@@ -240,9 +249,7 @@ public class AgoraController : MonoBehaviour {
             EnableVideoPlayback(); //Must be called for viewers to view
             ToggleLocalVideo(true); //Disable local video freeze fix iOS
         }
-
-        //iRtcEngine.EnableDualStreamMode(true);
-
+      
         var result = iRtcEngine.JoinChannelByKey(viewerBroadcasterToken, ChannelName, null, Convert.ToUInt32(userWebManager.GetUserID()));
 
         if (result < 0) {
@@ -250,19 +257,12 @@ public class AgoraController : MonoBehaviour {
         } else {
             HelperFunctions.DevLog("Agora Stream Join Success!");
         }
-
-        //print("JOINED");
-
+                
         if (IsChannelCreator && !IsRoom)//No thumbnails for rooms for now
             sendThumbnailRoutine = StartCoroutine(SendThumbnailData(true));
 
         IsLive = true;
-
-        agoraMessageStreamID = iRtcEngine.CreateDataStream(true, true);
-
-        iRtcEngine.OnStreamMessage = OnStreamMessageRecieved;
-        iRtcEngine.OnStreamMessageError = OnStreamMessageError;
-
+                
         OnStreamWentLive?.Invoke();
     }
 
@@ -273,12 +273,7 @@ public class AgoraController : MonoBehaviour {
 
         if (!IsLive)
             return;
-
-        //if (isChannelCreator)
-        //{
-        //iRtcEngine.SendStreamMessage(streamID, "CreatorLeft");
-        //}
-
+   
         if (sendThumbnailRoutine != null && !IsRoom)//No thumbnails for rooms for now
             StopCoroutine(sendThumbnailRoutine);
 
@@ -378,6 +373,30 @@ public class AgoraController : MonoBehaviour {
         videoSurfaceQuadRef.SetGameFps(frameRate);
     }
 
+    private void OnVolumeIndicationHandler(AudioVolumeInfo[] speakers, int speakerNumber, int totalVolume) {
+        if (IsChannelCreator) {// Not required for channel host
+            return;
+        }
+
+        bool vadParametersAreTrue = speakers != null && speakers.Length == 1 && speakers[0].vad == 1; //vad value found when only 1 element in array so always 0
+
+        if (vadParametersAreTrue) {
+            vadWasActive = true;
+        }
+
+        if (vadWasActive) {
+            if (vadParametersAreTrue) {
+                HelperFunctions.DevLog("Speech detected", "VolumeIndicator");
+                OnSpeechDetected?.Invoke(); //TODO test if moved into block were vasWasActive is set to true to call once and fix stuttering
+            } else {
+                HelperFunctions.DevLog("Speech detection voice off", "VolumeIndicator");
+                OnNoSpeechDetected?.Invoke();
+                vadWasActive = false;
+            }
+        }
+
+    }
+
     void OnUserOffline(uint uid, USER_OFFLINE_REASON reason) //Only called for host in broadcast profile
     {
         HelperFunctions.DevLog("onUserOffline: uid = " + uid + " reason = " + reason);
@@ -459,26 +478,24 @@ public class AgoraController : MonoBehaviour {
     }
 
     #region Messaging system
+    public void AddAgoraMessageReceiver(AgoraMessageReceiver agoraMessageReceiver)
+    {
+        agoraRTMChatController.AddMessageReceiver(agoraMessageReceiver);
+    }
 
     /// <summary>
     /// Sends string message to all users in a channel.
     /// </summary>
-    public void SendAgoraMessage(string message) {
-        HelperFunctions.DevLog($"Sending Agora Message {message}");
-        byte[] messageToBytes = Encoding.ASCII.GetBytes(message);
-        iRtcEngine.SendStreamMessage(agoraMessageStreamID, messageToBytes);
-    }
+    public void SendAgoraMessage(string message, int requestID =  AgoraMessageRequestIDs.IDStreamMessage) {
+        //HelperFunctions.DevLog($"Sending Agora Message {message}");
+        //byte[] messageToBytes = Encoding.ASCII.GetBytes(message);
+        //iRtcEngine.SendStreamMessage(agoraMessageStreamID, messageToBytes);
 
-    private void OnStreamMessageError(uint userId, int streamId, int code, int missed, int cached) {
-        HelperFunctions.DevLog($"Stream message error! Code = {code}");
-    }
+        ChatMessageJsonData agoraStreamMessage = new ChatMessageJsonData { message = message };
+        agoraStreamMessage.requestID = requestID;
 
-    private void OnStreamMessageRecieved(uint userId, int streamId, byte[] data, int length) {
-        string result = Encoding.ASCII.GetString(data);
-        HelperFunctions.DevLog($"Agora Message Recieved {result}");
-        OnMessageRecieved?.Invoke(result);
+        agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(agoraStreamMessage));
     }
-
     #endregion
 
     void OnApplicationPause(bool paused) {
@@ -492,45 +509,4 @@ public class AgoraController : MonoBehaviour {
             UnloadEngine();
         }
     }
-
-    //IEnumerator UpdateUsers() {
-    //    if (IsChannelCreator) {
-    //        while (IsLive) {
-    //            yield return new WaitForSeconds(5);
-    //        }
-    //    }
-    //}
-
-    //bool dippedBelowPerformanceThreshold;
-    //bool previousPerformanceState;
-
-    //private void Update()
-    //{
-    //    if (isLive)
-    //    {
-    //        var fps = (1.0 / Time.deltaTime);
-
-    //        if (fps < 25)
-    //        {
-    //            dippedBelowPerformanceThreshold = true;
-    //        }
-    //        else
-    //        {
-    //            dippedBelowPerformanceThreshold = false;
-    //        }
-
-    //        if (previousPerformanceState != dippedBelowPerformanceThreshold)
-    //        {
-    //            if (dippedBelowPerformanceThreshold)
-    //            {
-    //                iRtcEngine.SetRemoteDefaultVideoStreamType(REMOTE_VIDEO_STREAM_TYPE.REMOTE_VIDEO_STREAM_LOW);
-    //            }
-    //            else
-    //            {
-    //                iRtcEngine.SetRemoteDefaultVideoStreamType(REMOTE_VIDEO_STREAM_TYPE.REMOTE_VIDEO_STREAM_HIGH);
-    //            }
-    //        }
-    //        previousPerformanceState = dippedBelowPerformanceThreshold;
-    //    }
-    //}
 }

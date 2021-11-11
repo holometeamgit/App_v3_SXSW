@@ -7,6 +7,8 @@ public class AnimatedTransition : MonoBehaviour
 {
     private const string MoveTweenName = "MoveTween";
 
+    public bool SetAsLastSibling = true;
+
     [SerializeField]
     Button[] postAnimationActiveButtons;
 
@@ -28,7 +30,7 @@ public class AnimatedTransition : MonoBehaviour
     [Range(0, 255)]
     [SerializeField]
     int alphaFadeToValue = 100;
-
+       
     public enum AnimDir { Left, Right, Down };
 
     RectTransform parentRect;
@@ -71,7 +73,10 @@ public class AnimatedTransition : MonoBehaviour
         {
             gameObject.SetActive(true);
             //Set in front for better effect
-            parentRect.SetAsLastSibling();
+            if (SetAsLastSibling)
+            {
+                parentRect.SetAsLastSibling();
+            }
         }
         else
         {

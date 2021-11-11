@@ -313,7 +313,7 @@ public class FocusSquareV2 : PlacementHandler {
                 HideState();
                 break;
             case States.DRAG_AND_DROP:
-                if (Input.touchCount > 0 && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)) {
+                if (Input.touchCount > 0 && !HelperFunctions.IsPointerOverUIObject()) {
                     _focusSquareRenderer.color = Color.Lerp(_focusSquareRenderer.color, new Color(1, 1, 1, 0.0f), Time.deltaTime * 5.0f);
                     if (Input.touchCount == 1) {
                         var touch = Input.GetTouch(0);
@@ -341,7 +341,7 @@ public class FocusSquareV2 : PlacementHandler {
     private bool _isHideStateReachFirstTime = true;
 
     private void HideState() {
-        if (Input.touchCount == 1 && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)) {
+        if (Input.touchCount == 1 && !HelperFunctions.IsPointerOverUIObject()) {
             if (Input.touchCount == 1) {
                 var touch = Input.GetTouch(0);
                 switch (touch.phase) {
@@ -474,8 +474,7 @@ public class FocusSquareV2 : PlacementHandler {
     }
 
     private bool TapToPlace() {
-        if (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Ended &&
-            !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)) {
+        if (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Ended && !HelperFunctions.IsPointerOverUIObject()) {
             //OnPlaceDetected?.Invoke(_hits[0].pose.position);
             //_hologramPlacedPosition = _hits[0].pose.position;
 

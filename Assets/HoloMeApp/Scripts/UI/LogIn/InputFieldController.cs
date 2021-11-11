@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using System;
+using Mopsicus.Plugins;
 
 public class InputFieldController : MonoBehaviour {
     public bool IsClearOnDisable = true;
@@ -16,6 +17,9 @@ public class InputFieldController : MonoBehaviour {
 
     [SerializeField]
     InputField inputField;
+
+    [SerializeField]
+    private MobileInputField _mobileInputField;
 
     [SerializeField]
     TMP_Text warningMsgText;
@@ -34,8 +38,20 @@ public class InputFieldController : MonoBehaviour {
     }
 
     public string text {
-        get { return inputField.text; }
-        set { inputField.text = value; }
+        get {
+            if (_mobileInputField.InputField != null) {
+                return _mobileInputField.Text;
+            } else {
+                return inputField.text;
+            }
+        }
+        set {
+            if (_mobileInputField.InputField != null) {
+                _mobileInputField.Text = value;
+            } else {
+                inputField.text = value;
+            }
+        }
     }
 
     public bool interactable {
@@ -46,19 +62,17 @@ public class InputFieldController : MonoBehaviour {
     private void Awake() {
         inputField.onEndEdit.AddListener(DoOnEndEditPassword);
         inputField.onValueChanged.AddListener(OnValueChanged);
-#if UNITY_IOS
-        inputField.shouldHideMobileInput = true;
-        if (isEmail)
-        {
+        _mobileInputField.OnReturnPressedEvent.AddListener(OnReturn);
+        if (isEmail) {
             inputField.contentType = InputField.ContentType.EmailAddress;
         }
-#elif UNITY_ANDROID
-        inputField.shouldHideMobileInput = false;
-#endif
 
-        //        inputField.onEndEdit.AddListener(UpdateLayout);
         if (IsLowercase)
             inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
+    }
+
+    private void OnEnable() {
+        _mobileInputField.SetVisible(true);
     }
 
     public void ShowWarning(string warningMsg) {
@@ -133,7 +147,7 @@ public class InputFieldController : MonoBehaviour {
         return msg;
     }
 
-    private void DoOnEndEditPassword(string value) {
+    private void DoOnEndEditPassword(string value = "") {
         OnEndEditPassword.Invoke();
     }
 
@@ -141,12 +155,18 @@ public class InputFieldController : MonoBehaviour {
         onValueChanged.Invoke();
     }
 
+    private void OnReturn() {
+        inputField.onEndEdit?.Invoke(inputField.text);
+    }
+
     private void OnDestroy() {
         inputField.onEndEdit.RemoveListener(DoOnEndEditPassword);
         inputField.onValueChanged.RemoveListener(OnValueChanged);
+        _mobileInputField.OnReturnPressedEvent.RemoveListener(OnReturn);
     }
 
     private void OnDisable() {
+        _mobileInputField.SetVisible(false);
         if (IsClearOnDisable) {
             SetToDefaultState();
             text = "";

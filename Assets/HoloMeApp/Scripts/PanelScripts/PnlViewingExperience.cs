@@ -39,6 +39,7 @@ public class PnlViewingExperience : MonoBehaviour {
     bool skipTutorial;
     bool activatedForStreaming;
     bool isTeaser;
+    bool isRoom;
     StreamJsonData.Data data;
     bool viewingExperienceInFocus;
     bool tutorialDisplayed;
@@ -69,7 +70,7 @@ public class PnlViewingExperience : MonoBehaviour {
             OnPlaced();
             return;
         }
-        hologramHandler.SetOnPlacementUIHelperFinished(() => { if (viewingExperienceInFocus) StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed)); });
+        hologramHandler.SetOnPlacementUIHelperFinished(() => { if (viewingExperienceInFocus && !isRoom) StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed)); });
         scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         ShowMessage(scaneEnviromentStr);
         tutorialState = TutorialState.MessageTapToPlace;
@@ -92,7 +93,7 @@ public class PnlViewingExperience : MonoBehaviour {
         scanAnimationItems.SetActive(true);
         scanAnimationItems.transform.DOScale(Vector3.one, animationSpeed).SetDelay(0.5f);
     }
-    private void HideScanAnimation(float animationSpeed) {
+    private void HideScanAnimation(float animationSpeed = 0) {
         scanAnimationItems.transform.DOScale(Vector3.zero, animationSpeed).OnComplete(() => {
             scanAnimationItems.SetActive(false);
         });
@@ -140,6 +141,7 @@ public class PnlViewingExperience : MonoBehaviour {
         SharedActivationFunctions();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, streamJsonData.title } });
         this.isTeaser = isTeaser;
+        isRoom = false;
         this.data = streamJsonData;
         activatedForStreaming = false;
         btnBurger.SetActive(true);
@@ -152,11 +154,12 @@ public class PnlViewingExperience : MonoBehaviour {
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
         }
     }
-    public void ActivateForStreaming(string channelName, string streamID) {
+    public void ActivateForStreaming(string channelName, string streamID, bool isRoom) {
         StopExperience();
         SharedActivationFunctions();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, "Live Stream: " + channelName }, { AnalyticParameters.ParamPerformanceID, streamID } });
         isTeaser = false;
+        this.isRoom = isRoom;
         activatedForStreaming = true;
         btnBurger.SetActive(false); //Close button not required on this page
         hologramHandler.TogglePreRecordedVideoRenderer(false);
@@ -165,7 +168,9 @@ public class PnlViewingExperience : MonoBehaviour {
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
-            StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
+            if (!isRoom) {
+                StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
+            }
         }
     }
     void SharedActivationFunctions() {
@@ -181,12 +186,13 @@ public class PnlViewingExperience : MonoBehaviour {
         canvasGroup.DOFade(1, .5f);
     }
     public void FadeOutCanvas() {
+        HideScanAnimation();
         canvasGroup.DOFade(0, .5f);
     }
     public void StopExperience() {
         viewingExperienceInFocus = false;
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
-        //ToggleARSessionObjects(false);
+        ToggleARSessionObjects(false);
         hologramHandler.StopVideo();
     }
 }

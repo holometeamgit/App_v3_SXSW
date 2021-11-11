@@ -14,7 +14,7 @@ public abstract class BtnInteractionRequirementChecker : MonoBehaviour {
     /// <summary>
     /// This action is fired when the interactivity requirements have been updated.
     /// </summary>
-    protected Action _onRequirementsUpdated;
+    protected Action<bool> _onAvailableUpdated;
     /// <summary>
     /// The function is needed to check the requirements for the interactivity of the button
     /// </summary>
@@ -29,11 +29,11 @@ public abstract class BtnInteractionRequirementChecker : MonoBehaviour {
     protected virtual void OnEnable() {
         CheckBtnController();
         _btnController.AddCheckInteractionRequirementListener(CheckRequirements);
-        _onRequirementsUpdated += _btnController.CheckInteractionRequirement;
+        _onAvailableUpdated += _btnController.CheckInteractionRequirement;
     }
 
     protected virtual void OnDisable() {
         _btnController.RemoveCheckInteractionRequirementListener(CheckRequirements);
-        _onRequirementsUpdated -= _btnController.CheckInteractionRequirement;
+        _onAvailableUpdated -= _btnController.CheckInteractionRequirement;
     }
 }

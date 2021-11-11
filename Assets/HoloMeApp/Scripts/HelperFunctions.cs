@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class HelperFunctions {
     public const string EXTJSON = ".json";
@@ -105,9 +107,28 @@ public class HelperFunctions {
         return false;
     }
 
-    public static Color GetColor(int r, int g, int b, int a = 1)
-    {
+    public static Color GetColor(int r, int g, int b, int a = 1) {
         return new Color(r / 255f, g / 255f, b / 255f, a / 255f);
+    }
+
+    /// <summary>
+    /// Use this to detect if user's finger is over UI to block raycasts etc
+    /// </summary>
+    /// <returns>True if over UI</returns>
+    public static bool IsPointerOverUIObject() {
+        if (Input.touchCount > 0) {
+            for (int i = 0; i < Input.touchCount; i++) {
+                PointerEventData eventData = new PointerEventData(EventSystem.current);
+                eventData.position = Input.GetTouch(i).position;
+                List<RaycastResult> results = new List<RaycastResult>();
+                EventSystem.current.RaycastAll(eventData, results);
+
+                if (results.Count > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /// <summary>
