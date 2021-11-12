@@ -64,8 +64,8 @@ public class PnlProfile : MonoBehaviour {
     /// Switch profile to welcome
     /// </summary>
     public void ProfileToWelcome() {
-        PnlProfileConstructor._onActivated?.Invoke(false);
-        PnlWelcomeConstructor._onActivated?.Invoke(true);
+        ProfileConstructor.OnActivated?.Invoke(false);
+        WelcomeConstructor.OnActivated?.Invoke(true);
         _accountManager.LogOut();
     }
 
@@ -73,8 +73,8 @@ public class PnlProfile : MonoBehaviour {
     /// Switch profile to main menu
     /// </summary>
     public void ProfileToMainMenu() {
-        PnlProfileConstructor._onActivated?.Invoke(false);
-        PnlHomeScreenConstructor._onActivated?.Invoke(true);
+        ProfileConstructor.OnActivated?.Invoke(false);
+        HomeScreenConstructor.OnActivated?.Invoke(true);
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
@@ -111,7 +111,7 @@ public class PnlProfile : MonoBehaviour {
     }
 
     private void ShowMsgForDeletedUser() {
-        PnlGenericErrorConstructor.ActivateDoubleButton(null,
+        GenericConstructor.ActivateDoubleButton(null,
             string.Format("This account has been deleted, contact support to reinstate. "),
             "Support",
             "Cancel",

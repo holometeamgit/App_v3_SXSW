@@ -71,7 +71,7 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
         inputFieldEmail.ShowWarning("E-mail is not verified");
 
         if (EmailVerificationTimer.IsOver) {
-            PnlGenericErrorConstructor.ActivateDoubleButton("Email verication",
+            GenericConstructor.ActivateDoubleButton("Email verication",
                 string.Format("You have not activated your account via the email, would you like us to send it again? \n {0}", email),
                 "Yes",
                 "No",
@@ -79,12 +79,12 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
                     CallBacks.onEmailVerification?.Invoke();
                     EmailVerificationTimer.Release();
                 },
-                () => { PnlGenericErrorConstructor.Deactivate(); });
+                () => { GenericConstructor.Deactivate(); });
         } else {
-            PnlGenericErrorConstructor.ActivateSingleButton("Email verication",
+            GenericConstructor.ActivateSingleButton("Email verication",
                string.Format("You have not activated your account via the email \n {0}", email),
                "Ok",
-               () => { PnlGenericErrorConstructor.Deactivate(); });
+               () => { GenericConstructor.Deactivate(); });
         }
     }
 
@@ -130,32 +130,32 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     /// Switch sign in to profile
     /// </summary>
     public void SignInToProfile() {
-        PnlSignInEmailConstructor._onActivated?.Invoke(false);
-        PnlProfileConstructor._onActivated?.Invoke(true);
+        SignInConstructor.OnActivated?.Invoke(false);
+        ProfileConstructor.OnActivated?.Invoke(true);
     }
 
     /// <summary>
     /// Switch sign in to sign up
     /// </summary>
     public void SignInToSignUp() {
-        PnlSignInEmailConstructor._onActivated?.Invoke(false);
-        PnlSignUpEmailConstructor._onActivated?.Invoke(true);
+        SignInConstructor.OnActivated?.Invoke(false);
+        SignUpConstructor.OnActivated?.Invoke(true);
     }
 
     /// <summary>
     /// Switch sign in to reset password
     /// </summary>
     public void SignInToResetPassword() {
-        PnlSignInEmailConstructor._onActivated?.Invoke(false);
-        PnlResetPasswordConstructor._onActivated?.Invoke(true);
+        SignInConstructor.OnActivated?.Invoke(false);
+        ResetPasswordConstructor.OnActivated?.Invoke(true);
     }
 
     /// <summary>
     /// Switch sign in to welcome
     /// </summary>
     public void SignInToWelcome() {
-        PnlSignInEmailConstructor._onActivated?.Invoke(false);
-        PnlWelcomeConstructor._onActivated?.Invoke(true);
+        SignInConstructor.OnActivated?.Invoke(false);
+        WelcomeConstructor.OnActivated?.Invoke(true);
         _accountManager.LogOut();
     }
 

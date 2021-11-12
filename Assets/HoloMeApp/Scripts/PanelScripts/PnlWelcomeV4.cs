@@ -29,8 +29,8 @@ public class PnlWelcomeV4 : MonoBehaviour {
 
     private void SwitchToProfile() {
         HelperFunctions.DevLog("Welcome SwitchToProfile");
-        PnlProfileConstructor._onActivated?.Invoke(true);
-        PnlWelcomeConstructor._onActivated?.Invoke(false);
+        ProfileConstructor.OnActivated?.Invoke(true);
+        WelcomeConstructor.OnActivated?.Invoke(false);
     }
 
     /// <summary>
@@ -38,8 +38,8 @@ public class PnlWelcomeV4 : MonoBehaviour {
     /// </summary>
     public void SwitchToSignUp() {
         HelperFunctions.DevLog("Welcome SwitchToSignUp");
-        PnlSignUpEmailConstructor._onActivated?.Invoke(true);
-        PnlWelcomeConstructor._onActivated?.Invoke(false);
+        SignUpConstructor.OnActivated?.Invoke(true);
+        WelcomeConstructor.OnActivated?.Invoke(false);
     }
 
     /// <summary>
@@ -47,8 +47,8 @@ public class PnlWelcomeV4 : MonoBehaviour {
     /// </summary>
     public void SwitchToSignIn() {
         HelperFunctions.DevLog("Welcome SwitchToSignIn");
-        PnlSignInEmailConstructor._onActivated?.Invoke(true);
-        PnlWelcomeConstructor._onActivated?.Invoke(false);
+        SignInConstructor.OnActivated?.Invoke(true);
+        WelcomeConstructor.OnActivated?.Invoke(false);
     }
 
     private void OnEnable() {

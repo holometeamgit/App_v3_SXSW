@@ -29,7 +29,7 @@ public class PnlChangePassword : MonoBehaviour {
     }
 
     private void OnChangePasswordCallBack() {
-        PnlGenericErrorConstructor.ActivateSingleButton(" ", "Password has been successfully updated", "Continue", () => switchToNextMenu.Switch());
+        GenericConstructor.ActivateSingleButton(" ", "Password has been successfully updated", "Continue", () => switchToNextMenu.Switch());
     }
 
     private void OnErrorChangePasswordCallBack(BadRequestChangePassword badRequestChangePassword) {

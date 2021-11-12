@@ -72,7 +72,7 @@ public class PnlResetPassword : MonoBehaviour {
 
     private void ResetPasswordCallBack() {
         resetPasswordEnterEmail.ClearData();
-        PnlGenericErrorConstructor.ActivateSingleButton(" ", "Password has been successfully updated", "Continue", () => switcherToResetPassword.Switch());
+        GenericConstructor.ActivateSingleButton(" ", "Password has been successfully updated", "Continue", () => switcherToResetPassword.Switch());
     }
 
     private void ErrorResetPasswordCallBack(BadRequestResetPassword badRequestResetPassword) {

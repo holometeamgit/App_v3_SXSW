@@ -31,12 +31,12 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     }
 
     private void ShowWarning() {
-        PnlGenericErrorConstructor.ActivateDoubleButton(null,
+        GenericConstructor.ActivateDoubleButton(null,
             string.Format("Changing a password associated with a Facebook account will create login issues with your Beem account."),
             "Continue",
             "Cancel",
-            () => { PnlGenericErrorConstructor.Deactivate(); SendMsg(); },
-            () => PnlGenericErrorConstructor.Deactivate(), true);
+            () => { GenericConstructor.Deactivate(); SendMsg(); },
+            () => GenericConstructor.Deactivate(), true);
     }
 
     private void SendMsg() {
@@ -44,10 +44,10 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     }
 
     private void MsgSentCallBack() {
-        PnlGenericErrorConstructor.ActivateSingleButton("Change password",
+        GenericConstructor.ActivateSingleButton("Change password",
             string.Format("Password change information has been sent to email {0}", emailInputField.text),
             "Continue",
-            () => { PnlGenericErrorConstructor.Deactivate(); ResetPasswordToSignIn(); });
+            () => { GenericConstructor.Deactivate(); ResetPasswordToSignIn(); });
     }
 
     private void ErrorMsgCallBack(string msg) {
@@ -69,8 +69,8 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     /// Switch reset password to sign in
     /// </summary>
     public void ResetPasswordToSignIn() {
-        PnlResetPasswordConstructor._onActivated?.Invoke(false);
-        PnlSignInEmailConstructor._onActivated?.Invoke(true);
+        ResetPasswordConstructor.OnActivated?.Invoke(false);
+        SignInConstructor.OnActivated?.Invoke(true);
     }
 
     private void OnEnable() {

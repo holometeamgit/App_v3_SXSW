@@ -52,8 +52,8 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     }
 
     private void SignUpCallBack() {
-        PnlEmailVerificationConstructor._onActivated?.Invoke(true);
-        PnlSignUpEmailConstructor._onActivated?.Invoke(false);
+        EmailVerificationConstructor.OnActivated?.Invoke(true);
+        SignUpConstructor.OnActivated?.Invoke(false);
         ClearInputFieldData();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete);
     }
@@ -62,8 +62,8 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     /// Sign Up To Welcome
     /// </summary>
     public void SignUpToWelcome() {
-        PnlWelcomeConstructor._onActivated?.Invoke(true);
-        PnlSignUpEmailConstructor._onActivated?.Invoke(false);
+        WelcomeConstructor.OnActivated?.Invoke(true);
+        SignUpConstructor.OnActivated?.Invoke(false);
         _accountManager.LogOut();
     }
 

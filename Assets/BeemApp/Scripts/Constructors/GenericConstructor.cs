@@ -7,7 +7,7 @@ using UnityEngine.Events;
 /// <summary>
 /// Constructor for Generic Error Pnl
 /// </summary>
-public class PnlGenericErrorConstructor : MonoBehaviour {
+public class GenericConstructor : MonoBehaviour {
     [SerializeField]
     private PnlGenericError pnlGenericError;
 
