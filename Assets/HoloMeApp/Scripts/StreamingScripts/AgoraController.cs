@@ -238,7 +238,7 @@ public class AgoraController : MonoBehaviour {
         this.streamID = streamID;
 
         agoraRTMChatController.Login(rtmToken);
-        iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_COMMUNICATION);
+        iRtcEngine.SetChannelProfile(IsRoom? CHANNEL_PROFILE.CHANNEL_PROFILE_COMMUNICATION : CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
         if (IsChannelCreator) {
             iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
