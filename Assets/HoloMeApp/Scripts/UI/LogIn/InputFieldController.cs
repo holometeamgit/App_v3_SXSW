@@ -102,6 +102,12 @@ public class InputFieldController : MonoBehaviour {
         inputField.ForceLabelUpdate();
     }
 
+    private void OnApplicationPause(bool pause) {
+        if (pause) {
+            OnReturn();
+        }
+    }
+
     private string OverrideMsg(string msg) {
         //sign up
         HelperFunctions.DevLog("OverrideMsg " + msg);

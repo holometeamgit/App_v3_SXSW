@@ -1,4 +1,7 @@
 using Mopsicus.Plugins;
+using System.Collections;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,40 +14,25 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private RectTransform _rectTransform;
         [SerializeField]
-        private float _baseShift = 50;
-        [SerializeField]
         private float _baseHeight = 165;
+        [SerializeField]
+        private float _baseShift = 50;
 
-        private bool isChangedSize = false;
+        [SerializeField]
+        private float _speed = 10;
+
+        private Coroutine coroutine;
 
         public override void RefreshData(InputField inputField) {
-            var x = new GUIStyle {
-                font = inputField.textComponent.font,
-                fontSize = inputField.textComponent.fontSize
-            };
-            var textTranform = inputField.textComponent.GetComponent<RectTransform>();
-            var mobileInputField = inputField.GetComponent<MobileInputField>();
-
-            var words = inputField.text.Split(' ');
-            var currentWidth = 0f;
-            var currentHeight = 0f;
-
-            foreach (string word in words) {
-                var size = x.CalcSize(new GUIContent(word));
-                currentWidth += size.x;
-                if (currentWidth >= textTranform.sizeDelta.x) {
-                    currentHeight = _baseShift * (Mathf.FloorToInt(currentWidth / textTranform.sizeDelta.x));
-                    currentWidth = size.x;
-                    isChangedSize = true;
-                }
+            if (inputField.textComponent.text.Length > 0) {
+                ChangeInputHeight(_baseHeight + inputField.textComponent.preferredHeight - _baseShift);
+            } else {
+                ChangeInputHeight(_baseHeight);
             }
+        }
 
-            _rectTransform.sizeDelta = new Vector2(_rectTransform.sizeDelta.x, _baseHeight + currentHeight);
-            textTranform.sizeDelta = new Vector2(textTranform.sizeDelta.x, _baseShift + currentHeight);
-
-            if (isChangedSize) {
-                isChangedSize = false;
-            }
+        private void ChangeInputHeight(float height) {
+            _rectTransform.sizeDelta = new Vector2(_rectTransform.sizeDelta.x, height);
         }
 
     }

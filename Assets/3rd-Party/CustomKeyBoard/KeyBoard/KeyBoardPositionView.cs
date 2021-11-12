@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 namespace Beem.KeyBoard {
     /// <summary>
@@ -11,14 +14,20 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private float keyBoardHeightAndroid = 680;
 
+        [SerializeField]
+        private float _speed = 10;
+
+        private Coroutine coroutine;
+
         /// <summary>
         /// Update Keyboard Position
         /// </summary>
-        public void UpdatePosition() {
+        public void UpdatePosition(bool isShown) {
+
 #if UNITY_IOS
-            ChangePosition(keyBoardHeightiOS);
+            UpdatePosition(isShown, keyBoardHeightiOS);
 #elif UNITY_ANDROID
-            ChangePosition(keyBoardHeightAndroid);
+            UpdatePosition(isShown, keyBoardHeightAndroid);
 #endif
 
         }
@@ -27,15 +36,16 @@ namespace Beem.KeyBoard {
         /// Update keyboard position
         /// </summary>
         /// <param name="height"></param>
-        public void UpdatePosition(int height) {
-            ChangePosition(height);
+        public void UpdatePosition(bool isShown, float height) {
+            if (isShown) {
+                ChangePosition(height);
+            }
         }
 
         private void ChangePosition(float height) {
-            float _basePosition = height;
-            Vector2 position = _rectTransform.anchoredPosition;
-            position.y = _basePosition;
-            _rectTransform.anchoredPosition = position;
+            _rectTransform.anchoredPosition = new Vector2(_rectTransform.anchoredPosition.x, height);
+
         }
+
     }
 }
