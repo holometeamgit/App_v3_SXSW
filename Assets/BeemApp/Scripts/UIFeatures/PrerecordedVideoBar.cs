@@ -8,23 +8,60 @@ using Beem.UI;
 /// </summary>
 public class PrerecordedVideoBar : MonoBehaviour {
 
-    private List<IStreamDataView> _streamDataViews;
-
     [SerializeField]
     private StreamLikesRefresherView streamLikesRefresherView;
+
+    [Header("Hologram manager")]
+    [SerializeField]
+    private HologramHandler _hologramHandler;
+
+    private List<IStreamDataView> _streamDataViews;
+
+    private StreamJsonData.Data _streamData = default;
+
+    private bool newDataAssigned = false;
+
+    private bool isPinned = false;
+
     /// <summary>
     /// Initialization
     /// </summary>
     /// <param name="streamData">Stream Json data</param>
     public void Init(StreamJsonData.Data streamData) {
 
-        _streamDataViews = GetComponentsInChildren<IStreamDataView>().ToList();
+        newDataAssigned = true;
+        _streamData = streamData;
+        if (isPinned) {
+            Refresh();
+        } else {
+#if !UNITY_EDITOR
+            Deactivate();
+#else
+            Refresh();
+#endif
+        }
 
-        _streamDataViews.ForEach(x => x.Init(streamData));
+        _hologramHandler.SetOnPlacementUIHelperFinished(Refresh);
+
+    }
+
+    private void Refresh() {
+        if (!newDataAssigned) {
+            return;
+        }
+
+        isPinned = true;
 
         gameObject.SetActive(true);
-        streamLikesRefresherView?.StartCountAsync(streamData.id.ToString());
+
+        _streamDataViews = GetComponentsInChildren<IStreamDataView>().ToList();
+
+        _streamDataViews.ForEach(x => x.Init(_streamData));
+
+        streamLikesRefresherView?.StartCountAsync(_streamData.id.ToString());
     }
+
+
 
     /// <summary>
     /// Deactivate

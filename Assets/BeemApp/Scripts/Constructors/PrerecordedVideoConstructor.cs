@@ -3,11 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PnlPrerecordedConstructor : MonoBehaviour {
+/// <summary>
+/// Constructor For Prerecorded Video
+/// </summary>
+public class PrerecordedVideoConstructor : MonoBehaviour {
 
+    [Header("Prerecorded Video Window")]
     [SerializeField]
-    private PnlPrerecordedVideo _pnlPrerecordedVideo;
+    private PrerecordedVideoWindow _prerecordedVideoWindow;
 
+    [Header("Prerecorded Video Bar")]
     [SerializeField]
     private PrerecordedVideoBar _prerecordedVideoBar;
 
@@ -26,12 +31,12 @@ public class PnlPrerecordedConstructor : MonoBehaviour {
     }
 
     private void Activate(StreamJsonData.Data streamData) {
-        _pnlPrerecordedVideo.Init(streamData);
+        _prerecordedVideoWindow.Init(streamData);
         _prerecordedVideoBar.Init(streamData);
     }
 
     private void Deactivate() {
-        _pnlPrerecordedVideo.Deactivate();
+        _prerecordedVideoWindow.Deactivate();
         _prerecordedVideoBar.Deactivate();
     }
 }

@@ -154,6 +154,7 @@ public class PnlViewingExperience : MonoBehaviour {
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
         }
     }
+
     public void ActivateForStreaming(string channelName, string streamID, bool isRoom) {
         StopExperience();
         SharedActivationFunctions();
@@ -194,5 +195,6 @@ public class PnlViewingExperience : MonoBehaviour {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         ToggleARSessionObjects(false);
         hologramHandler.StopVideo();
+        PrerecordedVideoConstructor._onDeactivated?.Invoke();
     }
 }
