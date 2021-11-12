@@ -64,7 +64,7 @@ public class PnlProfile : MonoBehaviour {
     /// Switch profile to welcome
     /// </summary>
     public void ProfileToWelcome() {
-        ProfileConstructor.OnActivated?.Invoke(false);
+        UsernameConstructor.OnActivated?.Invoke(false);
         WelcomeConstructor.OnActivated?.Invoke(true);
         _accountManager.LogOut();
     }
@@ -73,8 +73,9 @@ public class PnlProfile : MonoBehaviour {
     /// Switch profile to main menu
     /// </summary>
     public void ProfileToMainMenu() {
-        ProfileConstructor.OnActivated?.Invoke(false);
+        UsernameConstructor.OnActivated?.Invoke(false);
         HomeScreenConstructor.OnActivated?.Invoke(true);
+        MenuConstructor.OnActivated?.Invoke(true);
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {

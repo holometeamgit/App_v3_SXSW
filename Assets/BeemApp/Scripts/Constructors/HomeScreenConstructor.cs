@@ -1,8 +1,18 @@
 using System;
+using UnityEngine;
 /// <summary>
 /// Constructor for HomeScreen
 /// </summary>
-public class HomeScreenConstructor : WindowConstructor {
+public class HomeScreenConstructor : MonoBehaviour {
+
+    [Header("Bottom Menu Bar")]
+    [SerializeField]
+    protected GameObject _bottomMenuBar;
+
+    [Header("Top Menu Bar")]
+    [SerializeField]
+    protected GameObject _topMenuBar;
+
     public static Action<bool> OnActivated = delegate { };
 
     protected void OnEnable() {
@@ -14,6 +24,7 @@ public class HomeScreenConstructor : WindowConstructor {
     }
 
     protected void Activate(bool status) {
-        _window.SetActive(status);
+        _topMenuBar.SetActive(status);
+        _bottomMenuBar.SetActive(status);
     }
 }

@@ -1,9 +1,9 @@
 using System;
 
 /// <summary>
-/// Constructor for Profile window
+/// Constructor for Settings window
 /// </summary>
-public class ProfileConstructor : WindowConstructor {
+public class SettingsConstructor : WindowConstructor {
     public static Action<bool> OnActivated = delegate { };
 
     protected void OnEnable() {

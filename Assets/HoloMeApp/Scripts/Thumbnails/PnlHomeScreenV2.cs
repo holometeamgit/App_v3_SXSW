@@ -120,6 +120,7 @@ public class PnlHomeScreenV2 : MonoBehaviour {
     }
 
     private void OnEnable() {
+        SetDefaultState();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyHomeScreen);
         pullRefreshController.EndRefreshing();
         if (needRefresh)
@@ -133,7 +134,7 @@ public class PnlHomeScreenV2 : MonoBehaviour {
 
     private void OnDestroy() {
         CallBacks.onStreamsContainerUpdated -= DataUpdateCallBack;
-        if(thumbnailsDataFetcher != null) {
+        if (thumbnailsDataFetcher != null) {
             thumbnailsDataFetcher.OnAllDataLoaded -= AllDataLoaded;
         }
     }

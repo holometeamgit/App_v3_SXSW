@@ -131,7 +131,7 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     /// </summary>
     public void SignInToProfile() {
         SignInConstructor.OnActivated?.Invoke(false);
-        ProfileConstructor.OnActivated?.Invoke(true);
+        UsernameConstructor.OnActivated?.Invoke(true);
     }
 
     /// <summary>
