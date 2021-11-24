@@ -4361,6 +4361,21 @@ PrefabInstance:
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.size
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 225807306442706127, guid: 5fb056e3ebab94fae838452a52f777c0,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1278785929}
+    - target: {fileID: 225807306442706127, guid: 5fb056e3ebab94fae838452a52f777c0,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Switch
+      objectReference: {fileID: 0}
+    - target: {fileID: 225807306442706127, guid: 5fb056e3ebab94fae838452a52f777c0,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Switcher, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 234510952594014336, guid: 5fb056e3ebab94fae838452a52f777c0,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -4877,6 +4892,7 @@ PrefabInstance:
     - {fileID: 8395558131437138761, guid: 5fb056e3ebab94fae838452a52f777c0, type: 3}
     - {fileID: 1276170317, guid: 5fb056e3ebab94fae838452a52f777c0, type: 3}
     - {fileID: 1276170320, guid: 5fb056e3ebab94fae838452a52f777c0, type: 3}
+    - {fileID: 5311794858755475165, guid: 5fb056e3ebab94fae838452a52f777c0, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 5fb056e3ebab94fae838452a52f777c0, type: 3}
 --- !u!1 &895048175 stripped
 GameObject:
@@ -6111,6 +6127,32 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 234510954451777389}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1278785927 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 225807306442706114, guid: 5fb056e3ebab94fae838452a52f777c0,
+    type: 3}
+  m_PrefabInstance: {fileID: 895048174}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1278785929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1278785927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6439298e7a369481d90dd373af950173, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  doOnlyWithActiveObject: 0
+  switchOnList:
+  - {fileID: 2275525968572402820}
+  switchOffList:
+  - {fileID: 895048175}
+  OnSwitch:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1301941423
 GameObject:
   m_ObjectHideFlags: 0
