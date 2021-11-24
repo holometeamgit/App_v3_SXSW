@@ -7,17 +7,27 @@ public class ChatBtnPosition : MonoBehaviour {
     [SerializeField]
     private RectTransform contentContainer;
 
-    private const float SHIFT = 140;
+    [SerializeField]
+    private RectTransform viewport;
 
-    private const float MAX_COUNT = 6;
+    private RectTransform buttonsRectTrans;
 
-    private Vector3 basePosition;
+    private const float OFFSET = 50;
+
+    private float contentContaineSizeRef;
+
+    private bool limitReached;
 
     private void Awake() {
-        basePosition = transform.localPosition;
+        buttonsRectTrans = GetComponent<RectTransform>();
     }
 
     private void OnEnable() {
+        contentContaineSizeRef = -1;
+        limitReached = false;
+    }
+
+    private void Update() {
         UpdatePosition();
     }
 
@@ -26,19 +36,19 @@ public class ChatBtnPosition : MonoBehaviour {
     /// </summary>
     public void UpdatePosition() {
 
-        int activeChildCount = 0;
-
-        for (int i = 0; i < contentContainer.childCount; i++) {
-            if (contentContainer.transform.GetChild(i).gameObject.activeInHierarchy) {
-                activeChildCount++;
-            }
+        if (limitReached) {
+            return;
         }
 
-        Vector3 position = transform.localPosition;
+        if (contentContainer.rect.size.y <= viewport.rect.size.y) {
+            if (contentContaineSizeRef != contentContainer.rect.size.y) {
+                buttonsRectTrans.anchoredPosition = new Vector2(buttonsRectTrans.anchoredPosition.x, contentContainer.rect.size.y + OFFSET);
+                contentContaineSizeRef = contentContainer.rect.size.y;
 
-        position.y = basePosition.y + SHIFT * Mathf.Min(activeChildCount, MAX_COUNT);
-
-        transform.localPosition = position;
-
+            }
+        } else {
+            buttonsRectTrans.anchoredPosition = new Vector2(buttonsRectTrans.anchoredPosition.x, viewport.rect.size.y + OFFSET);
+            limitReached = true;
+        }
     }
 }
