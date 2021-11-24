@@ -7,7 +7,7 @@ using TMPro;
 public class SwitchToProfileOnLogIn : MonoBehaviour {
 
     private void SwitchToProfile() {
-        UsernameConstructor.OnActivated?.Invoke(true);
+        CreateUsernameConstructor.OnActivated?.Invoke(true);
         WelcomeConstructor.OnActivated?.Invoke(false);
         SignUpConstructor.OnActivated?.Invoke(false);
         EmailVerificationConstructor.OnActivated?.Invoke(false);

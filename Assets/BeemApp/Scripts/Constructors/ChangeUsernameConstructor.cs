@@ -1,9 +1,9 @@
 using System;
 
 /// <summary>
-/// Constructor for Profile window
+/// Constructor for Change username window
 /// </summary>
-public class UsernameConstructor : WindowConstructor {
+public class ChangeUsernameConstructor : WindowConstructor {
     public static Action<bool> OnActivated = delegate { };
 
     protected void OnEnable() {

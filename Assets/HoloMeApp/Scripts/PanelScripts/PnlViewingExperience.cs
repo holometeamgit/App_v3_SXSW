@@ -197,4 +197,14 @@ public class PnlViewingExperience : MonoBehaviour {
         hologramHandler.StopVideo();
         PrerecordedVideoConstructor._onDeactivated?.Invoke();
     }
+
+    /// <summary>
+    /// Open Main Menu
+    /// </summary>
+    public void OpenMenu() {
+        MenuConstructor.OnActivated?.Invoke(true);
+        SettingsConstructor.OnActivated?.Invoke(false);
+        HomeScreenConstructor.OnActivated?.Invoke(true);
+        StreamCallBacks.onCloseComments?.Invoke();
+    }
 }

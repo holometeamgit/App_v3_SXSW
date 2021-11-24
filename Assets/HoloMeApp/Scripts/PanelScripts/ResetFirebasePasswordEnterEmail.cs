@@ -83,6 +83,14 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
         CallBacks.onResetPasswordMsgSent += MsgSentCallBack;
     }
 
+    /// <summary>
+    /// Back to settings
+    /// </summary>
+    public void ChangePasswordToSettings() {
+        ChangePasswordConstructor.OnActivated?.Invoke(false);
+        SettingsConstructor.OnActivated?.Invoke(true);
+    }
+
     private void OnDisable() {
         CallBacks.onResetPasswordClick -= SendMsgOnEmailForChangePassword;
         CallBacks.onFail -= ErrorMsgCallBack;

@@ -29,7 +29,7 @@ public class PnlWelcomeV4 : MonoBehaviour {
 
     private void SwitchToProfile() {
         HelperFunctions.DevLog("Welcome SwitchToProfile");
-        UsernameConstructor.OnActivated?.Invoke(true);
+        CreateUsernameConstructor.OnActivated?.Invoke(true);
         WelcomeConstructor.OnActivated?.Invoke(false);
     }
 

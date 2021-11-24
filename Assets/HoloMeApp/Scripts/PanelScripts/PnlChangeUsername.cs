@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PnlChangeUsername : MonoBehaviour
-{
+public class PnlChangeUsername : MonoBehaviour {
     [SerializeField] PnlGenericError pnlGenericError;
     [SerializeField] UserWebManager userWebManager;
     [SerializeField] InputFieldController usernameInputField;
     [SerializeField] int userNameLimit = 30;
-    [SerializeField] Switcher switchToSetting;
 
     public void ChangeUsername() {
-        if(LocalDataVerification())
+        if (LocalDataVerification())
             userWebManager.UpdateUserData(userName: usernameInputField?.text ?? null);
     }
 
@@ -24,15 +22,15 @@ public class PnlChangeUsername : MonoBehaviour
     }
 
     private void UpdateUserDataCallBack() {
-        GenericConstructor.ActivateSingleButton(" ", "Username has been successfully updated", "Continue", () => switchToSetting.Switch());
+        GenericConstructor.ActivateSingleButton(" ", "Username has been successfully updated", "Continue", () => ChangeUserNameToSettings());
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
         if (!string.IsNullOrEmpty(badRequestData.username)) {
-           /* if (badRequestData.username.Contains("is exist"))
-                usernameInputField.ShowWarning("Username already exists, please choose another");
-            else*/
-                usernameInputField.ShowWarning(badRequestData.username);
+            /* if (badRequestData.username.Contains("is exist"))
+                 usernameInputField.ShowWarning("Username already exists, please choose another");
+             else*/
+            usernameInputField.ShowWarning(badRequestData.username);
         }
 
         if (!string.IsNullOrEmpty(badRequestData.detail))
@@ -55,6 +53,14 @@ public class PnlChangeUsername : MonoBehaviour
         userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
         usernameInputField.text = userWebManager.GetUsername();
         userWebManager.LoadUserInfo();
+    }
+
+    /// <summary>
+    /// Back to settings
+    /// </summary>
+    public void ChangeUserNameToSettings() {
+        ChangeUsernameConstructor.OnActivated?.Invoke(false);
+        SettingsConstructor.OnActivated?.Invoke(true);
     }
 
     private void OnDisable() {
