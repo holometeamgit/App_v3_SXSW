@@ -53,7 +53,7 @@ public class PurchaseManager : MonoBehaviour
     #region products request
 
     private void GetProductList() {
-        webRequestHandler.GetRequest(GetRequestProductURL(), ProductListCallBack, ErrorProductListCallBack);
+        webRequestHandler.Get(GetRequestProductURL(), ProductListCallBack, ErrorProductListCallBack, needHeaderAccessToken: false);
     }
 
     private void ProductListCallBack(long code, string body) {
