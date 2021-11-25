@@ -63,7 +63,7 @@ namespace Beem.KeyBoard {
         /// Update InputField
         /// </summary>
         /// <param name="text"></param>
-        public void UpdateText(string text = "") {
+        public void UpdateText() {
             foreach (AbstractKeyBoardSettings item in _inputFieldSettings) {
                 item.RefreshData(InputField);
             }
@@ -87,6 +87,7 @@ namespace Beem.KeyBoard {
             _keyBoardPositionView.UpdatePosition(isShown);
 
             if (isShown) {
+                UpdateText();
                 _returnBtn.onClick.AddListener(() => {
                     string text = InputField.text;
                     if (InputField.characterLimit == 0) {
@@ -105,7 +106,7 @@ namespace Beem.KeyBoard {
                     Return();
                 });
                 InputField.onValueChanged.AddListener((text) => {
-                    UpdateText(text);
+                    UpdateText();
                     onChangeEvent?.Invoke(text);
                     if (text.Contains("\n")) {
                         _returnBtn.onClick?.Invoke();
