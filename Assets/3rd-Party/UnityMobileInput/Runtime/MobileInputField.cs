@@ -248,7 +248,6 @@ namespace Mopsicus.Plugins {
             if (!_isMobileInputCreated || !this.Visible) {
                 return;
             }
-            this.SetVisible(hasFocus);
         }
 
         /// <summary>
@@ -574,7 +573,15 @@ namespace Mopsicus.Plugins {
             data["y"] = InvariantCultureString(rect.y / Screen.height);
             data["width"] = InvariantCultureString(rect.width / Screen.width);
             data["height"] = InvariantCultureString(rect.height / Screen.height);
+            Debug.LogError("data[x] = " + data["x"]);
+            Debug.LogError("data[y] = " + data["y"]);
+            Debug.LogError("data[width] = " + data["width"]);
+            Debug.LogError("data[height] = " + data["height"]);
             this.Execute(data);
+        }
+
+        public void SetRectNative() {
+            SetRectNative(this._inputObjectText.rectTransform);
         }
 
         /// <summary>

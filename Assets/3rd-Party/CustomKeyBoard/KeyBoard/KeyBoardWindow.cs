@@ -117,6 +117,8 @@ namespace Beem.KeyBoard {
                 InputField.onValueChanged.RemoveAllListeners();
                 MobileInputField.OnReturnPressedEvent.RemoveAllListeners();
             }
+
+            MobileInputField.SetRectNative();
         }
     }
 }

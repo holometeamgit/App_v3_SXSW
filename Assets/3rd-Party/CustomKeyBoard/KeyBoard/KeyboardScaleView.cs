@@ -18,11 +18,6 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private float _baseShift = 50;
 
-        [SerializeField]
-        private float _speed = 10;
-
-        private Coroutine coroutine;
-
         public override void RefreshData(InputField inputField) {
             if (inputField.textComponent.text.Length > 0) {
                 ChangeInputHeight(_baseHeight + inputField.textComponent.preferredHeight - _baseShift);

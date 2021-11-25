@@ -14,11 +14,6 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private float keyBoardHeightAndroid = 680;
 
-        [SerializeField]
-        private float _speed = 10;
-
-        private Coroutine coroutine;
-
         /// <summary>
         /// Update Keyboard Position
         /// </summary>
