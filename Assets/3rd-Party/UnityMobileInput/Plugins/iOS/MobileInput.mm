@@ -248,8 +248,8 @@ NSString *plugin;
     float y = [[data valueForKey:@"y"] floatValue] * viewController.view.bounds.size.height;
     float width = [[data valueForKey:@"width"] floatValue] * viewController.view.bounds.size.width;
     float height = [[data valueForKey:@"height"] floatValue] * viewController.view.bounds.size.height;
-    //x -= editView.superview.frame.origin.x;
-    //y -= editView.superview.frame.origin.y;
+    x -= editView.superview.frame.origin.x;
+    y -= editView.superview.frame.origin.y;
     editView.frame = CGRectMake(x, y, width, height);
 }
 
