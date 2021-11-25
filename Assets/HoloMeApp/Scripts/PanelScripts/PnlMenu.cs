@@ -72,6 +72,7 @@ public class PnlMenu : MonoBehaviour {
 
         SettingsConstructor.OnActivated?.Invoke(false);
         MenuConstructor.OnActivated?.Invoke(false);
+        HomeScreenConstructor.OnActivated?.Invoke(false);
         StreamCallBacks.onCloseComments?.Invoke();
         _pnlStreamOverlay.OpenAsRoomBroadcaster();
     }
@@ -91,6 +92,7 @@ public class PnlMenu : MonoBehaviour {
 
         SettingsConstructor.OnActivated?.Invoke(false);
         MenuConstructor.OnActivated?.Invoke(false);
+        HomeScreenConstructor.OnActivated?.Invoke(false);
         StreamCallBacks.onCloseComments?.Invoke();
         _pnlStreamOverlay.OpenAsStreamer();
     }

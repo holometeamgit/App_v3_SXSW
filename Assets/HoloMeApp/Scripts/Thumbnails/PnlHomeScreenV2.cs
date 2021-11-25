@@ -29,8 +29,6 @@ public class PnlHomeScreenV2 : MonoBehaviour {
     bool initialized;
     bool needRefresh;
 
-    public UnityEvent OnPlay;
-
     public UnityEvent OnAllDataLoaded;
 
     public void SetDefaultState() {
@@ -110,7 +108,11 @@ public class PnlHomeScreenV2 : MonoBehaviour {
     }
 
     private void OnPlayCallBack(string user) {
-        OnPlay.Invoke();
+        HomeScreenConstructor.OnActivated?.Invoke(false);
+        SettingsConstructor.OnActivated?.Invoke(false);
+        MenuConstructor.OnActivated?.Invoke(false);
+        ChangeUsernameConstructor.OnActivated?.Invoke(false);
+        ChangePasswordConstructor.OnActivated?.Invoke(false);
     }
 
     private void EndingUIUpdate() {
