@@ -6,7 +6,9 @@ using UnityEngine.Networking;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Text;
-
+/// <summary>
+/// PatchWebRequester for patch  Web Request
+/// </summary>
 public class PatchWebRequester : WebRequester {
     /// <summary>
     /// Patch webrequest

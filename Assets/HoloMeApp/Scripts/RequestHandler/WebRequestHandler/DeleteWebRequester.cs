@@ -5,7 +5,9 @@ using System;
 using UnityEngine.Networking;
 using System.Threading.Tasks;
 using System.Threading;
-
+/// <summary>
+/// DeleteWebRequester for delete request 
+/// </summary>
 public class DeleteWebRequester : WebRequester
 {
     /// <summary>

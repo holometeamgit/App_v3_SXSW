@@ -6,10 +6,12 @@ using UnityEngine.Networking;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Text;
-
+/// <summary>
+/// PutWebRequester for put Web Request
+/// </summary>
 public class PutWebRequester : WebRequester {
     /// <summary>
-    /// Delete webrequest
+    /// Put webrequest
     /// </summary>
     public void PutRequest<T>(string url, T body, WebRequestBodyType bodyType, ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
         string headerAccessToken = null, ActionWrapper onCancel = null, Action<float> uploadProgress = null) {

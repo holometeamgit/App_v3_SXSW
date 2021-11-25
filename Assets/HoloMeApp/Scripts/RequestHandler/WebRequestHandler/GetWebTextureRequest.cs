@@ -6,6 +6,9 @@ using UnityEngine.Networking;
 using System.Threading.Tasks;
 using System.Threading;
 
+/// <summary>
+/// GetWebTextureRequest for get Texture Web Request
+/// </summary>
 public class GetWebTextureRequest : WebRequester {
 
     private const int TIMEOUT_TEXTURE_REQUEST = 120000;

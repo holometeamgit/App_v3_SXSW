@@ -5,7 +5,9 @@ using System;
 using UnityEngine.Networking;
 using System.Threading.Tasks;
 using System.Threading;
-
+/// <summary>
+/// GetWebRequester for get Web Request
+/// </summary>
 public class GetWebRequester : WebRequester {
     /// <summary>
     /// Get webrequest

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System;
-
+/// <summary>
+/// WebRequestHandler containt all webrequest function
+/// </summary>
 public class WebRequestHandler : MonoBehaviour {
 
     public string ServerURLAuthAPI { get { return serverURLAPI.ServerURLAuthAPI; } private set { } }
@@ -45,10 +47,16 @@ public class WebRequestHandler : MonoBehaviour {
         _isInit = true;
     }
 
+    /// <summary>
+    /// default success log Callback
+    /// </summary>
     public void LogCallback(long code, string body) {
         HelperFunctions.DevLog($"Code {code} Message {body}");
     }
 
+    /// <summary>
+    /// default fail log Callback
+    /// </summary>
     public void ErrorLogCallback(long code, string body) {
         HelperFunctions.DevLogError($"An Error Occurred! Code {code} Message {body}");
     }

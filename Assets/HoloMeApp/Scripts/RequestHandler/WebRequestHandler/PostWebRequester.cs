@@ -6,7 +6,9 @@ using UnityEngine.Networking;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Text;
-
+/// <summary>
+/// PostWebRequester for Post Web Request
+/// </summary>
 public class PostWebRequester : WebRequester {
 
     /// <summary>

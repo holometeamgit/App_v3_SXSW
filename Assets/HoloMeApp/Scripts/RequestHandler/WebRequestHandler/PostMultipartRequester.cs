@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Text;
 using System.IO;
-
+/// <summary>
+/// PostMultipartRequester for Post Multipart Web Request
+/// </summary>
 public class PostMultipartRequester : WebRequester {
 
     private const int TIMEOUT_MULTIPART_REQUEST = 1200000;

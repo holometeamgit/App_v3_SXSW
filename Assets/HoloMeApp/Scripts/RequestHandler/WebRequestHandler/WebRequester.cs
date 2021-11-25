@@ -5,7 +5,9 @@ using System;
 using UnityEngine.Networking;
 using System.Threading.Tasks;
 using System.Threading;
-
+/// <summary>
+/// Async web request class
+/// </summary>
 public class WebRequester 
 {
     protected const int TIMEOUT = 5000;
