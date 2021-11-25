@@ -22,8 +22,6 @@ public class WebRequester
         T responseDelegate, ErrorTypeDelegate errorTypeDelegate,
         ActionWrapper onCancel = null, Action<float> downloadProgress = null, Action<float> uploadProgress = null, int maxTimesWait = MAX_TIMES_BEFORE_STOP_REQUEST) {
 
-        HelperFunctions.DevLog("before request prepared. maxTimesWait:" + maxTimesWait);
-
         UnityWebRequest request = null;
         CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         if (onCancel != null) {
@@ -31,15 +29,13 @@ public class WebRequester
         }
         CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        if (onCancel.WasCalled) {
+        if (onCancel != null && onCancel.WasCalled) {
             HelperFunctions.DevLog("onCancel.WasCalled" + onCancel.WasCalled);
             cancellationTokenSource.Cancel();
         }
 
         try {
             request = createWebRequest?.Invoke();
-
-            HelperFunctions.DevLog("request prepared");
 
             Task requestTask = UnityWebRequestAsync(request, cancellationToken, maxTimesWait, downloadProgress: downloadProgress, uploadProgress: uploadProgress);
             await RetryAsyncHelpe.RetryOnExceptionAsync<UnityWebRequestServerConnectionException>(async () => { await requestTask; });
@@ -89,7 +85,6 @@ public class WebRequester
         while (!request.isDone) {
             downloadProgress?.Invoke(request.downloadProgress);
             uploadProgress?.Invoke(request.uploadProgress);
-            HelperFunctions.DevLog("request.uploadProgress " + request.uploadProgress);
             //check cancel
             if (cancellationToken.IsCancellationRequested) {
                 request.Abort();
@@ -105,7 +100,6 @@ public class WebRequester
 
         if (request.isNetworkError || request.isHttpError) {
             if (request.responseCode >= 500) {
-                HelperFunctions.DevLog("real server connection error " + request.responseCode +" " + request.isHttpError  + " " + request.isNetworkError);
                 throw new UnityWebRequestServerConnectionException(request.responseCode, request.downloadHandler.text);
             } else {
                 throw new UnityWebRequestException(request.responseCode, request.downloadHandler.text);
