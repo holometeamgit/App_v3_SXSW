@@ -13,6 +13,7 @@ using System.IO;
 public class PostMultipartRequester : WebRequester {
 
     private const int TIMEOUT_MULTIPART_REQUEST = 1200000;
+    private const int MAX_TIMES_BEFORE_POST_MULTIPART_STOP_REQUEST = 150;
     /// <summary>
     /// Post request multiple files 
     /// </summary>
@@ -54,7 +55,7 @@ public class PostMultipartRequester : WebRequester {
         }
 
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, uploadProgress: uploadProgress).ContinueWith((taskWebRequestData) => {
+        WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, uploadProgress: uploadProgress, maxTimesWait: MAX_TIMES_BEFORE_POST_MULTIPART_STOP_REQUEST).ContinueWith((taskWebRequestData) => {
         }, taskScheduler);
     }
 

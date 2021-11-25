@@ -22,9 +22,7 @@ public class WebRequester
         T responseDelegate, ErrorTypeDelegate errorTypeDelegate,
         ActionWrapper onCancel = null, Action<float> downloadProgress = null, Action<float> uploadProgress = null, int maxTimesWait = MAX_TIMES_BEFORE_STOP_REQUEST) {
 
-        Debug.Log("WebRequestWithRetryAsync");
-
-        HelperFunctions.DevLog("before request prepared");
+        HelperFunctions.DevLog("before request prepared. maxTimesWait:" + maxTimesWait);
 
         UnityWebRequest request = null;
         CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -33,8 +31,10 @@ public class WebRequester
         }
         CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-        if (onCancel.WasCalled)
+        if (onCancel.WasCalled) {
+            HelperFunctions.DevLog("onCancel.WasCalled" + onCancel.WasCalled);
             cancellationTokenSource.Cancel();
+        }
 
         try {
             request = createWebRequest?.Invoke();
@@ -78,7 +78,8 @@ public class WebRequester
     private async Task UnityWebRequestAsync(UnityWebRequest request, CancellationToken cancellationToken, int maxTimesWait,
         Action<float> downloadProgress = null, Action<float> uploadProgress = null) {
         int countStoppedSteps = 0;
-        float prevProgressState = request.downloadProgress;
+        float prevDownloadProgressState = request.downloadProgress;
+        float prevUploadProgressState = request.uploadProgress;
 
         request.SendWebRequest();
 
@@ -88,12 +89,13 @@ public class WebRequester
         while (!request.isDone) {
             downloadProgress?.Invoke(request.downloadProgress);
             uploadProgress?.Invoke(request.uploadProgress);
+            HelperFunctions.DevLog("request.uploadProgress " + request.uploadProgress);
             //check cancel
             if (cancellationToken.IsCancellationRequested) {
                 request.Abort();
                 cancellationToken.ThrowIfCancellationRequested();
                 //check timeout
-            } else if (IsServerWaitingTimeout(ref countStoppedSteps, ref prevProgressState, request, maxTimesWait)) {
+            } else if (IsServerWaitingTimeout(ref countStoppedSteps, ref prevDownloadProgressState, ref prevUploadProgressState, request, maxTimesWait)) {
                 request.Abort();
                 throw new UnityWebRequestServerConnectionException(504, "Gateway Timeout");
             }
@@ -103,6 +105,7 @@ public class WebRequester
 
         if (request.isNetworkError || request.isHttpError) {
             if (request.responseCode >= 500) {
+                HelperFunctions.DevLog("real server connection error " + request.responseCode +" " + request.isHttpError  + " " + request.isNetworkError);
                 throw new UnityWebRequestServerConnectionException(request.responseCode, request.downloadHandler.text);
             } else {
                 throw new UnityWebRequestException(request.responseCode, request.downloadHandler.text);
@@ -116,11 +119,12 @@ public class WebRequester
     /// <summary>
     /// check server timeout
     /// </summary>
-    private bool IsServerWaitingTimeout(ref int countStoppedSteps, ref float prevProgressState, UnityWebRequest request, int maxTimesWait) {
-        if (prevProgressState == request.downloadProgress) {
+    private bool IsServerWaitingTimeout(ref int countStoppedSteps, ref float prevDownloadProgressState, ref float prevUploadProgressState, UnityWebRequest request, int maxTimesWait) {
+        if (prevDownloadProgressState == request.downloadProgress && prevUploadProgressState == request.uploadProgress) {
             countStoppedSteps++;
         } else {
-            prevProgressState = request.downloadProgress;
+            prevDownloadProgressState = request.downloadProgress;
+            prevUploadProgressState = request.uploadProgress;
             countStoppedSteps = 0;
         }
 
