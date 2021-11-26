@@ -10,36 +10,27 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private RectTransform _rectTransform;
         [SerializeField]
-        private float keyBoardHeightiOS = 830;
+        private int keyBoardHeightiOS = 840;
         [SerializeField]
-        private float keyBoardHeightAndroid = 680;
+        private int keyBoardHeightAndroid = 800;
 
         /// <summary>
         /// Update Keyboard Position
         /// </summary>
-        public void UpdatePosition(bool isShown) {
-
-#if UNITY_IOS
-            UpdatePosition(isShown, keyBoardHeightiOS);
-#elif UNITY_ANDROID
-            UpdatePosition(isShown, keyBoardHeightAndroid);
-#endif
-
-        }
-
-        /// <summary>
-        /// Update keyboard position
-        /// </summary>
-        /// <param name="height"></param>
-        public void UpdatePosition(bool isShown, float height) {
+        public void UpdatePosition(bool isShown, int height = 0) {
             if (isShown) {
+#if UNITY_IOS
+                ChangePosition(Mathf.Max(keyBoardHeightiOS, height));
+#elif UNITY_ANDROID
+                ChangePosition(Mathf.Max(keyBoardHeightAndroid, height));
+#endif
+            } else {
                 ChangePosition(height);
             }
         }
 
-        private void ChangePosition(float height) {
+        private void ChangePosition(int height) {
             _rectTransform.anchoredPosition = new Vector2(_rectTransform.anchoredPosition.x, height);
-
         }
 
     }

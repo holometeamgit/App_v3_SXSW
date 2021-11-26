@@ -76,15 +76,24 @@ namespace Beem.KeyBoard {
         }
 
         /// <summary>
+        /// Refresh Keyboard Height
+        /// </summary>
+        /// <param name="height"></param>
+        public void RefreshHeight(bool isShown, int height) {
+            _keyBoardPositionView.UpdatePosition(isShown, height);
+
+            MobileInputField.SetRectNative();
+        }
+
+        /// <summary>
         /// Show Window
         /// </summary>
         /// <param name="isShown"></param>
-        public void Show(bool isShown, int height, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
+        public void Show(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
             _isShown = isShown;
             gameObject.SetActive(isShown);
             MobileInputField.SetFocus(isShown);
             MobileInputField.SetVisible(isShown);
-            _keyBoardPositionView.UpdatePosition(isShown);
 
             if (isShown) {
                 UpdateText();
