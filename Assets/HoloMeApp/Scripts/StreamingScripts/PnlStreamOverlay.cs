@@ -276,7 +276,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         if (channelName == userWebManager.GetUsername()) {
             GenericConstructor.ActivateSingleButton("Viewing as stream host",
                 "Please connect to the stream using a different account",
-                onBackPress: () => { CloseAsStreamer(); });
+                onBackPress: () => { StreamOverlayConstructor.onActivatedAsLiveBroadcaster?.Invoke(false); });
 
             return;
         }
@@ -322,7 +322,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         else if (isChannelCreator)
             GenericConstructor.ActivateDoubleButton("End the live stream?",
                 "Closing this page will end the live stream and disconnect your users.",
-                onButtonOnePress: () => { CloseAsStreamer(); },
+                onButtonOnePress: () => { StreamOverlayConstructor.onActivatedAsLiveBroadcaster?.Invoke(false); },
                 onButtonTwoPress: () => GenericConstructor.Deactivate());
         else
             GenericConstructor.ActivateDoubleButton("Disconnect from live stream?",

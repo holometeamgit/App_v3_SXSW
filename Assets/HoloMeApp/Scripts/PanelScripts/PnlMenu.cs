@@ -6,10 +6,8 @@ using Beem.Permissions;
 
 public class PnlMenu : MonoBehaviour {
     [SerializeField] UserWebManager userWebManager;
-    [SerializeField] TMP_Text txtUsername;
     [SerializeField] GameObject goLiveBtn;
     [SerializeField] GameObject myRoomBtn;
-    [SerializeField] PnlStreamOverlay _pnlStreamOverlay;
     [SerializeField]
     private PermissionController _permissionController;
 
@@ -21,8 +19,6 @@ public class PnlMenu : MonoBehaviour {
     }
 
     private void UpdateUI() {
-        if (txtUsername != null)
-            txtUsername.text = userWebManager.GetUsername();
         goLiveBtn.SetActive(userWebManager.CanGoLive());
         myRoomBtn.SetActive(userWebManager.CanStartRoom());
     }
@@ -74,7 +70,7 @@ public class PnlMenu : MonoBehaviour {
         MenuConstructor.OnActivated?.Invoke(false);
         HomeScreenConstructor.OnActivated?.Invoke(false);
         StreamCallBacks.onCloseComments?.Invoke();
-        _pnlStreamOverlay.OpenAsRoomBroadcaster();
+        StreamOverlayConstructor.onActivatedAsRoomBroadcaster?.Invoke(true);
     }
 
     /// <summary>
@@ -94,6 +90,6 @@ public class PnlMenu : MonoBehaviour {
         MenuConstructor.OnActivated?.Invoke(false);
         HomeScreenConstructor.OnActivated?.Invoke(false);
         StreamCallBacks.onCloseComments?.Invoke();
-        _pnlStreamOverlay.OpenAsStreamer();
+        StreamOverlayConstructor.onActivatedAsLiveBroadcaster?.Invoke(true);
     }
 }
