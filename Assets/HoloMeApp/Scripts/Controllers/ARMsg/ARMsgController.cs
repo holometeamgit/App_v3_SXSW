@@ -199,5 +199,9 @@ namespace Beem.ARMsg {
             return _webRequestHandler.ServerURLMediaAPI + _arMsgAPIScriptableObject.DeleteARMessageById.Replace("{id}", id.ToString());
         }
         #endregion
+
+        ~ARMsgController() {
+
+        }
     }
 }

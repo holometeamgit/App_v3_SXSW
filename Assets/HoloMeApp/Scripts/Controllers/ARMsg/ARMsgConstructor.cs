@@ -28,6 +28,6 @@ public class ARMsgConstructor : MonoBehaviour {
         CallBacks.OnDeleteLastARMsgActions -= _arMsgController.DeleteLastARMsg;
         CallBacks.OnGetLastARMsgShareLink -= _arMsgController.GetReadyShareLink;
 
-        _arMsgController.OnCancelAll();
+        _arMsgController?.OnCancelAll();
     }
 }
