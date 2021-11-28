@@ -18,8 +18,8 @@ MonoBehaviour:
   OnSwitch:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8694394563078891494}
-        m_TargetAssemblyTypeName: ARMsgProcessingInterrupter, Assembly-CSharp
+      - m_Target: {fileID: 286818250227627494}
+        m_TargetAssemblyTypeName: ARMsgReadyInterrupter, Assembly-CSharp
         m_MethodName: Interrupt
         m_Mode: 1
         m_Arguments:
@@ -544,7 +544,7 @@ GameObject:
   - component: {fileID: 8694394563078891515}
   - component: {fileID: 8694394563078891493}
   - component: {fileID: 8694394563078891492}
-  - component: {fileID: 8694394563078891494}
+  - component: {fileID: 286818250227627494}
   m_Layer: 5
   m_Name: UIDownloadingDone
   m_TagString: Untagged
@@ -632,7 +632,7 @@ MonoBehaviour:
   onFocusEvent:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &8694394563078891494
+--- !u!114 &286818250227627494
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -641,7 +641,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8694394563078891514}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5d68a43ce0254424b865ce156bb37cb, type: 3}
+  m_Script: {fileID: 11500000, guid: e39f75a461731451eb86ce7c2309f27c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _interruptSwitcher: {fileID: 8694394562375165581}
@@ -1215,7 +1215,8 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -27
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2447893180925916897, guid: 6d815eda1fa734b92aaae86f4ecc6077, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6d815eda1fa734b92aaae86f4ecc6077, type: 3}
 --- !u!1 &784894545408622967 stripped
 GameObject:

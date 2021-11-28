@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using Beem.ARMsg;
 
-public class ARMsgProcessingInterrupter : MonoBehaviour {
+public class ARMsgReadyInterrupter : MonoBehaviour {
     [SerializeField] Switcher _interruptSwitcher;
 
     private void OnEnable() {
-        CallBacks.OnCancelAllARMsgActions += OnInterrupt;
+        CallBacks.OnAllARMsgСanceled += OnInterrupt;
     }
 
     public void Interrupt() {
         CallBacks.OnActivateGenericErrorDoubleButton?.Invoke("Before you go...",
-            "If you exit before processing has completed, you will lose your AR message",
-            "Exit", "Return",
+            "If you exit you could lose your AR message if you don’t share the link.",
+            "Copy link and exit", "Return",
             () => {
-                CallBacks.OnDeleteLastARMsgActions?.Invoke();
+                //TODO add copy link action. CallBacks.OnGetLastARMsgShareLink?.Invoke(); can give you link
                 CallBacks.OnCancelAllARMsgActions?.Invoke();
             }, null, false);
     }

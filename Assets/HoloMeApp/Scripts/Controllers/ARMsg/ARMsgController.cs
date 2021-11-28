@@ -55,7 +55,7 @@ namespace Beem.ARMsg {
             PlayerPrefs.DeleteKey(LAST_UPLOADED_ARMSG_NAME);
             PlayerPrefs.Save();
 
-            CallBacks.OnlAllARMsgActionsed?.Invoke();
+            CallBacks.OnAllARMsgСanceled?.Invoke();
         }
 
         public void DeleteLastARMsg() {

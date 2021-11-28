@@ -17,7 +17,7 @@ namespace Beem.ARMsg {
         public static Func<string> OnGetLastARMsgShareLink;
 
         public static Action OnARMsgUpdloaded = delegate { };
-        public static Action OnlAllARMsgActionsed = delegate { };
+        public static Action OnAllARMsgСanceled = delegate { };
 
         #region UI
         public static Action OnUpdloadingUIOpened = delegate { };
