@@ -50,6 +50,8 @@ public class ARMsgScreenRecorder : MonoBehaviour {
         // Get the device
         audioDevice = deviceQuery.current as AudioDevice;
 
+        HelperFunctions.DevLog("vide record width " + width + " heigh " + heigh);
+
         // Create recorder
         recorder = new MP4Recorder(width, heigh, AgoraSharedVideoConfig.FrameRate, audioDevice.sampleRate, audioDevice.channelCount);
         // Stream media samples

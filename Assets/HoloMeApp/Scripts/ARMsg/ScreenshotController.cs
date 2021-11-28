@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Beem.ARMsg;
 
-public class ScreenshotController : MonoBehaviour
-{
+public class ScreenshotController : MonoBehaviour {
     private const string FILE_NAME = "Screenshot.png";
 
     private void Start() {
@@ -27,8 +26,32 @@ public class ScreenshotController : MonoBehaviour
     }
 
     IEnumerator AddingToImage() {
+        int width;
+        int heigh;
+        AgoraSharedVideoConfig.GetResolution(screenWidth: Screen.width, screenHeigh: Screen.height, out width, out heigh);
+
+        HelperFunctions.DevLog("screenshot width " + width + " heigh " + heigh);
+
+        //ScreenCapture.CaptureScreenshot(FILE_NAME);
+
         yield return new WaitForEndOfFrame();
-        ScreenCapture.CaptureScreenshot(FILE_NAME);
+
+        string path = GetPathToFile();
+
+        Texture2D screenImage = new Texture2D(Screen.width, Screen.height);
+        //Get Image from screen
+        screenImage.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
+        screenImage.Apply();
+        yield return new WaitForEndOfFrame();
+        // screenImage.Resize(width, heigh);
+        // screenImage.Apply();
+        TextureScale.Scale(screenImage, width, heigh);
+        yield return new WaitForEndOfFrame();
+        //Convert to png
+        byte[] imageBytes = screenImage.EncodeToPNG();
+
+        //Save image to file
+        System.IO.File.WriteAllBytes(path, imageBytes);
         yield return new WaitForEndOfFrame();
     }
 
