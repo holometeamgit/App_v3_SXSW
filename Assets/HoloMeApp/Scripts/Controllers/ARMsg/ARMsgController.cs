@@ -71,6 +71,10 @@ namespace Beem.ARMsg {
             return _lastLoadedARMsgJSON?.ar_message_s3_link ?? null;
         }
 
+        public ARMsgJSON.Data GetLastReadyARMsgData() {
+            return _lastLoadedARMsgJSON;
+        }
+
         //[Inject]
         private void Contructor(ARMsgAPIScriptableObject arMsgAPIScriptableObject, WebRequestHandler webRequestHandler) {
             _arMsgAPIScriptableObject = arMsgAPIScriptableObject;

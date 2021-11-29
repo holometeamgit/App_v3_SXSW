@@ -22,4 +22,8 @@ public class ARMsgProcessingInterrupter : MonoBehaviour {
     private void OnInterrupt() {
         _interruptSwitcher.Switch();
     }
+
+    private void OnDisable() {
+        CallBacks.OnCancelAllARMsgActions -= OnInterrupt;
+    }
 }
