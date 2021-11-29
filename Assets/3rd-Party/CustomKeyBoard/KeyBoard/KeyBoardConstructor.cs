@@ -15,9 +15,11 @@ namespace Beem.KeyBoard {
         public static Action<bool, InputField.OnChangeEvent, InputField.SubmitEvent> onShow = delegate { };
         public static Action<bool, InputField.OnChangeEvent, InputField.SubmitEvent, UITextField> onUITextShow = delegate { };
 
+
         private UITextField _currentUITextField;
         private KeyBoardSettings _inputSettings;
         private int _height;
+        private Vector2Int _limit = new Vector2Int(826, 1200);
 
         private void Awake() {
             Construct();
@@ -30,11 +32,19 @@ namespace Beem.KeyBoard {
         }
 
         private void OnShowKeyboard(bool isShown, int height) {
-            _height = height;
+            if (isShown) {
+                if (height > _limit.x && height < _limit.y) {
+                    _height = height;
+                } else {
+                    _height = _limit.x;
+                }
+            }
+            _keyBoardWindow.RefreshHeight(isShown, _height);
+
         }
 
         private void Show(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
-            _keyBoardWindow.Show(isShown, _height, onChangeEvent, submitEvent);
+            _keyBoardWindow.Show(isShown, onChangeEvent, submitEvent);
         }
 
         private void ShowWithoutField(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
