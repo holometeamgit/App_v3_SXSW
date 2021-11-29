@@ -18,11 +18,11 @@ namespace Beem.Firebase.DynamicLink {
         }
 
         protected virtual void Subscribe() {
-            DynamicLinksCallBacks.onGetShortLink += Refresh;
+            DynamicLinksCallBacks.onShareSocialLink += Refresh;
         }
 
         protected virtual void Unsubscribe() {
-            DynamicLinksCallBacks.onGetShortLink -= Refresh;
+            DynamicLinksCallBacks.onShareSocialLink -= Refresh;
         }
 
         protected abstract void Refresh(Uri value, SocialMetaTagParameters socialMetaTagParameters);

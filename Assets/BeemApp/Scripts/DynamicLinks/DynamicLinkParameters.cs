@@ -12,7 +12,8 @@ namespace Beem.Firebase.DynamicLink {
         public enum Folder {
             stream,
             room,
-            username
+            username,
+            message
         }
 
         public string Prefix {
@@ -24,6 +25,12 @@ namespace Beem.Firebase.DynamicLink {
         public string Id {
             get {
                 return _id;
+            }
+        }
+
+        public string Username {
+            get {
+                return _username;
             }
         }
 
@@ -47,6 +54,7 @@ namespace Beem.Firebase.DynamicLink {
 
         private string _prefix = default;
         private string _id;
+        private string _username;
         private string _dynamicLinkURL;
         private Folder _folderName;
         private SocialMetaTagParameters _socialMetaTagParameters;
@@ -58,8 +66,9 @@ namespace Beem.Firebase.DynamicLink {
             _folderName = folderName;
         }
 
-        public DynamicLinkParameters(string prefix, string dynamicLinkURL, Folder folderName, string id, SocialMetaTagParameters socialMetaTagParameters) {
+        public DynamicLinkParameters(string prefix, string dynamicLinkURL, Folder folderName, string username, string id, SocialMetaTagParameters socialMetaTagParameters) {
             _prefix = prefix;
+            _username = username;
             _id = id;
             _dynamicLinkURL = dynamicLinkURL;
             _folderName = folderName;

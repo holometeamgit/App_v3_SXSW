@@ -16,7 +16,7 @@ public class DeepLinkRoomController : MonoBehaviour {
         HelperFunctions.DevLog("Get Room By UserName " + username);
         webRequestHandler.Get(GetRoomUsernameUrl(username),
             (code, body) => RoomReceived(body),
-            (code, body) => { StreamCallBacks.onUserDoesntExist(code); HelperFunctions.DevLogError(code + " " + body); }, 
+            (code, body) => { StreamCallBacks.onUserDoesntExist(code); HelperFunctions.DevLogError(code + " " + body); },
             false);
     }
 
@@ -35,9 +35,9 @@ public class DeepLinkRoomController : MonoBehaviour {
     private void GetRoomLink(string source) {
         if (!serverURLAPIScriptableObject.UseHashForRoomLink) {
             Uri uri = new Uri(serverURLAPIScriptableObject.FirebaseDynamicLink + serverURLAPIScriptableObject.FirebaseRoom + source);
-            DynamicLinksCallBacks.onGetShortLink?.Invoke(uri, SocialParameters(source));
+            DynamicLinksCallBacks.onShareSocialLink?.Invoke(uri, SocialParameters(source));
         } else {
-            DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.ARUrl, DynamicLinkParameters.Folder.room, source, SocialParameters(source));
+            DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.ARUrl, DynamicLinkParameters.Folder.room, source, source, SocialParameters(source));
             DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters);
         }
     }

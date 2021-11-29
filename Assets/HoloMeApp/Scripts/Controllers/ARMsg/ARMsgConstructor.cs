@@ -5,19 +5,37 @@ using System;
 using Beem.ARMsg;
 
 public class ARMsgConstructor : MonoBehaviour {
-    [SerializeField] ARMsgAPIScriptableObject _arMsgAPI;
-    [SerializeField] WebRequestHandler _webRequestHandler;
+    [SerializeField]
+    private ARMsgAPIScriptableObject _arMsgAPI;
+    [SerializeField]
+    private WebRequestHandler _webRequestHandler;
+    [SerializeField]
+    private PnlARMessages pnlARMessages;
+
     private ARMsgController _arMsgController;
+
+
+    private void Activate(ARMsgJSON.Data data) {
+        pnlARMessages.Init(data);
+    }
+
+    private void Deactivate() {
+        pnlARMessages.Deactivate();
+    }
+
 
     void Awake() {
         _arMsgController = new ARMsgController(_arMsgAPI, _webRequestHandler);
-        
+
         CallBacks.OnUpdloadingUIOpened += _arMsgController.UploadARMsg;
         CallBacks.OnCancelAllARMsgActions += _arMsgController.OnCancelAll;
         CallBacks.OnARMsgProcessingCheck += _arMsgController.GetLastUploadedARMsgInfo;
         CallBacks.OnCheckContainLastUploadedARMsg += _arMsgController.CheckContainLastUploadedARMsg;
         CallBacks.OnDeleteLastARMsgActions += _arMsgController.DeleteLastARMsg;
         CallBacks.OnGetLastARMsgShareLink += _arMsgController.GetReadyShareLink;
+        StreamCallBacks.onARMsgLinkReceived += _arMsgController.GetARMsgById;
+        CallBacks.OnActivated += Activate;
+        CallBacks.OnDeactivated += Deactivate;
     }
 
     private void OnDestroy() {
@@ -27,6 +45,9 @@ public class ARMsgConstructor : MonoBehaviour {
         CallBacks.OnCheckContainLastUploadedARMsg -= _arMsgController.CheckContainLastUploadedARMsg;
         CallBacks.OnDeleteLastARMsgActions -= _arMsgController.DeleteLastARMsg;
         CallBacks.OnGetLastARMsgShareLink -= _arMsgController.GetReadyShareLink;
+        StreamCallBacks.onARMsgLinkReceived -= _arMsgController.GetARMsgById;
+        CallBacks.OnActivated -= Activate;
+        CallBacks.OnDeactivated -= Deactivate;
 
         _arMsgController?.OnCancelAll();
     }

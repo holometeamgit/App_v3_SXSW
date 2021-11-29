@@ -15,6 +15,7 @@ namespace Beem.ARMsg {
         public static Func<string> OnGetBGImgFilePath;
         public static Func<bool> OnCheckContainLastUploadedARMsg;
         public static Func<string> OnGetLastARMsgShareLink;
+        public static Func<ARMsgJSON.Data> OnGetARMsgByID;
 
         public static Action OnARMsgUpdloaded = delegate { };
         public static Action OnAllARMsgСanceled = delegate { };
@@ -24,6 +25,8 @@ namespace Beem.ARMsg {
         public static Action OnARMsgProcessingCheck = delegate { };
         public static Action OnDeleteLastARMsgActions = delegate { };
         public static Action OnCancelAllARMsgActions = delegate { };
+        public static Action<ARMsgJSON.Data> OnActivated = delegate { };
+        public static Action OnDeactivated = delegate { };
         #endregion
 
         #region ARmsg Webrequest

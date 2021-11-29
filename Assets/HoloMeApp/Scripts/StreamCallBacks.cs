@@ -8,6 +8,7 @@ public class StreamCallBacks {
     #region deep link room
     // from app to controller
     public static Action<string> onUsernameLinkReceived = delegate { };
+    public static Action<string> onARMsgLinkReceived = delegate { };
     public static Action<RoomJsonData> onRoomDataReceived = delegate { };
     // from app to controller: notification that broadcaster stop room 
     public static Action onRoomClosed = delegate { };
@@ -43,7 +44,7 @@ public class StreamCallBacks {
     public static Action<string> onGetRoomLink = delegate { };
     public static Action<string, string> onGetStreamLink = delegate { };
     public static Action<StreamJsonData.Data> onGetPrerecordedLink = delegate { };
-    public static Action<StreamJsonData.Data> onGetARMessagesLink = delegate { };
+    public static Action<ARMsgJSON.Data> onGetARMessagesLink = delegate { };
 
     //when start stream on Agora
     public static Action<StreamStartResponseJsonData> onRoomCreated = delegate { };

@@ -12,9 +12,9 @@ public class PnlARMessages : MonoBehaviour {
     [SerializeField]
     private HologramHandler _hologramHandler;
 
-    private List<IStreamDataView> _streamDataViews;
+    private List<IARMsgDataView> _arMsgDataViews;
 
-    private StreamJsonData.Data _streamData = default;
+    private ARMsgJSON.Data _arMsgJSON = default;
 
     private bool newDataAssigned = false;
 
@@ -24,10 +24,10 @@ public class PnlARMessages : MonoBehaviour {
     /// Initialization
     /// </summary>
     /// <param name="streamData">Stream Json data</param>
-    public void Init(StreamJsonData.Data streamData) {
+    public void Init(ARMsgJSON.Data arMsgJSON) {
 
         newDataAssigned = true;
-        _streamData = streamData;
+        _arMsgJSON = arMsgJSON;
         if (isPinned) {
             Refresh();
         } else {
@@ -51,9 +51,9 @@ public class PnlARMessages : MonoBehaviour {
 
         gameObject.SetActive(true);
 
-        _streamDataViews = GetComponentsInChildren<IStreamDataView>().ToList();
+        _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
 
-        _streamDataViews.ForEach(x => x.Init(_streamData));
+        _arMsgDataViews.ForEach(x => x.Init(_arMsgJSON));
     }
 
 

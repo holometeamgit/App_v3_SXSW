@@ -1,3 +1,4 @@
+using Beem.ARMsg;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace Beem.UI {
         /// Close ARMessage
         /// </summary>
         public void Close() {
-            ARMessagesContructor.onDeactivated?.Invoke();
+            CallBacks.OnDeactivated?.Invoke();
         }
     }
 }

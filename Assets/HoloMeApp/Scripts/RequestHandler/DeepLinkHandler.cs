@@ -49,6 +49,22 @@ public class DeepLinkHandler : MonoBehaviour {
 
             HelperFunctions.DevLog("username = " + userName);
             StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
+        } else if (ContainFolder(uri, DynamicLinkParameters.Folder.message.ToString())) {
+
+            HelperFunctions.DevLog("GetMessagesParameters");
+
+            string messageId = GetFolderId(uri, DynamicLinkParameters.Folder.message.ToString());
+
+            HelperFunctions.DevLog("messageId = " + messageId);
+            StreamCallBacks.onARMsgLinkReceived?.Invoke(messageId);
+        } else if (ContainParameter(uri, DynamicLinkParameters.Folder.message.ToString())) {
+
+            HelperFunctions.DevLog("GetMessageParameters");
+
+            string messageId = GetParameterId(uri, DynamicLinkParameters.Folder.message.ToString());
+
+            HelperFunctions.DevLog("messageId = " + messageId);
+            StreamCallBacks.onARMsgLinkReceived?.Invoke(messageId);
         }
     }
 
