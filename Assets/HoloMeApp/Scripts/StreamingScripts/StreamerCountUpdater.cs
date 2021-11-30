@@ -14,6 +14,7 @@ public class StreamerCountUpdater : MonoBehaviour {
     [SerializeField]
     GameObject imageToDisableIfZero;
 
+    private bool isRoom;
     private RequestUserList requestUserList;
     private bool waitingForResponse;
     private Coroutine updateRoutine;
@@ -22,9 +23,11 @@ public class StreamerCountUpdater : MonoBehaviour {
 
     public Action<int> OnCountUpdated = delegate { };
 
-    public void StartCheck(string channelName) {
+    public void StartCheck(string channelName, bool isRoom) {
         if (!gameObject.activeInHierarchy)
             return;
+
+        this.isRoom = isRoom;
 
         agoraRequests = HelperFunctions.GetTypeIfNull<AgoraRequests>(agoraRequests);
 
@@ -73,7 +76,7 @@ public class StreamerCountUpdater : MonoBehaviour {
         if (responseData.data == null) {
             Debug.LogError("data was null");
         } else {
-            userCount = responseData.data.users.Count - 1; //Subtract streamer's own value
+            userCount = isRoom ? responseData.data.users.Count - 1 : responseData.data.users.Count; //Subtract streamer's own value if room
             foreach (string user in responseData.data.users) {
                 if (user == RequestCloudRecordAcquire.CLOUD_RECORD_UID) { //Subtract cloud record server as viewer
                     userCount -= 1;
