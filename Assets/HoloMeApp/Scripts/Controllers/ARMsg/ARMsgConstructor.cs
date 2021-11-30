@@ -36,6 +36,7 @@ public class ARMsgConstructor : MonoBehaviour {
         StreamCallBacks.onARMsgLinkReceived += _arMsgController.GetARMsgById;
         CallBacks.OnActivated += Activate;
         CallBacks.OnDeactivated += Deactivate;
+        CallBacks.OnGetLastReadyARMsgData += _arMsgController.GetLastReadyARMsgData;
     }
 
     private void OnDestroy() {
@@ -48,6 +49,7 @@ public class ARMsgConstructor : MonoBehaviour {
         StreamCallBacks.onARMsgLinkReceived -= _arMsgController.GetARMsgById;
         CallBacks.OnActivated -= Activate;
         CallBacks.OnDeactivated -= Deactivate;
+        CallBacks.OnGetLastReadyARMsgData -= _arMsgController.GetLastReadyARMsgData;
 
         _arMsgController?.OnCancelAll();
     }
