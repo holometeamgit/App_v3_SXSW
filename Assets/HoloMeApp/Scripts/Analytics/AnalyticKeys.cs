@@ -17,6 +17,7 @@
     public const string KeyHologramViewPercentage = "hologramViewPercentage";
     public const string KeyHologramLiveViewTime = "hologramLiveViewTime";
     public const string KeyViewerCountUpdate = "viewerCountUpdate";
+    public const string KeyMaxViewerCount = "maxViewerCount";
 
     public const string KeyGoLive = "goLive"; //When a broadcaster clicks 'go live' from the main menu
     public const string KeyLiveStarted = "liveStarted"; //When a broadcaster clicks 'go live' from the main menu and starts to record a video
