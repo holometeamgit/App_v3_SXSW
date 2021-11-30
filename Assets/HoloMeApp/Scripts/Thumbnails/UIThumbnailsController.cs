@@ -71,7 +71,7 @@ public class UIThumbnailsController : MonoBehaviour {
         List<long> removingListID = new List<long>();
 
         HashSet<long> setId = new HashSet<long>();
-        foreach(var data in dataList) {
+        foreach (var data in dataList) {
             setId.Add(data.id);
         }
 
@@ -181,7 +181,7 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetShareAction((data) => {
                 //btnThumbnailItems[i]
                 if (data.GetStage() == StreamJsonData.Data.Stage.Live) {
-                    StreamCallBacks.onGetStreamLink?.Invoke(data.id.ToString(), data.user);
+                    StreamCallBacks.onShareStreamLink?.Invoke(data.id.ToString(), data.user);
                 } else {
                     StreamCallBacks.onGetPrerecordedLink.Invoke(data);
                 }

@@ -21,12 +21,16 @@ public class ARMsgConstructor : MonoBehaviour {
 
     private ARMsgController _arMsgController;
 
+    private ARMsgJSON.Data currentData;
+
 
     private void Activate(ARMsgJSON.Data data) {
 
         if (!_permissionController.CheckCameraAccess()) {
             return;
         }
+
+        currentData = data;
 
         _pnlViewingExperience.ActivateForARMessaging(data);
 
@@ -36,6 +40,23 @@ public class ARMsgConstructor : MonoBehaviour {
     }
 
     private void Deactivate() {
+        CallBacks.OnActivateGenericErrorDoubleButton?.Invoke("Before you go...",
+           "If you exit you could lose your AR message if you don’t share the link.",
+           "Copy link and exit", "Return",
+           () => {
+               GUIUtility.systemCopyBuffer = currentData.share_link;
+               Close();
+           },
+           () => {
+               Close();
+           },
+           false);
+
+    }
+
+    private void Close() {
+        CallBacks.OnCancelAllARMsgActions?.Invoke();
+        _pnlViewingExperience.StopExperience();
         _pnlARMessages.Deactivate();
     }
 
@@ -49,8 +70,6 @@ public class ARMsgConstructor : MonoBehaviour {
         CallBacks.OnCheckContainLastUploadedARMsg += _arMsgController.CheckContainLastUploadedARMsg;
         CallBacks.OnDeleteLastARMsgActions += _arMsgController.DeleteLastARMsg;
         CallBacks.OnGetLastARMsgShareLink += _arMsgController.GetReadyShareLink;
-        StreamCallBacks.onARMsgLinkReceived += _arMsgController.GetARMsgById;
-        CallBacks.OnARMsgByIdReceived += Activate;
         CallBacks.OnActivated += Activate;
         CallBacks.OnDeactivated += Deactivate;
         CallBacks.OnGetLastReadyARMsgData += _arMsgController.GetLastReadyARMsgData;
@@ -63,8 +82,6 @@ public class ARMsgConstructor : MonoBehaviour {
         CallBacks.OnCheckContainLastUploadedARMsg -= _arMsgController.CheckContainLastUploadedARMsg;
         CallBacks.OnDeleteLastARMsgActions -= _arMsgController.DeleteLastARMsg;
         CallBacks.OnGetLastARMsgShareLink -= _arMsgController.GetReadyShareLink;
-        StreamCallBacks.onARMsgLinkReceived -= _arMsgController.GetARMsgById;
-        CallBacks.OnARMsgByIdReceived -= Activate;
         CallBacks.OnActivated -= Activate;
         CallBacks.OnDeactivated -= Deactivate;
         CallBacks.OnGetLastReadyARMsgData -= _arMsgController.GetLastReadyARMsgData;

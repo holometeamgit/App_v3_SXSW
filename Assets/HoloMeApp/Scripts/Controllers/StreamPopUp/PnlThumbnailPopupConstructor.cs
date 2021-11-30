@@ -11,7 +11,7 @@ public class PnlThumbnailPopupConstructor : MonoBehaviour {
     }
 
     private void Construct() {
-        StreamCallBacks.onStreamLinkReceived += OpenStream;
+        StreamCallBacks.onReceiveStreamLink += OpenStream;
     }
 
     private void OpenStream(string idString) {
@@ -21,6 +21,6 @@ public class PnlThumbnailPopupConstructor : MonoBehaviour {
     }
 
     private void OnDestroy() {
-        StreamCallBacks.onStreamLinkReceived -= OpenStream;
+        StreamCallBacks.onReceiveStreamLink -= OpenStream;
     }
 }

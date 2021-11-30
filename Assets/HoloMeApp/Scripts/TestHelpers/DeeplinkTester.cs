@@ -15,7 +15,7 @@ public class DeeplinkTester : MonoBehaviour {
 
     [ContextMenu("Get onUsernameLinkReceived ")]
     private void TestOnUsernameLinkReceived() {
-        StreamCallBacks.onUsernameLinkReceived?.Invoke("ivklim21");
+        StreamCallBacks.onReceiveRoomLink?.Invoke("ivklim21");
     }
 
     [ContextMenu("Get test event online")]

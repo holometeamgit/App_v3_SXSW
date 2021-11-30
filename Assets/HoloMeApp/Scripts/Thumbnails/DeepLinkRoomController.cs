@@ -32,48 +32,48 @@ public class DeepLinkRoomController : MonoBehaviour {
         }
     }
 
-    private void OnOpenRoom(string username) {
+    private void OnOpen(string username) {
         GetRoomByUserName(username,
-            (code, body) => OpenRoom(body),
+            (code, body) => Open(body),
             (code, body) => {
                 StreamCallBacks.onUserDoesntExist(code); HelperFunctions.DevLogError(code + " " + body);
             });
     }
 
-    private void OpenRoom(string body) {
+    private void Open(string body) {
         RoomReceived(body,
-            (roomJsonData) => {
-                StreamCallBacks.onRoomDataReceived?.Invoke(roomJsonData);
+            (data) => {
+                StreamCallBacks.onRoomDataReceived?.Invoke(data);
             });
     }
 
-    private void OnShareRoom(string username) {
+    private void OnShare(string username) {
         GetRoomByUserName(username,
-            (code, body) => ShareRoom(body),
+            (code, body) => Share(body),
             (code, body) => {
                 HelperFunctions.DevLogError(code + " " + body);
             });
     }
 
-    private void ShareRoom(string body) {
+    private void Share(string body) {
         RoomReceived(body,
-            (roomJsonData) => {
-                DynamicLinksCallBacks.onShareSocialLink?.Invoke(new Uri(roomJsonData.share_link), SocialParameters(roomJsonData.user));
+            (data) => {
+                DynamicLinksCallBacks.onShareSocialLink?.Invoke(new Uri(data.share_link), SocialParameters(data.user));
             });
     }
 
     private void Awake() {
-        StreamCallBacks.onGetRoomLink += OnShareRoom;
-        StreamCallBacks.onUsernameLinkReceived += OnOpenRoom;
+        StreamCallBacks.onShareRoomLink += OnShare;
+        StreamCallBacks.onReceiveRoomLink += OnOpen;
     }
 
     private void OnDestroy() {
-        StreamCallBacks.onGetRoomLink -= OnShareRoom;
-        StreamCallBacks.onUsernameLinkReceived -= OnOpenRoom;
+        StreamCallBacks.onShareRoomLink -= OnShare;
+        StreamCallBacks.onReceiveRoomLink -= OnOpen;
     }
 
     private string GetRoomUsernameUrl(string username) {
-        return serverURLAPIScriptableObject.ServerURLMediaAPI + videoUploader.GetRoomByUserName + username;
+        return serverURLAPIScriptableObject.ServerURLMediaAPI + videoUploader.GetRoomByUserName.Replace("{username}", username.ToString());
     }
 
     public SocialMetaTagParameters SocialParameters(string source) {

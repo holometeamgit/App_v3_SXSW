@@ -130,7 +130,7 @@ public class PnlRoomPopupController {
     }
 
     private void OnShareRoom() {
-        StreamCallBacks.onGetRoomLink?.Invoke(_receivedRoomJsonData.user);
+        StreamCallBacks.onShareRoomLink?.Invoke(_receivedRoomJsonData.user);
     }
 
     private void OnPopUpClosed() {
@@ -168,7 +168,7 @@ public class PnlRoomPopupController {
     private async Task RecheckState() {
         await Task.Delay(CHECK_STATE_COOLDOWN);
         while (_roomPopupShowChecker.CanShow() && _isShow && _isCheckStateStarted) {
-            StreamCallBacks.onUsernameLinkReceived?.Invoke(_receivedRoomJsonData.user);
+            StreamCallBacks.onReceiveRoomLink?.Invoke(_receivedRoomJsonData.user);
             await Task.Delay(CHECK_STATE_COOLDOWN);
         }
     }

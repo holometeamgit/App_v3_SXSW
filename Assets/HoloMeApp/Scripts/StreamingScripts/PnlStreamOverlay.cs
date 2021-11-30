@@ -353,10 +353,10 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         HelperFunctions.DevLog($"IsRoom = {agoraController.IsRoom}, IsChannelCreator = {agoraController.IsChannelCreator}, agoraController.ChannelName = {agoraController.ChannelName}, currentStreamId = {currentStreamId}");
 
         if (agoraController.IsRoom) {
-            StreamCallBacks.onGetRoomLink?.Invoke(agoraController.ChannelName);
+            StreamCallBacks.onShareRoomLink?.Invoke(agoraController.ChannelName);
         } else {
             if (!string.IsNullOrWhiteSpace(currentStreamId)) {
-                StreamCallBacks.onGetStreamLink?.Invoke(currentStreamId, agoraController.ChannelName);
+                StreamCallBacks.onShareStreamLink?.Invoke(currentStreamId, agoraController.ChannelName);
             } else {
                 DynamicLinksCallBacks.onShareAppLink?.Invoke();
             }

@@ -32,7 +32,7 @@ public class DeepLinkHandler : MonoBehaviour {
             string streamId = GetFolderId(uri, DynamicLinkParameters.Folder.stream.ToString());
 
             HelperFunctions.DevLog("streamId = " + streamId);
-            StreamCallBacks.onStreamLinkReceived?.Invoke(streamId);
+            StreamCallBacks.onReceiveStreamLink?.Invoke(streamId);
         } else if (ContainFolder(uri, DynamicLinkParameters.Folder.room.ToString())) {
 
             HelperFunctions.DevLog("GetRoomParameters");
@@ -40,7 +40,7 @@ public class DeepLinkHandler : MonoBehaviour {
             string userName = GetFolderId(uri, DynamicLinkParameters.Folder.room.ToString());
 
             HelperFunctions.DevLog("username = " + userName);
-            StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
+            StreamCallBacks.onReceiveRoomLink?.Invoke(userName);
         } else if (ContainParameter(uri, DynamicLinkParameters.Folder.username.ToString())) {
 
             HelperFunctions.DevLog("GetRoomParameters");
@@ -48,7 +48,7 @@ public class DeepLinkHandler : MonoBehaviour {
             string userName = GetParameterId(uri, DynamicLinkParameters.Folder.username.ToString());
 
             HelperFunctions.DevLog("username = " + userName);
-            StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
+            StreamCallBacks.onReceiveRoomLink?.Invoke(userName);
         } else if (ContainFolder(uri, DynamicLinkParameters.Folder.message.ToString())) {
 
             HelperFunctions.DevLog("GetMessagesParameters");
@@ -56,7 +56,7 @@ public class DeepLinkHandler : MonoBehaviour {
             string messageId = GetFolderId(uri, DynamicLinkParameters.Folder.message.ToString());
 
             HelperFunctions.DevLog("messageId = " + messageId);
-            StreamCallBacks.onARMsgLinkReceived?.Invoke(messageId);
+            StreamCallBacks.onReceiveARMsgLink?.Invoke(messageId);
         } else if (ContainParameter(uri, DynamicLinkParameters.Folder.message.ToString())) {
 
             HelperFunctions.DevLog("GetMessageParameters");
@@ -64,7 +64,7 @@ public class DeepLinkHandler : MonoBehaviour {
             string messageId = GetParameterId(uri, DynamicLinkParameters.Folder.message.ToString());
 
             HelperFunctions.DevLog("messageId = " + messageId);
-            StreamCallBacks.onARMsgLinkReceived?.Invoke(messageId);
+            StreamCallBacks.onReceiveARMsgLink?.Invoke(messageId);
         }
     }
 

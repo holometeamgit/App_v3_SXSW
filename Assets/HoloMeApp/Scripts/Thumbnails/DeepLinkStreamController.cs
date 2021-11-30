@@ -12,7 +12,7 @@ public class DeepLinkStreamController : MonoBehaviour {
     private const string STREAM_DESCRIPTION = "Click the link to watch {0} in Augmented Reality.";
 
     private void Awake() {
-        StreamCallBacks.onGetStreamLink += GetStreamLink;
+        StreamCallBacks.onShareStreamLink += GetStreamLink;
         StreamCallBacks.onGetPrerecordedLink += GetPrerecordedLink;
     }
 
@@ -28,7 +28,7 @@ public class DeepLinkStreamController : MonoBehaviour {
 
 
     private void OnDestroy() {
-        StreamCallBacks.onGetStreamLink -= GetStreamLink;
+        StreamCallBacks.onShareStreamLink -= GetStreamLink;
         StreamCallBacks.onGetPrerecordedLink -= GetPrerecordedLink;
     }
 
