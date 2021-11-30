@@ -152,9 +152,12 @@ public class PnlViewingExperience : MonoBehaviour {
     /// <param name="streamJsonData"></param>
     public void ActivateForARMessaging(ARMsgJSON.Data streamJsonData) {
         SharedActivationFunctions();
+        isTeaser = false;
+        isRoom = false;
         activatedForStreaming = false;
         btnBurger.SetActive(false);
-        hologramHandler.PlayIfPlaced(streamJsonData.ar_message_s3_link, long.Parse(streamJsonData.user));
+        logoCanvas.ActivateIfLogoAvailable(null);
+        hologramHandler.PlayIfPlaced(streamJsonData.ar_message_s3_link);
         hologramHandler.TogglePreRecordedVideoRenderer(true);
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {

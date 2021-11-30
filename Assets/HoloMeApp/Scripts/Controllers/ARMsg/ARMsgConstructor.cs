@@ -11,6 +11,8 @@ public class ARMsgConstructor : MonoBehaviour {
     [SerializeField]
     private WebRequestHandler _webRequestHandler;
     [SerializeField]
+    private UIThumbnailsController _uiThumbnailsController;
+    [SerializeField]
     private PermissionController _permissionController;
     [SerializeField]
     private PnlARMessages _pnlARMessages;
@@ -21,12 +23,16 @@ public class ARMsgConstructor : MonoBehaviour {
 
 
     private void Activate(ARMsgJSON.Data data) {
+
         if (!_permissionController.CheckCameraAccess()) {
             return;
         }
 
         _pnlViewingExperience.ActivateForARMessaging(data);
+
         _pnlARMessages.Init(data);
+
+        _uiThumbnailsController.OnPlayFromUser?.Invoke(data.user);
     }
 
     private void Deactivate() {
@@ -45,6 +51,7 @@ public class ARMsgConstructor : MonoBehaviour {
         CallBacks.OnGetLastARMsgShareLink += _arMsgController.GetReadyShareLink;
         StreamCallBacks.onARMsgLinkReceived += _arMsgController.GetARMsgById;
         CallBacks.OnARMsgByIdReceived += Activate;
+        CallBacks.OnActivated += Activate;
         CallBacks.OnDeactivated += Deactivate;
         CallBacks.OnGetLastReadyARMsgData += _arMsgController.GetLastReadyARMsgData;
     }
@@ -58,6 +65,7 @@ public class ARMsgConstructor : MonoBehaviour {
         CallBacks.OnGetLastARMsgShareLink -= _arMsgController.GetReadyShareLink;
         StreamCallBacks.onARMsgLinkReceived -= _arMsgController.GetARMsgById;
         CallBacks.OnARMsgByIdReceived -= Activate;
+        CallBacks.OnActivated -= Activate;
         CallBacks.OnDeactivated -= Deactivate;
         CallBacks.OnGetLastReadyARMsgData -= _arMsgController.GetLastReadyARMsgData;
 

@@ -77,10 +77,16 @@ public class HologramHandler : MonoBehaviour {
     }
 
     public void PlayIfPlaced(string url, long broadcasterID) {
+
+        this.broadcasterID = broadcasterID;
+
+        PlayIfPlaced(url);
+    }
+
+    public void PlayIfPlaced(string url) {
         HelperFunctions.DevLog("PLAY ON PLACE CALLED code =" + url);
 
         videoURL = url;
-        this.broadcasterID = broadcasterID;
 
         if (Application.isEditor) {
             Debug.LogWarning($"{nameof(PlayOnPlace)} Called Editor Mode");
