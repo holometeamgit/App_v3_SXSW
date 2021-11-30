@@ -33,6 +33,7 @@
     public const string KeyShareEventPressed = "shareEventPressed";
 
     public const string KeySessionLength = "sessionLength";
+    public const string KeyViewLengthOfStream = "lengthOfStream";
 
     public const string KeyHomeScreen = "homeScreen";
     public const string KeySettingsPanel = "settings";

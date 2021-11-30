@@ -1,6 +1,7 @@
 ﻿using agora_gaming_rtc;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -190,6 +191,7 @@ public class AgoraController : MonoBehaviour {
 
         if (channelCreator) {
             secondaryServerCalls.StartStream(ChannelName, IsRoom);
+            AnalyticsController.Instance.StartTimer(AnalyticKeys.KeyViewLengthOfStream, AnalyticKeys.KeyViewLengthOfStream);
         } else {
             GetViewerAgoraToken();
         }
@@ -279,6 +281,7 @@ public class AgoraController : MonoBehaviour {
 
         if (IsChannelCreator) {
             secondaryServerCalls.EndStream();
+            AnalyticsController.Instance.StopTimer(AnalyticKeys.KeyViewLengthOfStream, new Dictionary<string, string> { { AnalyticParameters.ParamChannelName, ChannelName }, { AnalyticParameters.ParamDate, DateTime.Now.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() } });
         } else {
             liveStreamQuad.SetActive(false);
             ResetVideoQuadSurface();
