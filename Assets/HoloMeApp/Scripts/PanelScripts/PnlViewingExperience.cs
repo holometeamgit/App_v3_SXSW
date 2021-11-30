@@ -16,15 +16,9 @@ public class PnlViewingExperience : MonoBehaviour {
     [SerializeField]
     HologramHandler hologramHandler;
     [SerializeField]
-    ARPlaneManager arPlaneManager;
-    [SerializeField]
     LogoCanvas logoCanvas;
     [SerializeField]
     PnlRecord pnlRecord;
-    [SerializeField]
-    GameObject arSessionOrigin;
-    [SerializeField]
-    GameObject arSession;
     [Header("")]
     [SerializeField]
     RectTransform scanMessageRT;
@@ -54,10 +48,7 @@ public class PnlViewingExperience : MonoBehaviour {
             tutorialDisplayed = true;
         }
     }
-    public void ToggleARSessionObjects(bool enable) {
-        arSessionOrigin?.SetActive(enable);
-        arSession?.SetActive(enable);
-    }
+
     public void RunTutorial() {
         if (!gameObject.activeSelf)
             return;
@@ -154,6 +145,23 @@ public class PnlViewingExperience : MonoBehaviour {
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
         }
     }
+
+    /// <summary>
+    /// Placement for AR Messaging
+    /// </summary>
+    /// <param name="streamJsonData"></param>
+    public void ActivateForARMessaging(ARMsgJSON.Data streamJsonData) {
+        SharedActivationFunctions();
+        activatedForStreaming = false;
+        btnBurger.SetActive(false);
+        hologramHandler.PlayIfPlaced(streamJsonData.ar_message_s3_link, long.Parse(streamJsonData.user));
+        hologramHandler.TogglePreRecordedVideoRenderer(true);
+        if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
+        {
+            HideScanMessage();
+            StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
+        }
+    }
     public void ActivateForStreaming(string channelName, string streamID, bool isRoom) {
         StopExperience();
         SharedActivationFunctions();
@@ -175,7 +183,7 @@ public class PnlViewingExperience : MonoBehaviour {
     }
     void SharedActivationFunctions() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
-        ToggleARSessionObjects(true);
+        ARConstructor.onActivated?.Invoke(true);
         canvasGroup.alpha = 0;
         gameObject.SetActive(true);
         hologramHandler.InitSession();
@@ -192,7 +200,7 @@ public class PnlViewingExperience : MonoBehaviour {
     public void StopExperience() {
         viewingExperienceInFocus = false;
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
-        ToggleARSessionObjects(false);
+        ARConstructor.onActivated?.Invoke(false);
         hologramHandler.StopVideo();
     }
 }

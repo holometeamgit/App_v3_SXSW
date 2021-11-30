@@ -26,6 +26,7 @@ public class StreamJsonData {
         }
 
         public long id;
+        public string share_link;
         public string preview_s3_url;
         public string stream_s3_url;
         public string teaser_s3_url;

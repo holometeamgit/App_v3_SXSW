@@ -31,6 +31,7 @@ public class StreamCallBacks {
 
     #region deep link stream
     public static Action<string> onStreamLinkReceived = delegate { };
+    public static Action<string> onPrerecordedLinkReceived = delegate { };
     public static Action onOpenStream = delegate { }; // can subscribe on stream pnl
 
     public static Action onCancelOpenContent = delegate { };

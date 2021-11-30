@@ -180,9 +180,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         RefreshStreamControls(agoraController.IsRoom);
         RefreshBroadcasterControls(agoraController.IsChannelCreator);
         RefreshLiveControls(!agoraController.IsChannelCreator || agoraController.IsLive);
-        HelperFunctions.DevLog("IsRoom = " + agoraController.IsRoom);
-        HelperFunctions.DevLog("IsChannelCreator = " + agoraController.IsChannelCreator);
-        HelperFunctions.DevLog("IsLive = " + agoraController.IsLive);
+        HelperFunctions.DevLog($"IsRoom = {agoraController.IsRoom}, IsChannelCreator = {agoraController.IsChannelCreator}, IsLive = {agoraController.IsLive}");
     }
 
     private void RefreshStreamControls(bool room) {
@@ -261,7 +259,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
         isChannelCreator = true;
         gameObject.SetActive(true);
-        pnlViewingExperience.ToggleARSessionObjects(false);
+        ARConstructor.onActivated?.Invoke(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
 
         ToggleLocalAudio(false);
@@ -352,10 +350,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     public void ShareStream() {
-        HelperFunctions.DevLog("agoraController.IsChannelCreator = " + agoraController.IsChannelCreator);
-        HelperFunctions.DevLog("agoraController.ChannelName = " + agoraController.ChannelName);
-        HelperFunctions.DevLog("agoraController.IsRoom = " + agoraController.IsRoom);
-        HelperFunctions.DevLog("currentStreamId = " + currentStreamId);
+        HelperFunctions.DevLog($"IsRoom = {agoraController.IsRoom}, IsChannelCreator = {agoraController.IsChannelCreator}, agoraController.ChannelName = {agoraController.ChannelName}, currentStreamId = {currentStreamId}");
 
         if (agoraController.IsRoom) {
             StreamCallBacks.onGetRoomLink?.Invoke(agoraController.ChannelName);
@@ -778,9 +773,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private void OnDisable() {
         StopAllCoroutines();
-        if (pnlViewingExperience.gameObject != null) {
-            pnlViewingExperience.ToggleARSessionObjects(false);
-        }
+        ARConstructor.onActivated?.Invoke(false);
         speechNotificationPopups.DeactivateAllPopups();
         ChatBtn.onOpen -= OpenChat;
     }

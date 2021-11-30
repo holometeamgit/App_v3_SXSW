@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Beem.ARMsg;
+using Beem.Permissions;
 
 public class ARMsgConstructor : MonoBehaviour {
     [SerializeField]
@@ -10,17 +11,26 @@ public class ARMsgConstructor : MonoBehaviour {
     [SerializeField]
     private WebRequestHandler _webRequestHandler;
     [SerializeField]
-    private PnlARMessages pnlARMessages;
+    private PermissionController _permissionController;
+    [SerializeField]
+    private PnlARMessages _pnlARMessages;
+    [SerializeField]
+    private PnlViewingExperience _pnlViewingExperience;
 
     private ARMsgController _arMsgController;
 
 
     private void Activate(ARMsgJSON.Data data) {
-        pnlARMessages.Init(data);
+        if (!_permissionController.CheckCameraAccess()) {
+            return;
+        }
+
+        _pnlViewingExperience.ActivateForARMessaging(data);
+        _pnlARMessages.Init(data);
     }
 
     private void Deactivate() {
-        pnlARMessages.Deactivate();
+        _pnlARMessages.Deactivate();
     }
 
 
@@ -34,7 +44,7 @@ public class ARMsgConstructor : MonoBehaviour {
         CallBacks.OnDeleteLastARMsgActions += _arMsgController.DeleteLastARMsg;
         CallBacks.OnGetLastARMsgShareLink += _arMsgController.GetReadyShareLink;
         StreamCallBacks.onARMsgLinkReceived += _arMsgController.GetARMsgById;
-        CallBacks.OnActivated += Activate;
+        CallBacks.OnARMsgByIdReceived += Activate;
         CallBacks.OnDeactivated += Deactivate;
         CallBacks.OnGetLastReadyARMsgData += _arMsgController.GetLastReadyARMsgData;
     }
@@ -47,7 +57,7 @@ public class ARMsgConstructor : MonoBehaviour {
         CallBacks.OnDeleteLastARMsgActions -= _arMsgController.DeleteLastARMsg;
         CallBacks.OnGetLastARMsgShareLink -= _arMsgController.GetReadyShareLink;
         StreamCallBacks.onARMsgLinkReceived -= _arMsgController.GetARMsgById;
-        CallBacks.OnActivated -= Activate;
+        CallBacks.OnARMsgByIdReceived -= Activate;
         CallBacks.OnDeactivated -= Deactivate;
         CallBacks.OnGetLastReadyARMsgData -= _arMsgController.GetLastReadyARMsgData;
 

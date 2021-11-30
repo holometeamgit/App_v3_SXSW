@@ -78,7 +78,7 @@ public class DeepLinkHandler : MonoBehaviour {
         string[] split = localPath.Split('/');
         for (int i = 0; i < split.Length; i++) {
             if (split[i].Contains(parameter) && i < split.Length - 1) {
-                return split[i + 1];
+                return split[split.Length - 1];
             }
         }
         return string.Empty;
