@@ -55,5 +55,6 @@ public class AnalyticParameters {
     public const string ParamDate = "date";
     public const string ParamSignUpMethod = "signUpMethod";
     public const string ParamViewerCount = "viewerCount";
+    public const string ParamChannelName = "channelName";
     //public const string ParamNotificationsOptIn = "notificationOptIn"; //TODO future opt in notifications panel
 }

@@ -230,7 +230,7 @@ public class AgoraController : MonoBehaviour {
     /// </summary>
     public void SendViewerCountAnalyticsUpdate(int count) {
         if (IsChannelCreator) {
-            AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyViewerCountUpdate, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() }, { AnalyticParameters.ParamViewerCount, count.ToString() } });
+            AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyViewerCountUpdate, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamChannelName, ChannelName }, { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() }, { AnalyticParameters.ParamViewerCount, count.ToString() } });
         }
     }
 
