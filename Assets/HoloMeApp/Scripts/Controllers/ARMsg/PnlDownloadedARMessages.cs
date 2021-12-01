@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-//WIP
+/// <summary>
+/// Send current data to children points
+/// </summary>
 public class PnlDownloadedARMessages : MonoBehaviour {
 
     private List<IARMsgDataView> _arMsgDataViews;
@@ -15,7 +17,6 @@ public class PnlDownloadedARMessages : MonoBehaviour {
     }
 
     private void Init(ARMsgJSON.Data data) {
-        Debug.LogError(data.share_link);
         _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
 
         _arMsgDataViews.ForEach(x => x.Init(data));

@@ -205,5 +205,7 @@ public class PnlViewingExperience : MonoBehaviour {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         ARConstructor.onActivated?.Invoke(false);
         hologramHandler.StopVideo();
+        FadeOutCanvas();
+        pnlRecord.gameObject.SetActive(false);
     }
 }

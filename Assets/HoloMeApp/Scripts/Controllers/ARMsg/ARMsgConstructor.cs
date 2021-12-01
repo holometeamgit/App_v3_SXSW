@@ -55,7 +55,6 @@ public class ARMsgConstructor : MonoBehaviour {
     }
 
     private void Close() {
-        CallBacks.OnCancelAllARMsgActions?.Invoke();
         _pnlViewingExperience.StopExperience();
         _pnlARMessages.Deactivate();
         switchToHome.Switch();
