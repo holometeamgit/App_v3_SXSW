@@ -47,6 +47,46 @@ public class DeepLinkStreamController : MonoBehaviour {
         }
     }
 
+    private void StreamsReceived(string body, Action<StreamJsonData.Data> onReceived) {
+        try {
+            HelperFunctions.DevLog("Streams Recieved = " + body);
+
+            StreamJsonData data = JsonUtility.FromJson<StreamJsonData>(body);
+
+            StreamJsonData.Data lastStreamData = data.results[0];
+
+            foreach (StreamJsonData.Data item in data.results) {
+                if (item.StartDate.CompareTo(lastStreamData.StartDate) < 0) {
+                    lastStreamData = item;
+                }
+            }
+
+            HelperFunctions.DevLog("Streams Recieved = " + body);
+
+            onReceived?.Invoke(lastStreamData);
+        } catch (Exception e) {
+            HelperFunctions.DevLogError(e.Message);
+        }
+    }
+
+    private void OnOpen(string username) {
+        GetStreamByUsername(username,
+            (code, body) => {
+                HelperFunctions.DevLogError(code + " " + body);
+                Open(body); ;
+            },
+            (code, body) => {
+                HelperFunctions.DevLogError(code + " " + body);
+            });
+    }
+
+    private void Open(string body) {
+        StreamsReceived(body,
+            (data) => {
+                Debug.LogError($"id = {data.id}, username = {data.user}");
+            });
+    }
+
     private void Awake() {
         StreamCallBacks.onShareStreamLinkById += OnShare;
         StreamCallBacks.onShareStreamLinkByData += OnShare;
