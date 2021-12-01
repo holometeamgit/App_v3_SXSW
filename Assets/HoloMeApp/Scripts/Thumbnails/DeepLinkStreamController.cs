@@ -53,42 +53,61 @@ public class DeepLinkStreamController : MonoBehaviour {
 
             StreamJsonData data = JsonUtility.FromJson<StreamJsonData>(body);
 
-            StreamJsonData.Data lastStreamData = data.results[0];
+            if (data.results.Count > 0) {
 
-            foreach (StreamJsonData.Data item in data.results) {
-                if (item.StartDate.CompareTo(lastStreamData.StartDate) < 0) {
-                    lastStreamData = item;
+                StreamJsonData.Data lastStreamData = data.results[0];
+
+                foreach (StreamJsonData.Data item in data.results) {
+                    if (item.StartDate.CompareTo(lastStreamData.StartDate) < 0) {
+                        lastStreamData = item;
+                    }
                 }
+
+                onReceived?.Invoke(lastStreamData);
             }
-
-            HelperFunctions.DevLog("Streams Recieved = " + body);
-
-            onReceived?.Invoke(lastStreamData);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
         }
     }
 
-    private void OnOpen(string username) {
+    private void OnOpenStream(string username) {
         GetStreamByUsername(username,
             (code, body) => {
-                HelperFunctions.DevLogError(code + " " + body);
-                Open(body); ;
+                OpenStream(body); ;
             },
             (code, body) => {
                 HelperFunctions.DevLogError(code + " " + body);
             });
     }
 
-    private void Open(string body) {
+    private void OpenStream(string body) {
         StreamsReceived(body,
             (data) => {
-                Debug.LogError($"id = {data.id}, username = {data.user}");
+                StreamCallBacks.onStreamDataReceived?.Invoke(data);
+            });
+    }
+
+    private void OnOpenPrerecorded(string slug) {
+        GetStreamBySlug(slug,
+            (code, body) => {
+                OpenPrerecorded(body); ;
+            },
+            (code, body) => {
+                HelperFunctions.DevLogError(code + " " + body);
+            });
+    }
+
+    private void OpenPrerecorded(string body) {
+        StreamReceived(body,
+            (data) => {
+                StreamCallBacks.onStreamDataReceived?.Invoke(data);
             });
     }
 
     private void Awake() {
         StreamCallBacks.onShareStreamLinkById += OnShare;
+        StreamCallBacks.onReceiveStreamLink += OnOpenStream;
+        StreamCallBacks.onReceivePrerecordedLink += OnOpenPrerecorded;
         StreamCallBacks.onShareStreamLinkByData += OnShare;
     }
 
@@ -108,15 +127,15 @@ public class DeepLinkStreamController : MonoBehaviour {
     }
 
     private void OnShare(StreamJsonData.Data data) {
-        DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.DesktopUrl, DynamicLinkParameters.Folder.stream, data.user, data.id.ToString(), SocialParameters(data));
-        //DynamicLinksCallBacks.onShareSocialLink?.Invoke(new Uri(data.share_link), SocialParameters(data));
-        DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters);
+        DynamicLinksCallBacks.onShareSocialLink?.Invoke(new Uri(data.share_link), SocialParameters(data));
     }
 
 
     private void OnDestroy() {
         StreamCallBacks.onShareStreamLinkById -= OnShare;
+        StreamCallBacks.onReceiveStreamLink -= OnOpenStream;
         StreamCallBacks.onShareStreamLinkByData -= OnShare;
+        StreamCallBacks.onReceivePrerecordedLink -= OnOpenPrerecorded;
     }
 
     private string GetRequestStreamByIdURL(string id) {

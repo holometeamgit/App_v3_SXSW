@@ -31,7 +31,7 @@ public class StreamCallBacks {
 
     #region deep link stream
     public static Action<string> onReceiveStreamLink = delegate { };
-    public static Action<string> onPrerecordedLinkReceived = delegate { };
+    public static Action<string> onReceivePrerecordedLink = delegate { };
     public static Action onOpenStream = delegate { }; // can subscribe on stream pnl
 
     public static Action onCancelOpenContent = delegate { };
@@ -45,6 +45,7 @@ public class StreamCallBacks {
     public static Action<string> onShareRoomLink = delegate { };
     public static Action<string> onShareStreamLinkById = delegate { };
     public static Action<StreamJsonData.Data> onShareStreamLinkByData = delegate { };
+    public static Action<StreamJsonData.Data> onStreamDataReceived = delegate { };
 
     //when start stream on Agora
     public static Action<StreamStartResponseJsonData> onRoomCreated = delegate { };

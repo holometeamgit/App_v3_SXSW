@@ -10,10 +10,10 @@ namespace Beem.Firebase.DynamicLink {
     public class DynamicLinkParameters {
 
         public enum Folder {
-            stream,
-            room,
             username,
-            message
+            message,
+            live,
+            prerecorded
         }
 
         public string Prefix {
