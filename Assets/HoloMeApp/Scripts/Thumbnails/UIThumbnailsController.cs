@@ -178,15 +178,7 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetPlayAction(Play);
             btnThumbnailItems[i].SetTeaserPlayAction(PlayTeaser);
             btnThumbnailItems[i].SetBuyAction(Buy);
-            btnThumbnailItems[i].SetShareAction((data) => {
-                //btnThumbnailItems[i]
-                if (data.GetStage() == StreamJsonData.Data.Stage.Live) {
-                    StreamCallBacks.onShareStreamLink?.Invoke(data.id.ToString(), data.user);
-                } else {
-                    StreamCallBacks.onGetPrerecordedLink.Invoke(data);
-                }
-                AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
-            });
+            btnThumbnailItems[i].SetShareAction(StreamCallBacks.onShareStreamLinkByData);
             btnThumbnailItems[i].LockToPress(false);
         }
         OnUpdated?.Invoke();

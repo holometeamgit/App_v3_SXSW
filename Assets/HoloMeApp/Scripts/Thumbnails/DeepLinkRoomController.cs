@@ -7,7 +7,6 @@ public class DeepLinkRoomController : MonoBehaviour {
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] ServerURLAPIScriptableObject serverURLAPIScriptableObject;
     [SerializeField] VideoUploader videoUploader;
-    [SerializeField] DeepLinkHandler deepLinkHandler;
 
     private const string TITLE = "You have been invited to {0}'s Room";
     private const string DESCRIPTION = "Click the link below to join {0}'s Room";

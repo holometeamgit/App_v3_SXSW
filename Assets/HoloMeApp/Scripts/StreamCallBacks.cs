@@ -43,8 +43,8 @@ public class StreamCallBacks {
 
     public static Action onGetLastRoomLink = delegate { };
     public static Action<string> onShareRoomLink = delegate { };
-    public static Action<string, string> onShareStreamLink = delegate { };
-    public static Action<StreamJsonData.Data> onGetPrerecordedLink = delegate { };
+    public static Action<string> onShareStreamLinkById = delegate { };
+    public static Action<StreamJsonData.Data> onShareStreamLinkByData = delegate { };
 
     //when start stream on Agora
     public static Action<StreamStartResponseJsonData> onRoomCreated = delegate { };
