@@ -53,9 +53,9 @@ public class DeepLinkStreamController : MonoBehaviour {
     }
 
     private void OnShare(StreamJsonData.Data data) {
-        //DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.DesktopUrl, DynamicLinkParameters.Folder.stream, data.user, data.id.ToString(), SocialParameters(data));
-        DynamicLinksCallBacks.onShareSocialLink?.Invoke(new Uri(data.share_link), SocialParameters(data));
-        //DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters);
+        DynamicLinkParameters dynamicLinkParameters = new DynamicLinkParameters(serverURLAPIScriptableObject.FirebaseDynamicLink, serverURLAPIScriptableObject.DesktopUrl, DynamicLinkParameters.Folder.stream, data.user, data.id.ToString(), SocialParameters(data));
+        //DynamicLinksCallBacks.onShareSocialLink?.Invoke(new Uri(data.share_link), SocialParameters(data));
+        DynamicLinksCallBacks.onCreateShortLink?.Invoke(dynamicLinkParameters);
     }
 
 
