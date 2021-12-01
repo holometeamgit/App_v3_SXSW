@@ -4,16 +4,19 @@ using Beem.Firebase.DynamicLink;
 using Firebase.DynamicLinks;
 using UnityEngine;
 
+/// <summary>
+/// Deep Link Controller for Ar-messages
+/// </summary>
 public class DeepLinkARMessageController : MonoBehaviour {
+
+    [SerializeField]
+    private WebRequestHandler _webRequestHandler;
 
     [SerializeField]
     private ServerURLAPIScriptableObject _serverURLAPIScriptableObject;
 
     [SerializeField]
     private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
-
-    [SerializeField]
-    private WebRequestHandler _webRequestHandler;
 
     private void GetARMessageById(string id, Action<long, string> onSuccess, Action<long, string> onFailed) {
         HelperFunctions.DevLog("Get AR Message By Id " + id);
