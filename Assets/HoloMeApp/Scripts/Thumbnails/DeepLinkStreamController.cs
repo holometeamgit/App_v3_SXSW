@@ -12,12 +12,27 @@ public class DeepLinkStreamController : MonoBehaviour {
 
     private const string STREAM_TITLE = "Join {0}'s Live Stream";
     private const string STREAM_DESCRIPTION = "Click the link to watch {0} in Augmented Reality.";
+    private const string STATUS = "live";
 
     private void GetStreamById(string id, Action<long, string> onSuccess, Action<long, string> onFailed) {
         webRequestHandler.Get(GetRequestStreamByIdURL(id),
             (code, body) => { onSuccess?.Invoke(code, body); },
             (code, body) => { onFailed?.Invoke(code, body); },
         needHeaderAccessToken: true);
+    }
+
+    private void GetStreamBySlug(string slug, Action<long, string> onSuccess, Action<long, string> onFailed) {
+        webRequestHandler.Get(GetRequestStreamBySlugURL(slug),
+            (code, body) => { onSuccess?.Invoke(code, body); },
+            (code, body) => { onFailed?.Invoke(code, body); },
+        needHeaderAccessToken: false);
+    }
+
+    private void GetStreamByUsername(string username, Action<long, string> onSuccess, Action<long, string> onFailed) {
+        webRequestHandler.Get(GetRequestStreamByUsernameURL(username, STATUS),
+            (code, body) => { onSuccess?.Invoke(code, body); },
+            (code, body) => { onFailed?.Invoke(code, body); },
+        needHeaderAccessToken: false);
     }
 
     private void StreamReceived(string body, Action<StreamJsonData.Data> onReceived) {
@@ -66,6 +81,14 @@ public class DeepLinkStreamController : MonoBehaviour {
 
     private string GetRequestStreamByIdURL(string id) {
         return webRequestHandler.ServerURLMediaAPI + videoUploader.StreamById.Replace("{id}", id);
+    }
+
+    private string GetRequestStreamBySlugURL(string slug) {
+        return webRequestHandler.ServerURLMediaAPI + videoUploader.StreamBySlug.Replace("{slug}", slug);
+    }
+
+    private string GetRequestStreamByUsernameURL(string username, string status) {
+        return webRequestHandler.ServerURLMediaAPI + videoUploader.Stream + $"?status={status}&username={username}";
     }
 
     /// <summary>

@@ -35,6 +35,7 @@ public class StreamJsonData {
         public bool is_liked;
         public string user;
         public long user_id;
+        public string slug;
         public ProductType product_type;
         public List<string> content_category;
         public string status;

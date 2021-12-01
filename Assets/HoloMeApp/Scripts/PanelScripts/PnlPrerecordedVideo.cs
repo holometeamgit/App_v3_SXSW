@@ -77,6 +77,7 @@ public class PnlPrerecordedVideo : MonoBehaviour {
         _videoView.SetActive(false);
         _purchaseView.SetActive(false);
         _bottomBar.gameObject.SetActive(false);
+        ARConstructor.onActivated?.Invoke(false);
     }
 
     private void Refresh() {
