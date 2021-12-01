@@ -6598,7 +6598,7 @@ GameObject:
   - component: {fileID: 1000053069}
   - component: {fileID: 1000053068}
   m_Layer: 0
-  m_Name: RoomPopupShowChecker
+  m_Name: PopupShowChecker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6632,8 +6632,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1316278750}
-  m_RootOrder: 0
+  m_Father: {fileID: 1519454386}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1000972061
 GameObject:
@@ -7819,8 +7819,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1000053069}
+  m_Children: []
   m_Father: {fileID: 1519454386}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9028,6 +9027,7 @@ Transform:
   - {fileID: 1316278750}
   - {fileID: 2141595002}
   - {fileID: 1626989682}
+  - {fileID: 1000053069}
   m_Father: {fileID: 1511041754}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9466,11 +9466,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ced839fb85982747929f78a5458a906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _webRequestHandler: {fileID: 35185073}
   _serverURLAPIScriptableObject: {fileID: 11400000, guid: f753fd22d1e1d4c97803fa60aadd51bd,
     type: 2}
   _arMsgAPIScriptableObject: {fileID: 11400000, guid: 6654356a8bcc64e8dbfcada070457098,
     type: 2}
-  _webRequestHandler: {fileID: 35185073}
 --- !u!114 &1638023879 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8855005771883335463, guid: 8fd499dbaac434c5680e276a2a4d5dde,
@@ -10775,6 +10775,7 @@ MonoBehaviour:
   _permissionController: {fileID: 977903556}
   _pnlARMessages: {fileID: 914153284}
   _pnlViewingExperience: {fileID: 4715128579803891304}
+  _popupShowChecker: {fileID: 1000053068}
   switchToHome: {fileID: 1339238543}
 --- !u!1 &2141595001
 GameObject:
