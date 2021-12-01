@@ -18,6 +18,8 @@ public class ARMsgConstructor : MonoBehaviour {
     private PnlARMessages _pnlARMessages;
     [SerializeField]
     private PnlViewingExperience _pnlViewingExperience;
+    [SerializeField]
+    private Switcher switchToHome;
 
     private ARMsgController _arMsgController;
 
@@ -47,9 +49,7 @@ public class ARMsgConstructor : MonoBehaviour {
                GUIUtility.systemCopyBuffer = currentData.share_link;
                Close();
            },
-           () => {
-               Close();
-           },
+           null,
            false);
 
     }
@@ -58,6 +58,7 @@ public class ARMsgConstructor : MonoBehaviour {
         CallBacks.OnCancelAllARMsgActions?.Invoke();
         _pnlViewingExperience.StopExperience();
         _pnlARMessages.Deactivate();
+        switchToHome.Switch();
     }
 
 
@@ -70,9 +71,9 @@ public class ARMsgConstructor : MonoBehaviour {
         CallBacks.OnCheckContainLastUploadedARMsg += _arMsgController.CheckContainLastUploadedARMsg;
         CallBacks.OnDeleteLastARMsgActions += _arMsgController.DeleteLastARMsg;
         CallBacks.OnGetLastARMsgShareLink += _arMsgController.GetReadyShareLink;
+        CallBacks.OnGetLastReadyARMsgData += _arMsgController.GetLastReadyARMsgData;
         CallBacks.OnActivated += Activate;
         CallBacks.OnDeactivated += Deactivate;
-        CallBacks.OnGetLastReadyARMsgData += _arMsgController.GetLastReadyARMsgData;
     }
 
     private void OnDestroy() {
@@ -82,9 +83,9 @@ public class ARMsgConstructor : MonoBehaviour {
         CallBacks.OnCheckContainLastUploadedARMsg -= _arMsgController.CheckContainLastUploadedARMsg;
         CallBacks.OnDeleteLastARMsgActions -= _arMsgController.DeleteLastARMsg;
         CallBacks.OnGetLastARMsgShareLink -= _arMsgController.GetReadyShareLink;
+        CallBacks.OnGetLastReadyARMsgData -= _arMsgController.GetLastReadyARMsgData;
         CallBacks.OnActivated -= Activate;
         CallBacks.OnDeactivated -= Deactivate;
-        CallBacks.OnGetLastReadyARMsgData -= _arMsgController.GetLastReadyARMsgData;
 
         _arMsgController?.OnCancelAll();
     }

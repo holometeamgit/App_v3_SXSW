@@ -15,7 +15,7 @@ public class ARMsgReadyInterrupter : MonoBehaviour {
             "If you exit you could lose your AR message if you don’t share the link.",
             "Copy link and exit", "Return",
             () => {
-                //TODO add copy link action. CallBacks.OnGetLastARMsgShareLink?.Invoke(); can give you link
+                GUIUtility.systemCopyBuffer = CallBacks.OnGetLastARMsgShareLink?.Invoke();
                 CallBacks.OnCancelAllARMsgActions?.Invoke();
             }, null, false);
     }
