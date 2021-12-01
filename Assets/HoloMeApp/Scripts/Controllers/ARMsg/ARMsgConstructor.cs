@@ -1,17 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
 using Beem.ARMsg;
 
 public class ARMsgConstructor : MonoBehaviour {
-    [SerializeField] ARMsgAPIScriptableObject _arMsgAPI;
-    [SerializeField] WebRequestHandler _webRequestHandler;
+    [SerializeField]
+    private ARMsgAPIScriptableObject _arMsgAPI;
+    [SerializeField]
+    private WebRequestHandler _webRequestHandler;
+
     private ARMsgController _arMsgController;
+
 
     void Awake() {
         _arMsgController = new ARMsgController(_arMsgAPI, _webRequestHandler);
-        
+
         CallBacks.OnUpdloadingUIOpened += _arMsgController.UploadARMsg;
         CallBacks.OnCancelAllARMsgActions += _arMsgController.OnCancelAll;
         CallBacks.OnARMsgProcessingCheck += _arMsgController.GetLastUploadedARMsgInfo;

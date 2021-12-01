@@ -71,7 +71,7 @@ public class UIThumbnailsController : MonoBehaviour {
         List<long> removingListID = new List<long>();
 
         HashSet<long> setId = new HashSet<long>();
-        foreach(var data in dataList) {
+        foreach (var data in dataList) {
             setId.Add(data.id);
         }
 
@@ -178,15 +178,7 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetPlayAction(Play);
             btnThumbnailItems[i].SetTeaserPlayAction(PlayTeaser);
             btnThumbnailItems[i].SetBuyAction(Buy);
-            btnThumbnailItems[i].SetShareAction((data) => {
-                //btnThumbnailItems[i]
-                if (data.GetStage() == StreamJsonData.Data.Stage.Live) {
-                    StreamCallBacks.onGetStreamLink?.Invoke(data.id.ToString(), data.user);
-                } else {
-                    StreamCallBacks.onGetPrerecordedLink.Invoke(data);
-                }
-                AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
-            });
+            btnThumbnailItems[i].SetShareAction(StreamCallBacks.onShareStreamLinkByData);
             btnThumbnailItems[i].LockToPress(false);
         }
         OnUpdated?.Invoke();

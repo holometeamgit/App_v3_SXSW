@@ -25,47 +25,39 @@ public class DeepLinkHandler : MonoBehaviour {
     }
 
     private void GetContentsParameters(Uri uri) {
-        if (ContainFolder(uri, DynamicLinkParameters.Folder.stream.ToString())) {
-
-            HelperFunctions.DevLog("GetStreamParameters");
-
-            string streamId = GetFolderId(uri, DynamicLinkParameters.Folder.stream.ToString());
-
-            HelperFunctions.DevLog("streamId = " + streamId);
-            StreamCallBacks.onStreamLinkReceived?.Invoke(streamId);
-        } else if (ContainFolder(uri, DynamicLinkParameters.Folder.room.ToString())) {
-
-            HelperFunctions.DevLog("GetRoomParameters");
-
-            string userName = GetFolderId(uri, DynamicLinkParameters.Folder.room.ToString());
-
-            HelperFunctions.DevLog("username = " + userName);
-            StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
-        } else if (ContainParameter(uri, DynamicLinkParameters.Folder.username.ToString())) {
+        if (ContainParameter(uri, DynamicLinkParameters.Folder.username.ToString())) {
 
             HelperFunctions.DevLog("GetRoomParameters");
 
             string userName = GetParameterId(uri, DynamicLinkParameters.Folder.username.ToString());
 
             HelperFunctions.DevLog("username = " + userName);
-            StreamCallBacks.onUsernameLinkReceived?.Invoke(userName);
-        }
-    }
+            StreamCallBacks.onReceiveRoomLink?.Invoke(userName);
+        } else if (ContainParameter(uri, DynamicLinkParameters.Folder.message.ToString())) {
 
-    private bool ContainFolder(Uri uri, string parameter) {
-        return uri.LocalPath.Contains(parameter);
-    }
+            HelperFunctions.DevLog("GetMessageParameters");
 
-    private string GetFolderId(Uri uri, string parameter) {
-        string localPath = uri.LocalPath;
-        localPath = localPath.Substring(1, localPath.Length - 1);
-        string[] split = localPath.Split('/');
-        for (int i = 0; i < split.Length; i++) {
-            if (split[i].Contains(parameter) && i < split.Length - 1) {
-                return split[i + 1];
-            }
+            string messageId = GetParameterId(uri, DynamicLinkParameters.Folder.message.ToString());
+
+            HelperFunctions.DevLog("messageId = " + messageId);
+            StreamCallBacks.onReceiveARMsgLink?.Invoke(messageId);
+        } else if (ContainParameter(uri, DynamicLinkParameters.Folder.live.ToString())) {
+
+            HelperFunctions.DevLog("GetLiveParameters");
+
+            string username = GetParameterId(uri, DynamicLinkParameters.Folder.live.ToString());
+
+            HelperFunctions.DevLog("username = " + username);
+            StreamCallBacks.onReceiveStreamLink?.Invoke(username);
+        } else if (ContainParameter(uri, DynamicLinkParameters.Folder.prerecorded.ToString())) {
+
+            HelperFunctions.DevLog("GetPrerecordedParameters");
+
+            string slug = GetParameterId(uri, DynamicLinkParameters.Folder.prerecorded.ToString());
+
+            HelperFunctions.DevLog("slug = " + slug);
+            StreamCallBacks.onReceivePrerecordedLink?.Invoke(slug);
         }
-        return string.Empty;
     }
 
     private bool ContainParameter(Uri uri, string parameter) {
