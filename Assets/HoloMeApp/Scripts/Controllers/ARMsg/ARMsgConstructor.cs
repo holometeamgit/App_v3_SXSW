@@ -22,6 +22,8 @@ public class ARMsgConstructor : MonoBehaviour {
     }
 
     private void OnDestroy() {
+        _arMsgController?.OnCancelAll();
+
         CallBacks.OnUpdloadingUIOpened -= _arMsgController.UploadARMsg;
         CallBacks.OnCancelAllARMsgActions -= _arMsgController.OnCancelAll;
         CallBacks.OnARMsgProcessingCheck -= _arMsgController.GetLastUploadedARMsgInfo;
@@ -29,7 +31,5 @@ public class ARMsgConstructor : MonoBehaviour {
         CallBacks.OnDeleteLastARMsgActions -= _arMsgController.DeleteLastARMsg;
         CallBacks.OnGetLastARMsgShareLink -= _arMsgController.GetReadyShareLink;
         CallBacks.OnGetLastReadyARMsgData -= _arMsgController.GetLastReadyARMsgData;
-
-        _arMsgController?.OnCancelAll();
     }
 }

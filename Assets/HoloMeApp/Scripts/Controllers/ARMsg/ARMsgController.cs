@@ -205,7 +205,7 @@ namespace Beem.ARMsg {
         #endregion
 
         ~ARMsgController() {
-
+            OnCancelAll();
         }
     }
 }

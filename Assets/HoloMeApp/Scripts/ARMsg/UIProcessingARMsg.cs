@@ -15,6 +15,9 @@ public class UIProcessingARMsg : MonoBehaviour
     private void OnChecked(ARMsgJSON.Data data) {
         if(data.processing_status == ARMsgJSON.Data.COMPETED_STATUS) {
             OnNextStep?.Invoke();
+        } else {
+            if(gameObject.activeInHierarchy)
+                StartCoroutine(CheckingProcessing());
         }
     }
 
@@ -29,10 +32,7 @@ public class UIProcessingARMsg : MonoBehaviour
     }
 
     private IEnumerator CheckingProcessing() {
-
-        while (true) {
-            yield return new WaitForSeconds(COOLDOWN_CHECK);
-            CallBacks.OnARMsgProcessingCheck?.Invoke();
-        }
+        yield return new WaitForSeconds(COOLDOWN_CHECK);
+        CallBacks.OnARMsgProcessingCheck?.Invoke();
     }
 }

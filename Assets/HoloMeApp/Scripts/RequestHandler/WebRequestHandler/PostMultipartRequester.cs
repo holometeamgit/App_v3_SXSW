@@ -24,10 +24,6 @@ public class PostMultipartRequester : WebRequester {
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
         contentDictionary = LoadingFile(contentPathDataDictionary);
-        HelperFunctions.DevLog("PostMultipart prepared " + contentDictionary.Count);
-        foreach (var content in contentDictionary) {
-            HelperFunctions.DevLog(content.Key + " " + content.Value.FieldName + " " + content.Value.Content.Length + " " + content.Value.FileName);
-        }
 
         PostMultipart(url, contentDictionary, responseDelegate, errorTypeDelegate, headerAccessToken, onCancel: onCancel, uploadProgress: uploadProgress);
 
@@ -47,12 +43,6 @@ public class PostMultipartRequester : WebRequester {
             Dictionary<string, MultipartRequestBinaryData> currectData = contentDictionary;
             return PreparePostMultipartRequest(currentUrl, currectData, currentHeaderAccessToken);
         };
-
-        HelperFunctions.DevLog("PostMultipart ready " + contentDictionary.Count);
-
-        foreach (var content in contentDictionary) {
-            HelperFunctions.DevLog(content.Value.FileName);
-        }
 
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, uploadProgress: uploadProgress, maxTimesWait: MAX_TIMES_BEFORE_POST_MULTIPART_STOP_REQUEST).ContinueWith((taskWebRequestData) => {
@@ -88,14 +78,10 @@ public class PostMultipartRequester : WebRequester {
         Dictionary<string, MultipartRequestBinaryData> data = new Dictionary<string, MultipartRequestBinaryData>();
 
         foreach (var path in filePathsByName) {
-            HelperFunctions.DevLog("filePathByName: " + path.Value);
 
-            //using (FileStream SourceStream = File.Open(path.Value, FileMode.Open)) {
-            byte[] result = File.ReadAllBytes(path.Value);// new byte[SourceStream.Length];
-                                                          //await SourceStream.ReadAsync(result, 0, (int)SourceStream.Length);
-            HelperFunctions.DevLog("result: " + result.Length + " GetFileName: " + Path.GetFileName(path.Value));
+            byte[] result = File.ReadAllBytes(path.Value);
             data.Add(path.Key, new MultipartRequestBinaryData(path.Key, result, Path.GetFileName(path.Value)));
-            //}
+
         }
 
         return data;
