@@ -47,7 +47,7 @@ public class DeepLinkStreamController : MonoBehaviour {
         }
     }
 
-    private void StreamsReceived(string body, Action<StreamJsonData.Data> onReceived) {
+    private void StreamsReceived(string body, string username, Action<StreamJsonData.Data> onReceived) {
         try {
             HelperFunctions.DevLog("Streams Recieved = " + body);
 
@@ -55,15 +55,17 @@ public class DeepLinkStreamController : MonoBehaviour {
 
             if (data.results.Count > 0) {
 
-                StreamJsonData.Data lastStreamData = data.results[0];
+                StreamJsonData.Data lastStreamData = null;
 
                 foreach (StreamJsonData.Data item in data.results) {
-                    if (item.StartDate.CompareTo(lastStreamData.StartDate) < 0) {
+                    if (item.StartDate.CompareTo(lastStreamData.StartDate) < 0 && item.user == username) {
                         lastStreamData = item;
                     }
                 }
 
-                onReceived?.Invoke(lastStreamData);
+                if (lastStreamData != null) {
+                    onReceived?.Invoke(lastStreamData);
+                }
             }
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
@@ -73,15 +75,16 @@ public class DeepLinkStreamController : MonoBehaviour {
     private void OnOpenStream(string username) {
         GetStreamByUsername(username,
             (code, body) => {
-                OpenStream(body); ;
+                OpenStream(body, username); ;
             },
             (code, body) => {
                 HelperFunctions.DevLogError(code + " " + body);
             });
     }
 
-    private void OpenStream(string body) {
+    private void OpenStream(string body, string username) {
         StreamsReceived(body,
+            username,
             (data) => {
                 StreamCallBacks.onStreamDataReceived?.Invoke(data);
             });
