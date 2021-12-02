@@ -25,35 +25,35 @@ public class DeepLinkHandler : MonoBehaviour {
     }
 
     private void GetContentsParameters(Uri uri) {
-        if (ContainParameter(uri, DynamicLinkParameters.Folder.username.ToString())) {
+        if (ContainParameter(uri, DynamicLinkParameters.Query.username.ToString())) {
 
             HelperFunctions.DevLog("GetRoomParameters");
 
-            string userName = GetParameterId(uri, DynamicLinkParameters.Folder.username.ToString());
+            string userName = GetParameterId(uri, DynamicLinkParameters.Query.username.ToString());
 
             HelperFunctions.DevLog("username = " + userName);
             StreamCallBacks.onReceiveRoomLink?.Invoke(userName);
-        } else if (ContainParameter(uri, DynamicLinkParameters.Folder.message.ToString())) {
+        } else if (ContainParameter(uri, DynamicLinkParameters.Query.message.ToString())) {
 
             HelperFunctions.DevLog("GetMessageParameters");
 
-            string messageId = GetParameterId(uri, DynamicLinkParameters.Folder.message.ToString());
+            string messageId = GetParameterId(uri, DynamicLinkParameters.Query.message.ToString());
 
             HelperFunctions.DevLog("messageId = " + messageId);
             StreamCallBacks.onReceiveARMsgLink?.Invoke(messageId);
-        } else if (ContainParameter(uri, DynamicLinkParameters.Folder.live.ToString())) {
+        } else if (ContainParameter(uri, DynamicLinkParameters.Query.live.ToString())) {
 
             HelperFunctions.DevLog("GetLiveParameters");
 
-            string username = GetParameterId(uri, DynamicLinkParameters.Folder.live.ToString());
+            string username = GetParameterId(uri, DynamicLinkParameters.Query.live.ToString());
 
             HelperFunctions.DevLog("username = " + username);
             StreamCallBacks.onReceiveStreamLink?.Invoke(username);
-        } else if (ContainParameter(uri, DynamicLinkParameters.Folder.prerecorded.ToString())) {
+        } else if (ContainParameter(uri, DynamicLinkParameters.Query.prerecorded.ToString())) {
 
             HelperFunctions.DevLog("GetPrerecordedParameters");
 
-            string slug = GetParameterId(uri, DynamicLinkParameters.Folder.prerecorded.ToString());
+            string slug = GetParameterId(uri, DynamicLinkParameters.Query.prerecorded.ToString());
 
             HelperFunctions.DevLog("slug = " + slug);
             StreamCallBacks.onReceivePrerecordedLink?.Invoke(slug);
