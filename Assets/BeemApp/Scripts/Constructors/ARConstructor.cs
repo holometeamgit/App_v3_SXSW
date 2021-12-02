@@ -23,6 +23,7 @@ public class ARConstructor : MonoBehaviour {
     }
 
     private void Activate(bool status) {
+        HelperFunctions.DevLogError($"AR activated: {status}");
         arSessionOrigin?.SetActive(status);
         arSession?.SetActive(status);
     }
