@@ -14,49 +14,19 @@ public class PnlARMessages : MonoBehaviour {
 
     private List<IARMsgDataView> _arMsgDataViews;
 
-    private ARMsgJSON.Data _arMsgJSON = default;
-
-    private bool newDataAssigned = false;
-
-    private bool isPinned = false;
-
     /// <summary>
     /// Initialization
     /// </summary>
     /// <param name="streamData">Stream Json data</param>
     public void Init(ARMsgJSON.Data arMsgJSON) {
 
-        newDataAssigned = true;
-        _arMsgJSON = arMsgJSON;
-        if (isPinned) {
-            Refresh();
-        } else {
-#if !UNITY_EDITOR
-            Deactivate();
-#else
-            Refresh();
-#endif
-        }
-
-        _hologramHandler.SetOnPlacementUIHelperFinished(Refresh);
-
-    }
-
-    private void Refresh() {
-        if (!newDataAssigned) {
-            return;
-        }
-
-        isPinned = true;
-
         gameObject.SetActive(true);
 
         _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
 
-        _arMsgDataViews.ForEach(x => x.Init(_arMsgJSON));
+        _arMsgDataViews.ForEach(x => x.Init(arMsgJSON));
+
     }
-
-
 
     /// <summary>
     /// Deactivate
