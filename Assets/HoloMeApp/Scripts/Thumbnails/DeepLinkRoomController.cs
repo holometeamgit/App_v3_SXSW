@@ -16,7 +16,7 @@ public class DeepLinkRoomController : MonoBehaviour {
         webRequestHandler.Get(GetRoomUsernameUrl(username),
             (code, body) => { onSuccess?.Invoke(code, body); },
             (code, body) => { onFailed?.Invoke(code, body); },
-            false);
+            needHeaderAccessToken: false);
     }
 
     private void RoomReceived(string body, Action<RoomJsonData> onReceived) {
