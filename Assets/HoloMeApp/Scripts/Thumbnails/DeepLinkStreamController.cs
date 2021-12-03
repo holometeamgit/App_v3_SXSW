@@ -13,6 +13,8 @@ public class DeepLinkStreamController : MonoBehaviour {
     private const string STREAM_TITLE = "Join {0}'s Live Stream";
     private const string STREAM_DESCRIPTION = "Click the link to watch {0} in Augmented Reality.";
     private const string STATUS = "live";
+    private const string USERNAME_FILTER = "user__username";
+    private const string STATUS_FILTER = "status";
 
     private void GetStreamById(string id, Action<long, string> onSuccess, Action<long, string> onFailed) {
         webRequestHandler.Get(GetRequestStreamByIdURL(id),
@@ -150,7 +152,7 @@ public class DeepLinkStreamController : MonoBehaviour {
     }
 
     private string GetRequestStreamByUsernameURL(string username, string status) {
-        return webRequestHandler.ServerURLMediaAPI + videoUploader.Stream + $"?status={status}&username={username}";
+        return webRequestHandler.ServerURLMediaAPI + videoUploader.Stream + $"?{STATUS_FILTER}={status}&{USERNAME_FILTER}={username}";
     }
 
     /// <summary>
