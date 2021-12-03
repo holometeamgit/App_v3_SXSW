@@ -19,12 +19,12 @@ public class GetUserListRequestData {
 
     #region For communication profile only
     public int total;
-    public List<string> users = new List<string>();
+    public List<string> users;
     #endregion
 
     #region For broadcast profile only
-    public List<string> broadcasters = new List<string>();
-    public List<string> audience = new List<string>();
+    public List<string> broadcasters;
+    public List<string> audience;
     public int audience_total;
     #endregion
 }
