@@ -76,14 +76,21 @@ public class StreamerCountUpdater : MonoBehaviour {
         if (responseData.data == null) {
             Debug.LogError("data was null");
         } else {
-            userCount = isRoom ? responseData.data.users.Count - 1 : responseData.data.users.Count; //Subtract streamer's own value if room
-            foreach (string user in responseData.data.users) {
-                if (user == RequestCloudRecordAcquire.CLOUD_RECORD_UID) { //Subtract cloud record server as viewer
-                    userCount -= 1;
+            if (isRoom) {
+                userCount = responseData.data.users.Count - 1;
+                foreach (string user in responseData.data.users) {
+                    if (user == RequestCloudRecordAcquire.CLOUD_RECORD_UID) //Subtract cloud record server as viewer
+                    {
+                        userCount -= 1;
+                    }
                 }
+            } else {
+                userCount = responseData.data.audience_total; //Subtract streamer's own value if room
             }
-            if (userCount < 0) //Set to 0 is negative value
+
+            if (userCount < 0) { //Set to 0 is negative value
                 userCount = 0;
+            }
         }
 
         txtCount.text = emptyTextIfZero && userCount == 0 ? "" : userCount.ToString();
