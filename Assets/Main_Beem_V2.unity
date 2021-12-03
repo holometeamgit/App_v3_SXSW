@@ -5703,7 +5703,7 @@ MonoBehaviour:
   authController: {fileID: 635890365}
   webRequestHandler: {fileID: 35185073}
   purchaseAPISO: {fileID: 11400000, guid: fe37b0db6ef3c48d2ad410f4fc4856a0, type: 2}
-  accountManager: {fileID: 921435837}
+  accountManager: {fileID: 0}
   iapController: {fileID: 1428521455}
 --- !u!1 &1018772839 stripped
 GameObject:
@@ -6487,7 +6487,6 @@ MonoBehaviour:
   serverURLAPIScriptableObject: {fileID: 11400000, guid: f753fd22d1e1d4c97803fa60aadd51bd,
     type: 2}
   videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
-  deepLinkHandler: {fileID: 1519454387}
 --- !u!1 &1339238541
 GameObject:
   m_ObjectHideFlags: 0
@@ -7229,7 +7228,7 @@ MonoBehaviour:
   videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
   webRequestHandler: {fileID: 35185073}
   agoraRequests: {fileID: 1146380146}
-  accountManager: {fileID: 921435837}
+  accountManager: {fileID: 0}
 --- !u!1 &1496662217 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 491450016157643654, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
@@ -7766,7 +7765,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 556663bef7d534701a95e7995b8887ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  accountManager: {fileID: 921435837}
+  accountManager: {fileID: 0}
   webRequestHandler: {fileID: 35185073}
   videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
 --- !u!1001 &1691049189
@@ -8870,8 +8869,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e474636ab6ab849328e953cd189d74ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  webRequestHandler: {fileID: 35185073}
   serverURLAPIScriptableObject: {fileID: 11400000, guid: f753fd22d1e1d4c97803fa60aadd51bd,
     type: 2}
+  videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
 --- !u!1001 &164165630475402145
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9527,6 +9528,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1532801974}
     m_Modifications:
+    - target: {fileID: 4783958707309481190, guid: 604c9bb78e3af46b4aef4ea76027f8b0,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -129.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1276170316, guid: 5fb056e3ebab94fae838452a52f777c0, type: 3}
       propertyPath: authController
       value: 
@@ -9999,11 +10005,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4783958707309481190, guid: 604c9bb78e3af46b4aef4ea76027f8b0,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -129.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5fb056e3ebab94fae838452a52f777c0, type: 3}
@@ -10896,7 +10897,7 @@ PrefabInstance:
     - target: {fileID: 1790351701401955873, guid: de650753e65ede242ba1d0f342eea0f8,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -223.87604
+      value: -308.39597
       objectReference: {fileID: 0}
     - target: {fileID: 7871999243770856657, guid: de650753e65ede242ba1d0f342eea0f8,
         type: 3}
@@ -11171,6 +11172,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2016178056560891683, guid: 80bff197af043477f9890282f857c48a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -12.0000305
       objectReference: {fileID: 0}
     - target: {fileID: 2016178056668300806, guid: 80bff197af043477f9890282f857c48a,
         type: 3}
@@ -17190,6 +17196,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -1038
+      objectReference: {fileID: 0}
+    - target: {fileID: 9113670926308115896, guid: dae236a4affde4dfbb55512236ff8758,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -12.0000305
       objectReference: {fileID: 0}
     - target: {fileID: 9113670926633950868, guid: dae236a4affde4dfbb55512236ff8758,
         type: 3}
