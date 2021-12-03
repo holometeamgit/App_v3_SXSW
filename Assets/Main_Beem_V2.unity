@@ -5397,7 +5397,7 @@ GameObject:
   - component: {fileID: 1000053069}
   - component: {fileID: 1000053068}
   m_Layer: 0
-  m_Name: RoomPopupShowChecker
+  m_Name: PopupShowChecker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5431,8 +5431,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1316278750}
-  m_RootOrder: 0
+  m_Father: {fileID: 1519454386}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1000972061
 GameObject:
@@ -5703,7 +5703,7 @@ MonoBehaviour:
   authController: {fileID: 635890365}
   webRequestHandler: {fileID: 35185073}
   purchaseAPISO: {fileID: 11400000, guid: fe37b0db6ef3c48d2ad410f4fc4856a0, type: 2}
-  accountManager: {fileID: 0}
+  accountManager: {fileID: 921435837}
   iapController: {fileID: 1428521455}
 --- !u!1 &1018772839 stripped
 GameObject:
@@ -6466,8 +6466,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1000053069}
+  m_Children: []
   m_Father: {fileID: 1519454386}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7228,7 +7227,7 @@ MonoBehaviour:
   videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
   webRequestHandler: {fileID: 35185073}
   agoraRequests: {fileID: 1146380146}
-  accountManager: {fileID: 0}
+  accountManager: {fileID: 921435837}
 --- !u!1 &1496662217 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 491450016157643654, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
@@ -7327,6 +7326,7 @@ Transform:
   m_Children:
   - {fileID: 1316278750}
   - {fileID: 2141595002}
+  - {fileID: 1000053069}
   m_Father: {fileID: 1511041754}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -10897,7 +10897,7 @@ PrefabInstance:
     - target: {fileID: 1790351701401955873, guid: de650753e65ede242ba1d0f342eea0f8,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -745.739
+      value: -745.73895
       objectReference: {fileID: 0}
     - target: {fileID: 7871999243770856657, guid: de650753e65ede242ba1d0f342eea0f8,
         type: 3}
