@@ -9,7 +9,7 @@ using System;
 /// PnlRoomPopupController controller for PnlRoomPopup
 /// </summary>
 public class PnlRoomPopupController {
-    private RoomPopupShowChecker _roomPopupShowChecker;
+    private PopupShowChecker _roomPopupShowChecker;
     private StreamerCountUpdater _streamerCountUpdater;
 
     private RoomJsonData _receivedRoomJsonData;
@@ -25,11 +25,11 @@ public class PnlRoomPopupController {
     private bool _isWaitIfNeedHideStarted;
     private bool _isCheckStateStarted;
 
-    public PnlRoomPopupController(RoomPopupShowChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater) {
+    public PnlRoomPopupController(PopupShowChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater) {
         Construct(roomPopupShowChecker, streamerCountUpdater);
     }
 
-    private void Construct(RoomPopupShowChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater) {
+    private void Construct(PopupShowChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater) {
         _roomPopupShowChecker = roomPopupShowChecker;
         _streamerCountUpdater = streamerCountUpdater;
 
@@ -130,7 +130,7 @@ public class PnlRoomPopupController {
     }
 
     private void OnShareRoom() {
-        StreamCallBacks.onGetRoomLink?.Invoke(_receivedRoomJsonData.user);
+        StreamCallBacks.onShareRoomLink?.Invoke(_receivedRoomJsonData.user);
     }
 
     private void OnPopUpClosed() {
@@ -168,7 +168,7 @@ public class PnlRoomPopupController {
     private async Task RecheckState() {
         await Task.Delay(CHECK_STATE_COOLDOWN);
         while (_roomPopupShowChecker.CanShow() && _isShow && _isCheckStateStarted) {
-            StreamCallBacks.onUsernameLinkReceived?.Invoke(_receivedRoomJsonData.user);
+            StreamCallBacks.onReceiveRoomLink?.Invoke(_receivedRoomJsonData.user);
             await Task.Delay(CHECK_STATE_COOLDOWN);
         }
     }

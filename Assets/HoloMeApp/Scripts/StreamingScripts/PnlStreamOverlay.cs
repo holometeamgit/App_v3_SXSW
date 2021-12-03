@@ -180,9 +180,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         RefreshStreamControls(agoraController.IsRoom);
         RefreshBroadcasterControls(agoraController.IsChannelCreator);
         RefreshLiveControls(!agoraController.IsChannelCreator || agoraController.IsLive);
-        HelperFunctions.DevLog("IsRoom = " + agoraController.IsRoom);
-        HelperFunctions.DevLog("IsChannelCreator = " + agoraController.IsChannelCreator);
-        HelperFunctions.DevLog("IsLive = " + agoraController.IsLive);
+        HelperFunctions.DevLog($"IsRoom = {agoraController.IsRoom}, IsChannelCreator = {agoraController.IsChannelCreator}, IsLive = {agoraController.IsLive}");
     }
 
     private void RefreshStreamControls(bool room) {
@@ -352,16 +350,13 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     public void ShareStream() {
-        HelperFunctions.DevLog("agoraController.IsChannelCreator = " + agoraController.IsChannelCreator);
-        HelperFunctions.DevLog("agoraController.ChannelName = " + agoraController.ChannelName);
-        HelperFunctions.DevLog("agoraController.IsRoom = " + agoraController.IsRoom);
-        HelperFunctions.DevLog("currentStreamId = " + currentStreamId);
+        HelperFunctions.DevLog($"IsRoom = {agoraController.IsRoom}, IsChannelCreator = {agoraController.IsChannelCreator}, agoraController.ChannelName = {agoraController.ChannelName}, currentStreamId = {currentStreamId}");
 
         if (agoraController.IsRoom) {
-            StreamCallBacks.onGetRoomLink?.Invoke(agoraController.ChannelName);
+            StreamCallBacks.onShareRoomLink?.Invoke(agoraController.ChannelName);
         } else {
             if (!string.IsNullOrWhiteSpace(currentStreamId)) {
-                StreamCallBacks.onGetStreamLink?.Invoke(currentStreamId, agoraController.ChannelName);
+                StreamCallBacks.onShareStreamLinkById?.Invoke(currentStreamId);
             } else {
                 DynamicLinksCallBacks.onShareAppLink?.Invoke();
             }
@@ -778,9 +773,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private void OnDisable() {
         StopAllCoroutines();
-        if (pnlViewingExperience.gameObject != null) {
-            pnlViewingExperience.ToggleARSessionObjects(false);
-        }
         speechNotificationPopups.DeactivateAllPopups();
         ChatBtn.onOpen -= OpenChat;
     }
