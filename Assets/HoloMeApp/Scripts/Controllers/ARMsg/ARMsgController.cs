@@ -117,6 +117,7 @@ namespace Beem.ARMsg {
 
         private void ErrorPostUploadARMsgCallback(long code, string body) {
             HelperFunctions.DevLogError(string.Format("Can't upload ARMsg. {0} {1}", code, body));
+            CallBacks.OnARMsgUpdloadedError?.Invoke();
         }
 
         private string GetPostRequestUploadARMsgURL() {

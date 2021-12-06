@@ -22,7 +22,6 @@ public class ARMsgReadyInterrupter : MonoBehaviour {
                 CallBacks.OnCancelAllARMsgActions?.Invoke();
             }, () => {
                 OnShare?.Invoke();
-                CallBacks.OnCloseGenericError?.Invoke();
             }
             , false);
     }

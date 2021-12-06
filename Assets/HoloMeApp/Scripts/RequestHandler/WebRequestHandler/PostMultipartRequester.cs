@@ -13,7 +13,7 @@ using System.IO;
 public class PostMultipartRequester : WebRequester {
 
     private const int TIMEOUT_MULTIPART_REQUEST = 1200000;
-    private const int MAX_TIMES_BEFORE_POST_MULTIPART_STOP_REQUEST = 150;
+    private const int MAX_TIMES_BEFORE_POST_MULTIPART_STOP_REQUEST = 80;
     /// <summary>
     /// Post request multiple files 
     /// </summary>

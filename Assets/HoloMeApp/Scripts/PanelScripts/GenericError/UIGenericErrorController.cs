@@ -10,7 +10,6 @@ public class UIGenericErrorController : MonoBehaviour {
     // Start is called before the first frame update
     void Awake() {
         CallBacks.OnActivateGenericErrorDoubleButton += OnActivateDoubleButton;
-        CallBacks.OnCloseGenericError += OnCloseGenericError;
     }
 
     private void OnActivateDoubleButton(string header = "", string message = "",
@@ -22,12 +21,7 @@ public class UIGenericErrorController : MonoBehaviour {
             onButtonOnePress, onButtonTwoPress, isWarning);
     }
 
-    private void OnCloseGenericError() {
-        pnlGenericError.gameObject.SetActive(false);
-    }
-
     private void OnDestroy() {
         CallBacks.OnActivateGenericErrorDoubleButton -= OnActivateDoubleButton;
-        CallBacks.OnCloseGenericError -= OnCloseGenericError;
     }
 }

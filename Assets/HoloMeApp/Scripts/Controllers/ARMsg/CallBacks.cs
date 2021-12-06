@@ -19,6 +19,7 @@ namespace Beem.ARMsg {
         public static Func<ARMsgJSON.Data> OnGetLastReadyARMsgData;
 
         public static Action OnARMsgUpdloaded = delegate { };
+        public static Action OnARMsgUpdloadedError = delegate { };
         public static Action OnAllARMsgСanceled = delegate { };
 
         #region UI
@@ -39,7 +40,6 @@ namespace Beem.ARMsg {
         #region PnlGenericError
         public static Action<string, string, string, Action, bool> OnActivateGenericErrorSingleButton = delegate { };
         public static Action<string, string, string, string, UnityAction, UnityAction, bool> OnActivateGenericErrorDoubleButton = delegate { };
-        public static Action OnCloseGenericError = delegate { };
         #endregion
     }
 }
