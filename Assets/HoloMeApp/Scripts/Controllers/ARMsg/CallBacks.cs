@@ -19,7 +19,8 @@ namespace Beem.ARMsg {
         public static Func<ARMsgJSON.Data> OnGetLastReadyARMsgData;
 
         public static Action OnARMsgUpdloaded = delegate { };
-        public static Action OnARMsgUpdloadedError = delegate { };
+        public static Action<float> OnARMsgUpdloadedProcessing = delegate { };
+        public static Action OnARMsgUploadedError = delegate { };
         public static Action OnAllARMsgСanceled = delegate { };
 
         #region UI

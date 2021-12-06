@@ -20,10 +20,10 @@ public class ARMsgUploadingRepeater : MonoBehaviour
     }
 
     private void OnEnable() {
-        CallBacks.OnARMsgUpdloadedError += OnUploadingError;
+        CallBacks.OnARMsgUploadedError += OnUploadingError;
     }
 
     private void OnDisable() {
-        CallBacks.OnARMsgUpdloadedError -= OnUploadingError;
+        CallBacks.OnARMsgUploadedError -= OnUploadingError;
     }
 }
