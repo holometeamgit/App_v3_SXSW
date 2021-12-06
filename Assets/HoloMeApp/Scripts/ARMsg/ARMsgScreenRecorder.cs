@@ -37,6 +37,7 @@ public class ARMsgScreenRecorder : MonoBehaviour {
         CallBacks.OnStartRecord -= StartRecording;
         CallBacks.OnStopRecord -= StopRecord;
         CallBacks.OnGetVideoRecordedFilePath -= GetPathToFile;
+        StopRecord();
     }
 
     public void StartRecording() {

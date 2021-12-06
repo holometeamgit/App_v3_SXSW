@@ -8,47 +8,51 @@ using UnityEngine.EventSystems;
 using Beem.ARMsg;
 
 [RequireComponent(typeof(EventTrigger))]
-public class RecordButtonWithTimer : MonoBehaviour, IPointerDownHandler {
+public class CircleButtonWithTimer : MonoBehaviour {
 
-    public Image button, countdown;
+    public Image invertCountdown, countdown;
     public UnityEvent onStop;
     private bool pressed;
-    [SerializeField] private const float MaxRecordingTime = 15f; // seconds
+    [SerializeField] private float MaxRecordingTime = 15f; // seconds
+    [SerializeField] private float delayTimer = 2;
 
-    public void StartRecord() {
-        CallBacks.OnStartRecord?.Invoke();
-    }
-
-    public void StartRecordAnimation() {
+    public void StartAnimation() {
         Reset();
         StartCoroutine(Countdown());
     }
 
     private void Reset() {
         // Reset fill amounts
-        if (button)
-            button.fillAmount = 1.0f;
+        if (invertCountdown)
+            invertCountdown.fillAmount = 1.0f;
         if (countdown)
             countdown.fillAmount = 0.0f;
     }
 
-    void IPointerDownHandler.OnPointerDown(PointerEventData eventData) {
+    /// <summary>
+    /// RequestStop
+    /// </summary>
+    public void RequestStop() {
         pressed = true;
     }
 
     private IEnumerator Countdown() {
         pressed = false;
+
         // Animate the countdown
+        yield return new WaitForSeconds(delayTimer);
         float startTime = Time.time, ratio = 0f;
+
         while (!pressed && (ratio = (Time.time - startTime) / MaxRecordingTime) < 1.0f) {
-            countdown.fillAmount = ratio;
-            button.fillAmount = 1f - ratio;
+            if (countdown)
+                countdown.fillAmount = ratio;
+            if (invertCountdown)
+                invertCountdown.fillAmount = 1f - ratio;
             yield return null;
         }
         // Reset
         Reset();
         // Stop recording
         onStop?.Invoke();
-        CallBacks.OnStopRecord?.Invoke();
     }
 }
