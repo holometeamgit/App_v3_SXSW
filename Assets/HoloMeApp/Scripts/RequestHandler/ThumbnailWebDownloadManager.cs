@@ -23,8 +23,6 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
         }
     }
 
-    public AccountManager accountManager;
-
     public Action<StreamJsonData, LoadingKey> OnStreamJsonDataLoaded;
     public Action<long, string, LoadingKey> OnErrorStreamJsonDataLoaded;
 
@@ -50,17 +48,17 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
     private const int DOWNLOAD_STREAM_DELAY_TIME = 1500;
 
     public void DownloadThumbnails(ThumbnailWebRequestStruct thumbnailWebRequestStruct, LoadingKey loadingKey) {
-        webRequestHandler.GetRequest(GetRequestStreamURL(thumbnailWebRequestStruct),
+        webRequestHandler.Get(GetRequestStreamURL(thumbnailWebRequestStruct),
         (code, body) => { DownloadThumbnailsCallBack(body, loadingKey); },
         (code, body) => { DownloadErrorThumbnailsCallBack(code, body, loadingKey); },
-        accountManager.GetAccessToken().access);
+        needHeaderAccessToken: true);
     }
 
     public void GetCountThumbnails(ThumbnailWebRequestStruct thumbnailWebRequestStruct, LoadingKey loadingKey) {
-        webRequestHandler.GetRequest(GetRequestStreamURL(thumbnailWebRequestStruct),
+        webRequestHandler.Get(GetRequestStreamURL(thumbnailWebRequestStruct),
         (code, body) => { GetCountThumbnailsCallBack(body, loadingKey); },
         (code, body) => { ErrorGetCountThumbnailsCallBack(code, body, loadingKey); },
-        accountManager.GetAccessToken().access);
+        needHeaderAccessToken: true);
     }
 
     private void Awake() {
@@ -68,19 +66,19 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
     }
 
     private void DownloadStreamById(long id) {
-        webRequestHandler.GetRequest(GetRequestStreamByIdURL(id),
+        webRequestHandler.Get(GetRequestStreamByIdURL(id),
             (code, body) => {
-                HelperFunctions.DevLog("DownloadStreamById " + id + " "  + body);
+                HelperFunctions.DevLog("DownloadStreamById " + id + " " + body);
 
                 StreamJsonData.Data streamJsonData = JsonUtility.FromJson<StreamJsonData.Data>(body);
-                if (streamJsonData != null) 
+                if (streamJsonData != null)
                     OnStreamByIdJsonDataLoaded?.Invoke(streamJsonData);
             },
         (code, body) => {
             HelperFunctions.DevLog("Error DownloadStreamById " + id);
             OnErrorStreamByIdJsonDataLoaded?.Invoke(id);
         },
-        accountManager.GetAccessToken().access);
+        needHeaderAccessToken: true);
     }
 
     private void DownloadStreamByIdWithDelay(long id) { //TODO need wait server confirmation
