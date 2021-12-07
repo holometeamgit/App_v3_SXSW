@@ -21,6 +21,12 @@ public class InputFieldController : MonoBehaviour {
     [SerializeField]
     private MobileInputField _mobileInputField;
 
+    public MobileInputField MobileInputField {
+        get {
+            return _mobileInputField;
+        }
+    }
+
     [SerializeField]
     TMP_Text warningMsgText;
     [SerializeField]
