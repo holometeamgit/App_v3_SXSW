@@ -77,11 +77,6 @@ public class InputFieldController : MonoBehaviour {
             inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
     }
 
-    private void OnEnable() {
-        _mobileInputField.SetVisible(true);
-        Debug.LogError("OnEnable " + gameObject.name);
-    }
-
     public void ShowWarning(string warningMsg) {
         if (!string.IsNullOrEmpty(warningMsg)) {
             animator.enabled = true;
@@ -179,8 +174,6 @@ public class InputFieldController : MonoBehaviour {
     }
 
     private void OnDisable() {
-        _mobileInputField.SetVisible(false);
-        Debug.LogError("OnDisable " + gameObject.name);
         if (IsClearOnDisable) {
             SetToDefaultState();
             text = "";

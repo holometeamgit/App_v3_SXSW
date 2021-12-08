@@ -38,8 +38,6 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     /// The method do actions after pressing the LogIn button
     /// </summary>
     public void LogInBtnClick() {
-        //inputFieldEmail.MobileInputField.SetVisible(false);
-        //inputFieldPassword.MobileInputField.SetVisible(false);
         CallBacks.onSignInEMailClick?.Invoke();
     }
 
@@ -72,8 +70,8 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     private void NeedVerificationCallback(string email) {
         inputFieldEmail.ShowWarning("E-mail is not verified");
 
-        //inputFieldEmail.MobileInputField.SetVisible(false);
-        //inputFieldPassword.MobileInputField.SetVisible(false);
+        inputFieldEmail.MobileInputField.SetVisible(false);
+        inputFieldPassword.MobileInputField.SetVisible(false);
 
         if (EmailVerificationTimer.IsOver) {
             pnlGenericError.ActivateDoubleButton("Email verication",
@@ -83,13 +81,11 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
                 () => {
                     CallBacks.onEmailVerification?.Invoke();
                     EmailVerificationTimer.Release();
-                    //inputFieldEmail.MobileInputField.SetVisible(true);
-                    //inputFieldPassword.MobileInputField.SetVisible(true);
                 },
                 () => {
                     pnlGenericError.gameObject.SetActive(false);
-                    //inputFieldEmail.MobileInputField.SetVisible(true);
-                    //inputFieldPassword.MobileInputField.SetVisible(true);
+                    inputFieldEmail.MobileInputField.SetVisible(true);
+                    inputFieldPassword.MobileInputField.SetVisible(true);
                 });
         } else {
             pnlGenericError.ActivateSingleButton("Email verication",
@@ -97,8 +93,8 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
                "Ok",
                () => {
                    pnlGenericError.gameObject.SetActive(false);
-                   //inputFieldEmail.MobileInputField.SetVisible(true);
-                   //inputFieldPassword.MobileInputField.SetVisible(true);
+                   inputFieldEmail.MobileInputField.SetVisible(true);
+                   inputFieldPassword.MobileInputField.SetVisible(true);
                });
         }
     }

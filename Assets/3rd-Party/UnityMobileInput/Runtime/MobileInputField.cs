@@ -189,6 +189,8 @@ namespace Mopsicus.Plugins {
         /// </summary>
         const string READY = "READY";
 
+        private Coroutine coroutine;
+
         private Action onReady;
 
         /// <summary>
@@ -204,18 +206,11 @@ namespace Mopsicus.Plugins {
         }
 
         /// <summary>
-        /// Create mobile input on Start with coroutine
-        /// </summary>
-        protected override void Start() {
-            base.Start();
-            StartCoroutine(InitialzieOnNextFrame());
-        }
-
-        /// <summary>
         /// Show native on enable
         /// </summary>
-        private void OnEnable() {
-            Debug.Log($"OnEnable gameObject = {transform.parent.gameObject.name}, _isMobileInputCreated = {_isMobileInputCreated}");
+        protected override void OnEnable() {
+            base.OnEnable();
+            coroutine = StartCoroutine(InitialzieOnNextFrame());
             if (_isMobileInputCreated) {
                 this.SetVisible(true);
             } else {
@@ -226,25 +221,23 @@ namespace Mopsicus.Plugins {
         /// <summary>
         /// Hide native on disable
         /// </summary>
-        private void OnDisable() {
-            Debug.Log($"OnDisable gameObject = {transform.parent.gameObject.name}, _isMobileInputCreated = {_isMobileInputCreated}");
+        protected override void OnDisable() {
+            base.OnDisable();
+            RemoveNative();
+            if (coroutine != null) {
+                StopCoroutine(coroutine);
+                coroutine = null;
+            }
+
             if (_isMobileInputCreated) {
                 this.SetFocus(false);
                 this.SetVisible(false);
+                onReady -= SetVisible;
             }
-            onReady -= SetVisible;
         }
 
         private void SetVisible() {
             this.SetVisible(true);
-        }
-
-        /// <summary>
-        /// Destructor
-        /// </summary>
-        protected override void OnDestroy() {
-            RemoveNative();
-            base.OnDestroy();
         }
 
         /// <summary>
@@ -444,7 +437,6 @@ namespace Mopsicus.Plugins {
         private IEnumerator PluginsMessageRoutine(JsonObject data) {
             yield return null;
             string msg = data["msg"];
-            Debug.LogError($"msg = {msg}");
             if (msg.Equals(TEXT_CHANGE)) {
                 string text = data["text"];
                 this.OnTextChange(text);
@@ -533,7 +525,6 @@ namespace Mopsicus.Plugins {
         /// New field successfully added
         /// </summary>
         void Ready() {
-            Debug.LogError($"gameObject = {transform.parent.gameObject.name} Ready");
             _isMobileInputCreated = true;
             if (!_isVisibleOnCreate) {
                 SetVisible(false);
@@ -622,16 +613,10 @@ namespace Mopsicus.Plugins {
         /// <param name="isVisible">true | false</param>
         public void SetVisible(bool isVisible) {
 
-            Debug.LogError($"before gameObject = {transform.parent.gameObject.name}, SetVisible = {isVisible},  _isMobileInputCreated = {_isMobileInputCreated}");
-
             if (!_isMobileInputCreated) {
                 _isVisibleOnCreate = isVisible;
-                onReady -= () => SetVisible(isVisible);
-                onReady += () => SetVisible(isVisible); Debug.LogError("SetVisible Ready");
                 return;
             }
-
-            Debug.LogError($"after gameObject = {transform.parent.gameObject.name}, SetVisible = {isVisible},  _isMobileInputCreated = {_isMobileInputCreated}");
 
             JsonObject data = new JsonObject();
             data["msg"] = SET_VISIBLE;
