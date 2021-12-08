@@ -79,6 +79,7 @@ public class InputFieldController : MonoBehaviour {
 
     private void OnEnable() {
         _mobileInputField.SetVisible(true);
+        Debug.LogError("OnEnable " + gameObject.name);
     }
 
     public void ShowWarning(string warningMsg) {
@@ -179,6 +180,7 @@ public class InputFieldController : MonoBehaviour {
 
     private void OnDisable() {
         _mobileInputField.SetVisible(false);
+        Debug.LogError("OnDisable " + gameObject.name);
         if (IsClearOnDisable) {
             SetToDefaultState();
             text = "";

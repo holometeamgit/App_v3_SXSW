@@ -82,7 +82,9 @@ namespace Beem.KeyBoard {
         public void RefreshHeight(bool isShown, int height) {
             _keyBoardPositionView.UpdatePosition(isShown, height);
 
+            //if (isShown) {
             MobileInputField.SetRectNative();
+            //}
         }
 
         /// <summary>

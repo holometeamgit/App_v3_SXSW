@@ -215,10 +215,11 @@ namespace Mopsicus.Plugins {
         /// Show native on enable
         /// </summary>
         private void OnEnable() {
+            Debug.Log($"OnEnable gameObject = {transform.parent.gameObject.name}, _isMobileInputCreated = {_isMobileInputCreated}");
             if (_isMobileInputCreated) {
                 this.SetVisible(true);
             } else {
-                onReady += () => this.SetVisible(true);
+                onReady += SetVisible;
             }
         }
 
@@ -226,11 +227,16 @@ namespace Mopsicus.Plugins {
         /// Hide native on disable
         /// </summary>
         private void OnDisable() {
+            Debug.Log($"OnDisable gameObject = {transform.parent.gameObject.name}, _isMobileInputCreated = {_isMobileInputCreated}");
             if (_isMobileInputCreated) {
                 this.SetFocus(false);
                 this.SetVisible(false);
-                onReady -= () => this.SetVisible(true);
             }
+            onReady -= SetVisible;
+        }
+
+        private void SetVisible() {
+            this.SetVisible(true);
         }
 
         /// <summary>
@@ -438,6 +444,7 @@ namespace Mopsicus.Plugins {
         private IEnumerator PluginsMessageRoutine(JsonObject data) {
             yield return null;
             string msg = data["msg"];
+            Debug.LogError($"msg = {msg}");
             if (msg.Equals(TEXT_CHANGE)) {
                 string text = data["text"];
                 this.OnTextChange(text);
@@ -526,6 +533,7 @@ namespace Mopsicus.Plugins {
         /// New field successfully added
         /// </summary>
         void Ready() {
+            Debug.LogError($"gameObject = {transform.parent.gameObject.name} Ready");
             _isMobileInputCreated = true;
             if (!_isVisibleOnCreate) {
                 SetVisible(false);
@@ -613,10 +621,18 @@ namespace Mopsicus.Plugins {
         /// </summary>
         /// <param name="isVisible">true | false</param>
         public void SetVisible(bool isVisible) {
+
+            Debug.LogError($"before gameObject = {transform.parent.gameObject.name}, SetVisible = {isVisible},  _isMobileInputCreated = {_isMobileInputCreated}");
+
             if (!_isMobileInputCreated) {
                 _isVisibleOnCreate = isVisible;
+                onReady -= () => SetVisible(isVisible);
+                onReady += () => SetVisible(isVisible); Debug.LogError("SetVisible Ready");
                 return;
             }
+
+            Debug.LogError($"after gameObject = {transform.parent.gameObject.name}, SetVisible = {isVisible},  _isMobileInputCreated = {_isMobileInputCreated}");
+
             JsonObject data = new JsonObject();
             data["msg"] = SET_VISIBLE;
             data["is_visible"] = isVisible;

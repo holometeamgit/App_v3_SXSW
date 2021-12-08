@@ -27,8 +27,8 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     /// The method do actions after pressing the SignUp button
     /// </summary>
     public void SignUpBtnClick() {
-        inputFieldEmail.MobileInputField.SetVisible(false);
-        inputFieldPassword.MobileInputField.SetVisible(false);
+        //inputFieldEmail.MobileInputField.SetVisible(false);
+        //inputFieldPassword.MobileInputField.SetVisible(false);
         CallBacks.onSignUpEMailClick?.Invoke();
     }
 
