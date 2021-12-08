@@ -3,15 +3,15 @@ using UnityEditor;
 using UnityEngine;
 
 public class DevEnvironment : MonoBehaviour {
-    static string Prod = "PROD";
-    static string Dev = "DEV";
+    static string PROD = "PROD";
+    static string DEV = "DEV";
 
     [MenuItem("Environment/Switch To Dev")]
     static void SwitchToDev() {
         PlayerSettings.productName = "Beem Dev";
 
-        SwitchDefine(BuildTargetGroup.iOS, Prod, Dev);
-        SwitchDefine(BuildTargetGroup.Android, Prod, Dev);
+        SwitchDefine(BuildTargetGroup.iOS, DEV);
+        SwitchDefine(BuildTargetGroup.Android, DEV);
 
         EditorUserBuildSettings.development = true;
     }
@@ -20,25 +20,31 @@ public class DevEnvironment : MonoBehaviour {
     static void SwitchToProd() {
         PlayerSettings.productName = "Beem";
 
-        SwitchDefine(BuildTargetGroup.iOS, Dev, Prod);
-        SwitchDefine(BuildTargetGroup.Android, Dev, Prod);
+        SwitchDefine(BuildTargetGroup.iOS, PROD);
+        SwitchDefine(BuildTargetGroup.Android, PROD);
 
         EditorUserBuildSettings.development = false;
     }
 
-    static void SwitchDefine(BuildTargetGroup targetGroup, string firstDefine, string secondDefine) {
+    private static void SwitchDefine(BuildTargetGroup targetGroup, string buildType) {
         string[] currentDefines;
         PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup, out currentDefines);
-        if (currentDefines.Contains(firstDefine)) {
+        if (currentDefines.Contains(PROD)) {
             for (int i = 0; i < currentDefines.Length; i++) {
-                if (currentDefines[i] == firstDefine) {
-                    currentDefines[i] = secondDefine;
+                if (currentDefines[i] == PROD) {
+                    currentDefines[i] = buildType;
+                }
+            }
+        } else if (currentDefines.Contains(DEV)) {
+            for (int i = 0; i < currentDefines.Length; i++) {
+                if (currentDefines[i] == DEV) {
+                    currentDefines[i] = buildType;
                 }
             }
         } else {
             int lenght = currentDefines.Length;
             currentDefines = new string[lenght + 1];
-            currentDefines[lenght] = secondDefine;
+            currentDefines[lenght] = buildType;
         }
         PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, currentDefines);
     }

@@ -26,6 +26,7 @@ public class StreamJsonData {
         }
 
         public long id;
+        public string share_link;
         public string preview_s3_url;
         public string stream_s3_url;
         public string teaser_s3_url;
@@ -34,6 +35,7 @@ public class StreamJsonData {
         public bool is_liked;
         public string user;
         public long user_id;
+        public string slug;
         public ProductType product_type;
         public List<string> content_category;
         public string status;

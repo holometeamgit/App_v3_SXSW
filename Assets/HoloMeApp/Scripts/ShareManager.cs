@@ -10,25 +10,31 @@ public class ShareManager : MonoBehaviour {
     private ServerURLAPIScriptableObject serverURLAPIScriptableObject;
 
     private void OnEnable() {
-        DynamicLinksCallBacks.onGetShortLink += ShareStream;
-        DynamicLinksCallBacks.onShareAppLink += ShareApp;
+        DynamicLinksCallBacks.onShareSocialLink += ShareSocialLink;
+        DynamicLinksCallBacks.onShareAppLink += ShareAppLink;
+        DynamicLinksCallBacks.onShareLink += ShareLink;
     }
 
     private void OnDisable() {
-        DynamicLinksCallBacks.onGetShortLink -= ShareStream;
-        DynamicLinksCallBacks.onShareAppLink -= ShareApp;
+        DynamicLinksCallBacks.onShareSocialLink -= ShareSocialLink;
+        DynamicLinksCallBacks.onShareAppLink -= ShareAppLink;
+        DynamicLinksCallBacks.onShareLink -= ShareLink;
     }
 
-    private void ShareApp() {
+    private void ShareAppLink() {
         Uri link = new Uri(serverURLAPIScriptableObject.FirebaseDynamicLink + serverURLAPIScriptableObject.App);
         string msg = "Come to my App: " + link.AbsoluteUri;
         HelperFunctions.DevLog(msg);
         ShareLink(msg);
     }
 
-    private void ShareStream(Uri link, SocialMetaTagParameters socialMetaTagParameters) {
+    private void ShareSocialLink(Uri link, SocialMetaTagParameters socialMetaTagParameters) {
         string msg = socialMetaTagParameters.Title + "\n" + socialMetaTagParameters.Description + "\n" + link.AbsoluteUri;
         ShareLink(msg);
+    }
+
+    private void ShareLink(Uri link) {
+        ShareLink(link.AbsoluteUri);
     }
 
     protected void ShareLink(string msg) {
