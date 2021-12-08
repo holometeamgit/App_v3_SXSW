@@ -21,6 +21,12 @@ public class InputFieldController : MonoBehaviour {
     [SerializeField]
     private MobileInputField _mobileInputField;
 
+    public MobileInputField MobileInputField {
+        get {
+            return _mobileInputField;
+        }
+    }
+
     [SerializeField]
     TMP_Text warningMsgText;
     [SerializeField]
@@ -69,10 +75,6 @@ public class InputFieldController : MonoBehaviour {
 
         if (IsLowercase)
             inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
-    }
-
-    private void OnEnable() {
-        _mobileInputField.SetVisible(true);
     }
 
     public void ShowWarning(string warningMsg) {
@@ -172,7 +174,6 @@ public class InputFieldController : MonoBehaviour {
     }
 
     private void OnDisable() {
-        _mobileInputField.SetVisible(false);
         if (IsClearOnDisable) {
             SetToDefaultState();
             text = "";

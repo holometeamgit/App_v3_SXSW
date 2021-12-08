@@ -135,38 +135,38 @@ public class HelperFunctions {
     /// Log message only in editor or debug builds
     /// </summary>
     public static void DevLog(string message, string tag = "") {
-        if (Application.isEditor || Debug.isDebugBuild) {
-            if (string.IsNullOrEmpty(tag)) {
-                Debug.Log(message);
-            } else {
-                Debug.Log(message + TAG + tag);
-            }
+#if DEV || UNITY_EDITOR
+        if (string.IsNullOrEmpty(tag)) {
+            Debug.Log(message);
+        } else {
+            Debug.Log(message + TAG + tag);
         }
+#endif
     }
 
     /// <summary>
     /// Log warnings only in editor or debug builds
     /// </summary>
     public static void DevLogWarning(string message, string tag = "") {
-        if (Application.isEditor || Debug.isDebugBuild) {
-            if (string.IsNullOrEmpty(tag)) {
-                Debug.LogWarning(message);
-            } else {
-                Debug.LogWarning(message + TAG + tag);
-            }
+#if DEV || UNITY_EDITOR
+        if (string.IsNullOrEmpty(tag)) {
+            Debug.LogWarning(message);
+        } else {
+            Debug.LogWarning(message + TAG + tag);
         }
+#endif
     }
 
     /// <summary>
     /// Log errors only in editor or debug builds
     /// </summary>
     public static void DevLogError(string message, string tag = "") {
-        if (Application.isEditor || Debug.isDebugBuild) {
-            if (string.IsNullOrEmpty(tag)) {
-                Debug.LogError(message);
-            } else {
-                Debug.LogError(message + TAG + tag);
-            }
+#if DEV || UNITY_EDITOR
+        if (string.IsNullOrEmpty(tag)) {
+            Debug.LogError(message);
+        } else {
+            Debug.LogError(message + TAG + tag);
         }
+#endif
     }
 }

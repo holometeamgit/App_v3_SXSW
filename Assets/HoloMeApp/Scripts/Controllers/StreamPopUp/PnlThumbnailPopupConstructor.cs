@@ -11,16 +11,14 @@ public class PnlThumbnailPopupConstructor : MonoBehaviour {
     }
 
     private void Construct() {
-        StreamCallBacks.onStreamLinkReceived += OpenStream;
+        StreamCallBacks.onStreamDataReceived += OpenStream;
     }
 
-    private void OpenStream(string idString) {
-        long id = 0;
-        long.TryParse(idString, out id);
-        _pnlThumbnailPopup.OpenStream(id);
+    private void OpenStream(StreamJsonData.Data data) {
+        _pnlThumbnailPopup.OpenStream(data.id);
     }
 
     private void OnDestroy() {
-        StreamCallBacks.onStreamLinkReceived -= OpenStream;
+        StreamCallBacks.onStreamDataReceived -= OpenStream;
     }
 }
