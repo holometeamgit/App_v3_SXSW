@@ -644,7 +644,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         if (!videoSurface) {
             videoSurface = cameraRenderImage.gameObject.AddComponent<VideoSurface>();
             isUsingFrontCamera = true;
-            videoSurface.EnableFilpTextureApply(false, true);
+            videoSurface.EnableFilpTextureApply(true, true);
             videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
             videoSurface.SetGameFps(agoraController.frameRate);
         }
@@ -697,12 +697,18 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     public void ToggleLocalAudio(bool mute) {
         _muteAudio = mute;
 
-        AnimatedCentreTextMessage("Your microphone is " + (mute ? "off" : "on") + ".");
-        AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
         if (isChannelCreator) { //Display popup only for streamers but not for 2 way audio viewers
+            ShowMicrophoneMuteStatusMessage(mute);
             SendVideoAudioPauseStatusToViewers();
+        } else if (togglePushToTalk.interactable) { //Do not show microphone is off message unless push to talk is active for viewers
+            ShowMicrophoneMuteStatusMessage(mute);
         }
         agoraController.ToggleLocalAudio(mute);
+    }
+
+    private void ShowMicrophoneMuteStatusMessage(bool mute) {
+        AnimatedCentreTextMessage("Your microphone is " + (mute ? "off" : "on") + ".");
+        AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
     }
 
     public void ToggleVideo(bool hideVideo) {
@@ -772,7 +778,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private void OnDisable() {
         StopAllCoroutines();
-        if (pnlViewingExperience != null) {
+        if (pnlViewingExperience.gameObject != null) {
             pnlViewingExperience.ToggleARSessionObjects(false);
         }
         speechNotificationPopups.DeactivateAllPopups();

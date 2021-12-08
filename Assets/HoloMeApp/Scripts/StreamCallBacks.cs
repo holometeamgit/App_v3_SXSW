@@ -17,6 +17,7 @@ public class StreamCallBacks {
     public static Action<int> onUpdateUserCount = delegate { };
     public static Action<string> onShowPopUpRoomOffline = delegate { };
     public static Action<string> onShowPopUpRoomEnded = delegate { };
+    public static Action<long> onUserDoesntExist = delegate { };
     public static Action onClosePopUp = delegate { };
 
     //from ui

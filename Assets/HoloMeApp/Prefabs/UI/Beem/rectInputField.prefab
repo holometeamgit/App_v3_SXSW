@@ -274,6 +274,7 @@ MonoBehaviour:
   IsLowercase: 0
   isEmail: 0
   inputField: {fileID: 7940128831932923322}
+  _mobileInputField: {fileID: 8435443297745384095}
   warningMsgText: {fileID: 4542335493675226018}
   animator: {fileID: 4556019728795237901}
   onValueChanged:
@@ -281,7 +282,19 @@ MonoBehaviour:
       m_Calls: []
   OnEndEditPassword:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2603937705725323448}
+        m_TargetAssemblyTypeName: InputFieldController, Assembly-CSharp
+        m_MethodName: SetToDefaultState
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!95 &4556019728795237901
 Animator:
   serializedVersion: 3
@@ -1744,6 +1757,7 @@ GameObject:
   - component: {fileID: 7940128831932923322}
   - component: {fileID: 1975078485403921245}
   - component: {fileID: 3369450818511672268}
+  - component: {fileID: 8435443297745384095}
   m_Layer: 5
   m_Name: InputField
   m_TagString: Untagged
@@ -1858,7 +1872,7 @@ MonoBehaviour:
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
-  m_HideMobileInput: 0
+  m_HideMobileInput: 1
   m_CharacterValidation: 0
   m_CharacterLimit: 0
   m_OnEndEdit:
@@ -1866,19 +1880,7 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2603937705725323448}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: SetToDefaultState
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 1, g: 0.47058824, b: 0.3019608, a: 0.78431374}
@@ -1933,6 +1935,26 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &8435443297745384095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5941173714406216730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92594b9f3c977ba4b9516e80394752f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomFont: default
+  IsManualHideControl: 0
+  IsWithDoneButton: 0
+  IsWithClearButton: 0
+  ReturnKey: 0
+  OnReturnPressedEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6361511349081722563
 GameObject:
   m_ObjectHideFlags: 0

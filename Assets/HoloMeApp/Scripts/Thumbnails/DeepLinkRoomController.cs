@@ -16,7 +16,8 @@ public class DeepLinkRoomController : MonoBehaviour {
         HelperFunctions.DevLog("Get Room By UserName " + username);
         webRequestHandler.Get(GetRoomUsernameUrl(username),
             (code, body) => RoomReceived(body),
-            (code, body) => HelperFunctions.DevLogError(code + " " + body), false);
+            (code, body) => { StreamCallBacks.onUserDoesntExist(code); HelperFunctions.DevLogError(code + " " + body); }, 
+            false);
     }
 
     private void RoomReceived(string body) {
