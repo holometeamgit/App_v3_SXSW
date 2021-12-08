@@ -25,7 +25,7 @@ public class ScreenshotController : MonoBehaviour {
 
     }
 
-    IEnumerator AddingToImage() {
+    private IEnumerator AddingToImage() {
         int width;
         int heigh;
         AgoraSharedVideoConfig.GetResolution(screenWidth: Screen.width, screenHeigh: Screen.height, out width, out heigh);

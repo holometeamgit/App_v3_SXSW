@@ -202,7 +202,7 @@ public class PnlRecord : MonoBehaviour {
 
     }
 
-    async Task OnRecordComplete() {
+    private async Task OnRecordComplete() {
         string outputPath = await videoRecorder.FinishWriting();
         if (recordLengthFailed) {
             File.Delete(outputPath);

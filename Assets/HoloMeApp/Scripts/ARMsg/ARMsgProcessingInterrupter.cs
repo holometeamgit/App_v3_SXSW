@@ -4,7 +4,8 @@ using UnityEngine;
 using Beem.ARMsg;
 
 public class ARMsgProcessingInterrupter : MonoBehaviour {
-    [SerializeField] Switcher _interruptSwitcher;
+    [SerializeField]
+    private Switcher _interruptSwitcher;
 
     private void OnEnable() {
         CallBacks.OnCancelAllARMsgActions += OnInterrupt;

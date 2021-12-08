@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class TextCounter : MonoBehaviour
-{
-    [SerializeField] TMP_Text _textCount;
-    [SerializeField] float _destroyTimer = 1.2f;
+public class TextCounter : MonoBehaviour {
+    [SerializeField]
+    private TMP_Text _textCount;
+    [SerializeField]
+    private float _destroyTimer = 1.2f;
 
     public string Text {
         set { _textCount.text = value; }

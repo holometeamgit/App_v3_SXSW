@@ -25,8 +25,9 @@ public class FlashScreenshot : MonoBehaviour {
     }
 
     private void Update() {
-        if(_underControll)
+        if (_underControll) {
             Screen.brightness = Mathf.Lerp(Screen.brightness, 1, 0.1f);
+        }
     }
 
     private void OnDisable() {

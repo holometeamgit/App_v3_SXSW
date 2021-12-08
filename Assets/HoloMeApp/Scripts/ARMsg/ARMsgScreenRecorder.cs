@@ -12,14 +12,15 @@ using System.Threading.Tasks;
 
 public class ARMsgScreenRecorder : MonoBehaviour {
 
-    [SerializeField] Camera _camera;
+    [SerializeField]
+    private Camera _camera;
     private IMediaRecorder recorder;
     private CameraInput cameraInput;
-    AudioDevice audioDevice;
+    private AudioDevice audioDevice;
 
     private string _lastPathVideo;
 
-    async void Start() {
+    private async void Start() {
 
         CallBacks.OnStartRecord += StartRecording;
         CallBacks.OnStopRecord += StopRecord;
