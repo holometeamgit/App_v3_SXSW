@@ -5,7 +5,8 @@ using UnityEngine.Events;
 using Beem.ARMsg;
 
 public class UIGenericErrorController : MonoBehaviour {
-    [SerializeField] PnlGenericError pnlGenericError;
+    [SerializeField]
+    private PnlGenericError pnlGenericError;
 
     // Start is called before the first frame update
     void Awake() {

@@ -5,7 +5,8 @@ using UnityEngine.Events;
 using Beem.ARMsg;
 
 public class ARMsgReadyInterrupter : MonoBehaviour {
-    [SerializeField] Switcher _interruptSwitcher;
+    [SerializeField]
+    private Switcher _interruptSwitcher;
 
     [SerializeField] UnityEvent OnShare;
 

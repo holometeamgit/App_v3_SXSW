@@ -10,7 +10,7 @@ public class ARMsgConstructor : MonoBehaviour {
     private ARMsgController _arMsgController;
 
 
-    void Awake() {
+    private void Awake() {
         _arMsgController = new ARMsgController(_arMsgAPI, _webRequestHandler);
 
         CallBacks.OnUpdloadingUIOpened += _arMsgController.UploadARMsg;

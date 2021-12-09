@@ -6,7 +6,8 @@ using Beem.ARMsg;
 
 
 public class UIUploaderARMsg : MonoBehaviour {
-    [SerializeField] UnityEvent OnARMsgUpdloadedEvent;
+    [SerializeField]
+    private UnityEvent OnARMsgUpdloadedEvent;
 
     private void Awake() {
         CallBacks.OnARMsgUpdloaded += OnARMsgUpdloaded;

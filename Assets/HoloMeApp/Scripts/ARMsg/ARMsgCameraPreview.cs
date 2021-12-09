@@ -10,11 +10,11 @@ public class ARMsgCameraPreview : MonoBehaviour {
     private RawImage rawImage;
     private AspectRatioFitter aspectFitter;
 
-    void OnEnable() {
+    private void OnEnable() {
         StartCoroutine(StartCamera());
     }
 
-    IEnumerator StartCamera() {
+    private IEnumerator StartCamera() {
         rawImage = GetComponent<RawImage>();
         aspectFitter = GetComponent<AspectRatioFitter>();
         // Request camera permission
@@ -43,13 +43,14 @@ public class ARMsgCameraPreview : MonoBehaviour {
         rawImage.material.SetFloat("_Rotation", cameraTexture.videoRotationAngle * Mathf.PI / 180f);
         rawImage.material.SetFloat("_Scale", cameraTexture.videoVerticallyMirrored ? -1 : 1);
         // Scale the preview panel
-        if (cameraTexture.videoRotationAngle == 90 || cameraTexture.videoRotationAngle == 270)
+        if (cameraTexture.videoRotationAngle == 90 || cameraTexture.videoRotationAngle == 270) {
             aspectFitter.aspectRatio = (float)cameraTexture.height / cameraTexture.width;
-        else
+        } else {
             aspectFitter.aspectRatio = (float)cameraTexture.width / cameraTexture.height;
+        }
     }
 
-    void OnDisable() {
+    private void OnDisable() {
         cameraTexture.Stop();
     }
 

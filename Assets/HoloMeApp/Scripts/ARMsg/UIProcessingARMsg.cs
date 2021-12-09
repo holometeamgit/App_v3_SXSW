@@ -6,29 +6,41 @@ using System.Threading;
 using UnityEngine.Events;
 using Beem.ARMsg;
 
-public class UIProcessingARMsg : MonoBehaviour
-{
+public class UIProcessingARMsg : MonoBehaviour {
     private const float COOLDOWN_CHECK = 5f;
 
-    [SerializeField] private UnityEvent OnNextStep; 
+    [SerializeField]
+    private UnityEvent OnNextStep;
+
+    private Coroutine coroutine;
 
     private void OnChecked(ARMsgJSON.Data data) {
-        if(data.processing_status == ARMsgJSON.Data.COMPETED_STATUS) {
+        if (data.processing_status == ARMsgJSON.Data.COMPETED_STATUS) {
             OnNextStep?.Invoke();
         } else {
-            if(gameObject.activeInHierarchy)
-                StartCoroutine(CheckingProcessing());
+            if (gameObject.activeInHierarchy) {
+                Stop();
+                coroutine = StartCoroutine(CheckingProcessing());
+            }
         }
     }
 
     private void OnEnable() {
         CallBacks.OnARMsgByIdReceived += OnChecked;
-        StartCoroutine(CheckingProcessing());
+        Stop();
+        coroutine = StartCoroutine(CheckingProcessing());
     }
 
     private void OnDisable() {
         CallBacks.OnARMsgByIdReceived -= OnChecked;
-        StopAllCoroutines();
+        Stop();
+    }
+
+    private void Stop() {
+        if (coroutine != null) {
+            StopCoroutine(coroutine);
+            coroutine = null;
+        }
     }
 
     private IEnumerator CheckingProcessing() {
