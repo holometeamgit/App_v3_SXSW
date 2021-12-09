@@ -11,7 +11,7 @@ public class Counter : MonoBehaviour
     [SerializeField] TMP_Text _startTimerValue;
     [SerializeField] private int _timerSize = 5;
 
-    private const float DELAY_TIMER = 2;
+    [SerializeField] private float delayTimer = 2;
 
     public UnityEvent OnOneSecondBeforeFinish;
     public UnityEvent OnFinish;
@@ -38,7 +38,7 @@ public class Counter : MonoBehaviour
         int time = _timerSize;
 
         if (_startTimerValue != null) {
-            yield return new WaitForSeconds(DELAY_TIMER);
+            yield return new WaitForSeconds(delayTimer);
             _startTimerValue.gameObject.SetActive(false);
         }
 

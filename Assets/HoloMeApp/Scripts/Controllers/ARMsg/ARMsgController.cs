@@ -100,7 +100,8 @@ namespace Beem.ARMsg {
             content.Add(_arMsgAPIScriptableObject.ImgBGFieldName, pathToImgBG);
             content.Add(_arMsgAPIScriptableObject.SourceVideoFieldName, pathToVideoFile);
 
-            _webRequestHandler.PostMultipart(GetPostRequestUploadARMsgURL(), content, PostUploadARMsgCallback, ErrorPostUploadARMsgCallback, onCancel: _cancelUploadARMsg);
+            _webRequestHandler.PostMultipart(GetPostRequestUploadARMsgURL(), content, PostUploadARMsgCallback, ErrorPostUploadARMsgCallback,
+                onCancel: _cancelUploadARMsg, uploadProgress: OnProcessingUploading);
         }
 
         private void PostUploadARMsgCallback(long code, string body) {
@@ -117,6 +118,11 @@ namespace Beem.ARMsg {
 
         private void ErrorPostUploadARMsgCallback(long code, string body) {
             HelperFunctions.DevLogError(string.Format("Can't upload ARMsg. {0} {1}", code, body));
+            CallBacks.OnARMsgUploadedError?.Invoke();
+        }
+
+        private void OnProcessingUploading(float value) {
+            CallBacks.OnARMsgUpdloadedProcessing?.Invoke(value);
         }
 
         private string GetPostRequestUploadARMsgURL() {
