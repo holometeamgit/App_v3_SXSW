@@ -17,6 +17,7 @@
     public const string KeyHologramViewPercentage = "hologramViewPercentage";
     public const string KeyHologramLiveViewTime = "hologramLiveViewTime";
     public const string KeyViewerCountUpdate = "viewerCountUpdate";
+    public const string KeyMaxViewerCount = "maxViewerCount";
 
     public const string KeyGoLive = "goLive"; //When a broadcaster clicks 'go live' from the main menu
     public const string KeyLiveStarted = "liveStarted"; //When a broadcaster clicks 'go live' from the main menu and starts to record a video
@@ -33,6 +34,7 @@
     public const string KeyShareEventPressed = "shareEventPressed";
 
     public const string KeySessionLength = "sessionLength";
+    public const string KeyViewLengthOfStream = "lengthOfStream";
 
     public const string KeyHomeScreen = "homeScreen";
     public const string KeySettingsPanel = "settings";
@@ -55,5 +57,6 @@ public class AnalyticParameters {
     public const string ParamDate = "date";
     public const string ParamSignUpMethod = "signUpMethod";
     public const string ParamViewerCount = "viewerCount";
+    public const string ParamChannelName = "channelName";
     //public const string ParamNotificationsOptIn = "notificationOptIn"; //TODO future opt in notifications panel
 }
