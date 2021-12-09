@@ -53,7 +53,7 @@ public class PostMultipartRequester : WebRequester {
         foreach (var content in contentDictionary) {
             HelperFunctions.DevLog(content.Value.FileName);
         }
-
+      
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, uploadProgress: uploadProgress, maxTimesWait: MAX_TIMES_BEFORE_POST_MULTIPART_STOP_REQUEST).ContinueWith((taskWebRequestData) => {
         }, taskScheduler);

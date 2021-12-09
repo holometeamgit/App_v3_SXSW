@@ -19,44 +19,10 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     [Space]
 
     [SerializeField]
-    private bool useHashForRoomLink = default;
-
-    public bool UseHashForRoomLink {
-        get {
-            return useHashForRoomLink;
-        }
-    }
-
-    [SerializeField]
     private string firebaseDynamicLink = "https://join.beem.me";
     public string FirebaseDynamicLink {
         get {
             return firebaseDynamicLink;
-        }
-    }
-
-    [SerializeField]
-    private string firebaseRoom = "/room/";
-
-    public string FirebaseRoom {
-        get {
-            return firebaseRoom;
-        }
-    }
-
-    [SerializeField]
-    private string desktopUrl = "https://beem.me";
-    public string DesktopUrl {
-        get {
-            return desktopUrl;
-        }
-    }
-
-    [SerializeField]
-    private string arUrl = "https://ar.beem.me";
-    public string ARUrl {
-        get {
-            return arUrl;
         }
     }
 

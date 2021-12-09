@@ -42,14 +42,19 @@ public class Enabler : MonoBehaviour
 
     private void OnDisable() {
         foreach (var element in ObjectListActiveOnDisable)
-            element.SetActive(true);
+            element?.SetActive(true);
 
         foreach (var element in ObjectListDectiveOnDisable)
-            element.SetActive(false);
+            element?.SetActive(false);
 
         OnDisableEvent.Invoke();
 
         StopAllCoroutines();
+    }
+
+    private void OnDestroy() {
+        ObjectListActiveOnDisable = null;
+        ObjectListDectiveOnDisable = null;
     }
 
     IEnumerator InvokeEvent() {
