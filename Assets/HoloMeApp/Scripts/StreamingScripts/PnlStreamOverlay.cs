@@ -693,7 +693,13 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         _muteAudio = mute;
 
         if (isChannelCreator) { //Display popup only for streamers but not for 2 way audio viewers
-            ShowMicrophoneMuteStatusMessage(mute);
+            bool autoHide = true;
+            if (!agoraController.IsLive) {
+                if (mute) {
+                    autoHide = false; //Keep mute messages opened if the channel not live
+                }
+            }
+            ShowMicrophoneMuteStatusMessage(mute, autoHide); //Don't hide if not live
             SendVideoAudioPauseStatusToViewers();
         } else if (togglePushToTalk.interactable) { //Do not show microphone is off message unless push to talk is active for viewers
             ShowMicrophoneMuteStatusMessage(mute);
@@ -701,16 +707,26 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         agoraController.ToggleLocalAudio(mute);
     }
 
-    private void ShowMicrophoneMuteStatusMessage(bool mute) {
+    private void ShowMicrophoneMuteStatusMessage(bool mute, bool autoHide = true) {
         AnimatedCentreTextMessage("Your microphone is " + (mute ? "off" : "on") + ".");
-        AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
+        if (autoHide) {
+            AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
+        }
     }
 
-    public void ToggleVideo(bool hideVideo) {
+    public void ToggleVideo(bool hideVideo) { //Only called for stream host
         _hideVideo = hideVideo;
 
         AnimatedCentreTextMessage("Your camera is " + (hideVideo ? "off" : "on") + ".");
-        AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
+
+        if (!agoraController.IsLive) { //Don't hide if not live and camera is being disabled
+            if (!hideVideo) {
+                AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
+            }
+        } else {
+            AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
+        }
+
         SendVideoAudioPauseStatusToViewers();
 
         //UpdateToggleMessageOff();
