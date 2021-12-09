@@ -80,7 +80,7 @@ public class PnlRoomPopupController {
 
                 if (_receivedRoomJsonData.status == StreamJsonData.Data.LIVE_ROOM_STR) {
                     StreamCallBacks.onShowPopUpRoomOnline(_receivedRoomJsonData.user);
-                    _streamerCountUpdater.StartCheck(_receivedRoomJsonData.agora_channel);
+                    _streamerCountUpdater.StartCheck(_receivedRoomJsonData.agora_channel, true);
                 } else {
                     StreamCallBacks.onShowPopUpRoomOffline(_receivedRoomJsonData.user);
                 }

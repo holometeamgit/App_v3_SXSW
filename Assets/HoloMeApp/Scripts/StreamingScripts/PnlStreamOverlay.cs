@@ -207,7 +207,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private void StartStreamCountUpdaters() {
         HelperFunctions.DevLog("Stream Count Updaters Started");
         foreach (StreamerCountUpdater streamerCountUpdater in streamCountUpdaters) {
-            streamerCountUpdater.StartCheck(agoraController.ChannelName);
+            streamerCountUpdater.StartCheck(agoraController.ChannelName, agoraController.IsRoom);
         }
     }
 
