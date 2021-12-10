@@ -129,11 +129,11 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
             .Count(e => e.transform.parent == content);
     }
 
-    private void SnapToNext() {
+    public void SnapToNext() {
         SnapToIndex(cellIndex + 1);
     }
 
-    private void SnapToPrev() {
+    public void SnapToPrev() {
         SnapToIndex(cellIndex - 1);
     }
 
