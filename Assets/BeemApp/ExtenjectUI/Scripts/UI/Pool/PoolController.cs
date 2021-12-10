@@ -8,9 +8,9 @@ namespace Beem.Extenject.UI {
     /// Controller for pool methods and properties
     /// </summary>
     public class PoolController {
-        private List<WindowElement> _windowPool = new List<WindowElement>();
-        private WindowElement _currentWindowElement;
-        private WindowElement _previousWindowElement;
+        private Dictionary<string, GameObject> _windowPool = new Dictionary<string, GameObject>();
+        private GameObject _currentWindowElement;
+        private GameObject _previousWindowElement;
         private IShow[] _showWindows = null;
         private IEscape[] _escapeWindows = null;
 
@@ -20,11 +20,7 @@ namespace Beem.Extenject.UI {
         /// <param name="windowObject"></param>
         /// <param name="element"></param>
         public void AddInPool(WindowObject windowObject, GameObject element) {
-            WindowElement tempPoolElement = new WindowElement {
-                Id = windowObject.Id,
-                Element = element
-            };
-            _windowPool.Add(tempPoolElement);
+            _windowPool.Add(windowObject.Id, element);
         }
 
         /// <summary>
@@ -32,8 +28,8 @@ namespace Beem.Extenject.UI {
         /// </summary>
         /// <param name="windowObject"></param>
         /// <returns></returns>
-        public WindowElement GetWindowInPool(WindowObject windowObject) {
-            return _windowPool.Find(x => x.Id == windowObject.Id);
+        public GameObject GetWindowInPool(WindowObject windowObject) {
+            return _windowPool[windowObject.Id];
         }
 
         /// <summary>
@@ -42,7 +38,7 @@ namespace Beem.Extenject.UI {
         /// <param name="windowObject"></param>
         /// <returns></returns>
         public bool ContainInPool(WindowObject windowObject) {
-            return _windowPool.Find(x => x.Id == windowObject.Id) != null;
+            return _windowPool.ContainsKey(windowObject.Id);
         }
 
         /// <summary>
@@ -50,7 +46,7 @@ namespace Beem.Extenject.UI {
         /// </summary>
         public void Show<T>(WindowObject windowObject, T parameter) {
             Show(windowObject);
-            _showWindows = _currentWindowElement.Element.GetComponentsInChildren<IShow>();
+            _showWindows = _currentWindowElement.GetComponentsInChildren<IShow>();
             if (_showWindows != null && _showWindows.Length > 0) {
                 _showWindows.ToList().ForEach(x => x.Show(parameter));
             }
@@ -61,11 +57,11 @@ namespace Beem.Extenject.UI {
         /// </summary>
         public void Show(WindowObject windowObject) {
             if (ContainInPool(windowObject)) {
-                WindowElement tempWindow = GetWindowInPool(windowObject);
-                tempWindow.Element.SetActive(true);
+                GameObject tempWindow = GetWindowInPool(windowObject);
+                tempWindow.SetActive(true);
                 _previousWindowElement = _currentWindowElement;
                 _currentWindowElement = tempWindow;
-                _escapeWindows = _currentWindowElement.Element.GetComponentsInChildren<IEscape>();
+                _escapeWindows = _currentWindowElement.GetComponentsInChildren<IEscape>();
             }
         }
 
@@ -74,10 +70,10 @@ namespace Beem.Extenject.UI {
         /// </summary>
         public void Hide(WindowObject windowObject) {
             if (ContainInPool(windowObject)) {
-                WindowElement tempWindow = GetWindowInPool(windowObject);
-                tempWindow.Element.SetActive(false);
+                GameObject tempWindow = GetWindowInPool(windowObject);
+                tempWindow.SetActive(false);
                 _currentWindowElement = _previousWindowElement;
-                _escapeWindows = _currentWindowElement.Element.GetComponentsInChildren<IEscape>();
+                _escapeWindows = _currentWindowElement.GetComponentsInChildren<IEscape>();
             }
         }
 
@@ -85,8 +81,8 @@ namespace Beem.Extenject.UI {
         /// Deactivate all Windows
         /// </summary>
         public void DeactivateAllPoolElements() {
-            foreach (WindowElement item in _windowPool) {
-                item.Element.SetActive(false);
+            foreach (KeyValuePair<string, GameObject> item in _windowPool) {
+                item.Value.SetActive(false);
             }
         }
 
