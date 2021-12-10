@@ -107,7 +107,7 @@ namespace Beem.Extenject.UI {
 
         private void CreateWindow(WindowObject windowObject) {
             if (!_poolController.ContainInPool(windowObject)) {
-                GameObject tempWindow = _diContainer.InstantiatePrefab(windowObject.Prefab);
+                GameObject tempWindow = _diContainer.InstantiatePrefab(windowObject.WindowPrefab);
                 tempWindow.transform.SetParent(_parent);
                 tempWindow.name = windowObject.Id;
                 _poolController.AddInPool(windowObject, tempWindow);

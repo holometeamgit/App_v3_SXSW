@@ -6,24 +6,37 @@ namespace Beem.Extenject.UI {
     /// </summary>
     [CreateAssetMenu(fileName = "WindowObject", menuName = "Beem/UI/New WindowObject")]
     public class WindowObject : ScriptableObject {
-        [Header("Window Id")]
-        [SerializeField]
-        private string _id = default;
+
+        public enum WindowObjectType {
+            Prefab,
+            Resource
+        }
+
+        [Header("Window Object Type")]
+
+        public WindowObjectType Type;
+
 
         public string Id {
             get {
-                return _id;
+                return WindowPrefab.name;
             }
         }
 
         [Header("Window Prefab")]
-        [SerializeField]
-        private GameObject _prefab = default;
+        public GameObject Prefab = default;
 
-        public GameObject Prefab {
+        public GameObject WindowPrefab {
             get {
-                return _prefab;
+                if (Type == WindowObjectType.Prefab) {
+                    return Prefab;
+                } else {
+                    return (GameObject)Resources.Load(Folder, typeof(GameObject));
+                }
             }
         }
+
+        [Header("Window Resource Folder")]
+        public string Folder = default;
     }
 }
