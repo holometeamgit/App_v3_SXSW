@@ -58,9 +58,10 @@ public class UIProcessingARMsg : MonoBehaviour {
         _processingStarting = null;
     }
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID || UNITY_EDITOR
     void OnApplicationFocus(bool focus) {
         if (focus) {
+            CallBacks.OnARMsgProcessingCheck?.Invoke();
             ResumeProcessing();
         } else {
             LeaveProcessing();
@@ -68,11 +69,12 @@ public class UIProcessingARMsg : MonoBehaviour {
     }
 #endif
 
-#if UNITY_EDITOR || UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
     void OnApplicationPause(bool pause) {
         if (pause) {
             LeaveProcessing();
         } else {
+            CallBacks.OnARMsgProcessingCheck?.Invoke();
             ResumeProcessing();
         }
     }
