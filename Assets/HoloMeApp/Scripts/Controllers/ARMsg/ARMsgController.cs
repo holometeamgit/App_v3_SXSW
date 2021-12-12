@@ -45,6 +45,10 @@ namespace Beem.ARMsg {
             return _lastUploadedARMsgJSON != null;
         }
 
+        public void OnCancelLastGetARMsgById () {
+            _cancelGetARMsgById?.InvokeAction();
+        }
+
         public void OnCancelAll() {
             _cancelUploadARMsg?.InvokeAction();
             _cancelGetUserARMsgURL?.InvokeAction();

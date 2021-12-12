@@ -20,6 +20,7 @@ public class ARMsgConstructor : MonoBehaviour {
         CallBacks.OnDeleteLastARMsgActions += _arMsgController.DeleteLastARMsg;
         CallBacks.OnGetLastARMsgShareLink += _arMsgController.GetReadyShareLink;
         CallBacks.OnGetLastReadyARMsgData += _arMsgController.GetLastReadyARMsgData;
+        CallBacks.OnCancelLastGetARMsgById += _arMsgController.OnCancelLastGetARMsgById;
     }
 
     private void OnDestroy() {
@@ -32,5 +33,6 @@ public class ARMsgConstructor : MonoBehaviour {
         CallBacks.OnDeleteLastARMsgActions -= _arMsgController.DeleteLastARMsg;
         CallBacks.OnGetLastARMsgShareLink -= _arMsgController.GetReadyShareLink;
         CallBacks.OnGetLastReadyARMsgData -= _arMsgController.GetLastReadyARMsgData;
+        CallBacks.OnCancelLastGetARMsgById -= _arMsgController.OnCancelLastGetARMsgById;
     }
 }
