@@ -35,8 +35,9 @@ public class UIProcessingARMsg : MonoBehaviour {
     }
 
     private void StartProcessing() {
-        if (_processingStarting != null)
+        if (_processingStarting != null) {
             StopCoroutine(_processingStarting);
+        }
         _processingStarting = StartCoroutine(CheckingProcessing());
     }
 
@@ -53,13 +54,14 @@ public class UIProcessingARMsg : MonoBehaviour {
     private void LeaveProcessing() {
         CallBacks.OnARMsgByIdReceived -= OnChecked;
         CallBacks.OnCancelLastGetARMsgById?.Invoke();
-        if (_processingStarting != null)
+        if (_processingStarting != null) {
             StopCoroutine(_processingStarting);
+        }
         _processingStarting = null;
     }
 
 #if UNITY_ANDROID || UNITY_EDITOR
-    void OnApplicationFocus(bool focus) {
+    private void OnApplicationFocus(bool focus) {
         if (focus) {
             CallBacks.OnARMsgProcessingCheck?.Invoke();
             ResumeProcessing();
@@ -70,7 +72,7 @@ public class UIProcessingARMsg : MonoBehaviour {
 #endif
 
 #if UNITY_IOS && !UNITY_EDITOR
-    void OnApplicationPause(bool pause) {
+    private void OnApplicationPause(bool pause) {
         if (pause) {
             LeaveProcessing();
         } else {

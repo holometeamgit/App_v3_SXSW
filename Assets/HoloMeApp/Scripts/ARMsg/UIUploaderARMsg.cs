@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using Beem.ARMsg;
 
-
+/// <summary>
+/// UIUploaderARMsg uploading ARMsg
+/// </summary>
 public class UIUploaderARMsg : MonoBehaviour {
     [SerializeField]
     private UnityEvent OnARMsgUpdloadedEvent;

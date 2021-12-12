@@ -1,6 +1,9 @@
 using UnityEngine;
 using Beem.ARMsg;
 
+/// <summary>
+/// ARMsgConstructor. TODO convert it to DI in future 
+/// </summary>
 public class ARMsgConstructor : MonoBehaviour {
     [SerializeField]
     private ARMsgAPIScriptableObject _arMsgAPI;

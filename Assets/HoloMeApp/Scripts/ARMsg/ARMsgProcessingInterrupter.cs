@@ -3,10 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Beem.ARMsg;
 
+/// <summary>
+/// ARMsgProcessingInterrupter. Invoke GenericError for closing processing
+/// </summary>
 public class ARMsgProcessingInterrupter : MonoBehaviour {
     [SerializeField]
     private Switcher _interruptSwitcher;
 
+    /// <summary>
+    /// Request GenericError for interrupting
+    /// </summary>
     public void Interrupt() {
         CallBacks.OnActivateGenericErrorDoubleButton?.Invoke("Before you go...",
             "If you exit before processing has completed, you will lose your AR message",

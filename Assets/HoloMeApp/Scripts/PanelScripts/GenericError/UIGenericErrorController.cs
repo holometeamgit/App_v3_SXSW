@@ -4,12 +4,15 @@ using UnityEngine;
 using UnityEngine.Events;
 using Beem.ARMsg;
 
+/// <summary>
+/// UIGenericErrorController. Class for invoke UIGenericError
+/// </summary>
 public class UIGenericErrorController : MonoBehaviour {
     [SerializeField]
     private PnlGenericError pnlGenericError;
 
     // Start is called before the first frame update
-    void Awake() {
+    private void Awake() {
         CallBacks.OnActivateGenericErrorDoubleButton += OnActivateDoubleButton;
     }
 

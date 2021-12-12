@@ -5,6 +5,9 @@ using System;
 using UnityEngine.Networking;
 
 namespace Beem.ARMsg {
+    /// <summary>
+    /// ARMsgController. Main controller for uloading, processing ARMsg
+    /// </summary>
     public class ARMsgController {
         private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
         private WebRequestHandler _webRequestHandler;
@@ -18,22 +21,39 @@ namespace Beem.ARMsg {
         private ARMsgJSON.Data _lastLoadedARMsgJSON;
         private const string LAST_UPLOADED_ARMSG_NAME = "lastUploadedARMsg";
 
+        /// <summary>
+        /// Construtor 
+        /// </summary>
+        /// <param name="arMsgAPIScriptableObject"></param>
+        /// <param name="webRequestHandler"></param>
         public ARMsgController(ARMsgAPIScriptableObject arMsgAPIScriptableObject, WebRequestHandler webRequestHandler) {
             Contructor(arMsgAPIScriptableObject, webRequestHandler);
         }
 
+        /// <summary>
+        /// UploadARMsg
+        /// </summary>
         public void UploadARMsg() {
             UploadARMsg(CallBacks.OnGetBGImgFilePath?.Invoke(), CallBacks.OnGetVideoRecordedFilePath?.Invoke());
         }
 
+        /// <summary>
+        /// Get ARMsgs for current User
+        /// </summary>
         public void GetUserARMsgs() {
             RequestGetUserARMsgs();
         }
 
+        /// <summary>
+        /// Get ARMsgs by id
+        /// </summary>
         public void GetARMsgById(string id) {
             RequestGetARMsgById(id);
         }
 
+        /// <summary>
+        /// GetLastUploadedARMsgInfo
+        /// </summary>
         public void GetLastUploadedARMsgInfo() {
             if (_lastUploadedARMsgJSON == null)
                 return;
@@ -41,14 +61,24 @@ namespace Beem.ARMsg {
             GetARMsgById(_lastUploadedARMsgJSON.id);
         }
 
+        /// <summary>
+        /// CheckContainLastUploadedARMsg
+        /// </summary>
+        /// <returns></returns>
         public bool CheckContainLastUploadedARMsg() {
             return _lastUploadedARMsgJSON != null;
         }
 
+        /// <summary>
+        /// OnCancelLastGetARMsgById
+        /// </summary>
         public void OnCancelLastGetARMsgById () {
             _cancelGetARMsgById?.InvokeAction();
         }
 
+        /// <summary>
+        /// OnCancelAll. Cancel all requests
+        /// </summary>
         public void OnCancelAll() {
             _cancelUploadARMsg?.InvokeAction();
             _cancelGetUserARMsgURL?.InvokeAction();
@@ -62,19 +92,34 @@ namespace Beem.ARMsg {
             CallBacks.OnAllARMsgСanceled?.Invoke();
         }
 
+        /// <summary>
+        /// DeleteLastARMsg
+        /// </summary>
         public void DeleteLastARMsg() {
             if (_lastUploadedARMsgJSON != null)
                 DeleteARMsgById(_lastUploadedARMsgJSON.id);
         }
 
+        /// <summary>
+        /// DeleteARMsgById
+        /// </summary>
+        /// <param name="id"></param>
         public void DeleteARMsgById(string id) {
             ReqestDeleteARMsgById(id);
         }
 
+        /// <summary>
+        /// check ReadyShareLink for last loaded armsg
+        /// </summary>
+        /// <returns></returns>
         public string GetReadyShareLink() {
             return _lastLoadedARMsgJSON?.ar_message_s3_link ?? null;
         }
 
+        /// <summary>
+        /// GetLastReadyARMsgData
+        /// </summary>
+        /// <returns></returns>
         public ARMsgJSON.Data GetLastReadyARMsgData() {
             return _lastLoadedARMsgJSON;
         }

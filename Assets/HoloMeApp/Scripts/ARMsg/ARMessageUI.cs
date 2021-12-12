@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using Beem.ARMsg;
 
+/// <summary>
+/// ARMessageUI. Select current step when ARmsg openning
+/// </summary>
 public class ARMessageUI : MonoBehaviour {
     [SerializeField]
     private GameObject RecordSteps;

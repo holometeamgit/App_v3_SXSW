@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
 
+/// <summary>
+/// Counter. Spawn numbers before something and then request event
+/// </summary>
 public class Counter : MonoBehaviour {
     [SerializeField]
     private Transform _counterSpawn;
@@ -20,6 +23,10 @@ public class Counter : MonoBehaviour {
     public UnityEvent OnFinish;
     private Coroutine coroutine;
 
+    /// <summary>
+    /// set time for counting 
+    /// </summary>
+    /// <param name="timerSize"></param>
     public void SetCounterTime(int timerSize) {
         _timerSize = timerSize;
     }

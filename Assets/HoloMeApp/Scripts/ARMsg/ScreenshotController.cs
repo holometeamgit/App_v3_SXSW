@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using Beem.ARMsg;
 
+/// <summary>
+/// ScreenshotController. Can make screenshot 
+/// </summary>
 public class ScreenshotController : MonoBehaviour {
     private const string FILE_NAME = "Screenshot.png";
 
@@ -32,8 +35,6 @@ public class ScreenshotController : MonoBehaviour {
 
         HelperFunctions.DevLog("screenshot width " + width + " heigh " + heigh);
 
-        //ScreenCapture.CaptureScreenshot(FILE_NAME);
-
         yield return new WaitForEndOfFrame();
 
         string path = GetPathToFile();
@@ -43,8 +44,7 @@ public class ScreenshotController : MonoBehaviour {
         screenImage.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
         screenImage.Apply();
         yield return new WaitForEndOfFrame();
-        // screenImage.Resize(width, heigh);
-        // screenImage.Apply();
+
         TextureScale.Scale(screenImage, width, heigh);
         yield return new WaitForEndOfFrame();
         //Convert to png

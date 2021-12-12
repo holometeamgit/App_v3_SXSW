@@ -9,7 +9,9 @@ using NatSuite.Devices;
 using Beem.ARMsg;
 using System.Threading.Tasks;
 
-
+/// <summary>
+/// ARMsgScreenRecorder. Class for recording screen 
+/// </summary>
 public class ARMsgScreenRecorder : MonoBehaviour {
 
     [SerializeField]
@@ -41,6 +43,9 @@ public class ARMsgScreenRecorder : MonoBehaviour {
         StopRecord();
     }
 
+    /// <summary>
+    /// Start recording screen
+    /// </summary>
     public void StartRecording() {
         var clock = new RealtimeClock();
         int width;
@@ -61,6 +66,9 @@ public class ARMsgScreenRecorder : MonoBehaviour {
         audioDevice.StartRunning((sampleBuffer, timestamp) => recorder.CommitSamples(sampleBuffer, clock.timestamp));
     }
 
+    /// <summary>
+    /// stop recording screeen
+    /// </summary>
     public void StopRecord() {
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         StopRecordingAsync().ContinueWith((task) => {

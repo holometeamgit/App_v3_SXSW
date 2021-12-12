@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ARMsgAPIScriptableObject settings
+/// </summary>
 [CreateAssetMenu(fileName = "ARMessageAPI", menuName = "Data/API/ARMessageAPI", order = 108)]
 public class ARMsgAPIScriptableObject : ScriptableObject {
     [Header("AR Message")]

@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// TextCounter
+/// </summary>
 public class TextCounter : MonoBehaviour {
     [SerializeField]
     private TMP_Text _textCount;

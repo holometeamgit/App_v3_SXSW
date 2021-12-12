@@ -3,12 +3,16 @@ using UnityEngine.Android;
 using UnityEngine.UI;
 using System.Collections;
 
+/// <summary>
+/// ARMsgCameraPreview. Show WebCamTexture on the screen
+/// </summary>
 [RequireComponent(typeof(RawImage), typeof(AspectRatioFitter))]
 public class ARMsgCameraPreview : MonoBehaviour {
 
     public WebCamTexture cameraTexture { get; private set; }
     private RawImage rawImage;
     private AspectRatioFitter aspectFitter;
+    private const int CHECKING_NUMBERS_FOR_MACOS_BUG = 16;
 
     private void OnEnable() {
         StartCoroutine(StartCamera());
@@ -37,7 +41,7 @@ public class ARMsgCameraPreview : MonoBehaviour {
         cameraTexture = new WebCamTexture(devicesName, width, heigh, AgoraSharedVideoConfig.FrameRate);
 
         cameraTexture.Play();
-        yield return new WaitUntil(() => cameraTexture.width != 16 && cameraTexture.height != 16); // Workaround for weird bug on macOS
+        yield return new WaitUntil(() => cameraTexture.width != CHECKING_NUMBERS_FOR_MACOS_BUG && cameraTexture.height != CHECKING_NUMBERS_FOR_MACOS_BUG); // Workaround for weird bug on macOS
                                                                                                    // Setup preview shader with correct orientation
         rawImage.texture = cameraTexture;
         rawImage.material.SetFloat("_Rotation", cameraTexture.videoRotationAngle * Mathf.PI / 180f);

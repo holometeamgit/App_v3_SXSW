@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// AutoRotator for transform 
+/// </summary>
 public class AutoRotator : MonoBehaviour {
     [SerializeField]
     private Vector3 _rotation = new Vector3(0, 0, 0.5f);

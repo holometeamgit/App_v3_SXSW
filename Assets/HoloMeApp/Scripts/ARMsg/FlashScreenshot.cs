@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// FlashScreenshot. Make a flash on screen and request event at the end
+/// </summary>
 public class FlashScreenshot : MonoBehaviour {
 
     public UnityEvent OnMakeEventInFlash;
@@ -11,14 +14,23 @@ public class FlashScreenshot : MonoBehaviour {
     private float _defaultBrightness;
     private bool _underControll;
 
+    /// <summary>
+    /// Invoke flash event 
+    /// </summary>
     public void MakeEventInFlash() {
         OnMakeEventInFlash?.Invoke();
     }
 
+    /// <summary>
+    /// Invoke InvokeDone event 
+    /// </summary>
     public void InvokeDone() {
         OnDone?.Invoke();
     }
 
+    /// <summary>
+    /// ControlScreenBrightness
+    /// </summary>
     public void ControlScreenBrightness() {
         _defaultBrightness = Screen.brightness;
         _underControll = true;

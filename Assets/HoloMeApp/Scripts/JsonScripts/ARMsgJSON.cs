@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 
+/// <summary>
+/// ARMsgJSON. Serializable class for communication with server 
+/// </summary>
 [Serializable]
 public class ARMsgJSON 
 {
@@ -9,6 +12,9 @@ public class ARMsgJSON
     public string previous;
     public List<Data> results;
 
+    /// <summary>
+    /// subclass ARMsgJSON
+    /// </summary>
     [Serializable]
     public class Data {
         public string id;

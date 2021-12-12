@@ -1,6 +1,8 @@
 using UnityEngine;
 
-
+/// <summary>
+/// Class for rescaling texture
+/// </summary>
 public class TextureScale {
 	private static Color[] texColors;
 	private static Color[] newColors;
@@ -9,6 +11,13 @@ public class TextureScale {
 	private static float ratioY;
 	private static int w2;
 
+
+/// <summary>
+/// rescale texture
+/// </summary>
+/// <param name="tex"></param>
+/// <param name="newWidth"></param>
+/// <param name="newHeight"></param>
 	public static void Scale(Texture2D tex, int newWidth, int newHeight) {
 		texColors = tex.GetPixels();
 		newColors = new Color[newWidth * newHeight];

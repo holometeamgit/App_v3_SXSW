@@ -4,12 +4,16 @@ using UnityEngine;
 using NatSuite.Examples.Components;
 using Beem.ARMsg;
 
+/// <summary>
+/// RecordConstructor. Subscribe start animation recording 
+/// </summary>
 public class RecordConstructor : MonoBehaviour
 {
-    [SerializeField] CircleButtonWithTimer _recordButton;
+    [SerializeField]
+    private CircleButtonWithTimer _recordButton;
 
     // Start is called before the first frame update
-    void Start() {
+    private void Start() {
         CallBacks.OnStartRecord += _recordButton.StartAnimation;
     }
 

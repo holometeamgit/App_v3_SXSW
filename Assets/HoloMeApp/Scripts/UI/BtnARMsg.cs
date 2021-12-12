@@ -3,6 +3,10 @@ using UnityEngine;
 using UnityEngine.Events;
 using Beem.Permissions;
 
+
+/// <summary>
+/// BtnARMsg. Btn with check permission before start
+/// </summary>
 public class BtnARMsg : MonoBehaviour {
     [SerializeField] UnityEvent OnGo;
 
@@ -18,6 +22,9 @@ public class BtnARMsg : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// GoARMsg
+    /// </summary>
     public void GoARMsg() {
         if (!permissionController.CheckCameraMicAccess()) {
             return;

@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using Beem.ARMsg;
 
+/// <summary>
+/// ARMsgReadyInterrupter. Invoke GenericError for closing ready screen
+/// </summary>
 public class ARMsgReadyInterrupter : MonoBehaviour {
     [SerializeField]
     private Switcher _interruptSwitcher;
@@ -14,6 +17,9 @@ public class ARMsgReadyInterrupter : MonoBehaviour {
         CallBacks.OnAllARMsgСanceled += OnInterrupt;
     }
 
+    /// <summary>
+    /// Request GenericError for interrupting
+    /// </summary>
     public void Interrupt() {
         CallBacks.OnActivateGenericErrorDoubleButton?.Invoke("Before you go...",
             "If you exit without sharing it, your Beem will be lost",

@@ -3,6 +3,9 @@ using UnityEngine.Events;
 
 namespace Beem.ARMsg {
 
+    /// <summary>
+    /// Static callbacks for ARMsg
+    /// </summary>
     public class CallBacks {
         public static Action OnScreenshotRequest = delegate { };
         public static Action OnStartFirstStepRecord = delegate { };
