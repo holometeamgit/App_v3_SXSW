@@ -85,7 +85,7 @@ public class PnlARMsgConstructor : MonoBehaviour {
 
     private void Deactivate() {
         CallBacks.OnActivateGenericErrorDoubleButton?.Invoke("Before you go...",
-           "If you exit you could lose your AR message if you don’t share the link.",
+           "If you exit you could lose your AR message if you don't share the link.",
            "Copy link and exit", "Return",
            () => {
                GUIUtility.systemCopyBuffer = currentData.share_link;
