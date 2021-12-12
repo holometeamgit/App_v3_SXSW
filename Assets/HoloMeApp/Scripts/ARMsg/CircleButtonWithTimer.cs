@@ -50,9 +50,12 @@ public class CircleButtonWithTimer : MonoBehaviour {
                 invertCountdown.fillAmount = 1f - ratio;
             yield return null;
         }
-        // Reset
-        Reset();
         // Stop recording
         onStop?.Invoke();
+    }
+
+    private void OnDisable() {
+        // Reset
+        Reset();
     }
 }
