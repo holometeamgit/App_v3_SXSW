@@ -147,6 +147,9 @@ public class PnlRecord : MonoBehaviour {
         return value % 2 == 0 ? value : value - 1;
     }
 
+    /// <summary>
+    /// start recording
+    /// </summary>
     public void StartRecording() {
         if (!permissionController.CheckMicAccess()) {
             recordMicrophone = false;
@@ -202,7 +205,7 @@ public class PnlRecord : MonoBehaviour {
 
     }
 
-    async Task OnRecordComplete() {
+    private async Task OnRecordComplete() {
         string outputPath = await videoRecorder.FinishWriting();
         if (recordLengthFailed) {
             File.Delete(outputPath);
@@ -215,7 +218,7 @@ public class PnlRecord : MonoBehaviour {
         }
     }
 
-    void MakeScreenshot() {
+    private void MakeScreenshot() {
         if (currentCoroutine == null) {
             //print("MAKING SCREENSHOT");
             OnSnapshotStarted?.Invoke();

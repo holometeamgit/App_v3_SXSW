@@ -63,6 +63,7 @@ public class FocusSquareV2 : PlacementHandler {
 
     [SerializeField] private GameObject _btnCloseViewingExperience;
     [SerializeField] private GameObject _btnCloseStreamOverlay;
+    [SerializeField] private GameObject _btnCloseARMessaging;
 
     [Space(20)]
     [SerializeField] private ARSessionOrigin _arSessionOrigin;
@@ -537,12 +538,14 @@ public class FocusSquareV2 : PlacementHandler {
 
     private bool IsOneOfButtonsCloseActive() {
         return _btnCloseViewingExperience.activeInHierarchy ||
-               _btnCloseStreamOverlay.activeInHierarchy;
+               _btnCloseStreamOverlay.activeInHierarchy ||
+               _btnCloseARMessaging.activeInHierarchy;
     }
 
     private bool IsAllButtonsCloseNotActive() {
         return !_btnCloseViewingExperience.activeInHierarchy &&
-               !_btnCloseStreamOverlay.activeInHierarchy;
+               !_btnCloseStreamOverlay.activeInHierarchy &&
+               !_btnCloseARMessaging.activeInHierarchy;
     }
 
     private void HandleOrientation() {
