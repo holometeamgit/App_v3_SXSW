@@ -7,8 +7,7 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     InputFieldController emailInputField;
     [SerializeField]
     AuthController authController;
-    [SerializeField]
-    Switcher switchToLogIn;
+
     [SerializeField]
     bool needShowWarning = true;
 
@@ -32,14 +31,12 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     }
 
     private void ShowWarning() {
-        emailInputField.MobileInputField.SetVisible(false);
         GenericConstructor.ActivateDoubleButton(null,
             string.Format("Changing a password associated with a Facebook account will create login issues with your Beem account."),
             "Continue",
             "Cancel",
-            () => { GenericConstructor.Deactivate(); SendMsg(); emailInputField.MobileInputField.SetVisible(true); },
-            () => { GenericConstructor.Deactivate(); emailInputField.MobileInputField.SetVisible(true); },
-            true);
+            () => { GenericConstructor.Deactivate(); SendMsg(); },
+            () => GenericConstructor.Deactivate(), true);
     }
 
     private void SendMsg() {
@@ -47,11 +44,10 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     }
 
     private void MsgSentCallBack() {
-        emailInputField.MobileInputField.SetVisible(false);
         GenericConstructor.ActivateSingleButton("Change password",
             string.Format("Password change information has been sent to email {0}", emailInputField.text),
             "Continue",
-            () => { GenericConstructor.Deactivate(); switchToLogIn.Switch(); });
+            () => { GenericConstructor.Deactivate(); ResetPasswordToSignIn(); });
     }
 
     private void ErrorMsgCallBack(string msg) {
