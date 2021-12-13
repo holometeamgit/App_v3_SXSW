@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Beem.Permissions;
+using Beem.ARMsg;
 
 public class PnlMenu : MonoBehaviour {
-    [SerializeField] UserWebManager userWebManager;
-    [SerializeField] GameObject goLiveBtn;
-    [SerializeField] GameObject myRoomBtn;
+    [SerializeField]
+    private UserWebManager _userWebManager;
     [SerializeField]
     private PermissionController _permissionController;
 
@@ -19,20 +19,21 @@ public class PnlMenu : MonoBehaviour {
     }
 
     private void UpdateUI() {
-        goLiveBtn.SetActive(userWebManager.CanGoLive());
-        myRoomBtn.SetActive(userWebManager.CanStartRoom());
+        ///TODO: Disable/Enable Live/Room Buttons
+        //goLiveBtn.SetActive(_userWebManager.CanGoLive());
+        //myRoomBtn.SetActive(_userWebManager.CanStartRoom());
     }
 
     private void OnEnable() {
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySettingsPanel);
-        userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
-        userWebManager.LoadUserInfo();
+        _userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
+        _userWebManager.LoadUserInfo();
 
         UpdateUI();
     }
 
     private void OnDisable() {
-        userWebManager.OnUserInfoLoaded -= UserInfoLoadedCallBack;
+        _userWebManager.OnUserInfoLoaded -= UserInfoLoadedCallBack;
     }
 
     /// <summary>
@@ -81,6 +82,12 @@ public class PnlMenu : MonoBehaviour {
         if (!_permissionController.CheckCameraMicAccess()) {
             return;
         }
+
+        SettingsConstructor.OnActivated?.Invoke(false);
+        MenuConstructor.OnActivated?.Invoke(false);
+        HomeScreenConstructor.OnActivated?.Invoke(false);
+        StreamCallBacks.onCloseComments?.Invoke();
+        CallBacks.OnActivated?.Invoke(true);
 
     }
 

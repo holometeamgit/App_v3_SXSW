@@ -24,7 +24,7 @@ namespace Beem.UI {
         /// </summary>
         public void Open() {
             CallBacks.OnCancelAllARMsgActions?.Invoke();
-            CallBacks.OnActivated?.Invoke(_arMsgData);
+            CallBacks.OnActivatedARena?.Invoke(_arMsgData);
         }
     }
 }

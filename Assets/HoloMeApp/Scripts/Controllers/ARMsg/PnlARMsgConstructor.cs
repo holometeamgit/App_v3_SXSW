@@ -18,6 +18,8 @@ public class PnlARMsgConstructor : MonoBehaviour {
     [SerializeField]
     private PnlARMessages _pnlARMessages;
     [SerializeField]
+    private GameObject _pnlARMessagesSteps;
+    [SerializeField]
     private PnlViewingExperience _pnlViewingExperience;
     [SerializeField]
     private PopupShowChecker _popupShowChecker;
@@ -28,13 +30,12 @@ public class PnlARMsgConstructor : MonoBehaviour {
     private ARMsgJSON.Data currentData;
     private const int CHECK_COOLDOWN = 5000;
 
+    private void Activate(bool status) {
+        _pnlARMessagesSteps?.SetActive(status);
+    }
 
-    private void Activate(ARMsgJSON.Data data) {
 
-        if (!_permissionController.CheckCameraAccess()) {
-            return;
-        }
-
+    private void ActivateARena(ARMsgJSON.Data data) {
         OnReceivedRoomData(data, ActivateData);
     }
 
@@ -81,7 +82,7 @@ public class PnlARMsgConstructor : MonoBehaviour {
         }, taskScheduler);
     }
 
-    private void Deactivate() {
+    private void DeactivateARena() {
         CallBacks.OnActivateGenericErrorDoubleButton?.Invoke("Before you go...",
            "If you exit you could lose your AR message if you don't share the link.",
            "Copy link and exit", "Return",
@@ -103,12 +104,14 @@ public class PnlARMsgConstructor : MonoBehaviour {
 
 
     private void OnEnable() {
+        CallBacks.OnActivatedARena += ActivateARena;
+        CallBacks.OnDeactivatedARena += DeactivateARena;
         CallBacks.OnActivated += Activate;
-        CallBacks.OnDeactivated += Deactivate;
     }
 
     private void OnDisable() {
+        CallBacks.OnActivatedARena -= ActivateARena;
+        CallBacks.OnDeactivatedARena -= DeactivateARena;
         CallBacks.OnActivated -= Activate;
-        CallBacks.OnDeactivated -= Deactivate;
     }
 }
