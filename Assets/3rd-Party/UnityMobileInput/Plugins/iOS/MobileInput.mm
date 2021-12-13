@@ -568,6 +568,18 @@ BOOL multiline;
     }
 }
 
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    if (range.length + range.location > textView.text.length) {
+        return NO;
+    }
+    NSUInteger newLength = [textView.text length] + [text length] - range.length;
+    if (characterLimit > 0) {
+        return newLength <= characterLimit;
+    } else {
+        return YES;
+    }
+}
+
 - (void)textFieldActive:(UITextField *)theTextField {
     NSMutableDictionary *msg = [[NSMutableDictionary alloc] init];
     [msg setValue:ON_FOCUS forKey:@"msg"];

@@ -27,24 +27,24 @@ public class UserWebManager : MonoBehaviour {
     private UserJsonData userData;
 
     public void LoadUserInfo() {
-        webRequestHandler.GetRequest(GetRequestGetUserURL(), LoadUserInfoCallBack,
-            ErrorLoadUserInfoCallBack, accountManager.GetAccessToken().access);
+        webRequestHandler.Get(GetRequestGetUserURL(), LoadUserInfoCallBack,
+            ErrorLoadUserInfoCallBack, needHeaderAccessToken: true);
     }
 
     public void UploadUserInfo() {
-        webRequestHandler.PutRequest(GetRequestPutUserURL(), userData,
-            WebRequestHandler.BodyType.JSON, UploadUserInfoCallBack,
-            ErrorUploadUserInfoCallBack, accountManager.GetAccessToken().access);
+        webRequestHandler.Put(GetRequestPutUserURL(), userData,
+            WebRequestBodyType.JSON, UploadUserInfoCallBack,
+            ErrorUploadUserInfoCallBack, needHeaderAccessToken: true);
     }
 
     public void DeleteUserAccount() {
-        webRequestHandler.DeleteRequest(GetRequestDeleteUserURL(), DeleteUserInfoCallBack,
-            ErrorMsgCallBack, accountManager.GetAccessToken().access);
+        webRequestHandler.Delete(GetRequestDeleteUserURL(), DeleteUserInfoCallBack,
+            ErrorMsgCallBack, needHeaderAccessToken: true);
     }
 
     public void DisableUserAccount() {
-        webRequestHandler.DeleteRequest(GetRequestDisableUserURL(), DisableUserInfoCallBack,
-            ErrorMsgCallBack, accountManager.GetAccessToken().access);
+        webRequestHandler.Delete(GetRequestDisableUserURL(), DisableUserInfoCallBack,
+            ErrorMsgCallBack, needHeaderAccessToken: true);
     }
 
     public void UpdateUserData(string userName = null,
@@ -112,8 +112,8 @@ public class UserWebManager : MonoBehaviour {
     }
 
     public void LoadUserInfo(Action loadUserInfoCallBack) {
-        webRequestHandler.GetRequest(GetRequestGetUserURL(), (code, body) => loadUserInfoCallBack(),
-            ErrorMsgCallBack, accountManager.GetAccessToken().access);
+        webRequestHandler.Get(GetRequestGetUserURL(), (code, body) => loadUserInfoCallBack(),
+            ErrorMsgCallBack, needHeaderAccessToken: true);
     }
 
     public string GetEmail() {

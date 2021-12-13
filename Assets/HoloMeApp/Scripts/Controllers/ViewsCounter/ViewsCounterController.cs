@@ -21,7 +21,7 @@ public class ViewsCounterController
     /// call webrequest post like for stream 
     /// </summary>
     public void SendViewed(long streamId) {
-        _webRequestHandler.Post(GetPostViewRequestUrl(streamId), string.Empty, WebRequestHandler.BodyType.None,
+        _webRequestHandler.Post(GetPostViewRequestUrl(streamId), string.Empty, WebRequestBodyType.None,
                 (code, body) => { HelperFunctions.DevLog("Setted like " + streamId); },
                 (code, body) => { HelperFunctions.DevLogError("error Set like " + streamId + " code " + code + " " + body); });
     }

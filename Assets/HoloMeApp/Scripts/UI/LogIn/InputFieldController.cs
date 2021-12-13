@@ -21,6 +21,12 @@ public class InputFieldController : MonoBehaviour {
     [SerializeField]
     private MobileInputField _mobileInputField;
 
+    public MobileInputField MobileInputField {
+        get {
+            return _mobileInputField;
+        }
+    }
+
     [SerializeField]
     TMP_Text warningMsgText;
     [SerializeField]
@@ -71,10 +77,6 @@ public class InputFieldController : MonoBehaviour {
             inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
     }
 
-    private void OnEnable() {
-        _mobileInputField.SetVisible(true);
-    }
-
     public void ShowWarning(string warningMsg) {
         if (!string.IsNullOrEmpty(warningMsg)) {
             animator.enabled = true;
@@ -100,6 +102,12 @@ public class InputFieldController : MonoBehaviour {
     public void SetPasswordContentType(bool value) {
         inputField.contentType = value ? InputField.ContentType.Standard : InputField.ContentType.Password;
         inputField.ForceLabelUpdate();
+    }
+
+    private void OnApplicationPause(bool pause) {
+        if (pause) {
+            OnReturn();
+        }
     }
 
     private string OverrideMsg(string msg) {
@@ -166,7 +174,6 @@ public class InputFieldController : MonoBehaviour {
     }
 
     private void OnDisable() {
-        _mobileInputField.SetVisible(false);
         if (IsClearOnDisable) {
             SetToDefaultState();
             text = "";

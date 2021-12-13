@@ -499,11 +499,8 @@ MonoBehaviour:
   btnBurger: {fileID: 9131335257026221797}
   canvasGroup: {fileID: 219420117384257143}
   hologramHandler: {fileID: 0}
-  arPlaneManager: {fileID: 0}
   logoCanvas: {fileID: 0}
   pnlRecord: {fileID: 0}
-  arSessionOrigin: {fileID: 0}
-  arSession: {fileID: 0}
   scanMessageRT: {fileID: 1405858809527164827}
   skipTutorial: 1
 --- !u!225 &219420117384257143
@@ -970,7 +967,7 @@ PrefabInstance:
     - target: {fileID: 4266055964039861402, guid: 581e32461906f42edbebeb4843d0deb9,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4266055964039861402, guid: 581e32461906f42edbebeb4843d0deb9,
         type: 3}
@@ -1000,7 +997,7 @@ PrefabInstance:
     - target: {fileID: 4266055964039861402, guid: 581e32461906f42edbebeb4843d0deb9,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[5].m_Mode
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4266055964039861402, guid: 581e32461906f42edbebeb4843d0deb9,
         type: 3}
@@ -1075,12 +1072,17 @@ PrefabInstance:
     - target: {fileID: 4266055964039861402, guid: 581e32461906f42edbebeb4843d0deb9,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[5].m_MethodName
-      value: Switch
+      value: SetActive
       objectReference: {fileID: 0}
     - target: {fileID: 4266055964039861402, guid: 581e32461906f42edbebeb4843d0deb9,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[4].m_TargetAssemblyTypeName
-      value: 
+      value: Switcher, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4266055964039861402, guid: 581e32461906f42edbebeb4843d0deb9,
+        type: 3}
+      propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[5].m_TargetAssemblyTypeName
+      value: UnityEngine.GameObject, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 4266055964039861402, guid: 581e32461906f42edbebeb4843d0deb9,
         type: 3}

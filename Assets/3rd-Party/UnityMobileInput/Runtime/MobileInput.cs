@@ -31,14 +31,14 @@ namespace Mopsicus.Plugins {
         /// <summary>
         /// Init input and register interface
         /// </summary>
-        protected virtual void Start() {
+        protected virtual void OnEnable() {
             _id = MobileInput.Register(this);
         }
 
         /// <summary>
         /// Action on destroy
         /// </summary>
-        protected virtual void OnDestroy() {
+        protected virtual void OnDisable() {
             MobileInput.RemoveReceiver(_id);
         }
 

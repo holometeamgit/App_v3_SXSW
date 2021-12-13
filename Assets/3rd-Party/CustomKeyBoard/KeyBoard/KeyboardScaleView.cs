@@ -1,4 +1,7 @@
 using Mopsicus.Plugins;
+using System.Collections;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,40 +14,32 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private RectTransform _rectTransform;
         [SerializeField]
-        private float _baseShift = 50;
+        private float _baseHeight = 200;
+        [Space]
         [SerializeField]
-        private float _baseHeight = 165;
-
-        private bool isChangedSize = false;
+        private RectTransform _textRectTransform;
+        [SerializeField]
+        private RectTransform _placeHolderRectTransform;
+        [SerializeField]
+        private float _baseTextHeight = 140;
+        [Space]
+        [SerializeField]
+        private float _baseShift = 50;
 
         public override void RefreshData(InputField inputField) {
-            var x = new GUIStyle {
-                font = inputField.textComponent.font,
-                fontSize = inputField.textComponent.fontSize
-            };
-            var textTranform = inputField.textComponent.GetComponent<RectTransform>();
-            var mobileInputField = inputField.GetComponent<MobileInputField>();
-
-            var words = inputField.text.Split(' ');
-            var currentWidth = 0f;
-            var currentHeight = 0f;
-
-            foreach (string word in words) {
-                var size = x.CalcSize(new GUIContent(word));
-                currentWidth += size.x;
-                if (currentWidth >= textTranform.sizeDelta.x) {
-                    currentHeight = _baseShift * (Mathf.FloorToInt(currentWidth / textTranform.sizeDelta.x));
-                    currentWidth = size.x;
-                    isChangedSize = true;
-                }
+            if (inputField.textComponent.text.Length > 0) {
+                ChangeHeight(_rectTransform, _baseHeight + inputField.textComponent.preferredHeight - _baseShift);
+                ChangeHeight(_textRectTransform, _baseTextHeight + inputField.textComponent.preferredHeight - _baseShift);
+                ChangeHeight(_placeHolderRectTransform, _baseTextHeight + inputField.textComponent.preferredHeight - _baseShift);
+            } else {
+                ChangeHeight(_rectTransform, _baseHeight);
+                ChangeHeight(_textRectTransform, _baseTextHeight);
+                ChangeHeight(_placeHolderRectTransform, _baseTextHeight);
             }
+        }
 
-            _rectTransform.sizeDelta = new Vector2(_rectTransform.sizeDelta.x, _baseHeight + currentHeight);
-            textTranform.sizeDelta = new Vector2(textTranform.sizeDelta.x, _baseShift + currentHeight);
-
-            if (isChangedSize) {
-                isChangedSize = false;
-            }
+        private void ChangeHeight(RectTransform rectTransform, float height) {
+            rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, height);
         }
 
     }

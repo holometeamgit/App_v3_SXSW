@@ -11,6 +11,7 @@ public class UIThumbnailsController : MonoBehaviour {
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] PnlViewingExperience pnlViewingExperience;
     [SerializeField] PnlStreamOverlay pnlStreamOverlay;
+    [SerializeField] PnlPrerecordedVideo pnlPrerecordedVideo;
     [SerializeField] GameObject btnThumbnailPrefab;
     [SerializeField] Transform content;
     [SerializeField] PurchaseManager purchaseManager;
@@ -177,15 +178,7 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetPlayAction(Play);
             btnThumbnailItems[i].SetTeaserPlayAction(PlayTeaser);
             btnThumbnailItems[i].SetBuyAction(Buy);
-            btnThumbnailItems[i].SetShareAction((data) => {
-                //btnThumbnailItems[i]
-                if (data.GetStage() == StreamJsonData.Data.Stage.Live) {
-                    StreamCallBacks.onGetStreamLink?.Invoke(data.id.ToString(), data.user);
-                } else {
-                    StreamCallBacks.onGetPrerecordedLink.Invoke(data);
-                }
-                AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
-            });
+            btnThumbnailItems[i].SetShareAction(StreamCallBacks.onShareStreamLinkByData);
             btnThumbnailItems[i].LockToPress(false);
         }
         OnUpdated?.Invoke();
@@ -207,7 +200,7 @@ public class UIThumbnailsController : MonoBehaviour {
 
         if (data.HasStreamUrl) {
             pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, data, null, false);
-            PrerecordedVideoConstructor._onActivated?.Invoke(data);
+            pnlPrerecordedVideo.Init(data);
             OnPlayFromUser?.Invoke(data.user);
         } else if (data.HasAgoraChannel) {
             if (data.agora_channel == "0" || string.IsNullOrWhiteSpace(data.agora_channel))
@@ -221,7 +214,7 @@ public class UIThumbnailsController : MonoBehaviour {
             return;
 
         pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, data, null, data.HasTeaser);
-        PrerecordedVideoConstructor._onActivated?.Invoke(data);
+        pnlPrerecordedVideo.Init(data);
         OnPlayFromUser?.Invoke(data.user);
         purchaseManager.SetPurchaseStreamData(data);
     }
