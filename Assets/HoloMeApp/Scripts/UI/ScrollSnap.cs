@@ -19,6 +19,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
     public OnReleaseEvent onRelease;
 
     [SerializeField] float cellWidth;
+    [SerializeField] UnityEvent[] OnIndexSnapEvent;
 
     private int actualIndex;
     private int cellIndex;
@@ -153,6 +154,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
             cellIndex = newCellIndex;
         }
         onRelease.Invoke(cellIndex);
+        OnIndexSnapEvent[cellIndex]?.Invoke();
         StartLerping();
     }
 
