@@ -8,8 +8,6 @@ using Beem.ARMsg;
 /// UIGenericErrorController. Class for invoke UIGenericError
 /// </summary>
 public class UIGenericErrorController : MonoBehaviour {
-    [SerializeField]
-    private PnlGenericError pnlGenericError;
 
     // Start is called before the first frame update
     private void Awake() {
@@ -20,7 +18,7 @@ public class UIGenericErrorController : MonoBehaviour {
         string buttonOneText = "Yes", string buttonTwoText = "No",
         UnityAction onButtonOnePress = null, UnityAction onButtonTwoPress = null,
         bool isWarning = false) {
-        pnlGenericError.ActivateDoubleButton(header, message,
+        GenericConstructor.ActivateDoubleButton(header, message,
             buttonOneText, buttonTwoText,
             onButtonOnePress, onButtonTwoPress, isWarning);
     }

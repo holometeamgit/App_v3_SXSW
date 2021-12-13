@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PnlChangeUsername : MonoBehaviour {
-    [SerializeField] PnlGenericError pnlGenericError;
     [SerializeField] UserWebManager userWebManager;
     [SerializeField] InputFieldController usernameInputField;
     [SerializeField] int userNameLimit = 30;

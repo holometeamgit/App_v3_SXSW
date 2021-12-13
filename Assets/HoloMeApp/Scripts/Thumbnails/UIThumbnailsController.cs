@@ -11,7 +11,6 @@ public class UIThumbnailsController : MonoBehaviour {
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] PnlViewingExperience pnlViewingExperience;
     [SerializeField] PnlStreamOverlay pnlStreamOverlay;
-    [SerializeField] PnlPrerecordedVideo pnlPrerecordedVideo;
     [SerializeField] GameObject btnThumbnailPrefab;
     [SerializeField] Transform content;
     [SerializeField] PurchaseManager purchaseManager;
@@ -200,7 +199,7 @@ public class UIThumbnailsController : MonoBehaviour {
 
         if (data.HasStreamUrl) {
             pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, data, null, false);
-            pnlPrerecordedVideo.Init(data);
+            PrerecordedVideoConstructor._onActivated?.Invoke(data);
             OnPlayFromUser?.Invoke(data.user);
         } else if (data.HasAgoraChannel) {
             if (data.agora_channel == "0" || string.IsNullOrWhiteSpace(data.agora_channel))
@@ -214,7 +213,7 @@ public class UIThumbnailsController : MonoBehaviour {
             return;
 
         pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, data, null, data.HasTeaser);
-        pnlPrerecordedVideo.Init(data);
+        PrerecordedVideoConstructor._onActivated?.Invoke(data);
         OnPlayFromUser?.Invoke(data.user);
         purchaseManager.SetPurchaseStreamData(data);
     }
