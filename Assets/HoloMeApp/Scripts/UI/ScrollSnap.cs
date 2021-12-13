@@ -137,6 +137,10 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
         SnapToIndex(cellIndex - 1);
     }
 
+    public void ResetToFirst() {
+        SnapToIndex(0);
+    }
+
     private void SnapToIndex(int newCellIndex) {
         int maxIndex = CalculateMaxIndex();
         if (wrapAround && maxIndex > 0) {
