@@ -21,8 +21,6 @@ public class PnlARMsgConstructor : MonoBehaviour {
     private PnlViewingExperience _pnlViewingExperience;
     [SerializeField]
     private PopupShowChecker _popupShowChecker;
-    [SerializeField]
-    private Switcher switchToHome;
 
     private CancellationTokenSource _showCancellationTokenSource;
     private CancellationToken _showCancellationToken;
@@ -99,7 +97,8 @@ public class PnlARMsgConstructor : MonoBehaviour {
     private void Close() {
         _pnlViewingExperience.StopExperience();
         _pnlARMessages.Deactivate();
-        switchToHome.Switch();
+        MenuConstructor.OnActivated?.Invoke(true);
+        HomeScreenConstructor.OnActivated?.Invoke(true);
     }
 
 

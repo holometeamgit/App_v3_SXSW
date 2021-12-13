@@ -74,6 +74,17 @@ public class PnlMenu : MonoBehaviour {
     }
 
     /// <summary>
+    /// Open Ar Messages
+    /// </summary>
+    public void OpenARMessages() {
+
+        if (!_permissionController.CheckCameraMicAccess()) {
+            return;
+        }
+
+    }
+
+    /// <summary>
     /// Open Live Stream
     /// </summary>
 
