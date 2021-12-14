@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine.Events;
 using System.Threading.Tasks;
 
-public class PnlGenericError : MonoBehaviour
+public class PnlWarning : MonoBehaviour
 {
     [SerializeField]
     TextMeshProUGUI txtHeader;

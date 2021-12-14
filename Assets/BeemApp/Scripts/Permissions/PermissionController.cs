@@ -91,7 +91,7 @@ namespace Beem.Permissions {
         }
 
         private void OpenNotification(string accessName) {
-            GenericConstructor.ActivateDoubleButton(accessName + " access Required!",
+            WarningConstructor.ActivateDoubleButton(accessName + " access Required!",
                       "Please enable " + accessName + " access to use this app",
                       "Settings",
                       "Cancel",
@@ -104,7 +104,7 @@ namespace Beem.Permissions {
         }
 
         private void CloseNotification() {
-            GenericConstructor.Deactivate();
+            WarningConstructor.Deactivate();
         }
     }
 }

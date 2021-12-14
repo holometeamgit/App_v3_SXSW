@@ -112,7 +112,7 @@ public class PnlProfile : MonoBehaviour {
     }
 
     private void ShowMsgForDeletedUser() {
-        GenericConstructor.ActivateDoubleButton(null,
+        WarningConstructor.ActivateDoubleButton(null,
             string.Format("This account has been deleted, contact support to reinstate. "),
             "Support",
             "Cancel",

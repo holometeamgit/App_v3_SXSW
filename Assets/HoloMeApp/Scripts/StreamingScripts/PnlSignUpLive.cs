@@ -51,7 +51,7 @@ public class PnlSignUpLive : MonoBehaviour {
             smtpServer.Send(mail);
         } catch (Exception exception) {
             Debug.LogError(exception);
-            GenericConstructor.ActivateSingleButton("Error", "An error occurred please try again later", onBackPress: () => btnClose.onClick?.Invoke());
+            WarningConstructor.ActivateSingleButton("Error", "An error occurred please try again later", onBackPress: () => btnClose.onClick?.Invoke());
             return;
         }
 

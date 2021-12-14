@@ -42,10 +42,5 @@ namespace Beem.ARMsg {
         public static Action<ARMsgJSON.Data> OnARMsgByIdReceived = delegate { };
         public static Action<string> OnARMsgByIdDeleted = delegate { };
         #endregion
-
-        #region PnlGenericError
-        public static Action<string, string, string, Action, bool> OnActivateGenericErrorSingleButton = delegate { };
-        public static Action<string, string, string, string, UnityAction, UnityAction, bool> OnActivateGenericErrorDoubleButton = delegate { };
-        #endregion
     }
 }

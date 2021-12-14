@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using TMPro;
 
 public class PnlChangePassword : MonoBehaviour {
-    [SerializeField] PnlGenericError pnlGenericError;
+    [SerializeField] PnlWarning pnlGenericError;
     [SerializeField] EmailAccountManager emailAccountManager;
     [SerializeField] InputFieldController newPasswordInputField;
     [SerializeField] InputFieldController newPasswordRepeatInputField;
@@ -29,7 +29,7 @@ public class PnlChangePassword : MonoBehaviour {
     }
 
     private void OnChangePasswordCallBack() {
-        GenericConstructor.ActivateSingleButton(" ", "Password has been successfully updated", "Continue", () => switchToNextMenu.Switch());
+        WarningConstructor.ActivateSingleButton(" ", "Password has been successfully updated", "Continue", () => switchToNextMenu.Switch());
     }
 
     private void OnErrorChangePasswordCallBack(BadRequestChangePassword badRequestChangePassword) {

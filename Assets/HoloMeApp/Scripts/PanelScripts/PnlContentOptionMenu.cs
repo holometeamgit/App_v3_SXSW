@@ -9,15 +9,15 @@ public class PnlContentOptionMenu : MonoBehaviour {
     UnityEvent OnDeletePerformance;
 
     public void FlagPerformance() {
-        GenericConstructor.ActivateSingleButton("Flag performance",
+        WarningConstructor.ActivateSingleButton("Flag performance",
             "If you have any concerns with something you’ve seen, please let us know so we can take appropriate action <b>support@holo.me</b> ",
-            onBackPress: () => GenericConstructor.Deactivate());
+            onBackPress: () => WarningConstructor.Deactivate());
     }
 
     public void DeletePerformance() {
-        GenericConstructor.ActivateDoubleButton("Disconnect from live stream?", "Closing this page will disconnect you from the live stream",
+        WarningConstructor.ActivateDoubleButton("Disconnect from live stream?", "Closing this page will disconnect you from the live stream",
             onButtonOnePress: () => { OnDelete(); },
-            onButtonTwoPress: () => GenericConstructor.Deactivate());
+            onButtonTwoPress: () => WarningConstructor.Deactivate());
     }
 
     private void OnDelete() {

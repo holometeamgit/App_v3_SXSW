@@ -71,7 +71,7 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
         inputFieldEmail.ShowWarning("E-mail is not verified");
 
         if (EmailVerificationTimer.IsOver) {
-            GenericConstructor.ActivateDoubleButton("Email verication",
+            WarningConstructor.ActivateDoubleButton("Email verication",
                 string.Format("You have not activated your account via the email, would you like us to send it again? \n {0}", email),
                 "Yes",
                 "No",
@@ -79,12 +79,12 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
                     CallBacks.onEmailVerification?.Invoke();
                     EmailVerificationTimer.Release();
                 },
-                () => { GenericConstructor.Deactivate(); });
+                () => { WarningConstructor.Deactivate(); });
         } else {
-            GenericConstructor.ActivateSingleButton("Email verication",
+            WarningConstructor.ActivateSingleButton("Email verication",
                string.Format("You have not activated your account via the email \n {0}", email),
                "Ok",
-               () => { GenericConstructor.Deactivate(); });
+               () => { WarningConstructor.Deactivate(); });
         }
     }
 

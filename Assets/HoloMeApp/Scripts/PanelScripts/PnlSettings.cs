@@ -36,7 +36,7 @@ public class PnlSettings : MonoBehaviour {
     /// Open Delete Account Window
     /// </summary>
     public void SettingsToDeleteAccount() {
-        GenericConstructor.ActivateDoubleButton("Delete account", "If you delete your account, you will lose \naccess to the Beem network.Are you sure \nyou want to continue?",
+        WarningConstructor.ActivateDoubleButton("Delete account", "If you delete your account, you will lose \naccess to the Beem network.Are you sure \nyou want to continue?",
           "Continue", "Cancel",
           () => {
               userWebManager.DeleteUserAccount();
@@ -61,7 +61,7 @@ public class PnlSettings : MonoBehaviour {
     /// </summary>
     public void SettingsToWelcome() {
 
-        GenericConstructor.ActivateDoubleButton("Log Out", "Are you sure you want to log out?",
+        WarningConstructor.ActivateDoubleButton("Log Out", "Are you sure you want to log out?",
             "log out", "Cancel",
             () => {
                 UserLogOut();

@@ -52,7 +52,7 @@ public class PnlLogInEmail : MonoBehaviour {
             else {
                 inputFieldEmail.ShowWarning(badRequestData.non_field_errors[0]);
 
-                GenericConstructor.ActivateDoubleButton("Email verication",
+                WarningConstructor.ActivateDoubleButton("Email verication",
                     "You have not activated your account via the email, would you like us to send it again?",
                     "Yes",
                     "No",
@@ -60,7 +60,7 @@ public class PnlLogInEmail : MonoBehaviour {
                         ResendVerifyJsonData resendVerifyJsonData = new ResendVerifyJsonData(inputFieldEmail.text);
                         emailAccountManager.ResendVerification(resendVerifyJsonData);
                     },
-                    () => { GenericConstructor.Deactivate(); });
+                    () => { WarningConstructor.Deactivate(); });
             }
         }
 
@@ -75,7 +75,7 @@ public class PnlLogInEmail : MonoBehaviour {
     private void ResendVerificationCallBack() {
         if (!this.isActiveAndEnabled)
             return;
-        GenericConstructor.Deactivate();
+        WarningConstructor.Deactivate();
         inputFieldEmail.ShowWarning("We had sent a verification email");
     }
 

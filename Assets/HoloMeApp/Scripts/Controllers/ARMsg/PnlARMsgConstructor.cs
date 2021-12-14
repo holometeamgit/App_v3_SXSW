@@ -83,7 +83,7 @@ public class PnlARMsgConstructor : MonoBehaviour {
     }
 
     private void DeactivateARena() {
-        CallBacks.OnActivateGenericErrorDoubleButton?.Invoke("Before you go...",
+        WarningConstructor.ActivateDoubleButton("Before you go...",
            "If you exit you could lose your AR message if you don't share the link.",
            "Copy link and exit", "Return",
            () => {

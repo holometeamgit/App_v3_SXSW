@@ -7,9 +7,9 @@ using UnityEngine.Events;
 /// <summary>
 /// Constructor for Generic Error Pnl
 /// </summary>
-public class GenericConstructor : MonoBehaviour {
+public class WarningConstructor : MonoBehaviour {
     [SerializeField]
-    private PnlGenericError pnlGenericError;
+    private PnlWarning pnlGenericError;
 
     public static event Action<string, string, string, UnityAction, bool> onActivateSingleButton = delegate { };
     public static event Action<string, string, string, string, UnityAction, UnityAction, bool> onActivateDoubleButton = delegate { };
