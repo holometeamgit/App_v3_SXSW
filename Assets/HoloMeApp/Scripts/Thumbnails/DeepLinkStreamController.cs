@@ -5,6 +5,9 @@ using Beem.Firebase.DynamicLink;
 using Firebase.DynamicLinks;
 using System;
 
+/// <summary>
+/// DeepLinkStreamController 
+/// </summary>
 public class DeepLinkStreamController : MonoBehaviour {
     [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] ServerURLAPIScriptableObject serverURLAPIScriptableObject;
@@ -15,6 +18,29 @@ public class DeepLinkStreamController : MonoBehaviour {
     private const string STATUS = "live";
     private const string USERNAME_FILTER = "user__username";
     private const string STATUS_FILTER = "status";
+
+    /// <summary>
+    /// Social Media for Streams
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public SocialMetaTagParameters SocialParameters(StreamJsonData.Data data) {
+        SocialMetaTagParameters socialMetaTagParameters;
+        if (data.GetStage() == StreamJsonData.Data.Stage.Live) {
+            socialMetaTagParameters = new SocialMetaTagParameters() {
+                Title = string.Format(STREAM_TITLE, data.user),
+                Description = string.Format(STREAM_DESCRIPTION, data.user),
+                ImageUrl = new Uri(serverURLAPIScriptableObject.LogoLink)
+            };
+        } else {
+            socialMetaTagParameters = new SocialMetaTagParameters() {
+                Title = data.title,
+                Description = data.description,
+                ImageUrl = new Uri(serverURLAPIScriptableObject.LogoLink)
+            };
+        }
+        return socialMetaTagParameters;
+    }
 
     private void GetStreamById(string id, Action<long, string> onSuccess, Action<long, string> onFailed) {
         webRequestHandler.Get(GetRequestStreamByIdURL(id),
@@ -153,28 +179,5 @@ public class DeepLinkStreamController : MonoBehaviour {
 
     private string GetRequestStreamByUsernameURL(string username, string status) {
         return webRequestHandler.ServerURLMediaAPI + videoUploader.Stream + $"?{STATUS_FILTER}={status}&{USERNAME_FILTER}={username}";
-    }
-
-    /// <summary>
-    /// Social Media for Streams
-    /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    public SocialMetaTagParameters SocialParameters(StreamJsonData.Data data) {
-        SocialMetaTagParameters socialMetaTagParameters;
-        if (data.GetStage() == StreamJsonData.Data.Stage.Live) {
-            socialMetaTagParameters = new SocialMetaTagParameters() {
-                Title = string.Format(STREAM_TITLE, data.user),
-                Description = string.Format(STREAM_DESCRIPTION, data.user),
-                ImageUrl = new Uri(serverURLAPIScriptableObject.LogoLink)
-            };
-        } else {
-            socialMetaTagParameters = new SocialMetaTagParameters() {
-                Title = data.title,
-                Description = data.description,
-                ImageUrl = new Uri(serverURLAPIScriptableObject.LogoLink)
-            };
-        }
-        return socialMetaTagParameters;
     }
 }
