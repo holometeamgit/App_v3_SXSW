@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// TODO: class in progress
+/// </summary>
 public class StreamOverlayConstructor : MonoBehaviour {
     [SerializeField]
     private PnlStreamOverlay _pnlStreamOverlay;
