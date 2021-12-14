@@ -75,4 +75,13 @@ public class PrerecordedVideoWindow : MonoBehaviour {
             _purchaseManager.OnPurchaseSuccessful -= Refresh;
         }
     }
+
+    /// <summary>
+    /// Close Prerecorded video window
+    /// </summary>
+    public void Close() {
+        MenuConstructor.OnActivated?.Invoke(true);
+        HomeScreenConstructor.OnActivated?.Invoke(true);
+        PrerecordedVideoConstructor.OnDeactivated?.Invoke();
+    }
 }

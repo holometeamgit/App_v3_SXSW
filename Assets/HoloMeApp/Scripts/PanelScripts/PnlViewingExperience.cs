@@ -135,7 +135,7 @@ public class PnlViewingExperience : MonoBehaviour {
         isRoom = false;
         this.data = streamJsonData;
         activatedForStreaming = false;
-        btnBurger.SetActive(true);
+        btnBurger.SetActive(false);
         logoCanvas.ActivateIfLogoAvailable(videoJsonData);
         hologramHandler.PlayIfPlaced(url, streamJsonData.user_id);
         hologramHandler.TogglePreRecordedVideoRenderer(true);
