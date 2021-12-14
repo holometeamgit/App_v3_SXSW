@@ -355,11 +355,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         if (agoraController.IsRoom) {
             StreamCallBacks.onShareRoomLink?.Invoke(agoraController.ChannelName);
         } else {
-            if (!string.IsNullOrWhiteSpace(currentStreamId)) {
-                StreamCallBacks.onShareStreamLinkById?.Invoke(currentStreamId);
-            } else {
-                DynamicLinksCallBacks.onShareAppLink?.Invoke();
-            }
+            StreamCallBacks.onShareStadiumLink?.Invoke(agoraController.ChannelName);
         }
 
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
