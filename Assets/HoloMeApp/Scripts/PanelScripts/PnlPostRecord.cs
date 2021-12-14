@@ -29,9 +29,6 @@ public class PnlPostRecord : MonoBehaviour {
     Button btnDownload;
 
     [SerializeField]
-    GameObject pnlGenericError;
-
-    [SerializeField]
     HologramHandler hologramHandler;
 
     static string lastRecordingPath;
