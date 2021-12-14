@@ -7,6 +7,7 @@ public class VideoUploader : ScriptableObject { //TODO rename class this StreamA
     [Tooltip("get raw videos and processing statuses")]
     public string Stream = "/stream/";
     public string StreamById = "/stream/{id}/";
+    public string StreamBySlug = "/stream/webar/{slug}/";
 
     [Header("Change Status")]
     [Tooltip("Change Status, used to do things like end stream")]

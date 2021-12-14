@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// checks requirements for opening PnlRoomPopup
 /// </summary>
-public class RoomPopupShowChecker : MonoBehaviour {
+public class PopupShowChecker : MonoBehaviour {
     [SerializeField]
     List<GameObject> _needBeActivatedObjects;
 

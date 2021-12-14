@@ -70,6 +70,9 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     private void NeedVerificationCallback(string email) {
         inputFieldEmail.ShowWarning("E-mail is not verified");
 
+        inputFieldEmail.MobileInputField.SetVisible(false);
+        inputFieldPassword.MobileInputField.SetVisible(false);
+
         if (EmailVerificationTimer.IsOver) {
             pnlGenericError.ActivateDoubleButton("Email verication",
                 string.Format("You have not activated your account via the email, would you like us to send it again? \n {0}", email),
@@ -79,12 +82,20 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
                     CallBacks.onEmailVerification?.Invoke();
                     EmailVerificationTimer.Release();
                 },
-                () => { pnlGenericError.gameObject.SetActive(false); });
+                () => {
+                    pnlGenericError.gameObject.SetActive(false);
+                    inputFieldEmail.MobileInputField.SetVisible(true);
+                    inputFieldPassword.MobileInputField.SetVisible(true);
+                });
         } else {
             pnlGenericError.ActivateSingleButton("Email verication",
                string.Format("You have not activated your account via the email \n {0}", email),
                "Ok",
-               () => { pnlGenericError.gameObject.SetActive(false); });
+               () => {
+                   pnlGenericError.gameObject.SetActive(false);
+                   inputFieldEmail.MobileInputField.SetVisible(true);
+                   inputFieldPassword.MobileInputField.SetVisible(true);
+               });
         }
     }
 
