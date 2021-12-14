@@ -163,7 +163,9 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
             cellIndex = newCellIndex;
         }
         onRelease.Invoke(cellIndex);
-        OnIndexSnapEvent[cellIndex]?.Invoke();
+        if (OnIndexSnapEvent != null && OnIndexSnapEvent.Length - 1 >= cellIndex) {
+            OnIndexSnapEvent?[cellIndex]?.Invoke();
+        }
         StartLerping();
     }
 
