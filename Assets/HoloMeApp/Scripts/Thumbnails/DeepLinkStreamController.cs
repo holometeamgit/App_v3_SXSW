@@ -42,13 +42,6 @@ public class DeepLinkStreamController : MonoBehaviour {
         return socialMetaTagParameters;
     }
 
-    private void GetStreamById(string id, Action<long, string> onSuccess, Action<long, string> onFailed) {
-        webRequestHandler.Get(GetRequestStreamByIdURL(id),
-            (code, body) => { onSuccess?.Invoke(code, body); },
-            (code, body) => { onFailed?.Invoke(code, body); },
-        needHeaderAccessToken: true);
-    }
-
     private void GetStreamBySlug(string slug, Action<long, string> onSuccess, Action<long, string> onFailed) {
         webRequestHandler.Get(GetRequestStreamBySlugURL(slug),
             (code, body) => { onSuccess?.Invoke(code, body); },
@@ -136,22 +129,22 @@ public class DeepLinkStreamController : MonoBehaviour {
     }
 
     private void Awake() {
-        StreamCallBacks.onShareStreamLinkById += OnShare;
+        StreamCallBacks.onShareStadiumLink += OnShare;
         StreamCallBacks.onReceiveStreamLink += OnOpenStream;
         StreamCallBacks.onReceivePrerecordedLink += OnOpenPrerecorded;
-        StreamCallBacks.onShareStreamLinkByData += OnShare;
     }
 
-    private void OnShare(string id) {
-        GetStreamById(id,
-            (code, body) => Share(body),
+    private void OnShare(string username) {
+        GetStreamByUsername(username,
+            (code, body) => Share(body, username),
             (code, body) => {
                 HelperFunctions.DevLogError(code + " " + body);
             });
     }
 
-    private void Share(string body) {
-        StreamReceived(body,
+    private void Share(string body, string username) {
+        StreamsReceived(body,
+            username,
             (data) => {
                 OnShare(data);
             });
@@ -163,14 +156,9 @@ public class DeepLinkStreamController : MonoBehaviour {
 
 
     private void OnDestroy() {
-        StreamCallBacks.onShareStreamLinkById -= OnShare;
+        StreamCallBacks.onShareStadiumLink -= OnShare;
         StreamCallBacks.onReceiveStreamLink -= OnOpenStream;
-        StreamCallBacks.onShareStreamLinkByData -= OnShare;
         StreamCallBacks.onReceivePrerecordedLink -= OnOpenPrerecorded;
-    }
-
-    private string GetRequestStreamByIdURL(string id) {
-        return webRequestHandler.ServerURLMediaAPI + videoUploader.StreamById.Replace("{id}", id);
     }
 
     private string GetRequestStreamBySlugURL(string slug) {
