@@ -16,18 +16,18 @@ public class PrerecordedVideoConstructor : MonoBehaviour {
     [SerializeField]
     private PrerecordedVideoBar _prerecordedVideoBar;
 
-    public static Action<StreamJsonData.Data> _onActivated = delegate { };
+    public static Action<StreamJsonData.Data> OnActivated = delegate { };
 
-    public static Action _onDeactivated = delegate { };
+    public static Action OnDeactivated = delegate { };
 
     private void OnEnable() {
-        _onActivated += Activate;
-        _onDeactivated += Deactivate;
+        OnActivated += Activate;
+        OnDeactivated += Deactivate;
     }
 
     private void OnDisable() {
-        _onActivated -= Activate;
-        _onDeactivated -= Deactivate;
+        OnActivated -= Activate;
+        OnDeactivated -= Deactivate;
     }
 
     private void Activate(StreamJsonData.Data streamData) {

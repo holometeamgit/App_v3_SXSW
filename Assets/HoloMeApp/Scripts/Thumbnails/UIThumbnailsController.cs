@@ -199,7 +199,7 @@ public class UIThumbnailsController : MonoBehaviour {
 
         if (data.HasStreamUrl) {
             pnlViewingExperience.ActivateForPreRecorded(data.stream_s3_url, data, null, false);
-            PrerecordedVideoConstructor._onActivated?.Invoke(data);
+            PrerecordedVideoConstructor.OnActivated?.Invoke(data);
             OnPlayFromUser?.Invoke(data.user);
         } else if (data.HasAgoraChannel) {
             if (data.agora_channel == "0" || string.IsNullOrWhiteSpace(data.agora_channel))
@@ -213,7 +213,7 @@ public class UIThumbnailsController : MonoBehaviour {
             return;
 
         pnlViewingExperience.ActivateForPreRecorded(data.teaser_s3_url, data, null, data.HasTeaser);
-        PrerecordedVideoConstructor._onActivated?.Invoke(data);
+        PrerecordedVideoConstructor.OnActivated?.Invoke(data);
         OnPlayFromUser?.Invoke(data.user);
         purchaseManager.SetPurchaseStreamData(data);
     }
