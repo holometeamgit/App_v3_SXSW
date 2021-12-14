@@ -334,11 +334,15 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         OnCloseAsStreamer.Invoke();
+        HomeScreenConstructor.OnActivated?.Invoke(true);
+        MenuConstructor.OnActivated?.Invoke(true);
     }
 
     private void CloseAsViewer() {
         StopStream();
         OnCloseAsViewer.Invoke();
+        HomeScreenConstructor.OnActivated?.Invoke(true);
+        MenuConstructor.OnActivated?.Invoke(true);
     }
 
     private void CloseRoomAsViewerWhenStreamWasStopped() {

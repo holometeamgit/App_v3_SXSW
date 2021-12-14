@@ -207,5 +207,8 @@ public class PnlViewingExperience : MonoBehaviour {
         hologramHandler.StopVideo();
         FadeOutCanvas();
         pnlRecord.gameObject.SetActive(false);
+        PrerecordedVideoConstructor.OnDeactivated?.Invoke();
+        MenuConstructor.OnActivated?.Invoke(true);
+        HomeScreenConstructor.OnActivated?.Invoke(true);
     }
 }
