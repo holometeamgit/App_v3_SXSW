@@ -45,6 +45,6 @@ public class LogInBtnEnabler : MonoBehaviour
 
     private void OnEnable() {
         CheckPlatform();
-        webRequestHandler.GetRequest(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, null);
+        webRequestHandler.Get(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, needHeaderAccessToken: false);
     }
 }

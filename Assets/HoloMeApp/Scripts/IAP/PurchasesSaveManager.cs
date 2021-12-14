@@ -16,8 +16,6 @@ public class PurchasesSaveManager : MonoBehaviour {
     [SerializeField]
     PurchaseAPIScriptableObject purchaseAPISO;
     [SerializeField]
-    AccountManager accountManager;
-    [SerializeField]
     IAPController iapController;
 
     private bool isBusy;
@@ -56,8 +54,7 @@ public class PurchasesSaveManager : MonoBehaviour {
             if (purchaseSaveJsonData.purchaseSaveElements.Count > 0) {
                 isBusy = true;
                 PostData(uniqName, purchaseSaveJsonData.purchaseSaveElements[0].id,
-                    purchaseSaveJsonData.purchaseSaveElements[0].streamBillingJsonData,
-                    accountManager.GetAccessToken().access);
+                    purchaseSaveJsonData.purchaseSaveElements[0].streamBillingJsonData);
             } else {
                 OnAllDataSended?.Invoke();
             }
@@ -107,11 +104,11 @@ public class PurchasesSaveManager : MonoBehaviour {
         }
     }
 
-    private void PostData(string uniqName, long id, StreamBillingJsonData streamBillingJsonData, string accessToken) {
-        webRequestHandler.PostRequest(GetRequestRefreshTokenURL(id),
-           streamBillingJsonData, WebRequestHandler.BodyType.JSON,
+    private void PostData(string uniqName, long id, StreamBillingJsonData streamBillingJsonData) {
+        webRequestHandler.Post(GetRequestRefreshTokenURL(id),
+           streamBillingJsonData, WebRequestBodyType.JSON,
            (code, body) => { OnServerBillingSent(uniqName, id, streamBillingJsonData); isBusy = false; CheckSubmittedData(); },
-           (code, body) => { OnServerErrorBillingSent(uniqName, id, streamBillingJsonData); isBusy = false; }, accessToken);
+           (code, body) => { OnServerErrorBillingSent(uniqName, id, streamBillingJsonData); isBusy = false; });
     }
 
     private void OnServerBillingSent(string uniqName, long id, StreamBillingJsonData streamBillingJsonData) {

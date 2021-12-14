@@ -259,7 +259,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
         isChannelCreator = true;
         gameObject.SetActive(true);
-        pnlViewingExperience.ToggleARSessionObjects(false);
+        ARConstructor.onActivated?.Invoke(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
 
         ToggleLocalAudio(false);

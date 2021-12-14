@@ -1,15 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using NatCorder;
-using NatCorder.Clocks;
-using NatCorder.Inputs;
+using NatSuite.Recorders;
+using NatSuite.Recorders.Clocks;
+using NatSuite.Recorders.Inputs;
 using System.Collections;
 using TMPro;
 using UnityEngine.Events;
 using System.IO;
 using Beem.Utility;
 using Beem.Permissions;
+using System.Threading.Tasks;
+using System.Threading;
 
 public class PnlRecord : MonoBehaviour {
     [SerializeField]
@@ -70,7 +72,7 @@ public class PnlRecord : MonoBehaviour {
     [Header("Microphone")]
     public bool recordMicrophone = true;
     public AudioSource videoSource;
-    private MP4Recorder videoRecorder;
+    private IMediaRecorder videoRecorder;
     private IClock recordingClock;
     private CameraInput cameraInput;
     private AudioInput audioInput;
@@ -145,6 +147,9 @@ public class PnlRecord : MonoBehaviour {
         return value % 2 == 0 ? value : value - 1;
     }
 
+    /// <summary>
+    /// start recording
+    /// </summary>
     public void StartRecording() {
         if (!permissionController.CheckMicAccess()) {
             recordMicrophone = false;
@@ -156,9 +161,10 @@ public class PnlRecord : MonoBehaviour {
             videoHeight,
             25,
             recordMicrophone ? AudioSettings.outputSampleRate : 0,
-            recordMicrophone ? (int)AudioSettings.speakerMode : 0,
-            OnRecordComplete
+            recordMicrophone ? (int)AudioSettings.speakerMode : 0
         );
+
+
 
         cameraInput = new CameraInput(videoRecorder, recordingClock, arCamera, canvasCamera);
         if (recordMicrophone) {
@@ -183,18 +189,24 @@ public class PnlRecord : MonoBehaviour {
         if (recordMicrophone) {
             audioInput.Dispose();
         }
-
         cameraInput.Dispose();
-        videoRecorder.Dispose();
-        imgRecordFill.fillAmount = 0;
-        btnToggleMode.interactable = true;
-        Recording = false;
 
-        if (!recordLengthFailed)
-            watermarkCanvasObject.SetActive(false);
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        OnRecordComplete().ContinueWith((taskWebRequestData) => {
+
+            imgRecordFill.fillAmount = 0;
+            btnToggleMode.interactable = true;
+            Recording = false;
+
+            if (!recordLengthFailed)
+                watermarkCanvasObject.SetActive(false);
+
+        }, taskScheduler);
+
     }
 
-    void OnRecordComplete(string outputPath) {
+    private async Task OnRecordComplete() {
+        string outputPath = await videoRecorder.FinishWriting();
         if (recordLengthFailed) {
             File.Delete(outputPath);
             OnRecordStopped?.Invoke();
@@ -206,7 +218,7 @@ public class PnlRecord : MonoBehaviour {
         }
     }
 
-    void MakeScreenshot() {
+    private void MakeScreenshot() {
         if (currentCoroutine == null) {
             //print("MAKING SCREENSHOT");
             OnSnapshotStarted?.Invoke();
