@@ -177,7 +177,7 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetPlayAction(Play);
             btnThumbnailItems[i].SetTeaserPlayAction(PlayTeaser);
             btnThumbnailItems[i].SetBuyAction(Buy);
-            btnThumbnailItems[i].SetShareAction(StreamCallBacks.onShareStreamLinkByData);
+            btnThumbnailItems[i].SetShareAction(StreamCallBacks.onShareStadiumLink);
             btnThumbnailItems[i].LockToPress(false);
         }
         OnUpdated?.Invoke();

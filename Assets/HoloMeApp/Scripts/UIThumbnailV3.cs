@@ -44,7 +44,7 @@ public class UIThumbnailV3 : UIThumbnail {
     Action<StreamJsonData.Data> OnPlayClick;
     Action<StreamJsonData.Data> OnTeaserClick;
     Action<StreamJsonData.Data> OnBuyClick;
-    Action<StreamJsonData.Data> OnShareClick;
+    Action<string> OnShareClick;
 
     ThumbnailElement thumbnailElement;
 
@@ -63,7 +63,7 @@ public class UIThumbnailV3 : UIThumbnail {
         this.OnBuyClick += OnBuyClick;
     }
 
-    public override void SetShareAction(Action<StreamJsonData.Data> OnShareClick) {
+    public override void SetShareAction(Action<string> OnShareClick) {
         this.OnShareClick = null;
         this.OnShareClick += OnShareClick;
     }
@@ -99,7 +99,7 @@ public class UIThumbnailV3 : UIThumbnail {
     }
 
     public override void Share() {
-        OnShareClick?.Invoke(thumbnailElement.Data);
+        OnShareClick?.Invoke(thumbnailElement.Data.share_link);
     }
 
     public override void AddData(ThumbnailElement element) {
@@ -190,9 +190,9 @@ public class UIThumbnailV3 : UIThumbnail {
             txtInfoText.text = "This is a free event";
             if (thumbnailElement.Data.is_bought && thumbnailElement.Data.HasProduct)
                 txtInfoText.text = "Ticket purchased for event";
-                btnWatchNow.SetActive(thumbnailElement.Data.HasStreamUrl);
-                btnPlayTeaser.SetActive(!thumbnailElement.Data.HasStreamUrl && thumbnailElement.Data.HasTeaser);
-                btnShareEvent.SetActive(!thumbnailElement.Data.HasStreamUrl && !thumbnailElement.Data.HasTeaser);
+            btnWatchNow.SetActive(thumbnailElement.Data.HasStreamUrl);
+            btnPlayTeaser.SetActive(!thumbnailElement.Data.HasStreamUrl && thumbnailElement.Data.HasTeaser);
+            btnShareEvent.SetActive(!thumbnailElement.Data.HasStreamUrl && !thumbnailElement.Data.HasTeaser);
         } else {
             txtInfoText.text = "Ticket purchased for event scheduled on " + thumbnailElement.Data.StartDate.ToString("ddd d MMM");
 
