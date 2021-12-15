@@ -1,9 +1,19 @@
+using Beem.UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Panel for Prerecorded Video
 /// </summary>
 public class PrerecordedVideoWindow : MonoBehaviour {
+
+    [Header("Likes Counter")]
+    [SerializeField]
+    private StreamLikesRefresherView _streamLikesRefresherView;
+
+    [Header("Views after hologram placement")]
+    [SerializeField]
+    private GameObject _placementView;
 
     [Header("View for video")]
     [SerializeField]
@@ -12,6 +22,10 @@ public class PrerecordedVideoWindow : MonoBehaviour {
     [Header("Purchase for video")]
     [SerializeField]
     private GameObject _purchaseView;
+
+    [Header("Comments Toggle")]
+    [SerializeField]
+    private Toggle commentsToggle;
 
     [Header("Purchase manager")]
     [SerializeField]
@@ -35,15 +49,18 @@ public class PrerecordedVideoWindow : MonoBehaviour {
         newDataAssigned = true;
         _streamData = streamData;
         if (isPinned) {
-            Refresh();
+            OnPlacementCompleted();
         } else {
 #if !UNITY_EDITOR
-            Deactivate();
+            _placementView.SetActive(false);
 #else
-            Refresh();
+            OnPlacementCompleted();
 #endif
         }
-        _hologramHandler.SetOnPlacementUIHelperFinished(Refresh);
+
+        gameObject.SetActive(true);
+        Refresh();
+        _hologramHandler.SetOnPlacementUIHelperFinished(OnPlacementCompleted);
     }
 
     /// <summary>
@@ -51,26 +68,42 @@ public class PrerecordedVideoWindow : MonoBehaviour {
     /// </summary>
     public void Deactivate() {
         gameObject.SetActive(false);
-        _videoView.SetActive(false);
-        _purchaseView.SetActive(false);
+    }
+
+    private void OnPlacementCompleted() {
+        if (!newDataAssigned) {
+            return;
+        }
+        isPinned = true;
+        _placementView.SetActive(true);
     }
 
     private void Refresh() {
         if (!newDataAssigned) {
             return;
         }
-        isPinned = true;
-        gameObject.SetActive(true);
-        _videoView.SetActive(_streamData.IsStarted && _streamData.is_bought);
-        _purchaseView.SetActive(!_streamData.is_bought);
+
+        _videoView.SetActive(_streamData.IsStarted && _streamData.is_bought && !commentsToggle.isOn);
+        _purchaseView.SetActive(!_streamData.is_bought && !commentsToggle.isOn);
+        _streamLikesRefresherView?.StartCountAsync(_streamData.id.ToString());
+    }
+
+    /// <summary>
+    /// Change Status
+    /// </summary>
+    /// <param name="status"></param>
+    public void ChangeHideBottomBarStatus(bool status) {
+        Refresh();
     }
 
     private void OnEnable() {
+        commentsToggle.onValueChanged.AddListener(ChangeHideBottomBarStatus);
         _purchaseManager.OnPurchaseSuccessful += Refresh;
     }
 
     private void OnDisable() {
         newDataAssigned = false;
+        commentsToggle.onValueChanged.RemoveListener(ChangeHideBottomBarStatus);
         if (_purchaseManager != null) {
             _purchaseManager.OnPurchaseSuccessful -= Refresh;
         }

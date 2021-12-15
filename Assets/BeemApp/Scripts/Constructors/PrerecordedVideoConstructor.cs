@@ -12,10 +12,6 @@ public class PrerecordedVideoConstructor : MonoBehaviour {
     [SerializeField]
     private PrerecordedVideoWindow _prerecordedVideoWindow;
 
-    [Header("Prerecorded Video Bar")]
-    [SerializeField]
-    private PrerecordedVideoBar _prerecordedVideoBar;
-
     public static Action<StreamJsonData.Data> OnActivated = delegate { };
 
     public static Action OnDeactivated = delegate { };
@@ -32,11 +28,9 @@ public class PrerecordedVideoConstructor : MonoBehaviour {
 
     private void Activate(StreamJsonData.Data streamData) {
         _prerecordedVideoWindow.Init(streamData);
-        _prerecordedVideoBar.Init(streamData);
     }
 
     private void Deactivate() {
         _prerecordedVideoWindow.Deactivate();
-        _prerecordedVideoBar.Deactivate();
     }
 }

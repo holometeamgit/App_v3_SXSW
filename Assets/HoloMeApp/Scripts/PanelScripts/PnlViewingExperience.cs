@@ -31,10 +31,7 @@ public class PnlViewingExperience : MonoBehaviour {
     Coroutine scanAnimationRoutine;
     [SerializeField]
     bool skipTutorial;
-    bool activatedForStreaming;
-    bool isTeaser;
     bool isRoom;
-    StreamJsonData.Data data;
     bool viewingExperienceInFocus;
     bool tutorialDisplayed;
     float messageAnimationSpeed = 0.25f;
@@ -127,17 +124,14 @@ public class PnlViewingExperience : MonoBehaviour {
         //messageRT.DOAnchorPosY(0, messageAnimationSpeed);
         scanMessageRT.DOScale(Vector3.zero, animationSpeed).SetDelay(messageAnimationSpeed);
     }
-    public void ActivateForPreRecorded(string url, StreamJsonData.Data streamJsonData, VideoJsonData videoJsonData, bool isTeaser) {
+    public void ActivateForPreRecorded(StreamJsonData.Data streamJsonData, bool isTeaser) {
         //print($"PLAY CALLED - " + code);
         SharedActivationFunctions();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, streamJsonData.title } });
-        this.isTeaser = isTeaser;
         isRoom = false;
-        this.data = streamJsonData;
-        activatedForStreaming = false;
         btnBurger.SetActive(false);
-        logoCanvas.ActivateIfLogoAvailable(videoJsonData);
-        hologramHandler.PlayIfPlaced(url, streamJsonData.user_id);
+        logoCanvas.ActivateIfLogoAvailable(null);
+        hologramHandler.PlayIfPlaced(isTeaser ? streamJsonData.teaser_s3_url : streamJsonData.stream_s3_url, streamJsonData.user_id);
         hologramHandler.TogglePreRecordedVideoRenderer(true);
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
@@ -152,9 +146,7 @@ public class PnlViewingExperience : MonoBehaviour {
     /// <param name="streamJsonData"></param>
     public void ActivateForARMessaging(ARMsgJSON.Data streamJsonData) {
         SharedActivationFunctions();
-        isTeaser = false;
         isRoom = false;
-        activatedForStreaming = false;
         btnBurger.SetActive(false);
         logoCanvas.ActivateIfLogoAvailable(null);
         hologramHandler.PlayIfPlaced(streamJsonData.ar_message_s3_link);
@@ -165,13 +157,12 @@ public class PnlViewingExperience : MonoBehaviour {
             StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
         }
     }
+
     public void ActivateForStreaming(string channelName, string streamID, bool isRoom) {
         StopExperience();
         SharedActivationFunctions();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, "Live Stream: " + channelName }, { AnalyticParameters.ParamPerformanceID, streamID } });
-        isTeaser = false;
         this.isRoom = isRoom;
-        activatedForStreaming = true;
         btnBurger.SetActive(false); //Close button not required on this page
         hologramHandler.TogglePreRecordedVideoRenderer(false);
         hologramHandler.AssignStreamName(channelName);
