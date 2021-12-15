@@ -125,7 +125,6 @@ public class PnlViewingExperience : MonoBehaviour {
         scanMessageRT.DOScale(Vector3.zero, animationSpeed).SetDelay(messageAnimationSpeed);
     }
     public void ActivateForPreRecorded(StreamJsonData.Data streamJsonData, bool isTeaser) {
-        //print($"PLAY CALLED - " + code);
         SharedActivationFunctions();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, streamJsonData.title } });
         isRoom = false;
@@ -198,7 +197,6 @@ public class PnlViewingExperience : MonoBehaviour {
         hologramHandler.StopVideo();
         FadeOutCanvas();
         pnlRecord.gameObject.SetActive(false);
-        PrerecordedVideoConstructor.OnDeactivated?.Invoke();
         MenuConstructor.OnActivated?.Invoke(true);
         HomeScreenConstructor.OnActivated?.Invoke(true);
     }

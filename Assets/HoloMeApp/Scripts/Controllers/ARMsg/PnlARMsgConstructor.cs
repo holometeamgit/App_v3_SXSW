@@ -36,7 +36,7 @@ public class PnlARMsgConstructor : MonoBehaviour {
 
 
     private void ActivateARena(ARMsgJSON.Data data) {
-        OnReceivedRoomData(data, ActivateData);
+        OnReceivedARMessageData(data, ActivateData);
     }
 
     private void ActivateData(ARMsgJSON.Data data) {
@@ -58,7 +58,7 @@ public class PnlARMsgConstructor : MonoBehaviour {
         }
     }
 
-    private void OnReceivedRoomData(ARMsgJSON.Data data, Action<ARMsgJSON.Data> onSuccessTask) {
+    private void OnReceivedARMessageData(ARMsgJSON.Data data, Action<ARMsgJSON.Data> onSuccessTask) {
         if (_showCancellationTokenSource != null) {
             _showCancellationTokenSource.Cancel();
             _showCancellationTokenSource.Dispose();
