@@ -288,7 +288,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         isChannelCreator = false;
         gameObject.SetActive(true);
         togglePushToTalk.interactable = false;
-        pnlViewingExperience.ActivateForStreaming(agoraController.ChannelName, streamID, isRoom);
+        pnlViewingExperience.ActivateForStreaming(channelName, streamID, isRoom);
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
         currentStreamId = streamID;

@@ -58,7 +58,7 @@ public class PnlViewingExperience : MonoBehaviour {
             OnPlaced();
             return;
         }
-        hologramHandler.SetOnPlacementUIHelperFinished(() => { if (viewingExperienceInFocus && !isRoom) StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed)); });
+        hologramHandler.SetOnPlacementUIHelperFinished(() => { if (viewingExperienceInFocus && !isRoom) pnlRecord.EnableRecordPanel(); });
         scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         ShowMessage(scaneEnviromentStr);
         tutorialState = TutorialState.MessageTapToPlace;
@@ -110,10 +110,6 @@ public class PnlViewingExperience : MonoBehaviour {
             tutorialState = TutorialState.TutorialComplete;
         }
     }
-    IEnumerator DelayStartRecordPanel(float delay) {
-        yield return new WaitForSeconds(delay);
-        pnlRecord.EnableRecordPanel();
-    }
     public void ShowMessage(string message, float delay = 0) {
         scanMessageRT.localScale = Vector3.zero;
         scanMessageRT.GetComponentInChildren<TextMeshProUGUI>().text = message;
@@ -135,7 +131,7 @@ public class PnlViewingExperience : MonoBehaviour {
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
-            StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
+            pnlRecord.EnableRecordPanel();
         }
     }
 
@@ -153,7 +149,7 @@ public class PnlViewingExperience : MonoBehaviour {
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
-            StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
+            pnlRecord.EnableRecordPanel();
         }
     }
 
@@ -170,7 +166,7 @@ public class PnlViewingExperience : MonoBehaviour {
         {
             HideScanMessage();
             if (!isRoom) {
-                StartCoroutine(DelayStartRecordPanel(messageAnimationSpeed));
+                pnlRecord.EnableRecordPanel();
             }
         }
     }
