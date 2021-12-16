@@ -11,15 +11,11 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
 
     private const string CLOUD_BUILD_MANIFEST = "UnityCloudBuildManifest.json";
 
-    private const string APPLICATION_NAME_DEV = "Beem Dev";
-    private const string APPLICATION_NAME = "Beem";
-
-    private const string PROD = "PROD";
-    private const string DEV = "DEV";
-
     private const string BEEM_VERSION = "BEEM_VERSION";
     private const string BEEM_BUILD = "BEEM_BUILD";
-    private const string BEEM_BUILD_TYPE = "BEEM_BUILD_TYPE";
+    private const string BEEM_DEV = "DEV";
+    private const string BEEM_LOG = "LOG";
+    private const string BEEM_AGREE = "YES";
 
     private TextAsset currentManifest;
 
@@ -41,7 +37,8 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
     private void GetEnviromentVariables() {
         SetBuildNumber(Environment.GetEnvironmentVariable(BEEM_BUILD));
         SetBuildVersion(Environment.GetEnvironmentVariable(BEEM_VERSION));
-        SetBuildType(Environment.GetEnvironmentVariable(BEEM_BUILD_TYPE));
+        SetDevType(Environment.GetEnvironmentVariable(BEEM_DEV));
+        SetLogType(Environment.GetEnvironmentVariable(BEEM_LOG));
     }
 
     private void SetBuildNumber(string buildNumber) {
@@ -62,36 +59,24 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
         }
     }
 
-    private void SetBuildType(string buildType) {
-        if (!string.IsNullOrEmpty(buildType)) {
-            PlayerSettings.productName = buildType == DEV ? APPLICATION_NAME_DEV : APPLICATION_NAME;
-            EditorUserBuildSettings.development = buildType == DEV;
-            SwitchDefine(BuildTargetGroup.iOS, buildType);
-            SwitchDefine(BuildTargetGroup.Android, buildType);
+    private void SetDevType(string isDev) {
+        if (!string.IsNullOrEmpty(isDev)) {
+            if (isDev == BEEM_AGREE) {
+                DevEnvironment.SwitchToDev();
+            } else {
+                DevEnvironment.SwitchToProd();
+            }
         }
     }
 
-    private void SwitchDefine(BuildTargetGroup targetGroup, string buildType) {
-        string[] currentDefines;
-        PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup, out currentDefines);
-        if (currentDefines.Contains(PROD)) {
-            for (int i = 0; i < currentDefines.Length; i++) {
-                if (currentDefines[i] == PROD) {
-                    currentDefines[i] = buildType;
-                }
+    private void SetLogType(string isLog) {
+        if (!string.IsNullOrEmpty(isLog)) {
+            if (isLog == BEEM_AGREE) {
+                DevEnvironment.AddLogs();
+            } else {
+                DevEnvironment.RemoveLogs();
             }
-        } else if (currentDefines.Contains(DEV)) {
-            for (int i = 0; i < currentDefines.Length; i++) {
-                if (currentDefines[i] == DEV) {
-                    currentDefines[i] = buildType;
-                }
-            }
-        } else {
-            int lenght = currentDefines.Length;
-            currentDefines = new string[lenght + 1];
-            currentDefines[lenght] = buildType;
         }
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, currentDefines);
     }
 
     public void OnPreprocessBuild(BuildReport report) {

@@ -135,7 +135,7 @@ public class HelperFunctions {
     /// Log message only in editor or debug builds
     /// </summary>
     public static void DevLog(string message, string tag = "") {
-#if DEV || UNITY_EDITOR
+#if LOG || UNITY_EDITOR
         if (string.IsNullOrEmpty(tag)) {
             Debug.Log(message);
         } else {
@@ -148,7 +148,7 @@ public class HelperFunctions {
     /// Log warnings only in editor or debug builds
     /// </summary>
     public static void DevLogWarning(string message, string tag = "") {
-#if DEV || UNITY_EDITOR
+#if LOG || UNITY_EDITOR
         if (string.IsNullOrEmpty(tag)) {
             Debug.LogWarning(message);
         } else {
@@ -161,7 +161,7 @@ public class HelperFunctions {
     /// Log errors only in editor or debug builds
     /// </summary>
     public static void DevLogError(string message, string tag = "") {
-#if DEV || UNITY_EDITOR
+#if LOG || UNITY_EDITOR
         if (string.IsNullOrEmpty(tag)) {
             Debug.LogError(message);
         } else {

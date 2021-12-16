@@ -1,51 +1,67 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
 public class DevEnvironment : MonoBehaviour {
-    static string PROD = "PROD";
-    static string DEV = "DEV";
+
+    private const string APPLICATION_NAME_DEV = "Beem Dev";
+    private const string APPLICATION_NAME = "Beem";
+
+    private const string DEV = "DEV";
+    private const string LOG = "LOG";
 
     [MenuItem("Environment/Switch To Dev")]
-    static void SwitchToDev() {
-        PlayerSettings.productName = "Beem Dev";
+    public static void SwitchToDev() {
+        PlayerSettings.productName = APPLICATION_NAME_DEV;
 
-        SwitchDefine(BuildTargetGroup.iOS, DEV);
-        SwitchDefine(BuildTargetGroup.Android, DEV);
+        AddDefine(BuildTargetGroup.iOS, DEV);
+        AddDefine(BuildTargetGroup.Android, DEV);
 
         EditorUserBuildSettings.development = true;
     }
 
     [MenuItem("Environment/Switch To Prod")]
-    static void SwitchToProd() {
-        PlayerSettings.productName = "Beem";
+    public static void SwitchToProd() {
+        PlayerSettings.productName = APPLICATION_NAME;
 
-        SwitchDefine(BuildTargetGroup.iOS, PROD);
-        SwitchDefine(BuildTargetGroup.Android, PROD);
+        RemoveDefine(BuildTargetGroup.iOS, DEV);
+        RemoveDefine(BuildTargetGroup.Android, DEV);
 
         EditorUserBuildSettings.development = false;
     }
 
-    private static void SwitchDefine(BuildTargetGroup targetGroup, string buildType) {
+    [MenuItem("Environment/Add Logs")]
+    public static void AddLogs() {
+        AddDefine(BuildTargetGroup.iOS, LOG);
+        AddDefine(BuildTargetGroup.Android, LOG);
+    }
+
+    [MenuItem("Environment/Remove Logs")]
+    public static void RemoveLogs() {
+        RemoveDefine(BuildTargetGroup.iOS, LOG);
+        RemoveDefine(BuildTargetGroup.Android, LOG);
+    }
+
+    private static void AddDefine(BuildTargetGroup targetGroup, string buildType) {
         string[] currentDefines;
         PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup, out currentDefines);
-        if (currentDefines.Contains(PROD)) {
-            for (int i = 0; i < currentDefines.Length; i++) {
-                if (currentDefines[i] == PROD) {
-                    currentDefines[i] = buildType;
-                }
-            }
-        } else if (currentDefines.Contains(DEV)) {
-            for (int i = 0; i < currentDefines.Length; i++) {
-                if (currentDefines[i] == DEV) {
-                    currentDefines[i] = buildType;
-                }
-            }
-        } else {
-            int lenght = currentDefines.Length;
-            currentDefines = new string[lenght + 1];
-            currentDefines[lenght] = buildType;
+        List<string> nextDefines = currentDefines.ToList();
+        nextDefines.Add(buildType);
+        currentDefines = nextDefines.ToArray();
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, currentDefines);
+    }
+
+    private static void RemoveDefine(BuildTargetGroup targetGroup, string buildType) {
+        string[] currentDefines;
+        PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup, out currentDefines);
+
+        if (currentDefines.Contains(buildType)) {
+            List<string> nextDefines = currentDefines.ToList();
+            nextDefines.Remove(buildType);
+            currentDefines = nextDefines.ToArray();
         }
+
         PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, currentDefines);
     }
 
