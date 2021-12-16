@@ -39,9 +39,6 @@ public class PnlRecord : MonoBehaviour {
     TextMeshProUGUI txtPhoto;
 
     [SerializeField]
-    PnlPostRecord pnlPostRecord;
-
-    [SerializeField]
     RectTransform rtButtonContainer;
 
     [SerializeField]
@@ -125,12 +122,9 @@ public class PnlRecord : MonoBehaviour {
         canvasGroup.alpha = 0;
 
         uiThumbnailsController.OnPlayFromUser += user => txtWaterMarkText.text = "@" + user; //Gameobject must be active in the editor for this to work correctly
-        gameObject.SetActive(false);
     }
 
-    public void EnableRecordPanel() {
-
-        gameObject.SetActive(true);
+    private void OnEnable() {
         canvasGroup?.DOFade(1, .5f);
     }
 
@@ -214,7 +208,7 @@ public class PnlRecord : MonoBehaviour {
         } else {
             lastRecordingPath = outputPath;
             OnRecordStopped?.Invoke();
-            pnlPostRecord.ActivatePostVideo(outputPath);
+            PostRecordARConstructor.OnActivatedVideo?.Invoke(outputPath);
         }
     }
 
@@ -237,7 +231,7 @@ public class PnlRecord : MonoBehaviour {
 
         yield return new WaitForEndOfFrame();
         HideUI.onActivate(true);
-        pnlPostRecord.ActivatePostScreenshot(Sprite.Create(screenShot, new Rect(0, 0, Screen.width, Screen.height), new Vector2(0.5f, 0.5f)), screenShot, lastRecordingPath);
+        PostRecordARConstructor.OnActivatedScreenShot?.Invoke(Sprite.Create(screenShot, new Rect(0, 0, Screen.width, Screen.height), new Vector2(0.5f, 0.5f)), screenShot, lastRecordingPath);
         //pnlVideoExperience.PauseExperience();
         OnSnapshotEnded?.Invoke();
         canvasGroup.alpha = 1;

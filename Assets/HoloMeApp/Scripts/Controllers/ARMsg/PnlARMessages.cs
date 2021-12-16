@@ -25,13 +25,18 @@ public class PnlARMessages : MonoBehaviour {
         _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
 
         _arMsgDataViews.ForEach(x => x.Init(arMsgJSON));
+        _hologramHandler.SetOnPlacementUIHelperFinished(OnPlacementCompleted);
+    }
 
+    private void OnPlacementCompleted() {
+        RecordARConstructor.OnActivated?.Invoke(true);
     }
 
     /// <summary>
     /// Deactivate
     /// </summary>
     public void Deactivate() {
+        RecordARConstructor.OnActivated?.Invoke(false);
         gameObject.SetActive(false);
     }
 }

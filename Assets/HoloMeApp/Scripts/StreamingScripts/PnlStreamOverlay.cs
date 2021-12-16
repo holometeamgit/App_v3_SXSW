@@ -178,6 +178,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         RefreshStreamControls(agoraController.IsRoom);
         RefreshBroadcasterControls(agoraController.IsChannelCreator);
         RefreshLiveControls(!agoraController.IsChannelCreator || agoraController.IsLive);
+        RecordARConstructor.OnActivated?.Invoke(!agoraController.IsChannelCreator && !agoraController.IsRoom);
         HelperFunctions.DevLog($"IsRoom = {agoraController.IsRoom}, IsChannelCreator = {agoraController.IsChannelCreator}, IsLive = {agoraController.IsLive}");
     }
 
@@ -301,7 +302,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         uiBtnLikes.Init(currentStreamIdLong);
         uiViewersTextLabelLikes.Init(currentStreamIdLong);
         streamLikesRefresherView.StartCountAsync(streamID);
-
         StartStreamCountUpdaters();
     }
 
@@ -336,6 +336,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         OnCloseAsStreamer.Invoke();
         HomeScreenConstructor.OnActivated?.Invoke(true);
         MenuConstructor.OnActivated?.Invoke(true);
+        RecordARConstructor.OnActivated?.Invoke(false);
     }
 
     private void CloseAsViewer() {
@@ -343,6 +344,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         OnCloseAsViewer.Invoke();
         HomeScreenConstructor.OnActivated?.Invoke(true);
         MenuConstructor.OnActivated?.Invoke(true);
+        RecordARConstructor.OnActivated?.Invoke(false);
     }
 
     private void CloseRoomAsViewerWhenStreamWasStopped() {

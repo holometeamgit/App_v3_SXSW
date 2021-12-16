@@ -76,6 +76,7 @@ public class PrerecordedVideoWindow : MonoBehaviour {
         }
         isPinned = true;
         _placementView.SetActive(true);
+        RecordARConstructor.OnActivated?.Invoke(_streamData.IsStarted && _streamData.is_bought);
     }
 
     private void Refresh() {
@@ -113,6 +114,7 @@ public class PrerecordedVideoWindow : MonoBehaviour {
     /// Close Prerecorded video window
     /// </summary>
     public void Close() {
+        RecordARConstructor.OnActivated?.Invoke(false);
         MenuConstructor.OnActivated?.Invoke(true);
         HomeScreenConstructor.OnActivated?.Invoke(true);
         PrerecordedVideoConstructor.OnDeactivated?.Invoke();

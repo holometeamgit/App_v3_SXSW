@@ -15,10 +15,6 @@ public class PnlViewingExperience : MonoBehaviour {
     CanvasGroup canvasGroup;
     [SerializeField]
     HologramHandler hologramHandler;
-    [SerializeField]
-    LogoCanvas logoCanvas;
-    [SerializeField]
-    PnlRecord pnlRecord;
     [Header("")]
     [SerializeField]
     RectTransform scanMessageRT;
@@ -31,8 +27,6 @@ public class PnlViewingExperience : MonoBehaviour {
     Coroutine scanAnimationRoutine;
     [SerializeField]
     bool skipTutorial;
-    bool isRoom;
-    bool viewingExperienceInFocus;
     bool tutorialDisplayed;
     float messageAnimationSpeed = 0.25f;
     float messageTime = 10;
@@ -58,7 +52,6 @@ public class PnlViewingExperience : MonoBehaviour {
             OnPlaced();
             return;
         }
-        hologramHandler.SetOnPlacementUIHelperFinished(() => { if (viewingExperienceInFocus && !isRoom) pnlRecord.EnableRecordPanel(); });
         scanAnimationRoutine = StartCoroutine(StartScanAnimationLoop(messageTime));
         ShowMessage(scaneEnviromentStr);
         tutorialState = TutorialState.MessageTapToPlace;
@@ -123,15 +116,12 @@ public class PnlViewingExperience : MonoBehaviour {
     public void ActivateForPreRecorded(StreamJsonData.Data streamJsonData, bool isTeaser) {
         SharedActivationFunctions();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, streamJsonData.title } });
-        isRoom = false;
         btnBurger.SetActive(false);
-        logoCanvas.ActivateIfLogoAvailable(null);
         hologramHandler.PlayIfPlaced(isTeaser ? streamJsonData.teaser_s3_url : streamJsonData.stream_s3_url, streamJsonData.user_id);
         hologramHandler.TogglePreRecordedVideoRenderer(true);
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
-            pnlRecord.EnableRecordPanel();
         }
     }
 
@@ -141,15 +131,12 @@ public class PnlViewingExperience : MonoBehaviour {
     /// <param name="streamJsonData"></param>
     public void ActivateForARMessaging(ARMsgJSON.Data streamJsonData) {
         SharedActivationFunctions();
-        isRoom = false;
         btnBurger.SetActive(false);
-        logoCanvas.ActivateIfLogoAvailable(null);
         hologramHandler.PlayIfPlaced(streamJsonData.ar_message_s3_link);
         hologramHandler.TogglePreRecordedVideoRenderer(true);
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
-            pnlRecord.EnableRecordPanel();
         }
     }
 
@@ -157,7 +144,6 @@ public class PnlViewingExperience : MonoBehaviour {
         StopExperience();
         SharedActivationFunctions();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, "Live Stream: " + channelName }, { AnalyticParameters.ParamPerformanceID, streamID } });
-        this.isRoom = isRoom;
         btnBurger.SetActive(false); //Close button not required on this page
         hologramHandler.TogglePreRecordedVideoRenderer(false);
         hologramHandler.AssignStreamName(channelName);
@@ -165,9 +151,6 @@ public class PnlViewingExperience : MonoBehaviour {
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
-            if (!isRoom) {
-                pnlRecord.EnableRecordPanel();
-            }
         }
     }
     void SharedActivationFunctions() {
@@ -177,7 +160,6 @@ public class PnlViewingExperience : MonoBehaviour {
         gameObject.SetActive(true);
         hologramHandler.InitSession();
         FadeInCanvas();
-        viewingExperienceInFocus = true;
     }
     void FadeInCanvas() {
         canvasGroup.DOFade(1, .5f);
@@ -187,12 +169,10 @@ public class PnlViewingExperience : MonoBehaviour {
         canvasGroup.DOFade(0, .5f);
     }
     public void StopExperience() {
-        viewingExperienceInFocus = false;
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         ARConstructor.onActivated?.Invoke(false);
         hologramHandler.StopVideo();
         FadeOutCanvas();
-        pnlRecord.gameObject.SetActive(false);
         MenuConstructor.OnActivated?.Invoke(true);
         HomeScreenConstructor.OnActivated?.Invoke(true);
     }

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using NatShare;
 using DG.Tweening;
 using UnityEngine.Video;
+using Beem.Video;
 
 public class PnlPostRecord : MonoBehaviour {
     [SerializeField]
@@ -27,6 +28,12 @@ public class PnlPostRecord : MonoBehaviour {
 
     [SerializeField]
     Button btnDownload;
+
+    [SerializeField]
+    private VideoPlayerController _videoPlayerController;
+
+    [SerializeField]
+    private AnimatedTransition _animatedTransition;
 
     [SerializeField]
     HologramHandler hologramHandler;
@@ -89,6 +96,21 @@ public class PnlPostRecord : MonoBehaviour {
             imgPreview.texture = sprite.texture;
 
         lastRecordingPath = lastRecordPath;
+    }
+
+    /// <summary>
+    /// Close Post record
+    /// </summary>
+    public void Close() {
+        PostRecordARConstructor.OnDeactivated?.Invoke();
+    }
+
+    /// <summary>
+    /// Deactivate
+    /// </summary>
+    public void Deactivate() {
+        _videoPlayerController.OnResume();
+        _animatedTransition.DoMenuTransition(false);
     }
 
     public void Share() {

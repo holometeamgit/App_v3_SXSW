@@ -302,13 +302,18 @@ GameObject:
   - component: {fileID: 7152735005485296942}
   - component: {fileID: 4507631777984884431}
   - component: {fileID: 2516359726858345707}
+  - component: {fileID: 7282851537498012459}
+  - component: {fileID: 8485870446663318306}
+  - component: {fileID: 7329264041166494190}
+  - component: {fileID: 6745410852574273748}
+  - component: {fileID: 462117145021290349}
   m_Layer: 5
-  m_Name: PnlPostRecord_nba
+  m_Name: PostRecordARWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7625880759739528574
 RectTransform:
   m_ObjectHideFlags: 0
@@ -318,7 +323,7 @@ RectTransform:
   m_GameObject: {fileID: 2354498682435266379}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 97222541569827432}
   - {fileID: 9069930893613984469}
@@ -342,6 +347,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 621436e3907fda640956e0c097e91e30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SetAsLastSibling: 1
   postAnimationActiveButtons: []
   rectToMove: {fileID: 9142076123118342550}
   imgBackground: {fileID: 4507631777984884431}
@@ -380,8 +386,8 @@ MonoBehaviour:
   safeAreaContent: {fileID: 2142686503132721216}
   btnPreview: {fileID: 2702864992357211527}
   btnDownload: {fileID: 2149632282764081214}
-  permissionGranter: {fileID: 0}
-  pnlGenericError: {fileID: 0}
+  _videoPlayerController: {fileID: 0}
+  _animatedTransition: {fileID: 1816901322661278041}
   hologramHandler: {fileID: 0}
 --- !u!114 &4507631777984884431
 MonoBehaviour:
@@ -427,6 +433,91 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteTag: 
   colorTag: BackgroundTransparenceColor
+--- !u!223 &7282851537498012459
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2354498682435266379}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 0
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_SortingLayerID: 0
+  m_SortingOrder: 4
+  m_TargetDisplay: 0
+--- !u!114 &8485870446663318306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2354498682435266379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 1
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 1125, y: 2436}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
+--- !u!114 &7329264041166494190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2354498682435266379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!225 &6745410852574273748
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2354498682435266379}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &462117145021290349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2354498682435266379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7d12ddd1108e43768a503605baf1157, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2375393800172378167
 GameObject:
   m_ObjectHideFlags: 0
@@ -1529,7 +1620,7 @@ GameObject:
   - component: {fileID: 9011406601745372239}
   - component: {fileID: 5500063223233463176}
   - component: {fileID: 7860293648657197164}
-  - component: {fileID: 954647305875620006}
+  - component: {fileID: 5552111791956209431}
   m_Layer: 5
   m_Name: btnClose
   m_TagString: Untagged
@@ -1640,9 +1731,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 954647305875620006}
-        m_TargetAssemblyTypeName: Switcher, Assembly-CSharp
-        m_MethodName: Switch
+      - m_Target: {fileID: 5552111791956209431}
+        m_TargetAssemblyTypeName: BtnController, Assembly-CSharp
+        m_MethodName: BtnPress
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1652,7 +1743,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &954647305875620006
+--- !u!114 &5552111791956209431
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1661,19 +1752,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 5435830685041451264}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6439298e7a369481d90dd373af950173, type: 3}
+  m_Script: {fileID: 11500000, guid: d3ccf13f8c95b45239f9e6a367126280, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  doOnlyWithActiveObject: 0
-  switchOnList: []
-  switchOffList: []
-  OnSwitch:
+  OnPress:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1816901322661278041}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: DoMenuTransition
-        m_Mode: 6
+      - m_Target: {fileID: 7152735005485296942}
+        m_TargetAssemblyTypeName: PnlPostRecord, Assembly-CSharp
+        m_MethodName: Close
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
