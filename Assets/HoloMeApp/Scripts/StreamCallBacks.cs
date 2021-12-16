@@ -38,7 +38,7 @@ public class StreamCallBacks {
     #endregion
 
     #region
-    public static Action<string, string, string, bool> onPlayLiveStream = delegate { };
+    public static Action<RoomJsonData> onPlayRoom = delegate { };
     #endregion
 
     public static Action onGetLastRoomLink = delegate { };

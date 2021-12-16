@@ -49,7 +49,11 @@ public class UIThumbnailsController : MonoBehaviour {
 
     public void Play(StreamJsonData.Data data) {
         if (data.is_bought && data.IsStarted) {
-            PlayStream(data);
+            if (data.HasStreamUrl) {
+                PlayPrerecorded(data);
+            } else if (data.HasAgoraChannel) {
+                PlayStadium(data);
+            }
         } else if (data.HasTeaser) {
             PlayTeaser(data);
         }
@@ -92,22 +96,67 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].LockToPress(true);
         }
     }
-    /// <summary>
-    /// Play live stream from user 
-    /// </summary>
 
-    public void PlayLiveStream(string user, string agoraChannel, string streamID, bool isRoom) { //TODO split it to ather class
-        if (isRoom) {
-            if (!permissionController.CheckCameraMicAccess()) {
-                return;
-            }
-        } else {
-            if (!permissionController.CheckCameraAccess()) {
-                return;
-            }
+    /// <summary>
+    /// Play Room
+    /// </summary>
+    /// <param name="roomJsonData"></param>
+    private void PlayRoom(RoomJsonData data) { //TODO split it to other class
+
+        if (!permissionController.CheckCameraMicAccess()) {
+            return;
         }
-        pnlStreamOverlay.OpenAsViewer(agoraChannel, streamID, isRoom);
-        OnPlayFromUser?.Invoke(user);
+
+        pnlStreamOverlay.OpenAsViewer(data.agora_channel, data.id, true);
+        OnPlayFromUser?.Invoke(data.user);
+    }
+
+    /// <summary>
+    /// Play Stadium
+    /// </summary>
+    /// <param name="roomJsonData"></param>
+    private void PlayStadium(StreamJsonData.Data data) { //TODO split it to other class
+
+        if (!permissionController.CheckCameraMicAccess()) {
+            return;
+        }
+
+        if (data.agora_channel == "0" || string.IsNullOrWhiteSpace(data.agora_channel)) {
+            return;
+        }
+
+        pnlStreamOverlay.OpenAsViewer(data.agora_channel, data.id.ToString(), false);
+        OnPlayFromUser?.Invoke(data.user);
+    }
+
+    /// <summary>
+    /// Play Prerecorded
+    /// </summary>
+    /// <param name="roomJsonData"></param>
+    private void PlayPrerecorded(StreamJsonData.Data data) { //TODO split it to other class
+
+        if (!permissionController.CheckCameraAccess()) {
+            return;
+        }
+
+        pnlViewingExperience.ActivateForPreRecorded(data, false);
+        PrerecordedVideoConstructor.OnActivated?.Invoke(data);
+        OnPlayFromUser?.Invoke(data.user);
+    }
+
+    /// <summary>
+    /// Play Teaser
+    /// </summary>
+    /// <param name="data"></param>
+    private void PlayTeaser(StreamJsonData.Data data) {
+        if (!permissionController.CheckCameraAccess()) {
+            return;
+        }
+
+        pnlViewingExperience.ActivateForPreRecorded(data, data.HasTeaser);
+        PrerecordedVideoConstructor.OnActivated?.Invoke(data);
+        OnPlayFromUser?.Invoke(data.user);
+        purchaseManager.SetPurchaseStreamData(data);
     }
 
     private void Awake() {
@@ -118,7 +167,7 @@ public class UIThumbnailsController : MonoBehaviour {
 
         CallBacks.onClickLike += SetLike;
         CallBacks.onClickUnlike += SetUnlike;
-        StreamCallBacks.onPlayLiveStream += PlayLiveStream;
+        StreamCallBacks.onPlayRoom += PlayRoom;
 
         InstantiateBtns(_startBtnCount);
     }
@@ -185,39 +234,6 @@ public class UIThumbnailsController : MonoBehaviour {
 
     #endregion
 
-    private void PlayStream(StreamJsonData.Data data) {
-
-        if (data.GetStage() == StreamJsonData.Data.Stage.Prerecorded) {
-            if (!permissionController.CheckCameraAccess()) {
-                return;
-            }
-        } else {
-            if (!permissionController.CheckCameraMicAccess()) {
-                return;
-            }
-        }
-
-        if (data.HasStreamUrl) {
-            pnlViewingExperience.ActivateForPreRecorded(data, false);
-            PrerecordedVideoConstructor.OnActivated?.Invoke(data);
-            OnPlayFromUser?.Invoke(data.user);
-        } else if (data.HasAgoraChannel) {
-            if (data.agora_channel == "0" || string.IsNullOrWhiteSpace(data.agora_channel))
-                return;
-            PlayLiveStream(data.user, data.agora_channel, data.id.ToString(), false);
-        }
-    }
-
-    private void PlayTeaser(StreamJsonData.Data data) {
-        if (!permissionController.CheckCameraAccess())
-            return;
-
-        pnlViewingExperience.ActivateForPreRecorded(data, data.HasTeaser);
-        PrerecordedVideoConstructor.OnActivated?.Invoke(data);
-        OnPlayFromUser?.Invoke(data.user);
-        purchaseManager.SetPurchaseStreamData(data);
-    }
-
     private void SetLike(long streamId, bool isLike) {
         var stream = GetStreamElement(streamId);
         if (stream == null)
@@ -248,6 +264,6 @@ public class UIThumbnailsController : MonoBehaviour {
     private void OnDestroy() {
         CallBacks.onClickLike -= SetLike;
         CallBacks.onClickUnlike -= SetUnlike;
-        StreamCallBacks.onPlayLiveStream -= PlayLiveStream;
+        StreamCallBacks.onPlayRoom -= PlayRoom;
     }
 }
