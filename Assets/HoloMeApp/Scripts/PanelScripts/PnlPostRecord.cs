@@ -55,12 +55,8 @@ public class PnlPostRecord : MonoBehaviour {
         }
     }
 
-    private void Start() {
-        imgSavingCanvasGroup = imgSaving.GetComponent<CanvasGroup>();
-        imgDownloadSuccessCanvasGroup = imgDownloadSuccess.GetComponent<CanvasGroup>();
-    }
-
     public void ActivatePostVideo(string lastRecordPath) {
+        gameObject.SetActive(true);
         HelperFunctions.DevLog("Post record video activate called");
         screenshotWasTaken = false;
         btnPreview.gameObject.SetActive(true);
@@ -75,6 +71,7 @@ public class PnlPostRecord : MonoBehaviour {
     }
 
     public void ActivatePostScreenshot(Sprite sprite, Texture2D screenshotTexture, string lastRecordPath) {
+        gameObject.SetActive(true);
         HelperFunctions.DevLog("Post record screenshot activate called");
         VideoPlayer.enabled = false;
         screenshotWasTaken = true;
@@ -84,13 +81,15 @@ public class PnlPostRecord : MonoBehaviour {
     }
 
     private void Activate(Sprite sprite, string lastRecordPath) {
+        imgSavingCanvasGroup = imgSaving.GetComponent<CanvasGroup>();
+        imgDownloadSuccessCanvasGroup = imgDownloadSuccess.GetComponent<CanvasGroup>();
         imgSavingCanvasGroup.alpha = 0;
         imgSaving.gameObject.SetActive(false);
         imgDownloadSuccessCanvasGroup.alpha = 0;
         imgDownloadSuccess.gameObject.SetActive(false);
         btnDownload.interactable = true;
         btnPreview.interactable = true;
-        gameObject.SetActive(true);
+
 
         if (sprite != null)
             imgPreview.texture = sprite.texture;

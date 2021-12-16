@@ -35,6 +35,6 @@ public class PostRecordARConstructor : MonoBehaviour {
     }
 
     private void Deactivate() {
-
+        pnlPostRecord.Deactivate();
     }
 }
