@@ -46,9 +46,13 @@ public class DevEnvironment : MonoBehaviour {
     private static void AddDefine(BuildTargetGroup targetGroup, string buildType) {
         string[] currentDefines;
         PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup, out currentDefines);
-        List<string> nextDefines = currentDefines.ToList();
-        nextDefines.Add(buildType);
-        currentDefines = nextDefines.ToArray();
+
+        if (!currentDefines.Contains(buildType)) {
+            List<string> nextDefines = currentDefines.ToList();
+            nextDefines.Add(buildType);
+            currentDefines = nextDefines.ToArray();
+        }
+
         PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, currentDefines);
     }
 

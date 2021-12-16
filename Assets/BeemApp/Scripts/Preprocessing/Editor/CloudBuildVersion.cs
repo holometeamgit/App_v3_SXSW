@@ -13,8 +13,8 @@ public class CloudBuildVersion : IPreprocessBuildWithReport {
 
     private const string BEEM_VERSION = "BEEM_VERSION";
     private const string BEEM_BUILD = "BEEM_BUILD";
-    private const string BEEM_DEV = "DEV";
-    private const string BEEM_LOG = "LOG";
+    private const string BEEM_DEV = "BEEM_DEV";
+    private const string BEEM_LOG = "BEEM_LOG";
     private const string BEEM_AGREE = "YES";
 
     private TextAsset currentManifest;
