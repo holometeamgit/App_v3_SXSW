@@ -538,6 +538,7 @@ GameObject:
   - component: {fileID: 1287590554043956830}
   - component: {fileID: 4677681641650416841}
   - component: {fileID: 1287590554043956833}
+  - component: {fileID: 6789812991837748351}
   m_Layer: 5
   m_Name: btnSetting
   m_TagString: Untagged
@@ -619,9 +620,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4677681641650416841}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: Switch
+      - m_Target: {fileID: 6789812991837748351}
+        m_TargetAssemblyTypeName: BtnGoLive, Assembly-CSharp
+        m_MethodName: GoLive
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -665,6 +666,45 @@ MonoBehaviour:
   - {fileID: 8203110374113603611}
   - {fileID: 2314393027257446094}
   - {fileID: 7796678928728484887}
+--- !u!114 &6789812991837748351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4677681641650416847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10ae33e117b2e4a2e967a68ef10163ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnGoLive:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4677681641650416841}
+        m_TargetAssemblyTypeName: Switcher, Assembly-CSharp
+        m_MethodName: Switch
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5569586125480798317
 GameObject:
   m_ObjectHideFlags: 0
