@@ -15,12 +15,14 @@ public class PopupShowChecker : MonoBehaviour {
     public bool CanShow() {
         foreach (var obj in _needBeActivatedObjects) {
             if (!obj.activeInHierarchy) {
+                Debug.LogError($"obj.name = {obj.name}");
                 return false;
             }
         }
 
         foreach (var obj in _needBeDeactivatedObjects) {
             if (obj.activeInHierarchy) {
+                Debug.LogError($"obj.name = {obj.name}");
                 return false;
             }
         }

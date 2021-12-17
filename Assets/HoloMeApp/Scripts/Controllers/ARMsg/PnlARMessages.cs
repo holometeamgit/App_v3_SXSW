@@ -21,7 +21,7 @@ public class PnlARMessages : MonoBehaviour {
     public void Init(ARMsgJSON.Data arMsgJSON) {
 
         gameObject.SetActive(true);
-
+        Debug.LogError("Init");
         _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
 
         _arMsgDataViews.ForEach(x => x.Init(arMsgJSON));

@@ -5265,6 +5265,55 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &912298063
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 912298065}
+  - component: {fileID: 912298064}
+  m_Layer: 0
+  m_Name: ArMessagePopupShowChecker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &912298064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 912298063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e11c1981d561844ec950f222a5c3c87a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _needBeActivatedObjects:
+  - {fileID: 799995373}
+  _needBeDeactivatedObjects:
+  - {fileID: 1496662217}
+  - {fileID: 30566191}
+  - {fileID: 6120770270918357348}
+--- !u!4 &912298065
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 912298063}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1519454386}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &921435835
 GameObject:
   m_ObjectHideFlags: 0
@@ -5396,6 +5445,7 @@ MonoBehaviour:
   _needBeDeactivatedObjects:
   - {fileID: 1496662217}
   - {fileID: 30566191}
+  - {fileID: 6120770270918357348}
 --- !u!4 &1000053069
 Transform:
   m_ObjectHideFlags: 0
@@ -7316,6 +7366,7 @@ Transform:
   - {fileID: 2141595002}
   - {fileID: 1626989682}
   - {fileID: 1000053069}
+  - {fileID: 912298065}
   m_Father: {fileID: 1511041754}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9111,6 +9162,7 @@ MonoBehaviour:
   _pnlARMessagesSteps: {fileID: 799995373}
   _pnlViewingExperience: {fileID: 4715128579803891304}
   _popupShowChecker: {fileID: 1000053068}
+  _arMessagePopupChecker: {fileID: 912298064}
 --- !u!1 &2141595001
 GameObject:
   m_ObjectHideFlags: 0
@@ -11329,7 +11381,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 6120770270918357347}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 6120770270918357348}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9a8d0bf3a5cb5b14da48a044e362cdc3, type: 3}
@@ -12992,12 +13044,12 @@ PrefabInstance:
     - target: {fileID: 1391562580367999413, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
         type: 3}
       propertyPath: m_Pivot.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1391562580367999413, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
         type: 3}
       propertyPath: m_Pivot.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1391562580367999413, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
         type: 3}
@@ -13007,12 +13059,12 @@ PrefabInstance:
     - target: {fileID: 1391562580367999413, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1391562580367999413, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1391562580367999413, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
         type: 3}
@@ -13027,12 +13079,12 @@ PrefabInstance:
     - target: {fileID: 1391562580367999413, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 1125.0001
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1391562580367999413, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 2245.6733
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1391562580367999413, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
         type: 3}
@@ -13057,27 +13109,27 @@ PrefabInstance:
     - target: {fileID: 1391562580367999413, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1391562580367999413, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1391562580367999413, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1391562580367999413, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 562.50006
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1391562580367999413, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1122.8367
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1391562580367999413, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
         type: 3}
@@ -13104,8 +13156,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: ARMessagesWindow
       objectReference: {fileID: 0}
+    - target: {fileID: 8018658112276392459, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4, type: 3}
+--- !u!1 &6120770270918357348 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8018658112276392459, guid: 814ac3ea52d6cd54eafaaf6fd511b8e4,
+    type: 3}
+  m_PrefabInstance: {fileID: 6120770270918357347}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6182336418077749265
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14609,6 +14672,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ARMessageStepsWindow
       objectReference: {fileID: 0}
+    - target: {fileID: 7895984556559823192, guid: 8fd499dbaac434c5680e276a2a4d5dde,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7895984556559823193, guid: 8fd499dbaac434c5680e276a2a4d5dde,
         type: 3}
       propertyPath: m_RootOrder
@@ -14662,6 +14730,16 @@ PrefabInstance:
     - target: {fileID: 7895984556559823193, guid: 8fd499dbaac434c5680e276a2a4d5dde,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7895984556674183076, guid: 8fd499dbaac434c5680e276a2a4d5dde,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7895984557214537118, guid: 8fd499dbaac434c5680e276a2a4d5dde,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

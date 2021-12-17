@@ -23,8 +23,8 @@ namespace Beem.UI {
         /// Open AR Messages
         /// </summary>
         public void Open() {
-            CallBacks.OnCancelAllARMsgActions?.Invoke();
             CallBacks.OnActivatedARena?.Invoke(_arMsgData);
+            CallBacks.OnActivated?.Invoke(false);
         }
     }
 }
