@@ -42,6 +42,8 @@ namespace Beem.Xcode {
             //Access to photo and video
             rootDict.SetString("Privacy - Photo Library Usage Description", "Need for save recorded video");
 
+            rootDict.SetBoolean("UIRequiresFullScreen", true);
+
             // background modes
             PlistElementArray bgModes = rootDict.CreateArray("Bonjour services");
             bgModes.AddString("_beem._tcp");
