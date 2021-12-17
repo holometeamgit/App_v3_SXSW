@@ -56,8 +56,12 @@ public class PnlARMsgConstructor : MonoBehaviour {
         Debug.LogError("OnPlayFromUser");
         _uiThumbnailsController.OnPlayFromUser?.Invoke(data.user);
 
+        Debug.LogError("OnActivated 0");
+        CallBacks.OnActivated?.Invoke(false);
+
         Debug.LogError("OnCancelAllARMsgActions");
         CallBacks.OnCancelAllARMsgActions?.Invoke();
+        Debug.LogError("OnCancelAllARMsgActions2");
     }
 
     private async Task WaitForCanShow() {
