@@ -12,21 +12,15 @@ public class StreamOverlayConstructor : MonoBehaviour {
 
     public static Action<bool> onActivatedAsLiveBroadcaster = delegate { };
     public static Action<bool> onActivatedAsRoomBroadcaster = delegate { };
-    public static Action<bool> onActivatedAsLiveViewer = delegate { };
-    public static Action<bool> onActivatedAsRoomViewer = delegate { };
 
     private void OnEnable() {
         onActivatedAsLiveBroadcaster += ActivatedAsLiveBroadcaster;
         onActivatedAsRoomBroadcaster += ActivatedAsRoomBroadcaster;
-        onActivatedAsLiveViewer += ActivatedAsLiveViewer;
-        onActivatedAsRoomViewer += ActivatedAsRoomViewer;
     }
 
     private void OnDisable() {
         onActivatedAsLiveBroadcaster -= ActivatedAsLiveBroadcaster;
         onActivatedAsRoomBroadcaster -= ActivatedAsRoomBroadcaster;
-        onActivatedAsLiveViewer -= ActivatedAsLiveViewer;
-        onActivatedAsRoomViewer -= ActivatedAsRoomViewer;
     }
 
     private void ActivatedAsLiveBroadcaster(bool status) {
@@ -43,16 +37,6 @@ public class StreamOverlayConstructor : MonoBehaviour {
         } else {
             _pnlStreamOverlay.CloseAsStreamer();
         }
-    }
-
-    private void ActivatedAsLiveViewer(bool status) {
-        if (status) {
-
-        }
-    }
-
-    private void ActivatedAsRoomViewer(bool status) {
-
     }
 
 }
