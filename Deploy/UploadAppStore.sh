@@ -10,7 +10,7 @@ if [ -z "$APPSTORE_BUILD" ]; then
     echo "Could not find .ipa file"
     exit 1
 else
-    if xcrun altool --upload-app -f $APPSTORE_BUILD -u $ITUNES_USERNAME -p $ITUNES_PASSWORD ; then
+    if xcrun altool --upload-app -f $APPSTORE_BUILD --type ios -u $ITUNES_USERNAME -p $ITUNES_PASSWORD ; then
         echo "Upload IPA to Appstore Connect finished with success"
     else
         echo "Upload IPA to Appstore Connect failed"
