@@ -3,6 +3,9 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
+/// <summary>
+/// Class for creating different environments
+/// </summary>
 public class DevEnvironment : MonoBehaviour {
 
     private const string APPLICATION_NAME_DEV = "Beem Dev";
@@ -11,6 +14,10 @@ public class DevEnvironment : MonoBehaviour {
     private const string DEV = "DEV";
     private const string LOG = "LOG";
 
+
+    /// <summary>
+    /// Switch current project to dev server
+    /// </summary>
     [MenuItem("Environment/Switch To Dev")]
     public static void SwitchToDev() {
         PlayerSettings.productName = APPLICATION_NAME_DEV;
@@ -21,6 +28,9 @@ public class DevEnvironment : MonoBehaviour {
         EditorUserBuildSettings.development = true;
     }
 
+    /// <summary>
+    /// Switch current project to prod server
+    /// </summary>
     [MenuItem("Environment/Switch To Prod")]
     public static void SwitchToProd() {
         PlayerSettings.productName = APPLICATION_NAME;
@@ -31,12 +41,18 @@ public class DevEnvironment : MonoBehaviour {
         EditorUserBuildSettings.development = false;
     }
 
+    /// <summary>
+    /// Turn on logs
+    /// </summary>
     [MenuItem("Environment/Add Logs")]
     public static void AddLogs() {
         AddDefine(BuildTargetGroup.iOS, LOG);
         AddDefine(BuildTargetGroup.Android, LOG);
     }
 
+    /// <summary>
+    /// Turn off logs
+    /// </summary>
     [MenuItem("Environment/Remove Logs")]
     public static void RemoveLogs() {
         RemoveDefine(BuildTargetGroup.iOS, LOG);
@@ -68,17 +84,5 @@ public class DevEnvironment : MonoBehaviour {
 
         PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, currentDefines);
     }
-
-#if UNITY_CLOUD_BUILD
-    public static void BuildDev()
-    {
-        SwitchToDev();
-    }
-
-    public static void BuildProd()
-    {
-        SwitchToProd();
-    }
-#endif
 
 }
