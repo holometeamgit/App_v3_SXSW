@@ -17,7 +17,6 @@ public class PnlDownloadedARMessages : MonoBehaviour {
     }
 
     private void Init(ARMsgJSON.Data data) {
-        Debug.LogError("PnlDownloadedARMessages Init");
         _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
 
         _arMsgDataViews.ForEach(x => x.Init(data));
