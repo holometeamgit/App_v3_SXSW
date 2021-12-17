@@ -5,6 +5,9 @@ using TMPro;
 using Beem.Permissions;
 using Beem.ARMsg;
 
+/// <summary>
+/// Pnl for menu
+/// </summary>
 public class PnlMenu : MonoBehaviour {
     [SerializeField]
     private UserWebManager _userWebManager;
