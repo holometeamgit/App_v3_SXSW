@@ -33,7 +33,7 @@ public class AnalyticsController : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-#if DEV
+#if !UNITY_EDITOR
             if (!enableDebugTracking)
                 disableTracking = true;
 #endif
