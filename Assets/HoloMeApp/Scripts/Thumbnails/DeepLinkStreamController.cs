@@ -79,8 +79,14 @@ public class DeepLinkStreamController : MonoBehaviour {
                 StreamJsonData.Data lastStreamData = null;
 
                 foreach (StreamJsonData.Data item in data.results) {
-                    if (item.StartDate.CompareTo(lastStreamData.StartDate) < 0 && item.user == username) {
-                        lastStreamData = item;
+                    if (lastStreamData != null) {
+                        if (item.StartDate.CompareTo(lastStreamData.StartDate) < 0 && item.user == username) {
+                            lastStreamData = item;
+                        }
+                    } else {
+                        if (item.user == username) {
+                            lastStreamData = item;
+                        }
                     }
                 }
 

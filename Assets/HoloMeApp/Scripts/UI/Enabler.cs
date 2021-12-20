@@ -47,7 +47,7 @@ public class Enabler : MonoBehaviour
         foreach (var element in ObjectListDectiveOnDisable)
             element?.SetActive(false);
 
-        OnDisableEvent.Invoke();
+        OnDisableEvent?.Invoke();
 
         StopAllCoroutines();
     }
@@ -60,7 +60,7 @@ public class Enabler : MonoBehaviour
     IEnumerator InvokeEvent() {
         yield return new WaitForSeconds(timeDelay);
 
-        OnDelayEvent.Invoke();
+        OnDelayEvent?.Invoke();
     }
 
     private void OnApplicationFocus(bool focus) {

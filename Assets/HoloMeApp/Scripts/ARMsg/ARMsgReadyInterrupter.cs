@@ -17,6 +17,10 @@ public class ARMsgReadyInterrupter : MonoBehaviour {
         CallBacks.OnAllARMsgСanceled += OnInterrupt;
     }
 
+    private void OnDisable() {
+        CallBacks.OnAllARMsgСanceled -= OnInterrupt;
+    }
+
     /// <summary>
     /// Request GenericError for interrupting
     /// </summary>
