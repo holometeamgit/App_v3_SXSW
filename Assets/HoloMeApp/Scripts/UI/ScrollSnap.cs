@@ -15,7 +15,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
     [Range(0f, 10f)] public float triggerAcceleration = 1f;
 
     [Serializable]
-    public class OnProgressEvent : UnityEvent<Vector2> { }
+    public class OnProgressEvent : UnityEvent<float> { }
     public OnProgressEvent onProgress;
 
     public class OnLerpCompleteEvent : UnityEvent { }
@@ -222,7 +222,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
         float t = (Time.time - lerpStartedAt) * 1000f / lerpTimeMilliSeconds;
         float newX = Mathf.Lerp(releasedPosition.x, targetPosition.x, t);
         content.anchoredPosition = new Vector2(newX, content.anchoredPosition.y);
-        onProgress?.Invoke(content.anchoredPosition);
+        onProgress?.Invoke(-newX / cellWidth);
     }
 
     private void WrapElementAround() {
