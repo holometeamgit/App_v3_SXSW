@@ -25,6 +25,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
     public OnReleaseEvent onRelease;
 
     [SerializeField] float cellWidth;
+    [SerializeField] UnityEvent[] OnIndexSnapEvent;
 
     private int actualIndex;
     private int cellIndex;
@@ -137,12 +138,25 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
             .Count(e => e.transform.parent == content);
     }
 
-    private void SnapToNext() {
+    /// /// <summary>
+    /// Snaps to next index
+    /// </summary>
+    public void SnapToNext() {
         SnapToIndex(cellIndex + 1);
     }
 
-    private void SnapToPrev() {
+    /// <summary>
+    /// Snaps to previous index
+    /// </summary>
+    public void SnapToPrev() {
         SnapToIndex(cellIndex - 1);
+    }
+
+    /// <summary>
+    /// Resets scroll view to first index
+    /// </summary>
+    public void ResetToFirst() {
+        SnapToIndex(0);
     }
 
     private void SnapToIndex(int newCellIndex) {
@@ -157,6 +171,9 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
             cellIndex = newCellIndex;
         }
         onRelease.Invoke(cellIndex);
+        if (OnIndexSnapEvent != null && OnIndexSnapEvent.Length - 1 >= cellIndex) {
+            OnIndexSnapEvent?[cellIndex]?.Invoke();
+        }
         StartLerping();
     }
 

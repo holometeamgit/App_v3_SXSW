@@ -8,7 +8,7 @@ namespace Beem.Utility.UnityConsole {
     /// </summary>
     public class DebugView : MonoBehaviour {
         private void Awake() {
-#if DEV
+#if LOG
             gameObject.SetActive(true);
 #else
             gameObject.SetActive(false);

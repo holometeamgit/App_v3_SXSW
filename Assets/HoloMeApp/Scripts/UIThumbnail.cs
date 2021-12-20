@@ -8,7 +8,7 @@ public class UIThumbnail : MonoBehaviour {
     public virtual void SetPlayAction(Action<StreamJsonData.Data> OnPlayClick) { }
     public virtual void SetTeaserPlayAction(Action<StreamJsonData.Data> OnTeaserClick) { }
     public virtual void SetBuyAction(Action<StreamJsonData.Data> OnBuyClick) { }
-    public virtual void SetShareAction(Action<StreamJsonData.Data> OnShareClick) { }
+    public virtual void SetShareAction(Action<string> OnShareClick) { }
 
     public virtual void AddData(ThumbnailElement element) { }
 
