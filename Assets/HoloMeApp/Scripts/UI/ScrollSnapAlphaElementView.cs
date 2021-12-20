@@ -26,7 +26,7 @@ public class ScrollSnapAlphaElementView : MonoBehaviour, IScrollSnapElementView 
         if (canvasGroup == null) {
             canvasGroup = GetComponent<CanvasGroup>();
         }
-        float difference = 1 - Mathf.Abs((elementNumber - value) / maxNumber);
+        float difference = 1 - Mathf.Abs(elementNumber - value);
         canvasGroup.alpha = limit.x + difference * (limit.y - limit.x);
     }
 }

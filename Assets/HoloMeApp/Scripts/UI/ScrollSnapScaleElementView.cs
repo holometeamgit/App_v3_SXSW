@@ -19,7 +19,7 @@ public class ScrollSnapScaleElementView : MonoBehaviour, IScrollSnapElementView 
     /// <param name="value"></param>
     /// <param name="maxNumber"></param>
     public void OnProgress(float elementNumber, float value, float maxNumber) {
-        float difference = 1 - Mathf.Abs((elementNumber - value) / maxNumber);
+        float difference = 1 - Mathf.Abs(elementNumber - value);
         transform.localScale = Vector3.one * (limit.x + difference * (limit.y - limit.x));
     }
 }

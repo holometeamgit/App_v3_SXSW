@@ -535,6 +535,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   cellWidth: 1125
+  OnIndexSnapEvent: []
 --- !u!225 &4082329930295232824
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1680,7 +1681,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4986269864204817272}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0.5
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -1696,7 +1697,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 783d2f0212ea0ec41b5cdc3f3b31e64c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  limit: {x: 0, y: 1}
+  limit: {x: 0.5, y: 1}
 --- !u!114 &6615334914141477424
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1709,7 +1710,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b849be74a6f22344a5684338ed31b93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  limit: {x: 0.5, y: 1}
+  limit: {x: 0.8, y: 1}
 --- !u!114 &8419128019077594435
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1748,7 +1749,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 783d2f0212ea0ec41b5cdc3f3b31e64c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  limit: {x: 0, y: 1}
+  limit: {x: 0.5, y: 1}
 --- !u!114 &5852374720817154172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1775,7 +1776,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b849be74a6f22344a5684338ed31b93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  limit: {x: 0.5, y: 1}
+  limit: {x: 0.8, y: 1}
 --- !u!1 &5397079485164496230
 GameObject:
   m_ObjectHideFlags: 0
@@ -2338,7 +2339,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b849be74a6f22344a5684338ed31b93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  limit: {x: 0.5, y: 1}
+  limit: {x: 0.8, y: 1}
 --- !u!114 &8219098595248292783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2351,7 +2352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 783d2f0212ea0ec41b5cdc3f3b31e64c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  limit: {x: 0, y: 1}
+  limit: {x: 0.5, y: 1}
 --- !u!1001 &967005545006612554
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2884,6 +2885,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5898028122473162667, guid: 3563996677dd7421b9d9e1dc6d739e56,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 5898028122473162667, guid: 3563996677dd7421b9d9e1dc6d739e56,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 5898028122473162667, guid: 3563996677dd7421b9d9e1dc6d739e56,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 5898028122473162667, guid: 3563996677dd7421b9d9e1dc6d739e56,
+        type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -2895,7 +2911,7 @@ PrefabInstance:
     - target: {fileID: 5989896757043984070, guid: 3563996677dd7421b9d9e1dc6d739e56,
         type: 3}
       propertyPath: m_Pivot.x
-      value: 0.5
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5989896757043984070, guid: 3563996677dd7421b9d9e1dc6d739e56,
         type: 3}
@@ -2911,6 +2927,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5989896757043984070, guid: 3563996677dd7421b9d9e1dc6d739e56,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 5989896757043984070, guid: 3563996677dd7421b9d9e1dc6d739e56,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 5989896757043984070, guid: 3563996677dd7421b9d9e1dc6d739e56,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 5989896757043984070, guid: 3563996677dd7421b9d9e1dc6d739e56,
         type: 3}
