@@ -1,4 +1,7 @@
+using Beem.Permissions;
 using Beem.UI;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,11 +38,16 @@ public class PrerecordedVideoWindow : MonoBehaviour {
     [SerializeField]
     private HologramHandler _hologramHandler;
 
+    [Header("Permission Controller")]
+    [SerializeField]
+    private PermissionController _permissionController;
+
     private StreamJsonData.Data _streamData = default;
 
     private bool newDataAssigned = false;
 
     private bool isPinned = false;
+
 
     /// <summary>
     /// Initialization
@@ -60,6 +68,7 @@ public class PrerecordedVideoWindow : MonoBehaviour {
 
         gameObject.SetActive(true);
         Refresh();
+        _permissionController.CheckCameraPermission();
         _hologramHandler.SetOnPlacementUIHelperFinished(OnPlacementCompleted);
     }
 

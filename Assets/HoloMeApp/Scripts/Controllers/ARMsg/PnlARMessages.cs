@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Beem.UI;
+using Beem.Permissions;
 
 /// <summary>
 /// Bar for Prerecorded Video
@@ -11,6 +12,10 @@ public class PnlARMessages : MonoBehaviour {
     [Header("Hologram manager")]
     [SerializeField]
     private HologramHandler _hologramHandler;
+
+    [Header("Permission Controller")]
+    [SerializeField]
+    private PermissionController _permissionController;
 
     private List<IARMsgDataView> _arMsgDataViews;
 
@@ -24,6 +29,9 @@ public class PnlARMessages : MonoBehaviour {
         _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
 
         _arMsgDataViews.ForEach(x => x.Init(arMsgJSON));
+
+        _permissionController.CheckCameraPermission();
+
         _hologramHandler.SetOnPlacementUIHelperFinished(OnPlacementCompleted);
     }
 

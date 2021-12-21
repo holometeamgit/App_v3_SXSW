@@ -102,11 +102,6 @@ public class UIThumbnailsController : MonoBehaviour {
     /// </summary>
     /// <param name="roomJsonData"></param>
     private void PlayRoom(RoomJsonData data) { //TODO split it to other class
-
-        if (!permissionController.CheckCameraMicAccess()) {
-            return;
-        }
-
         pnlStreamOverlay.OpenAsViewer(data.agora_channel, data.id, true);
         OnPlayFromUser?.Invoke(data.user);
     }
@@ -116,11 +111,6 @@ public class UIThumbnailsController : MonoBehaviour {
     /// </summary>
     /// <param name="roomJsonData"></param>
     private void PlayStadium(StreamJsonData.Data data) { //TODO split it to other class
-
-        if (!permissionController.CheckCameraMicAccess()) {
-            return;
-        }
-
         if (data.agora_channel == "0" || string.IsNullOrWhiteSpace(data.agora_channel)) {
             return;
         }
@@ -134,11 +124,6 @@ public class UIThumbnailsController : MonoBehaviour {
     /// </summary>
     /// <param name="roomJsonData"></param>
     private void PlayPrerecorded(StreamJsonData.Data data) { //TODO split it to other class
-
-        if (!permissionController.CheckCameraAccess()) {
-            return;
-        }
-
         pnlViewingExperience.ActivateForPreRecorded(data, false);
         PrerecordedVideoConstructor.OnActivated?.Invoke(data);
         OnPlayFromUser?.Invoke(data.user);
@@ -149,10 +134,6 @@ public class UIThumbnailsController : MonoBehaviour {
     /// </summary>
     /// <param name="data"></param>
     private void PlayTeaser(StreamJsonData.Data data) {
-        if (!permissionController.CheckCameraAccess()) {
-            return;
-        }
-
         pnlViewingExperience.ActivateForPreRecorded(data, data.HasTeaser);
         PrerecordedVideoConstructor.OnActivated?.Invoke(data);
         OnPlayFromUser?.Invoke(data.user);

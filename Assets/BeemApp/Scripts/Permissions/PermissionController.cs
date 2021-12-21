@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Beem.Permissions {
 
@@ -32,8 +35,12 @@ namespace Beem.Permissions {
             }
         }
 
+        private CancellationTokenSource _showCancellationTokenSource;
+        private CancellationToken _showCancellationToken;
+
         private const string CAMERA_ACCESS = "Camera";
         private const string MICROPHONE_ACCESS = "Microphone";
+        private const int CHECK_COOLDOWN = 5000;
 
         private void Awake() {
             if (Application.platform == RuntimePlatform.Android) {
@@ -105,6 +112,60 @@ namespace Beem.Permissions {
 
         private void CloseNotification() {
             WarningConstructor.Deactivate();
+        }
+
+        private async Task CheckPermission(bool permission) {
+            while (!permission) {
+                if (_showCancellationToken.IsCancellationRequested) {
+                    _showCancellationToken.ThrowIfCancellationRequested();
+                }
+                await Task.Delay(CHECK_COOLDOWN);
+            }
+        }
+
+        private void OnPermissionCheck(bool permission, Action onSuccessed = null) {
+            if (_showCancellationTokenSource != null) {
+                _showCancellationTokenSource.Cancel();
+                _showCancellationTokenSource.Dispose();
+            }
+
+            _showCancellationTokenSource = new CancellationTokenSource();
+            _showCancellationToken = _showCancellationTokenSource.Token;
+
+
+            TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            CheckPermission(permission).ContinueWith((task) => {
+
+                if (task.IsCompleted) {
+                    onSuccessed?.Invoke();
+                } else {
+                    OnPermissionCheck(permission, onSuccessed);
+                }
+            }, taskScheduler);
+        }
+
+        /// <summary>
+        /// Check Camera Permission
+        /// </summary>
+        /// <param name="onSuccessed"></param>
+        public void CheckCameraPermission(Action onSuccessed = null) {
+            OnPermissionCheck(CheckCameraAccess(), onSuccessed);
+        }
+
+        /// <summary>
+        /// Check Mic Permission
+        /// </summary>
+        /// <param name="onSuccessed"></param>
+        public void CheckMicPermission(Action onSuccessed = null) {
+            OnPermissionCheck(CheckMicAccess(), onSuccessed);
+        }
+
+        /// <summary>
+        /// Check Camera and Mic Permission
+        /// </summary>
+        /// <param name="onSuccessed"></param>
+        public void CheckCameraMicPermission(Action onSuccessed = null) {
+            OnPermissionCheck(CheckCameraMicAccess(), onSuccessed);
         }
     }
 }

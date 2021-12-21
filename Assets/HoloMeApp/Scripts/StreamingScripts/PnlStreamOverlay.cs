@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using agora_gaming_rtc;
 using Beem.Firebase.DynamicLink;
 using Beem.UI;
+using Beem.Permissions;
 
 public class PnlStreamOverlay : AgoraMessageReceiver {
 
@@ -80,6 +81,10 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     [Header("Controllers")]
     [SerializeField]
     private AgoraController agoraController;
+
+    [Header("Permission Controller")]
+    [SerializeField]
+    private PermissionController _permissionController;
 
     [SerializeField]
     private UserWebManager userWebManager;
@@ -240,6 +245,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         currentStreamId = "";
         agoraController.IsRoom = true;
         StreamerOpenSharedFunctions();
+        _permissionController.CheckCameraMicPermission();
     }
 
     public void OpenAsStreamer() {
@@ -247,6 +253,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         currentStreamId = "";
         agoraController.IsRoom = false;
         StreamerOpenSharedFunctions();
+        _permissionController.CheckCameraMicPermission();
     }
 
     private void StreamerOpenSharedFunctions() {
@@ -303,6 +310,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         uiViewersTextLabelLikes.Init(currentStreamIdLong);
         streamLikesRefresherView.StartCountAsync(streamID);
         StartStreamCountUpdaters();
+        _permissionController.CheckCameraMicPermission();
     }
 
     private void LeaveOnDestroy() {

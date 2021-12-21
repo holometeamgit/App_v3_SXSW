@@ -88,18 +88,12 @@ public class PnlSettings : MonoBehaviour {
     /// </summary>
 
     public void OpenStadium() {
-
-        if (!_permissionController.CheckCameraMicAccess()) {
-            return;
-        }
-
-        AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyGoLive, new Dictionary<string, string>() { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID } });
-
-
         SettingsConstructor.OnActivated?.Invoke(false);
         MenuConstructor.OnActivated?.Invoke(false);
         HomeScreenConstructor.OnActivated?.Invoke(false);
         StreamCallBacks.onCloseComments?.Invoke();
         StreamOverlayConstructor.onActivatedAsStadiumBroadcaster?.Invoke(true);
+        AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyGoLive, new Dictionary<string, string>() { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID } });
+
     }
 }
