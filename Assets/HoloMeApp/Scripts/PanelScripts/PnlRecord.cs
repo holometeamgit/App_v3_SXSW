@@ -27,9 +27,6 @@ public class PnlRecord : MonoBehaviour {
     Image imgFillBackground;
 
     [SerializeField]
-    Sprite spriteRecord;
-
-    [SerializeField]
     Button btnToggleMode;
 
     [SerializeField]

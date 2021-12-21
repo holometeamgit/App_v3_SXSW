@@ -461,9 +461,9 @@ GameObject:
   - component: {fileID: 4732224277862370103}
   - component: {fileID: 7600135919757851583}
   - component: {fileID: 3256469288854390258}
-  - component: {fileID: 3576138923849117039}
   - component: {fileID: 5189256031071035706}
-  - component: {fileID: 8820128397374090301}
+  - component: {fileID: 1789693408754989578}
+  - component: {fileID: 6567860149924022387}
   m_Layer: 5
   m_Name: btnSetting
   m_TagString: Untagged
@@ -545,40 +545,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8820128397374090301}
-        m_TargetAssemblyTypeName: BtnGoLive, Assembly-CSharp
-        m_MethodName: GoLive
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &3576138923849117039
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5162594822217841392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6439298e7a369481d90dd373af950173, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  doOnlyWithActiveObject: 0
-  switchOnList: []
-  switchOffList:
-  - {fileID: 0}
-  OnSwitch:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PnlStreamOverlay, Assembly-CSharp
-        m_MethodName: OpenAsStreamer
+      - m_Target: {fileID: 6567860149924022387}
+        m_TargetAssemblyTypeName: BtnController, Assembly-CSharp
+        m_MethodName: BtnPress
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -604,7 +573,7 @@ MonoBehaviour:
   - {fileID: 7098705583620492511}
   - {fileID: 2856284540018846833}
   - {fileID: 8413447291909248294}
---- !u!114 &8820128397374090301
+--- !u!114 &1789693408754989578
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -613,27 +582,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 5162594822217841392}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10ae33e117b2e4a2e967a68ef10163ba, type: 3}
+  m_Script: {fileID: 11500000, guid: feb21ae32296c0e488a2c79114b53528, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnGoLive:
+--- !u!114 &6567860149924022387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5162594822217841392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3ccf13f8c95b45239f9e6a367126280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnPress:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3576138923849117039}
-        m_TargetAssemblyTypeName: Switcher, Assembly-CSharp
-        m_MethodName: Switch
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PnlComments, Assembly-CSharp
-        m_MethodName: CloseComments
+      - m_Target: {fileID: 1789693408754989578}
+        m_TargetAssemblyTypeName: StadiumBtn, Assembly-CSharp
+        m_MethodName: Open
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
