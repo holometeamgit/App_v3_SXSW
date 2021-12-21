@@ -17,7 +17,7 @@ public class AccountManager : MonoBehaviour {
     [SerializeField]
     bool disablePersistance;
 
-    private Action onCancelLogIn;
+    private ActionWrapper _onCancelLogIn;
 
     private bool canLogIn = true;
     private const int QUICK_LOGIN_DELAY_TIME = 1000;
@@ -25,7 +25,7 @@ public class AccountManager : MonoBehaviour {
     #region public authorization
 
     public void CancelLogIn() {
-        onCancelLogIn?.Invoke();
+        _onCancelLogIn.InvokeAction();
     }
 
     public void LogOut() {
@@ -94,6 +94,10 @@ public class AccountManager : MonoBehaviour {
     }
 
     private void QuickLogIn() {
+        _onCancelLogIn?.InvokeAction();
+
+        _onCancelLogIn = new ActionWrapper();
+
         if (!canLogIn) {
             LogOut(); // hotfix v4.9
             return;
@@ -121,10 +125,10 @@ public class AccountManager : MonoBehaviour {
         }
 
         canLogIn = false;
-        webRequestHandler.PostRequest(GetRequestRefreshTokenURL(),
-            accessToken, WebRequestHandler.BodyType.JSON,
+        webRequestHandler.Post(GetRequestRefreshTokenURL(),
+            accessToken, WebRequestBodyType.JSON,
             (code, body) => { UpdateAccessToken(body); SuccessRequestAccessTokenCallBack(code, body); },
-            ErrorRequestAccessTokenCallBack, onCancel: onCancelLogIn);
+            ErrorRequestAccessTokenCallBack, onCancel: _onCancelLogIn, needHeaderAccessToken: false);
     }
 
     private void UpdateAccessToken(string serverAccessToken) {
@@ -170,6 +174,10 @@ public class AccountManager : MonoBehaviour {
 
     private void GetServerAccessToken(string firebaseAccessToken) {
 
+        _onCancelLogIn?.InvokeAction();
+
+        _onCancelLogIn = new ActionWrapper();
+
         if (!canLogIn) {
             //  CallBacks.onFail?.Invoke("Can't Get Server Access Token");
             return;
@@ -180,9 +188,9 @@ public class AccountManager : MonoBehaviour {
 
         FirebaseJsonToken firebaseJsonToken = new FirebaseJsonToken(firebaseAccessToken);
 
-        webRequestHandler.PostRequest(url, firebaseJsonToken, WebRequestHandler.BodyType.JSON,
+        webRequestHandler.Post(url, firebaseJsonToken, WebRequestBodyType.JSON,
             (code, data) => { SaveAccessToken(data); SuccessRequestAccessTokenCallBack(code, data); },
-            ErrorRequestAccessTokenCallBack, onCancel: onCancelLogIn);
+            ErrorRequestAccessTokenCallBack, onCancel: _onCancelLogIn, needHeaderAccessToken: false);
     }
 
     private void SuccessRequestAccessTokenCallBack(long code, string data) {

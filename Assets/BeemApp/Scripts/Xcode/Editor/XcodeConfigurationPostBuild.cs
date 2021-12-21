@@ -15,9 +15,13 @@ namespace Beem.Xcode {
         private static List<string> CustomDomains = new List<string>() {
             "https://join.beem.me",
             "https://join.beem.me/room/*",
-             "https://join.beem.me/room",
-             "https://join.beem.me/stream",
-             "https://join.beem.me/stream/*",
+            "https://join.beem.me/live/*",
+            "https://join.beem.me/prerecorded/*",
+            "https://join.beem.me/message/*",
+            "https://join.beem.me/room",
+            "https://join.beem.me/live",
+            "https://join.beem.me/prerecorded",
+            "https://join.beem.me/message",
             "https://ar.beem.me"
         };
 
@@ -34,6 +38,11 @@ namespace Beem.Xcode {
 
             // background location useage key (new in iOS 8)
             rootDict.SetString("Privacy - Local Network Usage Description", "Beem uses this to find and connect to devices to cast to your TV");
+
+            //Access to photo and video
+            rootDict.SetString("Privacy - Photo Library Usage Description", "Need for save recorded video");
+
+            rootDict.SetBoolean("UIRequiresFullScreen", true);
 
             // background modes
             PlistElementArray bgModes = rootDict.CreateArray("Bonjour services");

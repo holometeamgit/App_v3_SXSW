@@ -6,13 +6,16 @@ using TMPro;
 
 public class PnlSettings : MonoBehaviour
 {
-    [SerializeField] GameObject changePassword;
-    [SerializeField] AccountManager accountManager;
-    [SerializeField] UserWebManager userWebManager;
-    [SerializeField] TMP_Text txtNickname;
+    [SerializeField] GameObject _changePassword;
+    [SerializeField] GameObject _btnStadium;
+    [SerializeField] AccountManager _accountManager;
+    [SerializeField] UserWebManager _userWebManager;
+    [SerializeField] TMP_Text _txtNickname;
 
     private void OnEnable() {
-        changePassword.SetActive(accountManager.GetLogInType() == LogInType.Email);
-        txtNickname.text = userWebManager.GetUsername();
+        _changePassword.SetActive(_accountManager.GetLogInType() == LogInType.Email);
+        _txtNickname.text = _userWebManager.GetUsername();
+
+        _btnStadium.SetActive(_userWebManager.CanGoLive());
     }
 }

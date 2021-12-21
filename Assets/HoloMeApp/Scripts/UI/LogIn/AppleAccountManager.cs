@@ -190,7 +190,7 @@ public class AppleAccountManager : MonoBehaviour {
         Dictionary<string, T> formData = new Dictionary<string, T>();
         formData["code"] = appleAccessToken;
         //webRequestHandler.PostRequest(url, formData, WebRequestHandler.BodyType.XWWWFormUrlEncoded, responseCallBack, errorCallBack);
-        webRequestHandler.GetRequest(GetGetRequestAccessTokenURL(appleAccessToken as string), responseCallBack, errorCallBack);
+        webRequestHandler.Get(GetGetRequestAccessTokenURL(appleAccessToken as string), responseCallBack, errorCallBack, needHeaderAccessToken: false);
     }
 
     private string GetRequestAccessTokenURL() {
