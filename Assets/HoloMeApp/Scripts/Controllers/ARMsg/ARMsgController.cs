@@ -34,7 +34,7 @@ namespace Beem.ARMsg {
         /// UploadARMsg
         /// </summary>
         public void UploadARMsg() {
-            UploadARMsg(CallBacks.OnGetBGImgFilePath?.Invoke(), CallBacks.OnGetVideoRecordedFilePath?.Invoke());
+            UploadARMsg(CallBacks.OnGetVideoRecordedFilePath?.Invoke());
         }
 
         /// <summary>
@@ -137,16 +137,15 @@ namespace Beem.ARMsg {
 
         #region UploadARMsg
 
-        private void UploadARMsg(string pathToImgBG, string pathToVideoFile) {
+        private void UploadARMsg(string pathToVideoFile) {
 
-            HelperFunctions.DevLog("Try upload: " + pathToImgBG + " " + " video: " + pathToVideoFile);
+            HelperFunctions.DevLog("Try upload video: " + pathToVideoFile);
 
             _cancelUploadARMsg?.InvokeAction();
             _cancelUploadARMsg = new ActionWrapper();
 
 
             Dictionary<string, string> content = new Dictionary<string, string>();
-            content.Add(_arMsgAPIScriptableObject.ImgBGFieldName, pathToImgBG);
             content.Add(_arMsgAPIScriptableObject.SourceVideoFieldName, pathToVideoFile);
 
             _webRequestHandler.PostMultipart(GetPostRequestUploadARMsgURL(), content, PostUploadARMsgCallback, ErrorPostUploadARMsgCallback,
