@@ -10,20 +10,20 @@ public class StreamOverlayConstructor : MonoBehaviour {
     [SerializeField]
     private PnlStreamOverlay _pnlStreamOverlay;
 
-    public static Action<bool> onActivatedAsLiveBroadcaster = delegate { };
+    public static Action<bool> onActivatedAsStadiumBroadcaster = delegate { };
     public static Action<bool> onActivatedAsRoomBroadcaster = delegate { };
 
     private void OnEnable() {
-        onActivatedAsLiveBroadcaster += ActivatedAsLiveBroadcaster;
+        onActivatedAsStadiumBroadcaster += ActivatedAsStadiumBroadcaster;
         onActivatedAsRoomBroadcaster += ActivatedAsRoomBroadcaster;
     }
 
     private void OnDisable() {
-        onActivatedAsLiveBroadcaster -= ActivatedAsLiveBroadcaster;
+        onActivatedAsStadiumBroadcaster -= ActivatedAsStadiumBroadcaster;
         onActivatedAsRoomBroadcaster -= ActivatedAsRoomBroadcaster;
     }
 
-    private void ActivatedAsLiveBroadcaster(bool status) {
+    private void ActivatedAsStadiumBroadcaster(bool status) {
         if (status) {
             _pnlStreamOverlay.OpenAsStreamer();
         } else {

@@ -111,6 +111,6 @@ public class PnlMenu : MonoBehaviour {
         MenuConstructor.OnActivated?.Invoke(false);
         HomeScreenConstructor.OnActivated?.Invoke(false);
         StreamCallBacks.onCloseComments?.Invoke();
-        StreamOverlayConstructor.onActivatedAsLiveBroadcaster?.Invoke(true);
+        StreamOverlayConstructor.onActivatedAsStadiumBroadcaster?.Invoke(true);
     }
 }
