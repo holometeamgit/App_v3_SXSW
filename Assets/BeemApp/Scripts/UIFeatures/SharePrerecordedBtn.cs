@@ -22,8 +22,6 @@ namespace Beem.UI {
         public void Share() {
             if (!string.IsNullOrWhiteSpace(_streamData.share_link.ToString())) {
                 StreamCallBacks.onShareStadiumLink?.Invoke(_streamData.share_link);
-            } else {
-                DynamicLinksCallBacks.onShareAppLink?.Invoke();
             }
         }
 
