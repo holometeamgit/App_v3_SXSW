@@ -16,9 +16,6 @@ public class HologramHandler : MonoBehaviour {
     HologramChild[] hologramChildren;
 
     [SerializeField]
-    AgoraController agoraController;
-
-    [SerializeField]
     AudioSource audioSource;
 
     [SerializeField]
