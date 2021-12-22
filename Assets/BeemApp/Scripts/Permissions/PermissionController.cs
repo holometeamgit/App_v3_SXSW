@@ -73,10 +73,8 @@ namespace Beem.Permissions {
         public void CheckCameraAccess(Action onSuccessed, Action onFailed = null) {
 
 #if UNITY_EDITOR
-            HelperFunctions.DevLogError($"debugCameraAccess = {debugCameraAccess}");
             if (!debugCameraAccess) {
                 OpenNotification(CAMERA_ACCESS, () => {
-                    HelperFunctions.DevLogError($"debugCameraAccess = {debugCameraAccess}");
                     if (debugCameraAccess) {
                         onSuccessed?.Invoke();
                     } else {
@@ -118,10 +116,8 @@ namespace Beem.Permissions {
         public void CheckMicAccess(Action onSuccessed, Action onFailed = null) {
 
 #if UNITY_EDITOR
-            HelperFunctions.DevLogError($"debugMicAccess = {debugMicAccess}");
             if (!debugMicAccess) {
                 OpenNotification(MICROPHONE_ACCESS, () => {
-                    HelperFunctions.DevLogError($"debugMicAccess = {debugMicAccess}");
                     if (debugMicAccess) {
                         onSuccessed?.Invoke();
                     } else {
