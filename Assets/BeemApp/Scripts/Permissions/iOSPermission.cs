@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Beem.Permissions {
     /// <summary>
@@ -10,11 +11,11 @@ namespace Beem.Permissions {
 
         public bool HasCameraAccess => Application.HasUserAuthorization(UserAuthorization.WebCam);
 
-        public void RequestCameraAccess() {
+        public void RequestCameraAccess(Action onSuccessed, Action onFailed) {
             Application.RequestUserAuthorization(UserAuthorization.WebCam);
         }
 
-        public void RequestMicAccess() {
+        public void RequestMicAccess(Action onSuccessed, Action onFailed) {
             Application.RequestUserAuthorization(UserAuthorization.Microphone);
         }
 

@@ -68,7 +68,6 @@ public class PrerecordedVideoWindow : MonoBehaviour {
 
         gameObject.SetActive(true);
         Refresh();
-        _permissionController.CheckCameraPermission();
         _hologramHandler.SetOnPlacementUIHelperFinished(OnPlacementCompleted);
     }
 

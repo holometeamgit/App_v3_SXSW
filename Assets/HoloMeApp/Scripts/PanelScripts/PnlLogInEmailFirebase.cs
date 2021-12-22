@@ -78,13 +78,11 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
                 () => {
                     CallBacks.onEmailVerification?.Invoke();
                     EmailVerificationTimer.Release();
-                },
-                () => { WarningConstructor.Deactivate(); });
+                });
         } else {
             WarningConstructor.ActivateSingleButton("Email verication",
                string.Format("You have not activated your account via the email \n {0}", email),
-               "Ok",
-               () => { WarningConstructor.Deactivate(); });
+               "Ok");
         }
     }
 

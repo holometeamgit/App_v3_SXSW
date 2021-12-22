@@ -1,3 +1,4 @@
+using Beem.Permissions;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,14 +7,29 @@ using UnityEngine;
 /// </summary>
 public class ARMessageTurorialBtn : MonoBehaviour {
 
+    private PermissionController _permissionController;
+
+    private PermissionController permissionController {
+        get {
+
+            if (_permissionController == null) {
+                _permissionController = FindObjectOfType<PermissionController>();
+            }
+
+            return _permissionController;
+        }
+    }
+
     /// <summary>
     /// Open Btn
     /// </summary>
     public void Open() {
-        SettingsConstructor.OnActivated?.Invoke(false);
-        MenuConstructor.OnActivated?.Invoke(false);
-        HomeScreenConstructor.OnActivated?.Invoke(false);
-        StreamCallBacks.onCloseComments?.Invoke();
-        ARMessageTutorialConstructor.OnActivated?.Invoke(true);
+        permissionController.CheckCameraMicAccess(() => {
+            SettingsConstructor.OnActivated?.Invoke(false);
+            MenuConstructor.OnActivated?.Invoke(false);
+            HomeScreenConstructor.OnActivated?.Invoke(false);
+            StreamCallBacks.onCloseComments?.Invoke();
+            ARMessageTutorialConstructor.OnActivated?.Invoke(true);
+        });
     }
 }

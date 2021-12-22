@@ -36,8 +36,8 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
             string.Format("Changing a password associated with a Facebook account will create login issues with your Beem account."),
             "Continue",
             "Cancel",
-            () => { WarningConstructor.Deactivate(); SendMsg(); emailInputField.MobileInputField.SetVisible(true); },
-            () => { WarningConstructor.Deactivate(); emailInputField.MobileInputField.SetVisible(true); }, true);
+            () => { SendMsg(); emailInputField.MobileInputField.SetVisible(true); },
+            () => { emailInputField.MobileInputField.SetVisible(true); }, true);
     }
 
     private void SendMsg() {
@@ -49,7 +49,7 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
         WarningConstructor.ActivateSingleButton("Change password",
             string.Format("Password change information has been sent to email {0}", emailInputField.text),
             "Continue",
-            () => { WarningConstructor.Deactivate(); ResetPasswordToSignIn(); });
+            () => { ResetPasswordToSignIn(); });
     }
 
     private void ErrorMsgCallBack(string msg) {

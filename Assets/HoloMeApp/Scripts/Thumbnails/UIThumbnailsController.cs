@@ -102,8 +102,11 @@ public class UIThumbnailsController : MonoBehaviour {
     /// </summary>
     /// <param name="roomJsonData"></param>
     private void PlayRoom(RoomJsonData data) { //TODO split it to other class
-        pnlStreamOverlay.OpenAsViewer(data.agora_channel, data.id, true);
-        OnPlayFromUser?.Invoke(data.user);
+        permissionController.CheckCameraMicAccess(() => {
+            pnlStreamOverlay.OpenAsViewer(data.agora_channel, data.id, true);
+            OnPlayFromUser?.Invoke(data.user);
+        });
+
     }
 
     /// <summary>
@@ -115,8 +118,10 @@ public class UIThumbnailsController : MonoBehaviour {
             return;
         }
 
-        pnlStreamOverlay.OpenAsViewer(data.agora_channel, data.id.ToString(), false);
-        OnPlayFromUser?.Invoke(data.user);
+        permissionController.CheckCameraMicAccess(() => {
+            pnlStreamOverlay.OpenAsViewer(data.agora_channel, data.id.ToString(), false);
+            OnPlayFromUser?.Invoke(data.user);
+        });
     }
 
     /// <summary>
@@ -124,9 +129,11 @@ public class UIThumbnailsController : MonoBehaviour {
     /// </summary>
     /// <param name="roomJsonData"></param>
     private void PlayPrerecorded(StreamJsonData.Data data) { //TODO split it to other class
-        pnlViewingExperience.ActivateForPreRecorded(data, false);
-        PrerecordedVideoConstructor.OnActivated?.Invoke(data);
-        OnPlayFromUser?.Invoke(data.user);
+        permissionController.CheckCameraAccess(() => {
+            pnlViewingExperience.ActivateForPreRecorded(data, false);
+            PrerecordedVideoConstructor.OnActivated?.Invoke(data);
+            OnPlayFromUser?.Invoke(data.user);
+        });
     }
 
     /// <summary>
@@ -134,10 +141,12 @@ public class UIThumbnailsController : MonoBehaviour {
     /// </summary>
     /// <param name="data"></param>
     private void PlayTeaser(StreamJsonData.Data data) {
-        pnlViewingExperience.ActivateForPreRecorded(data, data.HasTeaser);
-        PrerecordedVideoConstructor.OnActivated?.Invoke(data);
-        OnPlayFromUser?.Invoke(data.user);
-        purchaseManager.SetPurchaseStreamData(data);
+        permissionController.CheckCameraAccess(() => {
+            pnlViewingExperience.ActivateForPreRecorded(data, data.HasTeaser);
+            PrerecordedVideoConstructor.OnActivated?.Invoke(data);
+            OnPlayFromUser?.Invoke(data.user);
+            purchaseManager.SetPurchaseStreamData(data);
+        });
     }
 
     private void Awake() {

@@ -14,7 +14,7 @@ public class PnlLogInEmail : MonoBehaviour {
         emailLogInJsonData.username = inputFieldEmail.text;
         emailLogInJsonData.password = inputFieldPassword.text;
 
-        if(LocalDataVerification())
+        if (LocalDataVerification())
             emailAccountManager.LogIn(emailLogInJsonData);
     }
 
@@ -59,8 +59,7 @@ public class PnlLogInEmail : MonoBehaviour {
                     () => {
                         ResendVerifyJsonData resendVerifyJsonData = new ResendVerifyJsonData(inputFieldEmail.text);
                         emailAccountManager.ResendVerification(resendVerifyJsonData);
-                    },
-                    () => { WarningConstructor.Deactivate(); });
+                    });
             }
         }
 
@@ -75,7 +74,6 @@ public class PnlLogInEmail : MonoBehaviour {
     private void ResendVerificationCallBack() {
         if (!this.isActiveAndEnabled)
             return;
-        WarningConstructor.Deactivate();
         inputFieldEmail.ShowWarning("We had sent a verification email");
     }
 

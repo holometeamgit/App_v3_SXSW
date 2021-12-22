@@ -30,8 +30,6 @@ public class PnlARMessages : MonoBehaviour {
 
         _arMsgDataViews.ForEach(x => x.Init(arMsgJSON));
 
-        _permissionController.CheckCameraPermission();
-
         _hologramHandler.SetOnPlacementUIHelperFinished(OnPlacementCompleted);
     }
 

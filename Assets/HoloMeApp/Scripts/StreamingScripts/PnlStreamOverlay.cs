@@ -245,7 +245,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         currentStreamId = "";
         agoraController.IsRoom = true;
         StreamerOpenSharedFunctions();
-        _permissionController.CheckCameraMicPermission();
     }
 
     public void OpenAsStreamer() {
@@ -253,7 +252,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         currentStreamId = "";
         agoraController.IsRoom = false;
         StreamerOpenSharedFunctions();
-        _permissionController.CheckCameraMicPermission();
     }
 
     private void StreamerOpenSharedFunctions() {
@@ -310,7 +308,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         uiViewersTextLabelLikes.Init(currentStreamIdLong);
         streamLikesRefresherView.StartCountAsync(streamID);
         StartStreamCountUpdaters();
-        _permissionController.CheckCameraMicPermission();
     }
 
     private void LeaveOnDestroy() {
@@ -328,13 +325,11 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         else if (isChannelCreator)
             WarningConstructor.ActivateDoubleButton("End the live stream?",
                 "Closing this page will end the live stream and disconnect your users.",
-                onButtonOnePress: () => { StreamOverlayConstructor.onActivatedAsStadiumBroadcaster?.Invoke(false); },
-                onButtonTwoPress: () => WarningConstructor.Deactivate());
+                onButtonOnePress: () => { StreamOverlayConstructor.onActivatedAsStadiumBroadcaster?.Invoke(false); });
         else
             WarningConstructor.ActivateDoubleButton("Disconnect from live stream?",
                 "Closing this page will disconnect you from the live stream",
-                onButtonOnePress: () => { CloseAsViewer(); },
-                onButtonTwoPress: () => WarningConstructor.Deactivate());
+                onButtonOnePress: () => { CloseAsViewer(); });
     }
 
     public void CloseAsStreamer() {
