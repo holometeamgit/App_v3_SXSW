@@ -61,7 +61,6 @@ public class FocusSquareV2 : PlacementHandler {
     [SerializeField] private Transform _focusSquareV2Sprite;
     [SerializeField] private PnlViewingExperience _pnlViewingExperience;
 
-    [SerializeField] private GameObject _btnCloseViewingExperience;
     [SerializeField] private GameObject _btnCloseStreamOverlay;
     [SerializeField] private GameObject _btnCloseARMessaging;
     [SerializeField] private GameObject _btnClosePrerecordedVideo;
@@ -538,16 +537,14 @@ public class FocusSquareV2 : PlacementHandler {
     }
 
     private bool IsOneOfButtonsCloseActive() {
-        return _btnCloseViewingExperience.activeInHierarchy ||
-               _btnCloseStreamOverlay.activeInHierarchy ||
+        return _btnCloseStreamOverlay.activeInHierarchy ||
                _btnCloseARMessaging.activeInHierarchy ||
                _btnClosePrerecordedVideo.activeInHierarchy;
 
     }
 
     private bool IsAllButtonsCloseNotActive() {
-        return !_btnCloseViewingExperience.activeInHierarchy &&
-               !_btnCloseStreamOverlay.activeInHierarchy &&
+        return !_btnCloseStreamOverlay.activeInHierarchy &&
                !_btnCloseARMessaging.activeInHierarchy &&
                !_btnClosePrerecordedVideo.activeInHierarchy;
     }
