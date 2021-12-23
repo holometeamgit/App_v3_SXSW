@@ -2,8 +2,9 @@
 using Beem.Extenject.Hologram;
 using Beem.Extenject.Permissions;
 using NatCorder;
-using NatCorder.Clocks;
-using NatCorder.Inputs;
+using NatSuite.Recorders;
+using NatSuite.Recorders.Clocks;
+using NatSuite.Recorders.Inputs;
 using UnityEngine;
 using Zenject;
 
@@ -76,8 +77,8 @@ namespace Beem.Extenject.Record {
                 _videoHeight,
                 25,
                 AudioSettings.outputSampleRate,
-                (int)AudioSettings.speakerMode,
-                OnRecordComplete
+                (int)AudioSettings.speakerMode//,
+                                              //OnRecordComplete
             );
 
             _cameraInput = new CameraInput(_mediaRecorder, _recordingClock, _cameras);
@@ -114,7 +115,7 @@ namespace Beem.Extenject.Record {
         public void OnRecordStop() {
             _audioInput.Dispose();
             _cameraInput.Dispose();
-            _mediaRecorder.Dispose();
+            //_mediaRecorder.Dispose();
         }
 
         private void OnRecordComplete(string outputPath) {
