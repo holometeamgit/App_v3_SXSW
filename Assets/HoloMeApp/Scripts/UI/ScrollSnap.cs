@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Linq;
 using UnityEngine.Events;
+using System;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(ScrollRect), typeof(CanvasGroup))]
@@ -13,12 +14,18 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
     [SerializeField] public float triggerPercent = 5f;
     [Range(0f, 10f)] public float triggerAcceleration = 1f;
 
+    [Serializable]
+    public class OnProgressEvent : UnityEvent<float, int> { }
+    public OnProgressEvent onProgress;
+
     public class OnLerpCompleteEvent : UnityEvent { }
     public OnLerpCompleteEvent onLerpComplete;
+
     public class OnReleaseEvent : UnityEvent<int> { }
     public OnReleaseEvent onRelease;
 
     [SerializeField] float cellWidth;
+    [SerializeField] UnityEvent[] OnIndexSnapEvent;
 
     private int actualIndex;
     private int cellIndex;
@@ -68,6 +75,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
         element.transform.SetAsFirstSibling();
         SetContentSize(LayoutElementCount());
         content.anchoredPosition = new Vector2(content.anchoredPosition.x - cellWidth, content.anchoredPosition.y);
+        onProgress?.Invoke(-(content.anchoredPosition.x - cellWidth) / cellWidth, LayoutElementCount());
     }
 
     /// <summary>
@@ -104,6 +112,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
         this.canvasGroup = GetComponent<CanvasGroup>();
         this.content = scrollRect.content;
         content.anchoredPosition = new Vector2(-cellWidth * cellIndex, content.anchoredPosition.y);
+        onProgress?.Invoke((cellWidth * cellIndex) / cellWidth, LayoutElementCount());
         int count = LayoutElementCount();
         SetContentSize(count);
 
@@ -129,12 +138,25 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
             .Count(e => e.transform.parent == content);
     }
 
-    private void SnapToNext() {
+    /// /// <summary>
+    /// Snaps to next index
+    /// </summary>
+    public void SnapToNext() {
         SnapToIndex(cellIndex + 1);
     }
 
-    private void SnapToPrev() {
+    /// <summary>
+    /// Snaps to previous index
+    /// </summary>
+    public void SnapToPrev() {
         SnapToIndex(cellIndex - 1);
+    }
+
+    /// <summary>
+    /// Resets scroll view to first index
+    /// </summary>
+    public void ResetToFirst() {
+        SnapToIndex(0);
     }
 
     private void SnapToIndex(int newCellIndex) {
@@ -149,6 +171,9 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
             cellIndex = newCellIndex;
         }
         onRelease.Invoke(cellIndex);
+        if (OnIndexSnapEvent != null && OnIndexSnapEvent.Length - 1 >= cellIndex) {
+            OnIndexSnapEvent?[cellIndex]?.Invoke();
+        }
         StartLerping();
     }
 
@@ -216,6 +241,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
         float t = (Time.time - lerpStartedAt) * 1000f / lerpTimeMilliSeconds;
         float newX = Mathf.Lerp(releasedPosition.x, targetPosition.x, t);
         content.anchoredPosition = new Vector2(newX, content.anchoredPosition.y);
+        onProgress?.Invoke(-newX / cellWidth, LayoutElementCount());
     }
 
     private void WrapElementAround() {
@@ -224,11 +250,13 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
             elements[elements.Length - 1].transform.SetAsFirstSibling();
             cellIndex += 1;
             content.anchoredPosition = new Vector2(content.anchoredPosition.x - cellWidth, content.anchoredPosition.y);
+            onProgress?.Invoke(-(content.anchoredPosition.x - cellWidth) / cellWidth, LayoutElementCount());
         } else if (cellIndex >= CalculateMaxIndex()) {
             var element = content.GetComponentInChildren<LayoutElement>();
             element.transform.SetAsLastSibling();
             cellIndex -= 1;
             content.anchoredPosition = new Vector2(content.anchoredPosition.x + cellWidth, content.anchoredPosition.y);
+            onProgress?.Invoke(-(content.anchoredPosition.x - cellWidth) / cellWidth, LayoutElementCount());
         }
     }
 

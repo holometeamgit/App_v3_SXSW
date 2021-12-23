@@ -189,6 +189,8 @@ namespace Mopsicus.Plugins {
         /// </summary>
         const string READY = "READY";
 
+        private Coroutine coroutine;
+
         private Action onReady;
 
         /// <summary>
@@ -204,41 +206,38 @@ namespace Mopsicus.Plugins {
         }
 
         /// <summary>
-        /// Create mobile input on Start with coroutine
-        /// </summary>
-        protected override void Start() {
-            base.Start();
-            StartCoroutine(InitialzieOnNextFrame());
-        }
-
-        /// <summary>
         /// Show native on enable
         /// </summary>
-        private void OnEnable() {
+        protected override void OnEnable() {
+            base.OnEnable();
+            coroutine = StartCoroutine(InitialzieOnNextFrame());
             if (_isMobileInputCreated) {
                 this.SetVisible(true);
             } else {
-                onReady += () => this.SetVisible(true);
+                onReady += SetVisible;
             }
         }
 
         /// <summary>
         /// Hide native on disable
         /// </summary>
-        private void OnDisable() {
+        protected override void OnDisable() {
+            base.OnDisable();
+            RemoveNative();
+            if (coroutine != null) {
+                StopCoroutine(coroutine);
+                coroutine = null;
+            }
+
             if (_isMobileInputCreated) {
                 this.SetFocus(false);
                 this.SetVisible(false);
-                onReady -= () => this.SetVisible(true);
+                onReady -= SetVisible;
             }
         }
 
-        /// <summary>
-        /// Destructor
-        /// </summary>
-        protected override void OnDestroy() {
-            RemoveNative();
-            base.OnDestroy();
+        private void SetVisible() {
+            this.SetVisible(true);
         }
 
         /// <summary>
@@ -248,7 +247,6 @@ namespace Mopsicus.Plugins {
             if (!_isMobileInputCreated || !this.Visible) {
                 return;
             }
-            this.SetVisible(hasFocus);
         }
 
         /// <summary>
@@ -577,6 +575,10 @@ namespace Mopsicus.Plugins {
             this.Execute(data);
         }
 
+        public void SetRectNative() {
+            SetRectNative(this._inputObjectText.rectTransform);
+        }
+
         /// <summary>
         /// Set focus on field
         /// </summary>
@@ -610,10 +612,12 @@ namespace Mopsicus.Plugins {
         /// </summary>
         /// <param name="isVisible">true | false</param>
         public void SetVisible(bool isVisible) {
+
             if (!_isMobileInputCreated) {
                 _isVisibleOnCreate = isVisible;
                 return;
             }
+
             JsonObject data = new JsonObject();
             data["msg"] = SET_VISIBLE;
             data["is_visible"] = isVisible;

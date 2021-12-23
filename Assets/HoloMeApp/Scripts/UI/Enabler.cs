@@ -42,20 +42,25 @@ public class Enabler : MonoBehaviour
 
     private void OnDisable() {
         foreach (var element in ObjectListActiveOnDisable)
-            element.SetActive(true);
+            element?.SetActive(true);
 
         foreach (var element in ObjectListDectiveOnDisable)
-            element.SetActive(false);
+            element?.SetActive(false);
 
-        OnDisableEvent.Invoke();
+        OnDisableEvent?.Invoke();
 
         StopAllCoroutines();
+    }
+
+    private void OnDestroy() {
+        ObjectListActiveOnDisable = null;
+        ObjectListDectiveOnDisable = null;
     }
 
     IEnumerator InvokeEvent() {
         yield return new WaitForSeconds(timeDelay);
 
-        OnDelayEvent.Invoke();
+        OnDelayEvent?.Invoke();
     }
 
     private void OnApplicationFocus(bool focus) {

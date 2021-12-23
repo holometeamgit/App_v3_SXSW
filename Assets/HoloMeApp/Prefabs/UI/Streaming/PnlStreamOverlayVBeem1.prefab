@@ -321,7 +321,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8852342891770140728
 RectTransform:
   m_ObjectHideFlags: 0
@@ -386,7 +386,6 @@ MonoBehaviour:
   - {fileID: 8259988819137190791}
   - {fileID: 1274846364641336041}
   - {fileID: 6143454704004755397}
-  - {fileID: 8858580544628999647}
   offlineControls:
   - {fileID: 7013065129411508170}
   - {fileID: 3738879759186859606}
@@ -436,18 +435,6 @@ MonoBehaviour:
       - m_Target: {fileID: 6514130434781799381}
         m_TargetAssemblyTypeName: 
         m_MethodName: Switch
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: OnDisconnected
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5806,7 +5793,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7967544044649793560}
   m_Layer: 5
-  m_Name: Public
+  m_Name: Stadium
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6417,8 +6404,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 75, y: -285}
-  m_SizeDelta: {x: 150, y: 150}
+  m_AnchoredPosition: {x: 421.875, y: -72}
+  m_SizeDelta: {x: 281.25, y: 144}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3537299413245546582
 CanvasRenderer:
@@ -9248,8 +9235,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 75, y: -75}
-  m_SizeDelta: {x: 150, y: 150}
+  m_AnchoredPosition: {x: 984.375, y: -72}
+  m_SizeDelta: {x: 281.25, y: 144}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6254120020925379256
 CanvasRenderer:
@@ -9477,8 +9464,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 75, y: -495}
-  m_SizeDelta: {x: 150, y: 150}
+  m_AnchoredPosition: {x: 937.5, y: -72}
+  m_SizeDelta: {x: 375, y: 144}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2243488664857400539
 CanvasRenderer:
@@ -9738,8 +9725,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 75, y: -495}
-  m_SizeDelta: {x: 150, y: 150}
+  m_AnchoredPosition: {x: 937.5, y: -72}
+  m_SizeDelta: {x: 375, y: 144}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6341217874042256771
 CanvasRenderer:
@@ -9885,7 +9872,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8453856383733345772}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6efdda173d1424defbfef5c801bccbe4, type: 3}
   m_Name: 
@@ -10112,7 +10099,7 @@ GameObject:
   m_Component:
   - component: {fileID: 358662116505587145}
   m_Layer: 5
-  m_Name: Public
+  m_Name: Stadium
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10743,8 +10730,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 75, y: -495}
-  m_SizeDelta: {x: 150, y: 150}
+  m_AnchoredPosition: {x: 703.125, y: -72}
+  m_SizeDelta: {x: 281.25, y: 144}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5646571316656099969
 CanvasRenderer:
@@ -11216,11 +11203,6 @@ PrefabInstance:
       propertyPath: OnMessageAdded.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
-    - target: {fileID: 1790351701401955873, guid: de650753e65ede242ba1d0f342eea0f8,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -744.90857
-      objectReference: {fileID: 0}
     - target: {fileID: 2211949923021937280, guid: de650753e65ede242ba1d0f342eea0f8,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -11255,11 +11237,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3359976644642208814, guid: de650753e65ede242ba1d0f342eea0f8,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -476
       objectReference: {fileID: 0}
     - target: {fileID: 4236232692301638058, guid: de650753e65ede242ba1d0f342eea0f8,
         type: 3}

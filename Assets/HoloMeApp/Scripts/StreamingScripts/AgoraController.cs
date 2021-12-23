@@ -1,6 +1,7 @@
 ﻿using agora_gaming_rtc;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -42,6 +43,7 @@ public class AgoraController : MonoBehaviour {
 
     private int streamID = -1;
     private int agoraMessageStreamID;
+    private int maxViewerCountTracker;
 
     [HideInInspector]
     public uint frameRate;
@@ -190,6 +192,8 @@ public class AgoraController : MonoBehaviour {
 
         if (channelCreator) {
             secondaryServerCalls.StartStream(ChannelName, IsRoom);
+            maxViewerCountTracker = 0;
+            AnalyticsController.Instance.StartTimer(AnalyticKeys.KeyViewLengthOfStream, AnalyticKeys.KeyViewLengthOfStream);
         } else {
             GetViewerAgoraToken();
         }
@@ -230,7 +234,11 @@ public class AgoraController : MonoBehaviour {
     /// </summary>
     public void SendViewerCountAnalyticsUpdate(int count) {
         if (IsChannelCreator) {
-            AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyViewerCountUpdate, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() }, { AnalyticParameters.ParamViewerCount, count.ToString() } });
+            if (maxViewerCountTracker < count)
+            {
+                maxViewerCountTracker = count;
+            }
+            AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyViewerCountUpdate, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamChannelName, ChannelName }, { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() }, { AnalyticParameters.ParamViewerCount, count.ToString() } });
         }
     }
 
@@ -238,7 +246,7 @@ public class AgoraController : MonoBehaviour {
         this.streamID = streamID;
 
         agoraRTMChatController.Login(rtmToken);
-        iRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_COMMUNICATION);
+        iRtcEngine.SetChannelProfile(IsRoom? CHANNEL_PROFILE.CHANNEL_PROFILE_COMMUNICATION : CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
         if (IsChannelCreator) {
             iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
@@ -279,6 +287,8 @@ public class AgoraController : MonoBehaviour {
 
         if (IsChannelCreator) {
             secondaryServerCalls.EndStream();
+            AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyMaxViewerCount, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamChannelName, ChannelName }, { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() }, { AnalyticParameters.ParamViewerCount, maxViewerCountTracker.ToString() } });
+            AnalyticsController.Instance.StopTimer(AnalyticKeys.KeyViewLengthOfStream, new Dictionary<string, string> { { AnalyticParameters.ParamChannelName, ChannelName }, { AnalyticParameters.ParamDate, DateTime.Now.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() } });
         } else {
             liveStreamQuad.SetActive(false);
             ResetVideoQuadSurface();

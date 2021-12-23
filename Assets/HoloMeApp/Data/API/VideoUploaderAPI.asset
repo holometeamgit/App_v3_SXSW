@@ -13,9 +13,18 @@ MonoBehaviour:
   m_Name: VideoUploaderAPI
   m_EditorClassIdentifier: 
   Stream: /stream/
+  StreamById: /stream/{id}/
+  StreamBySlug: /stream/webar/{slug}/
   StreamStatus: /stream/{id}/status/
   GetStreamToken: /agora/token/
   UploadPreview: /stream/{id}/preview/
+  PostLike: /stream/{id}/like/
+  DeleteLike: /stream/{id}/like/
+  PostView: /stream/{id}/view/
+  GetComments: /stream/{id}/comments/
+  PostComments: /stream/{id}/comments/
+  DeleteComments: /stream/{id}/comments/
   GetRoom: /room/
   PutRoom: /room/
   GetRoomById: /room/{id}/
+  GetRoomByUserName: /room/username/{username}

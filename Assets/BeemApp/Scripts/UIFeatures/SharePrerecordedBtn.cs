@@ -20,8 +20,8 @@ namespace Beem.UI {
         /// Share prerecorded video
         /// </summary>
         public void Share() {
-            if (!string.IsNullOrWhiteSpace(_streamData.id.ToString())) {
-                StreamCallBacks.onGetPrerecordedLink?.Invoke(_streamData);
+            if (!string.IsNullOrWhiteSpace(_streamData.share_link.ToString())) {
+                StreamCallBacks.onShareStadiumLink?.Invoke(_streamData.share_link);
             } else {
                 DynamicLinksCallBacks.onShareAppLink?.Invoke();
             }

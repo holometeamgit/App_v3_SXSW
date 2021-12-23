@@ -1,58 +1,88 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
+/// <summary>
+/// Class for creating different environments
+/// </summary>
 public class DevEnvironment : MonoBehaviour {
-    static string Prod = "PROD";
-    static string Dev = "DEV";
 
+    private const string APPLICATION_NAME_DEV = "Beem Dev";
+    private const string APPLICATION_NAME = "Beem";
+
+    private const string DEV = "DEV";
+    private const string LOG = "LOG";
+
+
+    /// <summary>
+    /// Switch current project to dev server
+    /// </summary>
     [MenuItem("Environment/Switch To Dev")]
-    static void SwitchToDev() {
-        PlayerSettings.productName = "Beem Dev";
+    public static void SwitchToDev() {
+        PlayerSettings.productName = APPLICATION_NAME_DEV;
 
-        SwitchDefine(BuildTargetGroup.iOS, Prod, Dev);
-        SwitchDefine(BuildTargetGroup.Android, Prod, Dev);
+        AddDefine(BuildTargetGroup.iOS, DEV);
+        AddDefine(BuildTargetGroup.Android, DEV);
 
         EditorUserBuildSettings.development = true;
     }
 
+    /// <summary>
+    /// Switch current project to prod server
+    /// </summary>
     [MenuItem("Environment/Switch To Prod")]
-    static void SwitchToProd() {
-        PlayerSettings.productName = "Beem";
+    public static void SwitchToProd() {
+        PlayerSettings.productName = APPLICATION_NAME;
 
-        SwitchDefine(BuildTargetGroup.iOS, Dev, Prod);
-        SwitchDefine(BuildTargetGroup.Android, Dev, Prod);
+        RemoveDefine(BuildTargetGroup.iOS, DEV);
+        RemoveDefine(BuildTargetGroup.Android, DEV);
 
         EditorUserBuildSettings.development = false;
     }
 
-    static void SwitchDefine(BuildTargetGroup targetGroup, string firstDefine, string secondDefine) {
+    /// <summary>
+    /// Turn on logs
+    /// </summary>
+    [MenuItem("Environment/Add Logs")]
+    public static void AddLogs() {
+        AddDefine(BuildTargetGroup.iOS, LOG);
+        AddDefine(BuildTargetGroup.Android, LOG);
+    }
+
+    /// <summary>
+    /// Turn off logs
+    /// </summary>
+    [MenuItem("Environment/Remove Logs")]
+    public static void RemoveLogs() {
+        RemoveDefine(BuildTargetGroup.iOS, LOG);
+        RemoveDefine(BuildTargetGroup.Android, LOG);
+    }
+
+    private static void AddDefine(BuildTargetGroup targetGroup, string buildType) {
         string[] currentDefines;
         PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup, out currentDefines);
-        if (currentDefines.Contains(firstDefine)) {
-            for (int i = 0; i < currentDefines.Length; i++) {
-                if (currentDefines[i] == firstDefine) {
-                    currentDefines[i] = secondDefine;
-                }
-            }
-        } else {
-            int lenght = currentDefines.Length;
-            currentDefines = new string[lenght + 1];
-            currentDefines[lenght] = secondDefine;
+
+        if (!currentDefines.Contains(buildType)) {
+            List<string> nextDefines = currentDefines.ToList();
+            nextDefines.Add(buildType);
+            currentDefines = nextDefines.ToArray();
         }
+
         PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, currentDefines);
     }
 
-#if UNITY_CLOUD_BUILD
-    public static void BuildDev()
-    {
-        SwitchToDev();
-    }
+    private static void RemoveDefine(BuildTargetGroup targetGroup, string buildType) {
+        string[] currentDefines;
+        PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup, out currentDefines);
 
-    public static void BuildProd()
-    {
-        SwitchToProd();
+        if (currentDefines.Contains(buildType)) {
+            List<string> nextDefines = currentDefines.ToList();
+            nextDefines.Remove(buildType);
+            currentDefines = nextDefines.ToArray();
+        }
+
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, currentDefines);
     }
-#endif
 
 }

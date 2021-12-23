@@ -73,9 +73,9 @@ public class EmailAccountManager : MonoBehaviour {
     private void SignUpRequest(EmailSignUpJsonData emailSignUpJsonData) {
         string url = GetRequestURL(authorizationAPI.EmailSignUp);
         lastSignUpEmail = emailSignUpJsonData.email;
-        webRequestHandler.PostRequest(url, emailSignUpJsonData, WebRequestHandler.BodyType.JSON,
+        webRequestHandler.Post(url, emailSignUpJsonData, WebRequestBodyType.JSON,
             SignUpCallBack,
-            ErrorSignUpCallBack);
+            ErrorSignUpCallBack, needHeaderAccessToken: false);
 
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyUserSignup, AnalyticParameters.ParamUserType, AnalyticParameters.ParamViewer); //TODO: update this to take account tye into account if users can register as broadcasters in the future
     }
@@ -104,9 +104,9 @@ public class EmailAccountManager : MonoBehaviour {
     private void ResentVerificationRequest(ResendVerifyJsonData resendVerifyJsonData) {
         string url = GetRequestURL(authorizationAPI.ResendVerification);
         lastSignUpEmail = resendVerifyJsonData.email;
-        webRequestHandler.PostRequest(url, resendVerifyJsonData, WebRequestHandler.BodyType.JSON,
+        webRequestHandler.Post(url, resendVerifyJsonData, WebRequestBodyType.JSON,
             ResentVerificationCallBack,
-            ErrorResentVerificationBack);
+            ErrorResentVerificationBack, needHeaderAccessToken: false);
     }
 
     private void ResentVerificationCallBack(long code, string body) {
@@ -132,9 +132,9 @@ public class EmailAccountManager : MonoBehaviour {
     #region verification
     private void VerifyRequest(VerifyKeyJsonData verifyKeyJsonData) {
         string url = GetRequestURL(authorizationAPI.EmailVerification);
-        webRequestHandler.PostRequest(url, verifyKeyJsonData, WebRequestHandler.BodyType.JSON,
+        webRequestHandler.Post(url, verifyKeyJsonData, WebRequestBodyType.JSON,
             VerifedCallBack,
-            ErrorVerifyCallBack);
+            ErrorVerifyCallBack, needHeaderAccessToken: false);
     }
 
     private void VerifedCallBack(long code, string body) {
@@ -152,9 +152,9 @@ public class EmailAccountManager : MonoBehaviour {
     #region Log In
     private void LogInRequest(EmailLogInJsonData emailLogInJsonData) {
         string url = GetRequestURL(authorizationAPI.EmailLogIn);
-        webRequestHandler.PostRequest(url, emailLogInJsonData, WebRequestHandler.BodyType.JSON,
+        webRequestHandler.Post(url, emailLogInJsonData, WebRequestBodyType.JSON,
             LogInCallBack,
-            ErrorLogInCallBack);
+            ErrorLogInCallBack, needHeaderAccessToken: false);
     }
 
     private void LogInCallBack(long code, string body) {
@@ -182,9 +182,9 @@ public class EmailAccountManager : MonoBehaviour {
     #region Reset Password
     private void StartResetPasswordRequest(ResetPasswordEmailJsonData resetPasswordEmailJsonData) {
         string url = GetRequestURL(authorizationAPI.ResetPassword);
-        webRequestHandler.PostRequest(url, resetPasswordEmailJsonData, WebRequestHandler.BodyType.JSON,
+        webRequestHandler.Post(url, resetPasswordEmailJsonData, WebRequestBodyType.JSON,
             StartResetPasswordCallBack,
-            ErrorStartResetPasswordCallBack);
+            ErrorStartResetPasswordCallBack, needHeaderAccessToken: false);
     }
 
     private void StartResetPasswordCallBack(long code, string body) {
@@ -215,9 +215,9 @@ public class EmailAccountManager : MonoBehaviour {
     #region Reset Password verification
     private void ResetPasswordRequest(ResetPasswordJsonData resetPasswordJsonData) {
         string url = GetRequestURL(authorizationAPI.ResetPasswordConfirm);
-        webRequestHandler.PostRequest(url, resetPasswordJsonData, WebRequestHandler.BodyType.JSON,
+        webRequestHandler.Post(url, resetPasswordJsonData, WebRequestBodyType.JSON,
              ResetPasswordCallBack,
-             ErrorResetPasswordCallBack);
+             ErrorResetPasswordCallBack, needHeaderAccessToken: false);
     }
 
     private void ResetPasswordCallBack(long code, string body) {
@@ -242,10 +242,10 @@ public class EmailAccountManager : MonoBehaviour {
     #region Change Password 
     private void ChangePasswordRequest(PasswordChangeJsonData passwordChangeJsonData) {
         string url = GetRequestURL(authorizationAPI.ChangePassword);
-        webRequestHandler.PostRequest(url, passwordChangeJsonData, WebRequestHandler.BodyType.JSON,
+        webRequestHandler.Post(url, passwordChangeJsonData, WebRequestBodyType.JSON,
              ChangePasswordCallBack,
              ErrorChangePasswordCallBack,
-             accountManager.GetAccessToken().access);
+             needHeaderAccessToken:true);
     }
 
     private void ChangePasswordCallBack(long code, string body) {

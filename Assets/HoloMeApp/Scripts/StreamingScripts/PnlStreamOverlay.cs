@@ -180,9 +180,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         RefreshStreamControls(agoraController.IsRoom);
         RefreshBroadcasterControls(agoraController.IsChannelCreator);
         RefreshLiveControls(!agoraController.IsChannelCreator || agoraController.IsLive);
-        HelperFunctions.DevLog("IsRoom = " + agoraController.IsRoom);
-        HelperFunctions.DevLog("IsChannelCreator = " + agoraController.IsChannelCreator);
-        HelperFunctions.DevLog("IsLive = " + agoraController.IsLive);
+        HelperFunctions.DevLog($"IsRoom = {agoraController.IsRoom}, IsChannelCreator = {agoraController.IsChannelCreator}, IsLive = {agoraController.IsLive}");
     }
 
     private void RefreshStreamControls(bool room) {
@@ -209,7 +207,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private void StartStreamCountUpdaters() {
         HelperFunctions.DevLog("Stream Count Updaters Started");
         foreach (StreamerCountUpdater streamerCountUpdater in streamCountUpdaters) {
-            streamerCountUpdater.StartCheck(agoraController.ChannelName);
+            streamerCountUpdater.StartCheck(agoraController.ChannelName, agoraController.IsRoom);
         }
     }
 
@@ -261,7 +259,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
         isChannelCreator = true;
         gameObject.SetActive(true);
-        pnlViewingExperience.ToggleARSessionObjects(false);
+        ARConstructor.onActivated?.Invoke(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
 
         ToggleLocalAudio(false);
@@ -352,19 +350,12 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     public void ShareStream() {
-        HelperFunctions.DevLog("agoraController.IsChannelCreator = " + agoraController.IsChannelCreator);
-        HelperFunctions.DevLog("agoraController.ChannelName = " + agoraController.ChannelName);
-        HelperFunctions.DevLog("agoraController.IsRoom = " + agoraController.IsRoom);
-        HelperFunctions.DevLog("currentStreamId = " + currentStreamId);
+        HelperFunctions.DevLog($"IsRoom = {agoraController.IsRoom}, IsChannelCreator = {agoraController.IsChannelCreator}, agoraController.ChannelName = {agoraController.ChannelName}, currentStreamId = {currentStreamId}");
 
         if (agoraController.IsRoom) {
-            StreamCallBacks.onGetRoomLink?.Invoke(agoraController.ChannelName);
+            StreamCallBacks.onShareRoomLink?.Invoke(agoraController.ChannelName);
         } else {
-            if (!string.IsNullOrWhiteSpace(currentStreamId)) {
-                StreamCallBacks.onGetStreamLink?.Invoke(currentStreamId, agoraController.ChannelName);
-            } else {
-                DynamicLinksCallBacks.onShareAppLink?.Invoke();
-            }
+            StreamCallBacks.onShareStadiumLink?.Invoke(agoraController.ChannelName);
         }
 
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
@@ -698,7 +689,13 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         _muteAudio = mute;
 
         if (isChannelCreator) { //Display popup only for streamers but not for 2 way audio viewers
-            ShowMicrophoneMuteStatusMessage(mute);
+            bool autoHide = true;
+            if (!agoraController.IsLive) {
+                if (mute) {
+                    autoHide = false; //Keep mute messages opened if the channel not live
+                }
+            }
+            ShowMicrophoneMuteStatusMessage(mute, autoHide); //Don't hide if not live
             SendVideoAudioPauseStatusToViewers();
         } else if (togglePushToTalk.interactable) { //Do not show microphone is off message unless push to talk is active for viewers
             ShowMicrophoneMuteStatusMessage(mute);
@@ -706,16 +703,26 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         agoraController.ToggleLocalAudio(mute);
     }
 
-    private void ShowMicrophoneMuteStatusMessage(bool mute) {
+    private void ShowMicrophoneMuteStatusMessage(bool mute, bool autoHide = true) {
         AnimatedCentreTextMessage("Your microphone is " + (mute ? "off" : "on") + ".");
-        AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
+        if (autoHide) {
+            AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
+        }
     }
 
-    public void ToggleVideo(bool hideVideo) {
+    public void ToggleVideo(bool hideVideo) { //Only called for stream host
         _hideVideo = hideVideo;
 
         AnimatedCentreTextMessage("Your camera is " + (hideVideo ? "off" : "on") + ".");
-        AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
+
+        if (!agoraController.IsLive) { //Don't hide if not live and camera is being disabled
+            if (!hideVideo) {
+                AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
+            }
+        } else {
+            AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
+        }
+
         SendVideoAudioPauseStatusToViewers();
 
         //UpdateToggleMessageOff();
@@ -778,9 +785,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private void OnDisable() {
         StopAllCoroutines();
-        if (pnlViewingExperience.gameObject != null) {
-            pnlViewingExperience.ToggleARSessionObjects(false);
-        }
         speechNotificationPopups.DeactivateAllPopups();
         ChatBtn.onOpen -= OpenChat;
     }
