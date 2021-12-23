@@ -63,6 +63,7 @@ public class PnlSettings : MonoBehaviour {
         MenuConstructor.OnActivated?.Invoke(false);
         HomeScreenConstructor.OnActivated?.Invoke(false);
         SettingsConstructor.OnActivated?.Invoke(false);
+        ARMessageRoomConstructor.OnActivated?.Invoke(false);
         _accountManager.LogOut();
     }
 
