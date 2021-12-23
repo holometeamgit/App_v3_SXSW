@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 using Beem.Extenject.Hologram;
 using Beem.Extenject.Permissions;
 using NatCorder;
@@ -77,8 +78,7 @@ namespace Beem.Extenject.Record {
                 _videoHeight,
                 25,
                 AudioSettings.outputSampleRate,
-                (int)AudioSettings.speakerMode//,
-                                              //OnRecordComplete
+                (int)AudioSettings.speakerMode
             );
 
             _cameraInput = new CameraInput(_mediaRecorder, _recordingClock, _cameras);
@@ -115,10 +115,11 @@ namespace Beem.Extenject.Record {
         public void OnRecordStop() {
             _audioInput.Dispose();
             _cameraInput.Dispose();
-            //_mediaRecorder.Dispose();
+            OnRecordComplete();
         }
 
-        private void OnRecordComplete(string outputPath) {
+        private async void OnRecordComplete() {
+            string outputPath = await _mediaRecorder.FinishWriting();
             if (_recordLengthFailed) {
                 File.Delete(outputPath);
                 _signalBus.Fire(new SnapShotStartSignal());
