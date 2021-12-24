@@ -11,7 +11,7 @@ public class RoomBtn : MonoBehaviour {
     /// </summary>
     public void Open() {
         RoomTutorialConstructor.OnActivated?.Invoke(false);
-        StreamOverlayConstructor.onActivatedAsRoomBroadcaster?.Invoke(true);
+        StreamOverlayConstructor.onActivatedAsRoomBroadcaster?.Invoke();
 
         AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyGoLive, new Dictionary<string, string>() { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID } });
 

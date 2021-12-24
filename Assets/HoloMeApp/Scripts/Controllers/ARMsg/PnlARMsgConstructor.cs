@@ -20,8 +20,6 @@ public class PnlARMsgConstructor : MonoBehaviour {
     [SerializeField]
     private GameObject _pnlARMessagesSteps;
     [SerializeField]
-    private PnlViewingExperience _pnlViewingExperience;
-    [SerializeField]
     private PopupShowChecker _popupShowChecker;
     [SerializeField]
     private PopupShowChecker _arMessagePopupChecker;
@@ -44,7 +42,7 @@ public class PnlARMsgConstructor : MonoBehaviour {
     private void ActivateData(ARMsgJSON.Data data) {
         currentData = data;
 
-        _pnlViewingExperience.ActivateForARMessaging(data);
+        ARenaConstructor.onActivateForARMessaging?.Invoke(data);
 
         _pnlARMessages.Init(data);
 
@@ -98,7 +96,7 @@ public class PnlARMsgConstructor : MonoBehaviour {
     }
 
     private void Close() {
-        _pnlViewingExperience.StopExperience();
+        ARenaConstructor.onDeactivate?.Invoke();
         _pnlARMessages.Deactivate();
         MenuConstructor.OnActivated?.Invoke(true);
         HomeScreenConstructor.OnActivated?.Invoke(true);

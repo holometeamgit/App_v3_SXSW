@@ -59,7 +59,6 @@ public class FocusSquareV2 : PlacementHandler {
 
     // Remove it and add normal stuff
     [SerializeField] private Transform _focusSquareV2Sprite;
-    [SerializeField] private PnlViewingExperience _pnlViewingExperience;
 
     [SerializeField] private GameObject _btnCloseStreamOverlay;
     [SerializeField] private GameObject _btnCloseARMessaging;
@@ -138,30 +137,31 @@ public class FocusSquareV2 : PlacementHandler {
             case States.SCANNING:
                 TapToPlaceAnimation();
                 _focusSquareRenderer.color = new Color(1, 1, 1, 0.0f);
-                _pnlViewingExperience.RunTutorial();
+                ARenaConstructor.onRunTutorial?.Invoke();
                 _currentState = value;
                 break;
             case States.TAP_FIRST:
                 _focusSquareRenderer.color = new Color(1, 1, 1, 1.0f);
                 TapToPlaceAnimation();
-                _pnlViewingExperience.ShowTapToPlaceMessage();
+                ARenaConstructor.onShowTapToPlaceMessage?.Invoke();
+
                 _currentState = value;
                 break;
             case States.LOADING:
                 _focusSquareRenderer.color = new Color(1, 1, 1, 1.0f);
-                _pnlViewingExperience.HideScanMessage();
+                ARenaConstructor.onHideScanMessage?.Invoke();
                 TurnPlanes(false);
                 LoadignAnimation();
                 _currentState = value;
                 break;
             case States.PINCH:
                 _focusSquareRenderer.color = new Color(1, 1, 1, 1.0f);
-                _pnlViewingExperience.ShowPinchToZoomMessage();
+                ARenaConstructor.onShowPinchToZoomMessage?.Invoke();
                 PinchToZoomAnimation();
                 _currentState = value;
                 break;
             case States.DELAY_AFTER_PINCH:
-                _pnlViewingExperience.OnPlaced();
+                ARenaConstructor.onPlaced?.Invoke();
                 _currentDelayAfterPinch = 0.0f;
                 _currentState = value;
                 break;

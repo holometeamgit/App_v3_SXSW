@@ -9,8 +9,6 @@ public class UIThumbnailsController : MonoBehaviour {
     public Action<string> OnPlayFromUser;
 
     [SerializeField] WebRequestHandler webRequestHandler;
-    [SerializeField] PnlViewingExperience pnlViewingExperience;
-    [SerializeField] PnlStreamOverlay pnlStreamOverlay;
     [SerializeField] GameObject btnThumbnailPrefab;
     [SerializeField] Transform content;
     [SerializeField] PurchaseManager purchaseManager;
@@ -103,7 +101,7 @@ public class UIThumbnailsController : MonoBehaviour {
     /// <param name="roomJsonData"></param>
     private void PlayRoom(RoomJsonData data) { //TODO split it to other class
         permissionController.CheckCameraMicAccess(() => {
-            pnlStreamOverlay.OpenAsViewer(data.agora_channel, data.id, true);
+            StreamOverlayConstructor.onActivatedAsViewer?.Invoke(data.agora_channel, data.id, true);
             OnPlayFromUser?.Invoke(data.user);
         });
 
@@ -119,7 +117,7 @@ public class UIThumbnailsController : MonoBehaviour {
         }
 
         permissionController.CheckCameraMicAccess(() => {
-            pnlStreamOverlay.OpenAsViewer(data.agora_channel, data.id.ToString(), false);
+            StreamOverlayConstructor.onActivatedAsViewer?.Invoke(data.agora_channel, data.id.ToString(), false);
             OnPlayFromUser?.Invoke(data.user);
         });
     }
@@ -130,7 +128,7 @@ public class UIThumbnailsController : MonoBehaviour {
     /// <param name="roomJsonData"></param>
     private void PlayPrerecorded(StreamJsonData.Data data) { //TODO split it to other class
         permissionController.CheckCameraAccess(() => {
-            pnlViewingExperience.ActivateForPreRecorded(data, false);
+            ARenaConstructor.onActivateForPreRecorded?.Invoke(data, false);
             PrerecordedVideoConstructor.OnActivated?.Invoke(data);
             OnPlayFromUser?.Invoke(data.user);
         });
@@ -142,7 +140,7 @@ public class UIThumbnailsController : MonoBehaviour {
     /// <param name="data"></param>
     private void PlayTeaser(StreamJsonData.Data data) {
         permissionController.CheckCameraAccess(() => {
-            pnlViewingExperience.ActivateForPreRecorded(data, data.HasTeaser);
+            ARenaConstructor.onActivateForPreRecorded?.Invoke(data, data.HasTeaser);
             PrerecordedVideoConstructor.OnActivated?.Invoke(data);
             OnPlayFromUser?.Invoke(data.user);
             purchaseManager.SetPurchaseStreamData(data);

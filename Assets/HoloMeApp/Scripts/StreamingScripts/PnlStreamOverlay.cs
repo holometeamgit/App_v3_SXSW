@@ -40,6 +40,9 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private RawImage cameraRenderImage;
 
     [SerializeField]
+    private GameObject imgBackground;
+
+    [SerializeField]
     private Toggle togglePushToTalk;
 
     [SerializeField]
@@ -74,9 +77,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     [SerializeField]
     private AnimatedTransition chat;
 
-    [SerializeField]
-    private PnlViewingExperience pnlViewingExperience;
-
     [Header("Controllers")]
     [SerializeField]
     private AgoraController agoraController;
@@ -87,12 +87,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     [SerializeField]
     private UserWebManager userWebManager;
-
-    [SerializeField]
-    private UnityEvent OnCloseAsViewer;
-
-    [SerializeField]
-    private UnityEvent OnCloseAsStreamer;
 
     private bool initialised;
     private int countDown;
@@ -223,6 +217,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private void RefreshBroadcasterControls(bool broadcaster) {
         controlsPresenter.SetActive(broadcaster);
+        imgBackground.SetActive(broadcaster);
         controlsViewer.SetActive(!broadcaster);
     }
 
@@ -253,6 +248,13 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         StreamerOpenSharedFunctions();
     }
 
+    /// <summary>
+    /// Deactivate
+    /// </summary>
+    public void Deactivate() {
+        gameObject.SetActive(false);
+    }
+
     private void StreamerOpenSharedFunctions() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
 
@@ -279,7 +281,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         if (channelName == userWebManager.GetUsername()) {
             WarningConstructor.ActivateSingleButton("Viewing as stream host",
                 "Please connect to the stream using a different account",
-                onBackPress: () => { StreamOverlayConstructor.onActivatedAsStadiumBroadcaster?.Invoke(false); });
+                onBackPress: () => { Deactivate(); });
 
             return;
         }
@@ -293,7 +295,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         isChannelCreator = false;
         gameObject.SetActive(true);
         togglePushToTalk.interactable = false;
-        pnlViewingExperience.ActivateForStreaming(channelName, streamID, isRoom);
+        ARenaConstructor.onActivateForStreaming?.Invoke(channelName, streamID, isRoom);
         cameraRenderImage.transform.parent.gameObject.SetActive(false);
         agoraController.JoinOrCreateChannel(false);
         currentStreamId = streamID;
@@ -324,18 +326,18 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         else if (isChannelCreator)
             WarningConstructor.ActivateDoubleButton("End the live stream?",
                 "Closing this page will end the live stream and disconnect your users.",
-                onButtonOnePress: () => { StreamOverlayConstructor.onActivatedAsStadiumBroadcaster?.Invoke(false); });
+                onButtonOnePress: () => { CloseAsStreamer(); });
         else
             WarningConstructor.ActivateDoubleButton("Disconnect from live stream?",
                 "Closing this page will disconnect you from the live stream",
-                onButtonOnePress: () => { CloseAsViewer(); });
+                onButtonOnePress: () => { Deactivate(); });
     }
 
     public void CloseAsStreamer() {
         StopStream();
         agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
-        OnCloseAsStreamer.Invoke();
+        StreamOverlayConstructor.onDeactivate?.Invoke();
         HomeScreenConstructor.OnActivated?.Invoke(true);
         MenuConstructor.OnActivated?.Invoke(true);
         RecordARConstructor.OnActivated?.Invoke(false);
@@ -343,7 +345,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private void CloseAsViewer() {
         StopStream();
-        OnCloseAsViewer.Invoke();
+        StreamOverlayConstructor.onDeactivate?.Invoke();
         HomeScreenConstructor.OnActivated?.Invoke(true);
         MenuConstructor.OnActivated?.Invoke(true);
         RecordARConstructor.OnActivated?.Invoke(false);

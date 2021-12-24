@@ -10,33 +10,40 @@ public class StreamOverlayConstructor : MonoBehaviour {
     [SerializeField]
     private PnlStreamOverlay _pnlStreamOverlay;
 
-    public static Action<bool> onActivatedAsStadiumBroadcaster = delegate { };
-    public static Action<bool> onActivatedAsRoomBroadcaster = delegate { };
+    public static Action onActivatedAsStadiumBroadcaster = delegate { };
+    public static Action onActivatedAsRoomBroadcaster = delegate { };
+    public static Action<string, string, bool> onActivatedAsViewer = delegate { };
+
+    public static Action onDeactivate = delegate { };
 
     private void OnEnable() {
-        onActivatedAsStadiumBroadcaster += ActivatedAsStadiumBroadcaster;
-        onActivatedAsRoomBroadcaster += ActivatedAsRoomBroadcaster;
+        onActivatedAsStadiumBroadcaster += OnActivatedAsStadiumBroadcaster;
+        onActivatedAsRoomBroadcaster += OnActivatedAsRoomBroadcaster;
+        onActivatedAsViewer += OnActivatedAsViewer;
+        onDeactivate += OnDeactivate;
     }
 
     private void OnDisable() {
-        onActivatedAsStadiumBroadcaster -= ActivatedAsStadiumBroadcaster;
-        onActivatedAsRoomBroadcaster -= ActivatedAsRoomBroadcaster;
+        onActivatedAsStadiumBroadcaster -= OnActivatedAsStadiumBroadcaster;
+        onActivatedAsRoomBroadcaster -= OnActivatedAsRoomBroadcaster;
+        onActivatedAsViewer -= OnActivatedAsViewer;
+        onDeactivate -= OnDeactivate;
     }
 
-    private void ActivatedAsStadiumBroadcaster(bool status) {
-        if (status) {
-            _pnlStreamOverlay.OpenAsStreamer();
-        } else {
-            _pnlStreamOverlay.CloseAsStreamer();
-        }
+    private void OnActivatedAsStadiumBroadcaster() {
+        _pnlStreamOverlay.OpenAsStreamer();
     }
 
-    private void ActivatedAsRoomBroadcaster(bool status) {
-        if (status) {
-            _pnlStreamOverlay.OpenAsRoomBroadcaster();
-        } else {
-            _pnlStreamOverlay.CloseAsStreamer();
-        }
+    private void OnActivatedAsRoomBroadcaster() {
+        _pnlStreamOverlay.OpenAsRoomBroadcaster();
+    }
+
+    private void OnActivatedAsViewer(string channelName, string streamID, bool isRoom) {
+        _pnlStreamOverlay.OpenAsViewer(channelName, streamID, isRoom);
+    }
+
+    private void OnDeactivate() {
+        _pnlStreamOverlay.Deactivate();
     }
 
 }
