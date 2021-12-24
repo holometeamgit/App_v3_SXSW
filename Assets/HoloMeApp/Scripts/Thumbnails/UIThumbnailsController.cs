@@ -45,6 +45,10 @@ public class UIThumbnailsController : MonoBehaviour {
         purchaseManager.Purchase();
     }
 
+    public void Share(StreamJsonData.Data data) {
+        StreamCallBacks.onShareStreamLinkByData?.Invoke(data);
+    }
+
     public void Play(StreamJsonData.Data data) {
         if (data.is_bought && data.IsStarted) {
             if (data.HasStreamUrl) {
@@ -214,7 +218,7 @@ public class UIThumbnailsController : MonoBehaviour {
             btnThumbnailItems[i].SetPlayAction(Play);
             btnThumbnailItems[i].SetTeaserPlayAction(PlayTeaser);
             btnThumbnailItems[i].SetBuyAction(Buy);
-            btnThumbnailItems[i].SetShareAction(StreamCallBacks.onShareStadiumLink);
+            btnThumbnailItems[i].SetShareAction(Share);
             btnThumbnailItems[i].LockToPress(false);
         }
         OnUpdated?.Invoke();

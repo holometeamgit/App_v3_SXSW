@@ -363,7 +363,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         if (agoraController.IsRoom) {
             StreamCallBacks.onShareRoomLink?.Invoke(agoraController.ChannelName);
         } else {
-            StreamCallBacks.onShareStadiumLink?.Invoke(agoraController.ChannelName);
+            StreamCallBacks.onShareStreamLinkByUsername?.Invoke(agoraController.ChannelName);
         }
 
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);

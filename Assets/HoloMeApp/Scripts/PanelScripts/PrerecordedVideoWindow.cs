@@ -1,5 +1,7 @@
 using Beem.Permissions;
 using Beem.UI;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -44,6 +46,8 @@ public class PrerecordedVideoWindow : MonoBehaviour {
 
     private StreamJsonData.Data _streamData = default;
 
+    private List<IStreamDataView> _streamDataViewaViews;
+
     private bool newDataAssigned = false;
 
     private bool isPinned = false;
@@ -67,6 +71,11 @@ public class PrerecordedVideoWindow : MonoBehaviour {
         }
 
         gameObject.SetActive(true);
+
+        _streamDataViewaViews = GetComponentsInChildren<IStreamDataView>().ToList();
+
+        _streamDataViewaViews.ForEach(x => x.Init(streamData));
+
         Refresh();
         _hologramHandler.SetOnPlacementUIHelperFinished(OnPlacementCompleted);
     }
@@ -125,6 +134,7 @@ public class PrerecordedVideoWindow : MonoBehaviour {
         RecordARConstructor.OnActivated?.Invoke(false);
         MenuConstructor.OnActivated?.Invoke(true);
         HomeScreenConstructor.OnActivated?.Invoke(true);
+        ARenaConstructor.onDeactivate?.Invoke();
         PrerecordedVideoConstructor.OnDeactivated?.Invoke();
     }
 }

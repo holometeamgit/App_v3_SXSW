@@ -44,7 +44,7 @@ public class UIThumbnailV3 : UIThumbnail {
     Action<StreamJsonData.Data> OnPlayClick;
     Action<StreamJsonData.Data> OnTeaserClick;
     Action<StreamJsonData.Data> OnBuyClick;
-    Action<string> OnShareClick;
+    Action<StreamJsonData.Data> OnShareClick;
 
     ThumbnailElement thumbnailElement;
 
@@ -63,7 +63,7 @@ public class UIThumbnailV3 : UIThumbnail {
         this.OnBuyClick += OnBuyClick;
     }
 
-    public override void SetShareAction(Action<string> OnShareClick) {
+    public override void SetShareAction(Action<StreamJsonData.Data> OnShareClick) {
         this.OnShareClick = null;
         this.OnShareClick += OnShareClick;
     }
@@ -73,7 +73,7 @@ public class UIThumbnailV3 : UIThumbnail {
 
         if (thumbnailElement.Data.is_bought && thumbnailElement.Data.GetStage() == StreamJsonData.Data.Stage.Live) {
             Play();
-        }  else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted && thumbnailElement.Data.HasStreamUrl) {
+        } else if (thumbnailElement.Data.is_bought && thumbnailElement.Data.IsStarted && thumbnailElement.Data.HasStreamUrl) {
             Play();
         } else if (!thumbnailElement.Data.is_bought && !thumbnailElement.Data.HasTeaser) {
             Buy();
@@ -99,7 +99,7 @@ public class UIThumbnailV3 : UIThumbnail {
     }
 
     public override void Share() {
-        OnShareClick?.Invoke(thumbnailElement.Data.share_link);
+        OnShareClick?.Invoke(thumbnailElement.Data);
     }
 
     public override void AddData(ThumbnailElement element) {

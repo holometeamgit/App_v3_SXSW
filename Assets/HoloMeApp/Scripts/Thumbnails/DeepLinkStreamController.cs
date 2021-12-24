@@ -134,7 +134,8 @@ public class DeepLinkStreamController : MonoBehaviour {
     }
 
     private void Awake() {
-        StreamCallBacks.onShareStadiumLink += OnShare;
+        StreamCallBacks.onShareStreamLinkByUsername += OnShare;
+        StreamCallBacks.onShareStreamLinkByData += OnShare;
         StreamCallBacks.onReceiveStreamLink += OnOpenStream;
         StreamCallBacks.onReceivePrerecordedLink += OnOpenPrerecorded;
     }
@@ -161,7 +162,8 @@ public class DeepLinkStreamController : MonoBehaviour {
 
 
     private void OnDestroy() {
-        StreamCallBacks.onShareStadiumLink -= OnShare;
+        StreamCallBacks.onShareStreamLinkByUsername -= OnShare;
+        StreamCallBacks.onShareStreamLinkByData -= OnShare;
         StreamCallBacks.onReceiveStreamLink -= OnOpenStream;
         StreamCallBacks.onReceivePrerecordedLink -= OnOpenPrerecorded;
     }
