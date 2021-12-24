@@ -45,6 +45,10 @@ public class UIThumbnailsController : MonoBehaviour {
         purchaseManager.Purchase();
     }
 
+    /// <summary>
+    /// Share Stream from HomePage
+    /// </summary>
+    /// <param name="data"></param>
     public void Share(StreamJsonData.Data data) {
         StreamCallBacks.onShareStreamLinkByData?.Invoke(data);
     }
