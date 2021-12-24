@@ -22,6 +22,10 @@ namespace Beem.Extenject.Hologram {
 
         private GameObject _spawnedObject;
 
+        public GameObject GetSpawnedObject() {
+            return _spawnedObject;
+        }
+
         private GameObject _spawnedTargetObject;
 
         private static List<ARRaycastHit> _hits = new List<ARRaycastHit>();

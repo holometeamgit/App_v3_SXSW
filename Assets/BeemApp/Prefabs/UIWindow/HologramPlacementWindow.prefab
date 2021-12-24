@@ -240,6 +240,8 @@ GameObject:
   - component: {fileID: 5683782583317840528}
   - component: {fileID: 1469140292044332348}
   - component: {fileID: 6956369269324145758}
+  - component: {fileID: 1330564568324537119}
+  - component: {fileID: 3760878662274775110}
   m_Layer: 5
   m_Name: touchZone
   m_TagString: Untagged
@@ -320,6 +322,40 @@ MonoBehaviour:
     type: 3}
   _targetPrefab: {fileID: 5722644458700917521, guid: 3f6f21deaed30cf42a1c9bbb4ee929d1,
     type: 3}
+--- !u!114 &1330564568324537119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5545877779373769395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89a6f6ad3fe100d4b8478df973b0f005, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hologram: {fileID: 0}
+  _touchCount: 2
+  _zoomSpeed: 0.05
+  _zoomRange: {x: 0.35, y: 1.95}
+--- !u!114 &3760878662274775110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5545877779373769395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a43d9036558c5464e8ba5a6c125fddc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hologram: {fileID: 0}
+  _touchCount: 1
+  _clickCount: 2
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!1 &6448392976981508690
 GameObject:
   m_ObjectHideFlags: 0
