@@ -5,10 +5,10 @@ using UnityEngine.EventSystems;
 namespace Beem.UI {
 
     /// <summary>
-    /// Share Button for prerecorded video
+    /// Share Button for StreamJsonData.Data
     /// </summary>
 
-    public class SharePrerecordedBtn : MonoBehaviour, IStreamDataView, IPointerDownHandler {
+    public class ShareStreamBtn : MonoBehaviour, IStreamDataView, IPointerDownHandler {
 
         private StreamJsonData.Data _streamData = default;
 
@@ -21,7 +21,7 @@ namespace Beem.UI {
         /// </summary>
         public void Share() {
             if (!string.IsNullOrWhiteSpace(_streamData.share_link.ToString())) {
-                StreamCallBacks.onShareStadiumLink?.Invoke(_streamData.share_link);
+                StreamCallBacks.onShareStreamLink?.Invoke(_streamData.share_link);
             }
         }
 
