@@ -12,13 +12,19 @@ public class PnlThumbnailPopupConstructor : MonoBehaviour {
 
     private void Construct() {
         StreamCallBacks.onStreamDataReceived += OpenStream;
+        StreamCallBacks.onCloseStreamPopUp += Close;
     }
 
     private void OpenStream(StreamJsonData.Data data) {
         _pnlThumbnailPopup.OpenStream(data.id);
     }
 
+    private void Close() {
+        _pnlThumbnailPopup.ClosePnl();
+    }
+
     private void OnDestroy() {
         StreamCallBacks.onStreamDataReceived -= OpenStream;
+        StreamCallBacks.onCloseStreamPopUp -= Close;
     }
 }

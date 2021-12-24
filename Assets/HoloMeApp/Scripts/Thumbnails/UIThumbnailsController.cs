@@ -109,6 +109,9 @@ public class UIThumbnailsController : MonoBehaviour {
     /// <param name="roomJsonData"></param>
     private void PlayRoom(RoomJsonData data) { //TODO split it to other class
         permissionController.CheckCameraMicAccess(() => {
+            MenuConstructor.OnActivated?.Invoke(false);
+            HomeScreenConstructor.OnActivated?.Invoke(false);
+            SettingsConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onActivatedAsViewer?.Invoke(data.agora_channel, data.id, true);
             OnPlayFromUser?.Invoke(data.user);
         });
@@ -125,6 +128,10 @@ public class UIThumbnailsController : MonoBehaviour {
         }
 
         permissionController.CheckCameraMicAccess(() => {
+            StreamCallBacks.onCloseStreamPopUp?.Invoke();
+            MenuConstructor.OnActivated?.Invoke(false);
+            HomeScreenConstructor.OnActivated?.Invoke(false);
+            SettingsConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onActivatedAsViewer?.Invoke(data.agora_channel, data.id.ToString(), false);
             OnPlayFromUser?.Invoke(data.user);
         });
@@ -136,6 +143,10 @@ public class UIThumbnailsController : MonoBehaviour {
     /// <param name="roomJsonData"></param>
     private void PlayPrerecorded(StreamJsonData.Data data) { //TODO split it to other class
         permissionController.CheckCameraAccess(() => {
+            StreamCallBacks.onCloseStreamPopUp?.Invoke();
+            MenuConstructor.OnActivated?.Invoke(false);
+            HomeScreenConstructor.OnActivated?.Invoke(false);
+            SettingsConstructor.OnActivated?.Invoke(false);
             ARenaConstructor.onActivateForPreRecorded?.Invoke(data, false);
             PrerecordedVideoConstructor.OnActivated?.Invoke(data);
             OnPlayFromUser?.Invoke(data.user);
@@ -148,6 +159,10 @@ public class UIThumbnailsController : MonoBehaviour {
     /// <param name="data"></param>
     private void PlayTeaser(StreamJsonData.Data data) {
         permissionController.CheckCameraAccess(() => {
+            StreamCallBacks.onCloseStreamPopUp?.Invoke();
+            MenuConstructor.OnActivated?.Invoke(false);
+            HomeScreenConstructor.OnActivated?.Invoke(false);
+            SettingsConstructor.OnActivated?.Invoke(false);
             ARenaConstructor.onActivateForPreRecorded?.Invoke(data, data.HasTeaser);
             PrerecordedVideoConstructor.OnActivated?.Invoke(data);
             OnPlayFromUser?.Invoke(data.user);

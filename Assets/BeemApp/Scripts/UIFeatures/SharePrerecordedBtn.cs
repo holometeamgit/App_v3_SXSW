@@ -8,7 +8,7 @@ namespace Beem.UI {
     /// Share Button for prerecorded video
     /// </summary>
 
-    public class SharePrerecordedBtn : MonoBehaviour, IStreamDataView, IPointerDownHandler {
+    public class SharePrerecordedBtn : MonoBehaviour, IStreamDataView {
 
         private StreamJsonData.Data _streamData = default;
 
@@ -23,10 +23,6 @@ namespace Beem.UI {
             if (_streamData != null) {
                 StreamCallBacks.onShareStreamLinkByData?.Invoke(_streamData);
             }
-        }
-
-        public void OnPointerDown(PointerEventData eventData) {
-            Share();
         }
     }
 }

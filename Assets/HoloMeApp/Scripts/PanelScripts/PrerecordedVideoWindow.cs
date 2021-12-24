@@ -72,8 +72,6 @@ public class PrerecordedVideoWindow : MonoBehaviour {
 
         gameObject.SetActive(true);
 
-        _streamDataViewaViews = GetComponentsInChildren<IStreamDataView>().ToList();
-
         _streamDataViewaViews.ForEach(x => x.Init(streamData));
 
         Refresh();
@@ -115,6 +113,7 @@ public class PrerecordedVideoWindow : MonoBehaviour {
     }
 
     private void OnEnable() {
+        _streamDataViewaViews = GetComponentsInChildren<IStreamDataView>().ToList();
         commentsToggle.onValueChanged.AddListener(ChangeHideBottomBarStatus);
         _purchaseManager.OnPurchaseSuccessful += Refresh;
     }

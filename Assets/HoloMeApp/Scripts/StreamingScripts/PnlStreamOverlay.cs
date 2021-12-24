@@ -330,7 +330,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         else
             WarningConstructor.ActivateDoubleButton("Disconnect from live stream?",
                 "Closing this page will disconnect you from the live stream",
-                onButtonOnePress: () => { Deactivate(); });
+                onButtonOnePress: () => { CloseAsViewer(); });
     }
 
     public void CloseAsStreamer() {
