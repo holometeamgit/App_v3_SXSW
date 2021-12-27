@@ -21,11 +21,8 @@ public class ARMessageRoomWindow : MonoBehaviour {
     /// hide btns
     /// </summary>
     public void Hide() {
+        gameObject.SetActive(false);
         _animator.SetBool("Show", false);
-    }
-
-    private void OnEnable() {
-        Show();
     }
 
     private void OnDisable() {
