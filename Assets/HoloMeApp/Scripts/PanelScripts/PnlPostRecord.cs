@@ -118,7 +118,7 @@ public class PnlPostRecord : MonoBehaviour {
     /// Deactivate
     /// </summary>
     public void Deactivate() {
-        videoPlayerController.OnResume();
+        videoPlayerController?.OnResume();
         _animatedTransition.DoMenuTransition(false);
     }
 

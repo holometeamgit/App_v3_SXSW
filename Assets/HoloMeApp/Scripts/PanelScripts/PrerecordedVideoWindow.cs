@@ -18,15 +18,15 @@ public class PrerecordedVideoWindow : MonoBehaviour {
 
     [Header("Views after hologram placement")]
     [SerializeField]
-    private GameObject _placementView;
+    private CanvasGroup _placementView;
 
     [Header("View for video")]
     [SerializeField]
-    private GameObject _videoView;
+    private CanvasGroup _videoView;
 
     [Header("Purchase for video")]
     [SerializeField]
-    private GameObject _purchaseView;
+    private CanvasGroup _purchaseView;
 
     [Header("Comments Toggle")]
     [SerializeField]
@@ -88,17 +88,23 @@ public class PrerecordedVideoWindow : MonoBehaviour {
             return;
         }
         isPinned = true;
-        _placementView.SetActive(true);
+        SetActive(_placementView, true);
         RecordARConstructor.OnActivated?.Invoke(_streamData.IsStarted && _streamData.is_bought);
+    }
+
+    private void SetActive(CanvasGroup canvasGroup, bool value) {
+        canvasGroup.alpha = value ? 1 : 0;
+        canvasGroup.interactable = value;
+        canvasGroup.blocksRaycasts = value;
     }
 
     private void Refresh() {
         if (!newDataAssigned) {
             return;
         }
-
-        _videoView.SetActive(_streamData.IsStarted && _streamData.is_bought && !commentsToggle.isOn);
-        _purchaseView.SetActive(!_streamData.is_bought && !commentsToggle.isOn);
+        SetActive(_placementView, !commentsToggle.isOn);
+        SetActive(_videoView, _streamData.IsStarted && _streamData.is_bought);
+        SetActive(_purchaseView, !_streamData.is_bought);
         _streamLikesRefresherView?.StartCountAsync(_streamData.id.ToString());
     }
 

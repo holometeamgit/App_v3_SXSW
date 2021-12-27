@@ -91,9 +91,6 @@ public class PnlRecord : MonoBehaviour {
         }
     }
 
-    int videoWidth;
-    int videoHeight;
-
     string lastRecordingPath;
 
     enum Mode { Video, Photo };
@@ -119,7 +116,6 @@ public class PnlRecord : MonoBehaviour {
     }
 
     void Start() {
-        CorrectResolutionAspect();
         ChangeMode = Mode.Video;
         btnToggleMode.onClick.AddListener(() => ChangeMode = mode == Mode.Video ? Mode.Photo : Mode.Video);
         videoButtonContainerPosition = rtButtonContainer.anchoredPosition;
@@ -136,15 +132,6 @@ public class PnlRecord : MonoBehaviour {
         canvasGroup.alpha = 0;
     }
 
-    private void CorrectResolutionAspect() {
-        videoWidth = MakeEven(Screen.width / 2);
-        videoHeight = MakeEven(Screen.height / 2);
-    }
-
-    public int MakeEven(int value) {
-        return value % 2 == 0 ? value : value - 1;
-    }
-
     /// <summary>
     /// start recording
     /// </summary>
@@ -152,6 +139,12 @@ public class PnlRecord : MonoBehaviour {
         if (!permissionController.PermissionGranter.HasMicAccess) {
             recordMicrophone = false;
         }
+
+        int videoWidth;
+        int videoHeight;
+
+        AgoraSharedVideoConfig.GetResolution(screenWidth: Screen.width, screenHeigh: Screen.height, out videoWidth, out videoHeight);
+
         _cameras = FindObjectsOfType<Camera>();
         recordLengthFailed = false;
         recordingClock = new RealtimeClock();
@@ -176,7 +169,7 @@ public class PnlRecord : MonoBehaviour {
     }
 
     public void RecordLengthFail() {
-        videoPlayerController.OnPause();
+        videoPlayerController?.OnPause();
         MakeScreenshot();
         recordLengthFailed = true;
     }
@@ -188,7 +181,7 @@ public class PnlRecord : MonoBehaviour {
             audioInput.Dispose();
         }
         cameraInput.Dispose();
-        videoPlayerController.OnPause();
+        videoPlayerController?.OnPause();
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         OnRecordComplete().ContinueWith((taskWebRequestData) => {
 
