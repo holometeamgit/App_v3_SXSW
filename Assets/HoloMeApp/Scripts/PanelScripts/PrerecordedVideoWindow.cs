@@ -56,6 +56,12 @@ public class PrerecordedVideoWindow : MonoBehaviour {
     public void Init(StreamJsonData.Data streamData) {
         newDataAssigned = true;
         _streamData = streamData;
+
+        gameObject.SetActive(true);
+
+        _streamDataViewaViews = GetComponentsInChildren<IStreamDataView>().ToList();
+        _streamDataViewaViews.ForEach(x => x.Init(_streamData));
+
         if (isPinned) {
             OnPlacementCompleted();
         } else {
@@ -65,10 +71,6 @@ public class PrerecordedVideoWindow : MonoBehaviour {
             OnPlacementCompleted();
 #endif
         }
-
-        gameObject.SetActive(true);
-
-        _streamDataViewaViews.ForEach(x => x.Init(streamData));
 
         Refresh();
         _hologramHandler.SetOnPlacementUIHelperFinished(OnPlacementCompleted);
@@ -109,7 +111,6 @@ public class PrerecordedVideoWindow : MonoBehaviour {
     }
 
     private void OnEnable() {
-        _streamDataViewaViews = GetComponentsInChildren<IStreamDataView>().ToList();
         commentsToggle.onValueChanged.AddListener(ChangeHideBottomBarStatus);
         _purchaseManager.OnPurchaseSuccessful += Refresh;
     }

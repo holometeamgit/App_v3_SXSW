@@ -142,7 +142,7 @@ public class UIThumbnailsController : MonoBehaviour {
     /// </summary>
     /// <param name="roomJsonData"></param>
     private void PlayPrerecorded(StreamJsonData.Data data) { //TODO split it to other class
-        permissionController.CheckCameraAccess(() => {
+        permissionController.CheckCameraMicAccess(() => {
             StreamCallBacks.onCloseStreamPopUp?.Invoke();
             MenuConstructor.OnActivated?.Invoke(false);
             HomeScreenConstructor.OnActivated?.Invoke(false);
@@ -158,7 +158,7 @@ public class UIThumbnailsController : MonoBehaviour {
     /// </summary>
     /// <param name="data"></param>
     private void PlayTeaser(StreamJsonData.Data data) {
-        permissionController.CheckCameraAccess(() => {
+        permissionController.CheckCameraMicAccess(() => {
             StreamCallBacks.onCloseStreamPopUp?.Invoke();
             MenuConstructor.OnActivated?.Invoke(false);
             HomeScreenConstructor.OnActivated?.Invoke(false);

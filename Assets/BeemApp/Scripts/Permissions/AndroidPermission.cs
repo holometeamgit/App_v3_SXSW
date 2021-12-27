@@ -14,17 +14,17 @@ namespace Beem.Permissions {
 
         public void RequestMicAccess(Action onSuccessed, Action onFailed) {
             var callbacks = new PermissionCallbacks();
-            callbacks.PermissionDenied += (value) => { HelperFunctions.DevLogError($"{value} PermissionCallbacks_PermissionDenied"); onFailed?.Invoke(); };
-            callbacks.PermissionGranted += (value) => { HelperFunctions.DevLogError($"{value} PermissionCallbacks_PermissionGranted"); onSuccessed?.Invoke(); };
-            callbacks.PermissionDeniedAndDontAskAgain += (value) => { HelperFunctions.DevLogError($"{value} PermissionCallbacks_PermissionDeniedAndDontAskAgain"); onFailed?.Invoke(); };
+            callbacks.PermissionDenied += (value) => { onFailed?.Invoke(); };
+            callbacks.PermissionGranted += (value) => { onSuccessed?.Invoke(); };
+            callbacks.PermissionDeniedAndDontAskAgain += (value) => { onFailed?.Invoke(); };
             Permission.RequestUserPermission(Permission.Microphone, callbacks);
         }
 
         public void RequestCameraAccess(Action onSuccessed, Action onFailed) {
             var callbacks = new PermissionCallbacks();
-            callbacks.PermissionDenied += (value) => { HelperFunctions.DevLogError($"{value} PermissionCallbacks_PermissionDenied"); onFailed?.Invoke(); };
-            callbacks.PermissionGranted += (value) => { HelperFunctions.DevLogError($"{value} PermissionCallbacks_PermissionGranted"); onSuccessed?.Invoke(); };
-            callbacks.PermissionDeniedAndDontAskAgain += (value) => { HelperFunctions.DevLogError($"{value} PermissionCallbacks_PermissionDeniedAndDontAskAgain"); onFailed?.Invoke(); };
+            callbacks.PermissionDenied += (value) => { onFailed?.Invoke(); };
+            callbacks.PermissionGranted += (value) => { onSuccessed?.Invoke(); };
+            callbacks.PermissionDeniedAndDontAskAgain += (value) => { onFailed?.Invoke(); };
             Permission.RequestUserPermission(Permission.Camera, callbacks);
         }
 
