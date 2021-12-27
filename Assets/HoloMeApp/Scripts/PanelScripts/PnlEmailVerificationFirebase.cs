@@ -8,12 +8,15 @@ using System;
 
 public class PnlEmailVerificationFirebase : MonoBehaviour {
     [SerializeField]
-    AuthController _authController;
-    [SerializeField]
     TMP_Text _txtEmail;
     [SerializeField]
     GameObject _goToLogInBtn;
     [SerializeField] TMP_Text _resendMsg;
+
+    [Space]
+    [SerializeField]
+    private AuthController _authController;
+
     private const int DELAY_TIME = 5000;
     private const int DELAY_FOR_TIMER = 1000;
     private const string TIMER_TEXT = "You can resend the email in ";

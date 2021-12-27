@@ -8,12 +8,8 @@ using Beem.Permissions;
 /// Bar for Prerecorded Video
 /// </summary>
 public class PnlARMessages : MonoBehaviour {
-
-    [Header("Hologram manager")]
     [SerializeField]
     private HologramHandler _hologramHandler;
-
-    [Header("Permission Controller")]
     [SerializeField]
     private PermissionController _permissionController;
 

@@ -21,6 +21,10 @@ public class HologramHandler : MonoBehaviour {
     [SerializeField]
     Material liveStreamMat;
 
+    public AudioSource GetAudioSource() {
+        return audioSource;
+    }
+
     string hologramViewDwellTimer = nameof(hologramViewDwellTimer);
 
     HoloMe holoMe;

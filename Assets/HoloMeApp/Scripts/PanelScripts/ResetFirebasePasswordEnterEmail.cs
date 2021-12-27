@@ -5,11 +5,13 @@ using Beem.SSO;
 public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     [SerializeField]
     InputFieldController emailInputField;
-    [SerializeField]
-    AuthController authController;
 
     [SerializeField]
     bool needShowWarning = true;
+
+    [Space]
+    [SerializeField]
+    private AuthController _authController;
 
     public void ForgotPasswordBtnClick() {
         CallBacks.onResetPasswordClick?.Invoke();
@@ -77,7 +79,7 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
 
     private void OnEnable() {
         if (string.IsNullOrWhiteSpace(emailInputField.text))
-            emailInputField.text = authController.GetEmail();
+            emailInputField.text = _authController.GetEmail();
 
 
         CallBacks.onResetPasswordClick += SendMsgOnEmailForChangePassword;

@@ -30,13 +30,11 @@ public class PnlPostRecord : MonoBehaviour {
     Button btnDownload;
 
     [SerializeField]
-    private VideoPlayerController _videoPlayerController;
-
-    [SerializeField]
     private AnimatedTransition _animatedTransition;
 
+    [Space]
     [SerializeField]
-    HologramHandler hologramHandler;
+    private HologramHandler _hologramHandler;
 
     static string lastRecordingPath;
     public static string LastRecordingPath { get { return lastRecordingPath; } }
@@ -52,6 +50,18 @@ public class PnlPostRecord : MonoBehaviour {
                 videoPlayer = imgPreview.GetComponent<VideoPlayer>();
             }
             return videoPlayer;
+        }
+    }
+
+    private VideoPlayerController _videoPlayerController;
+    private VideoPlayerController videoPlayerController {
+        get {
+
+            if (_videoPlayerController == null) {
+                _videoPlayerController = FindObjectOfType<VideoPlayerController>();
+            }
+
+            return _videoPlayerController;
         }
     }
 
@@ -108,12 +118,12 @@ public class PnlPostRecord : MonoBehaviour {
     /// Deactivate
     /// </summary>
     public void Deactivate() {
-        _videoPlayerController.OnResume();
+        videoPlayerController.OnResume();
         _animatedTransition.DoMenuTransition(false);
     }
 
     public void Share() {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareHologramMediaPressed, AnalyticParameters.ParamVideoName, hologramHandler.GetVideoFileName);
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareHologramMediaPressed, AnalyticParameters.ParamVideoName, _hologramHandler.GetVideoFileName);
         if (screenshotWasTaken) {
             ShareScreenshot();
         } else {
@@ -132,7 +142,7 @@ public class PnlPostRecord : MonoBehaviour {
     #region Video Functions
     public void ShareVideo() {
         if (!string.IsNullOrEmpty(lastRecordingPath)) {
-            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyVideoShared, AnalyticParameters.ParamVideoName, hologramHandler.GetVideoFileName);
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyVideoShared, AnalyticParameters.ParamVideoName, _hologramHandler.GetVideoFileName);
 
             new NativeShare().AddFile(lastRecordingPath).Share();
         } else {
@@ -143,7 +153,7 @@ public class PnlPostRecord : MonoBehaviour {
 
     public void ShareScreenshot() {
         if (screenShot != null) {
-            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySnapshotShared, AnalyticParameters.ParamVideoName, hologramHandler.GetVideoFileName);
+            AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySnapshotShared, AnalyticParameters.ParamVideoName, _hologramHandler.GetVideoFileName);
 
             new NativeShare().AddFile(screenShot).Share();
         } else {

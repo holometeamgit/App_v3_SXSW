@@ -96,23 +96,6 @@ public class FocusSquareV2 : PlacementHandler {
     [SerializeField]
     private float _maxDistanceOnSelection = 25.0f;
 
-    // *** DEBUG ***
-    private int _stopPlaneConstruction = -1;
-    [SerializeField] private Toggle _stopPlaneConstructionCheckbox;
-    // *** END DEBUG ***
-
-    private void Awake() {
-        _stopPlaneConstruction = PlayerPrefs.GetInt("_stopPlaneConstruction", -1);
-
-        _stopPlaneConstructionCheckbox.isOn = _stopPlaneConstruction >= 0;
-        _stopPlaneConstructionCheckbox.onValueChanged.AddListener(x => {
-            _stopPlaneConstruction = x ? 1 : -1;
-            PlayerPrefs.SetInt("_stopPlaneConstruction", _stopPlaneConstruction);
-            HelperFunctions.DevLog("_stopPlaneConstruction PP: " + PlayerPrefs.GetInt("_stopPlaneConstruction", -1));
-            HelperFunctions.DevLog("_stopPlaneConstruction : " + _stopPlaneConstruction);
-        });
-    }
-
     private void OnEnable() {
         _arPlanesLayerMask = LayerMask.NameToLayer(_arPlanesLayerMaskName);
         SwitchToState(States.NOT_RUNNUNG);
@@ -493,18 +476,6 @@ public class FocusSquareV2 : PlacementHandler {
     }
 
     private void TurnPlanes(bool value) {
-        if (_stopPlaneConstruction > 0) {
-            foreach (var plane in _arPlaneManager.trackables) {
-                var arPlaneMeshVisualizer = plane.GetComponent<ARPlaneMeshVisualizer>();
-                if (arPlaneMeshVisualizer != null) {
-                    arPlaneMeshVisualizer.enabled = value;
-                }
-            }
-
-            _arPlaneManager.enabled = value;
-            return;
-        }
-
         var oldMask = _arSessionOrigin.camera.cullingMask;
         var newMask = value ? oldMask | (1 << _arPlanesLayerMask) : oldMask & ~(1 << _arPlanesLayerMask);
         _arSessionOrigin.camera.cullingMask = newMask;

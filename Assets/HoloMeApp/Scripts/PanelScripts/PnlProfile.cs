@@ -6,9 +6,6 @@ using UnityEngine.UI;
 using Beem.SSO;
 
 public class PnlProfile : MonoBehaviour {
-    [SerializeField]
-    private AccountManager _accountManager;
-    [SerializeField] UserWebManager userWebManager;
     [SerializeField] GameObject InputDataArea;
     [SerializeField] InputFieldController usernameInputField;
     [SerializeField] int userNameLimit;
@@ -20,21 +17,28 @@ public class PnlProfile : MonoBehaviour {
     [SerializeField]
     private Toggle toggleEmailReceive;
 
+
+    [Space]
+    [SerializeField]
+    private AccountManager _accountManager;
+    [SerializeField]
+    private UserWebManager _userWebManager;
+
     public void ChooseUsername() {
         if (LocalDataVerification()) {
-            userWebManager.UpdateUserData(userName: usernameInputField.text);
+            _userWebManager.UpdateUserData(userName: usernameInputField.text);
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyProfileCreated, AnalyticParameters.ParamSignUpMethod, AnalyticsSignUpModeTracker.Instance.SignUpMethodUsed.ToString());
         }
     }
 
     private void Start() {
         usernameInputField.characterLimit = userNameLimit;
-        userWebManager.LoadUserInfo();
+        _userWebManager.LoadUserInfo();
     }
 
     private void UserInfoLoadedCallBack() {
-        usernameInputField.text = string.IsNullOrWhiteSpace(usernameInputField.text) ? userWebManager.GetUsername() ?? "" : usernameInputField.text;
-        if (userWebManager.GetUsername() == null) {
+        usernameInputField.text = string.IsNullOrWhiteSpace(usernameInputField.text) ? _userWebManager.GetUsername() ?? "" : usernameInputField.text;
+        if (_userWebManager.GetUsername() == null) {
             InputDataArea.SetActive(true);
         } else {
             SwitchToMainMenu();
@@ -52,7 +56,7 @@ public class PnlProfile : MonoBehaviour {
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyEmailOptIn, AnalyticParameters.ParamSignUpMethod, AnalyticsSignUpModeTracker.Instance.SignUpMethodUsed.ToString());
         }
 
-        userWebManager.LoadUserInfo();
+        _userWebManager.LoadUserInfo();
         SwitchToMainMenu();
     }
 
@@ -120,13 +124,13 @@ public class PnlProfile : MonoBehaviour {
     }
 
     private void OnEnable() {
-        userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
-        userWebManager.OnErrorUserInfoLoaded += ErrorUserInfoLoadedCallBack;
-        userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
-        userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
+        _userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
+        _userWebManager.OnErrorUserInfoLoaded += ErrorUserInfoLoadedCallBack;
+        _userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
+        _userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
 
         InputDataArea.SetActive(false);
-        userWebManager.LoadUserInfo();
+        _userWebManager.LoadUserInfo();
 
         toggleEmailReceive.isOn = false;
         toggleEmailReceive.enabled = false;
@@ -134,10 +138,10 @@ public class PnlProfile : MonoBehaviour {
     }
 
     private void OnDisable() {
-        userWebManager.OnUserInfoLoaded -= UserInfoLoadedCallBack;
-        userWebManager.OnErrorUserInfoLoaded -= ErrorUserInfoLoadedCallBack;
-        userWebManager.OnUserInfoUploaded -= UpdateUserDataCallBack;
-        userWebManager.OnErrorUserUploaded -= ErrorUpdateUserDataCallBack;
+        _userWebManager.OnUserInfoLoaded -= UserInfoLoadedCallBack;
+        _userWebManager.OnErrorUserInfoLoaded -= ErrorUserInfoLoadedCallBack;
+        _userWebManager.OnUserInfoUploaded -= UpdateUserDataCallBack;
+        _userWebManager.OnErrorUserUploaded -= ErrorUpdateUserDataCallBack;
 
         ClearInputFieldData();
 

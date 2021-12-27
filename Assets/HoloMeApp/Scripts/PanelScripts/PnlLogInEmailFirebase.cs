@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 
 public class PnlLogInEmailFirebase : MonoBehaviour {
 
-    [SerializeField] AccountManager _accountManager;
     [SerializeField] InputFieldController inputFieldEmail;
     [SerializeField] InputFieldController inputFieldPassword;
 
     [SerializeField]
     GameObject LogInLoadingBackground;
+
+    [Space]
+    [SerializeField]
+    private AccountManager _accountManager;
 
     private EmailVerificationTimer emailVerificationTimer = new EmailVerificationTimer();
 

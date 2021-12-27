@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class PnlSignUpEmailFirebase : MonoBehaviour {
     [SerializeField]
-    private AccountManager _accountManager;
-    [SerializeField]
     private InputFieldController inputFieldEmail;
     [SerializeField]
     private InputFieldController inputFieldPassword;
@@ -15,6 +13,10 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     private GameObject LogInLoadingBackground;
     [SerializeField]
     private Animator animator;
+
+    [Space]
+    [SerializeField]
+    private AccountManager _accountManager;
 
     private const float COOLDOWN = 0.5f;
     private float nextTimeCanClick = 0;

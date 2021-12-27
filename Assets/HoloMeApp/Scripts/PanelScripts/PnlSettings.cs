@@ -15,6 +15,7 @@ public class PnlSettings : MonoBehaviour {
     private GameObject _btnStadium;
     [SerializeField]
     private TMP_Text _txtNickname;
+    [Space]
     [SerializeField]
     private AccountManager _accountManager;
     [SerializeField]

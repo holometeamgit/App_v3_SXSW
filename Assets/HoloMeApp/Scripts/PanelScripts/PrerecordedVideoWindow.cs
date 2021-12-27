@@ -32,15 +32,11 @@ public class PrerecordedVideoWindow : MonoBehaviour {
     [SerializeField]
     private Toggle commentsToggle;
 
-    [Header("Purchase manager")]
+    [Space]
     [SerializeField]
     private PurchaseManager _purchaseManager;
-
-    [Header("Hologram manager")]
     [SerializeField]
     private HologramHandler _hologramHandler;
-
-    [Header("Permission Controller")]
     [SerializeField]
     private PermissionController _permissionController;
 

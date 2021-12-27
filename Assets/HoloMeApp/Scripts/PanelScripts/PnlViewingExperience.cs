@@ -12,23 +12,23 @@ public class PnlViewingExperience : MonoBehaviour {
     [SerializeField]
     CanvasGroup canvasGroup;
     [SerializeField]
-    HologramHandler hologramHandler;
-    [Header("")]
-    [SerializeField]
     RectTransform scanMessageRT;
+    [SerializeField]
+    private bool skipTutorial;
+    [Space]
+    [SerializeField]
+    private HologramHandler _hologramHandler;
 
+    Coroutine scanAnimationRoutine;
+    bool tutorialDisplayed;
+    float messageAnimationSpeed = 0.25f;
+    float messageTime = 10;
+    float animationSpeed = 0.25f;
     string scaneEnviromentStr = "Scan the floor in front of you by moving your phone slowly from side to side";
 
     string pinchToZoomStr = "Pinch to resize the hologram";
 
     string tapToPlaceStr = "To see your chosen performer, tap the white circle when it appears on the floor";
-    Coroutine scanAnimationRoutine;
-    [SerializeField]
-    bool skipTutorial;
-    bool tutorialDisplayed;
-    float messageAnimationSpeed = 0.25f;
-    float messageTime = 10;
-    float animationSpeed = 0.25f;
     private enum TutorialState { MessageScan, MessageTapToPlace, WaitingForTap, WaitingForPinch, TutorialComplete };
     TutorialState tutorialState = TutorialState.MessageScan;
     void OnEnable() {
@@ -114,8 +114,8 @@ public class PnlViewingExperience : MonoBehaviour {
     public void ActivateForPreRecorded(StreamJsonData.Data streamJsonData, bool isTeaser) {
         SharedActivationFunctions();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, streamJsonData.title } });
-        hologramHandler.PlayIfPlaced(isTeaser ? streamJsonData.teaser_s3_url : streamJsonData.stream_s3_url, streamJsonData.user_id);
-        hologramHandler.TogglePreRecordedVideoRenderer(true);
+        _hologramHandler.PlayIfPlaced(isTeaser ? streamJsonData.teaser_s3_url : streamJsonData.stream_s3_url, streamJsonData.user_id);
+        _hologramHandler.TogglePreRecordedVideoRenderer(true);
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
@@ -128,8 +128,8 @@ public class PnlViewingExperience : MonoBehaviour {
     /// <param name="streamJsonData"></param>
     public void ActivateForARMessaging(ARMsgJSON.Data streamJsonData) {
         SharedActivationFunctions();
-        hologramHandler.PlayIfPlaced(streamJsonData.ar_message_s3_link);
-        hologramHandler.TogglePreRecordedVideoRenderer(true);
+        _hologramHandler.PlayIfPlaced(streamJsonData.ar_message_s3_link);
+        _hologramHandler.TogglePreRecordedVideoRenderer(true);
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
@@ -140,9 +140,9 @@ public class PnlViewingExperience : MonoBehaviour {
         StopExperience();
         SharedActivationFunctions();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, "Live Stream: " + channelName }, { AnalyticParameters.ParamPerformanceID, streamID } });
-        hologramHandler.TogglePreRecordedVideoRenderer(false);
-        hologramHandler.AssignStreamName(channelName);
-        hologramHandler.StartTrackingStream();
+        _hologramHandler.TogglePreRecordedVideoRenderer(false);
+        _hologramHandler.AssignStreamName(channelName);
+        _hologramHandler.StartTrackingStream();
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
             HideScanMessage();
@@ -153,7 +153,7 @@ public class PnlViewingExperience : MonoBehaviour {
         ARConstructor.onActivated?.Invoke(true);
         canvasGroup.alpha = 0;
         gameObject.SetActive(true);
-        hologramHandler.InitSession();
+        _hologramHandler.InitSession();
         FadeInCanvas();
     }
     void FadeInCanvas() {
@@ -166,7 +166,7 @@ public class PnlViewingExperience : MonoBehaviour {
     public void StopExperience() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         ARConstructor.onActivated?.Invoke(false);
-        hologramHandler.StopVideo();
+        _hologramHandler.StopVideo();
         FadeOutCanvas();
         MenuConstructor.OnActivated?.Invoke(true);
         HomeScreenConstructor.OnActivated?.Invoke(true);
