@@ -17,16 +17,12 @@ namespace Beem.Extenject.Hologram {
         [SerializeField]
         private GameObject _hologramPrefab;
 
-        [SerializeField]
-        private GameObject _targetPrefab;
-
         private GameObject _spawnedObject;
 
         public GameObject GetSpawnedObject() {
             return _spawnedObject;
         }
 
-        private GameObject _spawnedTargetObject;
 
         private static List<ARRaycastHit> _hits = new List<ARRaycastHit>();
 
@@ -56,7 +52,6 @@ namespace Beem.Extenject.Hologram {
 
         private void CreateHologram(GameObject prefab, Vector3 position, Quaternion rotation) {
             if (_spawnedObject == null) {
-                _spawnedTargetObject = Instantiate(_targetPrefab, position, rotation);
                 _spawnedObject = Instantiate(prefab, position, rotation);
                 _signalBus.Fire(new CreateHologramSignal(_spawnedObject));
             }
