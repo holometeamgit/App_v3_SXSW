@@ -66,7 +66,7 @@ public class PrerecordedVideoWindow : MonoBehaviour {
             OnPlacementCompleted();
         } else {
 #if !UNITY_EDITOR
-            _placementView.SetActive(false);
+            SetActive(_placementView, false);
 #else
             OnPlacementCompleted();
 #endif
