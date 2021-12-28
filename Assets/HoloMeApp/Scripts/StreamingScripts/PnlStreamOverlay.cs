@@ -353,6 +353,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     public void ShareStream() {
+
         HelperFunctions.DevLog($"IsRoom = {_agoraController.IsRoom}, IsChannelCreator = {_agoraController.IsChannelCreator}, agoraController.ChannelName = {_agoraController.ChannelName}, currentStreamId = {currentStreamId}");
 
         if (_agoraController.IsRoom) {
@@ -360,8 +361,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         } else {
             StreamCallBacks.onShareStreamLinkByUsername?.Invoke(_agoraController.ChannelName);
         }
-
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
     }
 
     public void StartCountdown() {
