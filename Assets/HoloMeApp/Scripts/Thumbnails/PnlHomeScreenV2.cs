@@ -10,28 +10,25 @@ public class PnlHomeScreenV2 : MonoBehaviour {
     [SerializeField] ScrollRect scrollRect;
     //Pull refresh
     [SerializeField] UIPullRefreshScrollController pullRefreshController;
-    //controller uithumbnails 
-    [SerializeField] UIThumbnailsController uiThumbnailsController;
     //filter for downloadable thumbnails 
     [SerializeField] ThumbnailPriorityScriptableObject thumbnailPriority;
-    //ThumbnailWebDownloadManager need for data fetcher  
-    [SerializeField] ThumbnailWebDownloadManager thumbnailWebDownloadManager;
-
-    [Space]
     [SerializeField] int pageSize = 10;
-
-    private const int DELAY_TIME_REFRESH_LAYOUT = 50;
 
     //ThumbnailsDataFetcher take json pages with thumbnails 
     private ThumbnailsDataFetcher thumbnailsDataFetcher;
 
-    bool dataLoaded;
-    bool initialized;
-    bool needRefresh;
+    private bool dataLoaded;
+    private bool initialized;
+    private bool needRefresh;
 
-    public UnityEvent OnPlay;
 
-    public UnityEvent OnAllDataLoaded;
+    [Space]
+    //controller uithumbnails 
+    [SerializeField]
+    private UIThumbnailsController _uiThumbnailsController;
+    //ThumbnailWebDownloadManager need for data fetcher
+    [SerializeField]
+    private ThumbnailWebDownloadManager _thumbnailWebDownloadManager;
 
     public void SetDefaultState() {
         scrollRect.verticalNormalizedPosition = 1;
@@ -44,10 +41,10 @@ public class PnlHomeScreenV2 : MonoBehaviour {
         InitFetcher();
         CallBacks.onStreamsContainerUpdated += DataUpdateCallBack;
 
-        uiThumbnailsController.OnUpdated += UIUpdated;
+        _uiThumbnailsController.OnUpdated += UIUpdated;
         //add ref to data list from fetcher for ui Thumbnails Controller
-        uiThumbnailsController.SetStreamJsonData(thumbnailsDataFetcher.GetDataList());
-        uiThumbnailsController.OnPlayFromUser += OnPlayCallBack;
+        _uiThumbnailsController.SetStreamJsonData(thumbnailsDataFetcher.GetDataList());
+        _uiThumbnailsController.OnPlayFromUser += OnPlayCallBack;
 
         CallBacks.onSignOut += ClearData;
     }
@@ -58,7 +55,7 @@ public class PnlHomeScreenV2 : MonoBehaviour {
 
         thumbnailsDataFetcher =
             new ThumbnailsDataFetcher(thumbnailPriority.ThumbnailPriority,
-            thumbnailWebDownloadManager, pageSize: pageSize);
+            _thumbnailWebDownloadManager, pageSize: pageSize);
 
         thumbnailsDataFetcher.OnAllDataLoaded += AllDataLoaded;
     }
@@ -68,7 +65,7 @@ public class PnlHomeScreenV2 : MonoBehaviour {
             return;
         initialized = true;
         pullRefreshController.StopBottomRefreshing = false;
-        uiThumbnailsController.UpdateData();
+        _uiThumbnailsController.UpdateData();
     }
 
     private void UIUpdated() {
@@ -79,7 +76,7 @@ public class PnlHomeScreenV2 : MonoBehaviour {
         needRefresh = false;
         Resources.UnloadUnusedAssets();
         dataLoaded = false;
-        uiThumbnailsController.LockToPressElements();
+        _uiThumbnailsController.LockToPressElements();
         InitFetcher();
         thumbnailsDataFetcher.RefreshData();
     }
@@ -97,20 +94,23 @@ public class PnlHomeScreenV2 : MonoBehaviour {
         dataLoaded = true;
         pullRefreshController.StopBottomRefreshing = true;
         pullRefreshController.EndRefreshing();
-        uiThumbnailsController.RemoveUnnecessary();
-        OnAllDataLoaded.Invoke();//temp
+        _uiThumbnailsController.RemoveUnnecessary();
     }
 
     private void ClearData() {
         thumbnailsDataFetcher.ClearData();
-        uiThumbnailsController.UpdateData();
+        _uiThumbnailsController.UpdateData();
         initialized = false;
         SetDefaultState();
         needRefresh = true;
     }
 
     private void OnPlayCallBack(string user) {
-        OnPlay.Invoke();
+        HomeScreenConstructor.OnActivated?.Invoke(false);
+        SettingsConstructor.OnActivated?.Invoke(false);
+        MenuConstructor.OnActivated?.Invoke(false);
+        ChangeUsernameConstructor.OnActivated?.Invoke(false);
+        ChangePasswordConstructor.OnActivated?.Invoke(false);
     }
 
     private void EndingUIUpdate() {
@@ -120,6 +120,7 @@ public class PnlHomeScreenV2 : MonoBehaviour {
     }
 
     private void OnEnable() {
+        SetDefaultState();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyHomeScreen);
         pullRefreshController.EndRefreshing();
         if (needRefresh)
@@ -133,7 +134,7 @@ public class PnlHomeScreenV2 : MonoBehaviour {
 
     private void OnDestroy() {
         CallBacks.onStreamsContainerUpdated -= DataUpdateCallBack;
-        if(thumbnailsDataFetcher != null) {
+        if (thumbnailsDataFetcher != null) {
             thumbnailsDataFetcher.OnAllDataLoaded -= AllDataLoaded;
         }
     }

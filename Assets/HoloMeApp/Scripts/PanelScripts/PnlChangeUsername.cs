@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PnlChangeUsername : MonoBehaviour
-{
-    [SerializeField] PnlGenericError pnlGenericError;
-    [SerializeField] UserWebManager userWebManager;
+public class PnlChangeUsername : MonoBehaviour {
     [SerializeField] InputFieldController usernameInputField;
     [SerializeField] int userNameLimit = 30;
-    [SerializeField] Switcher switchToSetting;
+    [Space]
+    [SerializeField]
+    private UserWebManager _userWebManager;
 
     public void ChangeUsername() {
-        if(LocalDataVerification())
-            userWebManager.UpdateUserData(userName: usernameInputField?.text ?? null);
+        if (LocalDataVerification())
+            _userWebManager.UpdateUserData(userName: usernameInputField?.text ?? null);
     }
 
     private void Start() {
@@ -20,19 +19,19 @@ public class PnlChangeUsername : MonoBehaviour
     }
 
     private void UserInfoLoadedCallBack() {
-        usernameInputField.text = string.IsNullOrWhiteSpace(usernameInputField.text) ? userWebManager.GetUsername() ?? "" : usernameInputField.text;
+        usernameInputField.text = string.IsNullOrWhiteSpace(usernameInputField.text) ? _userWebManager.GetUsername() ?? "" : usernameInputField.text;
     }
 
     private void UpdateUserDataCallBack() {
-        pnlGenericError.ActivateSingleButton(" ", "Username has been successfully updated", "Continue", () => switchToSetting.Switch());
+        WarningConstructor.ActivateSingleButton(" ", "Username has been successfully updated", "Continue", () => ChangeUserNameToSettings());
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
         if (!string.IsNullOrEmpty(badRequestData.username)) {
-           /* if (badRequestData.username.Contains("is exist"))
-                usernameInputField.ShowWarning("Username already exists, please choose another");
-            else*/
-                usernameInputField.ShowWarning(badRequestData.username);
+            /* if (badRequestData.username.Contains("is exist"))
+                 usernameInputField.ShowWarning("Username already exists, please choose another");
+             else*/
+            usernameInputField.ShowWarning(badRequestData.username);
         }
 
         if (!string.IsNullOrEmpty(badRequestData.detail))
@@ -50,16 +49,24 @@ public class PnlChangeUsername : MonoBehaviour
     }
 
     private void OnEnable() {
-        userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
-        userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
-        userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
-        usernameInputField.text = userWebManager.GetUsername();
-        userWebManager.LoadUserInfo();
+        _userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
+        _userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
+        _userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
+        usernameInputField.text = _userWebManager.GetUsername();
+        _userWebManager.LoadUserInfo();
+    }
+
+    /// <summary>
+    /// Back to settings
+    /// </summary>
+    public void ChangeUserNameToSettings() {
+        ChangeUsernameConstructor.OnActivated?.Invoke(false);
+        SettingsConstructor.OnActivated?.Invoke(true);
     }
 
     private void OnDisable() {
-        userWebManager.OnUserInfoLoaded -= UserInfoLoadedCallBack;
-        userWebManager.OnUserInfoUploaded -= UpdateUserDataCallBack;
-        userWebManager.OnErrorUserUploaded -= ErrorUpdateUserDataCallBack;
+        _userWebManager.OnUserInfoLoaded -= UserInfoLoadedCallBack;
+        _userWebManager.OnUserInfoUploaded -= UpdateUserDataCallBack;
+        _userWebManager.OnErrorUserUploaded -= ErrorUpdateUserDataCallBack;
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Beem.Permissions {
     /// <summary>
@@ -9,11 +10,11 @@ namespace Beem.Permissions {
 
         public bool HasMicAccess => true;
 
-        public void RequestCameraAccess() {
+        public void RequestCameraAccess(Action onSuccessed, Action onFailed) {
             Debug.LogError($"{nameof(EditorPermission)} Requested Camera Access Editor");
         }
 
-        public void RequestMicAccess() {
+        public void RequestMicAccess(Action onSuccessed, Action onFailed) {
             Debug.LogError($"{nameof(EditorPermission)} Requested Mic Access Editor");
         }
 

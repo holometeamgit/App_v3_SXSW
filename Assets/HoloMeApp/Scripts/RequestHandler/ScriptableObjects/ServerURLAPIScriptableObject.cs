@@ -19,23 +19,6 @@ public class ServerURLAPIScriptableObject : ScriptableObject {
     [Space]
 
     [SerializeField]
-    private string firebaseDynamicLink = "https://join.beem.me";
-    public string FirebaseDynamicLink {
-        get {
-            return firebaseDynamicLink;
-        }
-    }
-
-    [SerializeField]
-    private string app = "/App/";
-
-    public string App {
-        get {
-            return app;
-        }
-    }
-
-    [SerializeField]
     private string logoLink = "https://s3.eu-west-2.amazonaws.com/prod.previews/Logo-Deep-Link-black.png";
     public string LogoLink {
         get {

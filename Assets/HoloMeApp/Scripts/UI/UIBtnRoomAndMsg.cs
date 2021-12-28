@@ -5,15 +5,15 @@ using UnityEngine;
 /// <summary>
 /// UIBtnRoomAndMsg controller for switch btn
 /// </summary>
-public class UIBtnRoomAndMsg : MonoBehaviour
-{
+public class UIBtnRoomAndMsg : MonoBehaviour {
     [SerializeField]
-    Animator _animator;
+    private Animator _animator;
 
     /// <summary>
     /// Show btns
     /// </summary>
     public void Show() {
+        ARMessageRoomConstructor.OnActivated?.Invoke(true);
         _animator.SetBool("Show", true);
     }
 
@@ -21,6 +21,7 @@ public class UIBtnRoomAndMsg : MonoBehaviour
     /// hide btns
     /// </summary>
     public void Hide() {
+        ARMessageRoomConstructor.OnActivated?.Invoke(false);
         _animator.SetBool("Show", false);
     }
 
@@ -28,6 +29,7 @@ public class UIBtnRoomAndMsg : MonoBehaviour
     /// switch value 
     /// </summary>
     public void SwitchValue() {
+        ARMessageRoomConstructor.OnActivated?.Invoke(!_animator.GetBool("Show"));
         _animator.SetBool("Show", !_animator.GetBool("Show"));
     }
 

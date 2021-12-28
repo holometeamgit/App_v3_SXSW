@@ -5,13 +5,16 @@ using Beem.SSO;
 using System.Threading.Tasks;
 
 public class PnlLogInEmailFirebase : MonoBehaviour {
-    [SerializeField] PnlGenericError pnlGenericError;
+
     [SerializeField] InputFieldController inputFieldEmail;
     [SerializeField] InputFieldController inputFieldPassword;
-    [SerializeField] Switcher switcherToProfile;
 
     [SerializeField]
     GameObject LogInLoadingBackground;
+
+    [Space]
+    [SerializeField]
+    private AccountManager _accountManager;
 
     private EmailVerificationTimer emailVerificationTimer = new EmailVerificationTimer();
 
@@ -42,7 +45,7 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     }
 
     private void LogInCallBack() {
-        switcherToProfile.Switch();
+        SignInToProfile();
         ClearData();
     }
 
@@ -70,32 +73,19 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     private void NeedVerificationCallback(string email) {
         inputFieldEmail.ShowWarning("E-mail is not verified");
 
-        inputFieldEmail.MobileInputField.SetVisible(false);
-        inputFieldPassword.MobileInputField.SetVisible(false);
-
         if (EmailVerificationTimer.IsOver) {
-            pnlGenericError.ActivateDoubleButton("Email verication",
+            WarningConstructor.ActivateDoubleButton("Email verication",
                 string.Format("You have not activated your account via the email, would you like us to send it again? \n {0}", email),
                 "Yes",
                 "No",
                 () => {
                     CallBacks.onEmailVerification?.Invoke();
                     EmailVerificationTimer.Release();
-                },
-                () => {
-                    pnlGenericError.gameObject.SetActive(false);
-                    inputFieldEmail.MobileInputField.SetVisible(true);
-                    inputFieldPassword.MobileInputField.SetVisible(true);
                 });
         } else {
-            pnlGenericError.ActivateSingleButton("Email verication",
+            WarningConstructor.ActivateSingleButton("Email verication",
                string.Format("You have not activated your account via the email \n {0}", email),
-               "Ok",
-               () => {
-                   pnlGenericError.gameObject.SetActive(false);
-                   inputFieldEmail.MobileInputField.SetVisible(true);
-                   inputFieldPassword.MobileInputField.SetVisible(true);
-               });
+               "Ok");
         }
     }
 
@@ -135,6 +125,39 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
 
     private void HideBackground(string reason) {
         LogInLoadingBackground.SetActive(false);
+    }
+
+    /// <summary>
+    /// Switch sign in to profile
+    /// </summary>
+    public void SignInToProfile() {
+        SignInConstructor.OnActivated?.Invoke(false);
+        CreateUsernameConstructor.OnActivated?.Invoke(true);
+    }
+
+    /// <summary>
+    /// Switch sign in to sign up
+    /// </summary>
+    public void SignInToSignUp() {
+        SignInConstructor.OnActivated?.Invoke(false);
+        SignUpConstructor.OnActivated?.Invoke(true);
+    }
+
+    /// <summary>
+    /// Switch sign in to reset password
+    /// </summary>
+    public void SignInToResetPassword() {
+        SignInConstructor.OnActivated?.Invoke(false);
+        ResetPasswordConstructor.OnActivated?.Invoke(true);
+    }
+
+    /// <summary>
+    /// Switch sign in to welcome
+    /// </summary>
+    public void SignInToWelcome() {
+        SignInConstructor.OnActivated?.Invoke(false);
+        WelcomeConstructor.OnActivated?.Invoke(true);
+        _accountManager.LogOut();
     }
 
     private void OnEnable() {

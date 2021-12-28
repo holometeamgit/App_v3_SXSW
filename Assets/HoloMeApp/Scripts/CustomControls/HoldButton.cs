@@ -36,7 +36,10 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 
     void IPointerDownHandler.OnPointerDown(PointerEventData eventData) {
         // Start counting
-        StartCoroutine(Countdown());
+
+        permissionController.CheckMicAccess(() => {
+            StartCoroutine(Countdown());
+        });
     }
 
     void IPointerUpHandler.OnPointerUp(PointerEventData eventData) {
@@ -52,10 +55,6 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 
         if (!pressed) {
             onRecordTooShort?.Invoke(); //Trying to call screenshot path is short pressed here 
-            yield break;
-        }
-
-        if (!permissionController.CheckMicAccess()) {
             yield break;
         }
 
