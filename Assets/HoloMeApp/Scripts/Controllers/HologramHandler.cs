@@ -16,13 +16,14 @@ public class HologramHandler : MonoBehaviour {
     HologramChild[] hologramChildren;
 
     [SerializeField]
-    AgoraController agoraController;
-
-    [SerializeField]
     AudioSource audioSource;
 
     [SerializeField]
     Material liveStreamMat;
+
+    public AudioSource GetAudioSource() {
+        return audioSource;
+    }
 
     string hologramViewDwellTimer = nameof(hologramViewDwellTimer);
 

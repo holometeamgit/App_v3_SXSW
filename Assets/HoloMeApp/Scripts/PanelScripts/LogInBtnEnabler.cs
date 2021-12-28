@@ -4,8 +4,7 @@ using UnityEngine;
 using System;
 using Beem.SSO;
 
-public class LogInBtnEnabler : MonoBehaviour
-{
+public class LogInBtnEnabler : MonoBehaviour {
     [Serializable]
     public class Providers {
         public List<string> providers;
@@ -16,12 +15,13 @@ public class LogInBtnEnabler : MonoBehaviour
     }
 
     [SerializeField]
-    WebRequestHandler webRequestHandler;
-
-    [SerializeField]
     GameObject LogInAppleGO;
     [SerializeField]
     GameObject LogInGoogleGO;
+
+    [Space]
+    [SerializeField]
+    private WebRequestHandler _webRequestHandler;
 
     public void CheckPlatform() {
 #if !UNITY_IOS
@@ -45,6 +45,6 @@ public class LogInBtnEnabler : MonoBehaviour
 
     private void OnEnable() {
         CheckPlatform();
-        webRequestHandler.Get(webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, needHeaderAccessToken: false);
+        _webRequestHandler.Get(_webRequestHandler.ServerProvidersAPI, EnableFB, (key, body) => { }, needHeaderAccessToken: false);
     }
 }

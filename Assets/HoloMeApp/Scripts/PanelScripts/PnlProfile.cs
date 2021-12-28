@@ -6,36 +6,39 @@ using UnityEngine.UI;
 using Beem.SSO;
 
 public class PnlProfile : MonoBehaviour {
-    [SerializeField] UserWebManager userWebManager;
     [SerializeField] GameObject InputDataArea;
     [SerializeField] InputFieldController usernameInputField;
     [SerializeField] int userNameLimit;
-    [SerializeField] Switcher switchToMainMenu;
-    [SerializeField] Switcher switchLogOut;
 
     [SerializeField] List<GameObject> backBtns;
 
-    [SerializeField] PnlGenericError pnlGenericError;
     [SerializeField] ExternalLinkRedirector externalLinkRedirector;
 
     [SerializeField]
     private Toggle toggleEmailReceive;
 
+
+    [Space]
+    [SerializeField]
+    private AccountManager _accountManager;
+    [SerializeField]
+    private UserWebManager _userWebManager;
+
     public void ChooseUsername() {
         if (LocalDataVerification()) {
-            userWebManager.UpdateUserData(userName: usernameInputField.text);
+            _userWebManager.UpdateUserData(userName: usernameInputField.text);
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyProfileCreated, AnalyticParameters.ParamSignUpMethod, AnalyticsSignUpModeTracker.Instance.SignUpMethodUsed.ToString());
         }
     }
 
     private void Start() {
         usernameInputField.characterLimit = userNameLimit;
-        userWebManager.LoadUserInfo();
+        _userWebManager.LoadUserInfo();
     }
 
     private void UserInfoLoadedCallBack() {
-        usernameInputField.text = string.IsNullOrWhiteSpace(usernameInputField.text) ? userWebManager.GetUsername() ?? "" : usernameInputField.text;
-        if (userWebManager.GetUsername() == null) {
+        usernameInputField.text = string.IsNullOrWhiteSpace(usernameInputField.text) ? _userWebManager.GetUsername() ?? "" : usernameInputField.text;
+        if (_userWebManager.GetUsername() == null) {
             InputDataArea.SetActive(true);
         } else {
             SwitchToMainMenu();
@@ -44,21 +47,39 @@ public class PnlProfile : MonoBehaviour {
 
     private void ErrorUserInfoLoadedCallBack() {
         ShowMsgForDeletedUser();
-        switchLogOut?.Switch();
+        ProfileToWelcome();
     }
 
     private void UpdateUserDataCallBack() {
 
-        if(toggleEmailReceive.isOn) {
+        if (toggleEmailReceive.isOn) {
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyEmailOptIn, AnalyticParameters.ParamSignUpMethod, AnalyticsSignUpModeTracker.Instance.SignUpMethodUsed.ToString());
         }
 
-        userWebManager.LoadUserInfo();
+        _userWebManager.LoadUserInfo();
         SwitchToMainMenu();
     }
 
     private void SwitchToMainMenu() {
-        switchToMainMenu.Switch();
+        ProfileToMainMenu();
+    }
+
+    /// <summary>
+    /// Switch profile to welcome
+    /// </summary>
+    public void ProfileToWelcome() {
+        CreateUsernameConstructor.OnActivated?.Invoke(false);
+        WelcomeConstructor.OnActivated?.Invoke(true);
+        _accountManager.LogOut();
+    }
+
+    /// <summary>
+    /// Switch profile to main menu
+    /// </summary>
+    public void ProfileToMainMenu() {
+        CreateUsernameConstructor.OnActivated?.Invoke(false);
+        HomeScreenConstructor.OnActivated?.Invoke(true);
+        MenuConstructor.OnActivated?.Invoke(true);
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
@@ -95,7 +116,7 @@ public class PnlProfile : MonoBehaviour {
     }
 
     private void ShowMsgForDeletedUser() {
-        pnlGenericError.ActivateDoubleButton(null,
+        WarningConstructor.ActivateDoubleButton(null,
             string.Format("This account has been deleted, contact support to reinstate. "),
             "Support",
             "Cancel",
@@ -103,13 +124,13 @@ public class PnlProfile : MonoBehaviour {
     }
 
     private void OnEnable() {
-        userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
-        userWebManager.OnErrorUserInfoLoaded += ErrorUserInfoLoadedCallBack;
-        userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
-        userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
+        _userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
+        _userWebManager.OnErrorUserInfoLoaded += ErrorUserInfoLoadedCallBack;
+        _userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
+        _userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
 
         InputDataArea.SetActive(false);
-        userWebManager.LoadUserInfo();
+        _userWebManager.LoadUserInfo();
 
         toggleEmailReceive.isOn = false;
         toggleEmailReceive.enabled = false;
@@ -117,10 +138,10 @@ public class PnlProfile : MonoBehaviour {
     }
 
     private void OnDisable() {
-        userWebManager.OnUserInfoLoaded -= UserInfoLoadedCallBack;
-        userWebManager.OnErrorUserInfoLoaded -= ErrorUserInfoLoadedCallBack;
-        userWebManager.OnUserInfoUploaded -= UpdateUserDataCallBack;
-        userWebManager.OnErrorUserUploaded -= ErrorUpdateUserDataCallBack;
+        _userWebManager.OnUserInfoLoaded -= UserInfoLoadedCallBack;
+        _userWebManager.OnErrorUserInfoLoaded -= ErrorUserInfoLoadedCallBack;
+        _userWebManager.OnUserInfoUploaded -= UpdateUserDataCallBack;
+        _userWebManager.OnErrorUserUploaded -= ErrorUpdateUserDataCallBack;
 
         ClearInputFieldData();
 

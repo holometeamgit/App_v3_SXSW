@@ -140,7 +140,7 @@ public class PnlRoomPopupController {
     }
 
     private void PlayLiveStream() {
-        StreamCallBacks.onPlayLiveStream?.Invoke(_startedRoomJsonData.user, _startedRoomJsonData.agora_channel, _startedRoomJsonData.id, true);
+        StreamCallBacks.onPlayRoom?.Invoke(_startedRoomJsonData);
     }
 
     private void OnPopUpStartOpen() {

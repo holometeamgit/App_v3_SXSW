@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Beem.ARMsg;
 
-public class ARMsgUploadingRepeater : MonoBehaviour
-{
+public class ARMsgUploadingRepeater : MonoBehaviour {
     [SerializeField] ARMsgProcessingInterrupter _processingInterrupter;
 
     private void OnUploadingError() {
-        CallBacks.OnActivateGenericErrorDoubleButton?.Invoke("Connection Interupted",
+        WarningConstructor.ActivateDoubleButton("Connection Interupted",
             "We lost connection whilst uploading your Beem",
             "Exit", "Retry",
             () => {

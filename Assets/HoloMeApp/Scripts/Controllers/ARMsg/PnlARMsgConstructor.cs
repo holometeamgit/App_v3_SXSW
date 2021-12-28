@@ -18,11 +18,11 @@ public class PnlARMsgConstructor : MonoBehaviour {
     [SerializeField]
     private PnlARMessages _pnlARMessages;
     [SerializeField]
-    private PnlViewingExperience _pnlViewingExperience;
+    private GameObject _pnlARMessagesSteps;
     [SerializeField]
     private PopupShowChecker _popupShowChecker;
     [SerializeField]
-    private Switcher switchToHome;
+    private PopupShowChecker _arMessagePopupChecker;
 
     private CancellationTokenSource _showCancellationTokenSource;
     private CancellationToken _showCancellationToken;
@@ -30,28 +30,29 @@ public class PnlARMsgConstructor : MonoBehaviour {
     private ARMsgJSON.Data currentData;
     private const int CHECK_COOLDOWN = 5000;
 
+    private void Activate(bool status) {
+        _pnlARMessagesSteps?.SetActive(status);
+    }
 
-    private void Activate(ARMsgJSON.Data data) {
 
-        if (!_permissionController.CheckCameraAccess()) {
-            return;
-        }
-
-        OnReceivedRoomData(data, ActivateData);
+    private void ActivateARena(ARMsgJSON.Data data) {
+        OnReceivedARMessageData(data, ActivateData);
     }
 
     private void ActivateData(ARMsgJSON.Data data) {
         currentData = data;
 
-        _pnlViewingExperience.ActivateForARMessaging(data);
+        ARenaConstructor.onActivateForARMessaging?.Invoke(data);
 
         _pnlARMessages.Init(data);
 
         _uiThumbnailsController.OnPlayFromUser?.Invoke(data.user);
+
+        CallBacks.OnActivated?.Invoke(false);
     }
 
     private async Task WaitForCanShow() {
-        while (!_popupShowChecker.CanShow()) {
+        while (!_popupShowChecker.CanShow() && !_arMessagePopupChecker.CanShow()) {
             if (_showCancellationToken.IsCancellationRequested) {
                 _showCancellationToken.ThrowIfCancellationRequested();
             }
@@ -59,7 +60,7 @@ public class PnlARMsgConstructor : MonoBehaviour {
         }
     }
 
-    private void OnReceivedRoomData(ARMsgJSON.Data data, Action<ARMsgJSON.Data> onSuccessTask) {
+    private void OnReceivedARMessageData(ARMsgJSON.Data data, Action<ARMsgJSON.Data> onSuccessTask) {
         if (_showCancellationTokenSource != null) {
             _showCancellationTokenSource.Cancel();
             _showCancellationTokenSource.Dispose();
@@ -76,15 +77,13 @@ public class PnlARMsgConstructor : MonoBehaviour {
                 HelperFunctions.DevLog("Previouses room deeplink request was interrupted");
 
             } else if (task.IsCompleted) {
-
                 onSuccessTask?.Invoke(data);
-
             }
         }, taskScheduler);
     }
 
-    private void Deactivate() {
-        CallBacks.OnActivateGenericErrorDoubleButton?.Invoke("Before you go...",
+    private void DeactivateARena() {
+        WarningConstructor.ActivateDoubleButton("Before you go...",
            "If you exit you could lose your AR message if you don't share the link.",
            "Copy link and exit", "Return",
            () => {
@@ -97,19 +96,22 @@ public class PnlARMsgConstructor : MonoBehaviour {
     }
 
     private void Close() {
-        _pnlViewingExperience.StopExperience();
+        ARenaConstructor.onDeactivate?.Invoke();
         _pnlARMessages.Deactivate();
-        switchToHome.Switch();
+        MenuConstructor.OnActivated?.Invoke(true);
+        HomeScreenConstructor.OnActivated?.Invoke(true);
     }
 
 
     private void OnEnable() {
+        CallBacks.OnActivatedARena += ActivateARena;
+        CallBacks.OnDeactivatedARena += DeactivateARena;
         CallBacks.OnActivated += Activate;
-        CallBacks.OnDeactivated += Deactivate;
     }
 
     private void OnDisable() {
+        CallBacks.OnActivatedARena -= ActivateARena;
+        CallBacks.OnDeactivatedARena -= DeactivateARena;
         CallBacks.OnActivated -= Activate;
-        CallBacks.OnDeactivated -= Deactivate;
     }
 }

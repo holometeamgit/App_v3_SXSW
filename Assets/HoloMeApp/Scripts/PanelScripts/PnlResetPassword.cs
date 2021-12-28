@@ -6,8 +6,6 @@ using TMPro;
 public class PnlResetPassword : MonoBehaviour {
 
     [SerializeField]
-    PnlGenericError pnlGenericError;
-    [SerializeField]
     EmailAccountManager emailAccountManager;
     [SerializeField]
     ResetPasswordEnterEmail resetPasswordEnterEmail;
@@ -74,7 +72,7 @@ public class PnlResetPassword : MonoBehaviour {
 
     private void ResetPasswordCallBack() {
         resetPasswordEnterEmail.ClearData();
-        pnlGenericError.ActivateSingleButton(" ", "Password has been successfully updated", "Continue", () => switcherToResetPassword.Switch());
+        WarningConstructor.ActivateSingleButton(" ", "Password has been successfully updated", "Continue", () => switcherToResetPassword.Switch());
     }
 
     private void ErrorResetPasswordCallBack(BadRequestResetPassword badRequestResetPassword) {

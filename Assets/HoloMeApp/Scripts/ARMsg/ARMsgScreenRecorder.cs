@@ -26,13 +26,6 @@ public class ARMsgScreenRecorder : MonoBehaviour {
 
         CallBacks.OnStartRecord += StartRecording;
         CallBacks.OnStopRecord += StopRecord;
-
-        // Request mic permissions
-        if (!await MediaDeviceQuery.RequestPermissions<AudioDevice>()) {
-            HelperFunctions.DevLogError("User did not grant microphone permissions");
-            return;
-        }
-
         CallBacks.OnGetVideoRecordedFilePath += GetPathToFile;
     }
 

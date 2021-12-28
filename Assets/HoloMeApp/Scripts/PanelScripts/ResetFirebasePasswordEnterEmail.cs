@@ -4,15 +4,14 @@ using UnityEngine;
 using Beem.SSO;
 public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     [SerializeField]
-    PnlGenericError pnlGenericError;
-    [SerializeField]
     InputFieldController emailInputField;
-    [SerializeField]
-    AuthController authController;
-    [SerializeField]
-    Switcher switchToLogIn;
+
     [SerializeField]
     bool needShowWarning = true;
+
+    [Space]
+    [SerializeField]
+    private AuthController _authController;
 
     public void ForgotPasswordBtnClick() {
         CallBacks.onResetPasswordClick?.Invoke();
@@ -35,13 +34,12 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
 
     private void ShowWarning() {
         emailInputField.MobileInputField.SetVisible(false);
-        pnlGenericError.ActivateDoubleButton(null,
+        WarningConstructor.ActivateDoubleButton(null,
             string.Format("Changing a password associated with a Facebook account will create login issues with your Beem account."),
             "Continue",
             "Cancel",
-            () => { pnlGenericError.gameObject.SetActive(false); SendMsg(); emailInputField.MobileInputField.SetVisible(true); },
-            () => { pnlGenericError.gameObject.SetActive(false); emailInputField.MobileInputField.SetVisible(true); },
-            true);
+            () => { SendMsg(); emailInputField.MobileInputField.SetVisible(true); },
+            () => { emailInputField.MobileInputField.SetVisible(true); }, true);
     }
 
     private void SendMsg() {
@@ -50,10 +48,10 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
 
     private void MsgSentCallBack() {
         emailInputField.MobileInputField.SetVisible(false);
-        pnlGenericError.ActivateSingleButton("Change password",
+        WarningConstructor.ActivateSingleButton("Change password",
             string.Format("Password change information has been sent to email {0}", emailInputField.text),
             "Continue",
-            () => { pnlGenericError.gameObject.SetActive(false); switchToLogIn.Switch(); });
+            () => { ResetPasswordToSignIn(); });
     }
 
     private void ErrorMsgCallBack(string msg) {
@@ -71,14 +69,30 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
         emailInputField.text = "";
     }
 
+    /// <summary>
+    /// Switch reset password to sign in
+    /// </summary>
+    public void ResetPasswordToSignIn() {
+        ResetPasswordConstructor.OnActivated?.Invoke(false);
+        SignInConstructor.OnActivated?.Invoke(true);
+    }
+
     private void OnEnable() {
         if (string.IsNullOrWhiteSpace(emailInputField.text))
-            emailInputField.text = authController.GetEmail();
+            emailInputField.text = _authController.GetEmail();
 
 
         CallBacks.onResetPasswordClick += SendMsgOnEmailForChangePassword;
         CallBacks.onFail += ErrorMsgCallBack;
         CallBacks.onResetPasswordMsgSent += MsgSentCallBack;
+    }
+
+    /// <summary>
+    /// Back to settings
+    /// </summary>
+    public void ChangePasswordToSettings() {
+        ChangePasswordConstructor.OnActivated?.Invoke(false);
+        SettingsConstructor.OnActivated?.Invoke(true);
     }
 
     private void OnDisable() {

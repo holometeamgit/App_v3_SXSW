@@ -6,26 +6,14 @@ using Firebase.DynamicLinks;
 
 public class ShareManager : MonoBehaviour {
 
-    [SerializeField]
-    private ServerURLAPIScriptableObject serverURLAPIScriptableObject;
-
     private void OnEnable() {
         DynamicLinksCallBacks.onShareSocialLink += ShareSocialLink;
-        DynamicLinksCallBacks.onShareAppLink += ShareAppLink;
         DynamicLinksCallBacks.onShareLink += ShareLink;
     }
 
     private void OnDisable() {
         DynamicLinksCallBacks.onShareSocialLink -= ShareSocialLink;
-        DynamicLinksCallBacks.onShareAppLink -= ShareAppLink;
         DynamicLinksCallBacks.onShareLink -= ShareLink;
-    }
-
-    private void ShareAppLink() {
-        Uri link = new Uri(serverURLAPIScriptableObject.FirebaseDynamicLink + serverURLAPIScriptableObject.App);
-        string msg = "Come to my App: " + link.AbsoluteUri;
-        HelperFunctions.DevLog(msg);
-        ShareLink(msg);
     }
 
     private void ShareSocialLink(Uri link, SocialMetaTagParameters socialMetaTagParameters) {

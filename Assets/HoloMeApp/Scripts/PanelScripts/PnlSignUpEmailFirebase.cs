@@ -10,11 +10,13 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     [SerializeField]
     private InputFieldController inputFieldPassword;
     [SerializeField]
-    private Switcher switcherToVerification;
-    [SerializeField]
     private GameObject LogInLoadingBackground;
     [SerializeField]
     private Animator animator;
+
+    [Space]
+    [SerializeField]
+    private AccountManager _accountManager;
 
     private const float COOLDOWN = 0.5f;
     private float nextTimeCanClick = 0;
@@ -52,9 +54,19 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     }
 
     private void SignUpCallBack() {
-        switcherToVerification.Switch();
+        EmailVerificationConstructor.OnActivated?.Invoke(true);
+        SignUpConstructor.OnActivated?.Invoke(false);
         ClearInputFieldData();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete);
+    }
+
+    /// <summary>
+    /// Sign Up To Welcome
+    /// </summary>
+    public void SignUpToWelcome() {
+        WelcomeConstructor.OnActivated?.Invoke(true);
+        SignUpConstructor.OnActivated?.Invoke(false);
+        _accountManager.LogOut();
     }
 
     private void ErrorSignUpCallBack(string msg) {

@@ -8,13 +8,6 @@ using System.Threading.Tasks;
 public class PnlWelcomeV4 : MonoBehaviour {
     [SerializeField]
     GameObject LogInBackground;
-    [SerializeField]
-    PnlGenericError pnlGenericError;
-
-    [SerializeField]
-    Switcher switcherToProfile;
-    [SerializeField]
-    Switcher switcherToLigIn;
 
     private const int TIME_FOR_AUTOHIDINGBG = 10000;
     private int HIDE_BACKGROUND_DELAY_TIME = 500;
@@ -36,7 +29,26 @@ public class PnlWelcomeV4 : MonoBehaviour {
 
     private void SwitchToProfile() {
         HelperFunctions.DevLog("Welcome SwitchToProfile");
-        switcherToProfile.Switch();
+        CreateUsernameConstructor.OnActivated?.Invoke(true);
+        WelcomeConstructor.OnActivated?.Invoke(false);
+    }
+
+    /// <summary>
+    /// Switch To Sign Up
+    /// </summary>
+    public void SwitchToSignUp() {
+        HelperFunctions.DevLog("Welcome SwitchToSignUp");
+        SignUpConstructor.OnActivated?.Invoke(true);
+        WelcomeConstructor.OnActivated?.Invoke(false);
+    }
+
+    /// <summary>
+    /// Switch To Sign In
+    /// </summary>
+    public void SwitchToSignIn() {
+        HelperFunctions.DevLog("Welcome SwitchToSignIn");
+        SignInConstructor.OnActivated?.Invoke(true);
+        WelcomeConstructor.OnActivated?.Invoke(false);
     }
 
     private void OnEnable() {
