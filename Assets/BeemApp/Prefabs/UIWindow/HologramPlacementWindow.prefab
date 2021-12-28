@@ -393,7 +393,7 @@ RectTransform:
   - {fileID: 907859891936640962}
   - {fileID: 6133098327195678607}
   m_Father: {fileID: 548266708586802161}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -429,7 +429,7 @@ RectTransform:
   m_Children:
   - {fileID: 5205834925248367106}
   m_Father: {fileID: 548266708586802161}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -448,8 +448,7 @@ GameObject:
   - component: {fileID: 5683782583317840528}
   - component: {fileID: 1469140292044332348}
   - component: {fileID: 6956369269324145758}
-  - component: {fileID: 1330564568324537119}
-  - component: {fileID: 3760878662274775110}
+  - component: {fileID: 1558504971960645832}
   m_Layer: 5
   m_Name: touchZone
   m_TagString: Untagged
@@ -469,7 +468,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 548266708586802161}
-  m_RootOrder: 0
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -528,23 +527,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hologramPrefab: {fileID: 530260341925227610, guid: 82c35694d4ea5b54a8d832114b95c12a,
     type: 3}
---- !u!114 &1330564568324537119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5545877779373769395}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89a6f6ad3fe100d4b8478df973b0f005, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _hologram: {fileID: 0}
-  _touchCount: 2
+  moveTouchCount: 1
+  scaleTouchCount: 2
   _zoomSpeed: 0.05
   _zoomRange: {x: 0.35, y: 1.95}
---- !u!114 &3760878662274775110
+--- !u!114 &1558504971960645832
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -553,15 +540,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 5545877779373769395}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a43d9036558c5464e8ba5a6c125fddc1, type: 3}
+  m_Script: {fileID: 11500000, guid: a0bc1f5b5eb32444c85a68261ca33dea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hologram: {fileID: 0}
-  _touchCount: 1
-  _clickCount: 2
-  _layerMask:
-    serializedVersion: 2
-    m_Bits: 1024
+  _hologramPrefab: {fileID: 5722644458700917532, guid: 3f6f21deaed30cf42a1c9bbb4ee929d1,
+    type: 3}
 --- !u!1 &6448392976981508690
 GameObject:
   m_ObjectHideFlags: 0
@@ -746,7 +729,7 @@ RectTransform:
   m_Children:
   - {fileID: 6960221232135099102}
   m_Father: {fileID: 548266708586802161}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
