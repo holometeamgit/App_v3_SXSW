@@ -11,7 +11,7 @@ namespace Beem.Extenject.Hologram {
     /// <summary>
     /// Hologram Creator
     /// </summary>
-    public class HologramGenerator : MonoBehaviour, IPointerClickHandler {
+    public class HologramGenerator : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler, IBeginDragHandler, IEndDragHandler {
 
         [Header("Hologram Prefab")]
         [SerializeField]
@@ -38,6 +38,7 @@ namespace Beem.Extenject.Hologram {
         private float _startPerimeter;
         private float _endPerimeter;
         private bool isDrag;
+        private bool _arActive = true;
 
         [Inject]
         public void Construct(SignalBus signalBus) {
@@ -62,24 +63,34 @@ namespace Beem.Extenject.Hologram {
             _target = createHologramTargetSignal.Target;
         }
 
-        private void Hologram(Vector3 position, Quaternion rotation) {
+        private void ActivateHologram(Vector3 position, Quaternion rotation) {
             if (_spawnedObject == null) {
-                _spawnedObject = Instantiate(_hologramPrefab, position, rotation);
+                _spawnedObject = Instantiate(_hologramPrefab);
                 _signalBus.Fire(new CreateHologramSignal(_spawnedObject));
-            } else {
-                if (_touchCounter.TouchCount == moveTouchCount) {
-                    _spawnedObject.transform.position = position;
-                    _spawnedObject.transform.rotation = rotation;
-                }
             }
+
+            _spawnedObject.SetActive(true);
+
+            Debug.LogError($"_touchCounter.TouchCount = {_touchCounter.TouchCount}");
+
+            if (_touchCounter.TouchCount == moveTouchCount) {
+                _spawnedObject.transform.SetPositionAndRotation(position, rotation);
+            }
+
         }
 
-        public void OnPointerClick(PointerEventData eventData) {
-            Hologram(_target.position, _target.rotation);
+        private void DeactivateHologram() {
+            if (_spawnedObject != null) {
+                _spawnedObject.SetActive(false);
+            }
         }
 
         public void OnPointerDown(PointerEventData eventData) {
             _touchCounter.OnPointerDown(eventData);
+            if (_target != null && _arActive) {
+                Debug.LogError($"position = {_target.position}");
+                ActivateHologram(_target.position, _target.rotation);
+            }
         }
 
         public void OnPointerUp(PointerEventData eventData) {

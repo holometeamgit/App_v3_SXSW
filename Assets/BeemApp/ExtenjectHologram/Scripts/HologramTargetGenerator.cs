@@ -14,15 +14,16 @@ namespace Beem.Extenject.Hologram {
     /// </summary>
     public class HologramTargetGenerator : MonoBehaviour {
 
-        [Header("Hologram Prefab")]
         [SerializeField]
-        private Transform _hologramPrefab;
+        private GameObject _hologramPrefab;
 
-        private Transform _spawnedObject;
+        private GameObject _spawnedObject;
 
-        private ARRaycastManager _raycastManager;
+        private ARRaycastManager _arRaycastManager;
+        private Pose _placementPose;
+        private bool _placementPoseIsValid = false;
         private SignalBus _signalBus;
-        private List<ARRaycastHit> _hits = new List<ARRaycastHit>();
+        private bool _arActive = true;
 
         [Inject]
         public void Construct(SignalBus signalBus) {
@@ -30,38 +31,70 @@ namespace Beem.Extenject.Hologram {
         }
 
         private void Awake() {
-            _raycastManager = FindObjectOfType<ARRaycastManager>();
+            _arRaycastManager = FindObjectOfType<ARRaycastManager>();
         }
 
-        private void Target(Vector3 position, Quaternion rotation) {
+
+        private void ActivateTarget() {
             if (_spawnedObject == null) {
-                _spawnedObject = Instantiate(_hologramPrefab, position, rotation);
-                _signalBus.Fire(new CreateHologramTargetSignal(_spawnedObject));
-            } else {
-                _spawnedObject.position = position;
-                _spawnedObject.rotation = rotation;
+                _spawnedObject = Instantiate(_hologramPrefab);
+                _signalBus.Fire(new CreateHologramTargetSignal(_spawnedObject.transform));
+            }
+            _spawnedObject.SetActive(true);
+        }
+
+        private void DeactivateTarget() {
+            if (_spawnedObject != null) {
+                _spawnedObject.SetActive(false);
             }
         }
 
         private void Update() {
-            MoveTarget(Target);
-        }
-
-        private bool SurfaceDetected() {
-            _hits = new List<ARRaycastHit>();
-            var ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
-            return _raycastManager.Raycast(ray, _hits, TrackableType.PlaneEstimated);
-        }
-
-        private void MoveTarget(Action<Vector3, Quaternion> onAction) {
 #if !UNITY_EDITOR
-            if (SurfaceDetected()) {
-                var hitPose = _hits[0].pose;
-                onAction?.Invoke(hitPose.position, hitPose.rotation);
+            UpdatePlacementPose();
+#endif
+            UpdatePlacementIndicator();
+        }
+
+        private void UpdatePlacementIndicator() {
+#if !UNITY_EDITOR
+
+            if (_placementPoseIsValid && _arActive) {
+                ActivateTarget();
+                UpdateTransform();
+            } else {
+                DeactivateTarget();
             }
 #else
-            onAction?.Invoke(_hologramPrefab.transform.position, _hologramPrefab.transform.rotation);
+            if (_arActive) {
+                ActivateTarget();
+            } else {
+                DeactivateTarget();
+            }
 #endif
+        }
+
+        private void UpdateTransform() {
+            if (_spawnedObject != null) {
+                _spawnedObject.transform.SetPositionAndRotation(_placementPose.position, _placementPose.rotation);
+            }
+        }
+
+        private void UpdatePlacementPose() {
+
+            var screenCenter = Camera.main.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));
+            var hits = new List<ARRaycastHit>();
+            _arRaycastManager.Raycast(screenCenter, hits, TrackableType.Planes);
+            _placementPoseIsValid = hits.Count > 0;
+            if (_placementPoseIsValid) {
+
+                _placementPose = hits[0].pose;
+
+                var cameraForward = Camera.main.transform.forward;
+                var cameraBearing = new Vector3(cameraForward.x, 0, cameraForward.z).normalized;
+                _placementPose.rotation = Quaternion.LookRotation(cameraBearing);
+            }
+
         }
     }
 }
