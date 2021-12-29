@@ -7,8 +7,11 @@ namespace Beem.Extenject.Hologram {
 
     public class HologramInstaller : MonoInstaller {
         public override void InstallBindings() {
-            Container.DeclareSignal<CreateHologramTargetSignal>();
-            Container.DeclareSignal<CreateHologramSignal>();
+            Container.DeclareSignal<TargetPlacementSignal>();
+            Container.DeclareSignal<HologramPlacementSignal>();
+            Container.DeclareSignal<ARSignal>();
+            Container.DeclareSignal<ARPlanesDetectedSignal>();
+            Container.DeclareSignal<ARPinchSignal>();
             Container.DeclareSignal<SelectHologramSignal>();
         }
     }

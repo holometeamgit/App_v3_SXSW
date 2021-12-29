@@ -4,7 +4,7 @@ namespace Beem.Extenject.Hologram {
     /// <summary>
     /// Create Holo Target Signal
     /// </summary>
-    public class CreateHologramTargetSignal : BeemSignal {
+    public class TargetPlacementSignal : BeemSignal {
         private Transform _target;
 
         public Transform Target {
@@ -13,7 +13,7 @@ namespace Beem.Extenject.Hologram {
             }
         }
 
-        public CreateHologramTargetSignal(Transform target) {
+        public TargetPlacementSignal(Transform target) {
             _target = target;
         }
     }

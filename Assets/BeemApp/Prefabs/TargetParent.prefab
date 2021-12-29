@@ -1,5 +1,18 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &4759270187787920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1065037132785439317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bc863e3d69f02d43be0a6a7c803f46d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hintAnimator: {fileID: 1065037132785439318}
 --- !u!1 &3402395970838084970
 GameObject:
   m_ObjectHideFlags: 0
@@ -41,8 +54,13 @@ PrefabInstance:
     - target: {fileID: 5722644458700917521, guid: 3f6f21deaed30cf42a1c9bbb4ee929d1,
         type: 3}
       propertyPath: m_Name
-      value: FocusSquareV2Sprite
+      value: Target
       objectReference: {fileID: 0}
+    - target: {fileID: 5722644458700917522, guid: 3f6f21deaed30cf42a1c9bbb4ee929d1,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 3fa661185b407df4ab6b2c2202c5b59e, type: 2}
     - target: {fileID: 5722644458700917532, guid: 3f6f21deaed30cf42a1c9bbb4ee929d1,
         type: 3}
       propertyPath: m_RootOrder
@@ -115,9 +133,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f6f21deaed30cf42a1c9bbb4ee929d1, type: 3}
+--- !u!1 &1065037132785439317 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5722644458700917521, guid: 3f6f21deaed30cf42a1c9bbb4ee929d1,
+    type: 3}
+  m_PrefabInstance: {fileID: 4732490948448033092}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1065037132785439320 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5722644458700917532, guid: 3f6f21deaed30cf42a1c9bbb4ee929d1,
+    type: 3}
+  m_PrefabInstance: {fileID: 4732490948448033092}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1065037132785439318 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5722644458700917522, guid: 3f6f21deaed30cf42a1c9bbb4ee929d1,
     type: 3}
   m_PrefabInstance: {fileID: 4732490948448033092}
   m_PrefabAsset: {fileID: 0}
