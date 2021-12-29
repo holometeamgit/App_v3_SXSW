@@ -1,6 +1,7 @@
 ﻿using Beem.Extenject.Record;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.XR.ARFoundation;
@@ -25,12 +26,24 @@ namespace Beem.Extenject.Hologram {
             _signalBus = signalBus;
         }
 
+        private void OnEnable() {
+            _signalBus.Fire(new ARSignal(true));
+#if UNITY_EDITOR
+            _signalBus.Fire(new ARPlanesDetectedSignal(true));
+            ActivateTargetAsync();
+#endif
+        }
+
         private void OnDisable() {
+            _signalBus.Fire(new ARSignal(false));
             DeactivateTarget();
         }
 
 
-        private void ActivateTarget() {
+        private async void ActivateTargetAsync() {
+
+            await Task.Yield();
+
             if (_spawnedObject == null) {
                 _spawnedObject = Instantiate(_hologramPrefab);
                 _signalBus.Fire(new TargetPlacementSignal(_spawnedObject.transform));
@@ -61,7 +74,7 @@ namespace Beem.Extenject.Hologram {
 
         private void UpdatePlacementIndicator() {
             if (_placementPoseIsValid) {
-                ActivateTarget();
+                ActivateTargetAsync();
                 UpdateTransform();
             } else {
                 DeactivateTarget();
@@ -89,11 +102,6 @@ namespace Beem.Extenject.Hologram {
             }
             
             _signalBus.Fire(new ARPlanesDetectedSignal(_placementPoseIsValid));
-        }
-#else
-        private void OnEnable() {
-            ActivateTarget();
-            _signalBus.Fire(new ARPlanesDetectedSignal(true));
         }
 #endif
     }

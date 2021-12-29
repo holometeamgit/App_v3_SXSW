@@ -20,11 +20,11 @@ namespace Beem.Extenject.Hologram {
         }
 
         private void OnEnable() {
-            _signalBus.Subscribe<HologramPlacementSignal>(CallWindow);
+            _signalBus.Subscribe<CreateHologramSignal>(CallWindow);
         }
 
         private void OnDisable() {
-            _signalBus.Unsubscribe<HologramPlacementSignal>(CallWindow);
+            _signalBus.Unsubscribe<CreateHologramSignal>(CallWindow);
         }
     }
 }

@@ -217,7 +217,7 @@ namespace Beem.Extenject.Video {
             Cancel();
         }
 
-        private void OnCreateHologram(HologramPlacementSignal createHologramSignal) {
+        private void OnCreateHologram(CreateHologramSignal createHologramSignal) {
 
             if (createHologramSignal.Hologram == null) {
                 return;
@@ -233,7 +233,7 @@ namespace Beem.Extenject.Video {
         }
 
         public void Initialize() {
-            _signalBus.Subscribe<HologramPlacementSignal>(OnCreateHologram);
+            _signalBus.Subscribe<CreateHologramSignal>(OnCreateHologram);
             _signalBus.Subscribe<PlaySignal>(OnPlay);
             _signalBus.Subscribe<PauseSignal>(OnPause);
             _signalBus.Subscribe<StopSignal>(OnStop);
@@ -243,7 +243,7 @@ namespace Beem.Extenject.Video {
         }
 
         public void LateDispose() {
-            _signalBus.Unsubscribe<HologramPlacementSignal>(OnCreateHologram);
+            _signalBus.Unsubscribe<CreateHologramSignal>(OnCreateHologram);
             _signalBus.Unsubscribe<PlaySignal>(OnPlay);
             _signalBus.Unsubscribe<PauseSignal>(OnPause);
             _signalBus.Unsubscribe<StopSignal>(OnStop);

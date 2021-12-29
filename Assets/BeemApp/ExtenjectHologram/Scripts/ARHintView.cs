@@ -20,51 +20,67 @@ namespace Beem.Extenject.Hologram {
         [SerializeField]
         private GameObject _pinch;
 
-        private SignalBus _signalBus;
         private bool _arActive;
         private bool _arPlanesDetected;
         private bool _arObjectWasCreated;
         private bool _arObjectWasPinched;
 
-        [Inject]
-        public void Construct(SignalBus signalBus) {
-            _signalBus = signalBus;
-        }
+        private ARHint _arHint = new ARHint();
 
         private void OnEnable() {
-            _signalBus.Subscribe<ARSignal>(ActivateAR);
-            _signalBus.Subscribe<ARPlanesDetectedSignal>(ActivateARPlanesDetected);
-            _signalBus.Subscribe<HologramPlacementSignal>(ActivateHologramPlacement);
-            _signalBus.Subscribe<ARPinchSignal>(ActivateARPinch);
+            _arHint.onActivateAR += ActivateAR;
+            _arHint.onActivateARPlanesDetected += ActivateARPlanesDetected;
+            _arHint.onHologramPlacement += ActivateHologramPlacement;
+            _arHint.onActivateARPinch += ActivateARPinch;
         }
 
         private void OnDisable() {
-            _signalBus.Unsubscribe<ARSignal>(ActivateAR);
-            _signalBus.Unsubscribe<ARPlanesDetectedSignal>(ActivateARPlanesDetected);
-            _signalBus.Unsubscribe<HologramPlacementSignal>(ActivateHologramPlacement);
-            _signalBus.Unsubscribe<ARPinchSignal>(ActivateARPinch);
+            _arHint.onActivateAR -= ActivateAR;
+            _arHint.onActivateARPlanesDetected -= ActivateARPlanesDetected;
+            _arHint.onHologramPlacement -= ActivateHologramPlacement;
+            _arHint.onActivateARPinch -= ActivateARPinch;
         }
 
-        private void ActivateAR(ARSignal signal) {
+        /// <summary>
+        /// Activate AR
+        /// </summary>
+        /// <param name="signal"></param>
+        public void ActivateAR(ARSignal signal) {
             _arActive = signal.Active;
+            Refresh();
         }
 
-        private void ActivateARPlanesDetected(ARPlanesDetectedSignal signal) {
+        /// <summary>
+        /// Activate ARPlanesDetected
+        /// </summary>
+        /// <param name="signal"></param>
+        public void ActivateARPlanesDetected(ARPlanesDetectedSignal signal) {
             _arPlanesDetected = signal.Active;
+            Refresh();
         }
 
-        private void ActivateHologramPlacement(HologramPlacementSignal signal) {
-            _arObjectWasCreated = true;
+        /// <summary>
+        /// Activate HologramPlacement
+        /// </summary>
+        /// <param name="signal"></param>
+        public void ActivateHologramPlacement(HologramPlacementSignal signal) {
+            _arObjectWasCreated = signal.Active;
+            Refresh();
         }
 
-        private void ActivateARPinch(ARPinchSignal signal) {
+        /// <summary>
+        /// Activate Pinch
+        /// </summary>
+        /// <param name="signal"></param>
+        public void ActivateARPinch(ARPinchSignal signal) {
             _arObjectWasPinched = signal.Active;
+            Refresh();
         }
 
-        public void Refresh() {
-            _scan.SetActive(_arActive && !_arObjectWasPinched && !_arPlanesDetected && !_arObjectWasCreated);
-            _hologramPlacement.SetActive(_arActive && !_arObjectWasPinched && _arPlanesDetected && !_arObjectWasCreated);
-            _pinch.SetActive(_arActive && !_arObjectWasPinched && _arPlanesDetected && _arObjectWasCreated);
+        private void Refresh() {
+            _scan?.SetActive(_arActive && !_arObjectWasPinched && !_arPlanesDetected && !_arObjectWasCreated);
+            _hologramPlacement?.SetActive(_arActive && !_arObjectWasPinched && _arPlanesDetected && !_arObjectWasCreated);
+            _pinch?.SetActive(_arActive && !_arObjectWasPinched && _arPlanesDetected && _arObjectWasCreated);
         }
 
 

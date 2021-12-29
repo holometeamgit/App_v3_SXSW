@@ -38,7 +38,6 @@ namespace Beem.Extenject.Hologram {
         private float _startPerimeter;
         private float _endPerimeter;
         private bool isDrag;
-        private bool _arActive = true;
 
         [Inject]
         public void Construct(SignalBus signalBus) {
@@ -48,6 +47,7 @@ namespace Beem.Extenject.Hologram {
         private void OnEnable() {
             _signalBus.Subscribe<SelectHologramSignal>(SetHologram);
             _signalBus.Subscribe<TargetPlacementSignal>(SetTarget);
+
         }
 
         private void OnDisable() {
@@ -67,7 +67,8 @@ namespace Beem.Extenject.Hologram {
         private void ActivateHologram(Vector3 position, Quaternion rotation) {
             if (_spawnedObject == null) {
                 _spawnedObject = Instantiate(_hologramPrefab);
-                _signalBus.Fire(new HologramPlacementSignal(_spawnedObject));
+                _signalBus.Fire(new CreateHologramSignal(_spawnedObject));
+                _signalBus.Fire(new HologramPlacementSignal(true));
             }
 
             _spawnedObject.transform.SetPositionAndRotation(position, rotation);
@@ -76,13 +77,14 @@ namespace Beem.Extenject.Hologram {
 
         private void DeactivateHologram() {
             if (_spawnedObject != null) {
+                _signalBus.Fire(new HologramPlacementSignal(false));
                 Destroy(_spawnedObject);
             }
         }
 
         public void OnPointerDown(PointerEventData eventData) {
             _touchCounter.OnPointerDown(eventData);
-            if (_target != null && _arActive) {
+            if (_target != null) {
                 if (_touchCounter.TouchCount == moveTouchCount) {
                     ActivateHologram(_target.position, _target.rotation);
                 }

@@ -13,23 +13,22 @@ namespace Beem.Extenject.Hologram {
         [SerializeField]
         private Animator _hintAnimator;
 
-        private SignalBus _signalBus;
+        private ARHint _arHint = new ARHint();
 
         private void OnEnable() {
-            _signalBus.Subscribe<HologramPlacementSignal>(ChangeState);
+            _arHint.onHologramPlacement += ActivateHologramPlacement;
         }
 
         private void OnDisable() {
-            _signalBus.Unsubscribe<HologramPlacementSignal>(ChangeState);
+            _arHint.onHologramPlacement -= ActivateHologramPlacement;
         }
 
-        [Inject]
-        public void Construct(SignalBus signalBus) {
-            _signalBus = signalBus;
-        }
-
-        private void ChangeState(HologramPlacementSignal hologramPlacementSignal) {
-            _hintAnimator.SetBool("Hologram", true);
+        /// <summary>
+        /// Activate Hologram Placement
+        /// </summary>
+        /// <param name="signal"></param>
+        public void ActivateHologramPlacement(HologramPlacementSignal signal) {
+            _hintAnimator.SetBool("Hologram", signal.Active);
         }
 
     }

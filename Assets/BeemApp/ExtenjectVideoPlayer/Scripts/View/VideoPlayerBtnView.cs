@@ -44,7 +44,6 @@ namespace Beem.Extenject.Video {
         }
 
         private void Refresh(bool isPlaying) {
-            Debug.Log("Refresh = " + isPlaying);
             playBtn.SetActive(!isPlaying);
             pauseBtn.SetActive(isPlaying);
         }
