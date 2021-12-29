@@ -25,27 +25,33 @@ namespace Beem.Extenject.Hologram {
         private bool _arObjectWasCreated;
         private bool _arObjectWasPinched;
 
-        private ARHint _arHint = new ARHint();
+        private SignalBus _signalBus;
+
+        [Inject]
+        public void Construct(SignalBus signalBus) {
+            _signalBus = signalBus;
+        }
 
         private void OnEnable() {
-            _arHint.onActivateAR += ActivateAR;
-            _arHint.onActivateARPlanesDetected += ActivateARPlanesDetected;
-            _arHint.onHologramPlacement += ActivateHologramPlacement;
-            _arHint.onActivateARPinch += ActivateARPinch;
+            _signalBus.Subscribe<HologramPlacementSignal>(ActivateHologramPlacement);
+            _signalBus.Subscribe<ARSessionActivateSignal>(ActivateAR);
+            _signalBus.Subscribe<ARPinchSignal>(ActivateARPinch);
+            _signalBus.Subscribe<ARPlanesDetectedSignal>(ActivateARPlanesDetected);
+
         }
 
         private void OnDisable() {
-            _arHint.onActivateAR -= ActivateAR;
-            _arHint.onActivateARPlanesDetected -= ActivateARPlanesDetected;
-            _arHint.onHologramPlacement -= ActivateHologramPlacement;
-            _arHint.onActivateARPinch -= ActivateARPinch;
+            _signalBus.Unsubscribe<HologramPlacementSignal>(ActivateHologramPlacement);
+            _signalBus.Unsubscribe<ARSessionActivateSignal>(ActivateAR);
+            _signalBus.Unsubscribe<ARPinchSignal>(ActivateARPinch);
+            _signalBus.Unsubscribe<ARPlanesDetectedSignal>(ActivateARPlanesDetected);
         }
 
         /// <summary>
         /// Activate AR
         /// </summary>
         /// <param name="signal"></param>
-        public void ActivateAR(ARSignal signal) {
+        public void ActivateAR(ARSessionActivateSignal signal) {
             _arActive = signal.Active;
             Refresh();
         }

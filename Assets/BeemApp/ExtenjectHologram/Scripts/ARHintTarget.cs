@@ -13,14 +13,25 @@ namespace Beem.Extenject.Hologram {
         [SerializeField]
         private Animator _hintAnimator;
 
-        private ARHint _arHint = new ARHint();
+        private bool _arActive;
+        private bool _arObjectWasPinched;
+        private SignalBus _signalBus;
+
+        [Inject]
+        public void Construct(SignalBus signalBus) {
+            _signalBus = signalBus;
+        }
 
         private void OnEnable() {
-            _arHint.onHologramPlacement += ActivateHologramPlacement;
+            _signalBus.Subscribe<HologramPlacementSignal>(ActivateHologramPlacement);
+            _signalBus.Subscribe<ARSessionActivateSignal>(ActivateAR);
+            _signalBus.Subscribe<ARPinchSignal>(ActivateARPinch);
         }
 
         private void OnDisable() {
-            _arHint.onHologramPlacement -= ActivateHologramPlacement;
+            _signalBus.Unsubscribe<HologramPlacementSignal>(ActivateHologramPlacement);
+            _signalBus.Unsubscribe<ARSessionActivateSignal>(ActivateAR);
+            _signalBus.Unsubscribe<ARPinchSignal>(ActivateARPinch);
         }
 
         /// <summary>
@@ -29,6 +40,18 @@ namespace Beem.Extenject.Hologram {
         /// <param name="signal"></param>
         public void ActivateHologramPlacement(HologramPlacementSignal signal) {
             _hintAnimator.SetBool("Hologram", signal.Active);
+        }
+
+        private void ActivateAR(ARSessionActivateSignal signal) {
+            _arActive = signal.Active;
+            Debug.LogError($"_arActive = {_arActive}");
+            _hintAnimator.SetBool("Active", _arActive/* && _arObjectWasPinched*/);
+        }
+
+        private void ActivateARPinch(ARPinchSignal signal) {
+            _arObjectWasPinched = signal.Active;
+            Debug.LogError($"_arObjectWasPinched = {_arObjectWasPinched}");
+            _hintAnimator.SetBool("Active", _arActive/* && _arObjectWasPinched*/);
         }
 
     }

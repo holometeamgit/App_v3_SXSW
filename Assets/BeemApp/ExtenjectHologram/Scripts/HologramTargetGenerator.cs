@@ -18,43 +18,35 @@ namespace Beem.Extenject.Hologram {
         [SerializeField]
         private GameObject _hologramPrefab;
 
-        private GameObject _spawnedObject;
         private SignalBus _signalBus;
+        private bool _arActive;
 
         [Inject]
         public void Construct(SignalBus signalBus) {
             _signalBus = signalBus;
         }
 
-        private void OnEnable() {
-            _signalBus.Fire(new ARSignal(true));
+        private void ARSessionActivate(ARSessionActivateSignal signal) {
+            if (signal.Active) {
 #if UNITY_EDITOR
-            _signalBus.Fire(new ARPlanesDetectedSignal(true));
-            ActivateTargetAsync();
+                _signalBus.Fire(new ARPlanesDetectedSignal(true));
+                ActivateTargetAsync();
 #endif
+            }
+        }
+
+        private void OnEnable() {
+            _signalBus.Subscribe<ARSessionActivateSignal>(ARSessionActivate);
         }
 
         private void OnDisable() {
-            _signalBus.Fire(new ARSignal(false));
-            DeactivateTarget();
+            _signalBus.Unsubscribe<ARSessionActivateSignal>(ARSessionActivate);
         }
 
 
         private async void ActivateTargetAsync() {
-
             await Task.Yield();
-
-            if (_spawnedObject == null) {
-                _spawnedObject = Instantiate(_hologramPrefab);
-                _signalBus.Fire(new TargetPlacementSignal(_spawnedObject.transform));
-            }
-            _spawnedObject.SetActive(true);
-        }
-
-        private void DeactivateTarget() {
-            if (_spawnedObject != null) {
-                _spawnedObject.SetActive(false);
-            }
+            _signalBus.Fire(new TargetPlacementSignal(_hologramPrefab.transform));
         }
 
 #if !UNITY_EDITOR
@@ -68,16 +60,16 @@ namespace Beem.Extenject.Hologram {
         }
 
         private void Update() {
-            UpdatePlacementPose();
-            UpdatePlacementIndicator();
+            if(_arActive){
+                UpdatePlacementPose();
+                UpdatePlacementIndicator();
+            }
         }
 
         private void UpdatePlacementIndicator() {
             if (_placementPoseIsValid) {
                 ActivateTargetAsync();
                 UpdateTransform();
-            } else {
-                DeactivateTarget();
             }
         }
 
@@ -91,7 +83,7 @@ namespace Beem.Extenject.Hologram {
 
             var screenCenter = Camera.main.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));
             var hits = new List<ARRaycastHit>();
-            _arRaycastManager.Raycast(screenCenter, hits, TrackableType.Planes);
+            _arRaycastManager.Raycast(screenCenter, hits, TrackableType.PlaneWithinPolygon);
             _placementPoseIsValid = hits.Count > 0;
             if (_placementPoseIsValid) {
                 _placementPose = hits[0].pose;
