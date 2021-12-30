@@ -23,20 +23,12 @@ namespace Beem.Extenject.Video {
             timerText.text = string.Empty;
         }
 
-        public override void Show<T>(T parameter) {
-            base.Show(parameter);
-            if (timerText == null) {
-                timerText = GetComponent<Text>();
-            }
-            timerText.text = string.Empty;
-        }
-
         public override void Refresh() {
-            if (_videoPlayer == null || !_videoPlayer.isPrepared) {
+            if (Player == null || !Player.isPrepared) {
                 return;
             }
 
-            if (_videoPlayer.frameCount > 0) {
+            if (Player.frameCount > 0) {
                 TimeSpan timeSpan = TimeSpan.FromSeconds((float)Time);
 
                 if (timerText != null) {

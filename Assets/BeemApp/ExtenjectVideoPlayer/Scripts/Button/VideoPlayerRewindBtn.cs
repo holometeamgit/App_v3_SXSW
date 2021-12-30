@@ -12,15 +12,12 @@ namespace Beem.Extenject.Video {
     [RequireComponent(typeof(Slider))]
     public class VideoPlayerRewindBtn : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler {
 
-        private SignalBus _signalBus;
         private Slider _progress;
-        private RewindSignal _rewindSignal = new RewindSignal();
-        private StartRewindSignal _startRewindSignal = new StartRewindSignal();
-        private FinishRewindSignal _finishRewindSignal = new FinishRewindSignal();
+        private VideoPlayerController _videoPlayerController;
 
         [Inject]
-        public void Construct(SignalBus signalBus) {
-            _signalBus = signalBus;
+        public void Construct(VideoPlayerController videoPlayerController) {
+            _videoPlayerController = videoPlayerController;
         }
 
         private void Awake() {
@@ -28,17 +25,15 @@ namespace Beem.Extenject.Video {
         }
 
         public void OnDrag(PointerEventData eventData) {
-            _rewindSignal.Percent = _progress.value;
-            _signalBus.Fire(_rewindSignal);
+            _videoPlayerController.OnRewind(_progress.value);
         }
 
         public void OnBeginDrag(PointerEventData eventData) {
-            _signalBus.Fire(_startRewindSignal);
+            _videoPlayerController.OnRewindStarted();
         }
 
         public void OnEndDrag(PointerEventData eventData) {
-            _finishRewindSignal.Percent = _progress.value;
-            _signalBus.Fire(_finishRewindSignal);
+            _videoPlayerController.OnRewindFinished(_progress.value);
         }
     }
 }

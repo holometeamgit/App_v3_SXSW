@@ -13,8 +13,21 @@ namespace Beem.Extenject.Hologram {
             }
         }
 
-        public HologramPlacementSignal(bool active) {
-            _active = active;
+        private GameObject _hologram;
+
+        public GameObject Hologram {
+            get {
+                return _hologram;
+            }
+        }
+
+        public HologramPlacementSignal(GameObject hologram) {
+            _active = true;
+            _hologram = hologram;
+        }
+
+        public HologramPlacementSignal() {
+            _active = false;
         }
     }
 }

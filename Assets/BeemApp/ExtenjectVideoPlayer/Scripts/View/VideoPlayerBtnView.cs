@@ -16,23 +16,28 @@ namespace Beem.Extenject.Video {
         [SerializeField]
         private GameObject pauseBtn;
 
-        private SignalBus _signalBus;
+        private VideoPlayerController _videoPlayerController;
 
         [Inject]
-        public void Construct(SignalBus signalBus) {
-            _signalBus = signalBus;
+        public void Construct(VideoPlayerController videoPlayerController) {
+            _videoPlayerController = videoPlayerController;
         }
 
         private void OnEnable() {
-            _signalBus.Subscribe<PlaySignal>(OnPlay);
-            _signalBus.Subscribe<PauseSignal>(OnPause);
-            _signalBus.Subscribe<StopSignal>(OnPause);
+            _videoPlayerController.onPlay += OnPlay;
+            _videoPlayerController.onPause += OnPause;
+            _videoPlayerController.onStop += OnPause;
+            if (_videoPlayerController.Player.isPlaying) {
+                OnPlay();
+            } else {
+                OnPause();
+            }
         }
 
         private void OnDisable() {
-            _signalBus.Unsubscribe<PlaySignal>(OnPlay);
-            _signalBus.Unsubscribe<PauseSignal>(OnPause);
-            _signalBus.Unsubscribe<StopSignal>(OnPause);
+            _videoPlayerController.onPlay -= OnPlay;
+            _videoPlayerController.onPause -= OnPause;
+            _videoPlayerController.onStop -= OnPause;
         }
 
         private void OnPlay() {

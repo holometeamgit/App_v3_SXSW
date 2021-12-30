@@ -19,23 +19,15 @@ namespace Beem.Extenject.Video {
 
         private void Awake() {
             progress = GetComponent<Slider>();
-        }
-
-        public override void Show<T>(T parameter) {
-            base.Show(parameter);
-            if (progress == null) {
-                progress = GetComponent<Slider>();
-            }
             progress.value = 0f;
         }
 
         public override void Refresh() {
-
-            if (_videoPlayer == null || !_videoPlayer.isPrepared) {
+            if (Player == null || !Player.isPrepared) {
                 return;
             }
 
-            if (_videoPlayer.frameCount > 0) {
+            if (Player.frameCount > 0) {
                 progress.value = (float)NTime;
             }
         }

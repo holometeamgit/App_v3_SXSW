@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Beem.Extenject.Hologram;
 using Beem.Extenject.Permissions;
+using Beem.Extenject.Video;
 using NatCorder;
 using NatSuite.Recorders;
 using NatSuite.Recorders.Clocks;
@@ -16,7 +17,12 @@ namespace Beem.Extenject.Record {
     /// </summary>
     public class RecordSystem : IInitializable, ILateDisposable {
 
-        private AudioSource _audioSource;
+        public AudioSource Audio {
+            get {
+                return _videoPlayerController.Player.GetTargetAudioSource(0);
+            }
+        }
+
         private IMediaRecorder _mediaRecorder;
         private IClock _recordingClock;
         private CameraInput _cameraInput;
@@ -31,6 +37,7 @@ namespace Beem.Extenject.Record {
         private bool _recordLengthFailed = false;
 
         private SignalBus _signalBus;
+        private VideoPlayerController _videoPlayerController;
 
         public RecordSystem(Camera[] cameras) {
             _cameras = cameras;
@@ -38,24 +45,19 @@ namespace Beem.Extenject.Record {
         }
 
         [Inject]
-        public void Construct(SignalBus signalBus) {
+        public void Construct(SignalBus signalBus, VideoPlayerController videoPlayerController) {
+            _videoPlayerController = videoPlayerController;
             _signalBus = signalBus;
         }
 
         public void Initialize() {
-            _signalBus.Subscribe<CreateHologramSignal>(OnCreateHologram);
             _signalBus.Subscribe<VideoRecordStartSignal>(OnRecordStart);
             _signalBus.Subscribe<VideoRecordEndSignal>(OnRecordEnd);
         }
 
         public void LateDispose() {
-            _signalBus.Unsubscribe<CreateHologramSignal>(OnCreateHologram);
             _signalBus.Unsubscribe<VideoRecordStartSignal>(OnRecordStart);
             _signalBus.Unsubscribe<VideoRecordEndSignal>(OnRecordEnd);
-        }
-
-        public void OnCreateHologram(CreateHologramSignal createHologramSignal) {
-            _audioSource = createHologramSignal.Hologram.GetComponentInChildren<AudioSource>();
         }
 
         private void CorrectResolutionAspect() {
@@ -83,7 +85,7 @@ namespace Beem.Extenject.Record {
             );
 
             _cameraInput = new CameraInput(_mediaRecorder, _recordingClock, _cameras);
-            _audioInput = new AudioInput(_mediaRecorder, _recordingClock, _audioSource);
+            _audioInput = new AudioInput(_mediaRecorder, _recordingClock, Audio);
         }
 
         private void OnRecordEnd(VideoRecordEndSignal recordEndSignal) {

@@ -13,29 +13,34 @@ namespace Beem.Extenject.Video {
     /// <summary>
     /// CurrentPlayer for video
     /// </summary>
-    public class VideoPlayerController : IInitializable, ILateDisposable {
+    public class VideoPlayerController : ILateDisposable {
 
-        [Header("Video Player")]
-        [SerializeField]
         private VideoPlayer _videoPlayer;
+
+        public VideoPlayer Player {
+            get {
+                return _videoPlayer;
+            }
+        }
 
         private double currentTime = default;
         private CancellationTokenSource cancelTokenSource;
-        private SignalBus _signalBus;
 
-        [Inject]
-        public void Construct(SignalBus signalBus) {
-            _signalBus = signalBus;
-        }
+        public event Action onPlay = delegate { };
+        public event Action onStop = delegate { };
+        public event Action onPause = delegate { };
+        public event Action<float> onRewind = delegate { };
+        public event Action onStartRewind = delegate { };
+        public event Action<float> onFinishRewind = delegate { };
 
         /// <summary>
         /// Play Video
         /// </summary>
-
-        private void OnPlay() {
+        public void OnPlay() {
             if (_videoPlayer == null) {
                 return;
             }
+
 
             if (!_videoPlayer.isPrepared) {
                 _videoPlayer.prepareCompleted += OnPrepare;
@@ -43,6 +48,9 @@ namespace Beem.Extenject.Video {
             } else {
                 OnPrepare(_videoPlayer);
             }
+
+
+            onPlay?.Invoke();
 
         }
 
@@ -66,24 +74,30 @@ namespace Beem.Extenject.Video {
         /// Pause Video
         /// </summary>
 
-        private void OnPause() {
+        public void OnPause() {
 
             if (_videoPlayer == null) {
                 return;
             }
 
             _videoPlayer.Pause();
+
+            onPause?.Invoke();
         }
 
         /// <summary>
         /// Rewind Start
         /// </summary>
 
-        private void OnRewindStarted() {
+        public void OnRewindStarted() {
             OnPause();
+            onStartRewind?.Invoke();
         }
 
-        private void OnResume() {
+        /// <summary>
+        /// Resume Video
+        /// </summary>
+        public void OnResume() {
 
             if (_videoPlayer == null) {
                 return;
@@ -93,23 +107,11 @@ namespace Beem.Extenject.Video {
             }
         }
 
-        private void OnApplicationPause(bool pause) {
-            if (pause) {
-                OnPause();
-            }
-        }
-
-        private void OnApplicationFocus(bool focus) {
-            if (focus) {
-                OnResume();
-            }
-        }
-
         /// <summary>
         /// Rewind Video
         /// </summary>
         /// <param name="pct"></param>
-        private void OnRewind(RewindSignal rewindSignal) {
+        public void OnRewind(float percent) {
 
             if (_videoPlayer == null) {
                 return;
@@ -117,8 +119,10 @@ namespace Beem.Extenject.Video {
 
             if (!_videoPlayer.canSetTime) return;
             if (!_videoPlayer.isPrepared) return;
-            currentTime = rewindSignal.Percent * (_videoPlayer.frameCount / _videoPlayer.frameRate);
+            currentTime = percent * (_videoPlayer.frameCount / _videoPlayer.frameRate);
             _videoPlayer.time = currentTime;
+
+            onRewind?.Invoke(percent);
         }
 
         /// <summary>
@@ -194,19 +198,17 @@ namespace Beem.Extenject.Video {
         /// </summary>
         /// <param name="pct"></param>
 
-        private void OnRewindFinished(FinishRewindSignal finishRewindSignal) {
-            RewindSignal rewindSignal = new RewindSignal {
-                Percent = finishRewindSignal.Percent
-            };
-            OnRewind(rewindSignal);
+        public void OnRewindFinished(float percent) {
+            OnRewind(percent);
             LoadVideoFrameComletedAsync();
+            onFinishRewind?.Invoke(percent);
         }
 
         /// <summary>
         /// Stop Video
         /// </summary>
 
-        private void OnStop() {
+        public void OnStop() {
             if (_videoPlayer == null) {
                 return;
             }
@@ -215,41 +217,29 @@ namespace Beem.Extenject.Video {
                 _videoPlayer.Stop();
             }
             Cancel();
+            onStop?.Invoke();
         }
 
-        private void OnCreateHologram(CreateHologramSignal createHologramSignal) {
+        /// <summary>
+        /// VideoPlayer setup
+        /// </summary>
+        /// <param name="videoPlayer"></param>
+        public void SetVideoPlayer(VideoPlayer videoPlayer) {
 
-            if (createHologramSignal.Hologram == null) {
+            if (videoPlayer == null) {
                 return;
             }
 
 
-            _signalBus.Fire(new StopSignal());
+            OnStop();
 
-            _videoPlayer = createHologramSignal.Hologram.GetComponentInChildren<VideoPlayer>();
+            _videoPlayer = videoPlayer;
 
-            _signalBus.Fire(new PlaySignal());
+            OnPlay();
 
-        }
-
-        public void Initialize() {
-            _signalBus.Subscribe<CreateHologramSignal>(OnCreateHologram);
-            _signalBus.Subscribe<PlaySignal>(OnPlay);
-            _signalBus.Subscribe<PauseSignal>(OnPause);
-            _signalBus.Subscribe<StopSignal>(OnStop);
-            _signalBus.Subscribe<StartRewindSignal>(OnRewindStarted);
-            _signalBus.Subscribe<RewindSignal>(OnRewind);
-            _signalBus.Subscribe<FinishRewindSignal>(OnRewindFinished);
         }
 
         public void LateDispose() {
-            _signalBus.Unsubscribe<CreateHologramSignal>(OnCreateHologram);
-            _signalBus.Unsubscribe<PlaySignal>(OnPlay);
-            _signalBus.Unsubscribe<PauseSignal>(OnPause);
-            _signalBus.Unsubscribe<StopSignal>(OnStop);
-            _signalBus.Unsubscribe<StartRewindSignal>(OnRewindStarted);
-            _signalBus.Unsubscribe<RewindSignal>(OnRewind);
-            _signalBus.Unsubscribe<FinishRewindSignal>(OnRewindFinished);
             OnStop();
         }
     }

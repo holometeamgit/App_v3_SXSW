@@ -11,23 +11,27 @@ namespace Beem.Extenject.Video {
     /// <summary>
     /// Abstract video player view
     /// </summary>
-    public abstract class AbstractVideoPlayerView : MonoBehaviour, IShow {
+    public abstract class AbstractVideoPlayerView : MonoBehaviour {
 
         protected CancellationTokenSource cancelTokenSource;
 
         protected abstract int delay { get; }
         protected abstract bool condition { get; }
 
-        protected VideoPlayer _videoPlayer;
+        protected VideoPlayer Player {
+            get {
+                return _videoPlayerController.Player;
+            }
+        }
 
-        private SignalBus _signalBus;
+        private VideoPlayerController _videoPlayerController;
 
         public double Time {
-            get { return _videoPlayer.time; }
+            get { return Player.time; }
         }
 
         public ulong Duration {
-            get { return (ulong)(_videoPlayer.frameCount / _videoPlayer.frameRate); }
+            get { return (ulong)(Player.frameCount / Player.frameRate); }
         }
 
         public double NTime {
@@ -35,8 +39,8 @@ namespace Beem.Extenject.Video {
         }
 
         [Inject]
-        public void Construct(SignalBus signalBus) {
-            _signalBus = signalBus;
+        public void Construct(VideoPlayerController videoPlayerController) {
+            _videoPlayerController = videoPlayerController;
         }
 
         /// <summary>
@@ -62,15 +66,18 @@ namespace Beem.Extenject.Video {
         }
 
         private void OnEnable() {
-            _signalBus.Subscribe<PlaySignal>(PlayAsync);
-            _signalBus.Subscribe<PauseSignal>(Cancel);
-            _signalBus.Subscribe<StopSignal>(Cancel);
+            _videoPlayerController.onStop += Cancel;
+            _videoPlayerController.onPause += Cancel;
+            _videoPlayerController.onPlay += PlayAsync;
+            if (Player.isPlaying) {
+                PlayAsync();
+            }
         }
 
         protected void OnDisable() {
-            _signalBus.Unsubscribe<PlaySignal>(PlayAsync);
-            _signalBus.Unsubscribe<PauseSignal>(Cancel);
-            _signalBus.Unsubscribe<StopSignal>(Cancel);
+            _videoPlayerController.onStop -= Cancel;
+            _videoPlayerController.onPause -= Cancel;
+            _videoPlayerController.onPlay -= PlayAsync;
             Cancel();
         }
 
@@ -81,13 +88,6 @@ namespace Beem.Extenject.Video {
             if (cancelTokenSource != null) {
                 cancelTokenSource.Cancel();
                 cancelTokenSource = null;
-            }
-        }
-
-        public virtual void Show<T>(T parameter) {
-            if (parameter is PrerecordedVideoData) {
-                PrerecordedVideoData prerecordedVideoData = parameter as PrerecordedVideoData;
-                _videoPlayer = prerecordedVideoData.Player;
             }
         }
     }

@@ -1,9 +1,5 @@
-﻿using Beem.Extenject.Record;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.XR.ARFoundation;
-using UnityEngine.XR.ARSubsystems;
 using Zenject;
 
 namespace Beem.Extenject.Hologram {
@@ -67,8 +63,7 @@ namespace Beem.Extenject.Hologram {
         private void ActivateHologram(Vector3 position, Quaternion rotation) {
             if (_spawnedObject == null) {
                 _spawnedObject = Instantiate(_hologramPrefab);
-                _signalBus.Fire(new CreateHologramSignal(_spawnedObject));
-                _signalBus.Fire(new HologramPlacementSignal(true));
+                _signalBus.Fire(new HologramPlacementSignal(_spawnedObject));
             }
 
             _spawnedObject.transform.SetPositionAndRotation(position, rotation);
@@ -77,7 +72,7 @@ namespace Beem.Extenject.Hologram {
 
         private void DeactivateHologram() {
             if (_spawnedObject != null) {
-                _signalBus.Fire(new HologramPlacementSignal(false));
+                _signalBus.Fire(new HologramPlacementSignal());
                 _signalBus.Fire(new ARPinchSignal(false));
                 _target = null;
                 Destroy(_spawnedObject);
