@@ -53,7 +53,7 @@ namespace Beem.Extenject.Hologram {
         private void OnDisable() {
             _signalBus.Unsubscribe<SelectHologramSignal>(SetHologram);
             _signalBus.Unsubscribe<TargetPlacementSignal>(SetTarget);
-            _signalBus.Fire(new ARPinchSignal(false));
+            DeactivateHologram();
         }
 
         private void SetHologram(SelectHologramSignal selectHologramSignal) {
@@ -78,27 +78,19 @@ namespace Beem.Extenject.Hologram {
         private void DeactivateHologram() {
             if (_spawnedObject != null) {
                 _signalBus.Fire(new HologramPlacementSignal(false));
+                _signalBus.Fire(new ARPinchSignal(false));
+                _target = null;
                 Destroy(_spawnedObject);
             }
         }
 
         public void OnPointerDown(PointerEventData eventData) {
             _touchCounter.OnPointerDown(eventData);
-            Debug.LogError($"_touchCounter.TouchCount = {_touchCounter.TouchCount}");
             if (_touchCounter.TouchCount == moveTouchCount) {
-                if (_target != null) {
-                    if (_spawnedObject == null) {
-                        if (eventData.clickCount == moveTouchCount) {
-                            ActivateHologram(_target.position, _target.rotation);
-                        }
-                    } else {
-                        if (eventData.clickCount > moveTouchCount) {
-                            ActivateHologram(_target.position, _target.rotation);
-                        }
-                    }
+                if (_target != null && _spawnedObject == null) {
+                    ActivateHologram(_target.position, _target.rotation);
                 }
             }
-            Debug.LogError($"eventData.clickCount = {eventData.clickCount}");
         }
 
         public void OnPointerUp(PointerEventData eventData) {

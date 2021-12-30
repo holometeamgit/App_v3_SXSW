@@ -20,6 +20,7 @@ namespace Beem.Extenject.Hologram {
 
         private SignalBus _signalBus;
         private bool _arActive;
+        protected bool _arObjectWasCreated;
 
         [Inject]
         public void Construct(SignalBus signalBus) {
@@ -27,7 +28,8 @@ namespace Beem.Extenject.Hologram {
         }
 
         private void ARSessionActivate(ARSessionActivateSignal signal) {
-            if (signal.Active) {
+            _arActive = signal.Active;
+            if (_arActive) {
 #if UNITY_EDITOR
                 _signalBus.Fire(new ARPlanesDetectedSignal(true));
                 ActivateTargetAsync();
@@ -37,10 +39,16 @@ namespace Beem.Extenject.Hologram {
 
         private void OnEnable() {
             _signalBus.Subscribe<ARSessionActivateSignal>(ARSessionActivate);
+            _signalBus.Subscribe<HologramPlacementSignal>(ActivateHologramPlacement);
         }
 
         private void OnDisable() {
             _signalBus.Unsubscribe<ARSessionActivateSignal>(ARSessionActivate);
+            _signalBus.Unsubscribe<HologramPlacementSignal>(ActivateHologramPlacement);
+        }
+
+        protected void ActivateHologramPlacement(HologramPlacementSignal signal) {
+            _arObjectWasCreated = signal.Active;
         }
 
 
@@ -74,7 +82,7 @@ namespace Beem.Extenject.Hologram {
         }
 
         private void UpdateTransform() {
-            if (_hologramPrefab != null) {
+            if (!_arObjectWasCreated) {
                 _hologramPrefab.transform.SetPositionAndRotation(_placementPose.position, _placementPose.rotation);
             }
         }
