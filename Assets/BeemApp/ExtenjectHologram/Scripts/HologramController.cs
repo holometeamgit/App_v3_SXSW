@@ -11,7 +11,7 @@ namespace Beem.Extenject.Hologram {
     /// <summary>
     /// Hologram Controller
     /// </summary>
-    public class HologramController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler, IBeginDragHandler, IEndDragHandler {
+    public class HologramController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler, IBeginDragHandler, IEndDragHandler, IScrollHandler {
 
         [Header("Hologram Prefab")]
         [SerializeField]
@@ -84,11 +84,21 @@ namespace Beem.Extenject.Hologram {
 
         public void OnPointerDown(PointerEventData eventData) {
             _touchCounter.OnPointerDown(eventData);
-            if (_target != null) {
-                if (_touchCounter.TouchCount == moveTouchCount) {
-                    ActivateHologram(_target.position, _target.rotation);
+            Debug.LogError($"_touchCounter.TouchCount = {_touchCounter.TouchCount}");
+            if (_touchCounter.TouchCount == moveTouchCount) {
+                if (_target != null) {
+                    if (_spawnedObject == null) {
+                        if (eventData.clickCount == moveTouchCount) {
+                            ActivateHologram(_target.position, _target.rotation);
+                        }
+                    } else {
+                        if (eventData.clickCount > moveTouchCount) {
+                            ActivateHologram(_target.position, _target.rotation);
+                        }
+                    }
                 }
             }
+            Debug.LogError($"eventData.clickCount = {eventData.clickCount}");
         }
 
         public void OnPointerUp(PointerEventData eventData) {
@@ -97,14 +107,10 @@ namespace Beem.Extenject.Hologram {
 
         public void OnDrag(PointerEventData eventData) {
             if (_touchCounter.TouchCount == scaleTouchCount) {
-                _endPerimeter = _touchCounter.TouchPerimeter;
-                if (Mathf.Abs(_endPerimeter) > Mathf.Epsilon) {
-                    float param = (_endPerimeter - _startPerimeter) / _endPerimeter;
-                    var delta = Vector3.one * (param * _zoomSpeed);
-                    if (_spawnedObject != null) {
-                        var desiredScale = _spawnedObject.transform.localScale + delta;
-                        desiredScale = ClampDesiredScale(desiredScale);
-                        _spawnedObject.transform.localScale = desiredScale;
+                if (_spawnedObject != null) {
+                    _endPerimeter = _touchCounter.TouchPerimeter;
+                    if (Mathf.Abs(_endPerimeter) > Mathf.Epsilon) {
+                        ChangeScale((_endPerimeter - _startPerimeter) / _endPerimeter);
                     }
                 }
             }
@@ -126,11 +132,28 @@ namespace Beem.Extenject.Hologram {
             }
         }
 
+        public void OnScroll(PointerEventData eventData) {
+#if UNITY_EDITOR
+            if (_spawnedObject != null) {
+                ChangeScale(eventData.scrollDelta.y);
+                if (Mathf.Abs(eventData.scrollDelta.y) > 0) {
+                    _signalBus.Fire(new ARPinchSignal(true));
+                }
+            }
+#endif
+        }
+
+        private void ChangeScale(float param) {
+            var delta = Vector3.one * (param * _zoomSpeed);
+            var desiredScale = _spawnedObject.transform.localScale + delta;
+            desiredScale = ClampDesiredScale(desiredScale);
+            _spawnedObject.transform.localScale = desiredScale;
+        }
+
         private Vector3 ClampDesiredScale(Vector3 desiredScale) {
             desiredScale = Vector3.Max(Vector3.one * _zoomRange.x, desiredScale);
             desiredScale = Vector3.Min(Vector3.one * _zoomRange.y, desiredScale);
             return desiredScale;
         }
-
     }
 }

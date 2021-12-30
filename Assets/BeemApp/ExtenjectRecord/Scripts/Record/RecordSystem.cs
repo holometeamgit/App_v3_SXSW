@@ -29,6 +29,7 @@ namespace Beem.Extenject.Record {
         private string _lastRecordingPath;
 
         private bool _recordLengthFailed = false;
+
         private SignalBus _signalBus;
 
         public RecordSystem(Camera[] cameras) {

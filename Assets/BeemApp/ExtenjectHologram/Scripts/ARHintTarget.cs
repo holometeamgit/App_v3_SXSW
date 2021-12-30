@@ -44,14 +44,12 @@ namespace Beem.Extenject.Hologram {
 
         private void ActivateAR(ARSessionActivateSignal signal) {
             _arActive = signal.Active;
-            Debug.LogError($"_arActive = {_arActive}");
-            _hintAnimator.SetBool("Active", _arActive/* && _arObjectWasPinched*/);
+            _hintAnimator.SetBool("Active", _arActive && !_arObjectWasPinched);
         }
 
         private void ActivateARPinch(ARPinchSignal signal) {
             _arObjectWasPinched = signal.Active;
-            Debug.LogError($"_arObjectWasPinched = {_arObjectWasPinched}");
-            _hintAnimator.SetBool("Active", _arActive/* && _arObjectWasPinched*/);
+            _hintAnimator.SetBool("Active", _arActive && !_arObjectWasPinched);
         }
 
     }

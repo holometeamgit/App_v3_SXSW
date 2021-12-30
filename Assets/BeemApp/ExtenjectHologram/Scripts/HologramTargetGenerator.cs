@@ -74,8 +74,8 @@ namespace Beem.Extenject.Hologram {
         }
 
         private void UpdateTransform() {
-            if (_spawnedObject != null) {
-                _spawnedObject.transform.SetPositionAndRotation(_placementPose.position, _placementPose.rotation);
+            if (_hologramPrefab != null) {
+                _hologramPrefab.transform.SetPositionAndRotation(_placementPose.position, _placementPose.rotation);
             }
         }
 
