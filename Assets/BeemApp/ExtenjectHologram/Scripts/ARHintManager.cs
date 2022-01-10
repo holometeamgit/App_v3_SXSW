@@ -32,10 +32,10 @@ namespace Beem.Extenject.Hologram {
             }
         }
 
-        protected bool _arActive;
-        protected bool _arPlanesDetected;
-        protected bool _arObjectWasCreated;
-        protected bool _arObjectWasPinched;
+        private bool _arActive;
+        private bool _arPlanesDetected;
+        private bool _arObjectWasCreated;
+        private bool _arObjectWasPinched;
 
         private SignalBus _signalBus;
 
@@ -59,16 +59,20 @@ namespace Beem.Extenject.Hologram {
         }
 
         protected void ActivateHologramPlacement(HologramPlacementSignal signal) {
-            _arObjectWasCreated = signal.Active;
-            arPlaneManager.enabled = _arObjectWasCreated;
+            if (_arObjectWasCreated != signal.Active) {
+                _arObjectWasCreated = signal.Active;
+            }
+            arPlaneManager.enabled = !_arObjectWasCreated;
 
             foreach (var plane in arPlaneManager.trackables) {
-                plane.gameObject.SetActive(_arObjectWasCreated);
+                plane.gameObject.SetActive(!_arObjectWasCreated);
             }
         }
 
         protected void ActivateAR(ARSessionActivateSignal signal) {
-            _arActive = signal.Active;
+            if (_arActive != signal.Active) {
+                _arActive = signal.Active;
+            }
             arSession.enabled = _arActive;
 
             if (_arActive) {
@@ -77,11 +81,15 @@ namespace Beem.Extenject.Hologram {
         }
 
         protected void ActivateARPinch(ARPinchSignal signal) {
-            _arObjectWasPinched = signal.Active;
+            if (_arObjectWasPinched != signal.Active) {
+                _arObjectWasPinched = signal.Active;
+            }
         }
 
         protected void ActivateARPlanesDetected(ARPlanesDetectedSignal signal) {
-            _arPlanesDetected = signal.Active;
+            if (_arPlanesDetected != signal.Active) {
+                _arPlanesDetected = signal.Active;
+            }
         }
     }
 }
