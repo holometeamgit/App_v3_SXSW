@@ -13,7 +13,7 @@ public class ARMessageRoomWindow : MonoBehaviour {
     /// Show btns
     /// </summary>
     public void Show() {
-        gameObject.SetActive(true);
+        gameObject?.SetActive(true);
         _animator.SetBool("Show", true);
     }
 
@@ -21,7 +21,7 @@ public class ARMessageRoomWindow : MonoBehaviour {
     /// hide btns
     /// </summary>
     public void Hide() {
-        gameObject.SetActive(false);
+        gameObject?.SetActive(false);
         _animator.SetBool("Show", false);
     }
 
