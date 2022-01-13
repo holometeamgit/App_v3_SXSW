@@ -21,6 +21,8 @@ public class ARMsgScreenRecorder : MonoBehaviour {
     private AudioDevice audioDevice;
 
     private string _lastPathVideo;
+    private const int MAX_HEIGH = 720;
+    private const int BITRATE = 4000000;
 
     private async void Start() {
 
@@ -43,7 +45,7 @@ public class ARMsgScreenRecorder : MonoBehaviour {
         var clock = new RealtimeClock();
         int width;
         int heigh;
-        AgoraSharedVideoConfig.GetResolution(screenWidth: Screen.width, screenHeigh: Screen.height, out width, out heigh);
+        AgoraSharedVideoConfig.GetResolution(screenWidth: Screen.width, screenHeigh: Screen.height, out width, out heigh, maxHeigh: MAX_HEIGH);
 
         // Create a media device query for audio devices
         var deviceQuery = new MediaDeviceQuery(MediaDeviceCriteria.AudioDevice);
@@ -53,7 +55,7 @@ public class ARMsgScreenRecorder : MonoBehaviour {
         HelperFunctions.DevLog("vide record width " + width + " heigh " + heigh);
 
         // Create recorder
-        recorder = new MP4Recorder(width, heigh, AgoraSharedVideoConfig.FrameRate, audioDevice.sampleRate, audioDevice.channelCount);
+        recorder = new MP4Recorder(width, heigh, frameRate: AgoraSharedVideoConfig.FrameRate, audioDevice.sampleRate, audioDevice.channelCount, bitrate: BITRATE);
         // Stream media samples
         cameraInput = new CameraInput(recorder, clock, _camera);
         audioDevice.StartRunning((sampleBuffer, timestamp) => recorder.CommitSamples(sampleBuffer, clock.timestamp));
