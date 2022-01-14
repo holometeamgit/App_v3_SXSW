@@ -49,6 +49,7 @@
 public class AnalyticParameters {
     public const string ParamUserID = "User_ID";
     public const string ParamProductID = "Product_ID";
+    public const string ParamUserName = "User_Name";
     public const string ParamBroadcasterUserID = "Broadcaster_User_ID";
     public const string ParamPerformanceID = "Performance_ID";
     public const string ParamUserEmail = "User_Email";
