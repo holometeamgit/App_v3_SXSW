@@ -157,8 +157,6 @@ public class PnlRecord : MonoBehaviour {
             OnRecordComplete
         );
 
-
-
         cameraInput = new CameraInput(videoRecorder, recordingClock, _cameras);
         if (recordMicrophone) {
             audioInput = new AudioInput(videoRecorder, recordingClock, _hologramHandler.GetAudioSource());
@@ -182,7 +180,15 @@ public class PnlRecord : MonoBehaviour {
             audioInput.Dispose();
         }
         cameraInput.Dispose();
+        videoRecorder.Dispose();
         videoPlayerController?.OnPause();
+
+        imgRecordFill.fillAmount = 0;
+        btnToggleMode.interactable = true;
+        Recording = false;
+
+        if (!recordLengthFailed)
+            watermarkCanvasObject.SetActive(false);
     }
 
     private void OnRecordComplete(string path) {
@@ -193,13 +199,6 @@ public class PnlRecord : MonoBehaviour {
             lastRecordingPath = path;
             PostRecordARConstructor.OnActivatedVideo?.Invoke(path);
         }
-
-        imgRecordFill.fillAmount = 0;
-        btnToggleMode.interactable = true;
-        Recording = false;
-
-        if (!recordLengthFailed)
-            watermarkCanvasObject.SetActive(false);
     }
 
     private void MakeScreenshot() {

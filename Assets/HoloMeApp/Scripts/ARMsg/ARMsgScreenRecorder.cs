@@ -23,6 +23,7 @@ public class ARMsgScreenRecorder : MonoBehaviour {
     private string _lastPathVideo;
     private const int MAX_HEIGH = 720;
     private const int BITRATE = 4000000;
+    private const int FRAMERATE = 30;
 
     private async void Start() {
 
@@ -56,7 +57,7 @@ public class ARMsgScreenRecorder : MonoBehaviour {
 
         // Create recorder
         recorder = new MP4Recorder(width, heigh,
-            framerate: AgoraSharedVideoConfig.FrameRate,
+            framerate: FRAMERATE,
             sampleRate: audioDevice.sampleRate, channelCount: audioDevice.channelCount,
             recordingCallback: OnRecordComplete,
             bitrate: BITRATE);
@@ -71,6 +72,7 @@ public class ARMsgScreenRecorder : MonoBehaviour {
     public void StopRecord() {
         audioDevice.StopRunning();
         cameraInput.Dispose();
+        recorder.Dispose();
     }
 
     private void OnRecordComplete(string path) {
