@@ -2,8 +2,8 @@
 
 public class ApplicationSettingsHandler : MonoBehaviour
 {
+    public static int TARGET_FRAAME_RATE = 300;
     const int SLEEP_TIMEOUT = 60;
-    const int TARGET_FRAAME_RATE = 300;
 
     public static ApplicationSettingsHandler Instance { get; private set; }
 
