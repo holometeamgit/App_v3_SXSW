@@ -71,9 +71,9 @@ public class ARMsgScreenRecorder : MonoBehaviour {
     /// stop recording screeen
     /// </summary>
     public void StopRecord() {
-        audioDevice.StopRunning();
-        cameraInput.Dispose();
-        recorder.Dispose();
+        audioDevice?.StopRunning();
+        cameraInput?.Dispose();
+        recorder?.Dispose();
     }
 
     private void OnRecordComplete(string path) {
