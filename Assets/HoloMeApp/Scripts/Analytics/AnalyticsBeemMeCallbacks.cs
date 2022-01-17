@@ -1,6 +1,9 @@
 using Beem.ARMsg;
 using UnityEngine;
 
+/// <summary>
+/// This class assigns relevant callbacks for analytics and Beem Me feature
+/// </summary>
 public class AnalyticsBeemMeCallbacks : MonoBehaviour {
 
     void Start() {
