@@ -1,4 +1,8 @@
-﻿public class AnalyticKeys {
+﻿/// <summary>
+/// Class holds analytic strings. There's a chance some events are pass in the scene using Unity Events so there may be a few
+/// missing from this file, instead please refer to the tracking plan which should include all calls
+/// </summary>
+public class AnalyticKeys {
     public const string KeyRegistrationComplete = "Registration_Complete";
     public const string KeyRegistrationDropOff = "Registration_Dropped_Off";
     public const string KeyUserSignup = "User_Signup";
@@ -19,12 +23,10 @@
     public const string KeyViewerCountUpdate = "Viewer_Count_Update";
     public const string KeyMaxViewerCount = "Max_Viewer_Count";
 
-    public const string KeyBeemMeSelected = "Beem_Me_Pressed";
-    public const string KeyBeemMeUploadStarted = "Upload_Beem_Me";
-    public const string KeyBeemMeConversionComplete = "Conversion_Complete";
-    public const string KeyBeemMePlaced = "Place_Beem_Me";
-    public const string KeyBeemMeShared = "Share_Beem_Me";
-
+    public const string KeyBeemMeRecordStarted = "Beem_Me_Record_Started";
+    public const string KeyBeemMeUploadComplete = "Beem_Me_Upload_Complete";
+    public const string KeyBeemMeConversionComplete = "Beem_Me_Conversion_Complete";
+    
     public const string KeyGoLive = "Go_Live"; //When a broadcaster clicks 'go live' from the main menu
     public const string KeyLiveStarted = "Live_Started"; //When a broadcaster clicks 'go live' from the main menu and starts to record a video
 
