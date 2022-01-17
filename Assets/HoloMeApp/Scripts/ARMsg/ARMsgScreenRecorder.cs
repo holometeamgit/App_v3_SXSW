@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections;
-using NatSuite.Recorders;
-using NatSuite.Recorders.Clocks;
-using NatSuite.Recorders.Inputs;
+using NatCorder;
+using NatCorder.Clocks;
+using NatCorder.Inputs;
 using UnityEngine.Video;
 using UnityEngine.UI;
 using NatSuite.Devices;
@@ -21,6 +21,9 @@ public class ARMsgScreenRecorder : MonoBehaviour {
     private AudioDevice audioDevice;
 
     private string _lastPathVideo;
+    private const int MAX_HEIGH = 720;
+    private const int BITRATE = 4000000;
+    private const int FRAMERATE = 30;
 
     private async void Start() {
 
@@ -43,7 +46,8 @@ public class ARMsgScreenRecorder : MonoBehaviour {
         var clock = new RealtimeClock();
         int width;
         int heigh;
-        AgoraSharedVideoConfig.GetResolution(screenWidth: Screen.width, screenHeigh: Screen.height, out width, out heigh);
+        AgoraSharedVideoConfig.GetResolution(screenWidth: Screen.width, screenHeigh: Screen.height, out width, out heigh, maxHeigh: MAX_HEIGH);
+        Application.targetFrameRate = FRAMERATE;
 
         // Create a media device query for audio devices
         var deviceQuery = new MediaDeviceQuery(MediaDeviceCriteria.AudioDevice);
@@ -53,33 +57,33 @@ public class ARMsgScreenRecorder : MonoBehaviour {
         HelperFunctions.DevLog("vide record width " + width + " heigh " + heigh);
 
         // Create recorder
-        recorder = new MP4Recorder(width, heigh, AgoraSharedVideoConfig.FrameRate, audioDevice.sampleRate, audioDevice.channelCount);
+        recorder = new MP4Recorder(width, heigh,
+            framerate: FRAMERATE,
+            sampleRate: audioDevice.sampleRate, channelCount: audioDevice.channelCount,
+            recordingCallback: OnRecordComplete,
+            bitrate: BITRATE);
         // Stream media samples
         cameraInput = new CameraInput(recorder, clock, _camera);
-        audioDevice.StartRunning((sampleBuffer, timestamp) => recorder.CommitSamples(sampleBuffer, clock.timestamp));
+        audioDevice.StartRunning((sampleBuffer, timestamp) => recorder.CommitSamples(sampleBuffer, clock.Timestamp));
     }
 
     /// <summary>
     /// stop recording screeen
     /// </summary>
     public void StopRecord() {
-        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        StopRecordingAsync().ContinueWith((task) => {
-            CallBacks.OnVideoReadyPlay?.Invoke();
-        }
-        , taskScheduler);
+        audioDevice?.StopRunning();
+        cameraInput?.Dispose();
+        recorder?.Dispose();
     }
 
-    private async Task StopRecordingAsync() {
-        audioDevice.StopRunning();
-        cameraInput.Dispose();
-
-        var path = await recorder.FinishWriting();
-
+    private void OnRecordComplete(string path) {
+        Application.targetFrameRate = ApplicationSettingsHandler.TARGET_FRAAME_RATE;
         // Playback recording
         HelperFunctions.DevLog($"Saved recording to: {path}");
 
         _lastPathVideo = path;
+
+        CallBacks.OnVideoReadyPlay?.Invoke();
     }
 
     private string GetPathToFile() {

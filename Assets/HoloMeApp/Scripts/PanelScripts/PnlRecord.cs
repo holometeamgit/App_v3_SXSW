@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using NatSuite.Recorders;
-using NatSuite.Recorders.Clocks;
-using NatSuite.Recorders.Inputs;
+using NatCorder;
+using NatCorder.Clocks;
+using NatCorder.Inputs;
 using System.Collections;
 using TMPro;
 using UnityEngine.Events;
@@ -153,10 +153,9 @@ public class PnlRecord : MonoBehaviour {
             videoHeight,
             25,
             recordMicrophone ? AudioSettings.outputSampleRate : 0,
-            recordMicrophone ? (int)AudioSettings.speakerMode : 0
+            recordMicrophone ? (int)AudioSettings.speakerMode : 0,
+            OnRecordComplete
         );
-
-
 
         cameraInput = new CameraInput(videoRecorder, recordingClock, _cameras);
         if (recordMicrophone) {
@@ -181,29 +180,24 @@ public class PnlRecord : MonoBehaviour {
             audioInput.Dispose();
         }
         cameraInput.Dispose();
+        videoRecorder.Dispose();
         videoPlayerController?.OnPause();
-        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        OnRecordComplete().ContinueWith((taskWebRequestData) => {
 
-            imgRecordFill.fillAmount = 0;
-            btnToggleMode.interactable = true;
-            Recording = false;
+        imgRecordFill.fillAmount = 0;
+        btnToggleMode.interactable = true;
+        Recording = false;
 
-            if (!recordLengthFailed)
-                watermarkCanvasObject.SetActive(false);
-
-        }, taskScheduler);
-
+        if (!recordLengthFailed)
+            watermarkCanvasObject.SetActive(false);
     }
 
-    private async Task OnRecordComplete() {
-        string outputPath = await videoRecorder.FinishWriting();
+    private void OnRecordComplete(string path) {
         if (recordLengthFailed) {
-            File.Delete(outputPath);
+            File.Delete(path);
             MakeScreenshot();
         } else {
-            lastRecordingPath = outputPath;
-            PostRecordARConstructor.OnActivatedVideo?.Invoke(outputPath);
+            lastRecordingPath = path;
+            PostRecordARConstructor.OnActivatedVideo?.Invoke(path);
         }
     }
 

@@ -29,9 +29,6 @@ public class PnlPostRecord : MonoBehaviour {
     [SerializeField]
     Button btnDownload;
 
-    [SerializeField]
-    private AnimatedTransition _animatedTransition;
-
     [Space]
     [SerializeField]
     private HologramHandler _hologramHandler;
@@ -119,7 +116,7 @@ public class PnlPostRecord : MonoBehaviour {
     /// </summary>
     public void Deactivate() {
         videoPlayerController?.OnResume();
-        _animatedTransition.DoMenuTransition(false);
+        gameObject.SetActive(false);
     }
 
     public void Share() {
