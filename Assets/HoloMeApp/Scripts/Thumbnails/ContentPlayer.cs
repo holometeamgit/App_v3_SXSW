@@ -35,6 +35,10 @@ public class ContentPlayer : MonoBehaviour {
         StreamCallBacks.onShareStreamLinkByData?.Invoke(data);
     }
 
+    /// <summary>
+    /// Play data
+    /// </summary>
+    /// <param name="data"></param>
     public void Play(StreamJsonData.Data data) {
         if (data.is_bought && data.IsStarted) {
             if (data.HasStreamUrl) {
