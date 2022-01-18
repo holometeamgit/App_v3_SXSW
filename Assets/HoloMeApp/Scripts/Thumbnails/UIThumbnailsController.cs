@@ -179,8 +179,8 @@ public class UIThumbnailsController : MonoBehaviour {
         CallBacks.onClickLike += SetLike;
         CallBacks.onClickUnlike += SetUnlike;
         StreamCallBacks.onPlayRoom += PlayRoom;
-
-        InstantiateBtns(_startBtnCount);
+        //FIXME: Homepage with thumbnails
+        //InstantiateBtns(_startBtnCount);
     }
 
     #region Prepare thumbnails
@@ -214,7 +214,8 @@ public class UIThumbnailsController : MonoBehaviour {
         }
 
         int quantityDifference = btnThumbnailItems.Count - dataList.Count;
-        InstantiateBtns(-quantityDifference);
+        //FIXME: Homepage with thumbnails
+        //InstantiateBtns(-quantityDifference);
         CheckActiveBtns();
     }
 
