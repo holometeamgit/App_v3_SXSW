@@ -34,7 +34,7 @@ public class PnlThumbnailPopup : UIThumbnail {
     [SerializeField]
     private WebRequestHandler _webRequestHandler;
     [SerializeField]
-    private UIThumbnailsController _uiThumbnailsController;
+    private ContentPlayer _uiThumbnailsController;
     [SerializeField]
     private ThumbnailWebDownloadManager _thumbnailWebDownloadManager;
 

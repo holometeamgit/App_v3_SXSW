@@ -12,8 +12,6 @@ using System.Threading;
 /// </summary>
 public class PnlARMsgConstructor : MonoBehaviour {
     [SerializeField]
-    private UIThumbnailsController _uiThumbnailsController;
-    [SerializeField]
     private PermissionController _permissionController;
     [SerializeField]
     private PnlARMessages _pnlARMessages;
@@ -46,7 +44,7 @@ public class PnlARMsgConstructor : MonoBehaviour {
 
         _pnlARMessages.Init(data);
 
-        _uiThumbnailsController.OnPlayFromUser?.Invoke(data.user);
+        ContentPlayer.OnPlayFromUser?.Invoke(data.user);
 
         CallBacks.OnActivated?.Invoke(false);
     }
