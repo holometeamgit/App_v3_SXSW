@@ -28,7 +28,6 @@ public class PnlMenu : MonoBehaviour {
     }
 
     private void OnEnable() {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySettingsPanel);
         _userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
         _userWebManager.LoadUserInfo();
 
@@ -52,6 +51,7 @@ public class PnlMenu : MonoBehaviour {
     /// Open Settings
     /// </summary>
     public void OpenSettings() {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySettingsPanel);
         SettingsConstructor.OnActivated?.Invoke(true);
         MenuConstructor.OnActivated?.Invoke(false);
         StreamCallBacks.onCloseComments?.Invoke();
