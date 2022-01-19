@@ -51,7 +51,7 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
         WarningConstructor.ActivateSingleButton("Change password",
             string.Format("Password change information has been sent to email {0}", emailInputField.text),
             "Continue",
-            () => { ResetPasswordToSignIn(); });
+            () => { ResetPasswordToSignIn(); emailInputField.MobileInputField.SetVisible(true); });
     }
 
     private void ErrorMsgCallBack(string msg) {
