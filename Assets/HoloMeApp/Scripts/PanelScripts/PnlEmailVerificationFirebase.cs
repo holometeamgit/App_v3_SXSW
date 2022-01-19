@@ -11,6 +11,8 @@ public class PnlEmailVerificationFirebase : MonoBehaviour {
     TMP_Text _txtEmail;
     [SerializeField]
     GameObject _goToLogInBtn;
+    [SerializeField]
+    GameObject _resendBtn;
     [SerializeField] TMP_Text _resendMsg;
 
     [Space]
@@ -32,7 +34,7 @@ public class PnlEmailVerificationFirebase : MonoBehaviour {
 
     private void OnEnable() {
         _txtEmail.text = _authController.GetEmail();
-
+        EmailVerificationTimer.Release();
         UpdateResendTextAsync();
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         Task.Delay(DELAY_TIME).ContinueWith((_) => {
@@ -70,6 +72,7 @@ public class PnlEmailVerificationFirebase : MonoBehaviour {
     private async void UpdateResendTextAsync() {
         TimeSpan timeSpan = EmailVerificationTimer.GetTimeLeft();
         try {
+            _resendBtn.SetActive(!(timeSpan.TotalSeconds > 0 && !EmailVerificationTimer.GetToken().IsCancellationRequested));
             while (timeSpan.TotalSeconds > 0 && !EmailVerificationTimer.GetToken().IsCancellationRequested) {
                 _resendMsg.text = string.Format(TIMER_TEXT + "{0:D1}:{1:D2}", timeSpan.Minutes, timeSpan.Seconds);
                 await Task.Delay(DELAY_FOR_TIMER);
