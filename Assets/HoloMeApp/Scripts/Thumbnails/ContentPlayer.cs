@@ -2,7 +2,7 @@
 using UnityEngine;
 using System;
 using Beem.Permissions;
-
+using Beem.ARMsg;
 
 /// <summary>
 /// Content Player
@@ -67,6 +67,24 @@ public class ContentPlayer : MonoBehaviour {
     }
 
     /// <summary>
+    /// Play ARMessage
+    /// </summary>
+    /// <param name="roomJsonData"></param>
+    private void PlayARMessage(ARMsgJSON.Data data) { //TODO split it to other class
+        _permissionController.CheckCameraMicAccess(() => {
+            MenuConstructor.OnActivated?.Invoke(false);
+            HomeScreenConstructor.OnActivated?.Invoke(false);
+            SettingsConstructor.OnActivated?.Invoke(false);
+            ARMsgRecordConstructor.OnActivated?.Invoke(false);
+            ARenaConstructor.onActivateForARMessaging?.Invoke(data);
+            ARMsgARenaConstructor.OnActivatedARena?.Invoke(data);
+            OnPlayFromUser?.Invoke(data.user);
+        });
+
+    }
+
+
+    /// <summary>
     /// Play Stadium
     /// </summary>
     /// <param name="roomJsonData"></param>
@@ -120,9 +138,11 @@ public class ContentPlayer : MonoBehaviour {
 
     private void Awake() {
         StreamCallBacks.onPlayRoom += PlayRoom;
+        StreamCallBacks.onPlayARMessage += PlayARMessage;
     }
 
     private void OnDestroy() {
         StreamCallBacks.onPlayRoom -= PlayRoom;
+        StreamCallBacks.onPlayARMessage -= PlayARMessage;
     }
 }

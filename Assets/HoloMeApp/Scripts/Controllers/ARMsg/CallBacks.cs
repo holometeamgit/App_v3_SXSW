@@ -32,9 +32,6 @@ namespace Beem.ARMsg {
         public static Action OnARMsgProcessingCheck = delegate { };
         public static Action OnDeleteLastARMsgActions = delegate { };
         public static Action OnCancelAllARMsgActions = delegate { };
-        public static Action<ARMsgJSON.Data> OnActivatedARena = delegate { };
-        public static Action OnDeactivatedARena = delegate { };
-        public static Action<bool> OnActivated = delegate { };
         #endregion
 
         #region ARmsg Webrequest

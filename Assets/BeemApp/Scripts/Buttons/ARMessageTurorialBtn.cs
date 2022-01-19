@@ -30,7 +30,6 @@ public class ARMessageTurorialBtn : MonoBehaviour {
             HomeScreenConstructor.OnActivated?.Invoke(false);
             StreamCallBacks.onCloseComments?.Invoke();
             ARMessageTutorialConstructor.OnActivated?.Invoke(true);
-            ARMessageRoomConstructor.OnActivated?.Invoke(false);
         });
     }
 }

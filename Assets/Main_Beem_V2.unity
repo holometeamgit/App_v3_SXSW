@@ -1571,7 +1571,6 @@ Transform:
   - {fileID: 210189154}
   - {fileID: 1313744753}
   - {fileID: 1832899321}
-  - {fileID: 1300996325}
   - {fileID: 1707344585}
   m_Father: {fileID: 1511041754}
   m_RootOrder: 19
@@ -2738,55 +2737,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 38
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &912298063
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 912298065}
-  - component: {fileID: 912298064}
-  m_Layer: 0
-  m_Name: ArMessagePopupShowChecker
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &912298064
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 912298063}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e11c1981d561844ec950f222a5c3c87a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _needBeActivatedObjects:
-  - {fileID: 799995373}
-  _needBeDeactivatedObjects:
-  - {fileID: 1496662217}
-  - {fileID: 30566191}
-  - {fileID: 971999349}
---- !u!4 &912298065
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 912298063}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1519454386}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &921435835
 GameObject:
   m_ObjectHideFlags: 0
@@ -3732,50 +3682,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 234510954451777389}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1300996324
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1300996325}
-  - component: {fileID: 1300996326}
-  m_Layer: 0
-  m_Name: ARMessageRoomConstructor
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1300996325
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1300996324}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 517767691}
-  m_RootOrder: 27
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1300996326
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1300996324}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71faded1548a0b548971755159f9f0c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _arMessageRoomWindow: {fileID: 0}
 --- !u!1 &1313744752
 GameObject:
   m_ObjectHideFlags: 0
@@ -4454,7 +4360,6 @@ Transform:
   - {fileID: 2141595002}
   - {fileID: 1626989682}
   - {fileID: 1000053069}
-  - {fileID: 912298065}
   m_Father: {fileID: 1511041754}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5001,7 +4906,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 28
+  m_RootOrder: 27
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1707344586
 MonoBehaviour:
@@ -5933,6 +5838,7 @@ GameObject:
   - component: {fileID: 2141014400}
   - component: {fileID: 2141014401}
   - component: {fileID: 2141014402}
+  - component: {fileID: 2141014403}
   m_Layer: 0
   m_Name: ARMsgConstructor
   m_TagString: Untagged
@@ -5966,6 +5872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 402288bbd31df42bab03482214df5a47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _window: {fileID: 799995373}
   _arMsgAPI: {fileID: 11400000, guid: 6654356a8bcc64e8dbfcada070457098, type: 2}
   _webRequestHandler: {fileID: 35185073}
 --- !u!114 &2141014402
@@ -5977,14 +5884,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 2141014399}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe3d4a9fe0d13b0409799978eef67ed5, type: 3}
+  m_Script: {fileID: 11500000, guid: 2b331203cacdfea488045794c7b9694c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _permissionController: {fileID: 977903556}
   _pnlARMessages: {fileID: 98785881}
-  _pnlARMessagesSteps: {fileID: 799995373}
+--- !u!114 &2141014403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2141014399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c89eaf9eb65ff4d4e990d1d3e454339f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _popupShowChecker: {fileID: 1000053068}
-  _arMessagePopupChecker: {fileID: 912298064}
 --- !u!1 &2141595001
 GameObject:
   m_ObjectHideFlags: 0
