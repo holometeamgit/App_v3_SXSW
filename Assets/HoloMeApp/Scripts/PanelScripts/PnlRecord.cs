@@ -48,7 +48,7 @@ public class PnlRecord : MonoBehaviour {
     [Space]
 
     [SerializeField]
-    private ContentPlayer _uiThumbnailsController;
+    private ContentPlayer _contentPlayer;
 
     [SerializeField]
     private HologramHandler _hologramHandler;
@@ -121,7 +121,7 @@ public class PnlRecord : MonoBehaviour {
         videoButtonContainerPosition = rtButtonContainer.anchoredPosition;
         canvasGroup.alpha = 0;
 
-        ContentPlayer.OnPlayFromUser += user => txtWaterMarkText.text = "@" + user; //Gameobject must be active in the editor for this to work correctly
+        _contentPlayer.OnPlayFromUser += user => txtWaterMarkText.text = "@" + user; //Gameobject must be active in the editor for this to work correctly
     }
 
     private void OnEnable() {

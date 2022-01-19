@@ -16,7 +16,7 @@ public class ContentPlayer : MonoBehaviour {
     [SerializeField]
     private PermissionController _permissionController;
 
-    public static Action<string> OnPlayFromUser;
+    public Action<string> OnPlayFromUser;
 
     /// <summary>
     /// Buy Stadium/Prerecorded
