@@ -116,11 +116,14 @@ public class PnlProfile : MonoBehaviour {
     }
 
     private void ShowMsgForDeletedUser() {
+        usernameInputField.MobileInputField.SetVisible(false);
         WarningConstructor.ActivateDoubleButton(null,
             string.Format("This account has been deleted, contact support to reinstate. "),
             "Support",
             "Cancel",
-            () => { externalLinkRedirector.Redirect(); });
+            () => { externalLinkRedirector.Redirect(); usernameInputField.MobileInputField.SetVisible(false); },
+            () => { usernameInputField.MobileInputField.SetVisible(true); }
+        );
     }
 
     private void OnEnable() {
