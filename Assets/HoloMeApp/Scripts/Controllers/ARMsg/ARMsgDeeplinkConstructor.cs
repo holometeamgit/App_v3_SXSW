@@ -5,6 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
+/// <summary>
+/// Constructor for opening deep Link for ARMessage
+/// </summary>
 public class ARMsgDeeplinkConstructor : MonoBehaviour {
 
     [SerializeField]
