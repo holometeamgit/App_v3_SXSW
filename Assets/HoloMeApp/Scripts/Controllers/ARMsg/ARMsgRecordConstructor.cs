@@ -1,16 +1,19 @@
 using UnityEngine;
 using Beem.ARMsg;
+using System;
 
 /// <summary>
 /// ARMsgConstructor. TODO convert it to DI in future 
 /// </summary>
-public class ARMsgConstructor : MonoBehaviour {
+public class ARMsgRecordConstructor : WindowConstructor {
     [SerializeField]
     private ARMsgAPIScriptableObject _arMsgAPI;
     [SerializeField]
     private WebRequestHandler _webRequestHandler;
 
     private ARMsgController _arMsgController;
+
+    public static Action<bool> OnActivated = delegate { };
 
 
     private void Awake() {
@@ -24,6 +27,7 @@ public class ARMsgConstructor : MonoBehaviour {
         CallBacks.OnGetLastARMsgShareLink += _arMsgController.GetReadyShareLink;
         CallBacks.OnGetLastReadyARMsgData += _arMsgController.GetLastReadyARMsgData;
         CallBacks.OnCancelLastGetARMsgById += _arMsgController.OnCancelLastGetARMsgById;
+        OnActivated += Activate;
     }
 
     private void OnDestroy() {
@@ -37,5 +41,10 @@ public class ARMsgConstructor : MonoBehaviour {
         CallBacks.OnGetLastARMsgShareLink -= _arMsgController.GetReadyShareLink;
         CallBacks.OnGetLastReadyARMsgData -= _arMsgController.GetLastReadyARMsgData;
         CallBacks.OnCancelLastGetARMsgById -= _arMsgController.OnCancelLastGetARMsgById;
+        OnActivated -= Activate;
+    }
+
+    private void Activate(bool status) {
+        _window?.SetActive(status);
     }
 }
