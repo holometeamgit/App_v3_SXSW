@@ -27,7 +27,7 @@ public class StadiumBtn : MonoBehaviour {
 
         permissionController.CheckCameraMicAccess(() => {
             SettingsConstructor.OnActivated?.Invoke(false);
-            MenuConstructor.OnActivated?.Invoke(false);
+            //MenuConstructor.OnActivated?.Invoke(false);
             HomeScreenConstructor.OnActivated?.Invoke(false);
             StreamCallBacks.onCloseComments?.Invoke();
             StreamOverlayConstructor.onActivatedAsStadiumBroadcaster?.Invoke();

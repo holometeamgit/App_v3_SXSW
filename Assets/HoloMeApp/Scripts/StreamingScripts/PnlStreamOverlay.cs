@@ -333,7 +333,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         _agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         StreamOverlayConstructor.onDeactivate?.Invoke();
-        HomeScreenConstructor.OnActivated?.Invoke(true);
+        //HomeScreenConstructor.OnActivated?.Invoke(true);
         MenuConstructor.OnActivated?.Invoke(true);
         RecordARConstructor.OnActivated?.Invoke(false);
     }
@@ -341,7 +341,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private void CloseAsViewer() {
         StopStream();
         StreamOverlayConstructor.onDeactivate?.Invoke();
-        HomeScreenConstructor.OnActivated?.Invoke(true);
+        //HomeScreenConstructor.OnActivated?.Invoke(true);
         MenuConstructor.OnActivated?.Invoke(true);
         RecordARConstructor.OnActivated?.Invoke(false);
     }

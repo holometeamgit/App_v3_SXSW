@@ -78,7 +78,7 @@ public class PnlProfile : MonoBehaviour {
     /// </summary>
     public void ProfileToMainMenu() {
         CreateUsernameConstructor.OnActivated?.Invoke(false);
-        HomeScreenConstructor.OnActivated?.Invoke(true);
+        //HomeScreenConstructor.OnActivated?.Invoke(true);
         MenuConstructor.OnActivated?.Invoke(true);
     }
 
