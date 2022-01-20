@@ -166,9 +166,12 @@ namespace Mopsicus.Plugins {
         public void OnData(JsonObject data) {
             //Debug.Log (string.Format ("{0} plugin OnData: {1}", GetType ().Name, data.ToJsonPrettyPrintString ()));
             _data = data;
+            Debug.LogError(string.Format("Data error: {0}", data));
+            Debug.LogError((JsonObject)JsonNode.ParseJsonString(data["data"]));
             try {
                 JsonObject response = (JsonObject)JsonNode.ParseJsonString(data["data"]);
                 string code = response["msg"];
+                Debug.LogError($"code = {code}");
                 switch (code) {
                     case KEYBOARD_ACTION:
                         bool isShow = response["show"];
