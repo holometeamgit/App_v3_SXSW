@@ -48,6 +48,7 @@ public class ARMsgScreenRecorder : MonoBehaviour {
         int heigh;
         AgoraSharedVideoConfig.GetResolution(screenWidth: Screen.width, screenHeigh: Screen.height, out width, out heigh, maxHeigh: MAX_HEIGH);
         Application.targetFrameRate = FRAMERATE;
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
 
         // Create a media device query for audio devices
         var deviceQuery = new MediaDeviceQuery(MediaDeviceCriteria.AudioDevice);
@@ -78,6 +79,7 @@ public class ARMsgScreenRecorder : MonoBehaviour {
 
     private void OnRecordComplete(string path) {
         Application.targetFrameRate = ApplicationSettingsHandler.TARGET_FRAAME_RATE;
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         // Playback recording
         HelperFunctions.DevLog($"Saved recording to: {path}");
 
