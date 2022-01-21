@@ -164,10 +164,8 @@ namespace Mopsicus.Plugins {
         /// Callback on data
         /// </summary>
         public void OnData(JsonObject data) {
-            //Debug.Log (string.Format ("{0} plugin OnData: {1}", GetType ().Name, data.ToJsonPrettyPrintString ()));
             _data = data;
             Debug.LogError(string.Format("Data error: {0}", data));
-            Debug.LogError((JsonObject)JsonNode.ParseJsonString(data["data"]));
             try {
                 JsonObject response = (JsonObject)JsonNode.ParseJsonString(data["data"]);
                 string code = response["msg"];
@@ -181,6 +179,7 @@ namespace Mopsicus.Plugins {
                         break;
                     default:
                         int id = response["id"];
+                        Debug.LogError($"id = {id}");
                         if (_inputs.ContainsKey(id)) {
                             GetReceiver(id).Send(response);
                         }
