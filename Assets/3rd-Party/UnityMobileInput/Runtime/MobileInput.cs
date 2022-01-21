@@ -165,21 +165,18 @@ namespace Mopsicus.Plugins {
         /// </summary>
         public void OnData(JsonObject data) {
             _data = data;
-            Debug.LogError(string.Format("Data error: {0}", data));
             try {
                 JsonObject response = (JsonObject)JsonNode.ParseJsonString(data["data"]);
                 string code = response["msg"];
-                Debug.LogError($"code = {code}");
                 switch (code) {
                     case KEYBOARD_ACTION:
                         bool isShow = response["show"];
                         int height = 0;
                         height = response["height"];
-                        OnShowKeyboard(isShow, height);
+                        OnShowKeyboard?.Invoke(isShow, height);
                         break;
                     default:
                         int id = response["id"];
-                        Debug.LogError($"id = {id}");
                         if (_inputs.ContainsKey(id)) {
                             GetReceiver(id).Send(response);
                         }
@@ -187,7 +184,7 @@ namespace Mopsicus.Plugins {
                 }
                 _data = null;
             } catch (Exception e) {
-                Debug.LogError(string.Format("{0} plugin OnData error: {1}", GetType().Name, e.Message));
+                Debug.LogError(string.Format("{0} plugin OnData error: {1}, {2}", GetType().Name, e.Message, e.InnerException.Message));
             }
         }
 
