@@ -33,13 +33,13 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     }
 
     private void ShowWarning() {
-        emailInputField.MobileInputField.SetVisible(false);
+        emailInputField.MobileInputField.gameObject.SetActive(false);
         WarningConstructor.ActivateDoubleButton(null,
             string.Format("Changing a password associated with a Facebook account will create login issues with your Beem account."),
             "Continue",
             "Cancel",
-            () => { SendMsg(); emailInputField.MobileInputField.SetVisible(true); },
-            () => { emailInputField.MobileInputField.SetVisible(true); }, true);
+            () => { SendMsg(); emailInputField.MobileInputField.gameObject.SetActive(true); },
+            () => { emailInputField.MobileInputField.gameObject.SetActive(true); }, true);
     }
 
     private void SendMsg() {
@@ -47,11 +47,11 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     }
 
     private void MsgSentCallBack() {
-        emailInputField.MobileInputField.SetVisible(false);
+        emailInputField.MobileInputField.gameObject.SetActive(false);
         WarningConstructor.ActivateSingleButton("Change password",
             string.Format("Password change information has been sent to email {0}", emailInputField.text),
             "Continue",
-            () => { ResetPasswordToSignIn(); emailInputField.MobileInputField.SetVisible(true); });
+            () => { ResetPasswordToSignIn(); emailInputField.MobileInputField.gameObject.SetActive(true); });
     }
 
     private void ErrorMsgCallBack(string msg) {
