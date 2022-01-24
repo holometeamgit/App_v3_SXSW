@@ -89,7 +89,7 @@ public class UserWebManager : MonoBehaviour {
 
     public string GetUsername() {
         if (userData == null || string.IsNullOrEmpty(userData.username))
-            return string.Empty;
+            return null;
         return userData.username;
     }
 
