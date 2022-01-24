@@ -25,14 +25,12 @@ namespace Beem.SSO {
         }
 
         private void SendEmailVerification() {
-            if (EmailVerificationTimer.IsOver) {
-                FirebaseUser user = _auth.CurrentUser;
-                if (user != null) {
-                    var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-                    user.SendEmailVerificationAsync().ContinueWith(task => { UserTask(task); }, taskScheduler);
-                }
-                EmailVerificationTimer.Release(seconds);
+            FirebaseUser user = _auth.CurrentUser;
+            if (user != null) {
+                var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+                user.SendEmailVerificationAsync().ContinueWith(task => { UserTask(task); }, taskScheduler);
             }
+            EmailVerificationTimer.Release(seconds);
         }
 
         private void UserTask(Task task, Action onSuccess = null, Action<string> onFail = null) {
