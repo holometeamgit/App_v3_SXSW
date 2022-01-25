@@ -2,7 +2,7 @@ namespace Beem.Permissions {
     /// <summary>
     /// All Permissions
     /// </summary>
-    public interface IPermissionGranter : ISettingsPermission, ICameraPermission, IMicrophonePermission {
+    public interface IPermissionGranter : ICameraPermission, IMicrophonePermission {
 
     }
 }

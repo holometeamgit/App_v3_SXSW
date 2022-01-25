@@ -12,14 +12,12 @@ namespace Beem.Permissions {
 
         public void RequestCameraAccess(Action onSuccessed, Action onFailed) {
             Debug.LogError($"{nameof(EditorPermission)} Requested Camera Access Editor");
+            onSuccessed?.Invoke();
         }
 
         public void RequestMicAccess(Action onSuccessed, Action onFailed) {
             Debug.LogError($"{nameof(EditorPermission)} Requested Mic Access Editor");
-        }
-
-        public void RequestSettings() {
-            Debug.LogError($"{nameof(EditorPermission)} Requested Settings Editor");
+            onSuccessed?.Invoke();
         }
     }
 }

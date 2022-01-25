@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Android;
 
@@ -7,25 +8,82 @@ namespace Beem.Permissions {
     /// <summary>
     /// Permission for Android
     /// </summary>
-    public class AndroidPermission : IPermissionGranter {
+    public class AndroidPermission : IPermissionGranter, ISettingsPermission {
 
         public bool HasCameraAccess => Permission.HasUserAuthorizedPermission(Permission.Camera);
         public bool HasMicAccess => Permission.HasUserAuthorizedPermission(Permission.Microphone);
 
+        private const string CAMERA_ACCESS = "Camera";
+        private const string MICROPHONE_ACCESS = "Microphone";
+        private const int DELAY = 3000;
+
+        public bool MicRequestComplete {
+            get {
+                return PlayerPrefs.GetString("Access for " + MICROPHONE_ACCESS, "false") == "true";
+            }
+            private set {
+                PlayerPrefs.SetString("Access for " + MICROPHONE_ACCESS, value ? "true" : "false");
+            }
+        }
+        public bool CameraRequestComplete {
+            get {
+                return PlayerPrefs.GetString("Access for " + CAMERA_ACCESS, "false") == "true";
+            }
+            private set {
+                PlayerPrefs.SetString("Access for " + CAMERA_ACCESS, value ? "true" : "false");
+            }
+        }
+
         public void RequestMicAccess(Action onSuccessed, Action onFailed) {
-            var callbacks = new PermissionCallbacks();
-            callbacks.PermissionDenied += (value) => { onFailed?.Invoke(); };
-            callbacks.PermissionGranted += (value) => { onSuccessed?.Invoke(); };
-            callbacks.PermissionDeniedAndDontAskAgain += (value) => { onFailed?.Invoke(); };
-            Permission.RequestUserPermission(Permission.Microphone, callbacks);
+
+            if (HasMicAccess) {
+                onSuccessed.Invoke();
+                return;
+            }
+
+            if (!MicRequestComplete) {
+                var callbacks = new PermissionCallbacks();
+                callbacks.PermissionDenied += (value) => { onFailed?.Invoke(); };
+                callbacks.PermissionGranted += (value) => { onSuccessed?.Invoke(); };
+                callbacks.PermissionDeniedAndDontAskAgain += (value) => { onFailed?.Invoke(); MicRequestComplete = true; };
+                Permission.RequestUserPermission(Permission.Microphone, callbacks);
+                return;
+            }
+
+
+            OpenNotification(MICROPHONE_ACCESS, () => {
+                if (HasMicAccess) {
+                    onSuccessed?.Invoke();
+                } else {
+                    onFailed?.Invoke();
+                }
+            });
         }
 
         public void RequestCameraAccess(Action onSuccessed, Action onFailed) {
-            var callbacks = new PermissionCallbacks();
-            callbacks.PermissionDenied += (value) => { onFailed?.Invoke(); };
-            callbacks.PermissionGranted += (value) => { onSuccessed?.Invoke(); };
-            callbacks.PermissionDeniedAndDontAskAgain += (value) => { onFailed?.Invoke(); };
-            Permission.RequestUserPermission(Permission.Camera, callbacks);
+
+            if (HasCameraAccess) {
+                onSuccessed.Invoke();
+                return;
+            }
+
+            if (!CameraRequestComplete) {
+                var callbacks = new PermissionCallbacks();
+                callbacks.PermissionDenied += (value) => { onFailed?.Invoke(); };
+                callbacks.PermissionGranted += (value) => { onSuccessed?.Invoke(); };
+                callbacks.PermissionDeniedAndDontAskAgain += (value) => { onFailed?.Invoke(); CameraRequestComplete = true; };
+                Permission.RequestUserPermission(Permission.Camera, callbacks);
+                return;
+            }
+
+
+            OpenNotification(CAMERA_ACCESS, () => {
+                if (HasCameraAccess) {
+                    onSuccessed?.Invoke();
+                } else {
+                    onFailed?.Invoke();
+                }
+            });
         }
 
         public void RequestSettings() {
@@ -47,6 +105,22 @@ namespace Beem.Permissions {
                 Debug.LogException(ex);
             }
 #endif
+        }
+
+        private void OpenNotification(string accessName, Action onClosed) {
+            WarningConstructor.ActivateDoubleButton(accessName + " access Required!",
+                      "Please enable " + accessName + " access to use this app",
+                      "Settings",
+                      "Cancel",
+                      () => {
+                          RequestSettings();
+                          RecheckAsync(onClosed);
+                      });
+        }
+
+        private async void RecheckAsync(Action onClosed) {
+            await Task.Delay(DELAY);
+            onClosed?.Invoke();
         }
     }
 }
