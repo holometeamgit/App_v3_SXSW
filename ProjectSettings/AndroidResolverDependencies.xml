@@ -15,17 +15,30 @@
     <package>com.google.android.gms:play-services-base:17.6.0</package>
     <package>com.google.android.material:material:1.2.1</package>
     <package>com.google.firebase:firebase-analytics:20.0.0</package>
+    <package>com.google.firebase:firebase-analytics-unity:8.7.0</package>
     <package>com.google.firebase:firebase-app-unity:8.7.0</package>
     <package>com.google.firebase:firebase-auth:21.0.1</package>
     <package>com.google.firebase:firebase-auth-unity:8.7.0</package>
     <package>com.google.firebase:firebase-common:20.0.0</package>
+    <package>com.google.firebase:firebase-config:21.0.1</package>
+    <package>com.google.firebase:firebase-config-unity:8.7.0</package>
     <package>com.google.firebase:firebase-crashlytics-ndk:18.2.5</package>
     <package>com.google.firebase:firebase-crashlytics-unity:8.7.0</package>
+    <package>com.google.firebase:firebase-database:20.0.3</package>
+    <package>com.google.firebase:firebase-database-unity:8.7.0</package>
     <package>com.google.firebase:firebase-dynamic-links:21.0.0</package>
     <package>com.google.firebase:firebase-dynamic-links-unity:8.7.0</package>
+    <package>com.google.firebase:firebase-firestore:24.0.0</package>
+    <package>com.google.firebase:firebase-firestore-unity:8.7.0</package>
+    <package>com.google.firebase:firebase-functions:20.0.1</package>
+    <package>com.google.firebase:firebase-functions-unity:8.7.0</package>
     <package>com.google.firebase:firebase-iid:21.1.0</package>
+    <package>com.google.firebase:firebase-installations:17.0.0</package>
+    <package>com.google.firebase:firebase-installations-unity:8.7.0</package>
     <package>com.google.firebase:firebase-messaging:23.0.0</package>
     <package>com.google.firebase:firebase-messaging-unity:8.7.0</package>
+    <package>com.google.firebase:firebase-storage:20.0.0</package>
+    <package>com.google.firebase:firebase-storage-unity:8.7.0</package>
     <package>com.google.signin:google-signin-support:1.0.4</package>
     <package>com.squareup.okhttp3:okhttp:4.2.2</package>
   </packages>
@@ -75,6 +88,7 @@
     <file>Assets/Plugins/Android/com.appsflyer.af-android-sdk-6.1.3.aar</file>
     <file>Assets/Plugins/Android/com.appsflyer.oaid-6.1.2.aar</file>
     <file>Assets/Plugins/Android/com.appsflyer.unity-wrapper-6.1.3.aar</file>
+    <file>Assets/Plugins/Android/com.google.android.annotations-4.1.1.4.jar</file>
     <file>Assets/Plugins/Android/com.google.android.datatransport.transport-api-3.0.0.aar</file>
     <file>Assets/Plugins/Android/com.google.android.datatransport.transport-backend-cct-3.1.1.aar</file>
     <file>Assets/Plugins/Android/com.google.android.datatransport.transport-runtime-3.1.1.aar</file>
@@ -95,34 +109,69 @@
     <file>Assets/Plugins/Android/com.google.android.gms.play-services-stats-17.0.0.aar</file>
     <file>Assets/Plugins/Android/com.google.android.gms.play-services-tasks-17.2.1.aar</file>
     <file>Assets/Plugins/Android/com.google.android.material.material-1.2.1.aar</file>
+    <file>Assets/Plugins/Android/com.google.code.findbugs.jsr305-3.0.2.jar</file>
+    <file>Assets/Plugins/Android/com.google.code.gson.gson-2.8.6.jar</file>
+    <file>Assets/Plugins/Android/com.google.errorprone.error_prone_annotations-2.9.0.jar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-abt-21.0.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-analytics-20.0.0.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-analytics-unity-8.7.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-annotations-16.0.0.jar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-appcheck-interop-16.0.0-beta04.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-app-unity-8.7.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-auth-21.0.1.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-auth-interop-20.0.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-auth-unity-8.7.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-common-20.0.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-components-17.0.0.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-config-21.0.1.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-config-unity-8.7.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-crashlytics-18.2.5.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-crashlytics-ndk-18.2.5.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-crashlytics-unity-8.7.0.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-database-20.0.3.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-database-collection-18.0.0.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-database-unity-8.7.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-datatransport-18.0.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-dynamic-links-21.0.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-dynamic-links-unity-8.7.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-encoders-17.0.0.jar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-encoders-json-18.0.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-encoders-proto-16.0.0.jar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-firestore-24.0.0.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-firestore-unity-8.7.0.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-functions-20.0.1.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-functions-unity-8.7.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-iid-21.1.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-iid-interop-17.1.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-installations-17.0.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-installations-interop-17.0.0.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-installations-unity-8.7.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-measurement-connector-19.0.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-messaging-23.0.0.aar</file>
     <file>Assets/Plugins/Android/com.google.firebase.firebase-messaging-unity-8.7.0.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-storage-20.0.0.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.firebase-storage-unity-8.7.0.aar</file>
+    <file>Assets/Plugins/Android/com.google.firebase.protolite-well-known-types-18.0.0.aar</file>
+    <file>Assets/Plugins/Android/com.google.guava.failureaccess-1.0.1.jar</file>
+    <file>Assets/Plugins/Android/com.google.guava.guava-30.1-android.jar</file>
+    <file>Assets/Plugins/Android/com.google.guava.listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar</file>
+    <file>Assets/Plugins/Android/com.google.j2objc.j2objc-annotations-1.3.jar</file>
+    <file>Assets/Plugins/Android/com.google.protobuf.protobuf-javalite-3.17.2.jar</file>
     <file>Assets/Plugins/Android/com.google.signin.google-signin-support-1.0.4.aar</file>
+    <file>Assets/Plugins/Android/com.squareup.okhttp.okhttp-2.7.5.jar</file>
     <file>Assets/Plugins/Android/com.squareup.okhttp3.okhttp-4.2.2.jar</file>
     <file>Assets/Plugins/Android/com.squareup.okio.okio-2.2.2.jar</file>
+    <file>Assets/Plugins/Android/io.grpc.grpc-android-1.41.0.aar</file>
+    <file>Assets/Plugins/Android/io.grpc.grpc-api-1.41.0.jar</file>
+    <file>Assets/Plugins/Android/io.grpc.grpc-context-1.41.0.jar</file>
+    <file>Assets/Plugins/Android/io.grpc.grpc-core-1.41.0.jar</file>
+    <file>Assets/Plugins/Android/io.grpc.grpc-okhttp-1.41.0.jar</file>
+    <file>Assets/Plugins/Android/io.grpc.grpc-protobuf-lite-1.41.0.jar</file>
+    <file>Assets/Plugins/Android/io.grpc.grpc-stub-1.41.0.jar</file>
+    <file>Assets/Plugins/Android/io.perfmark.perfmark-api-0.23.0.jar</file>
     <file>Assets/Plugins/Android/javax.inject.javax.inject-1.jar</file>
+    <file>Assets/Plugins/Android/org.checkerframework.checker-compat-qual-2.5.5.jar</file>
+    <file>Assets/Plugins/Android/org.codehaus.mojo.animal-sniffer-annotations-1.19.jar</file>
     <file>Assets/Plugins/Android/org.jetbrains.annotations-13.0.jar</file>
     <file>Assets/Plugins/Android/org.jetbrains.kotlin.kotlin-stdlib-1.3.50.jar</file>
     <file>Assets/Plugins/Android/org.jetbrains.kotlin.kotlin-stdlib-common-1.3.50.jar</file>
