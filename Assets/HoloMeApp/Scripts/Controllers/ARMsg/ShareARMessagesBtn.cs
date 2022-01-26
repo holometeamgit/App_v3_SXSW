@@ -14,6 +14,8 @@ namespace Beem.UI {
 
         private ARMsgJSON.Data _arMsgData = default;
 
+        private ShareLinkController _shareController = new ShareLinkController();
+
         public void Init(ARMsgJSON.Data arMsgData) {
             _arMsgData = arMsgData;
         }
@@ -23,7 +25,7 @@ namespace Beem.UI {
         /// </summary>
         public void Share() {
             if (!string.IsNullOrWhiteSpace(_arMsgData.share_link.ToString())) {
-                DynamicLinksCallBacks.onShareLink?.Invoke(new Uri(_arMsgData.share_link));
+                _shareController.ShareLink(new Uri(_arMsgData.share_link));
             }
         }
     }

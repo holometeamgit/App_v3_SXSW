@@ -11,8 +11,6 @@ using Beem.ARMsg;
 public class PnlMenu : MonoBehaviour {
     [SerializeField]
     private UserWebManager _userWebManager;
-    [SerializeField]
-    private PermissionController _permissionController;
 
     private void UserInfoLoadedCallBack() {
         if (!this.isActiveAndEnabled)
