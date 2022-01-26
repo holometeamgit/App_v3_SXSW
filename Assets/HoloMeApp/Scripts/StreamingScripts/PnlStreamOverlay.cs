@@ -276,7 +276,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         if (channelName == _userWebManager.GetUsername()) {
             WarningConstructor.ActivateSingleButton("Viewing as stream host",
                 "Please connect to the stream using a different account",
-                onBackPress: () => { Deactivate(); });
+                onBackPress: () => { CloseAsViewer(); });
 
             return;
         }
