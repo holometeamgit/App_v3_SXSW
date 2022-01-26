@@ -13,8 +13,7 @@ public class ContentPlayer : MonoBehaviour {
     private WebRequestHandler _webRequestHandler;
     [SerializeField]
     private PurchaseManager _purchaseManager;
-    [SerializeField]
-    private PermissionController _permissionController;
+    private PermissionController _permissionController = new PermissionController();
 
     public Action<string> OnPlayFromUser;
 
