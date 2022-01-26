@@ -33,6 +33,14 @@ public class PnlSettings : MonoBehaviour {
     }
 
     /// <summary>
+    /// Back button pressed, disable settings and enable home screen
+    /// </summary>
+    public void BackPressed() {
+        MenuConstructor.OnActivated?.Invoke(true);
+        SettingsConstructor.OnActivated?.Invoke(false);
+    }
+
+    /// <summary>
     /// Open Change Usename Window
     /// </summary>
     public void SettingsToChangeUserName() {
