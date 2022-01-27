@@ -321,11 +321,16 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         else if (isChannelCreator)
             WarningConstructor.ActivateDoubleButton("End the live stream?",
                 "Closing this page will end the live stream and disconnect your users.",
-                onButtonOnePress: () => { CloseAsStreamer(); });
+                onButtonOnePress: () => { DeactivateLive(); });
         else
             WarningConstructor.ActivateDoubleButton("Disconnect from live stream?",
                 "Closing this page will disconnect you from the live stream",
                 onButtonOnePress: () => { CloseAsViewer(); });
+    }
+
+    private void DeactivateLive() {
+        StopStream();
+        MenuConstructor.OnActivated?.Invoke(true);
     }
 
     public void CloseAsStreamer() {
@@ -389,6 +394,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         cameraRenderImage.texture = null;
         AnimatedFadeOutMessage();
         RefreshControls();
+        //MenuConstructor.OnActivated(true);
     }
 
     /// <summary>
@@ -617,6 +623,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     /// Starts the stream, use countdown coroutine to start with delay
     /// </summary>
     public void StartStream() {
+        MenuConstructor.OnActivateCanvas(false);
         TogglePreLiveControls(false);
         _agoraController.JoinOrCreateChannel(true);
         RefreshControls(); //Is this call actually needed?
