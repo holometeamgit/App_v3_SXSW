@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Android;
 
 namespace Beem.Permissions {
@@ -11,12 +12,20 @@ namespace Beem.Permissions {
         public bool HasCameraAccess => Permission.HasUserAuthorizedPermission(Permission.Camera);
         public bool HasMicAccess => Permission.HasUserAuthorizedPermission(Permission.Microphone);
 
-        public void RequestMicAccess() {
-            Permission.RequestUserPermission(Permission.Microphone);
+        public void RequestMicAccess(Action onSuccessed, Action onFailed) {
+            var callbacks = new PermissionCallbacks();
+            callbacks.PermissionDenied += (value) => { onFailed?.Invoke(); };
+            callbacks.PermissionGranted += (value) => { onSuccessed?.Invoke(); };
+            callbacks.PermissionDeniedAndDontAskAgain += (value) => { onFailed?.Invoke(); };
+            Permission.RequestUserPermission(Permission.Microphone, callbacks);
         }
 
-        public void RequestCameraAccess() {
-            Permission.RequestUserPermission(Permission.Camera);
+        public void RequestCameraAccess(Action onSuccessed, Action onFailed) {
+            var callbacks = new PermissionCallbacks();
+            callbacks.PermissionDenied += (value) => { onFailed?.Invoke(); };
+            callbacks.PermissionGranted += (value) => { onSuccessed?.Invoke(); };
+            callbacks.PermissionDeniedAndDontAskAgain += (value) => { onFailed?.Invoke(); };
+            Permission.RequestUserPermission(Permission.Camera, callbacks);
         }
 
         public void RequestSettings() {

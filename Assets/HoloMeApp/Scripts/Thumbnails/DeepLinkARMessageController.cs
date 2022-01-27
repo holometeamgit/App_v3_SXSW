@@ -49,7 +49,7 @@ public class DeepLinkARMessageController : MonoBehaviour {
     private void Open(string body) {
         ARMessageReceived(body,
             (data) => {
-                CallBacks.OnActivated?.Invoke(data);
+                ARMsgDeeplinkConstructor.OnActivated?.Invoke(data);
             });
     }
 

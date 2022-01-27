@@ -11,7 +11,7 @@ public class AnalyticsController : MonoBehaviour
     Dictionary<string, AnalyticsDwellTracker> dwellTimers = new Dictionary<string, AnalyticsDwellTracker>();
 
     [SerializeField]
-    bool enableDebugTracking;
+    bool enableDebugTracking = false;
     bool disableTracking;
 
     [SerializeField]
@@ -78,6 +78,7 @@ public class AnalyticsController : MonoBehaviour
         if (userWebManager != null && userWebManager.GetUserID() != -1)
         {
             data.Add(AnalyticParameters.ParamUserID, userWebManager.GetUserID().ToString()); //Add user ID to tracking variable
+            data.Add(AnalyticParameters.ParamUserName, userWebManager.GetUsername().ToString());
             data.Add(AnalyticParameters.ParamUserType, userWebManager.CanGoLive() ? AnalyticParameters.ParamBroadcaster : AnalyticParameters.ParamViewer);
         }
         else
@@ -155,6 +156,7 @@ public class AnalyticsController : MonoBehaviour
         if (userWebManager != null && userWebManager.GetUserID() != -1)
         {
             data.Add(AnalyticParameters.ParamUserID, userWebManager.GetUserID().ToString()); //Add user ID to tracking variable
+            data.Add(AnalyticParameters.ParamUserName, userWebManager.GetUsername().ToString());
             data.Add(AnalyticParameters.ParamUserType, userWebManager.CanGoLive() ? AnalyticParameters.ParamBroadcaster : AnalyticParameters.ParamViewer);
         }
         else
@@ -232,6 +234,7 @@ public class AnalyticsController : MonoBehaviour
             dataDictionary = new Dictionary<string, string>();
         dataDictionary.Add(AnalyticParameters.ParamTime, elapsedTime.ToString());
         dataDictionary.Add(AnalyticParameters.ParamUserID, userWebManager.GetUserID().ToString());
+        dataDictionary.Add(AnalyticParameters.ParamUserName, userWebManager.GetUsername().ToString());
 
         foreach (var analyticsController in analyticsLibraryAbstractions)
         {

@@ -21,14 +21,6 @@ public class PnlThumbnailPopup : UIThumbnail {
     [SerializeField]
     GameObject btnBuyTicket;
     [SerializeField]
-    WebRequestHandler webRequestHandler;
-    [SerializeField]
-    UIThumbnailsController uiThumbnailsController;
-    [SerializeField]
-    ThumbnailWebDownloadManager thumbnailWebDownloadManager;
-
-    [Space]
-    [SerializeField]
     AspectRatioFitterByMinSide aspectRatioFitter;
     [SerializeField]
     Texture defaultTexture;
@@ -38,6 +30,14 @@ public class PnlThumbnailPopup : UIThumbnail {
     [SerializeField]
     private VerticalLayoutGroup layoutGroup;
 
+    [Space]
+    [SerializeField]
+    private WebRequestHandler _webRequestHandler;
+    [SerializeField]
+    private ContentPlayer _uiThumbnailsController;
+    [SerializeField]
+    private ThumbnailWebDownloadManager _thumbnailWebDownloadManager;
+
     ThumbnailElement thumbnailElement;
     long currentId = 0;
 
@@ -46,20 +46,20 @@ public class PnlThumbnailPopup : UIThumbnail {
     bool isSubscribed;
 
     public override void Play() {
-        uiThumbnailsController.Play(thumbnailElement.Data);
+        _uiThumbnailsController.Play(thumbnailElement.Data);
     }
 
     public override void PlayTeaser() {
-        uiThumbnailsController.Play(thumbnailElement.Data);
+        _uiThumbnailsController.Play(thumbnailElement.Data);
     }
 
     public override void Buy() {
-        uiThumbnailsController.Buy(thumbnailElement.Data);
+        _uiThumbnailsController.Buy(thumbnailElement.Data);
     }
 
     public void OpenStream(long id) {
         if (!isSubscribed) {
-            thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded += ShowStreamStream;
+            _thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded += ShowStreamStream;
             isSubscribed = true;
         }
         currentId = id;
@@ -86,7 +86,7 @@ public class PnlThumbnailPopup : UIThumbnail {
         currentId = DEFAUL_STREAM_DATA_ID;
 
         if (isSubscribed) {
-            thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded -= ShowStreamStream;
+            _thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded -= ShowStreamStream;
             isSubscribed = false;
         }
 
@@ -107,7 +107,7 @@ public class PnlThumbnailPopup : UIThumbnail {
             uiThumbnailsController.Play(streamData);
         }*/
 
-        ThumbnailElement element = new ThumbnailElement(streamData, webRequestHandler);
+        ThumbnailElement element = new ThumbnailElement(streamData, _webRequestHandler);
         AddData(element);
 
         ShowPnl();
@@ -176,7 +176,7 @@ public class PnlThumbnailPopup : UIThumbnail {
 
     private void OnDestroy() {
         if (isSubscribed) {
-            thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded -= ShowStreamStream;
+            _thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded -= ShowStreamStream;
             isSubscribed = false;
         }
     }

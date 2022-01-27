@@ -1,73 +1,68 @@
 /* 
 *   NatCorder
-*   Copyright (c) 2020 Yusuf Olokoba
+*   Copyright (c) 2019 Yusuf Olokoba
 */
 
-namespace NatSuite.Examples {
+namespace NatCorder.Examples {
 
     using UnityEngine;
     using UnityEngine.UI;
     using System.Collections;
-    using Recorders;
-    using Recorders.Clocks;
+    using Clocks;
 
     public class WebCam : MonoBehaviour {
 
-        [Header(@"UI")]
         public RawImage rawImage;
         public AspectRatioFitter aspectFitter;
 
-        private WebCamTexture webCamTexture;
-        private MP4Recorder recorder;
+        private WebCamTexture webcamTexture;
+        private MP4Recorder videoRecorder;
         private IClock clock;
-        private bool recording;
         private Color32[] pixelBuffer;
-
-
-        #region --Recording State--
 
         public void StartRecording () {
             // Start recording
             clock = new RealtimeClock();
-            recorder = new MP4Recorder(webCamTexture.width, webCamTexture.height, 30);
-            pixelBuffer = webCamTexture.GetPixels32();
-            recording = true;
+            videoRecorder = new MP4Recorder(webcamTexture.width, webcamTexture.height, 30, 0, 0, OnRecording);
+            pixelBuffer = webcamTexture.GetPixels32();
         }
 
-        public async void StopRecording () {
+        public void StopRecording () {
             // Stop recording
-            recording = false;
-            var path = await recorder.FinishWriting();
-            // Playback recording
-            Debug.Log($"Saved recording to: {path}");
-            Handheld.PlayFullScreenMovie($"file://{path}");
+            videoRecorder.Dispose();
+            videoRecorder = null;
+            pixelBuffer = null;
         }
-        #endregion
-
-
-        #region --Operations--
 
         IEnumerator Start () {
-            // Request camera permission
-            yield return Application.RequestUserAuthorization(UserAuthorization.WebCam);
-            if (!Application.HasUserAuthorization(UserAuthorization.WebCam))
-                yield break;
+            // Request microphone and camera
+            yield return Application.RequestUserAuthorization(UserAuthorization.WebCam | UserAuthorization.Microphone);
+            if (!Application.HasUserAuthorization(UserAuthorization.WebCam | UserAuthorization.Microphone)) yield break;
             // Start the WebCamTexture
-            webCamTexture = new WebCamTexture(1280, 720, 30);
-            webCamTexture.Play();
+            webcamTexture = new WebCamTexture(1280, 720, 30);
+            webcamTexture.Play();
             // Display webcam
-            yield return new WaitUntil(() => webCamTexture.width != 16 && webCamTexture.height != 16); // Workaround for weird bug on macOS
-            rawImage.texture = webCamTexture;
-            aspectFitter.aspectRatio = (float)webCamTexture.width / webCamTexture.height;
+            yield return new WaitUntil(() => webcamTexture.width != 16 && webcamTexture.height != 16); // Workaround for weird bug on macOS
+            rawImage.texture = webcamTexture;
+            aspectFitter.aspectRatio = (float)webcamTexture.width / webcamTexture.height;
         }
 
         void Update () {
-            // Record frames from the webcam
-            if (recording && webCamTexture.didUpdateThisFrame) {
-                webCamTexture.GetPixels32(pixelBuffer);
-                recorder.CommitFrame(pixelBuffer, clock.timestamp);
+            // Record frames
+            if (videoRecorder != null && webcamTexture.didUpdateThisFrame) {
+                webcamTexture.GetPixels32(pixelBuffer);
+                videoRecorder.CommitFrame(pixelBuffer, clock.Timestamp);
             }
         }
-        #endregion
+
+        void OnRecording (string path) {
+            HelperFunctions.DevLog("Saved recording to: "+path);
+            // Playback the video
+            #if UNITY_IOS
+            Handheld.PlayFullScreenMovie("file://" + path);
+            #elif UNITY_ANDROID
+            Handheld.PlayFullScreenMovie(path);
+            #endif
+        }
     }
 }

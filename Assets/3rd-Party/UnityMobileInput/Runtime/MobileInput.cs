@@ -164,7 +164,6 @@ namespace Mopsicus.Plugins {
         /// Callback on data
         /// </summary>
         public void OnData(JsonObject data) {
-            //Debug.Log (string.Format ("{0} plugin OnData: {1}", GetType ().Name, data.ToJsonPrettyPrintString ()));
             _data = data;
             try {
                 JsonObject response = (JsonObject)JsonNode.ParseJsonString(data["data"]);
@@ -174,7 +173,7 @@ namespace Mopsicus.Plugins {
                         bool isShow = response["show"];
                         int height = 0;
                         height = response["height"];
-                        OnShowKeyboard(isShow, height);
+                        OnShowKeyboard?.Invoke(isShow, height);
                         break;
                     default:
                         int id = response["id"];
@@ -185,7 +184,7 @@ namespace Mopsicus.Plugins {
                 }
                 _data = null;
             } catch (Exception e) {
-                Debug.LogError(string.Format("{0} plugin OnData error: {1}", GetType().Name, e.Message));
+                Debug.LogError(string.Format("{0} plugin OnData error: {1}, {2}", GetType().Name, e.Message, e.InnerException.Message));
             }
         }
 

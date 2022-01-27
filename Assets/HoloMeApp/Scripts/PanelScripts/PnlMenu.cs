@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Beem.Permissions;
+using Beem.ARMsg;
 
-public class PnlMenu : MonoBehaviour
-{
-    [SerializeField] UserWebManager userWebManager;
-    [SerializeField] TMP_Text txtUsername;
-    [SerializeField] GameObject goLiveBtn;
-    [SerializeField] GameObject myRoomBtn;
+/// <summary>
+/// Pnl for menu
+/// </summary>
+public class PnlMenu : MonoBehaviour {
+    [SerializeField]
+    private UserWebManager _userWebManager;
+    [SerializeField]
+    private PermissionController _permissionController;
 
     private void UserInfoLoadedCallBack() {
         if (!this.isActiveAndEnabled)
@@ -18,21 +22,38 @@ public class PnlMenu : MonoBehaviour
     }
 
     private void UpdateUI() {
-        if(txtUsername != null)
-            txtUsername.text = userWebManager.GetUsername();
-        goLiveBtn.SetActive(userWebManager.CanGoLive());
-        myRoomBtn.SetActive(userWebManager.CanStartRoom());
+        ///TODO: Disable/Enable Live/Room Buttons
+        //goLiveBtn.SetActive(_userWebManager.CanGoLive());
+        //myRoomBtn.SetActive(_userWebManager.CanStartRoom());
     }
 
     private void OnEnable() {
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySettingsPanel);
-        userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
-        userWebManager.LoadUserInfo();
+        _userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
+        _userWebManager.LoadUserInfo();
 
         UpdateUI();
     }
 
     private void OnDisable() {
-        userWebManager.OnUserInfoLoaded -= UserInfoLoadedCallBack;
+        _userWebManager.OnUserInfoLoaded -= UserInfoLoadedCallBack;
+    }
+
+    /// <summary>
+    /// Open Main Menu
+    /// </summary>
+    public void OpenMenu() {
+        MenuConstructor.OnActivated?.Invoke(true);
+        SettingsConstructor.OnActivated?.Invoke(false);
+        StreamCallBacks.onCloseComments?.Invoke();
+    }
+
+    /// <summary>
+    /// Open Settings
+    /// </summary>
+    public void OpenSettings() {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySettingsPanel);
+        SettingsConstructor.OnActivated?.Invoke(true);
+        MenuConstructor.OnActivated?.Invoke(false);
+        StreamCallBacks.onCloseComments?.Invoke();
     }
 }

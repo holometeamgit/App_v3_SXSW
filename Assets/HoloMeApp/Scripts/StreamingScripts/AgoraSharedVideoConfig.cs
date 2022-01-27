@@ -13,4 +13,11 @@ public class AgoraSharedVideoConfig
         heigh = maxHeigh;
         width = (int)(maxHeigh * ratio);
     }
+
+    public static void GetResolution(int screenWidth, int screenHeigh, out int width, out int heigh, int maxHeigh) {
+        float ratio = ((float)screenWidth) / screenHeigh;
+
+        heigh = maxHeigh;
+        width = (int)(maxHeigh * ratio);
+    }
 }

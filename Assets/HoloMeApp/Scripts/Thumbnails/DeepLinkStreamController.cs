@@ -73,7 +73,6 @@ public class DeepLinkStreamController : MonoBehaviour {
             HelperFunctions.DevLog("Streams Recieved = " + body);
 
             StreamJsonData data = JsonUtility.FromJson<StreamJsonData>(body);
-
             if (data.results.Count > 0) {
 
                 StreamJsonData.Data lastStreamData = null;
@@ -135,7 +134,8 @@ public class DeepLinkStreamController : MonoBehaviour {
     }
 
     private void Awake() {
-        StreamCallBacks.onShareStadiumLink += OnShare;
+        StreamCallBacks.onShareStreamLinkByUsername += OnShare;
+        StreamCallBacks.onShareStreamLinkByData += OnShare;
         StreamCallBacks.onReceiveStreamLink += OnOpenStream;
         StreamCallBacks.onReceivePrerecordedLink += OnOpenPrerecorded;
     }
@@ -162,7 +162,8 @@ public class DeepLinkStreamController : MonoBehaviour {
 
 
     private void OnDestroy() {
-        StreamCallBacks.onShareStadiumLink -= OnShare;
+        StreamCallBacks.onShareStreamLinkByUsername -= OnShare;
+        StreamCallBacks.onShareStreamLinkByData -= OnShare;
         StreamCallBacks.onReceiveStreamLink -= OnOpenStream;
         StreamCallBacks.onReceivePrerecordedLink -= OnOpenPrerecorded;
     }

@@ -12,7 +12,7 @@ namespace Beem.UI {
         /// Close ARMessage
         /// </summary>
         public void Close() {
-            CallBacks.OnDeactivated?.Invoke();
+            ARMsgARenaConstructor.OnDeactivatedARena?.Invoke();
         }
     }
 }

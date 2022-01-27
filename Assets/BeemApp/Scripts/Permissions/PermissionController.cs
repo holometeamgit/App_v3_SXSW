@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Beem.Permissions {
 
@@ -8,7 +11,10 @@ namespace Beem.Permissions {
     public class PermissionController : MonoBehaviour {
 
         [SerializeField]
-        private PnlGenericError pnlGenericError;
+        private bool debugCameraAccess;
+
+        [SerializeField]
+        private bool debugMicAccess;
 
         public IPermissionGranter PermissionGranter {
             get {
@@ -38,6 +44,8 @@ namespace Beem.Permissions {
         private const string CAMERA_ACCESS = "Camera";
         private const string MICROPHONE_ACCESS = "Microphone";
 
+        private const int DELAY = 3000;
+
         private void Awake() {
             if (Application.platform == RuntimePlatform.Android) {
                 _permissionGranter = new AndroidPermission();
@@ -53,26 +61,50 @@ namespace Beem.Permissions {
         /// </summary>
         /// <returns></returns>
 
-        public bool CheckCameraMicAccess() {
-            return CheckCameraAccess() && CheckMicAccess();
+        public void CheckCameraMicAccess(Action onSuccessed, Action onFailed = null) {
+            CheckCameraAccess(() => CheckMicAccess(onSuccessed, onFailed), onFailed); ;
         }
 
         /// <summary>
         /// Check Camera Access
         /// </summary>
         /// <returns></returns>
-        public bool CheckCameraAccess() {
-            if (_permissionGranter.HasCameraAccess)
-                return true;
+        public void CheckCameraAccess(Action onSuccessed, Action onFailed = null) {
 
-            if (!CameraRequestComplete) {
-                _permissionGranter.RequestCameraAccess();
-                CameraRequestComplete = true;
+#if UNITY_EDITOR
+            if (!debugCameraAccess) {
+                OpenNotification(CAMERA_ACCESS, () => {
+                    if (debugCameraAccess) {
+                        onSuccessed?.Invoke();
+                    } else {
+                        onFailed?.Invoke();
+                    }
+                }); ;
             } else {
-                OpenNotification(CAMERA_ACCESS);
+                onSuccessed.Invoke();
+            }
+#else
+
+            if (_permissionGranter.HasCameraAccess) {
+                onSuccessed.Invoke();
+                return;
             }
 
-            return false;
+            if (!CameraRequestComplete) {
+                _permissionGranter.RequestCameraAccess(onSuccessed, onFailed);
+                CameraRequestComplete = true;
+                return;
+            }
+
+
+            OpenNotification(CAMERA_ACCESS, () => {
+                if (_permissionGranter.HasCameraAccess) {
+                    onSuccessed?.Invoke();
+                } else {
+                    onFailed?.Invoke();
+                }
+            }); ;
+#endif
         }
 
         /// <summary>
@@ -80,34 +112,62 @@ namespace Beem.Permissions {
         /// </summary>
         /// <returns></returns>
 
-        public bool CheckMicAccess() {
-            if (_permissionGranter.HasMicAccess)
-                return true;
+        public void CheckMicAccess(Action onSuccessed, Action onFailed = null) {
+
+#if UNITY_EDITOR
+            if (!debugMicAccess) {
+                OpenNotification(MICROPHONE_ACCESS, () => {
+                    if (debugMicAccess) {
+                        onSuccessed?.Invoke();
+                    } else {
+                        onFailed?.Invoke();
+                    }
+                });
+            } else {
+                onSuccessed.Invoke();
+            }
+#else
+
+            if (_permissionGranter.HasMicAccess) {
+                onSuccessed.Invoke();
+                return;
+            }
 
             if (!MicRequestComplete) {
-                _permissionGranter.RequestMicAccess();
+                _permissionGranter.RequestMicAccess(onSuccessed, onFailed);
                 MicRequestComplete = true;
-            } else {
-                OpenNotification(MICROPHONE_ACCESS);
+                return;
             }
-            return false;
+
+
+            OpenNotification(MICROPHONE_ACCESS, () => {
+                if (_permissionGranter.HasMicAccess) {
+                    onSuccessed?.Invoke();
+                } else {
+                    onFailed?.Invoke();
+                }
+            }); ;
+#endif
         }
 
-        private void OpenNotification(string accessName) {
-            pnlGenericError.ActivateDoubleButton(accessName + " access Required!",
+        private void OpenNotification(string accessName, Action onClosed) {
+            WarningConstructor.ActivateDoubleButton(accessName + " access Required!",
                       "Please enable " + accessName + " access to use this app",
                       "Settings",
                       "Cancel",
-                      () => OpenSettings(),
-                      () => CloseNotification());
+                      () => {
+                          OpenSettings();
+                          RecheckAsync(onClosed);
+                      });
+        }
+
+        private async void RecheckAsync(Action onClosed) {
+            await Task.Delay(DELAY);
+            onClosed?.Invoke();
         }
 
         private void OpenSettings() {
             _permissionGranter.RequestSettings();
-        }
-
-        private void CloseNotification() {
-            pnlGenericError.gameObject.SetActive(false);
         }
     }
 }

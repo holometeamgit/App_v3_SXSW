@@ -24,8 +24,6 @@ namespace Beem.UI {
         public void Share() {
             if (!string.IsNullOrWhiteSpace(_arMsgData.share_link.ToString())) {
                 DynamicLinksCallBacks.onShareLink?.Invoke(new Uri(_arMsgData.share_link));
-            } else {
-                DynamicLinksCallBacks.onShareAppLink?.Invoke();
             }
         }
     }

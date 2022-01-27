@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using NatSuite.Recorders;
-using NatSuite.Recorders.Clocks;
-using NatSuite.Recorders.Inputs;
+using NatCorder;
+using NatCorder.Clocks;
+using NatCorder.Inputs;
 using System.Collections;
 using TMPro;
 using UnityEngine.Events;
@@ -12,22 +12,15 @@ using Beem.Utility;
 using Beem.Permissions;
 using System.Threading.Tasks;
 using System.Threading;
+using Beem.Video;
 
 public class PnlRecord : MonoBehaviour {
-    [SerializeField]
-    Camera canvasCamera;
-
-    [SerializeField]
-    Camera arCamera;
 
     [SerializeField]
     Image imgRecordFill;
 
     [SerializeField]
     Image imgFillBackground;
-
-    [SerializeField]
-    Sprite spriteRecord;
 
     [SerializeField]
     Button btnToggleMode;
@@ -39,9 +32,6 @@ public class PnlRecord : MonoBehaviour {
     TextMeshProUGUI txtPhoto;
 
     [SerializeField]
-    PnlPostRecord pnlPostRecord;
-
-    [SerializeField]
     RectTransform rtButtonContainer;
 
     [SerializeField]
@@ -51,32 +41,31 @@ public class PnlRecord : MonoBehaviour {
     CanvasGroup canvasGroup;
 
     [SerializeField]
-    UnityEvent OnRecordStarted;
-    [SerializeField]
-    UnityEvent OnRecordStopped;
-    [SerializeField]
-    UnityEvent OnSnapshotStarted;
-    [SerializeField]
-    UnityEvent OnSnapshotEnded;
-
-    [SerializeField]
-    UIThumbnailsController uiThumbnailsController;
-    [SerializeField]
     GameObject watermarkCanvasObject;
     [SerializeField]
     Text txtWaterMarkText;
 
-    public bool Recording { get; set; }
-    private bool recordLengthFailed;
+    [Space]
 
-    [Header("Microphone")]
-    public bool recordMicrophone = true;
-    public AudioSource videoSource;
+    [SerializeField]
+    private ContentPlayer _contentPlayer;
+
+    [SerializeField]
+    private HologramHandler _hologramHandler;
+
+    private Camera[] _cameras;
+
+    private bool recordMicrophone = true;
+
+    public bool Recording { get; set; }
+
     private IMediaRecorder videoRecorder;
     private IClock recordingClock;
     private CameraInput cameraInput;
     private AudioInput audioInput;
     private Coroutine currentCoroutine;
+
+    private bool recordLengthFailed;
 
     private PermissionController _permissionController;
     private PermissionController permissionController {
@@ -90,8 +79,17 @@ public class PnlRecord : MonoBehaviour {
         }
     }
 
-    int videoWidth;
-    int videoHeight;
+    private VideoPlayerController _videoPlayerController;
+    private VideoPlayerController videoPlayerController {
+        get {
+
+            if (_videoPlayerController == null) {
+                _videoPlayerController = FindObjectOfType<VideoPlayerController>();
+            }
+
+            return _videoPlayerController;
+        }
+    }
 
     string lastRecordingPath;
 
@@ -118,19 +116,15 @@ public class PnlRecord : MonoBehaviour {
     }
 
     void Start() {
-        CorrectResolutionAspect();
         ChangeMode = Mode.Video;
         btnToggleMode.onClick.AddListener(() => ChangeMode = mode == Mode.Video ? Mode.Photo : Mode.Video);
         videoButtonContainerPosition = rtButtonContainer.anchoredPosition;
         canvasGroup.alpha = 0;
 
-        uiThumbnailsController.OnPlayFromUser += user => txtWaterMarkText.text = "@" + user; //Gameobject must be active in the editor for this to work correctly
-        gameObject.SetActive(false);
+        _contentPlayer.OnPlayFromUser += user => txtWaterMarkText.text = "@" + user; //Gameobject must be active in the editor for this to work correctly
     }
 
-    public void EnableRecordPanel() {
-
-        gameObject.SetActive(true);
+    private void OnEnable() {
         canvasGroup?.DOFade(1, .5f);
     }
 
@@ -138,22 +132,20 @@ public class PnlRecord : MonoBehaviour {
         canvasGroup.alpha = 0;
     }
 
-    private void CorrectResolutionAspect() {
-        videoWidth = MakeEven(Screen.width / 2);
-        videoHeight = MakeEven(Screen.height / 2);
-    }
-
-    public int MakeEven(int value) {
-        return value % 2 == 0 ? value : value - 1;
-    }
-
     /// <summary>
     /// start recording
     /// </summary>
     public void StartRecording() {
-        if (!permissionController.CheckMicAccess()) {
+        if (!permissionController.PermissionGranter.HasMicAccess) {
             recordMicrophone = false;
         }
+
+        int videoWidth;
+        int videoHeight;
+
+        AgoraSharedVideoConfig.GetResolution(screenWidth: Screen.width, screenHeigh: Screen.height, out videoWidth, out videoHeight);
+
+        _cameras = FindObjectsOfType<Camera>();
         recordLengthFailed = false;
         recordingClock = new RealtimeClock();
         videoRecorder = new MP4Recorder(
@@ -161,24 +153,22 @@ public class PnlRecord : MonoBehaviour {
             videoHeight,
             25,
             recordMicrophone ? AudioSettings.outputSampleRate : 0,
-            recordMicrophone ? (int)AudioSettings.speakerMode : 0
+            recordMicrophone ? (int)AudioSettings.speakerMode : 0,
+            OnRecordComplete
         );
 
-
-
-        cameraInput = new CameraInput(videoRecorder, recordingClock, arCamera, canvasCamera);
+        cameraInput = new CameraInput(videoRecorder, recordingClock, _cameras);
         if (recordMicrophone) {
-            audioInput = new AudioInput(videoRecorder, recordingClock, videoSource);
+            audioInput = new AudioInput(videoRecorder, recordingClock, _hologramHandler.GetAudioSource());
         }
 
         btnToggleMode.interactable = false;
         Recording = true;
-        OnRecordStarted?.Invoke();
         watermarkCanvasObject.SetActive(true);
     }
 
     public void RecordLengthFail() {
-        OnRecordStopped?.Invoke();
+        videoPlayerController?.OnPause();
         MakeScreenshot();
         recordLengthFailed = true;
     }
@@ -190,38 +180,29 @@ public class PnlRecord : MonoBehaviour {
             audioInput.Dispose();
         }
         cameraInput.Dispose();
+        videoRecorder.Dispose();
+        videoPlayerController?.OnPause();
 
-        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        OnRecordComplete().ContinueWith((taskWebRequestData) => {
+        imgRecordFill.fillAmount = 0;
+        btnToggleMode.interactable = true;
+        Recording = false;
 
-            imgRecordFill.fillAmount = 0;
-            btnToggleMode.interactable = true;
-            Recording = false;
-
-            if (!recordLengthFailed)
-                watermarkCanvasObject.SetActive(false);
-
-        }, taskScheduler);
-
+        if (!recordLengthFailed)
+            watermarkCanvasObject.SetActive(false);
     }
 
-    private async Task OnRecordComplete() {
-        string outputPath = await videoRecorder.FinishWriting();
+    private void OnRecordComplete(string path) {
         if (recordLengthFailed) {
-            File.Delete(outputPath);
-            OnRecordStopped?.Invoke();
+            File.Delete(path);
             MakeScreenshot();
         } else {
-            lastRecordingPath = outputPath;
-            OnRecordStopped?.Invoke();
-            pnlPostRecord.ActivatePostVideo(outputPath);
+            lastRecordingPath = path;
+            PostRecordARConstructor.OnActivatedVideo?.Invoke(path);
         }
     }
 
     private void MakeScreenshot() {
         if (currentCoroutine == null) {
-            //print("MAKING SCREENSHOT");
-            OnSnapshotStarted?.Invoke();
             currentCoroutine = StartCoroutine(ScreenShotAsync());
         }
     }
@@ -229,7 +210,6 @@ public class PnlRecord : MonoBehaviour {
     private IEnumerator ScreenShotAsync() {
         canvasGroup.alpha = 0;
         watermarkCanvasObject.SetActive(true);
-        //print("ENABLED WATERMARK");
         HideUI.onActivate(false);
         yield return new WaitForEndOfFrame();
 
@@ -237,9 +217,7 @@ public class PnlRecord : MonoBehaviour {
 
         yield return new WaitForEndOfFrame();
         HideUI.onActivate(true);
-        pnlPostRecord.ActivatePostScreenshot(Sprite.Create(screenShot, new Rect(0, 0, Screen.width, Screen.height), new Vector2(0.5f, 0.5f)), screenShot, lastRecordingPath);
-        //pnlVideoExperience.PauseExperience();
-        OnSnapshotEnded?.Invoke();
+        PostRecordARConstructor.OnActivatedScreenShot?.Invoke(Sprite.Create(screenShot, new Rect(0, 0, Screen.width, Screen.height), new Vector2(0.5f, 0.5f)), screenShot, lastRecordingPath);
         canvasGroup.alpha = 1;
         currentCoroutine = null;
         watermarkCanvasObject.SetActive(false);
