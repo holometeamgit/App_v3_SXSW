@@ -10,8 +10,6 @@ using Beem.Permissions;
 public class PnlARMessages : MonoBehaviour {
     [SerializeField]
     private HologramHandler _hologramHandler;
-    [SerializeField]
-    private PermissionController _permissionController;
 
     private List<IARMsgDataView> _arMsgDataViews;
 

@@ -7,31 +7,18 @@ using UnityEngine;
 /// </summary>
 public class RoomTutorialBtn : MonoBehaviour {
 
-    private PermissionController _permissionController;
-
-    private PermissionController permissionController {
-        get {
-
-            if (_permissionController == null) {
-                _permissionController = FindObjectOfType<PermissionController>();
-            }
-
-            return _permissionController;
-        }
-    }
+    private PermissionController _permissionController = new PermissionController();
 
     /// <summary>
     /// Open Btn
     /// </summary>
     public void Open() {
-
-        permissionController.CheckCameraMicAccess(() => {
+        _permissionController.CheckCameraMicAccess(() => {
             SettingsConstructor.OnActivated?.Invoke(false);
             MenuConstructor.OnActivated?.Invoke(false);
             HomeScreenConstructor.OnActivated?.Invoke(false);
             StreamCallBacks.onCloseComments?.Invoke();
             RoomTutorialConstructor.OnActivated?.Invoke(true);
-
             AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyGoLive, new Dictionary<string, string>() { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID } });
         });
     }
