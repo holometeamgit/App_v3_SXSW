@@ -21,9 +21,6 @@ public class ARMsgCameraPreview : MonoBehaviour {
     private void Awake() {
         CallBacks.onCanSwitchCamera += CanSwitchCamera;
         CallBacks.onSwitchCameraClicked += SwitchCamera;
-    }
-
-    private void Start() {
         SwitchDevice();
     }
 
