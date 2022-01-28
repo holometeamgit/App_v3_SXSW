@@ -28,6 +28,8 @@ public class ScrollRectSnapButtonHorz : MonoBehaviour {
 
     float segmentSectionSize;
 
+    int currentRegisteredIndex;
+
     Color previousTextColor;
     int previousIndex = -1;
     bool originalColorAssigned;
@@ -48,6 +50,32 @@ public class ScrollRectSnapButtonHorz : MonoBehaviour {
     }
 
     /// <summary>
+    /// Use this to call the button event again for the button last pressed
+    /// </summary>
+    public void ReactivateCurrentIndex() {
+        RegisterIndex(currentRegisteredIndex);
+        buttons[currentRegisteredIndex]?.onClick?.Invoke();
+    }
+
+    /// <summary>
+    /// Select the next element to the right
+    /// </summary>
+    public void SelectRight() {
+        if (currentRegisteredIndex + 1 < buttons.Length) {
+            buttons[currentRegisteredIndex + 1].onClick.Invoke();
+        }
+    }
+
+    /// <summary>
+    /// Select the next element to the left
+    /// </summary>
+    public void SelectLeft() {
+        if (currentRegisteredIndex - 1 >= 0 && buttons.Length > 0) {
+            buttons[currentRegisteredIndex - 1].onClick.Invoke();
+        }
+    }
+
+    /// <summary>
     /// This should be called by the button's UnityEvent to trigger the animation
     /// </summary>
     /// <param name="index">Index of the button being pressed</param>
@@ -60,6 +88,8 @@ public class ScrollRectSnapButtonHorz : MonoBehaviour {
 
         print("RegisterIndex Called " + index);
         print("segment  restul = " + segmentSectionSize * index);
+
+        currentRegisteredIndex = index;
 
         //Kill tweens before calling again
 

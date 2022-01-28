@@ -343,7 +343,7 @@ RectTransform:
   m_Children:
   - {fileID: 7368018576404716368}
   m_Father: {fileID: 7635839176245709169}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1072,7 +1072,7 @@ RectTransform:
   m_Children:
   - {fileID: 1621289060045308443}
   m_Father: {fileID: 7635839176245709169}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1225,6 +1225,7 @@ GameObject:
   - component: {fileID: 8685430490363914220}
   - component: {fileID: 7228597739329719718}
   - component: {fileID: 225805234821923157}
+  - component: {fileID: 7598243410576126852}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -1334,12 +1335,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scrollRect: {fileID: 7228597739329719718}
   buttons:
-  - {fileID: 1937626370120372092}
   - {fileID: 8675940965074734539}
+  - {fileID: 1937626370120372092}
   - {fileID: 8501335340765543776}
   transitionSpeed: 0.25
   selectedButtonColor: {r: 0, g: 0.87843144, b: 0.45882356, a: 1}
   scaleUpFactor: 1.5
+--- !u!114 &7598243410576126852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6319693584632969290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3806d483e1560dc4aa01fc1a35b1a268, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  detectSwipeOnlyAfterRelease: 1
+  SWIPE_THRESHOLD: 20
+  OnSwipeRighte:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 225805234821923157}
+        m_TargetAssemblyTypeName: ScrollRectSnapButtonHorz, Assembly-CSharp
+        m_MethodName: SelectLeft
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnSwipeLefte:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 225805234821923157}
+        m_TargetAssemblyTypeName: ScrollRectSnapButtonHorz, Assembly-CSharp
+        m_MethodName: SelectRight
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnSwipeUpe:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSwipeDowne:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7065593637841788880
 GameObject:
   m_ObjectHideFlags: 0
@@ -1458,8 +1509,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1514991404974853011}
   - {fileID: 2306500921001255582}
+  - {fileID: 1514991404974853011}
   - {fileID: 4258313992980273955}
   m_Father: {fileID: 1438751310990170836}
   m_RootOrder: 0
@@ -1614,6 +1665,6 @@ MonoBehaviour:
   OnDisabled:
     m_PersistentCalls:
       m_Calls: []
-  btnOnEnableInvoke: {fileID: 1937626370120372092}
+  btnOnEnableInvoke: {fileID: 8675940965074734539}
   panelCanvas: {fileID: 8411070801490865206}
   scrollRectSnapButtonHorz: {fileID: 225805234821923157}
