@@ -25,25 +25,8 @@ public class ARMsgARenaConstructor : MonoBehaviour {
     }
 
     private void DeactivateARena() {
-        WarningConstructor.ActivateDoubleButton("Before you go...",
-           "If you exit you could lose your AR message if you don't share the link.",
-           "Copy link and exit", "Return",
-           () => {
-               GUIUtility.systemCopyBuffer = currentData.share_link;
-               Close();
-           },
-           null,
-           false);
-
-    }
-
-    private void Close() {
-        ARenaConstructor.onDeactivate?.Invoke();
         _pnlARMessages.Deactivate();
-        MenuConstructor.OnActivated?.Invoke(true);
-        HomeScreenConstructor.OnActivated?.Invoke(true);
     }
-
 
     private void OnEnable() {
         OnActivatedARena += ActivateARena;

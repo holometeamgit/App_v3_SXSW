@@ -37,8 +37,6 @@ public class PrerecordedVideoWindow : MonoBehaviour {
     private PurchaseManager _purchaseManager;
     [SerializeField]
     private HologramHandler _hologramHandler;
-    [SerializeField]
-    private PermissionController _permissionController;
 
     private StreamJsonData.Data _streamData = default;
 

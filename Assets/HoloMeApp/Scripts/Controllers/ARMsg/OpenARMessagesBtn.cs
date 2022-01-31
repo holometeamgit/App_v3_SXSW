@@ -24,6 +24,7 @@ namespace Beem.UI {
         /// </summary>
         public void Open() {
             StreamCallBacks.onPlayARMessage?.Invoke(_arMsgData);
+            ARMsgRecordConstructor.OnActivated?.Invoke(false);
             CallBacks.OnCancelAllARMsgActions?.Invoke();
         }
     }
