@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// GoingRecordController. Update timer for counter
+/// GoingRecordController. Update timer for counter. Wainting counter
 /// </summary>
 public class GoingRecordController : MonoBehaviour
 {
@@ -17,16 +17,16 @@ public class GoingRecordController : MonoBehaviour
     /// ChangeVaiting Change waiting
     /// </summary>
     /// <param name="value"></param>
-    public void ChangeVaiting(int value) {
+    public void ChangeWaiting(int value) {
         if (value > timersScaleList.Count - 1)
             return;
         SetNewValue(timersScaleList[value]);
     }
 
     private void Awake() {
-        ChangeVaiting(START_VALUE);
+        ChangeWaiting(START_VALUE);
 #if UNITY_EDITOR
-        ChangeVaiting(0);
+        ChangeWaiting(0);
 #endif
     }
 
