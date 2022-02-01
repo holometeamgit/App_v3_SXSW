@@ -8,6 +8,7 @@ namespace Beem {
 
     public class SplashScreenController {
         public Action onSentNeedUpdateApp;
+        public Action onSentCanUse;
         public Action onSignIn;
         public Action onFailSignIn;
 
@@ -31,6 +32,7 @@ namespace Beem {
         }
 
         private void TryLogin() {
+            onSentCanUse?.Invoke();
             CallBacks.onQuickLogInRequest?.Invoke();
         }
 
