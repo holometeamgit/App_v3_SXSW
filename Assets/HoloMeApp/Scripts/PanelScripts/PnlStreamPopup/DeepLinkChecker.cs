@@ -9,12 +9,10 @@ using UnityEngine;
 /// <summary>
 /// checks requirements for opening PnlRoomPopup
 /// </summary>
-public class PopupShowChecker : MonoBehaviour {
-    [SerializeField]
-    private List<GameObject> _needBeActivatedObjects;
+public class DeepLinkChecker : MonoBehaviour {
 
     [SerializeField]
-    private List<GameObject> _needBeDeactivatedObjects;
+    private List<GameObject> _activatedObjects;
 
     [SerializeField]
     private bool _requireSignIn = true;
@@ -39,19 +37,13 @@ public class PopupShowChecker : MonoBehaviour {
             }
         }
 
-        foreach (var obj in _needBeActivatedObjects) {
-            if (!obj.activeInHierarchy) {
-                return false;
-            }
-        }
-
-        foreach (var obj in _needBeDeactivatedObjects) {
+        foreach (var obj in _activatedObjects) {
             if (obj.activeInHierarchy) {
-                return false;
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     private async Task WaitForCanShow() {

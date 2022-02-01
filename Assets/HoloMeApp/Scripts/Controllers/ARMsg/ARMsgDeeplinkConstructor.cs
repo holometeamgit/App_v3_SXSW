@@ -11,7 +11,7 @@ using UnityEngine;
 public class ARMsgDeeplinkConstructor : MonoBehaviour {
 
     [SerializeField]
-    private PopupShowChecker _popupShowChecker;
+    private DeepLinkChecker _popupShowChecker;
 
     public static Action<ARMsgJSON.Data> OnActivated = delegate { };
 

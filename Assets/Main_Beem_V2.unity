@@ -124,19 +124,13 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &30566191 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4302810320313320491, guid: 74fd2c6248c674f308d632c0a2b368ed,
-    type: 3}
-  m_PrefabInstance: {fileID: 1988917483}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &30566192 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1484107438612870469, guid: 74fd2c6248c674f308d632c0a2b368ed,
     type: 3}
   m_PrefabInstance: {fileID: 1988917483}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 30566191}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9398041af5bc4d6f8e1607a752f705c, type: 3}
@@ -201,7 +195,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1107463186}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 971999349}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9a8d0bf3a5cb5b14da48a044e362cdc3, type: 3}
@@ -1430,6 +1424,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pnlThumbnailPopup: {fileID: 559953091}
+  _popupShowChecker: {fileID: 1000053068}
 --- !u!114 &366655799 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 366655799, guid: 8c5a9e4d2b941694288254f9ed86d81b,
@@ -2792,12 +2787,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 616473673}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &971999349 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8018658112276392459, guid: 550d99768edf6c94d823b60c275d04d1,
-    type: 3}
-  m_PrefabInstance: {fileID: 1107463186}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1000053067
 GameObject:
   m_ObjectHideFlags: 0
@@ -2809,7 +2798,7 @@ GameObject:
   - component: {fileID: 1000053069}
   - component: {fileID: 1000053068}
   m_Layer: 0
-  m_Name: PopupShowChecker
+  m_Name: DeepLinkChecker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2827,12 +2816,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11c1981d561844ec950f222a5c3c87a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _needBeActivatedObjects:
+  _activatedObjects:
   - {fileID: 3161963791150318576}
-  _needBeDeactivatedObjects:
-  - {fileID: 1496662217}
-  - {fileID: 30566191}
-  - {fileID: 971999349}
   _requireSignIn: 1
   _authController: {fileID: 635890365}
 --- !u!4 &1000053069
@@ -4174,12 +4159,6 @@ MonoBehaviour:
   videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
   webRequestHandler: {fileID: 35185073}
   agoraRequests: {fileID: 1146380146}
---- !u!1 &1496662217 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 491450016157643654, guid: 50ac8c79b05ad45e9b9b3b1a6c66fc83,
-    type: 3}
-  m_PrefabInstance: {fileID: 6511805454453755403}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1500566620 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8071998731876317604, guid: 5901c8758b67e3a4fb4ec0ed7df48b08,
@@ -8540,7 +8519,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 6511805454453755403}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1496662217}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1d18b6ad82f107f48b55d083afacd6f1, type: 3}

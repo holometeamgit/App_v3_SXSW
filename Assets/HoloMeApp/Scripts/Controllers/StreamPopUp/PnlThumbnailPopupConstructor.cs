@@ -7,7 +7,7 @@ public class PnlThumbnailPopupConstructor : MonoBehaviour {
     [SerializeField]
     private PnlThumbnailPopup _pnlThumbnailPopup;
     [SerializeField]
-    private PopupShowChecker _popupShowChecker;
+    private DeepLinkChecker _popupShowChecker;
 
     private void Awake() {
         Construct();
