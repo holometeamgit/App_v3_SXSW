@@ -4,8 +4,10 @@ using UnityEngine;
 using Beem.ARMsg;
 using UnityEngine.UI;
 
-public class BtnSwitchCamera : MonoBehaviour
-{
+/// <summary>
+/// View for switch camera (front/back)
+/// </summary>
+public class BtnSwitchCamera : MonoBehaviour {
     [SerializeField]
     private Button _switchBtn;
 
@@ -13,6 +15,9 @@ public class BtnSwitchCamera : MonoBehaviour
         _switchBtn.interactable = CallBacks.onCanSwitchCamera?.Invoke() ?? false;
     }
 
+    /// <summary>
+    /// Call switch camera
+    /// </summary>
     public void SwitchCamera() {
         CallBacks.onSwitchCameraClicked?.Invoke();
     }

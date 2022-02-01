@@ -20,13 +20,13 @@ public class RecordConstructor : MonoBehaviour
 
         _recordController = new RecordController();
         CallBacks.onSwitchRecordTimerClicked += _recordController.SwitchTimer;
-        CallBacks.onGetCurrevRecordTimerClicked += _recordController.onGetCurrevRecordTimer;
+        CallBacks.onGetCurrevRecordTimerClicked += _recordController.OnGetCurrentRecordTimer;
     }
 
     private void OnDestroy() {
         CallBacks.OnStartRecord -= _recordButton.StartAnimation;
         CallBacks.onRecordTimerSet -= _recordButton.SetMaxRecordingTime;
         CallBacks.onSwitchRecordTimerClicked += _recordController.SwitchTimer;
-        CallBacks.onGetCurrevRecordTimerClicked += _recordController.onGetCurrevRecordTimer;
+        CallBacks.onGetCurrevRecordTimerClicked += _recordController.OnGetCurrentRecordTimer;
     }
 }

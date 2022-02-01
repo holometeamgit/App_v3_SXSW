@@ -5,14 +5,18 @@ using UnityEngine.UI;
 using Beem.ARMsg;
 using TMPro;
 
-public class BtnSwitchRecordTimer : MonoBehaviour
-{
+/// <summary>
+/// View for showing timer for Beem Me feature
+/// </summary>
+public class BtnSwitchRecordTimer : MonoBehaviour {
     [SerializeField]
     private TMP_Text _timerValueText;
 
     private const string SUFFIX = "s";
 
-
+    /// <summary>
+    /// Change Timer value
+    /// </summary>
     public void SwitchTimer() {
         CallBacks.onSwitchRecordTimerClicked?.Invoke();
     }
