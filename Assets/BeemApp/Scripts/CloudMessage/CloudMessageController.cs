@@ -1,3 +1,4 @@
+using Beem.Firebase;
 using Firebase.Messaging;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +9,11 @@ namespace Beem.Firebase.CloudMessage {
     /// CloudMessage Controller
     /// </summary>
     public class CloudMessageController : MonoBehaviour {
+
+        private const string SENDER_ID = "233061171188";
+
+        private const string TOPIC = "Beem";
+
         private void OnEnable() {
             FirebaseCallBacks.onInit += Subscribe;
         }
@@ -15,6 +21,7 @@ namespace Beem.Firebase.CloudMessage {
         protected void Subscribe() {
             FirebaseMessaging.TokenReceived += OnTokenReceived;
             FirebaseMessaging.MessageReceived += OnMessageReceived;
+            FirebaseMessaging.SubscribeAsync(TOPIC);
 
         }
 
@@ -22,6 +29,7 @@ namespace Beem.Firebase.CloudMessage {
             FirebaseCallBacks.onInit -= Subscribe;
             FirebaseMessaging.TokenReceived -= OnTokenReceived;
             FirebaseMessaging.MessageReceived -= OnMessageReceived;
+            FirebaseMessaging.UnsubscribeAsync(TOPIC);
         }
 
         private void OnTokenReceived(object sender, TokenReceivedEventArgs token) {
@@ -39,6 +47,17 @@ namespace Beem.Firebase.CloudMessage {
                 HelperFunctions.DevLogError($"Message item key: {item.Key}, value: {item.Value}");
             }
         }
+
+        /*
+        private void SendMessage() {
+            FirebaseMessage message = new FirebaseMessage();
+            message.To = SENDER_ID + "@fcm.googleapis.com";
+            message.MessageId = "Some Id";
+            message.Data.Add("my_message", "Hello World");
+            message.Data.Add("my_action", "SAY HELLO");
+            Firebase.Messaging.
+
+        }*/
 
     }
 }
