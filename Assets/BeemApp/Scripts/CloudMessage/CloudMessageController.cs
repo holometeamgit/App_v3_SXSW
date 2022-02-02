@@ -2,6 +2,7 @@ using Beem.Firebase;
 using Firebase.Messaging;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http;
 using UnityEngine;
 
 namespace Beem.Firebase.CloudMessage {
@@ -49,13 +50,33 @@ namespace Beem.Firebase.CloudMessage {
         }
 
         /*
-        private void SendMessage() {
-            FirebaseMessage message = new FirebaseMessage();
-            message.To = SENDER_ID + "@fcm.googleapis.com";
-            message.MessageId = "Some Id";
-            message.Data.Add("my_message", "Hello World");
-            message.Data.Add("my_action", "SAY HELLO");
-            Firebase.Messaging.
+        public async static void SendPushToTokenID(string tokenID, string title, string body) {
+
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json");
+
+            var url = serverURL;
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "key=" + serverKey);
+
+
+            var notification = new {
+                title = title,
+                body = body
+
+            };
+
+            var postModel = new {
+                to = tokenID,
+                notification = notification
+
+            };
+
+
+            var response = await client.PostAsJsonAsync(url, postModel);
+
+            // format result json into object 
+            string content = await response.Content.ReadAsStringAsync();
+            string xw = (response.Content.ReadAsStringAsync().Result);
 
         }*/
 
