@@ -6,6 +6,9 @@ using System.Net.Http;
 using UnityEngine;
 
 namespace Beem.Firebase.CloudMessage {
+
+    //INPROGRESS: This class is in progress
+
     /// <summary>
     /// CloudMessage Controller
     /// </summary>
@@ -13,7 +16,7 @@ namespace Beem.Firebase.CloudMessage {
 
         private const string SENDER_ID = "233061171188";
 
-        private const string TOPIC = "Beem";
+        private const string TOPIC = "Test";
 
         private void OnEnable() {
             FirebaseCallBacks.onInit += Subscribe;
