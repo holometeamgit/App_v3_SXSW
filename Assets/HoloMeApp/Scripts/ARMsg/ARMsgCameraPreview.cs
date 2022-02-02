@@ -2,6 +2,7 @@
 using UnityEngine.Android;
 using UnityEngine.UI;
 using System.Collections;
+using Beem.ARMsg;
 
 /// <summary>
 /// ARMsgCameraPreview. Show WebCamTexture on the screen
@@ -14,10 +15,46 @@ public class ARMsgCameraPreview : MonoBehaviour {
     private AspectRatioFitter aspectFitter;
     private const int CHECKING_NUMBERS_FOR_MACOS_BUG = 16;
     private Coroutine _coroutine;
+    private int _currectDeviceID = 0;
+    private string _devicesName;
 
+    private void Awake() {
+        CallBacks.onCanSwitchCamera += CanSwitchCamera;
+        CallBacks.onSwitchCameraClicked += SwitchCamera;
+        SwitchDevice();
+    }
 
-    private void OnEnable() {
+    private bool CanSwitchCamera() {
+        return WebCamTexture.devices.Length > 1;
+    }
+
+    private void SwitchCamera() {
+        if (cameraTexture != null && cameraTexture.isPlaying)
+            cameraTexture.Stop();
+
+        SwitchDevice();
+
+        StopStartCameraCoroutine();
+        StartStartCameraCoroutine();
+    }
+
+    private void SwitchDevice() {
+        WebCamDevice[] devices = WebCamTexture.devices;
+        if (devices.Length > 1)
+            _currectDeviceID = (_currectDeviceID + 1) % 2;
+
+        _devicesName = devices[_currectDeviceID].name;
+    }
+
+    private void StartStartCameraCoroutine() {
         _coroutine = StartCoroutine(StartCamera());
+    }
+
+    private void StopStartCameraCoroutine() {
+        if (_coroutine != null) {
+            StopCoroutine(_coroutine);
+            _coroutine = null;
+        }
     }
 
     private IEnumerator StartCamera() {
@@ -28,9 +65,8 @@ public class ARMsgCameraPreview : MonoBehaviour {
         int heigh;
         AgoraSharedVideoConfig.GetResolution(screenWidth: Screen.width, screenHeigh: Screen.height, out width, out heigh);
         // Start the WebCamTexture
-        WebCamDevice[] devices = WebCamTexture.devices;
-        string devicesName = devices.Length > 1 ? devices[1].name : devices[0].name;
-        cameraTexture = new WebCamTexture(devicesName, width, heigh, AgoraSharedVideoConfig.FrameRate);
+
+        cameraTexture = new WebCamTexture(_devicesName, width, heigh, AgoraSharedVideoConfig.FrameRate);
 
         cameraTexture.Play();
         yield return new WaitUntil(() => cameraTexture.width != CHECKING_NUMBERS_FOR_MACOS_BUG && cameraTexture.height != CHECKING_NUMBERS_FOR_MACOS_BUG); // Workaround for weird bug on macOS
@@ -46,12 +82,19 @@ public class ARMsgCameraPreview : MonoBehaviour {
         }
     }
 
+    private void OnEnable() {
+        StartStartCameraCoroutine();
+    }
+
     private void OnDisable() {
-        if (_coroutine != null) {
-            StopCoroutine(_coroutine);
-            _coroutine = null;
-        }
-        cameraTexture.Stop();
+        StopStartCameraCoroutine();
+        if(cameraTexture != null)
+            cameraTexture.Stop();
+    }
+
+    private void OnDestroy() {
+        CallBacks.onCanSwitchCamera -= CanSwitchCamera;
+        CallBacks.onSwitchCameraClicked -= SwitchCamera;
     }
 
 }

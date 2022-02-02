@@ -39,5 +39,18 @@ namespace Beem.ARMsg {
         public static Action<ARMsgJSON.Data> OnARMsgByIdReceived = delegate { };
         public static Action<string> OnARMsgByIdDeleted = delegate { };
         #endregion
+
+        #region Camera Settings Action
+        public static Action onSwitchCameraClicked = delegate { };
+
+        public static Func<bool> onCanSwitchCamera;
+        #endregion
+
+        #region Record Timer Settings action
+        public static Action onSwitchRecordTimerClicked = delegate { };
+        public static Action onGetCurrevRecordTimerClicked = delegate { };
+
+        public static Action<int> onRecordTimerSet;
+        #endregion
     }
 }
