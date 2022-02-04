@@ -52,7 +52,7 @@ public class PnlLogInEmail : MonoBehaviour {
             else {
                 inputFieldEmail.ShowWarning(badRequestData.non_field_errors[0]);
 
-                WarningConstructor.ActivateDoubleButton("Email verication",
+                WarningConstructor.ActivateDoubleButton("Email verification",
                     "You have not activated your account via the email, would you like us to send it again?",
                     "Yes",
                     "No",

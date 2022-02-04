@@ -10,11 +10,12 @@ using Beem.ARMsg;
 public class ContentPlayer : MonoBehaviour {
 
     [SerializeField]
+    private UserWebManager _userWebManager;
+    [SerializeField]
     private WebRequestHandler _webRequestHandler;
     [SerializeField]
     private PurchaseManager _purchaseManager;
-    [SerializeField]
-    private PermissionController _permissionController;
+    private PermissionController _permissionController = new PermissionController();
 
     public Action<string> OnPlayFromUser;
 
@@ -56,6 +57,14 @@ public class ContentPlayer : MonoBehaviour {
     /// </summary>
     /// <param name="roomJsonData"></param>
     private void PlayRoom(RoomJsonData data) { //TODO split it to other class
+
+        if (data.user == _userWebManager.GetUsername()) {
+            WarningConstructor.ActivateSingleButton("Viewing as stream host",
+                "Please connect to the stream using a different account");
+
+            return;
+        }
+
         _permissionController.CheckCameraMicAccess(() => {
             MenuConstructor.OnActivated?.Invoke(false);
             HomeScreenConstructor.OnActivated?.Invoke(false);
@@ -89,6 +98,13 @@ public class ContentPlayer : MonoBehaviour {
     /// </summary>
     /// <param name="roomJsonData"></param>
     private void PlayStadium(StreamJsonData.Data data) { //TODO split it to other class
+        if (data.user == _userWebManager.GetUsername()) {
+            WarningConstructor.ActivateSingleButton("Viewing as stream host",
+                "Please connect to the stream using a different account");
+
+            return;
+        }
+
         if (data.agora_channel == "0" || string.IsNullOrWhiteSpace(data.agora_channel)) {
             return;
         }
