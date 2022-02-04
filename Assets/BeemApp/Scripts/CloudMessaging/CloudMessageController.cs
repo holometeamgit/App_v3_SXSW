@@ -25,7 +25,6 @@ namespace Beem.Firebase.CloudMessage {
 
         protected void Subscribe() {
             Debug.LogError("Subscribe");
-            FirebaseMessaging.GetTokenAsync().ContinueWith((token) => HelperFunctions.DevLogError("Received Registration Token: " + token));
             FirebaseMessaging.TokenReceived += OnTokenReceived;
             FirebaseMessaging.MessageReceived += OnMessageReceived;
             FirebaseMessaging.SubscribeAsync(TOPIC);
@@ -48,12 +47,11 @@ namespace Beem.Firebase.CloudMessage {
 
             HelperFunctions.DevLogError($"Message from: {e.Message.From}");
             HelperFunctions.DevLogError($"Message ID: {e.Message.MessageId}");
-            HelperFunctions.DevLogError($"Message Link: {e.Message.Link}");
-            HelperFunctions.DevLogError($"Message Notification Title: {e.Message.Notification.Title}");
-            HelperFunctions.DevLogError($"Message Notification Body: {e.Message.Notification.Body}");
-            HelperFunctions.DevLogError($"Message Notification ClickAction: {e.Message.Notification.ClickAction}");
 
-            DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(e.Message.Notification.ClickAction);
+            foreach (KeyValuePair<string, string> item in e.Message.Data) {
+                HelperFunctions.DevLogError($"Message Data: {item.Key} , {item.Value}");
+            }
+
         }
 
         /*
