@@ -28,7 +28,7 @@ namespace Beem.Firebase.CloudMessage {
 
             if (task.IsCompleted) {
                 GUIUtility.systemCopyBuffer = task.Result;
-                HelperFunctions.DevLog("GetTokenAsync: " + task.Result);
+                HelperFunctions.DevLog("GetFCMTokenAsync: " + task.Result);
             }
         }
 
