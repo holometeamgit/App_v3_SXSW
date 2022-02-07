@@ -21,7 +21,19 @@ namespace Beem.Firebase.CloudMessage {
             FirebaseCallBacks.onInit += Subscribe;
         }
 
+        private async void GetTokenAsync() {
+            var task = FirebaseMessaging.GetTokenAsync();
+
+            await task;
+
+            if (task.IsCompleted) {
+                GUIUtility.systemCopyBuffer = task.Result;
+                HelperFunctions.DevLog("GetTokenAsync: " + task.Result);
+            }
+        }
+
         protected void Subscribe() {
+            GetTokenAsync();
             FirebaseMessaging.TokenReceived += OnTokenReceived;
             FirebaseMessaging.MessageReceived += OnMessageReceived;
             FirebaseMessaging.SubscribeAsync(TOPIC);
