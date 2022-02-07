@@ -33,13 +33,8 @@
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
-        <data android:scheme="beemholomedl" android:host="verification" />
-        <data android:scheme="beemholomedl" android:host="passwordresetconfirm" />
-        <data android:scheme="beemholomedl" android:host="room" />
-        <data android:scheme="beemholomedl" android:host="complete-login" />
-        <data android:scheme="beemholomedl" android:host="username" />
-        <data android:scheme="https" android:host="join.beem.me" />
-        <data android:scheme="https" android:host="ar.beem.me" />
+        <data android:scheme="http" android:host="*.beem.me" />
+        <data android:scheme="https" android:host="*.beem.me" />
       </intent-filter>
       <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
     </activity>

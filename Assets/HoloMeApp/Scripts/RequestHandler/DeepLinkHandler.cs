@@ -37,72 +37,52 @@ public class DeepLinkHandler : MonoBehaviour {
     }
 
     private void GetContentsParameters(Uri uri) {
-        if (ContainParameter(uri, Params.room.ToString())) {
+        if (ContainParam(uri, Params.room.ToString())) {
 
             HelperFunctions.DevLog("GetRoomParameters");
 
-            string userName = GetParameterId(uri, Params.room.ToString());
+            string userName = GetParam(uri, Params.room.ToString());
 
             HelperFunctions.DevLog("username = " + userName);
             StreamCallBacks.onReceiveRoomLink?.Invoke(userName);
-        } else if (ContainParameter(uri, Params.message.ToString())) {
+        } else if (ContainParam(uri, Params.message.ToString())) {
 
             HelperFunctions.DevLog("GetMessageParameters");
 
-            string messageId = GetParameterId(uri, Params.message.ToString());
+            string messageId = GetParam(uri, Params.message.ToString());
 
             HelperFunctions.DevLog("messageId = " + messageId);
             StreamCallBacks.onReceiveARMsgLink?.Invoke(messageId);
-        } else if (ContainParameter(uri, Params.live.ToString())) {
+        } else if (ContainParam(uri, Params.live.ToString())) {
 
             HelperFunctions.DevLog("GetLiveParameters");
 
-            string username = GetParameterId(uri, Params.live.ToString());
+            string username = GetParam(uri, Params.live.ToString());
 
             HelperFunctions.DevLog("username = " + username);
             StreamCallBacks.onReceiveStreamLink?.Invoke(username);
-        } else if (ContainParameter(uri, Params.prerecorded.ToString())) {
+        } else if (ContainParam(uri, Params.prerecorded.ToString())) {
 
             HelperFunctions.DevLog("GetPrerecordedParameters");
 
-            string slug = GetParameterId(uri, Params.prerecorded.ToString());
+            string slug = GetParam(uri, Params.prerecorded.ToString());
 
             HelperFunctions.DevLog("slug = " + slug);
             StreamCallBacks.onReceivePrerecordedLink?.Invoke(slug);
-        } /*else 
-        if (ContainFolder(uri, Params.room.ToString())) {
+        }
+    }
 
-            HelperFunctions.DevLog("GetRoomParameters");
+    private bool ContainParam(Uri uri, string parameter) {
+        return ContainFolder(uri, parameter) || ContainQueryParam(uri, parameter);
+    }
 
-            string userName = GetFolderId(uri, Params.room.ToString());
-
-            HelperFunctions.DevLog("username = " + userName);
-            StreamCallBacks.onReceiveRoomLink?.Invoke(userName);
-        } else if (ContainFolder(uri, Params.message.ToString())) {
-
-            HelperFunctions.DevLog("GetMessageParameters");
-
-            string messageId = GetFolderId(uri, Params.message.ToString());
-
-            HelperFunctions.DevLog("messageId = " + messageId);
-            StreamCallBacks.onReceiveARMsgLink?.Invoke(messageId);
-        } else if (ContainFolder(uri, Params.live.ToString())) {
-
-            HelperFunctions.DevLog("GetLiveParameters");
-
-            string username = GetFolderId(uri, Params.live.ToString());
-
-            HelperFunctions.DevLog("username = " + username);
-            StreamCallBacks.onReceiveStreamLink?.Invoke(username);
-        } else if (ContainFolder(uri, Params.prerecorded.ToString())) {
-
-            HelperFunctions.DevLog("GetPrerecordedParameters");
-
-            string slug = GetFolderId(uri, Params.prerecorded.ToString());
-
-            HelperFunctions.DevLog("slug = " + slug);
-            StreamCallBacks.onReceivePrerecordedLink?.Invoke(slug);
-        }*/
+    private string GetParam(Uri uri, string parameter) {
+        if (ContainQueryParam(uri, parameter)) {
+            return GetQueryParam(uri, parameter);
+        } else if (ContainFolder(uri, parameter)) {
+            return GetFolderId(uri, parameter);
+        }
+        return null;
     }
 
     private bool ContainFolder(Uri uri, string parameter) {
@@ -121,11 +101,11 @@ public class DeepLinkHandler : MonoBehaviour {
         return string.Empty;
     }
 
-    private bool ContainParameter(Uri uri, string parameter) {
+    private bool ContainQueryParam(Uri uri, string parameter) {
         return HttpUtility.ParseQueryString(uri.Query).Get(parameter) != null;
     }
 
-    private string GetParameterId(Uri uri, string parameter) {
+    private string GetQueryParam(Uri uri, string parameter) {
         return HttpUtility.ParseQueryString(uri.Query).Get(parameter);
     }
 }
