@@ -11,22 +11,16 @@ namespace Beem.Firebase.DynamicLink {
 
         private void OnEnable() {
             FirebaseCallBacks.onInit += Subscribe;
-            Application.deepLinkActivated += OnDynamicLink;
-            if (!string.IsNullOrEmpty(Application.absoluteURL)) {
-                // Cold start and Application.absoluteURL not null so process Deep Link.
-                OnDynamicLink(Application.absoluteURL);
-            }
         }
 
-        protected void Subscribe() {
+        private void Subscribe() {
             DynamicLinks.DynamicLinkReceived += OnDynamicLink;
 
         }
 
-        protected void OnDisable() {
+        private void OnDisable() {
             DynamicLinks.DynamicLinkReceived -= OnDynamicLink;
             FirebaseCallBacks.onInit -= Subscribe;
-            Application.deepLinkActivated -= OnDynamicLink;
         }
 
         private void OnDynamicLink(string url) {
