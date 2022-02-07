@@ -22,7 +22,8 @@ namespace Beem.Xcode {
             "https://join.beem.me/live",
             "https://join.beem.me/prerecorded",
             "https://join.beem.me/message",
-            "https://ar.beem.me"
+            "https://ar.beem.me",
+            "https://ar.beem.me/*"
         };
 
         [PostProcessBuild]
