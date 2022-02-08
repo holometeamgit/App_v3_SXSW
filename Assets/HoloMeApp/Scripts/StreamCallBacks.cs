@@ -39,6 +39,7 @@ public class StreamCallBacks {
 
     #region
     public static Action<RoomJsonData> onPlayRoom = delegate { };
+    public static Action<ARMsgJSON.Data> onPlayARMessage = delegate { };
     #endregion
 
     public static Action onGetLastRoomLink = delegate { };

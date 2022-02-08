@@ -12,6 +12,6 @@ public class ARMessageBtn : MonoBehaviour {
     /// </summary>
     public void Open() {
         ARMessageTutorialConstructor.OnActivated?.Invoke(false);
-        CallBacks.OnActivated?.Invoke(true);
+        ARMsgRecordConstructor.OnActivated?.Invoke(true);
     }
 }

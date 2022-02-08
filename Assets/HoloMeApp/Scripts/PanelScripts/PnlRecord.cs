@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using NatSuite.Recorders;
-using NatSuite.Recorders.Clocks;
-using NatSuite.Recorders.Inputs;
+using NatCorder;
+using NatCorder.Clocks;
+using NatCorder.Inputs;
 using System.Collections;
 using TMPro;
 using UnityEngine.Events;
@@ -48,7 +48,7 @@ public class PnlRecord : MonoBehaviour {
     [Space]
 
     [SerializeField]
-    private UIThumbnailsController _uiThumbnailsController;
+    private ContentPlayer _contentPlayer;
 
     [SerializeField]
     private HologramHandler _hologramHandler;
@@ -67,17 +67,7 @@ public class PnlRecord : MonoBehaviour {
 
     private bool recordLengthFailed;
 
-    private PermissionController _permissionController;
-    private PermissionController permissionController {
-        get {
-
-            if (_permissionController == null) {
-                _permissionController = FindObjectOfType<PermissionController>();
-            }
-
-            return _permissionController;
-        }
-    }
+    private PermissionController _permissionController = new PermissionController();
 
     private VideoPlayerController _videoPlayerController;
     private VideoPlayerController videoPlayerController {
@@ -121,7 +111,7 @@ public class PnlRecord : MonoBehaviour {
         videoButtonContainerPosition = rtButtonContainer.anchoredPosition;
         canvasGroup.alpha = 0;
 
-        _uiThumbnailsController.OnPlayFromUser += user => txtWaterMarkText.text = "@" + user; //Gameobject must be active in the editor for this to work correctly
+        _contentPlayer.OnPlayFromUser += user => txtWaterMarkText.text = "@" + user; //Gameobject must be active in the editor for this to work correctly
     }
 
     private void OnEnable() {
@@ -136,7 +126,7 @@ public class PnlRecord : MonoBehaviour {
     /// start recording
     /// </summary>
     public void StartRecording() {
-        if (!permissionController.PermissionGranter.HasMicAccess) {
+        if (!_permissionController.PermissionGranter.HasMicAccess) {
             recordMicrophone = false;
         }
 
@@ -153,10 +143,9 @@ public class PnlRecord : MonoBehaviour {
             videoHeight,
             25,
             recordMicrophone ? AudioSettings.outputSampleRate : 0,
-            recordMicrophone ? (int)AudioSettings.speakerMode : 0
+            recordMicrophone ? (int)AudioSettings.speakerMode : 0,
+            OnRecordComplete
         );
-
-
 
         cameraInput = new CameraInput(videoRecorder, recordingClock, _cameras);
         if (recordMicrophone) {
@@ -181,29 +170,24 @@ public class PnlRecord : MonoBehaviour {
             audioInput.Dispose();
         }
         cameraInput.Dispose();
+        videoRecorder.Dispose();
         videoPlayerController?.OnPause();
-        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        OnRecordComplete().ContinueWith((taskWebRequestData) => {
 
-            imgRecordFill.fillAmount = 0;
-            btnToggleMode.interactable = true;
-            Recording = false;
+        imgRecordFill.fillAmount = 0;
+        btnToggleMode.interactable = true;
+        Recording = false;
 
-            if (!recordLengthFailed)
-                watermarkCanvasObject.SetActive(false);
-
-        }, taskScheduler);
-
+        if (!recordLengthFailed)
+            watermarkCanvasObject.SetActive(false);
     }
 
-    private async Task OnRecordComplete() {
-        string outputPath = await videoRecorder.FinishWriting();
+    private void OnRecordComplete(string path) {
         if (recordLengthFailed) {
-            File.Delete(outputPath);
+            File.Delete(path);
             MakeScreenshot();
         } else {
-            lastRecordingPath = outputPath;
-            PostRecordARConstructor.OnActivatedVideo?.Invoke(outputPath);
+            lastRecordingPath = path;
+            PostRecordARConstructor.OnActivatedVideo?.Invoke(path);
         }
     }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,8 @@ using UnityEngine;
 public class PnlThumbnailPopupConstructor : MonoBehaviour {
     [SerializeField]
     private PnlThumbnailPopup _pnlThumbnailPopup;
+    [SerializeField]
+    private DeepLinkChecker _popupShowChecker;
 
     private void Awake() {
         Construct();
@@ -16,7 +19,11 @@ public class PnlThumbnailPopupConstructor : MonoBehaviour {
     }
 
     private void OpenStream(StreamJsonData.Data data) {
-        _pnlThumbnailPopup.OpenStream(data.id);
+        _popupShowChecker.OnReceivedData(data, ActivatePopup);
+    }
+
+    private void ActivatePopup(StreamJsonData.Data data) {
+        _pnlThumbnailPopup.OpenStream(data);
     }
 
     private void Close() {

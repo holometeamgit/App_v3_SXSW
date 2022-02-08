@@ -6,12 +6,17 @@ using Firebase.DynamicLinks;
 using System;
 
 /// <summary>
-/// DeepLinkStreamController 
+/// Deep Link Controller for StreamData
 /// </summary>
 public class DeepLinkStreamController : MonoBehaviour {
-    [SerializeField] WebRequestHandler webRequestHandler;
-    [SerializeField] ServerURLAPIScriptableObject serverURLAPIScriptableObject;
-    [SerializeField] VideoUploader videoUploader;
+    [SerializeField]
+    private WebRequestHandler _webRequestHandler;
+    [SerializeField]
+    private ServerURLAPIScriptableObject _serverURLAPIScriptableObject;
+    [SerializeField]
+    private VideoUploader _videoUploader;
+
+    private ShareLinkController _shareController = new ShareLinkController();
 
     private const string STREAM_TITLE = "Join {0}'s Live Stream";
     private const string STREAM_DESCRIPTION = "Click the link to watch {0} in Augmented Reality.";
@@ -30,27 +35,27 @@ public class DeepLinkStreamController : MonoBehaviour {
             socialMetaTagParameters = new SocialMetaTagParameters() {
                 Title = string.Format(STREAM_TITLE, data.user),
                 Description = string.Format(STREAM_DESCRIPTION, data.user),
-                ImageUrl = new Uri(serverURLAPIScriptableObject.LogoLink)
+                ImageUrl = new Uri(_serverURLAPIScriptableObject.LogoLink)
             };
         } else {
             socialMetaTagParameters = new SocialMetaTagParameters() {
                 Title = data.title,
                 Description = data.description,
-                ImageUrl = new Uri(serverURLAPIScriptableObject.LogoLink)
+                ImageUrl = new Uri(_serverURLAPIScriptableObject.LogoLink)
             };
         }
         return socialMetaTagParameters;
     }
 
     private void GetStreamBySlug(string slug, Action<long, string> onSuccess, Action<long, string> onFailed) {
-        webRequestHandler.Get(GetRequestStreamBySlugURL(slug),
+        _webRequestHandler.Get(GetRequestStreamBySlugURL(slug),
             (code, body) => { onSuccess?.Invoke(code, body); },
             (code, body) => { onFailed?.Invoke(code, body); },
         needHeaderAccessToken: false);
     }
 
     private void GetStreamByUsername(string username, Action<long, string> onSuccess, Action<long, string> onFailed) {
-        webRequestHandler.Get(GetRequestStreamByUsernameURL(username, STATUS),
+        _webRequestHandler.Get(GetRequestStreamByUsernameURL(username, STATUS),
             (code, body) => { onSuccess?.Invoke(code, body); },
             (code, body) => { onFailed?.Invoke(code, body); },
         needHeaderAccessToken: false);
@@ -157,7 +162,7 @@ public class DeepLinkStreamController : MonoBehaviour {
     }
 
     private void OnShare(StreamJsonData.Data data) {
-        DynamicLinksCallBacks.onShareSocialLink?.Invoke(new Uri(data.share_link), SocialParameters(data));
+        _shareController.ShareSocialLink(new Uri(data.share_link), SocialParameters(data));
     }
 
 
@@ -169,10 +174,10 @@ public class DeepLinkStreamController : MonoBehaviour {
     }
 
     private string GetRequestStreamBySlugURL(string slug) {
-        return webRequestHandler.ServerURLMediaAPI + videoUploader.StreamBySlug.Replace("{slug}", slug);
+        return _webRequestHandler.ServerURLMediaAPI + _videoUploader.StreamBySlug.Replace("{slug}", slug);
     }
 
     private string GetRequestStreamByUsernameURL(string username, string status) {
-        return webRequestHandler.ServerURLMediaAPI + videoUploader.Stream + $"?{STATUS_FILTER}={status}&{USERNAME_FILTER}={username}";
+        return _webRequestHandler.ServerURLMediaAPI + _videoUploader.Stream + $"?{STATUS_FILTER}={status}&{USERNAME_FILTER}={username}";
     }
 }

@@ -9,7 +9,7 @@ using System;
 /// PnlRoomPopupController controller for PnlRoomPopup
 /// </summary>
 public class PnlRoomPopupController {
-    private PopupShowChecker _roomPopupShowChecker;
+    private DeepLinkChecker _roomPopupShowChecker;
     private StreamerCountUpdater _streamerCountUpdater;
 
     private RoomJsonData _receivedRoomJsonData;
@@ -25,11 +25,11 @@ public class PnlRoomPopupController {
     private bool _isWaitIfNeedHideStarted;
     private bool _isCheckStateStarted;
 
-    public PnlRoomPopupController(PopupShowChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater) {
+    public PnlRoomPopupController(DeepLinkChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater) {
         Construct(roomPopupShowChecker, streamerCountUpdater);
     }
 
-    private void Construct(PopupShowChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater) {
+    private void Construct(DeepLinkChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater) {
         _roomPopupShowChecker = roomPopupShowChecker;
         _streamerCountUpdater = streamerCountUpdater;
 

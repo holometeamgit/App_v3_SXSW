@@ -34,16 +34,13 @@ public class PnlThumbnailPopup : UIThumbnail {
     [SerializeField]
     private WebRequestHandler _webRequestHandler;
     [SerializeField]
-    private UIThumbnailsController _uiThumbnailsController;
-    [SerializeField]
-    private ThumbnailWebDownloadManager _thumbnailWebDownloadManager;
+    private ContentPlayer _uiThumbnailsController;
 
     ThumbnailElement thumbnailElement;
     long currentId = 0;
 
     const long DEFAUL_STREAM_DATA_ID = 0;
     private const int REFRESH_LAYOUT_TIME = 1000;
-    bool isSubscribed;
 
     public override void Play() {
         _uiThumbnailsController.Play(thumbnailElement.Data);
@@ -57,13 +54,9 @@ public class PnlThumbnailPopup : UIThumbnail {
         _uiThumbnailsController.Buy(thumbnailElement.Data);
     }
 
-    public void OpenStream(long id) {
-        if (!isSubscribed) {
-            _thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded += ShowStreamStream;
-            isSubscribed = true;
-        }
-        currentId = id;
-        CallBacks.onDownloadStreamById?.Invoke(id);
+    public void OpenStream(StreamJsonData.Data data) {
+        currentId = data.id;
+        ShowStreamStream(data);
     }
 
     public override void AddData(ThumbnailElement element) {
@@ -84,11 +77,6 @@ public class PnlThumbnailPopup : UIThumbnail {
 
     public void ClosePnl() {
         currentId = DEFAUL_STREAM_DATA_ID;
-
-        if (isSubscribed) {
-            _thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded -= ShowStreamStream;
-            isSubscribed = false;
-        }
 
         gameObject.SetActive(false);
     }
@@ -172,13 +160,6 @@ public class PnlThumbnailPopup : UIThumbnail {
             return;
 
         btnBuyTicket.SetActive(false);
-    }
-
-    private void OnDestroy() {
-        if (isSubscribed) {
-            _thumbnailWebDownloadManager.OnStreamByIdJsonDataLoaded -= ShowStreamStream;
-            isSubscribed = false;
-        }
     }
 
     private void OnEnable() {

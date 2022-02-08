@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Beem.ARMsg;
+using Beem.UI;
 
 /// <summary>
 /// ARMsgReadyInterrupter. Invoke GenericError for closing ready screen
 /// </summary>
-public class ARMsgReadyInterrupter : MonoBehaviour {
+public class ARMsgReadyInterrupter : MonoBehaviour, IARMsgDataView {
     [SerializeField]
     private Switcher _interruptSwitcher;
 
     [SerializeField] UnityEvent OnShare;
+
+    private ARMsgJSON.Data currentData;
 
     private void OnEnable() {
         CallBacks.OnAllARMsgСanceled += OnInterrupt;
@@ -29,8 +32,12 @@ public class ARMsgReadyInterrupter : MonoBehaviour {
             "If you exit without sharing it, your Beem will be lost",
             "Copy link and exit", "Share",
             () => {
-                GUIUtility.systemCopyBuffer = CallBacks.OnGetLastARMsgShareLink?.Invoke();
+                GUIUtility.systemCopyBuffer = currentData.share_link;
+                MenuConstructor.OnActivated?.Invoke(true);
+                HomeScreenConstructor.OnActivated?.Invoke(true);
+                ARMsgRecordConstructor.OnActivated?.Invoke(false);
                 CallBacks.OnCancelAllARMsgActions?.Invoke();
+
             }, () => {
                 OnShare?.Invoke();
             }
@@ -38,5 +45,9 @@ public class ARMsgReadyInterrupter : MonoBehaviour {
     }
     private void OnInterrupt() {
         _interruptSwitcher.Switch();
+    }
+
+    public void Init(ARMsgJSON.Data data) {
+        currentData = data;
     }
 }

@@ -3,17 +3,25 @@ using Beem.Firebase.DynamicLink;
 using Firebase.DynamicLinks;
 using UnityEngine;
 
+/// <summary>
+/// Deep Link Controller for RoomData
+/// </summary>
 public class DeepLinkRoomController : MonoBehaviour {
-    [SerializeField] WebRequestHandler webRequestHandler;
-    [SerializeField] ServerURLAPIScriptableObject serverURLAPIScriptableObject;
-    [SerializeField] VideoUploader videoUploader;
+    [SerializeField]
+    private WebRequestHandler _webRequestHandler;
+    [SerializeField]
+    private ServerURLAPIScriptableObject _serverURLAPIScriptableObject;
+    [SerializeField]
+    private VideoUploader _videoUploader;
+
+    private ShareLinkController _shareController = new ShareLinkController();
 
     private const string TITLE = "You have been invited to {0}'s Room";
     private const string DESCRIPTION = "Click the link below to join {0}'s Room";
 
     private void GetRoomByUserName(string username, Action<long, string> onSuccess, Action<long, string> onFailed) {
         HelperFunctions.DevLog("Get Room By UserName " + username);
-        webRequestHandler.Get(GetRoomUsernameUrl(username),
+        _webRequestHandler.Get(GetRoomUsernameUrl(username),
             (code, body) => { onSuccess?.Invoke(code, body); },
             (code, body) => { onFailed?.Invoke(code, body); },
             needHeaderAccessToken: false);
@@ -57,7 +65,7 @@ public class DeepLinkRoomController : MonoBehaviour {
     private void Share(string body) {
         RoomReceived(body,
             (data) => {
-                DynamicLinksCallBacks.onShareSocialLink?.Invoke(new Uri(data.share_link), SocialParameters(data.user));
+                _shareController.ShareSocialLink(new Uri(data.share_link), SocialParameters(data.user));
             });
     }
 
@@ -72,14 +80,14 @@ public class DeepLinkRoomController : MonoBehaviour {
     }
 
     private string GetRoomUsernameUrl(string username) {
-        return serverURLAPIScriptableObject.ServerURLMediaAPI + videoUploader.GetRoomByUserName.Replace("{username}", username.ToString());
+        return _serverURLAPIScriptableObject.ServerURLMediaAPI + _videoUploader.GetRoomByUserName.Replace("{username}", username.ToString());
     }
 
     public SocialMetaTagParameters SocialParameters(string source) {
         SocialMetaTagParameters socialMetaTagParameters = new SocialMetaTagParameters() {
             Title = string.Format(TITLE, source),
             Description = string.Format(DESCRIPTION, source),
-            ImageUrl = new Uri(serverURLAPIScriptableObject.LogoLink)
+            ImageUrl = new Uri(_serverURLAPIScriptableObject.LogoLink)
         };
         return socialMetaTagParameters;
     }

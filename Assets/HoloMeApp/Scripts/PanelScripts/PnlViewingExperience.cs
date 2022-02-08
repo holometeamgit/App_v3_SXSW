@@ -137,7 +137,6 @@ public class PnlViewingExperience : MonoBehaviour {
     }
 
     public void ActivateForStreaming(string channelName, string streamID, bool isRoom) {
-        StopExperience();
         SharedActivationFunctions();
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, "Live Stream: " + channelName }, { AnalyticParameters.ParamPerformanceID, streamID } });
         _hologramHandler.TogglePreRecordedVideoRenderer(false);
