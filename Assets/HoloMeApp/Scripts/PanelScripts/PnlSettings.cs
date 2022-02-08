@@ -20,8 +20,6 @@ public class PnlSettings : MonoBehaviour {
     private AccountManager _accountManager;
     [SerializeField]
     private UserWebManager _userWebManager;
-    [SerializeField]
-    private PermissionController _permissionController;
 
     private void OnEnable() {
         _changePassword.SetActive(_accountManager.GetLogInType() == LogInType.Email);
@@ -72,7 +70,6 @@ public class PnlSettings : MonoBehaviour {
         MenuConstructor.OnActivated?.Invoke(false);
         HomeScreenConstructor.OnActivated?.Invoke(false);
         SettingsConstructor.OnActivated?.Invoke(false);
-        ARMessageRoomConstructor.OnActivated?.Invoke(false);
         _accountManager.LogOut();
     }
 

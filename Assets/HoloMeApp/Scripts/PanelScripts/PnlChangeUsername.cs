@@ -23,7 +23,8 @@ public class PnlChangeUsername : MonoBehaviour {
     }
 
     private void UpdateUserDataCallBack() {
-        WarningConstructor.ActivateSingleButton(" ", "Username has been successfully updated", "Continue", () => ChangeUserNameToSettings());
+        usernameInputField.MobileInputField.gameObject.SetActive(false);
+        WarningConstructor.ActivateSingleButton(" ", "Username has been successfully updated", "Continue", () => { ChangeUserNameToSettings(); usernameInputField.MobileInputField.gameObject.SetActive(true); });
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {

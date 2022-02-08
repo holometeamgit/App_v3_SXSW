@@ -14,7 +14,7 @@ namespace Beem.SSO {
     /// </summary>
     public class EmailVerificationTimer {
 
-        private static DateTime currentDateTime;
+        private static DateTime currentDateTime = DateTime.Now;
 
         public static Action onStartTimer;
 

@@ -95,7 +95,7 @@ namespace Beem.KeyBoard {
             _isShown = isShown;
             gameObject.SetActive(isShown);
             MobileInputField.SetFocus(isShown);
-            MobileInputField.SetVisible(isShown);
+            MobileInputField.gameObject.SetActive(isShown);
 
             if (isShown) {
                 UpdateText();

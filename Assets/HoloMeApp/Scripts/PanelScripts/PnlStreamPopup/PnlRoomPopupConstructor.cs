@@ -12,7 +12,7 @@ public class PnlRoomPopupConstructor : MonoBehaviour {
     [SerializeField]
     private PnlRoomPopup _pnlRoomPopup;
     [SerializeField]
-    private PopupShowChecker _roomPopupShowChecker;
+    private DeepLinkChecker _roomPopupShowChecker;
     [SerializeField]
     private StreamerCountUpdater _streamerCountUpdater;
     private PnlRoomPopupController _pnlRoomPopupController;

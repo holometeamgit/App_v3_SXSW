@@ -8,14 +8,7 @@ namespace Beem.Permissions {
     /// <summary>
     /// Controllers for Different permissions
     /// </summary>
-    public class PermissionController : MonoBehaviour {
-
-        [SerializeField]
-        private bool debugCameraAccess;
-
-        [SerializeField]
-        private bool debugMicAccess;
-
+    public class PermissionController {
         public IPermissionGranter PermissionGranter {
             get {
                 return _permissionGranter;
@@ -46,7 +39,7 @@ namespace Beem.Permissions {
 
         private const int DELAY = 3000;
 
-        private void Awake() {
+        public PermissionController() {
             if (Application.platform == RuntimePlatform.Android) {
                 _permissionGranter = new AndroidPermission();
             } else if (Application.platform == RuntimePlatform.IPhonePlayer) {
@@ -72,17 +65,7 @@ namespace Beem.Permissions {
         public void CheckCameraAccess(Action onSuccessed, Action onFailed = null) {
 
 #if UNITY_EDITOR
-            if (!debugCameraAccess) {
-                OpenNotification(CAMERA_ACCESS, () => {
-                    if (debugCameraAccess) {
-                        onSuccessed?.Invoke();
-                    } else {
-                        onFailed?.Invoke();
-                    }
-                }); ;
-            } else {
-                onSuccessed.Invoke();
-            }
+            onSuccessed.Invoke();
 #else
 
             if (_permissionGranter.HasCameraAccess) {
@@ -115,17 +98,7 @@ namespace Beem.Permissions {
         public void CheckMicAccess(Action onSuccessed, Action onFailed = null) {
 
 #if UNITY_EDITOR
-            if (!debugMicAccess) {
-                OpenNotification(MICROPHONE_ACCESS, () => {
-                    if (debugMicAccess) {
-                        onSuccessed?.Invoke();
-                    } else {
-                        onFailed?.Invoke();
-                    }
-                });
-            } else {
-                onSuccessed.Invoke();
-            }
+            onSuccessed.Invoke();
 #else
 
             if (_permissionGranter.HasMicAccess) {

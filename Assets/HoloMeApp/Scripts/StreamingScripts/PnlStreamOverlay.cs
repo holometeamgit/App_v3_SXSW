@@ -272,15 +272,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     public void OpenAsViewer(string channelName, string streamID, bool isRoom) {
-
-        if (channelName == _userWebManager.GetUsername()) {
-            WarningConstructor.ActivateSingleButton("Viewing as stream host",
-                "Please connect to the stream using a different account",
-                onBackPress: () => { Deactivate(); });
-
-            return;
-        }
-
         Init();
         ToggleLocalAudio(true);
         lastPauseStatusMessageReceived = string.Empty;

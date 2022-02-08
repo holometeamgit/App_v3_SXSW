@@ -110,21 +110,23 @@ namespace Mopsicus.Plugins {
         /// </summary>
         /// <param name="data">data from plugin</param>
         void OnDataReceive(string data) {
-            try {
-                JsonObject info = (JsonObject)JsonNode.ParseJsonString(data);
-                if (_plugins.ContainsKey(info["name"])) {
-                    IPlugin plugin = _plugins[info["name"]];
-                    if (info.ContainsKey("error")) {
-                        plugin.OnError(info);
+            if (!string.IsNullOrEmpty(data)) {
+                try {
+                    JsonObject info = (JsonObject)JsonNode.ParseJsonString(data);
+                    if (_plugins.ContainsKey(info["name"])) {
+                        IPlugin plugin = _plugins[info["name"]];
+                        if (info.ContainsKey("error")) {
+                            plugin.OnError(info);
+                        } else {
+                            plugin.OnData(info);
+                            onJsonInit?.Invoke(info);
+                        }
                     } else {
-                        plugin.OnData(info);
-                        onJsonInit?.Invoke(info);
+                        Debug.LogError(string.Format("{0} plugin does not exists", info["name"]));
                     }
-                } else {
-                    Debug.LogError(string.Format("{0} plugin does not exists", info["name"]));
+                } catch (Exception e) {
+                    Debug.LogError(string.Format("Plugins receive error: {0}, stack: {1}", e.Message, e.StackTrace));
                 }
-            } catch (Exception e) {
-                Debug.LogError(string.Format("Plugins receive error: {0}, stack: {1}", e.Message, e.StackTrace));
             }
 
         }

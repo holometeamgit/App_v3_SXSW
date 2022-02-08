@@ -48,7 +48,7 @@ public class PnlRecord : MonoBehaviour {
     [Space]
 
     [SerializeField]
-    private UIThumbnailsController _uiThumbnailsController;
+    private ContentPlayer _contentPlayer;
 
     [SerializeField]
     private HologramHandler _hologramHandler;
@@ -67,17 +67,7 @@ public class PnlRecord : MonoBehaviour {
 
     private bool recordLengthFailed;
 
-    private PermissionController _permissionController;
-    private PermissionController permissionController {
-        get {
-
-            if (_permissionController == null) {
-                _permissionController = FindObjectOfType<PermissionController>();
-            }
-
-            return _permissionController;
-        }
-    }
+    private PermissionController _permissionController = new PermissionController();
 
     private VideoPlayerController _videoPlayerController;
     private VideoPlayerController videoPlayerController {
@@ -121,7 +111,7 @@ public class PnlRecord : MonoBehaviour {
         videoButtonContainerPosition = rtButtonContainer.anchoredPosition;
         canvasGroup.alpha = 0;
 
-        _uiThumbnailsController.OnPlayFromUser += user => txtWaterMarkText.text = "@" + user; //Gameobject must be active in the editor for this to work correctly
+        _contentPlayer.OnPlayFromUser += user => txtWaterMarkText.text = "@" + user; //Gameobject must be active in the editor for this to work correctly
     }
 
     private void OnEnable() {
@@ -136,7 +126,7 @@ public class PnlRecord : MonoBehaviour {
     /// start recording
     /// </summary>
     public void StartRecording() {
-        if (!permissionController.PermissionGranter.HasMicAccess) {
+        if (!_permissionController.PermissionGranter.HasMicAccess) {
             recordMicrophone = false;
         }
 
