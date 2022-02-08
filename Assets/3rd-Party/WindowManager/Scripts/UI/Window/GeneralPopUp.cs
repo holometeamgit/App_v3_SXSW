@@ -8,7 +8,7 @@ namespace WindowManager.Extenject {
     /// <summary>
     /// General pop up
     /// </summary>
-    public class GeneralPopUp : MonoBehaviour, IShow {
+    public class GeneralPopUp : MonoBehaviour, IShowWithParam {
 
         [SerializeField]
         private TMP_Text _titleTxt;

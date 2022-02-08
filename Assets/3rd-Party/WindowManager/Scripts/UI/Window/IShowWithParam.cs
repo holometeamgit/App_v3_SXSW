@@ -1,11 +1,11 @@
-namespace WindowManager.Extenject {
+﻿namespace WindowManager.Extenject {
     /// <summary>
     /// Interface for Show Window for all Window with param
     /// </summary>
-    public interface IShow {
+    public interface IShowWithParam {
         /// <summary>
         /// Show Window
         /// </summary>
-        void Show();
+        void Show<T>(T parameter);
     }
 }

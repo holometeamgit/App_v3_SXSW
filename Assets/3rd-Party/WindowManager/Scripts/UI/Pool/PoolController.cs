@@ -13,7 +13,9 @@ namespace WindowManager.Extenject {
     public class PoolController {
         private GameObject _currentWindowElement;
         private GameObject _previousWindowElement;
+        private IShowWithParam[] _showWithParamWindows = null;
         private IShow[] _showWindows = null;
+        private IHide[] _hideWindows = null;
         private IEscape[] _escapeWindows = null;
 
         private Transform _parent;
@@ -50,7 +52,6 @@ namespace WindowManager.Extenject {
             GameObject tempAsset = Element(assetId);
 
             if (Contain(assetId)) {
-                tempAsset.SetActive(true);
                 Addressables.ReleaseInstance(tempAsset);
 
             }
@@ -58,7 +59,13 @@ namespace WindowManager.Extenject {
         }
 
         public void DeactivateAllPoolElements() {
-            _cachedObject.ForEach(x => x.SetActive(false));
+            _cachedObject.ForEach(x => {
+                _hideWindows = x.GetComponentsInChildren<IHide>();
+                if (_hideWindows != null && _hideWindows.Length > 0) {
+                    _hideWindows.ToList().ForEach(x => x.Hide());
+                }
+            }
+            );
         }
 
 
@@ -69,9 +76,9 @@ namespace WindowManager.Extenject {
 
             Show(id);
 
-            _showWindows = _currentWindowElement.GetComponentsInChildren<IShow>();
-            if (_showWindows != null && _showWindows.Length > 0) {
-                _showWindows.ToList().ForEach(x => x.Show(parameter));
+            _showWithParamWindows = _currentWindowElement.GetComponentsInChildren<IShowWithParam>();
+            if (_showWithParamWindows != null && _showWithParamWindows.Length > 0) {
+                _showWithParamWindows.ToList().ForEach(x => x.Show(parameter));
             }
         }
 
@@ -86,6 +93,10 @@ namespace WindowManager.Extenject {
             _previousWindowElement = _currentWindowElement;
             _currentWindowElement = tempWindow;
             _escapeWindows = _currentWindowElement.GetComponentsInChildren<IEscape>();
+            _showWindows = _currentWindowElement.GetComponentsInChildren<IShow>();
+            if (_showWindows != null && _showWindows.Length > 0) {
+                _showWindows.ToList().ForEach(x => x.Show());
+            }
         }
 
         /// <summary>
@@ -94,9 +105,15 @@ namespace WindowManager.Extenject {
         public void Hide(string id) {
             if (Contain(id)) {
                 _currentWindowElement = _previousWindowElement;
+
                 _escapeWindows = _currentWindowElement.GetComponents<IEscape>();
+
                 GameObject tempAsset = Element(id);
-                tempAsset.SetActive(false);
+                _hideWindows = tempAsset.GetComponentsInChildren<IHide>();
+                if (_hideWindows != null && _hideWindows.Length > 0) {
+                    _hideWindows.ToList().ForEach(x => x.Hide());
+                }
+
             }
 
         }
