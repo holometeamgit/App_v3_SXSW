@@ -6,13 +6,9 @@ using System.Collections;
 using Crosstales.BWF.Model;
 using Crosstales.BWF;
 using UnityEngine.Events;
+using Zenject;
 
 public class PnlStreamChat : AgoraMessageReceiver {
-    [SerializeField]
-    AgoraController agoraController;
-
-    [SerializeField]
-    AgoraRTMChatController agoraRTMChatController;
 
     [SerializeField]
     GameObject chatMessagePrefabRef;
@@ -31,12 +27,21 @@ public class PnlStreamChat : AgoraMessageReceiver {
 
     Stack<GameObject> chatMessagePool = new Stack<GameObject>();
 
+    private AgoraController _agoraController;
+    private AgoraRTMChatController _agoraRTMChatController;
+
+    [Inject]
+    public void Construct(AgoraController agoraController, AgoraRTMChatController agoraRTMChatController) {
+        _agoraController = agoraController;
+        _agoraRTMChatController = agoraRTMChatController;
+    }
+
     private void Awake() {
-        agoraRTMChatController.AddMessageReceiver(this);
+        _agoraRTMChatController.AddMessageReceiver(this);
     }
 
     private void OnDestroy() {
-        agoraRTMChatController.RemoveMessageReceiver(this);
+        _agoraRTMChatController.RemoveMessageReceiver(this);
     }
 
     public void OnEnable() {
@@ -56,15 +61,15 @@ public class PnlStreamChat : AgoraMessageReceiver {
 
         ChatMessageJsonData chatMessageJsonData;
 
-        if (!agoraController.IsLive && agoraController.IsChannelCreator) {
+        if (!_agoraController.IsLive && _agoraController.IsChannelCreator) {
             chatMessageJsonData = new ChatMessageJsonData { userName = "", message = "Channel must be live to post comments" };
         } else {
-            chatMessageJsonData = new ChatMessageJsonData { userName = agoraRTMChatController.UserName, message = censoredText };
+            chatMessageJsonData = new ChatMessageJsonData { userName = _agoraRTMChatController.UserName, message = censoredText };
         }
         CreateChatMessageGO(chatMessageJsonData);
 
-        if (agoraController.IsLive)
-            agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(chatMessageJsonData));
+        if (_agoraController.IsLive)
+            _agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(chatMessageJsonData));
 
         StartRefreshLayoutRoutine();
     }

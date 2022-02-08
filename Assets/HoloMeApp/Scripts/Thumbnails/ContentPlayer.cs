@@ -11,16 +11,14 @@ using Zenject;
 public class ContentPlayer : MonoBehaviour {
 
     private UserWebManager _userWebManager;
-    private WebRequestHandler _webRequestHandler;
     private PurchaseManager _purchaseManager;
     private PermissionController _permissionController = new PermissionController();
 
     public Action<string> OnPlayFromUser;
 
     [Inject]
-    public void Construct(UserWebManager userWebManager, WebRequestHandler webRequestHandler, PurchaseManager purchaseManager) {
+    public void Construct(UserWebManager userWebManager, PurchaseManager purchaseManager) {
         _userWebManager = userWebManager;
-        _webRequestHandler = webRequestHandler;
         _purchaseManager = purchaseManager;
     }
 

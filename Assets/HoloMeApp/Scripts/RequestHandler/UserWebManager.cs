@@ -26,11 +26,9 @@ public class UserWebManager : MonoBehaviour {
     public Action UserAccountDisabled;
 
     private WebRequestHandler _webRequestHandler;
-    private AccountManager _accountManager;
 
     [Inject]
-    public void Construct(AccountManager accountManager, WebRequestHandler webRequestHandler) {
-        _accountManager = accountManager;
+    public void Construct(WebRequestHandler webRequestHandler) {
         _webRequestHandler = webRequestHandler;
     }
 
