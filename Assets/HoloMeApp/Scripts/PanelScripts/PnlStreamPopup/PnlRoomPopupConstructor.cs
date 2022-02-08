@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 using System.Threading;
+using Zenject;
 
 /// <summary>
 /// Constructor for PnlRoomPopup and PnlRoomPopupController
@@ -17,11 +18,18 @@ public class PnlRoomPopupConstructor : MonoBehaviour {
     private StreamerCountUpdater _streamerCountUpdater;
     private PnlRoomPopupController _pnlRoomPopupController;
 
+    private UserWebManager _userWebManager;
+
+    [Inject]
+    public void Construct(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
+    }
+
     private void Awake() {
         Construct();
     }
 
     private void Construct() {
-        _pnlRoomPopupController = new PnlRoomPopupController(_roomPopupShowChecker, _streamerCountUpdater);
+        _pnlRoomPopupController = new PnlRoomPopupController(_roomPopupShowChecker, _streamerCountUpdater, _userWebManager);
     }
 }

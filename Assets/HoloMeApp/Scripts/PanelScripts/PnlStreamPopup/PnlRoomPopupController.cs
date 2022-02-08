@@ -11,6 +11,7 @@ using System;
 public class PnlRoomPopupController {
     private DeepLinkChecker _roomPopupShowChecker;
     private StreamerCountUpdater _streamerCountUpdater;
+    private UserWebManager _userWebManager;
 
     private RoomJsonData _receivedRoomJsonData;
     private RoomJsonData _startedRoomJsonData;
@@ -25,13 +26,14 @@ public class PnlRoomPopupController {
     private bool _isWaitIfNeedHideStarted;
     private bool _isCheckStateStarted;
 
-    public PnlRoomPopupController(DeepLinkChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater) {
-        Construct(roomPopupShowChecker, streamerCountUpdater);
+    public PnlRoomPopupController(DeepLinkChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater, UserWebManager userWebManager) {
+        Construct(roomPopupShowChecker, streamerCountUpdater, userWebManager);
     }
 
-    private void Construct(DeepLinkChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater) {
+    private void Construct(DeepLinkChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater, UserWebManager userWebManager) {
         _roomPopupShowChecker = roomPopupShowChecker;
         _streamerCountUpdater = streamerCountUpdater;
+        _userWebManager = userWebManager;
 
         _streamerCountUpdater.OnCountUpdated += UpdateUserCount;
 
@@ -140,7 +142,8 @@ public class PnlRoomPopupController {
     }
 
     private void PlayLiveStream() {
-        StreamCallBacks.onPlayRoom?.Invoke(_startedRoomJsonData);
+        ContentPlayer contentPlayer = new ContentPlayer(_userWebManager);
+        contentPlayer.PlayRoom(_startedRoomJsonData);
     }
 
     private void OnPopUpStartOpen() {

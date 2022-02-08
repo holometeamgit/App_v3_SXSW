@@ -37,10 +37,6 @@ public class StreamCallBacks {
     public static Action onCancelOpenContent = delegate { };
     #endregion
 
-    #region
-    public static Action<RoomJsonData> onPlayRoom = delegate { };
-    public static Action<ARMsgJSON.Data> onPlayARMessage = delegate { };
-    #endregion
 
     public static Action onGetLastRoomLink = delegate { };
     public static Action<string> onShareRoomLink = delegate { };

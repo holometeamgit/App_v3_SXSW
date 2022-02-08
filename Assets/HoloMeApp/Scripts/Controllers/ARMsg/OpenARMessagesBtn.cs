@@ -4,6 +4,7 @@ using Firebase.DynamicLinks;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Zenject;
 
 namespace Beem.UI {
 
@@ -14,6 +15,12 @@ namespace Beem.UI {
     public class OpenARMessagesBtn : MonoBehaviour, IARMsgDataView {
 
         private ARMsgJSON.Data _arMsgData = default;
+        private ContentPlayer _contentPlayer;
+
+        [Inject]
+        public void Construct(UserWebManager userWebManager) {
+            _contentPlayer = new ContentPlayer(userWebManager);
+        }
 
         public void Init(ARMsgJSON.Data arMsgData) {
             _arMsgData = arMsgData;
@@ -23,7 +30,7 @@ namespace Beem.UI {
         /// Open AR Messages
         /// </summary>
         public void Open() {
-            StreamCallBacks.onPlayARMessage?.Invoke(_arMsgData);
+            _contentPlayer.PlayARMessage(_arMsgData);
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
             CallBacks.OnCancelAllARMsgActions?.Invoke();
         }

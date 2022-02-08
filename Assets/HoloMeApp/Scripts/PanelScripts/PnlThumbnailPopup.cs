@@ -41,9 +41,9 @@ public class PnlThumbnailPopup : UIThumbnail {
     private const int REFRESH_LAYOUT_TIME = 1000;
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler, ContentPlayer contentPlayer) {
-        _contentPlayer = contentPlayer;
+    public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager, PurchaseManager purchaseManager) {
         _webRequestHandler = webRequestHandler;
+        _contentPlayer = new ContentPlayer(userWebManager, purchaseManager);
     }
 
     public override void Play() {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using Zenject;
 
 /// <summary>
 /// Constructor for opening deep Link for ARMessage
@@ -14,6 +15,13 @@ public class ARMsgDeeplinkConstructor : MonoBehaviour {
     private DeepLinkChecker _popupShowChecker;
 
     public static Action<ARMsgJSON.Data> OnActivated = delegate { };
+
+    private ContentPlayer _contentPlayer;
+
+    [Inject]
+    public void Construct(UserWebManager userWebManager) {
+        _contentPlayer = new ContentPlayer(userWebManager);
+    }
 
     private void OnEnable() {
         OnActivated += Activate;
@@ -32,7 +40,7 @@ public class ARMsgDeeplinkConstructor : MonoBehaviour {
     }
 
     private void ActivateData(ARMsgJSON.Data data) {
-        StreamCallBacks.onPlayARMessage?.Invoke(data);
+        _contentPlayer.PlayARMessage(data);
     }
 
 }

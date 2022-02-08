@@ -8,18 +8,21 @@ using Zenject;
 /// <summary>
 /// Content Player
 /// </summary>
-public class ContentPlayer : MonoBehaviour {
+public class ContentPlayer {
 
     private UserWebManager _userWebManager;
     private PurchaseManager _purchaseManager;
     private PermissionController _permissionController = new PermissionController();
 
-    public Action<string> OnPlayFromUser;
+    public static string UserName;
 
-    [Inject]
-    public void Construct(UserWebManager userWebManager, PurchaseManager purchaseManager) {
+    public ContentPlayer(UserWebManager userWebManager, PurchaseManager purchaseManager) {
         _userWebManager = userWebManager;
         _purchaseManager = purchaseManager;
+    }
+
+    public ContentPlayer(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
     }
 
     /// <summary>
@@ -59,7 +62,7 @@ public class ContentPlayer : MonoBehaviour {
     /// Play Room
     /// </summary>
     /// <param name="roomJsonData"></param>
-    private void PlayRoom(RoomJsonData data) { //TODO split it to other class
+    public void PlayRoom(RoomJsonData data) { //TODO split it to other class
 
         if (data.user == _userWebManager.GetUsername()) {
             WarningConstructor.ActivateSingleButton("Viewing as stream host",
@@ -73,7 +76,7 @@ public class ContentPlayer : MonoBehaviour {
             BottomMenuConstructor.OnActivated?.Invoke(false);
             SettingsConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onActivatedAsViewer?.Invoke(data.agora_channel, data.id, true);
-            OnPlayFromUser?.Invoke(data.user);
+            UserName = data.user;
         });
 
     }
@@ -82,7 +85,7 @@ public class ContentPlayer : MonoBehaviour {
     /// Play ARMessage
     /// </summary>
     /// <param name="roomJsonData"></param>
-    private void PlayARMessage(ARMsgJSON.Data data) { //TODO split it to other class
+    public void PlayARMessage(ARMsgJSON.Data data) { //TODO split it to other class
         _permissionController.CheckCameraMicAccess(() => {
             HomeConstructor.OnActivated?.Invoke(false);
             BottomMenuConstructor.OnActivated?.Invoke(false);
@@ -90,7 +93,7 @@ public class ContentPlayer : MonoBehaviour {
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
             ARenaConstructor.onActivateForARMessaging?.Invoke(data);
             ARMsgARenaConstructor.OnActivatedARena?.Invoke(data);
-            OnPlayFromUser?.Invoke(data.user);
+            UserName = data.user;
         });
 
     }
@@ -118,7 +121,7 @@ public class ContentPlayer : MonoBehaviour {
             BottomMenuConstructor.OnActivated?.Invoke(false);
             SettingsConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onActivatedAsViewer?.Invoke(data.agora_channel, data.id.ToString(), false);
-            OnPlayFromUser?.Invoke(data.user);
+            UserName = data.user;
         });
     }
 
@@ -134,7 +137,7 @@ public class ContentPlayer : MonoBehaviour {
             SettingsConstructor.OnActivated?.Invoke(false);
             ARenaConstructor.onActivateForPreRecorded?.Invoke(data, false);
             PrerecordedVideoConstructor.OnActivated?.Invoke(data);
-            OnPlayFromUser?.Invoke(data.user);
+            UserName = data.user;
         });
     }
 
@@ -150,18 +153,8 @@ public class ContentPlayer : MonoBehaviour {
             SettingsConstructor.OnActivated?.Invoke(false);
             ARenaConstructor.onActivateForPreRecorded?.Invoke(data, data.HasTeaser);
             PrerecordedVideoConstructor.OnActivated?.Invoke(data);
-            OnPlayFromUser?.Invoke(data.user);
+            UserName = data.user;
             _purchaseManager.SetPurchaseStreamData(data);
         });
-    }
-
-    private void Awake() {
-        StreamCallBacks.onPlayRoom += PlayRoom;
-        StreamCallBacks.onPlayARMessage += PlayARMessage;
-    }
-
-    private void OnDestroy() {
-        StreamCallBacks.onPlayRoom -= PlayRoom;
-        StreamCallBacks.onPlayARMessage -= PlayARMessage;
     }
 }
