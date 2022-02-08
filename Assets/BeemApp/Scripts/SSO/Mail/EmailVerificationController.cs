@@ -12,8 +12,7 @@ namespace Beem.SSO {
     /// </summary>
     public class EmailVerificationController : AbstractFirebaseController {
 
-        [SerializeField]
-        private int seconds = 60;
+        private const int DELAY = 60;
 
         // Start is called before the first frame update
         protected override void Subscribe() {
@@ -30,7 +29,7 @@ namespace Beem.SSO {
                 var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
                 user.SendEmailVerificationAsync().ContinueWith(task => { UserTask(task); }, taskScheduler);
             }
-            EmailVerificationTimer.Release(seconds);
+            EmailVerificationTimer.Release(DELAY);
         }
 
         private void UserTask(Task task, Action onSuccess = null, Action<string> onFail = null) {
