@@ -5,6 +5,7 @@ using TMPro;
 using System.Collections;
 using System;
 using Beem.Permissions;
+using Zenject;
 
 public class PnlViewingExperience : MonoBehaviour {
     [SerializeField]
@@ -15,8 +16,7 @@ public class PnlViewingExperience : MonoBehaviour {
     RectTransform scanMessageRT;
     [SerializeField]
     private bool skipTutorial;
-    [Space]
-    [SerializeField]
+
     private HologramHandler _hologramHandler;
 
     Coroutine scanAnimationRoutine;
@@ -31,6 +31,12 @@ public class PnlViewingExperience : MonoBehaviour {
     string tapToPlaceStr = "To see your chosen performer, tap the white circle when it appears on the floor";
     private enum TutorialState { MessageScan, MessageTapToPlace, WaitingForTap, WaitingForPinch, TutorialComplete };
     TutorialState tutorialState = TutorialState.MessageScan;
+
+    [Inject]
+    public void Construct(HologramHandler hologramHandler) {
+        _hologramHandler = hologramHandler;
+    }
+
     void OnEnable() {
         scanAnimationItems.SetActive(false);
         if (!tutorialDisplayed) {
@@ -149,7 +155,7 @@ public class PnlViewingExperience : MonoBehaviour {
     }
     void SharedActivationFunctions() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
-        ARConstructor.onActivated?.Invoke(true);
+        ARController.onActivated?.Invoke(true);
         canvasGroup.alpha = 0;
         gameObject.SetActive(true);
         _hologramHandler.InitSession();
@@ -164,10 +170,10 @@ public class PnlViewingExperience : MonoBehaviour {
     }
     public void StopExperience() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
-        ARConstructor.onActivated?.Invoke(false);
+        ARController.onActivated?.Invoke(false);
         _hologramHandler.StopVideo();
         FadeOutCanvas();
-        MenuConstructor.OnActivated?.Invoke(true);
-        HomeScreenConstructor.OnActivated?.Invoke(true);
+        HomeConstructor.OnActivated?.Invoke(true);
+        BottomMenuConstructor.OnActivated?.Invoke(true);
     }
 }

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using agora_gaming_rtc;
 using Beem.UI;
 using Beem.Permissions;
+using Zenject;
 
 public class PnlStreamOverlay : AgoraMessageReceiver {
 
@@ -77,10 +78,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     [SerializeField]
     private AnimatedTransition chat;
 
-    [Space]
-    [SerializeField]
     private AgoraController _agoraController;
-    [SerializeField]
     private UserWebManager _userWebManager;
 
     private bool initialised;
@@ -119,6 +117,12 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private const string MessageToViewerBroadcasterUnpaused = ToViewerTag + "BroadcasterUnpausedVideoAndAudio";
     private const string MessageToAllViewerIsSpeaking = "ViewerSpeakingStarted";
     private const string MessageToAllViewerSpeakingStopped = "ViewerSpeakingStopped";
+
+    [Inject]
+    public void Construct(UserWebManager userWebManager, AgoraController agoraController) {
+        _userWebManager = userWebManager;
+        _agoraController = agoraController;
+    }
 
     void Init() {
         if (initialised)
@@ -259,7 +263,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
         isChannelCreator = true;
         gameObject.SetActive(true);
-        ARConstructor.onActivated?.Invoke(false);
+        ARController.onActivated?.Invoke(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
 
         ToggleLocalAudio(false);
@@ -324,16 +328,16 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         _agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         StreamOverlayConstructor.onDeactivate?.Invoke();
-        HomeScreenConstructor.OnActivated?.Invoke(true);
-        MenuConstructor.OnActivated?.Invoke(true);
+        BottomMenuConstructor.OnActivated?.Invoke(true);
+        HomeConstructor.OnActivated?.Invoke(true);
         RecordARConstructor.OnActivated?.Invoke(false);
     }
 
     private void CloseAsViewer() {
         StopStream();
         StreamOverlayConstructor.onDeactivate?.Invoke();
-        HomeScreenConstructor.OnActivated?.Invoke(true);
-        MenuConstructor.OnActivated?.Invoke(true);
+        BottomMenuConstructor.OnActivated?.Invoke(true);
+        HomeConstructor.OnActivated?.Invoke(true);
         RecordARConstructor.OnActivated?.Invoke(false);
     }
 

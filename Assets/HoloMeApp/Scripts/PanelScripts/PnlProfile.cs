@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Beem.SSO;
+using Zenject;
 
 public class PnlProfile : MonoBehaviour {
     [SerializeField] GameObject InputDataArea;
@@ -18,11 +19,14 @@ public class PnlProfile : MonoBehaviour {
     private Toggle toggleEmailReceive;
 
 
-    [Space]
-    [SerializeField]
     private AccountManager _accountManager;
-    [SerializeField]
     private UserWebManager _userWebManager;
+
+    [Inject]
+    public void Construct(AccountManager accountManager, UserWebManager userWebManager) {
+        _accountManager = accountManager;
+        _userWebManager = userWebManager;
+    }
 
     public void ChooseUsername() {
         if (LocalDataVerification()) {
@@ -78,8 +82,8 @@ public class PnlProfile : MonoBehaviour {
     /// </summary>
     public void ProfileToMainMenu() {
         CreateUsernameConstructor.OnActivated?.Invoke(false);
-        HomeScreenConstructor.OnActivated?.Invoke(true);
-        MenuConstructor.OnActivated?.Invoke(true);
+        BottomMenuConstructor.OnActivated?.Invoke(true);
+        HomeConstructor.OnActivated?.Invoke(true);
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {

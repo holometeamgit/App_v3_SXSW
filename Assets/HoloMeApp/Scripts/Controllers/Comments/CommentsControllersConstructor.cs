@@ -1,14 +1,20 @@
 ﻿using UnityEngine;
 using Beem.Content;
+using Zenject;
 
 namespace Beem {
 
     public class CommentsControllersConstructor : MonoBehaviour {
-        [SerializeField] WebRequestHandler _webRequestHandler;
         [SerializeField] VideoUploader _videoUploader;
         [SerializeField] PnlComments _pnlComments;
 
         private CommentsController _commentsController;
+        private WebRequestHandler _webRequestHandler;
+
+        [Inject]
+        public void Construct(WebRequestHandler webRequestHandler) {
+            _webRequestHandler = webRequestHandler;
+        }
 
         private void Awake() {
             _commentsController = new CommentsController(_webRequestHandler, _videoUploader);

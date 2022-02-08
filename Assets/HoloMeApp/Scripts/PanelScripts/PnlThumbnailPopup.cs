@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Beem.SSO;
 using System.Threading.Tasks;
+using Zenject;
 
 public class PnlThumbnailPopup : UIThumbnail {
 
@@ -30,11 +31,8 @@ public class PnlThumbnailPopup : UIThumbnail {
     [SerializeField]
     private VerticalLayoutGroup layoutGroup;
 
-    [Space]
-    [SerializeField]
     private WebRequestHandler _webRequestHandler;
-    [SerializeField]
-    private ContentPlayer _uiThumbnailsController;
+    private ContentPlayer _contentPlayer;
 
     ThumbnailElement thumbnailElement;
     long currentId = 0;
@@ -42,16 +40,22 @@ public class PnlThumbnailPopup : UIThumbnail {
     const long DEFAUL_STREAM_DATA_ID = 0;
     private const int REFRESH_LAYOUT_TIME = 1000;
 
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler, ContentPlayer contentPlayer) {
+        _contentPlayer = contentPlayer;
+        _webRequestHandler = webRequestHandler;
+    }
+
     public override void Play() {
-        _uiThumbnailsController.Play(thumbnailElement.Data);
+        _contentPlayer.Play(thumbnailElement.Data);
     }
 
     public override void PlayTeaser() {
-        _uiThumbnailsController.Play(thumbnailElement.Data);
+        _contentPlayer.Play(thumbnailElement.Data);
     }
 
     public override void Buy() {
-        _uiThumbnailsController.Buy(thumbnailElement.Data);
+        _contentPlayer.Buy(thumbnailElement.Data);
     }
 
     public void OpenStream(StreamJsonData.Data data) {

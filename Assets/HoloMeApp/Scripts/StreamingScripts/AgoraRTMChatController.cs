@@ -2,11 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
-public class AgoraRTMChatController : MonoBehaviour
-{
-    [SerializeField]
-    private UserWebManager userWebManager;
+public class AgoraRTMChatController : MonoBehaviour {
+    private UserWebManager _userWebManager;
 
     private string appId;
     public string UserName { get; private set; }
@@ -18,8 +17,12 @@ public class AgoraRTMChatController : MonoBehaviour
 
     bool loggedIn;
 
-    void Initialise()
-    {
+    [Inject]
+    public void Construct(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
+    }
+
+    void Initialise() {
         clientEventHandler = new RtmClientEventHandler();
         channelEventHandler = new RtmChannelEventHandler();
 
@@ -43,23 +46,20 @@ public class AgoraRTMChatController : MonoBehaviour
         //}
     }
 
-    public void Init(string appId)
-    {
+    public void Init(string appId) {
         this.appId = appId;
         Initialise();
     }
 
-    public void Login(string token)
-    {
+    public void Login(string token) {
         if (loggedIn)
             return;
 
-        UserName = userWebManager.GetUsername();
+        UserName = _userWebManager.GetUsername();
         rtmClient.Login(token, UserName);
     }
 
-    public void Logout()
-    {
+    public void Logout() {
         //SendMessageToChat(userName + " logged out of the rtm", Message.MessageType.info);
         if (loggedIn) {
             rtmClient?.Logout();
@@ -67,8 +67,7 @@ public class AgoraRTMChatController : MonoBehaviour
         }
     }
 
-    public void JoinChannel(string channelName)
-    {
+    public void JoinChannel(string channelName) {
         //Debug.Log("User: " + userName + " joined room: " + channelName);
 
         //if (!loggedIn)
@@ -78,8 +77,7 @@ public class AgoraRTMChatController : MonoBehaviour
 
     }
 
-    IEnumerator JoinChannelWhenLoggedIn(string channelName)
-    {
+    IEnumerator JoinChannelWhenLoggedIn(string channelName) {
         while (!loggedIn) //Wait till logged in
         {
             yield return null;
@@ -89,34 +87,29 @@ public class AgoraRTMChatController : MonoBehaviour
         channel.Join();
     }
 
-    public void LeaveChannel()
-    {
+    public void LeaveChannel() {
         if (loggedIn && rtmClient != null && channel != null)
             channel.Leave();
         OnStreamDisconnected();
     }
 
-    void OnChannelMessageReceivedHandler(int id, string userName, TextMessage message)
-    {
+    void OnChannelMessageReceivedHandler(int id, string userName, TextMessage message) {
         //SendMessageToChat(userName + ": " + msg, Message.MessageType.playerMessage);
 
         //TODO: Use the userName param to specify the user name as currently it's compiles in msg string via PnlStreamChat SendChatMessage 
 
         HelperFunctions.DevLog("Message received RTM " + message.GetText());
 
-        foreach (AgoraMessageReceiver agoraMessageReceiver in messageReceivers)
-        {
+        foreach (AgoraMessageReceiver agoraMessageReceiver in messageReceivers) {
             agoraMessageReceiver.ReceivedChatMessage(message.GetText());
         }
     }
 
-    void OnJoinSuccessHandler(int id)
-    {
+    void OnJoinSuccessHandler(int id) {
 
     }
 
-    public void OnClientLoginSuccessHandler(int id)
-    {
+    public void OnClientLoginSuccessHandler(int id) {
         HelperFunctions.DevLog("RTM Logged into chat");
         loggedIn = true;
         //SendMessageToChat(userName + " logged into the rtm", Message.MessageType.info);
@@ -124,8 +117,7 @@ public class AgoraRTMChatController : MonoBehaviour
 
     #region Messaging system
 
-    public void SendMessageToChannel(string message)
-    {
+    public void SendMessageToChannel(string message) {
         if (!loggedIn) {
             HelperFunctions.DevLogError("Tried to send a RTM messaged while not logged in");
             return;
@@ -134,33 +126,24 @@ public class AgoraRTMChatController : MonoBehaviour
         HelperFunctions.DevLog("Message Sent " + message);
     }
 
-    public void OnStreamMessageError(uint userId, int streamId, int code, int missed, int cached)
-    {
+    public void OnStreamMessageError(uint userId, int streamId, int code, int missed, int cached) {
         HelperFunctions.DevLog($"Stream message error! Code = {code}");
     }
 
     List<AgoraMessageReceiver> messageReceivers = new List<AgoraMessageReceiver>();
-    public void AddMessageReceiver(AgoraMessageReceiver agoraMessageReceiver)
-    {
-        if (!messageReceivers.Contains(agoraMessageReceiver))
-        {
+    public void AddMessageReceiver(AgoraMessageReceiver agoraMessageReceiver) {
+        if (!messageReceivers.Contains(agoraMessageReceiver)) {
             HelperFunctions.DevLog("AddMessageReceiver added");
             messageReceivers.Add(agoraMessageReceiver);
-        }
-        else
-        {
+        } else {
             Debug.LogError("Tried to add the same messageReceiver");
         }
     }
 
-    public void RemoveMessageReceiver(AgoraMessageReceiver agoraMessageReceiver)
-    {
-        if (messageReceivers.Contains(agoraMessageReceiver))
-        {
+    public void RemoveMessageReceiver(AgoraMessageReceiver agoraMessageReceiver) {
+        if (messageReceivers.Contains(agoraMessageReceiver)) {
             messageReceivers.Remove(agoraMessageReceiver);
-        }
-        else
-        {
+        } else {
             Debug.LogError("Tried to remove messageReceiver but wasn't in collection");
         }
     }
@@ -175,30 +158,24 @@ public class AgoraRTMChatController : MonoBehaviour
     //    }
     //}
 
-    public void OnStreamDisconnected()
-    {
-        foreach (AgoraMessageReceiver agoraMessageReceiver in messageReceivers)
-        {
+    public void OnStreamDisconnected() {
+        foreach (AgoraMessageReceiver agoraMessageReceiver in messageReceivers) {
             agoraMessageReceiver.OnDisconnected();
         }
     }
 
     #endregion
 
-    private void OnDestroy()
-    {
+    private void OnDestroy() {
         Logout();
     }
 
-    void OnApplicationQuit()
-    {
-        if (channel != null)
-        {
+    void OnApplicationQuit() {
+        if (channel != null) {
             channel.Dispose();
             channel = null;
         }
-        if (rtmClient != null)
-        {
+        if (rtmClient != null) {
             rtmClient.Dispose();
             rtmClient = null;
         }

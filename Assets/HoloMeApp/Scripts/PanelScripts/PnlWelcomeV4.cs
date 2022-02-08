@@ -40,6 +40,7 @@ public class PnlWelcomeV4 : MonoBehaviour {
         HelperFunctions.DevLog("Welcome SwitchToSignUp");
         SignUpConstructor.OnActivated?.Invoke(true);
         WelcomeConstructor.OnActivated?.Invoke(false);
+        AnalyticsSignUpModeTracker.Instance.SetAsEmail();
     }
 
     /// <summary>

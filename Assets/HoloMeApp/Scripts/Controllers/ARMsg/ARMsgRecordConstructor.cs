@@ -1,6 +1,7 @@
 using UnityEngine;
 using Beem.ARMsg;
 using System;
+using Zenject;
 
 /// <summary>
 /// ARMsgConstructor. TODO convert it to DI in future 
@@ -8,12 +9,17 @@ using System;
 public class ARMsgRecordConstructor : WindowConstructor {
     [SerializeField]
     private ARMsgAPIScriptableObject _arMsgAPI;
-    [SerializeField]
+
     private WebRequestHandler _webRequestHandler;
 
     private ARMsgController _arMsgController;
 
     public static Action<bool> OnActivated = delegate { };
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+    }
 
 
     private void Awake() {

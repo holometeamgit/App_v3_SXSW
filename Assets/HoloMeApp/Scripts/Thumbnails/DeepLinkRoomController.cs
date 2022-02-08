@@ -2,17 +2,24 @@
 using Beem.Firebase.DynamicLink;
 using Firebase.DynamicLinks;
 using UnityEngine;
+using Zenject;
 
 /// <summary>
 /// Deep Link Controller for RoomData
 /// </summary>
 public class DeepLinkRoomController : MonoBehaviour {
     [SerializeField]
-    private WebRequestHandler _webRequestHandler;
-    [SerializeField]
     private ServerURLAPIScriptableObject _serverURLAPIScriptableObject;
     [SerializeField]
     private VideoUploader _videoUploader;
+
+    private WebRequestHandler _webRequestHandler;
+
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+    }
 
     private ShareLinkController _shareController = new ShareLinkController();
 

@@ -3,30 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Beem.SSO;
+using Zenject;
 
 public class PurchasesSaveManager : MonoBehaviour {
+
+    [SerializeField]
+    private PurchaseAPIScriptableObject _purchaseAPISO;
+
     public Action OnAllDataSended;
     public Action OnFailSentToserver;
 
-    [SerializeField] UserWebManager userWebManager;
-    [SerializeField]
-    AuthController authController;
-    [SerializeField]
-    WebRequestHandler webRequestHandler;
-    [SerializeField]
-    PurchaseAPIScriptableObject purchaseAPISO;
-    [SerializeField]
-    IAPController iapController;
+    private UserWebManager _userWebManager;
+    private AuthController _authController;
+    private WebRequestHandler _webRequestHandler;
 
     private bool isBusy;
 
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager, AuthController authController) {
+        _webRequestHandler = webRequestHandler;
+        _userWebManager = userWebManager;
+        _authController = authController;
+    }
+
     public void SendToServer(long id, StreamBillingJsonData streamBillingJsonData) {
-        AddData(authController.GetID(), id, streamBillingJsonData);
+        AddData(_authController.GetID(), id, streamBillingJsonData);
         CheckSubmittedData();
     }
 
     private void Awake() {
-        userWebManager.OnUserInfoLoaded += CheckSubmittedData;
+        _userWebManager.OnUserInfoLoaded += CheckSubmittedData;
     }
 
     private void CheckSubmittedData() {
@@ -36,7 +42,7 @@ public class PurchasesSaveManager : MonoBehaviour {
             return;
         }
 
-        string uniqName = authController.GetID();
+        string uniqName = _authController.GetID();
 
         if (string.IsNullOrWhiteSpace(uniqName)) {
             OnFailSentToserver?.Invoke();
@@ -105,7 +111,7 @@ public class PurchasesSaveManager : MonoBehaviour {
     }
 
     private void PostData(string uniqName, long id, StreamBillingJsonData streamBillingJsonData) {
-        webRequestHandler.Post(GetRequestRefreshTokenURL(id),
+        _webRequestHandler.Post(GetRequestRefreshTokenURL(id),
            streamBillingJsonData, WebRequestBodyType.JSON,
            (code, body) => { OnServerBillingSent(uniqName, id, streamBillingJsonData); isBusy = false; CheckSubmittedData(); },
            (code, body) => { OnServerErrorBillingSent(uniqName, id, streamBillingJsonData); isBusy = false; });
@@ -126,6 +132,6 @@ public class PurchasesSaveManager : MonoBehaviour {
     }
 
     private string GetRequestRefreshTokenURL(long id) {
-        return webRequestHandler.ServerURLMediaAPI + purchaseAPISO.SendPurchaseHash.Replace("{id}", id.ToString());
+        return _webRequestHandler.ServerURLMediaAPI + _purchaseAPISO.SendPurchaseHash.Replace("{id}", id.ToString());
     }
 }

@@ -13,6 +13,7 @@ using Beem.Permissions;
 using System.Threading.Tasks;
 using System.Threading;
 using Beem.Video;
+using Zenject;
 
 public class PnlRecord : MonoBehaviour {
 
@@ -45,12 +46,7 @@ public class PnlRecord : MonoBehaviour {
     [SerializeField]
     Text txtWaterMarkText;
 
-    [Space]
-
-    [SerializeField]
     private ContentPlayer _contentPlayer;
-
-    [SerializeField]
     private HologramHandler _hologramHandler;
 
     private Camera[] _cameras;
@@ -103,6 +99,12 @@ public class PnlRecord : MonoBehaviour {
                     break;
             }
         }
+    }
+
+    [Inject]
+    public void Construct(ContentPlayer contentPlayer, HologramHandler hologramHandler) {
+        _contentPlayer = contentPlayer;
+        _hologramHandler = hologramHandler;
     }
 
     void Start() {

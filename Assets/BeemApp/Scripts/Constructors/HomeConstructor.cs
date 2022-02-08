@@ -1,10 +1,9 @@
 using System;
-using UnityEngine;
-/// <summary>
-/// Constructor for HomeScreen
-/// </summary>
-public class HomeScreenConstructor : WindowConstructor {
 
+/// <summary>
+/// Constructor for Menu window
+/// </summary>
+public class HomeConstructor : WindowConstructor {
     public static Action<bool> OnActivated = delegate { };
 
     protected void OnEnable() {

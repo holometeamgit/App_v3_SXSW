@@ -4,14 +4,15 @@ using UnityEngine;
 using System;
 using Beem.SSO;
 using System.Threading.Tasks;
+using Zenject;
 
 public class AccountManager : MonoBehaviour {
-    public AuthController authController;
 
     [SerializeField]
-    AuthorizationAPIScriptableObject authorizationAPI;
-    [SerializeField]
-    WebRequestHandler webRequestHandler;
+    private AuthorizationAPIScriptableObject _authorizationAPI;
+
+    private AuthController _authController;
+    private WebRequestHandler _webRequestHandler;
 
     [Tooltip("Use this to test multiple editor logins on the same PC")]
     [SerializeField]
@@ -21,6 +22,12 @@ public class AccountManager : MonoBehaviour {
 
     private bool canLogIn = true;
     private const int QUICK_LOGIN_DELAY_TIME = 1000;
+
+    [Inject]
+    public void Construct(AuthController authController, WebRequestHandler webRequestHandler) {
+        _authController = authController;
+        _webRequestHandler = webRequestHandler;
+    }
 
     #region public authorization
 
@@ -108,16 +115,16 @@ public class AccountManager : MonoBehaviour {
 
         ServerAccessToken accessToken = GetAccessToken();
 
-        if (accessToken == null && !authController.HasUser()) {
+        if (accessToken == null && !_authController.HasUser()) {
             ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
             //errorTypeCallBack?.Invoke();
             LogOut();
             return;
-        } else if (accessToken == null && authController.HasUser() && GetLogInType() != LogInType.None) {
+        } else if (accessToken == null && _authController.HasUser() && GetLogInType() != LogInType.None) {
             HelperFunctions.DevLog("Has firebase user. QuickLogIn Firebase");
-            authController.DoAfterReloadUser(() => CallBacks.onFirebaseSignInSuccess(GetLogInType())); //TODO need test 
+            _authController.DoAfterReloadUser(() => CallBacks.onFirebaseSignInSuccess(GetLogInType())); //TODO need test 
             return;
-        } else if (accessToken == null && authController.HasUser() && GetLogInType() == LogInType.None) {
+        } else if (accessToken == null && _authController.HasUser() && GetLogInType() == LogInType.None) {
             HelperFunctions.DevLog("Has firebase user but doesn't have LogInType");
             LogOut();
             ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
@@ -125,7 +132,7 @@ public class AccountManager : MonoBehaviour {
         }
 
         canLogIn = false;
-        webRequestHandler.Post(GetRequestRefreshTokenURL(),
+        _webRequestHandler.Post(GetRequestRefreshTokenURL(),
             accessToken, WebRequestBodyType.JSON,
             (code, body) => { UpdateAccessToken(body); SuccessRequestAccessTokenCallBack(code, body); },
             ErrorRequestAccessTokenCallBack, onCancel: _onCancelLogIn, needHeaderAccessToken: false);
@@ -159,17 +166,17 @@ public class AccountManager : MonoBehaviour {
 
     private void LogInToServer(LogInType logInType) {
 
-        if(authController.IsNewUser())
+        if (_authController.IsNewUser())
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete);
 
         SaveLogInType(logInType);
 
-        if (logInType == LogInType.Email && !authController.IsVerifiried()) {
-            CallBacks.onNeedVerification?.Invoke(authController.GetEmail());
+        if (logInType == LogInType.Email && !_authController.IsVerifiried()) {
+            CallBacks.onNeedVerification?.Invoke(_authController.GetEmail());
             return;
         }
 
-        authController.GetFirebaseToken((firebaseAccessToken) => GetServerAccessToken(firebaseAccessToken), CallBacks.onFail);
+        _authController.GetFirebaseToken((firebaseAccessToken) => GetServerAccessToken(firebaseAccessToken), CallBacks.onFail);
     }
 
     private void GetServerAccessToken(string firebaseAccessToken) {
@@ -188,7 +195,7 @@ public class AccountManager : MonoBehaviour {
 
         FirebaseJsonToken firebaseJsonToken = new FirebaseJsonToken(firebaseAccessToken);
 
-        webRequestHandler.Post(url, firebaseJsonToken, WebRequestBodyType.JSON,
+        _webRequestHandler.Post(url, firebaseJsonToken, WebRequestBodyType.JSON,
             (code, data) => { SaveAccessToken(data); SuccessRequestAccessTokenCallBack(code, data); },
             ErrorRequestAccessTokenCallBack, onCancel: _onCancelLogIn, needHeaderAccessToken: false);
     }
@@ -211,11 +218,11 @@ public class AccountManager : MonoBehaviour {
 
     #region request urls
     private string GetRequestRefreshTokenURL() {
-        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.RefreshToken;
+        return _webRequestHandler.ServerURLAuthAPI + _authorizationAPI.RefreshToken;
     }
 
     private string GetRequestAccessTokenURL() {
-        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.FirebaseToken;
+        return _webRequestHandler.ServerURLAuthAPI + _authorizationAPI.FirebaseToken;
     }
 
     #endregion

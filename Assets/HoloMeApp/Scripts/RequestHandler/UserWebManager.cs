@@ -8,8 +8,13 @@ using UnityEngine.Events;
 using System;
 using Beem.SSO;
 using Beem.Firebase.DynamicLink;
+using Zenject;
 
 public class UserWebManager : MonoBehaviour {
+
+    [SerializeField]
+    private AuthorizationAPIScriptableObject _authorizationAPI;
+
     public Action OnLoadUserDataAfterLogIn;
     public Action OnUserInfoLoaded;
     public Action OnErrorUserInfoLoaded;
@@ -20,30 +25,35 @@ public class UserWebManager : MonoBehaviour {
     public Action OnUserAccountDeleted;
     public Action UserAccountDisabled;
 
-    [SerializeField] WebRequestHandler webRequestHandler;
-    [SerializeField] AccountManager accountManager;
-    [SerializeField] AuthorizationAPIScriptableObject authorizationAPI;
+    private WebRequestHandler _webRequestHandler;
+    private AccountManager _accountManager;
+
+    [Inject]
+    public void Construct(AccountManager accountManager, WebRequestHandler webRequestHandler) {
+        _accountManager = accountManager;
+        _webRequestHandler = webRequestHandler;
+    }
 
     private UserJsonData userData;
 
     public void LoadUserInfo() {
-        webRequestHandler.Get(GetRequestGetUserURL(), LoadUserInfoCallBack,
+        _webRequestHandler.Get(GetRequestGetUserURL(), LoadUserInfoCallBack,
             ErrorLoadUserInfoCallBack, needHeaderAccessToken: true);
     }
 
     public void UploadUserInfo() {
-        webRequestHandler.Put(GetRequestPutUserURL(), userData,
+        _webRequestHandler.Put(GetRequestPutUserURL(), userData,
             WebRequestBodyType.JSON, UploadUserInfoCallBack,
             ErrorUploadUserInfoCallBack, needHeaderAccessToken: true);
     }
 
     public void DeleteUserAccount() {
-        webRequestHandler.Delete(GetRequestDeleteUserURL(), DeleteUserInfoCallBack,
+        _webRequestHandler.Delete(GetRequestDeleteUserURL(), DeleteUserInfoCallBack,
             ErrorMsgCallBack, needHeaderAccessToken: true);
     }
 
     public void DisableUserAccount() {
-        webRequestHandler.Delete(GetRequestDisableUserURL(), DisableUserInfoCallBack,
+        _webRequestHandler.Delete(GetRequestDisableUserURL(), DisableUserInfoCallBack,
             ErrorMsgCallBack, needHeaderAccessToken: true);
     }
 
@@ -112,7 +122,7 @@ public class UserWebManager : MonoBehaviour {
     }
 
     public void LoadUserInfo(Action loadUserInfoCallBack) {
-        webRequestHandler.Get(GetRequestGetUserURL(), (code, body) => loadUserInfoCallBack(),
+        _webRequestHandler.Get(GetRequestGetUserURL(), (code, body) => loadUserInfoCallBack(),
             ErrorMsgCallBack, needHeaderAccessToken: true);
     }
 
@@ -210,19 +220,19 @@ public class UserWebManager : MonoBehaviour {
 
     #region url generation functions
     private string GetRequestGetUserURL() {
-        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.GetUser;
+        return _webRequestHandler.ServerURLAuthAPI + _authorizationAPI.GetUser;
     }
 
     private string GetRequestPutUserURL() {
-        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.PutUser;
+        return _webRequestHandler.ServerURLAuthAPI + _authorizationAPI.PutUser;
     }
 
     private string GetRequestDeleteUserURL() {
-        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.DeleteUser;
+        return _webRequestHandler.ServerURLAuthAPI + _authorizationAPI.DeleteUser;
     }
 
     private string GetRequestDisableUserURL() {
-        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.DisableUser;
+        return _webRequestHandler.ServerURLAuthAPI + _authorizationAPI.DisableUser;
     }
 
     #endregion

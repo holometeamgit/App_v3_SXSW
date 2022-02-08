@@ -3,21 +3,26 @@ using UnityEngine;
 using System;
 using Beem.Permissions;
 using Beem.ARMsg;
+using Zenject;
 
 /// <summary>
 /// Content Player
 /// </summary>
 public class ContentPlayer : MonoBehaviour {
 
-    [SerializeField]
     private UserWebManager _userWebManager;
-    [SerializeField]
     private WebRequestHandler _webRequestHandler;
-    [SerializeField]
     private PurchaseManager _purchaseManager;
     private PermissionController _permissionController = new PermissionController();
 
     public Action<string> OnPlayFromUser;
+
+    [Inject]
+    public void Construct(UserWebManager userWebManager, WebRequestHandler webRequestHandler, PurchaseManager purchaseManager) {
+        _userWebManager = userWebManager;
+        _webRequestHandler = webRequestHandler;
+        _purchaseManager = purchaseManager;
+    }
 
     /// <summary>
     /// Buy Stadium/Prerecorded
@@ -66,8 +71,8 @@ public class ContentPlayer : MonoBehaviour {
         }
 
         _permissionController.CheckCameraMicAccess(() => {
-            MenuConstructor.OnActivated?.Invoke(false);
-            HomeScreenConstructor.OnActivated?.Invoke(false);
+            HomeConstructor.OnActivated?.Invoke(false);
+            BottomMenuConstructor.OnActivated?.Invoke(false);
             SettingsConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onActivatedAsViewer?.Invoke(data.agora_channel, data.id, true);
             OnPlayFromUser?.Invoke(data.user);
@@ -81,8 +86,8 @@ public class ContentPlayer : MonoBehaviour {
     /// <param name="roomJsonData"></param>
     private void PlayARMessage(ARMsgJSON.Data data) { //TODO split it to other class
         _permissionController.CheckCameraMicAccess(() => {
-            MenuConstructor.OnActivated?.Invoke(false);
-            HomeScreenConstructor.OnActivated?.Invoke(false);
+            HomeConstructor.OnActivated?.Invoke(false);
+            BottomMenuConstructor.OnActivated?.Invoke(false);
             SettingsConstructor.OnActivated?.Invoke(false);
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
             ARenaConstructor.onActivateForARMessaging?.Invoke(data);
@@ -111,8 +116,8 @@ public class ContentPlayer : MonoBehaviour {
 
         _permissionController.CheckCameraMicAccess(() => {
             StreamCallBacks.onCloseStreamPopUp?.Invoke();
-            MenuConstructor.OnActivated?.Invoke(false);
-            HomeScreenConstructor.OnActivated?.Invoke(false);
+            HomeConstructor.OnActivated?.Invoke(false);
+            BottomMenuConstructor.OnActivated?.Invoke(false);
             SettingsConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onActivatedAsViewer?.Invoke(data.agora_channel, data.id.ToString(), false);
             OnPlayFromUser?.Invoke(data.user);
@@ -126,8 +131,8 @@ public class ContentPlayer : MonoBehaviour {
     private void PlayPrerecorded(StreamJsonData.Data data) { //TODO split it to other class
         _permissionController.CheckCameraMicAccess(() => {
             StreamCallBacks.onCloseStreamPopUp?.Invoke();
-            MenuConstructor.OnActivated?.Invoke(false);
-            HomeScreenConstructor.OnActivated?.Invoke(false);
+            HomeConstructor.OnActivated?.Invoke(false);
+            BottomMenuConstructor.OnActivated?.Invoke(false);
             SettingsConstructor.OnActivated?.Invoke(false);
             ARenaConstructor.onActivateForPreRecorded?.Invoke(data, false);
             PrerecordedVideoConstructor.OnActivated?.Invoke(data);
@@ -142,8 +147,8 @@ public class ContentPlayer : MonoBehaviour {
     private void PlayTeaser(StreamJsonData.Data data) {
         _permissionController.CheckCameraMicAccess(() => {
             StreamCallBacks.onCloseStreamPopUp?.Invoke();
-            MenuConstructor.OnActivated?.Invoke(false);
-            HomeScreenConstructor.OnActivated?.Invoke(false);
+            HomeConstructor.OnActivated?.Invoke(false);
+            BottomMenuConstructor.OnActivated?.Invoke(false);
             SettingsConstructor.OnActivated?.Invoke(false);
             ARenaConstructor.onActivateForPreRecorded?.Invoke(data, data.HasTeaser);
             PrerecordedVideoConstructor.OnActivated?.Invoke(data);

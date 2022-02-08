@@ -25,8 +25,8 @@ public class ARMessageUI : MonoBehaviour {
     /// Close ARMessage Steps
     /// </summary>
     public void CloseARMessageSteps() {
-        MenuConstructor.OnActivated?.Invoke(true);
-        HomeScreenConstructor.OnActivated?.Invoke(true);
+        HomeConstructor.OnActivated?.Invoke(true);
+        BottomMenuConstructor.OnActivated?.Invoke(true);
         ARMsgRecordConstructor.OnActivated?.Invoke(false);
     }
 }

@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System;
+using Zenject;
 /// <summary>
 /// WebRequestHandler containt all webrequest function
 /// </summary>
 public class WebRequestHandler : MonoBehaviour {
 
-    public string ServerURLAuthAPI { get { return serverURLAPI.ServerURLAuthAPI; } private set { } }
-    public string ServerURLMediaAPI { get { return serverURLAPI.ServerURLMediaAPI; } private set { } }
-    public string ServerProvidersAPI { get { return serverURLAPI.ServerProvidersAPI; } private set { } }
+    [SerializeField]
+    private ServerURLAPIScriptableObject _serverURLAPI;
 
-    [SerializeField] ServerURLAPIScriptableObject serverURLAPI;
-    [SerializeField] AccountManager accountManager;
+    public string ServerURLAuthAPI { get { return _serverURLAPI.ServerURLAuthAPI; } private set { } }
+    public string ServerURLMediaAPI { get { return _serverURLAPI.ServerURLMediaAPI; } private set { } }
+    public string ServerProvidersAPI { get { return _serverURLAPI.ServerProvidersAPI; } private set { } }
+
+    private AccountManager _accountManager;
 
     private bool _isInit;
     private GetWebRequester _getWebRequester;
@@ -23,6 +26,11 @@ public class WebRequestHandler : MonoBehaviour {
     private PutWebRequester _putWebRequester;
     private PatchWebRequester _patchWebRequester;
     private DeleteWebRequester _deleteWebRequester;
+
+    [Inject]
+    public void Construct(AccountManager accountManager) {
+        _accountManager = accountManager;
+    }
 
 
     private void Awake() {
@@ -69,7 +77,7 @@ public class WebRequestHandler : MonoBehaviour {
         Init();
 
         _getWebRequester.GetRequest(url, responseDelegate, errorTypeDelegate,
-            needHeaderAccessToken ? accountManager.GetAccessToken().access : null,
+            needHeaderAccessToken ? _accountManager.GetAccessToken().access : null,
             onCancel, progress);
     }
 
@@ -82,7 +90,7 @@ public class WebRequestHandler : MonoBehaviour {
         Init();
 
         _postWebRequester.PostRequest(url, body, bodyType, responseDelegate, errorTypeDelegate,
-            needHeaderAccessToken ? accountManager.GetAccessToken().access : null,
+            needHeaderAccessToken ? _accountManager.GetAccessToken().access : null,
             onCancel, progress);
     }
 
@@ -93,7 +101,7 @@ public class WebRequestHandler : MonoBehaviour {
             bool needHeaderAccessToken = true, ActionWrapper onCancel = null) {
         Init();
 
-        string currentHeaderAccessToken = needHeaderAccessToken ? accountManager.GetAccessToken().access : null;
+        string currentHeaderAccessToken = needHeaderAccessToken ? _accountManager.GetAccessToken().access : null;
         _deleteWebRequester.DeleteRequest(url, responseDelegate, errorTypeDelegate,
             currentHeaderAccessToken,
             onCancel);
@@ -107,7 +115,7 @@ public class WebRequestHandler : MonoBehaviour {
             bool needHeaderAccessToken = true, ActionWrapper onCancel = null, Action<float> progress = null) {
         Init();
 
-        string currentHeaderAccessToken = needHeaderAccessToken ? accountManager.GetAccessToken().access : null;
+        string currentHeaderAccessToken = needHeaderAccessToken ? _accountManager.GetAccessToken().access : null;
         _putWebRequester.PutRequest(url, body, bodyType, responseDelegate, errorTypeDelegate,
             currentHeaderAccessToken,
             onCancel, progress);
@@ -123,7 +131,7 @@ public class WebRequestHandler : MonoBehaviour {
             bool needHeaderAccessToken = true, ActionWrapper onCancel = null, Action<float> uploadProgress = null) {
         Init();
 
-        string currentHeaderAccessToken = needHeaderAccessToken ? accountManager.GetAccessToken().access : null;
+        string currentHeaderAccessToken = needHeaderAccessToken ? _accountManager.GetAccessToken().access : null;
         _postMultipartRequester.PostMultipart(url, contentPathDataDictionary,
             responseDelegate, errorTypeDelegate,
             currentHeaderAccessToken,
@@ -139,7 +147,7 @@ public class WebRequestHandler : MonoBehaviour {
             bool needHeaderAccessToken = true, ActionWrapper onCancel = null, Action<float> uploadProgress = null) {
         Init();
 
-        string currentHeaderAccessToken = needHeaderAccessToken ? accountManager.GetAccessToken().access : null;
+        string currentHeaderAccessToken = needHeaderAccessToken ? _accountManager.GetAccessToken().access : null;
         _postMultipartRequester.PostMultipart(url, contentDictionary,
             responseDelegate, errorTypeDelegate,
             currentHeaderAccessToken,
@@ -155,7 +163,7 @@ public class WebRequestHandler : MonoBehaviour {
             bool needHeaderAccessToken = true, ActionWrapper onCancel = null) {
         Init();
 
-        string currentHeaderAccessToken = needHeaderAccessToken ? accountManager.GetAccessToken().access : null;
+        string currentHeaderAccessToken = needHeaderAccessToken ? _accountManager.GetAccessToken().access : null;
         _patchWebRequester.PatchRequest(url, body, bodyType,
             responseDelegate, errorTypeDelegate,
             currentHeaderAccessToken,
@@ -171,7 +179,7 @@ public class WebRequestHandler : MonoBehaviour {
         bool needHeaderAccessToken = true, ActionWrapper onCancel = null, Action<float> progress = null) {
         Init();
 
-        string currentHeaderAccessToken = needHeaderAccessToken ? accountManager.GetAccessToken().access : null;
+        string currentHeaderAccessToken = needHeaderAccessToken ? _accountManager.GetAccessToken().access : null;
         _getWebTextureRequest.GetTextureRequest(url, responseDelegate, errorTypeDelegate,
             currentHeaderAccessToken,
             onCancel, progress);

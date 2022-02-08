@@ -22,8 +22,8 @@ namespace Beem.UI {
                GUIUtility.systemCopyBuffer = currentData.share_link;
                ARMsgARenaConstructor.OnDeactivatedARena?.Invoke();
                ARenaConstructor.onDeactivate?.Invoke();
-               MenuConstructor.OnActivated?.Invoke(true);
-               HomeScreenConstructor.OnActivated?.Invoke(true);
+               HomeConstructor.OnActivated?.Invoke(true);
+               BottomMenuConstructor.OnActivated?.Invoke(true);
            },
            null,
            false);

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Beem.SSO;
+using Zenject;
+
 public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     [SerializeField]
     InputFieldController emailInputField;
@@ -9,9 +11,12 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     [SerializeField]
     bool needShowWarning = true;
 
-    [Space]
-    [SerializeField]
     private AuthController _authController;
+
+    [Inject]
+    public void Construct(AuthController authController) {
+        _authController = authController;
+    }
 
     public void ForgotPasswordBtnClick() {
         CallBacks.onResetPasswordClick?.Invoke();

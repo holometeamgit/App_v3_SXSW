@@ -6,6 +6,7 @@ using Firebase;
 using Firebase.Auth;
 using System;
 using Beem.Firebase;
+using System.Linq;
 
 namespace Beem.SSO {
 
@@ -13,8 +14,6 @@ namespace Beem.SSO {
     /// Controller for Auth
     /// </summary>
     public class AuthController : MonoBehaviour {
-        [Header("Controllers")]
-        [SerializeField]
         private List<AbstractFirebaseController> abstractFirebaseControllers = new List<AbstractFirebaseController>();
         private FirebaseAuth _auth;
         private BackEndTokenController _backEndTokenController;
@@ -62,6 +61,9 @@ namespace Beem.SSO {
 
         private void InitializeFirebase() {
             _auth = FirebaseAuth.DefaultInstance;
+
+            abstractFirebaseControllers = GetComponentsInChildren<AbstractFirebaseController>().ToList();
+
             foreach (AbstractFirebaseController item in abstractFirebaseControllers) {
                 item.InitializeFirebase(_auth);
             }

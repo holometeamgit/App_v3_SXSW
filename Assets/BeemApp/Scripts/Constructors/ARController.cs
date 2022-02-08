@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Constructor for ar
 /// </summary>
-public class ARConstructor : MonoBehaviour {
+public class ARController : MonoBehaviour {
 
     [SerializeField]
     private GameObject arSessionOrigin;

@@ -15,8 +15,8 @@ public class ARMessageTurorialBtn : MonoBehaviour {
     public void Open() {
         _permissionController.CheckCameraMicAccess(() => {
             SettingsConstructor.OnActivated?.Invoke(false);
-            MenuConstructor.OnActivated?.Invoke(false);
-            HomeScreenConstructor.OnActivated?.Invoke(false);
+            HomeConstructor.OnActivated?.Invoke(false);
+            BottomMenuConstructor.OnActivated?.Invoke(false);
             StreamCallBacks.onCloseComments?.Invoke();
             ARMessageTutorialConstructor.OnActivated?.Invoke(true);
         });

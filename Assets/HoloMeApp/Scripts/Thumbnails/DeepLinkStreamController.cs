@@ -4,17 +4,18 @@ using UnityEngine;
 using Beem.Firebase.DynamicLink;
 using Firebase.DynamicLinks;
 using System;
+using Zenject;
 
 /// <summary>
 /// Deep Link Controller for StreamData
 /// </summary>
 public class DeepLinkStreamController : MonoBehaviour {
     [SerializeField]
-    private WebRequestHandler _webRequestHandler;
-    [SerializeField]
     private ServerURLAPIScriptableObject _serverURLAPIScriptableObject;
     [SerializeField]
     private VideoUploader _videoUploader;
+
+    private WebRequestHandler _webRequestHandler;
 
     private ShareLinkController _shareController = new ShareLinkController();
 
@@ -23,6 +24,11 @@ public class DeepLinkStreamController : MonoBehaviour {
     private const string STATUS = "live";
     private const string USERNAME_FILTER = "user__username";
     private const string STATUS_FILTER = "status";
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+    }
 
     /// <summary>
     /// Social Media for Streams

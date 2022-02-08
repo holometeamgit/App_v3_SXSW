@@ -4,13 +4,18 @@ using UnityEngine;
 using TMPro;
 using Beem.Permissions;
 using Beem.ARMsg;
+using Zenject;
 
 /// <summary>
 /// Pnl for menu
 /// </summary>
 public class PnlMenu : MonoBehaviour {
-    [SerializeField]
     private UserWebManager _userWebManager;
+
+    [Inject]
+    public void Construct(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
+    }
 
     private void UserInfoLoadedCallBack() {
         if (!this.isActiveAndEnabled)
@@ -40,7 +45,7 @@ public class PnlMenu : MonoBehaviour {
     /// Open Main Menu
     /// </summary>
     public void OpenMenu() {
-        MenuConstructor.OnActivated?.Invoke(true);
+        HomeConstructor.OnActivated?.Invoke(true);
         SettingsConstructor.OnActivated?.Invoke(false);
         StreamCallBacks.onCloseComments?.Invoke();
     }
@@ -51,7 +56,7 @@ public class PnlMenu : MonoBehaviour {
     public void OpenSettings() {
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySettingsPanel);
         SettingsConstructor.OnActivated?.Invoke(true);
-        MenuConstructor.OnActivated?.Invoke(false);
+        HomeConstructor.OnActivated?.Invoke(false);
         StreamCallBacks.onCloseComments?.Invoke();
     }
 }

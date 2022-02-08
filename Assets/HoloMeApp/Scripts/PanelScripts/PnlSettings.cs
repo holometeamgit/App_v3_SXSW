@@ -4,6 +4,7 @@ using UnityEngine;
 using Beem.SSO;
 using TMPro;
 using Beem.Permissions;
+using Zenject;
 
 /// <summary>
 /// Settings Pnl
@@ -15,11 +16,15 @@ public class PnlSettings : MonoBehaviour {
     private GameObject _btnStadium;
     [SerializeField]
     private TMP_Text _txtNickname;
-    [Space]
-    [SerializeField]
+
     private AccountManager _accountManager;
-    [SerializeField]
     private UserWebManager _userWebManager;
+
+    [Inject]
+    public void Construct(UserWebManager userWebManager, AccountManager accountManager) {
+        _userWebManager = userWebManager;
+        _accountManager = accountManager;
+    }
 
     private void OnEnable() {
         _changePassword.SetActive(_accountManager.GetLogInType() == LogInType.Email);
@@ -59,8 +64,8 @@ public class PnlSettings : MonoBehaviour {
 
     private void UserLogOut() {
         WelcomeConstructor.OnActivated?.Invoke(true);
-        MenuConstructor.OnActivated?.Invoke(false);
-        HomeScreenConstructor.OnActivated?.Invoke(false);
+        HomeConstructor.OnActivated?.Invoke(false);
+        BottomMenuConstructor.OnActivated?.Invoke(false);
         SettingsConstructor.OnActivated?.Invoke(false);
         _accountManager.LogOut();
     }
