@@ -8,6 +8,7 @@ using agora_gaming_rtc;
 using Beem.UI;
 using Beem.Permissions;
 using Zenject;
+using WindowManager.Extenject;
 
 public class PnlStreamOverlay : AgoraMessageReceiver {
 
@@ -313,14 +314,17 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
         if (!_agoraController.IsLive && isChannelCreator)
             StopStream();
-        else if (isChannelCreator)
-            WarningConstructor.ActivateDoubleButton("End the live stream?",
-                "Closing this page will end the live stream and disconnect your users.",
-                onButtonOnePress: () => { CloseAsStreamer(); });
-        else
-            WarningConstructor.ActivateDoubleButton("Disconnect from live stream?",
-                "Closing this page will disconnect you from the live stream",
-                onButtonOnePress: () => { CloseAsViewer(); });
+        else if (isChannelCreator) {
+            GeneralPopUpData.ButtonData funcButton = new GeneralPopUpData.ButtonData("Yes", CloseAsStreamer);
+            GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("No", null);
+            GeneralPopUpData data = new GeneralPopUpData("End the live stream?", "Closing this page will end the live stream and disconnect your users.", closeButton, funcButton);
+            WarningConstructor.OnShow?.Invoke(data);
+        } else {
+            GeneralPopUpData.ButtonData funcButton = new GeneralPopUpData.ButtonData("Yes", CloseAsViewer);
+            GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("No", null);
+            GeneralPopUpData data = new GeneralPopUpData("Disconnect from live stream?", "Closing this page will disconnect you from the live stream", closeButton, funcButton);
+            WarningConstructor.OnShow?.Invoke(data);
+        }
     }
 
     public void CloseAsStreamer() {

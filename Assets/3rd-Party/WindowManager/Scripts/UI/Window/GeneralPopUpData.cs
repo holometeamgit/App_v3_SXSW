@@ -40,6 +40,7 @@ namespace WindowManager.Extenject {
             _title = title;
             _description = description;
             _cancelBtnData = cancelBtnData;
+            _funcBtnData = null;
         }
 
         public GeneralPopUpData(string title, string description, ButtonData cancelBtnData, ButtonData funcBtnData) {

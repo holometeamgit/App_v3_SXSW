@@ -5,6 +5,7 @@ using Beem.SSO;
 using TMPro;
 using Beem.Permissions;
 using Zenject;
+using WindowManager.Extenject;
 
 /// <summary>
 /// Settings Pnl
@@ -55,11 +56,12 @@ public class PnlSettings : MonoBehaviour {
     /// Open Delete Account Window
     /// </summary>
     public void SettingsToDeleteAccount() {
-        WarningConstructor.ActivateDoubleButton("Delete account", "If you delete your account, you will lose \naccess to the Beem network.Are you sure \nyou want to continue?",
-          "Continue", "Cancel",
-          () => {
-              _userWebManager.DeleteUserAccount();
-          });
+
+        GeneralPopUpData.ButtonData funcButton = new GeneralPopUpData.ButtonData("Continue", _userWebManager.DeleteUserAccount);
+        GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Cancel", null);
+        GeneralPopUpData data = new GeneralPopUpData("Delete account", "If you delete your account, you will lose \naccess to the Beem network.Are you sure \nyou want to continue?", closeButton, funcButton);
+
+        WarningConstructor.OnShow?.Invoke(data);
     }
 
     private void UserLogOut() {
@@ -80,10 +82,10 @@ public class PnlSettings : MonoBehaviour {
     /// </summary>
     public void SettingsToWelcome() {
 
-        WarningConstructor.ActivateDoubleButton("Log Out", "Are you sure you want to log out?",
-            "log out", "Cancel",
-            () => {
-                UserLogOut();
-            });
+        GeneralPopUpData.ButtonData funcButton = new GeneralPopUpData.ButtonData("Log Out", UserLogOut);
+        GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Cancel", null);
+        GeneralPopUpData data = new GeneralPopUpData(null, "Are you sure you want to log out?", closeButton, funcButton);
+
+        WarningConstructor.OnShow?.Invoke(data);
     }
 }

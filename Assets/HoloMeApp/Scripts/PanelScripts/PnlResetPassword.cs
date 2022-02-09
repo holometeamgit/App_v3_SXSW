@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using WindowManager.Extenject;
 
 public class PnlResetPassword : MonoBehaviour {
 
@@ -72,7 +73,12 @@ public class PnlResetPassword : MonoBehaviour {
 
     private void ResetPasswordCallBack() {
         resetPasswordEnterEmail.ClearData();
-        WarningConstructor.ActivateSingleButton(" ", "Password has been successfully updated", "Continue", () => switcherToResetPassword.Switch());
+
+        GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Continue", () => switcherToResetPassword.Switch());
+
+        GeneralPopUpData data = new GeneralPopUpData(null, "Password has been successfully updated", closeButton);
+
+        WarningConstructor.OnShow?.Invoke(data);
     }
 
     private void ErrorResetPasswordCallBack(BadRequestResetPassword badRequestResetPassword) {

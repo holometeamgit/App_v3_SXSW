@@ -14,24 +14,24 @@ public class ARMsgARenaConstructor : MonoBehaviour {
     [SerializeField]
     private PnlARMessages _pnlARMessages;
 
-    public static Action<ARMsgJSON.Data> OnActivatedARena = delegate { };
-    public static Action OnDeactivatedARena = delegate { };
+    public static Action<ARMsgJSON.Data> OnShow = delegate { };
+    public static Action OnHide = delegate { };
 
-    private void ActivateARena(ARMsgJSON.Data data) {
+    private void Show(ARMsgJSON.Data data) {
         _pnlARMessages.Init(data);
     }
 
-    private void DeactivateARena() {
+    private void Hide() {
         _pnlARMessages.Deactivate();
     }
 
     private void OnEnable() {
-        OnActivatedARena += ActivateARena;
-        OnDeactivatedARena += DeactivateARena;
+        OnShow += Show;
+        OnHide += Hide;
     }
 
     private void OnDisable() {
-        OnActivatedARena -= ActivateARena;
-        OnDeactivatedARena -= DeactivateARena;
+        OnShow -= Show;
+        OnHide -= Hide;
     }
 }

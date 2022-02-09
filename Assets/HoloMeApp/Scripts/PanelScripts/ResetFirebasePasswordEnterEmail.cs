@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Beem.SSO;
 using Zenject;
+using WindowManager.Extenject;
 
 public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     [SerializeField]
     InputFieldController emailInputField;
-
-    [SerializeField]
-    bool needShowWarning = true;
 
     private AuthController _authController;
 
@@ -30,21 +28,7 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
         if (!LocalDataVerification())
             return;
 
-        if (needShowWarning) {
-            ShowWarning();
-        } else {
-            SendMsg();
-        }
-    }
-
-    private void ShowWarning() {
-        emailInputField.MobileInputField.gameObject.SetActive(false);
-        WarningConstructor.ActivateDoubleButton(null,
-            string.Format("Changing a password associated with a Facebook account will create login issues with your Beem account."),
-            "Continue",
-            "Cancel",
-            () => { SendMsg(); emailInputField.MobileInputField.gameObject.SetActive(true); },
-            () => { emailInputField.MobileInputField.gameObject.SetActive(true); }, true);
+        SendMsg();
     }
 
     private void SendMsg() {
@@ -53,10 +37,11 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
 
     private void MsgSentCallBack() {
         emailInputField.MobileInputField.gameObject.SetActive(false);
-        WarningConstructor.ActivateSingleButton("Change password",
-            string.Format("Password change information has been sent to email {0}", emailInputField.text),
-            "Continue",
-            () => { ResetPasswordToSignIn(); emailInputField.MobileInputField.gameObject.SetActive(true); });
+
+        GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Continue", () => { ResetPasswordToSignIn(); emailInputField.MobileInputField.gameObject.SetActive(true); });
+        GeneralPopUpData data = new GeneralPopUpData("Change password", $"Password change information has been sent to email {emailInputField.text}", closeButton);
+
+        WarningConstructor.OnShow?.Invoke(data);
     }
 
     private void ErrorMsgCallBack(string msg) {

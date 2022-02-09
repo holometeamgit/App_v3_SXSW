@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using WindowManager.Extenject;
 
 namespace Beem.Permissions {
 
@@ -124,14 +125,15 @@ namespace Beem.Permissions {
         }
 
         private void OpenNotification(string accessName, Action onClosed) {
-            WarningConstructor.ActivateDoubleButton(accessName + " access Required!",
-                      "Please enable " + accessName + " access to use this app",
-                      "Settings",
-                      "Cancel",
-                      () => {
-                          OpenSettings();
-                          RecheckAsync(onClosed);
-                      });
+
+            GeneralPopUpData.ButtonData funcButton = new GeneralPopUpData.ButtonData("Settings", () => {
+                OpenSettings();
+                RecheckAsync(onClosed);
+            });
+            GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Cancel", null);
+            GeneralPopUpData data = new GeneralPopUpData($"{accessName} access Required!", $"Please enable {accessName} access to use this app", closeButton, funcButton);
+
+            WarningConstructor.OnShow?.Invoke(data);
         }
 
         private async void RecheckAsync(Action onClosed) {

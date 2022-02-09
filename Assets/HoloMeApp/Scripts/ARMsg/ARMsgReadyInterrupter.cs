@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Beem.ARMsg;
 using Beem.UI;
+using WindowManager.Extenject;
 
 /// <summary>
 /// ARMsgReadyInterrupter. Invoke GenericError for closing ready screen
@@ -28,21 +29,22 @@ public class ARMsgReadyInterrupter : MonoBehaviour, IARMsgDataView {
     /// Request GenericError for interrupting
     /// </summary>
     public void Interrupt() {
-        WarningConstructor.ActivateDoubleButton("Before you go...",
-            "If you exit without sharing it, your Beem will be lost",
-            "Copy link and exit", "Share",
-            () => {
-                GUIUtility.systemCopyBuffer = currentData.share_link;
-                HomeConstructor.OnActivated?.Invoke(true);
-                BottomMenuConstructor.OnActivated?.Invoke(true);
-                ARMsgRecordConstructor.OnActivated?.Invoke(false);
-                CallBacks.OnCancelAllARMsgActions?.Invoke();
 
-            }, () => {
-                OnShare?.Invoke();
-            }
-            , false);
+        GeneralPopUpData.ButtonData funcButton = new GeneralPopUpData.ButtonData("Copy link and exit", CopyAndExit);
+        GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Share", () => OnShare?.Invoke());
+        GeneralPopUpData data = new GeneralPopUpData("Before you go...", "If you exit without sharing it, your Beem will be lost", closeButton, funcButton);
+
+        WarningConstructor.OnShow?.Invoke(data);
     }
+
+    private void CopyAndExit() {
+        GUIUtility.systemCopyBuffer = currentData.share_link;
+        HomeConstructor.OnActivated?.Invoke(true);
+        BottomMenuConstructor.OnActivated?.Invoke(true);
+        ARMsgRecordConstructor.OnActivated?.Invoke(false);
+        CallBacks.OnCancelAllARMsgActions?.Invoke();
+    }
+
     private void OnInterrupt() {
         _interruptSwitcher.Switch();
     }

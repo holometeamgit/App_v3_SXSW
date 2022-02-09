@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WindowManager.Extenject;
 using Zenject;
 
 public class PnlChangeUsername : MonoBehaviour {
@@ -28,7 +29,11 @@ public class PnlChangeUsername : MonoBehaviour {
 
     private void UpdateUserDataCallBack() {
         usernameInputField.MobileInputField.gameObject.SetActive(false);
-        WarningConstructor.ActivateSingleButton(" ", "Username has been successfully updated", "Continue", () => { ChangeUserNameToSettings(); usernameInputField.MobileInputField.gameObject.SetActive(true); });
+
+        GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Continue", () => { ChangeUserNameToSettings(); usernameInputField.MobileInputField.gameObject.SetActive(true); });
+        GeneralPopUpData data = new GeneralPopUpData(null, "Username has been successfully updated", closeButton);
+
+        WarningConstructor.OnShow?.Invoke(data);
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {

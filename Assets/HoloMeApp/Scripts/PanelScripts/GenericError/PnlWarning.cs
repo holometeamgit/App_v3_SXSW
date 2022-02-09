@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
 using System.Threading.Tasks;
+using System;
 
 public class PnlWarning : MonoBehaviour {
     [SerializeField]
@@ -34,17 +35,17 @@ public class PnlWarning : MonoBehaviour {
         txtMessage.text = message == "" ? DefaultMessage : message;
     }
 
-    void SetupButton(Button button, string text, UnityAction action) {
+    void SetupButton(Button button, string text, Action action) {
         button.gameObject.SetActive(true);
         button.GetComponentInChildren<TextMeshProUGUI>().text = text;
         button.onClick.RemoveAllListeners(); //Remember this doesn't effect editor actions
         if (action != null) {
-            button.onClick.AddListener(action);
+            button.onClick.AddListener(() => action?.Invoke());
         }
-        button.onClick.AddListener(Deactivate);
+        button.onClick.AddListener(() => WarningConstructor.OnHide?.Invoke());
     }
 
-    public void ActivateSingleButton(string header = "", string message = "", string buttonText = "Back", UnityAction onBackPress = null, bool isWarning = false) {
+    public void ActivateSingleButton(string header = "", string message = "", string buttonText = "Back", Action onBackPress = null, bool isWarning = false) {
         SetMessages(header, message);
         SetupButton(btnLeft, buttonText, onBackPress);
         btnRight.gameObject.SetActive(false);
@@ -52,7 +53,7 @@ public class PnlWarning : MonoBehaviour {
         imgWarning.gameObject.SetActive(isWarning);
     }
 
-    public void ActivateDoubleButton(string header = "", string message = "", string buttonOneText = "Yes", string buttonTwoText = "No", UnityAction onButtonOnePress = null, UnityAction onButtonTwoPress = null, bool isWarning = false) {
+    public void ActivateDoubleButton(string header = "", string message = "", string buttonOneText = "Yes", string buttonTwoText = "No", Action onButtonOnePress = null, Action onButtonTwoPress = null, bool isWarning = false) {
         SetMessages(header, message);
         SetupButton(btnLeft, buttonOneText, onButtonOnePress);
         SetupButton(btnRight, buttonTwoText, onButtonTwoPress);

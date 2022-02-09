@@ -4,6 +4,7 @@ using System;
 using Beem.Permissions;
 using Beem.ARMsg;
 using Zenject;
+using WindowManager.Extenject;
 
 /// <summary>
 /// Content Player
@@ -65,8 +66,10 @@ public class ContentPlayer {
     public void PlayRoom(RoomJsonData data) { //TODO split it to other class
 
         if (data.user == _userWebManager.GetUsername()) {
-            WarningConstructor.ActivateSingleButton("Viewing as stream host",
-                "Please connect to the stream using a different account");
+
+            GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Ok", null);
+            GeneralPopUpData popUpData = new GeneralPopUpData("Viewing as stream host", "Please connect to the stream using a different account", closeButton);
+            WarningConstructor.OnShow?.Invoke(popUpData);
 
             return;
         }
@@ -92,7 +95,7 @@ public class ContentPlayer {
             SettingsConstructor.OnActivated?.Invoke(false);
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
             ARenaConstructor.onActivateForARMessaging?.Invoke(data);
-            ARMsgARenaConstructor.OnActivatedARena?.Invoke(data);
+            ARMsgARenaConstructor.OnShow?.Invoke(data);
             UserName = data.user;
         });
 
@@ -105,8 +108,10 @@ public class ContentPlayer {
     /// <param name="roomJsonData"></param>
     private void PlayStadium(StreamJsonData.Data data) { //TODO split it to other class
         if (data.user == _userWebManager.GetUsername()) {
-            WarningConstructor.ActivateSingleButton("Viewing as stream host",
-                "Please connect to the stream using a different account");
+
+            GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Ok", null);
+            GeneralPopUpData popUpData = new GeneralPopUpData("Viewing as stream host", "Please connect to the stream using a different account", closeButton);
+            WarningConstructor.OnShow?.Invoke(popUpData);
 
             return;
         }

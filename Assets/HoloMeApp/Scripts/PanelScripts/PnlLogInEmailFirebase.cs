@@ -4,6 +4,7 @@ using UnityEngine;
 using Beem.SSO;
 using System.Threading.Tasks;
 using Zenject;
+using WindowManager.Extenject;
 
 public class PnlLogInEmailFirebase : MonoBehaviour {
 
@@ -79,29 +80,27 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
         inputFieldEmail.MobileInputField.gameObject.SetActive(false);
         inputFieldPassword.MobileInputField.gameObject.SetActive(false);
         if (EmailVerificationTimer.IsOver) {
-            WarningConstructor.ActivateDoubleButton("Email verification",
-                string.Format("You have not activated your account via the email, would you like us to send it again? \n {0}", email),
-                "Yes",
-                "No",
-                () => {
-                    CallBacks.onEmailVerification?.Invoke();
-                    EmailVerificationTimer.Release();
-                    inputFieldEmail.MobileInputField.gameObject.SetActive(true);
-                    inputFieldPassword.MobileInputField.gameObject.SetActive(true);
-                },
-                () => {
-                    inputFieldEmail.MobileInputField.gameObject.SetActive(true);
-                    inputFieldPassword.MobileInputField.gameObject.SetActive(true);
-                }
-                );
+            GeneralPopUpData.ButtonData funcButton = new GeneralPopUpData.ButtonData("Yes", () => {
+                CallBacks.onEmailVerification?.Invoke();
+                EmailVerificationTimer.Release();
+                inputFieldEmail.MobileInputField.gameObject.SetActive(true);
+                inputFieldPassword.MobileInputField.gameObject.SetActive(true);
+            });
+            GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("No", () => {
+                inputFieldEmail.MobileInputField.gameObject.SetActive(true);
+                inputFieldPassword.MobileInputField.gameObject.SetActive(true);
+            });
+            GeneralPopUpData data = new GeneralPopUpData("Email verification", $"You have not activated your account via the email, would you like us to send it again? \n {email}", closeButton, funcButton);
+
+            WarningConstructor.OnShow?.Invoke(data);
         } else {
-            WarningConstructor.ActivateSingleButton("Email verification",
-               string.Format("You have not activated your account via the email \n {0}", email),
-               "Ok",
-               () => {
-                   inputFieldEmail.MobileInputField.gameObject.SetActive(true);
-                   inputFieldPassword.MobileInputField.gameObject.SetActive(true);
-               });
+            GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Ok", () => {
+                inputFieldEmail.MobileInputField.gameObject.SetActive(true);
+                inputFieldPassword.MobileInputField.gameObject.SetActive(true);
+            });
+            GeneralPopUpData data = new GeneralPopUpData("Email verification", $"You have not activated your account via the email \n {email}", closeButton);
+
+            WarningConstructor.OnShow?.Invoke(data);
         }
     }
 

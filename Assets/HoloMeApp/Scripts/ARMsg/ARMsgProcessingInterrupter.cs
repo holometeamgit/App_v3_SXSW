@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Beem.ARMsg;
+using WindowManager.Extenject;
 
 /// <summary>
 /// ARMsgProcessingInterrupter. Invoke GenericError for closing processing
@@ -14,12 +15,11 @@ public class ARMsgProcessingInterrupter : MonoBehaviour {
     /// Request GenericError for interrupting
     /// </summary>
     public void Interrupt() {
-        WarningConstructor.ActivateDoubleButton("Before you go...",
-            "If you exit before processing has completed, you will lose your AR message",
-            "Exit", "Return",
-            () => {
-                ImmediateInterruption();
-            }, null, false);
+        GeneralPopUpData.ButtonData funcButton = new GeneralPopUpData.ButtonData("Exit", ImmediateInterruption);
+        GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Return", null);
+        GeneralPopUpData data = new GeneralPopUpData("Before you go...", "If you exit before processing has completed, you will lose your AR message", closeButton, funcButton);
+
+        WarningConstructor.OnShow?.Invoke(data);
     }
 
     public void ImmediateInterruption() {

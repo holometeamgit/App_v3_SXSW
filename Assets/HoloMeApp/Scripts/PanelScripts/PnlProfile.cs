@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using Beem.SSO;
 using Zenject;
+using WindowManager.Extenject;
 
 public class PnlProfile : MonoBehaviour {
     [SerializeField] GameObject InputDataArea;
@@ -121,13 +122,11 @@ public class PnlProfile : MonoBehaviour {
 
     private void ShowMsgForDeletedUser() {
         usernameInputField.MobileInputField.gameObject.SetActive(false);
-        WarningConstructor.ActivateDoubleButton(null,
-            string.Format("This account has been deleted, contact support to reinstate. "),
-            "Support",
-            "Cancel",
-            () => { externalLinkRedirector.Redirect(); usernameInputField.MobileInputField.gameObject.SetActive(true); },
-            () => { usernameInputField.MobileInputField.gameObject.SetActive(true); }
-        );
+        GeneralPopUpData.ButtonData funcButton = new GeneralPopUpData.ButtonData("Support", () => { externalLinkRedirector.Redirect(); usernameInputField.MobileInputField.gameObject.SetActive(true); });
+        GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Cancel", () => { usernameInputField.MobileInputField.gameObject.SetActive(true); });
+        GeneralPopUpData data = new GeneralPopUpData(null, "This account has been deleted, contact support to reinstate.", closeButton, funcButton);
+
+        WarningConstructor.OnShow?.Invoke(data);
     }
 
     private void OnEnable() {

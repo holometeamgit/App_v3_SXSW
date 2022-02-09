@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
+using WindowManager.Extenject;
 
 public class PnlChangePassword : MonoBehaviour {
     [SerializeField] PnlWarning pnlGenericError;
@@ -29,7 +30,11 @@ public class PnlChangePassword : MonoBehaviour {
     }
 
     private void OnChangePasswordCallBack() {
-        WarningConstructor.ActivateSingleButton(" ", "Password has been successfully updated", "Continue", () => switchToNextMenu.Switch());
+
+        GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Continue", () => switchToNextMenu.Switch());
+        GeneralPopUpData data = new GeneralPopUpData(null, "Password has been successfully updated", closeButton);
+
+        WarningConstructor.OnShow?.Invoke(data);
     }
 
     private void OnErrorChangePasswordCallBack(BadRequestChangePassword badRequestChangePassword) {
