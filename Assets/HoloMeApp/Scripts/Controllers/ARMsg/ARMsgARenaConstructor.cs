@@ -14,13 +14,10 @@ public class ARMsgARenaConstructor : MonoBehaviour {
     [SerializeField]
     private PnlARMessages _pnlARMessages;
 
-    private ARMsgJSON.Data currentData;
-
     public static Action<ARMsgJSON.Data> OnActivatedARena = delegate { };
     public static Action OnDeactivatedARena = delegate { };
 
     private void ActivateARena(ARMsgJSON.Data data) {
-        currentData = data;
         _pnlARMessages.Init(data);
     }
 

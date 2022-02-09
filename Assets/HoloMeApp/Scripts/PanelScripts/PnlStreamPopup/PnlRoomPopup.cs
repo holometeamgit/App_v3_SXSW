@@ -47,12 +47,7 @@ public class PnlRoomPopup : MonoBehaviour {
     }
 
     private void Awake() {
-        StreamCallBacks.onShowPopUpRoomOnline += ShowCurrentlyOnline;
         StreamCallBacks.onUpdateUserCount += UpdateUserCount;
-        StreamCallBacks.onShowPopUpRoomOffline += ShowCurrentlyOffline;
-        StreamCallBacks.onShowPopUpRoomEnded += ShowNoLongerOnline;
-        StreamCallBacks.onUserDoesntExist += ShowUserDoesntExist;
-        StreamCallBacks.onClosePopUp += Hide;
 
         _swipePopUp.onHid += OnPopUpClosed;
         _swipePopUp.onShowed += StartInteraction;
@@ -61,8 +56,12 @@ public class PnlRoomPopup : MonoBehaviour {
         _swipePopUp.onStartShowing += OnPopUpStartOpen;
     }
 
-    private void ShowUserDoesntExist(long errorCode) {
-        if(errorCode != USER_NOT_FOUND_CODE) {
+    /// <summary>
+    /// User doesn'tExist
+    /// </summary>
+    /// <param name="errorCode"></param>
+    public void ShowUserDoesntExist(long errorCode) {
+        if (errorCode != USER_NOT_FOUND_CODE) {
             return;
         }
 
@@ -79,7 +78,11 @@ public class PnlRoomPopup : MonoBehaviour {
         _swipePopUp.Show();
     }
 
-    private void ShowNoLongerOnline(string username) {
+    /// <summary>
+    /// User No Longer online
+    /// </summary>
+    /// <param name="username"></param>
+    public void ShowNoLongerOnline(string username) {
         _titleText.text = string.Format("<color=#{0}>{1}</color> is no longer live",
             ColorUtility.ToHtmlStringRGBA(_highlightMSGColor), username);
 
@@ -93,7 +96,11 @@ public class PnlRoomPopup : MonoBehaviour {
         _swipePopUp.Show();
     }
 
-    private void ShowCurrentlyOffline(string username) {
+    /// <summary>
+    /// User is Offline
+    /// </summary>
+    /// <param name="username"></param>
+    public void ShowCurrentlyOffline(string username) {
         _titleText.text = string.Format("<color=#{0}>{1}</color>’s room is currently offline",
             ColorUtility.ToHtmlStringRGBA(_highlightMSGColor), username);
 
@@ -107,7 +114,11 @@ public class PnlRoomPopup : MonoBehaviour {
         _swipePopUp.Show();
     }
 
-    private void ShowCurrentlyOnline(string username) {
+    /// <summary>
+    /// User is online
+    /// </summary>
+    /// <param name="username"></param>
+    public void ShowCurrentlyOnline(string username) {
         _titleText.text = string.Format("<color=#{0}>{1}</color>’s room is online",
             ColorUtility.ToHtmlStringRGBA(_highlightMSGColor), username);
 
@@ -121,7 +132,7 @@ public class PnlRoomPopup : MonoBehaviour {
         _swipePopUp.Show();
     }
 
-    private void Hide() {
+    public void Hide() {
         _swipePopUp.Hide();
     }
 
@@ -155,11 +166,7 @@ public class PnlRoomPopup : MonoBehaviour {
     }
 
     private void OnDestroy() {
-        StreamCallBacks.onShowPopUpRoomOnline -= ShowCurrentlyOnline;
-        StreamCallBacks.onShowPopUpRoomOffline -= ShowCurrentlyOffline;
         StreamCallBacks.onUpdateUserCount -= UpdateUserCount;
-        StreamCallBacks.onShowPopUpRoomEnded -= ShowNoLongerOnline;
-        StreamCallBacks.onClosePopUp -= Hide;
 
         _swipePopUp.onHid -= OnPopUpClosed;
         _swipePopUp.onShowed -= StartInteraction;

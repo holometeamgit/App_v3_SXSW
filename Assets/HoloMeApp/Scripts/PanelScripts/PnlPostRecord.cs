@@ -81,14 +81,14 @@ public class PnlPostRecord : MonoBehaviour {
         Activate(null, lastRecordPath);
     }
 
-    public void ActivatePostScreenshot(Sprite sprite, Texture2D screenshotTexture, string lastRecordPath) {
+    public void ActivatePostScreenshot(RecordARScreenshotData recordARScreenshotData) {
         gameObject.SetActive(true);
         HelperFunctions.DevLog("Post record screenshot activate called");
         VideoPlayer.enabled = false;
         screenshotWasTaken = true;
-        screenShot = screenshotTexture;
+        screenShot = recordARScreenshotData.GetScreenshotTexture;
         btnPreview.gameObject.SetActive(false);
-        Activate(sprite, lastRecordPath);
+        Activate(recordARScreenshotData.GetSprite, recordARScreenshotData.GetPath);
     }
 
     private void Activate(Sprite sprite, string lastRecordPath) {

@@ -206,7 +206,9 @@ public class PnlRecord : MonoBehaviour {
 
         yield return new WaitForEndOfFrame();
         HideUI.onActivate(true);
-        PostRecordARConstructor.OnActivatedScreenShot?.Invoke(Sprite.Create(screenShot, new Rect(0, 0, Screen.width, Screen.height), new Vector2(0.5f, 0.5f)), screenShot, lastRecordingPath);
+
+        RecordARScreenshotData recordARScreenshotData = new RecordARScreenshotData(Sprite.Create(screenShot, new Rect(0, 0, Screen.width, Screen.height), new Vector2(0.5f, 0.5f)), screenShot, lastRecordingPath);
+        PostRecordARConstructor.OnActivatedScreenShot?.Invoke(recordARScreenshotData);
         canvasGroup.alpha = 1;
         currentCoroutine = null;
         watermarkCanvasObject.SetActive(false);

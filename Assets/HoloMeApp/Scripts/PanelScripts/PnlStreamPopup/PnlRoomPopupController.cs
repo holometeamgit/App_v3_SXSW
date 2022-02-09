@@ -81,10 +81,10 @@ public class PnlRoomPopupController {
                 _receivedRoomJsonData = roomJsonData;
 
                 if (_receivedRoomJsonData.status == StreamJsonData.Data.LIVE_ROOM_STR) {
-                    StreamCallBacks.onShowPopUpRoomOnline(_receivedRoomJsonData.user);
+                    StreamCallBacks.onShowPopUpRoomOnline?.Invoke(_receivedRoomJsonData.user);
                     _streamerCountUpdater.StartCheck(_receivedRoomJsonData.agora_channel, true);
                 } else {
-                    StreamCallBacks.onShowPopUpRoomOffline(_receivedRoomJsonData.user);
+                    StreamCallBacks.onShowPopUpRoomOffline?.Invoke(_receivedRoomJsonData.user);
                 }
 
                 WaitStart();
@@ -106,7 +106,7 @@ public class PnlRoomPopupController {
         WaitForCanShow().ContinueWith((task) => {
             if (_receivedRoomJsonData != null)
                 return;
-            StreamCallBacks.onShowPopUpRoomEnded(_startedRoomJsonData.user);
+            StreamCallBacks.onShowPopUpRoomEnded?.Invoke(_startedRoomJsonData.user);
             WaitStart();
         }, taskScheduler);
     }

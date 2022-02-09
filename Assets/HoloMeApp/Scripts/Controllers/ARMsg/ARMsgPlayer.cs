@@ -9,7 +9,7 @@ using Zenject;
 /// <summary>
 /// Constructor for opening deep Link for ARMessage
 /// </summary>
-public class ARMsgDeeplinkConstructor : MonoBehaviour {
+public class ARMsgPlayer : MonoBehaviour {
 
     [SerializeField]
     private DeepLinkChecker _popupShowChecker;

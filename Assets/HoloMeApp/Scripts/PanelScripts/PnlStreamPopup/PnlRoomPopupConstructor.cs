@@ -31,5 +31,20 @@ public class PnlRoomPopupConstructor : MonoBehaviour {
 
     private void Construct() {
         _pnlRoomPopupController = new PnlRoomPopupController(_roomPopupShowChecker, _streamerCountUpdater, _userWebManager);
+
+        StreamCallBacks.onShowPopUpRoomOnline += _pnlRoomPopup.ShowCurrentlyOnline;
+        StreamCallBacks.onShowPopUpRoomOffline += _pnlRoomPopup.ShowCurrentlyOffline;
+        StreamCallBacks.onShowPopUpRoomEnded += _pnlRoomPopup.ShowNoLongerOnline;
+        StreamCallBacks.onUserDoesntExist += _pnlRoomPopup.ShowUserDoesntExist;
+        StreamCallBacks.onClosePopUp += _pnlRoomPopup.Hide;
+
+    }
+
+    private void OnDestroy() {
+        StreamCallBacks.onShowPopUpRoomOnline -= _pnlRoomPopup.ShowCurrentlyOnline;
+        StreamCallBacks.onShowPopUpRoomOffline -= _pnlRoomPopup.ShowCurrentlyOffline;
+        StreamCallBacks.onShowPopUpRoomEnded -= _pnlRoomPopup.ShowNoLongerOnline;
+        StreamCallBacks.onUserDoesntExist -= _pnlRoomPopup.ShowUserDoesntExist;
+        StreamCallBacks.onClosePopUp -= _pnlRoomPopup.Hide;
     }
 }

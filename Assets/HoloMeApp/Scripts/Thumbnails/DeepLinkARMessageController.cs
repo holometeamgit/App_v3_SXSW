@@ -47,14 +47,14 @@ public class DeepLinkARMessageController : MonoBehaviour {
         GetARMessageById(id,
             (code, body) => Open(body),
             (code, body) => {
-                StreamCallBacks.onUserDoesntExist(code); HelperFunctions.DevLogError(code + " " + body);
+                StreamCallBacks.onUserDoesntExist?.Invoke(code); HelperFunctions.DevLogError(code + " " + body);
             });
     }
 
     private void Open(string body) {
         ARMessageReceived(body,
             (data) => {
-                ARMsgDeeplinkConstructor.OnActivated?.Invoke(data);
+                ARMsgPlayer.OnActivated?.Invoke(data);
             });
     }
 
