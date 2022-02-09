@@ -18,22 +18,33 @@ public class DeepLinkHandler : MonoBehaviour {
 
         Uri uri = new Uri(uriStr);
 
-        HelperFunctions.DevLog("Dynamic link: " + uriStr);
+        HelperFunctions.DevLogError("Dynamic link: " + uriStr);
+        GetContentsParameters(uri);
+    }
+
+    public void OnDeepLinkActivated(string uriStr) {
+
+        Uri uri = new Uri(uriStr);
+
+        HelperFunctions.DevLogError("Deep link: " + uriStr);
         GetContentsParameters(uri);
     }
 
     private void Awake() {
         DynamicLinksCallBacks.onReceivedDeepLink += OnDynamicLinkActivated;
-        Application.deepLinkActivated += OnDynamicLinkActivated;
+        Application.deepLinkActivated += OnDeepLinkActivated;
+
+        HelperFunctions.DevLogError("Application.absoluteURL: " + Application.absoluteURL);
+
         if (!string.IsNullOrEmpty(Application.absoluteURL)) {
             // Cold start and Application.absoluteURL not null so process Deep Link.
-            OnDynamicLinkActivated(Application.absoluteURL);
+            OnDeepLinkActivated(Application.absoluteURL);
         }
     }
 
     private void OnDestroy() {
         DynamicLinksCallBacks.onReceivedDeepLink -= OnDynamicLinkActivated;
-        Application.deepLinkActivated -= OnDynamicLinkActivated;
+        Application.deepLinkActivated -= OnDeepLinkActivated;
     }
 
     private void GetContentsParameters(Uri uri) {
