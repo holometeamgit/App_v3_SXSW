@@ -30,11 +30,14 @@ public class DeepLinkHandler : MonoBehaviour {
         GetContentsParameters(uri);
     }
 
-    private void Awake() {
-        DynamicLinksCallBacks.onReceivedDeepLink += OnDynamicLinkActivated;
-        Application.deepLinkActivated += OnDeepLinkActivated;
+    private void OnEnable() {
+
+        HelperFunctions.DevLogError("Awake");
 
         HelperFunctions.DevLogError("Application.absoluteURL: " + Application.absoluteURL);
+
+        DynamicLinksCallBacks.onReceivedDeepLink += OnDynamicLinkActivated;
+        Application.deepLinkActivated += OnDeepLinkActivated;
 
         if (!string.IsNullOrEmpty(Application.absoluteURL)) {
             // Cold start and Application.absoluteURL not null so process Deep Link.
@@ -42,43 +45,23 @@ public class DeepLinkHandler : MonoBehaviour {
         }
     }
 
-    private void OnDestroy() {
+    private void OnDisable() {
         DynamicLinksCallBacks.onReceivedDeepLink -= OnDynamicLinkActivated;
         Application.deepLinkActivated -= OnDeepLinkActivated;
     }
 
     private void GetContentsParameters(Uri uri) {
         if (ContainParam(uri, Params.room.ToString())) {
-
-            HelperFunctions.DevLog("GetRoomParameters");
-
             string userName = GetParam(uri, Params.room.ToString());
-
-            HelperFunctions.DevLog("username = " + userName);
             StreamCallBacks.onReceiveRoomLink?.Invoke(userName);
         } else if (ContainParam(uri, Params.message.ToString())) {
-
-            HelperFunctions.DevLog("GetMessageParameters");
-
             string messageId = GetParam(uri, Params.message.ToString());
-
-            HelperFunctions.DevLog("messageId = " + messageId);
             StreamCallBacks.onReceiveARMsgLink?.Invoke(messageId);
         } else if (ContainParam(uri, Params.live.ToString())) {
-
-            HelperFunctions.DevLog("GetLiveParameters");
-
             string username = GetParam(uri, Params.live.ToString());
-
-            HelperFunctions.DevLog("username = " + username);
             StreamCallBacks.onReceiveStreamLink?.Invoke(username);
         } else if (ContainParam(uri, Params.prerecorded.ToString())) {
-
-            HelperFunctions.DevLog("GetPrerecordedParameters");
-
             string slug = GetParam(uri, Params.prerecorded.ToString());
-
-            HelperFunctions.DevLog("slug = " + slug);
             StreamCallBacks.onReceivePrerecordedLink?.Invoke(slug);
         }
     }
