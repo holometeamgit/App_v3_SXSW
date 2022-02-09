@@ -57,7 +57,7 @@ public class WebRequester
         } catch (Exception exception) {
             HelperFunctions.DevLogError("Exception: WebRequestError  " + request.uri + " " + exception.Message);
             ///FIXME This error is called in the wrong sequence of actions due to Action
-            //errorTypeDelegate?.Invoke(500, "Failed to connect to server: " + exception.Message);
+            errorTypeDelegate?.Invoke(500, "Failed to connect to server: " + exception.Message);
         } finally {
             if (onCancel != null) {
                 onCancel.RemoveListener(cancellationTokenSource.Cancel);

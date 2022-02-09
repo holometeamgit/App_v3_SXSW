@@ -88,7 +88,6 @@ public class ARMsgScreenRecorder : MonoBehaviour {
         yield return null;
         // Create a media device query for audio devices
         var deviceQuery = new MediaDeviceQuery(MediaDeviceCriteria.AudioDevice);
-        yield return null;
         // Get the device
         audioDevice = deviceQuery.current as AudioDevice;
 
