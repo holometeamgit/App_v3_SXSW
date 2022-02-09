@@ -8,7 +8,8 @@ using System;
 /// <summary>
 /// PnlRoomPopupController controller for PnlRoomPopup
 /// </summary>
-public class PnlRoomPopupController {
+public class DeepLinkRoomPopupController {
+
     private DeepLinkChecker _roomPopupShowChecker;
     private StreamerCountUpdater _streamerCountUpdater;
     private UserWebManager _userWebManager;
@@ -26,7 +27,7 @@ public class PnlRoomPopupController {
     private bool _isWaitIfNeedHideStarted;
     private bool _isCheckStateStarted;
 
-    public PnlRoomPopupController(DeepLinkChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater, UserWebManager userWebManager) {
+    public DeepLinkRoomPopupController(DeepLinkChecker roomPopupShowChecker, StreamerCountUpdater streamerCountUpdater, UserWebManager userWebManager) {
         Construct(roomPopupShowChecker, streamerCountUpdater, userWebManager);
     }
 
@@ -81,10 +82,12 @@ public class PnlRoomPopupController {
                 _receivedRoomJsonData = roomJsonData;
 
                 if (_receivedRoomJsonData.status == StreamJsonData.Data.LIVE_ROOM_STR) {
-                    StreamCallBacks.onShowPopUpRoomOnline?.Invoke(_receivedRoomJsonData.user);
+                    DeepLinkRoomData roomData = new DeepLinkRoomData(_receivedRoomJsonData.user, DeepLinkRoomData.Settings.Online);
+                    DeepLinkRoomConstructor.OnShow?.Invoke(roomData);
                     _streamerCountUpdater.StartCheck(_receivedRoomJsonData.agora_channel, true);
                 } else {
-                    StreamCallBacks.onShowPopUpRoomOffline?.Invoke(_receivedRoomJsonData.user);
+                    DeepLinkRoomData roomData = new DeepLinkRoomData(_receivedRoomJsonData.user, DeepLinkRoomData.Settings.Offline);
+                    DeepLinkRoomConstructor.OnShow?.Invoke(roomData);
                 }
 
                 WaitStart();
@@ -106,7 +109,8 @@ public class PnlRoomPopupController {
         WaitForCanShow().ContinueWith((task) => {
             if (_receivedRoomJsonData != null)
                 return;
-            StreamCallBacks.onShowPopUpRoomEnded?.Invoke(_startedRoomJsonData.user);
+            DeepLinkRoomData roomData = new DeepLinkRoomData(_receivedRoomJsonData.user, DeepLinkRoomData.Settings.Ended);
+            DeepLinkRoomConstructor.OnShow?.Invoke(roomData);
             WaitStart();
         }, taskScheduler);
     }
@@ -128,7 +132,7 @@ public class PnlRoomPopupController {
     private void OnOpenRoom() {
         _startedRoomJsonData = _receivedRoomJsonData;
         PlayLiveStream();
-        StreamCallBacks.onClosePopUp?.Invoke();
+        DeepLinkRoomConstructor.OnHide?.Invoke();
     }
 
     private void OnShareRoom() {
@@ -181,10 +185,10 @@ public class PnlRoomPopupController {
             await Task.Delay(CHECK_COOLDOWN);
         }
 
-        StreamCallBacks.onClosePopUp?.Invoke();
+        DeepLinkRoomConstructor.OnHide?.Invoke();
     }
 
-    ~PnlRoomPopupController() {
+    ~DeepLinkRoomPopupController() {
         _streamerCountUpdater.OnCountUpdated -= UpdateUserCount;
 
         //from app

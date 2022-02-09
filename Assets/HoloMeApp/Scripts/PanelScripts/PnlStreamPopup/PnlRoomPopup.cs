@@ -30,7 +30,7 @@ public class PnlRoomPopup : MonoBehaviour {
     [SerializeField]
     private CanvasGroup _canvasGroup;
 
-    private const long USER_NOT_FOUND_CODE = 404;
+    private const string USER_NOT_FOUND_CODE = "404";
 
     /// <summary>
     /// Call share event for current room
@@ -57,10 +57,31 @@ public class PnlRoomPopup : MonoBehaviour {
     }
 
     /// <summary>
+    /// Show Window
+    /// </summary>
+    /// <param name="data"></param>
+    public void Show(DeepLinkRoomData data) {
+        switch (data.GetSettings()) {
+            case DeepLinkRoomData.Settings.NotExist:
+                ShowUserDoesntExist(data.GetText());
+                break;
+            case DeepLinkRoomData.Settings.Ended:
+                ShowNoLongerOnline(data.GetText());
+                break;
+            case DeepLinkRoomData.Settings.Online:
+                ShowCurrentlyOnline(data.GetText());
+                break;
+            default:
+                ShowCurrentlyOffline(data.GetText());
+                break;
+        }
+    }
+
+    /// <summary>
     /// User doesn'tExist
     /// </summary>
     /// <param name="errorCode"></param>
-    public void ShowUserDoesntExist(long errorCode) {
+    private void ShowUserDoesntExist(string errorCode) {
         if (errorCode != USER_NOT_FOUND_CODE) {
             return;
         }
@@ -82,7 +103,7 @@ public class PnlRoomPopup : MonoBehaviour {
     /// User No Longer online
     /// </summary>
     /// <param name="username"></param>
-    public void ShowNoLongerOnline(string username) {
+    private void ShowNoLongerOnline(string username) {
         _titleText.text = string.Format("<color=#{0}>{1}</color> is no longer live",
             ColorUtility.ToHtmlStringRGBA(_highlightMSGColor), username);
 
@@ -100,7 +121,7 @@ public class PnlRoomPopup : MonoBehaviour {
     /// User is Offline
     /// </summary>
     /// <param name="username"></param>
-    public void ShowCurrentlyOffline(string username) {
+    private void ShowCurrentlyOffline(string username) {
         _titleText.text = string.Format("<color=#{0}>{1}</color>’s room is currently offline",
             ColorUtility.ToHtmlStringRGBA(_highlightMSGColor), username);
 
@@ -118,7 +139,7 @@ public class PnlRoomPopup : MonoBehaviour {
     /// User is online
     /// </summary>
     /// <param name="username"></param>
-    public void ShowCurrentlyOnline(string username) {
+    private void ShowCurrentlyOnline(string username) {
         _titleText.text = string.Format("<color=#{0}>{1}</color>’s room is online",
             ColorUtility.ToHtmlStringRGBA(_highlightMSGColor), username);
 
@@ -132,6 +153,9 @@ public class PnlRoomPopup : MonoBehaviour {
         _swipePopUp.Show();
     }
 
+    /// <summary>
+    /// Hide Window
+    /// </summary>
     public void Hide() {
         _swipePopUp.Hide();
     }

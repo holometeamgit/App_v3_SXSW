@@ -50,7 +50,8 @@ public class DeepLinkRoomController : MonoBehaviour {
         GetRoomByUserName(username,
             (code, body) => Open(body),
             (code, body) => {
-                StreamCallBacks.onUserDoesntExist?.Invoke(code); HelperFunctions.DevLogError(code + " " + body);
+                DeepLinkRoomData deepLinkRoomData = new DeepLinkRoomData(code.ToString(), DeepLinkRoomData.Settings.NotExist);
+                DeepLinkRoomConstructor.OnShow?.Invoke(deepLinkRoomData); HelperFunctions.DevLogError(code + " " + body);
             });
     }
 
