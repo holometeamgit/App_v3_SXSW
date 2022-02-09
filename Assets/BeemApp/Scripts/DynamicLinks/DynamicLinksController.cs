@@ -15,7 +15,6 @@ namespace Beem.Firebase.DynamicLink {
 
         private void Subscribe() {
             DynamicLinks.DynamicLinkReceived += OnDynamicLink;
-
         }
 
         private void OnDisable() {
@@ -25,7 +24,7 @@ namespace Beem.Firebase.DynamicLink {
 
         private void OnDynamicLink(string url) {
             DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(url);
-            HelperFunctions.DevLog("Received dynamic link {0}", url);
+            HelperFunctions.DevLogError($"Received dynamic link {url}");
         }
 
         // Display the dynamic link received by the application.
