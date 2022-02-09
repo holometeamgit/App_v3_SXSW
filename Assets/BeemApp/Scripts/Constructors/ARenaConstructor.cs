@@ -15,10 +15,12 @@ public class ARenaConstructor : MonoBehaviour {
     public static Action onShowPinchToZoomMessage = delegate { };
     public static Action onPlaced = delegate { };
     public static Action onHideScanMessage = delegate { };
-    public static Action<StreamJsonData.Data, bool> onActivateForPreRecorded = delegate { };
-    public static Action<ARMsgJSON.Data> onActivateForARMessaging = delegate { };
-    public static Action<string, string, bool> onActivateForStreaming = delegate { };
-    public static Action onDeactivate = delegate { };
+    public static Action<StreamJsonData.Data, bool> OnShowPrerecorded = delegate { };
+    public static Action<ARMsgJSON.Data> OnShowARMessaging = delegate { };
+    public static Action<StreamJsonData.Data> OnShowStadium = delegate { };
+    public static Action<RoomJsonData> OnShowRoom = delegate { };
+
+    public static Action OnHide = delegate { };
 
     private void OnEnable() {
         onRunTutorial += OnRunTutorial;
@@ -26,10 +28,11 @@ public class ARenaConstructor : MonoBehaviour {
         onShowPinchToZoomMessage += OnShowPinchToZoomMessage;
         onPlaced += OnPlaced;
         onHideScanMessage += OnHideScanMessage;
-        onActivateForPreRecorded += OnActivateForPreRecorded;
-        onActivateForARMessaging += OnActivateForARMessaging;
-        onActivateForStreaming += OnActivateForStreaming;
-        onDeactivate += OnDeactivate;
+        OnShowPrerecorded += ShowPrerecorded;
+        OnShowARMessaging += ShowARMessaging;
+        OnShowStadium += ShowStadium;
+        OnShowRoom += ShowRoom;
+        OnHide += Hide;
     }
 
     private void OnDisable() {
@@ -38,10 +41,11 @@ public class ARenaConstructor : MonoBehaviour {
         onShowPinchToZoomMessage -= OnShowPinchToZoomMessage;
         onPlaced -= OnPlaced;
         onHideScanMessage -= OnHideScanMessage;
-        onActivateForPreRecorded -= OnActivateForPreRecorded;
-        onActivateForARMessaging -= OnActivateForARMessaging;
-        onActivateForStreaming -= OnActivateForStreaming;
-        onDeactivate -= OnDeactivate;
+        OnShowPrerecorded -= ShowPrerecorded;
+        OnShowARMessaging -= ShowARMessaging;
+        OnShowStadium -= ShowStadium;
+        OnShowRoom -= ShowRoom;
+        OnHide -= Hide;
     }
 
     private void OnRunTutorial() {
@@ -64,19 +68,23 @@ public class ARenaConstructor : MonoBehaviour {
         _pnlViewingExperience.HideScanMessage();
     }
 
-    private void OnActivateForPreRecorded(StreamJsonData.Data data, bool isTeaser) {
-        _pnlViewingExperience.ActivateForPreRecorded(data, isTeaser);
+    private void ShowPrerecorded(StreamJsonData.Data data, bool isTeaser) {
+        _pnlViewingExperience.ShowPrerecorded(data, isTeaser);
     }
 
-    private void OnActivateForARMessaging(ARMsgJSON.Data data) {
-        _pnlViewingExperience.ActivateForARMessaging(data);
+    private void ShowARMessaging(ARMsgJSON.Data data) {
+        _pnlViewingExperience.ShowARMessaging(data);
     }
 
-    private void OnActivateForStreaming(string channelName, string streamID, bool isRoom) {
-        _pnlViewingExperience.ActivateForStreaming(channelName, streamID, isRoom);
+    private void ShowStadium(StreamJsonData.Data data) {
+        _pnlViewingExperience.ShowStadium(data);
     }
 
-    private void OnDeactivate() {
-        _pnlViewingExperience.StopExperience();
+    private void ShowRoom(RoomJsonData data) {
+        _pnlViewingExperience.ShowRoom(data);
+    }
+
+    private void Hide() {
+        _pnlViewingExperience.Hide();
     }
 }

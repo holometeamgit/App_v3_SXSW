@@ -10,40 +10,40 @@ public class StreamOverlayConstructor : MonoBehaviour {
     [SerializeField]
     private PnlStreamOverlay _pnlStreamOverlay;
 
-    public static Action onActivatedAsStadiumBroadcaster = delegate { };
-    public static Action onActivatedAsRoomBroadcaster = delegate { };
-    public static Action<string, string, bool> onActivatedAsViewer = delegate { };
+    public static Action<BroadcasterData> OnShowAsBroadcaster = delegate { };
+    public static Action<StreamJsonData.Data> OnShowAsStadiumViewer = delegate { };
+    public static Action<RoomJsonData> OnShowAsRoomViewer = delegate { };
 
     public static Action OnHide = delegate { };
 
     private void OnEnable() {
-        onActivatedAsStadiumBroadcaster += OnActivatedAsStadiumBroadcaster;
-        onActivatedAsRoomBroadcaster += OnActivatedAsRoomBroadcaster;
-        onActivatedAsViewer += OnActivatedAsViewer;
+        OnShowAsBroadcaster += ShowAsBroadcaster;
+        OnShowAsRoomViewer += ShowAsRoomViewer;
+        OnShowAsStadiumViewer += ShowAsStadiumViewer;
         OnHide += Hide;
     }
 
     private void OnDisable() {
-        onActivatedAsStadiumBroadcaster -= OnActivatedAsStadiumBroadcaster;
-        onActivatedAsRoomBroadcaster -= OnActivatedAsRoomBroadcaster;
-        onActivatedAsViewer -= OnActivatedAsViewer;
+        OnShowAsBroadcaster -= ShowAsBroadcaster;
+        OnShowAsRoomViewer -= ShowAsRoomViewer;
+        OnShowAsStadiumViewer -= ShowAsStadiumViewer;
         OnHide -= Hide;
     }
 
-    private void OnActivatedAsStadiumBroadcaster() {
-        _pnlStreamOverlay.OpenAsStreamer();
+    private void ShowAsBroadcaster(BroadcasterData data) {
+        _pnlStreamOverlay.Show(data);
     }
 
-    private void OnActivatedAsRoomBroadcaster() {
-        _pnlStreamOverlay.OpenAsRoomBroadcaster();
+    private void ShowAsRoomViewer(RoomJsonData data) {
+        _pnlStreamOverlay.Show(data);
     }
 
-    private void OnActivatedAsViewer(string channelName, string streamID, bool isRoom) {
-        _pnlStreamOverlay.OpenAsViewer(channelName, streamID, isRoom);
+    private void ShowAsStadiumViewer(StreamJsonData.Data data) {
+        _pnlStreamOverlay.Show(data);
     }
 
     private void Hide() {
-        _pnlStreamOverlay.Deactivate();
+        _pnlStreamOverlay.Hide();
     }
 
 }

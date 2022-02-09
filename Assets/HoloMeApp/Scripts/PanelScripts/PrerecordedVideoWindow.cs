@@ -55,7 +55,7 @@ public class PrerecordedVideoWindow : MonoBehaviour {
     /// Initialization
     /// </summary>
     /// <param name="streamID"></param>
-    public void Init(StreamJsonData.Data streamData) {
+    public void Show(StreamJsonData.Data streamData) {
         newDataAssigned = true;
         _streamData = streamData;
 
@@ -81,7 +81,7 @@ public class PrerecordedVideoWindow : MonoBehaviour {
     /// <summary>
     /// Deactivate
     /// </summary>
-    public void Deactivate() {
+    public void Hide() {
         gameObject.SetActive(false);
     }
 
@@ -143,7 +143,7 @@ public class PrerecordedVideoWindow : MonoBehaviour {
         RecordARConstructor.OnHide?.Invoke();
         HomeConstructor.OnShow?.Invoke();
         BottomMenuConstructor.OnShow?.Invoke();
-        ARenaConstructor.onDeactivate?.Invoke();
+        ARenaConstructor.OnHide?.Invoke();
         PrerecordedVideoConstructor.OnHide?.Invoke();
     }
 }

@@ -78,7 +78,8 @@ public class ContentPlayer {
             HomeConstructor.OnHide?.Invoke();
             BottomMenuConstructor.OnHide?.Invoke();
             SettingsConstructor.OnHide?.Invoke();
-            StreamOverlayConstructor.onActivatedAsViewer?.Invoke(data.agora_channel, data.id, true);
+            ARenaConstructor.OnShowRoom?.Invoke(data);
+            StreamOverlayConstructor.OnShowAsRoomViewer?.Invoke(data);
             UserName = data.user;
         });
 
@@ -94,7 +95,7 @@ public class ContentPlayer {
             BottomMenuConstructor.OnHide?.Invoke();
             SettingsConstructor.OnHide?.Invoke();
             ARMsgRecordConstructor.OnHide?.Invoke();
-            ARenaConstructor.onActivateForARMessaging?.Invoke(data);
+            ARenaConstructor.OnShowARMessaging?.Invoke(data);
             ARMsgARenaConstructor.OnShow?.Invoke(data);
             UserName = data.user;
         });
@@ -125,7 +126,8 @@ public class ContentPlayer {
             HomeConstructor.OnHide?.Invoke();
             BottomMenuConstructor.OnHide?.Invoke();
             SettingsConstructor.OnHide?.Invoke();
-            StreamOverlayConstructor.onActivatedAsViewer?.Invoke(data.agora_channel, data.id.ToString(), false);
+            ARenaConstructor.OnShowStadium?.Invoke(data);
+            StreamOverlayConstructor.OnShowAsStadiumViewer?.Invoke(data);
             UserName = data.user;
         });
     }
@@ -140,7 +142,7 @@ public class ContentPlayer {
             HomeConstructor.OnHide?.Invoke();
             BottomMenuConstructor.OnHide?.Invoke();
             SettingsConstructor.OnHide?.Invoke();
-            ARenaConstructor.onActivateForPreRecorded?.Invoke(data, false);
+            ARenaConstructor.OnShowPrerecorded?.Invoke(data, false);
             PrerecordedVideoConstructor.OnShow?.Invoke(data);
             UserName = data.user;
         });
@@ -156,7 +158,7 @@ public class ContentPlayer {
             HomeConstructor.OnHide?.Invoke();
             BottomMenuConstructor.OnHide?.Invoke();
             SettingsConstructor.OnHide?.Invoke();
-            ARenaConstructor.onActivateForPreRecorded?.Invoke(data, data.HasTeaser);
+            ARenaConstructor.OnShowPrerecorded?.Invoke(data, data.HasTeaser);
             PrerecordedVideoConstructor.OnShow?.Invoke(data);
             UserName = data.user;
             _purchaseManager.SetPurchaseStreamData(data);

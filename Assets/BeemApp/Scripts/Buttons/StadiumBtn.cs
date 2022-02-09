@@ -20,7 +20,8 @@ public class StadiumBtn : MonoBehaviour {
             HomeConstructor.OnHide?.Invoke();
             BottomMenuConstructor.OnHide?.Invoke();
             CommentsControllersConstructor.OnHide?.Invoke();
-            StreamOverlayConstructor.onActivatedAsStadiumBroadcaster?.Invoke();
+            BroadcasterData data = new BroadcasterData(false);
+            StreamOverlayConstructor.OnShowAsBroadcaster?.Invoke(data);
             AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyGoLive, new Dictionary<string, string>() { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID } });
 
         });

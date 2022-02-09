@@ -117,10 +117,10 @@ public class PnlViewingExperience : MonoBehaviour {
         //messageRT.DOAnchorPosY(0, messageAnimationSpeed);
         scanMessageRT.DOScale(Vector3.zero, animationSpeed).SetDelay(messageAnimationSpeed);
     }
-    public void ActivateForPreRecorded(StreamJsonData.Data streamJsonData, bool isTeaser) {
+    public void ShowPrerecorded(StreamJsonData.Data data, bool isTeaser) {
         SharedActivationFunctions();
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, streamJsonData.title } });
-        _hologramHandler.PlayIfPlaced(isTeaser ? streamJsonData.teaser_s3_url : streamJsonData.stream_s3_url, streamJsonData.user_id);
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, data.title } });
+        _hologramHandler.PlayIfPlaced(isTeaser ? data.teaser_s3_url : data.stream_s3_url, data.user_id);
         _hologramHandler.TogglePreRecordedVideoRenderer(true);
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
@@ -131,10 +131,10 @@ public class PnlViewingExperience : MonoBehaviour {
     /// <summary>
     /// Placement for AR Messaging
     /// </summary>
-    /// <param name="streamJsonData"></param>
-    public void ActivateForARMessaging(ARMsgJSON.Data streamJsonData) {
+    /// <param name="data"></param>
+    public void ShowARMessaging(ARMsgJSON.Data data) {
         SharedActivationFunctions();
-        _hologramHandler.PlayIfPlaced(streamJsonData.ar_message_s3_link);
+        _hologramHandler.PlayIfPlaced(data.ar_message_s3_link);
         _hologramHandler.TogglePreRecordedVideoRenderer(true);
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
@@ -142,11 +142,31 @@ public class PnlViewingExperience : MonoBehaviour {
         }
     }
 
-    public void ActivateForStreaming(string channelName, string streamID, bool isRoom) {
+    /// <summary>
+    /// Placement for Room
+    /// </summary>
+    /// <param name="data"></param>
+    public void ShowRoom(RoomJsonData data) {
         SharedActivationFunctions();
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, "Live Stream: " + channelName }, { AnalyticParameters.ParamPerformanceID, streamID } });
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, "Live Stream: " + data.agora_channel }, { AnalyticParameters.ParamPerformanceID, data.id } });
         _hologramHandler.TogglePreRecordedVideoRenderer(false);
-        _hologramHandler.AssignStreamName(channelName);
+        _hologramHandler.AssignStreamName(data.agora_channel);
+        _hologramHandler.StartTrackingStream();
+        if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
+        {
+            HideScanMessage();
+        }
+    }
+
+    /// <summary>
+    /// Placement for Stadium
+    /// </summary>
+    /// <param name="data"></param>
+    public void ShowStadium(StreamJsonData.Data data) {
+        SharedActivationFunctions();
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, "Live Stream: " + data.agora_channel }, { AnalyticParameters.ParamPerformanceID, data.id.ToString() } });
+        _hologramHandler.TogglePreRecordedVideoRenderer(false);
+        _hologramHandler.AssignStreamName(data.agora_channel);
         _hologramHandler.StartTrackingStream();
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
@@ -168,7 +188,7 @@ public class PnlViewingExperience : MonoBehaviour {
         HideScanAnimation();
         canvasGroup.DOFade(0, .5f);
     }
-    public void StopExperience() {
+    public void Hide() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         ARController.onActivated?.Invoke(false);
         _hologramHandler.StopVideo();

@@ -26,11 +26,11 @@ public class PrerecordedVideoConstructor : MonoBehaviour {
         OnHide -= Hide;
     }
 
-    private void Show(StreamJsonData.Data streamData) {
-        _prerecordedVideoWindow.Init(streamData);
+    private void Show(StreamJsonData.Data data) {
+        _prerecordedVideoWindow.Show(data);
     }
 
     private void Hide() {
-        _prerecordedVideoWindow.Deactivate();
+        _prerecordedVideoWindow.Hide();
     }
 }

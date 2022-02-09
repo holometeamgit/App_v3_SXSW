@@ -26,7 +26,7 @@ namespace Beem.UI {
         private void CopyAndExit() {
             GUIUtility.systemCopyBuffer = currentData.share_link;
             ARMsgARenaConstructor.OnHide?.Invoke();
-            ARenaConstructor.onDeactivate?.Invoke();
+            ARenaConstructor.OnHide?.Invoke();
             HomeConstructor.OnShow?.Invoke();
             BottomMenuConstructor.OnShow?.Invoke();
         }
