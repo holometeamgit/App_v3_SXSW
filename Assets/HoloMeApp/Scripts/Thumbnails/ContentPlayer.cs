@@ -116,7 +116,7 @@ public class ContentPlayer {
         }
 
         _permissionController.CheckCameraMicAccess(() => {
-            StreamCallBacks.onCloseStreamPopUp?.Invoke();
+            DeepLinkStreamConstructor.OnHide?.Invoke();
             HomeConstructor.OnActivated?.Invoke(false);
             BottomMenuConstructor.OnActivated?.Invoke(false);
             SettingsConstructor.OnActivated?.Invoke(false);
@@ -131,7 +131,7 @@ public class ContentPlayer {
     /// <param name="roomJsonData"></param>
     private void PlayPrerecorded(StreamJsonData.Data data) { //TODO split it to other class
         _permissionController.CheckCameraMicAccess(() => {
-            StreamCallBacks.onCloseStreamPopUp?.Invoke();
+            DeepLinkStreamConstructor.OnHide?.Invoke();
             HomeConstructor.OnActivated?.Invoke(false);
             BottomMenuConstructor.OnActivated?.Invoke(false);
             SettingsConstructor.OnActivated?.Invoke(false);
@@ -147,7 +147,7 @@ public class ContentPlayer {
     /// <param name="data"></param>
     private void PlayTeaser(StreamJsonData.Data data) {
         _permissionController.CheckCameraMicAccess(() => {
-            StreamCallBacks.onCloseStreamPopUp?.Invoke();
+            DeepLinkStreamConstructor.OnHide?.Invoke();
             HomeConstructor.OnActivated?.Invoke(false);
             BottomMenuConstructor.OnActivated?.Invoke(false);
             SettingsConstructor.OnActivated?.Invoke(false);

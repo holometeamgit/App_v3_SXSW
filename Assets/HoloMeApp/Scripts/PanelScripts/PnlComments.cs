@@ -15,7 +15,7 @@ public class PnlComments : MonoBehaviour {
     public event GetItemByOrdinalID onGetItemByOrdinalIndex;
     public Action onRefresh;
     public Action onLoadNext;
-    public Action<int> onOpen;
+    public Action<StreamJsonData.Data> onOpen;
     public Action onClose;
     public Action<string> onPost;
 
@@ -40,15 +40,15 @@ public class PnlComments : MonoBehaviour {
     /// <summary>
     /// open comments for content with id
     /// </summary>
-    public void OpenComments(int contentId) {
-        HelperFunctions.DevLog("pnlcomments OpenComments " + contentId);
+    public void Show(StreamJsonData.Data data) {
+        HelperFunctions.DevLog("pnlcomments OpenComments " + data.id);
         PrepareToShowComments();
         _isCanOpen = true;
         _afterRefresh = true;
         OnOpen();
         uiCommentElementPrefab = _scroll.Prefab.GetComponent<UICommentElement>();
         _scroll.IsPullBottom = true;
-        onOpen?.Invoke(contentId);
+        onOpen?.Invoke(data);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class PnlComments : MonoBehaviour {
     /// <summary>
     /// close comments
     /// </summary>
-    public void CloseComments() {
+    public void Hide() {
         _isCanOpen = false;
         HidePost();
         _animator.SetBool("IsShowComment", _isCanOpen);

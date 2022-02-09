@@ -5,6 +5,7 @@ using TMPro;
 using Beem.Permissions;
 using Beem.ARMsg;
 using Zenject;
+using Beem;
 
 /// <summary>
 /// Pnl for menu
@@ -47,7 +48,7 @@ public class PnlMenu : MonoBehaviour {
     public void OpenMenu() {
         HomeConstructor.OnActivated?.Invoke(true);
         SettingsConstructor.OnActivated?.Invoke(false);
-        StreamCallBacks.onCloseComments?.Invoke();
+        CommentsControllersConstructor.OnHide?.Invoke();
     }
 
     /// <summary>
@@ -57,6 +58,6 @@ public class PnlMenu : MonoBehaviour {
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySettingsPanel);
         SettingsConstructor.OnActivated?.Invoke(true);
         HomeConstructor.OnActivated?.Invoke(false);
-        StreamCallBacks.onCloseComments?.Invoke();
+        CommentsControllersConstructor.OnHide?.Invoke();
     }
 }

@@ -58,7 +58,7 @@ public class PnlThumbnailPopup : UIThumbnail {
         _contentPlayer.Buy(thumbnailElement.Data);
     }
 
-    public void OpenStream(StreamJsonData.Data data) {
+    public void Show(StreamJsonData.Data data) {
         currentId = data.id;
         ShowStreamStream(data);
     }
@@ -79,7 +79,7 @@ public class PnlThumbnailPopup : UIThumbnail {
         UpdateData();
     }
 
-    public void ClosePnl() {
+    public void Hide() {
         currentId = DEFAUL_STREAM_DATA_ID;
 
         gameObject.SetActive(false);

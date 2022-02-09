@@ -5,11 +5,17 @@ using UnityEngine;
 /// <summary>
 /// RecordARScreenshotdata
 /// </summary>
-public class RecordARScreenshotData {
+public struct RecordARData {
 
-    public RecordARScreenshotData(Sprite sprite, Texture2D screenshotTexture, string path) {
+    public RecordARData(Sprite sprite, Texture2D screenshotTexture, string path) {
         _sprite = sprite;
         _screenshotTexture = screenshotTexture;
+        _path = path;
+    }
+
+    public RecordARData(string path) {
+        _sprite = null;
+        _screenshotTexture = null;
         _path = path;
     }
 

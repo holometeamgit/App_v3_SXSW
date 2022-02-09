@@ -66,29 +66,29 @@ public class PnlPostRecord : MonoBehaviour {
         _hologramHandler = hologramHandler;
     }
 
-    public void ActivatePostVideo(string lastRecordPath) {
+    /// <summary>
+    /// Show Post Record Panel
+    /// </summary>
+    /// <param name="recordARData"></param>
+    public void Show(RecordARData recordARData) {
         gameObject.SetActive(true);
-        HelperFunctions.DevLog("Post record video activate called");
-        screenshotWasTaken = false;
-        btnPreview.gameObject.SetActive(true);
+        screenshotWasTaken = recordARData.GetSprite;
 
-        imgPreview.texture = renderTexture;
+        screenShot = recordARData.GetScreenshotTexture;
 
-        VideoPlayer.enabled = true;
-        VideoPlayer.url = lastRecordPath;
-        VideoPlayer.Play();
+        btnPreview.gameObject.SetActive(!recordARData.GetSprite);
 
-        Activate(null, lastRecordPath);
-    }
+        VideoPlayer.enabled = !recordARData.GetSprite;
 
-    public void ActivatePostScreenshot(RecordARScreenshotData recordARScreenshotData) {
-        gameObject.SetActive(true);
-        HelperFunctions.DevLog("Post record screenshot activate called");
-        VideoPlayer.enabled = false;
-        screenshotWasTaken = true;
-        screenShot = recordARScreenshotData.GetScreenshotTexture;
-        btnPreview.gameObject.SetActive(false);
-        Activate(recordARScreenshotData.GetSprite, recordARScreenshotData.GetPath);
+        if (!recordARData.GetSprite) {
+            imgPreview.texture = renderTexture;
+            VideoPlayer.url = recordARData.GetPath;
+            VideoPlayer.Play();
+        } else {
+            imgPreview.texture = recordARData.GetSprite.texture;
+        }
+
+        Activate(recordARData.GetSprite, recordARData.GetPath);
     }
 
     private void Activate(Sprite sprite, string lastRecordPath) {
@@ -100,11 +100,6 @@ public class PnlPostRecord : MonoBehaviour {
         imgDownloadSuccess.gameObject.SetActive(false);
         btnDownload.interactable = true;
         btnPreview.interactable = true;
-
-
-        if (sprite != null)
-            imgPreview.texture = sprite.texture;
-
         lastRecordingPath = lastRecordPath;
     }
 
@@ -112,7 +107,7 @@ public class PnlPostRecord : MonoBehaviour {
     /// Close Post record
     /// </summary>
     public void Close() {
-        PostRecordARConstructor.OnDeactivated?.Invoke();
+        PostRecordARConstructor.OnHide?.Invoke();
     }
 
     /// <summary>

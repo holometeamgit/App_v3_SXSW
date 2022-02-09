@@ -28,9 +28,9 @@ namespace Beem.UI {
         /// </summary>
         public void ToggleComments(bool enable) {
             if (enable) {
-                StreamCallBacks.onOpenComment?.Invoke((int)_streamData.id);
+                CommentsControllersConstructor.OnShow?.Invoke(_streamData);
             } else {
-                StreamCallBacks.onCloseComments?.Invoke();
+                CommentsControllersConstructor.OnHide?.Invoke();
             }
         }
 

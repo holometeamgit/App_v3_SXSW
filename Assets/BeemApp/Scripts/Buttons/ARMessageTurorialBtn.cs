@@ -1,3 +1,4 @@
+using Beem;
 using Beem.Permissions;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ public class ARMessageTurorialBtn : MonoBehaviour {
             SettingsConstructor.OnActivated?.Invoke(false);
             HomeConstructor.OnActivated?.Invoke(false);
             BottomMenuConstructor.OnActivated?.Invoke(false);
-            StreamCallBacks.onCloseComments?.Invoke();
+            CommentsControllersConstructor.OnHide?.Invoke();
             ARMessageTutorialConstructor.OnActivated?.Invoke(true);
         });
     }

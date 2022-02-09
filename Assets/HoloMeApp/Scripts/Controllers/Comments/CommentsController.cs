@@ -7,7 +7,7 @@ using System;
 namespace Beem.Content {
     public class CommentsController {
 
-        public Action<int,int> onDataFetched;
+        public Action<int, int> onDataFetched;
         public Action onFailDataFetched;
         public Action onPosted;
         public Action onFailPosted;
@@ -20,19 +20,20 @@ namespace Beem.Content {
         CommentsContainer _commentsContainer;
 
         VideoUploader _videoUploaderAPI;
-        long _contentId;
         bool _afterRefresh;
 
         const int PAGE_SIZE = 100;
+
+        private StreamJsonData.Data _data;
 
         public CommentsController(WebRequestHandler webRequestHandler, VideoUploader videoUploader) {
             _webRequestHandler = webRequestHandler;
             _videoUploaderAPI = videoUploader;
         }
 
-        public void Init(int contentId) {
-            HelperFunctions.DevLog("CommentsController Init  contentId " + contentId);
-            _contentId = contentId;
+        public void Init(StreamJsonData.Data data) {
+            HelperFunctions.DevLog("CommentsController Init  contentId " + data.id);
+            _data = data;
             _commentsContainer = new CommentsContainer();
             Refresh();
         }
@@ -100,7 +101,7 @@ namespace Beem.Content {
             int newCount = _commentsContainer.Count() - prevCountItems;
 
             onDataFetched?.Invoke(count, newCount);
-            if(_afterRefresh) {
+            if (_afterRefresh) {
                 _afterRefresh = false;
                 onRefresh?.Invoke();
             }
@@ -132,11 +133,11 @@ namespace Beem.Content {
         #endregion
 
         private string GetRequestUrl() {
-            return _webRequestHandler.ServerURLMediaAPI + _videoUploaderAPI.GetComments.Replace("{id}", _contentId.ToString());
+            return _webRequestHandler.ServerURLMediaAPI + _videoUploaderAPI.GetComments.Replace("{id}", _data.id.ToString());
         }
 
         private string PostRequestUrl() {
-            return _webRequestHandler.ServerURLMediaAPI + _videoUploaderAPI.PostComments.Replace("{id}", _contentId.ToString());
+            return _webRequestHandler.ServerURLMediaAPI + _videoUploaderAPI.PostComments.Replace("{id}", _data.id.ToString());
         }
     }
 }

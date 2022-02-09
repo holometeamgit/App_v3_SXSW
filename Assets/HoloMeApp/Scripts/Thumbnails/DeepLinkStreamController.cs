@@ -123,7 +123,7 @@ public class DeepLinkStreamController : MonoBehaviour {
         StreamsReceived(body,
             username,
             (data) => {
-                StreamCallBacks.onStreamDataReceived?.Invoke(data);
+                DeepLinkStreamConstructor.OnShow?.Invoke(data);
             });
     }
 
@@ -140,7 +140,7 @@ public class DeepLinkStreamController : MonoBehaviour {
     private void OpenPrerecorded(string body) {
         StreamReceived(body,
             (data) => {
-                StreamCallBacks.onStreamDataReceived?.Invoke(data);
+                DeepLinkStreamConstructor.OnShow?.Invoke(data);
             });
     }
 

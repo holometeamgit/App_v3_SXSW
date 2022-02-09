@@ -186,7 +186,8 @@ public class PnlRecord : MonoBehaviour {
             MakeScreenshot();
         } else {
             lastRecordingPath = path;
-            PostRecordARConstructor.OnActivatedVideo?.Invoke(path);
+            RecordARData recordARData = new RecordARData(lastRecordingPath);
+            PostRecordARConstructor.OnShow?.Invoke(recordARData);
         }
     }
 
@@ -207,8 +208,8 @@ public class PnlRecord : MonoBehaviour {
         yield return new WaitForEndOfFrame();
         HideUI.onActivate(true);
 
-        RecordARScreenshotData recordARScreenshotData = new RecordARScreenshotData(Sprite.Create(screenShot, new Rect(0, 0, Screen.width, Screen.height), new Vector2(0.5f, 0.5f)), screenShot, lastRecordingPath);
-        PostRecordARConstructor.OnActivatedScreenShot?.Invoke(recordARScreenshotData);
+        RecordARData recordARData = new RecordARData(Sprite.Create(screenShot, new Rect(0, 0, Screen.width, Screen.height), new Vector2(0.5f, 0.5f)), screenShot, lastRecordingPath);
+        PostRecordARConstructor.OnShow?.Invoke(recordARData);
         canvasGroup.alpha = 1;
         currentCoroutine = null;
         watermarkCanvasObject.SetActive(false);

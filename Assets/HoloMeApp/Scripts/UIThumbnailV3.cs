@@ -83,7 +83,7 @@ public class UIThumbnailV3 : UIThumbnail {
     }
 
     public void OpenComment() {
-        StreamCallBacks.onOpenComment?.Invoke((int)thumbnailElement.Data.id);
+        CommentsControllersConstructor.OnShow?.Invoke(thumbnailElement.Data);
     }
 
     public override void Play() {

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Beem.Content;
 using Zenject;
+using System;
 
 namespace Beem {
 
@@ -10,6 +11,9 @@ namespace Beem {
 
         private CommentsController _commentsController;
         private WebRequestHandler _webRequestHandler;
+
+        public static Action<StreamJsonData.Data> OnShow = delegate { };
+        public static Action OnHide = delegate { };
 
         [Inject]
         public void Construct(WebRequestHandler webRequestHandler) {
@@ -31,8 +35,8 @@ namespace Beem {
             _commentsController.onFailPosted += _pnlComments.OnFailPost;
             _commentsController.onFetchedTotalCommentsCount += _pnlComments.OnRefreshUpdateCommentsCount;
 
-            StreamCallBacks.onOpenComment += _pnlComments.OpenComments;
-            StreamCallBacks.onCloseComments += _pnlComments.CloseComments;
+            OnShow += _pnlComments.Show;
+            OnHide += _pnlComments.Hide;
         }
 
         private void OnDestroy() {
@@ -49,8 +53,8 @@ namespace Beem {
             _commentsController.onFailPosted -= _pnlComments.OnFailPost;
             _commentsController.onFetchedTotalCommentsCount -= _pnlComments.OnRefreshUpdateCommentsCount;
 
-            StreamCallBacks.onOpenComment -= _pnlComments.OpenComments;
-            StreamCallBacks.onCloseComments -= _pnlComments.CloseComments;
+            OnShow -= _pnlComments.Show;
+            OnHide -= _pnlComments.Hide;
         }
     }
 }
