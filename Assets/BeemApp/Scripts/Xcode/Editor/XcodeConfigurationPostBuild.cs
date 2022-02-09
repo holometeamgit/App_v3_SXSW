@@ -18,13 +18,13 @@ namespace Beem.Xcode {
             "https://join.beem.me/message/**",
             "https://join.beem.me/prerecorded/**",
             "https://join.beem.me/live/**",
-            "https://ar.beem.me",
-            "https://ar.beem.me/**",
+            "https://join.beem.me/stadium/**",
             "https://watch.beem.me",
             "https://watch.beem.me/room/**",
             "https://watch.beem.me/message/**",
             "https://watch.beem.me/prerecorded/**",
             "https://watch.beem.me/live/**",
+            "https://watch.beem.me/stadium/**"
         };
 
         [PostProcessBuild]
