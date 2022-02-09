@@ -21,7 +21,10 @@ namespace Beem.Xcode {
             "https://ar.beem.me",
             "https://ar.beem.me/**",
             "https://watch.beem.me",
-            "https://watch.beem.me/**",
+            "https://watch.beem.me/room/**",
+            "https://watch.beem.me/message/**",
+            "https://watch.beem.me/prerecorded/**",
+            "https://watch.beem.me/live/**",
         };
 
         [PostProcessBuild]
