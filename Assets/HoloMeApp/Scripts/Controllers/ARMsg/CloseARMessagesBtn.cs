@@ -27,8 +27,8 @@ namespace Beem.UI {
             GUIUtility.systemCopyBuffer = currentData.share_link;
             ARMsgARenaConstructor.OnHide?.Invoke();
             ARenaConstructor.onDeactivate?.Invoke();
-            HomeConstructor.OnActivated?.Invoke(true);
-            BottomMenuConstructor.OnActivated?.Invoke(true);
+            HomeConstructor.OnShow?.Invoke();
+            BottomMenuConstructor.OnShow?.Invoke();
         }
 
         public void Init(ARMsgJSON.Data data) {

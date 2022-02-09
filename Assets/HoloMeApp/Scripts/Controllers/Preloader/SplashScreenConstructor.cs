@@ -48,13 +48,13 @@ namespace Beem {
         }
 
         private void OnAuthSuccess() {
-            CreateUsernameConstructor.OnActivated?.Invoke(true);
+            CreateUsernameConstructor.OnShow?.Invoke();
             _pnlSplashScreen.Hide();
             _preloaderController.OnViewStartHide();
         }
 
         private void OnAuthFailed() {
-            WelcomeConstructor.OnActivated?.Invoke(true);
+            WelcomeConstructor.OnShow?.Invoke();
             _pnlSplashScreen.Hide();
             _preloaderController.OnViewStartHide();
         }

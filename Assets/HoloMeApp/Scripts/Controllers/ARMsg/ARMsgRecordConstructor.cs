@@ -1,22 +1,27 @@
-using UnityEngine;
-using Beem.ARMsg;
 using System;
-using Zenject;
 
 /// <summary>
 /// ARMsgConstructor. TODO convert it to DI in future 
 /// </summary>
 public class ARMsgRecordConstructor : WindowConstructor {
-    public static Action<bool> OnActivated = delegate { };
+    public static Action OnShow = delegate { };
+    public static Action OnHide = delegate { };
+
     protected void OnEnable() {
-        OnActivated += Activate;
+        OnShow += Show;
+        OnHide += Hide;
     }
 
     protected void OnDisable() {
-        OnActivated -= Activate;
+        OnShow -= Show;
+        OnHide -= Hide;
     }
 
-    private void Activate(bool status) {
-        _window?.SetActive(status);
+    protected void Show() {
+        _window.SetActive(true);
+    }
+
+    protected void Hide() {
+        _window.SetActive(false);
     }
 }

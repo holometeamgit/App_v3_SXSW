@@ -46,8 +46,8 @@ public class PnlMenu : MonoBehaviour {
     /// Open Main Menu
     /// </summary>
     public void OpenMenu() {
-        HomeConstructor.OnActivated?.Invoke(true);
-        SettingsConstructor.OnActivated?.Invoke(false);
+        HomeConstructor.OnShow?.Invoke();
+        SettingsConstructor.OnHide?.Invoke();
         CommentsControllersConstructor.OnHide?.Invoke();
     }
 
@@ -56,8 +56,8 @@ public class PnlMenu : MonoBehaviour {
     /// </summary>
     public void OpenSettings() {
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeySettingsPanel);
-        SettingsConstructor.OnActivated?.Invoke(true);
-        HomeConstructor.OnActivated?.Invoke(false);
+        SettingsConstructor.OnShow?.Invoke();
+        HomeConstructor.OnHide?.Invoke();
         CommentsControllersConstructor.OnHide?.Invoke();
     }
 }

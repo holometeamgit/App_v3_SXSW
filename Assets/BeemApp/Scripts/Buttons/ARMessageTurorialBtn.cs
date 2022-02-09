@@ -15,11 +15,11 @@ public class ARMessageTurorialBtn : MonoBehaviour {
     /// </summary>
     public void Open() {
         _permissionController.CheckCameraMicAccess(() => {
-            SettingsConstructor.OnActivated?.Invoke(false);
-            HomeConstructor.OnActivated?.Invoke(false);
-            BottomMenuConstructor.OnActivated?.Invoke(false);
+            SettingsConstructor.OnHide?.Invoke();
+            HomeConstructor.OnHide?.Invoke();
+            BottomMenuConstructor.OnHide?.Invoke();
             CommentsControllersConstructor.OnHide?.Invoke();
-            ARMessageTutorialConstructor.OnActivated?.Invoke(true);
+            ARMessageTutorialConstructor.OnShow?.Invoke();
         });
     }
 }

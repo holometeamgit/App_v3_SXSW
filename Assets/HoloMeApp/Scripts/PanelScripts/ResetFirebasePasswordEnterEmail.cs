@@ -63,8 +63,8 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     /// Switch reset password to sign in
     /// </summary>
     public void ResetPasswordToSignIn() {
-        ResetPasswordConstructor.OnActivated?.Invoke(false);
-        SignInConstructor.OnActivated?.Invoke(true);
+        ResetPasswordConstructor.OnHide?.Invoke();
+        SignInConstructor.OnShow?.Invoke();
     }
 
     private void OnEnable() {
@@ -81,8 +81,8 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     /// Back to settings
     /// </summary>
     public void ChangePasswordToSettings() {
-        ChangePasswordConstructor.OnActivated?.Invoke(false);
-        SettingsConstructor.OnActivated?.Invoke(true);
+        ChangePasswordConstructor.OnHide?.Invoke();
+        SettingsConstructor.OnShow?.Invoke();
     }
 
     private void OnDisable() {

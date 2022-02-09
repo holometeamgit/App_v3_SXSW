@@ -14,20 +14,20 @@ public class StreamOverlayConstructor : MonoBehaviour {
     public static Action onActivatedAsRoomBroadcaster = delegate { };
     public static Action<string, string, bool> onActivatedAsViewer = delegate { };
 
-    public static Action onDeactivate = delegate { };
+    public static Action OnHide = delegate { };
 
     private void OnEnable() {
         onActivatedAsStadiumBroadcaster += OnActivatedAsStadiumBroadcaster;
         onActivatedAsRoomBroadcaster += OnActivatedAsRoomBroadcaster;
         onActivatedAsViewer += OnActivatedAsViewer;
-        onDeactivate += OnDeactivate;
+        OnHide += Hide;
     }
 
     private void OnDisable() {
         onActivatedAsStadiumBroadcaster -= OnActivatedAsStadiumBroadcaster;
         onActivatedAsRoomBroadcaster -= OnActivatedAsRoomBroadcaster;
         onActivatedAsViewer -= OnActivatedAsViewer;
-        onDeactivate -= OnDeactivate;
+        OnHide -= Hide;
     }
 
     private void OnActivatedAsStadiumBroadcaster() {
@@ -42,7 +42,7 @@ public class StreamOverlayConstructor : MonoBehaviour {
         _pnlStreamOverlay.OpenAsViewer(channelName, streamID, isRoom);
     }
 
-    private void OnDeactivate() {
+    private void Hide() {
         _pnlStreamOverlay.Deactivate();
     }
 

@@ -176,8 +176,12 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         RefreshStreamControls(_agoraController.IsRoom);
         RefreshBroadcasterControls(_agoraController.IsChannelCreator);
         RefreshLiveControls(!_agoraController.IsChannelCreator || _agoraController.IsLive);
-        RecordARConstructor.OnActivated?.Invoke(!_agoraController.IsChannelCreator && !_agoraController.IsRoom);
-        HelperFunctions.DevLog($"IsRoom = {_agoraController.IsRoom}, IsChannelCreator = {_agoraController.IsChannelCreator}, IsLive = {_agoraController.IsLive}");
+
+        if (!_agoraController.IsChannelCreator && !_agoraController.IsRoom) {
+            RecordARConstructor.OnShow?.Invoke();
+        } else {
+            RecordARConstructor.OnHide?.Invoke();
+        }
     }
 
     private void RefreshStreamControls(bool room) {
@@ -331,18 +335,18 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         StopStream();
         _agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
-        StreamOverlayConstructor.onDeactivate?.Invoke();
-        BottomMenuConstructor.OnActivated?.Invoke(true);
-        HomeConstructor.OnActivated?.Invoke(true);
-        RecordARConstructor.OnActivated?.Invoke(false);
+        StreamOverlayConstructor.OnHide?.Invoke();
+        BottomMenuConstructor.OnShow?.Invoke();
+        HomeConstructor.OnShow?.Invoke();
+        RecordARConstructor.OnHide?.Invoke();
     }
 
     private void CloseAsViewer() {
         StopStream();
-        StreamOverlayConstructor.onDeactivate?.Invoke();
-        BottomMenuConstructor.OnActivated?.Invoke(true);
-        HomeConstructor.OnActivated?.Invoke(true);
-        RecordARConstructor.OnActivated?.Invoke(false);
+        StreamOverlayConstructor.OnHide?.Invoke();
+        BottomMenuConstructor.OnShow?.Invoke();
+        HomeConstructor.OnShow?.Invoke();
+        RecordARConstructor.OnHide?.Invoke();
     }
 
     private void CloseRoomAsViewerWhenStreamWasStopped() {

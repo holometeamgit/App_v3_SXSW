@@ -57,16 +57,16 @@ public class PnlEmailVerificationFirebase : MonoBehaviour {
     /// Email Verification To Sign Up
     /// </summary>
     public void EmailVerificationToSignUp() {
-        EmailVerificationConstructor.OnActivated?.Invoke(false);
-        SignUpConstructor.OnActivated?.Invoke(true);
+        EmailVerificationConstructor.OnHide?.Invoke();
+        SignUpConstructor.OnShow?.Invoke();
     }
 
     /// <summary>
     /// Email Verification To Sign In
     /// </summary>
     public void EmailVerificationToSignIn() {
-        EmailVerificationConstructor.OnActivated?.Invoke(false);
-        SignInConstructor.OnActivated?.Invoke(true);
+        EmailVerificationConstructor.OnHide?.Invoke();
+        SignInConstructor.OnShow?.Invoke();
     }
 
     private void OnApplicationFocus(bool focus) {

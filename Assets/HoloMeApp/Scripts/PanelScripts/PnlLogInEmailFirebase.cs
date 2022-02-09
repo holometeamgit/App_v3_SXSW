@@ -146,32 +146,32 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     /// Switch sign in to profile
     /// </summary>
     public void SignInToProfile() {
-        SignInConstructor.OnActivated?.Invoke(false);
-        CreateUsernameConstructor.OnActivated?.Invoke(true);
+        SignInConstructor.OnHide?.Invoke();
+        CreateUsernameConstructor.OnShow?.Invoke();
     }
 
     /// <summary>
     /// Switch sign in to sign up
     /// </summary>
     public void SignInToSignUp() {
-        SignInConstructor.OnActivated?.Invoke(false);
-        SignUpConstructor.OnActivated?.Invoke(true);
+        SignInConstructor.OnHide?.Invoke();
+        SignUpConstructor.OnShow?.Invoke();
     }
 
     /// <summary>
     /// Switch sign in to reset password
     /// </summary>
     public void SignInToResetPassword() {
-        SignInConstructor.OnActivated?.Invoke(false);
-        ResetPasswordConstructor.OnActivated?.Invoke(true);
+        SignInConstructor.OnHide?.Invoke();
+        ResetPasswordConstructor.OnShow?.Invoke();
     }
 
     /// <summary>
     /// Switch sign in to welcome
     /// </summary>
     public void SignInToWelcome() {
-        SignInConstructor.OnActivated?.Invoke(false);
-        WelcomeConstructor.OnActivated?.Invoke(true);
+        SignInConstructor.OnHide?.Invoke();
+        WelcomeConstructor.OnShow?.Invoke();
         _accountManager.LogOut();
     }
 

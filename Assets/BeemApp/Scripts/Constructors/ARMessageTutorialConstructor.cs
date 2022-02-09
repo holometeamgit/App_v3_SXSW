@@ -5,17 +5,24 @@ using System;
 /// Constructor for ARMessageTutorial window
 /// </summary>
 public class ARMessageTutorialConstructor : WindowConstructor {
-    public static Action<bool> OnActivated = delegate { };
+    public static Action OnShow = delegate { };
+    public static Action OnHide = delegate { };
 
     protected void OnEnable() {
-        OnActivated += Activate;
+        OnShow += Show;
+        OnHide += Hide;
     }
 
     protected void OnDisable() {
-        OnActivated -= Activate;
+        OnShow -= Show;
+        OnHide -= Hide;
     }
 
-    protected void Activate(bool status) {
-        _window.SetActive(status);
+    protected void Show() {
+        _window.SetActive(true);
+    }
+
+    protected void Hide() {
+        _window.SetActive(false);
     }
 }

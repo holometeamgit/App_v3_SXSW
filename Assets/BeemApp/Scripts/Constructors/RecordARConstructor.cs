@@ -7,17 +7,24 @@ using UnityEngine;
 /// Constructor for Record AR window
 /// </summary>
 public class RecordARConstructor : WindowConstructor {
-    public static Action<bool> OnActivated = delegate { };
+    public static Action OnShow = delegate { };
+    public static Action OnHide = delegate { };
 
     protected void OnEnable() {
-        OnActivated += Activate;
+        OnShow += Show;
+        OnHide += Hide;
     }
 
     protected void OnDisable() {
-        OnActivated -= Activate;
+        OnShow -= Show;
+        OnHide -= Hide;
     }
 
-    protected void Activate(bool status) {
-        _window.SetActive(status);
+    protected void Show() {
+        _window.SetActive(true);
+    }
+
+    protected void Hide() {
+        _window.SetActive(false);
     }
 }

@@ -75,9 +75,9 @@ public class ContentPlayer {
         }
 
         _permissionController.CheckCameraMicAccess(() => {
-            HomeConstructor.OnActivated?.Invoke(false);
-            BottomMenuConstructor.OnActivated?.Invoke(false);
-            SettingsConstructor.OnActivated?.Invoke(false);
+            HomeConstructor.OnHide?.Invoke();
+            BottomMenuConstructor.OnHide?.Invoke();
+            SettingsConstructor.OnHide?.Invoke();
             StreamOverlayConstructor.onActivatedAsViewer?.Invoke(data.agora_channel, data.id, true);
             UserName = data.user;
         });
@@ -90,10 +90,10 @@ public class ContentPlayer {
     /// <param name="roomJsonData"></param>
     public void PlayARMessage(ARMsgJSON.Data data) { //TODO split it to other class
         _permissionController.CheckCameraMicAccess(() => {
-            HomeConstructor.OnActivated?.Invoke(false);
-            BottomMenuConstructor.OnActivated?.Invoke(false);
-            SettingsConstructor.OnActivated?.Invoke(false);
-            ARMsgRecordConstructor.OnActivated?.Invoke(false);
+            HomeConstructor.OnHide?.Invoke();
+            BottomMenuConstructor.OnHide?.Invoke();
+            SettingsConstructor.OnHide?.Invoke();
+            ARMsgRecordConstructor.OnHide?.Invoke();
             ARenaConstructor.onActivateForARMessaging?.Invoke(data);
             ARMsgARenaConstructor.OnShow?.Invoke(data);
             UserName = data.user;
@@ -122,9 +122,9 @@ public class ContentPlayer {
 
         _permissionController.CheckCameraMicAccess(() => {
             DeepLinkStreamConstructor.OnHide?.Invoke();
-            HomeConstructor.OnActivated?.Invoke(false);
-            BottomMenuConstructor.OnActivated?.Invoke(false);
-            SettingsConstructor.OnActivated?.Invoke(false);
+            HomeConstructor.OnHide?.Invoke();
+            BottomMenuConstructor.OnHide?.Invoke();
+            SettingsConstructor.OnHide?.Invoke();
             StreamOverlayConstructor.onActivatedAsViewer?.Invoke(data.agora_channel, data.id.ToString(), false);
             UserName = data.user;
         });
@@ -137,11 +137,11 @@ public class ContentPlayer {
     private void PlayPrerecorded(StreamJsonData.Data data) { //TODO split it to other class
         _permissionController.CheckCameraMicAccess(() => {
             DeepLinkStreamConstructor.OnHide?.Invoke();
-            HomeConstructor.OnActivated?.Invoke(false);
-            BottomMenuConstructor.OnActivated?.Invoke(false);
-            SettingsConstructor.OnActivated?.Invoke(false);
+            HomeConstructor.OnHide?.Invoke();
+            BottomMenuConstructor.OnHide?.Invoke();
+            SettingsConstructor.OnHide?.Invoke();
             ARenaConstructor.onActivateForPreRecorded?.Invoke(data, false);
-            PrerecordedVideoConstructor.OnActivated?.Invoke(data);
+            PrerecordedVideoConstructor.OnShow?.Invoke(data);
             UserName = data.user;
         });
     }
@@ -153,11 +153,11 @@ public class ContentPlayer {
     private void PlayTeaser(StreamJsonData.Data data) {
         _permissionController.CheckCameraMicAccess(() => {
             DeepLinkStreamConstructor.OnHide?.Invoke();
-            HomeConstructor.OnActivated?.Invoke(false);
-            BottomMenuConstructor.OnActivated?.Invoke(false);
-            SettingsConstructor.OnActivated?.Invoke(false);
+            HomeConstructor.OnHide?.Invoke();
+            BottomMenuConstructor.OnHide?.Invoke();
+            SettingsConstructor.OnHide?.Invoke();
             ARenaConstructor.onActivateForPreRecorded?.Invoke(data, data.HasTeaser);
-            PrerecordedVideoConstructor.OnActivated?.Invoke(data);
+            PrerecordedVideoConstructor.OnShow?.Invoke(data);
             UserName = data.user;
             _purchaseManager.SetPurchaseStreamData(data);
         });

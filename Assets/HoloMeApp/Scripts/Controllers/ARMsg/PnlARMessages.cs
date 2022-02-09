@@ -33,14 +33,14 @@ public class PnlARMessages : MonoBehaviour {
     }
 
     private void OnPlacementCompleted() {
-        RecordARConstructor.OnActivated?.Invoke(true);
+        RecordARConstructor.OnShow?.Invoke();
     }
 
     /// <summary>
     /// Deactivate
     /// </summary>
     public void Deactivate() {
-        RecordARConstructor.OnActivated?.Invoke(false);
+        RecordARConstructor.OnHide?.Invoke();
         gameObject.SetActive(false);
     }
 }

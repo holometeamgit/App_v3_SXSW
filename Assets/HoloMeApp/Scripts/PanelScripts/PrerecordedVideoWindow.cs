@@ -91,7 +91,12 @@ public class PrerecordedVideoWindow : MonoBehaviour {
         }
         isPinned = true;
         SetActive(_placementView, true);
-        RecordARConstructor.OnActivated?.Invoke(_streamData.IsStarted && _streamData.is_bought);
+
+        if (_streamData.IsStarted && _streamData.is_bought) {
+            RecordARConstructor.OnShow?.Invoke();
+        } else {
+            RecordARConstructor.OnHide?.Invoke();
+        }
     }
 
     private void SetActive(CanvasGroup canvasGroup, bool value) {
@@ -135,10 +140,10 @@ public class PrerecordedVideoWindow : MonoBehaviour {
     /// Close Prerecorded video window
     /// </summary>
     public void Close() {
-        RecordARConstructor.OnActivated?.Invoke(false);
-        HomeConstructor.OnActivated?.Invoke(true);
-        BottomMenuConstructor.OnActivated?.Invoke(true);
+        RecordARConstructor.OnHide?.Invoke();
+        HomeConstructor.OnShow?.Invoke();
+        BottomMenuConstructor.OnShow?.Invoke();
         ARenaConstructor.onDeactivate?.Invoke();
-        PrerecordedVideoConstructor.OnDeactivated?.Invoke();
+        PrerecordedVideoConstructor.OnHide?.Invoke();
     }
 }

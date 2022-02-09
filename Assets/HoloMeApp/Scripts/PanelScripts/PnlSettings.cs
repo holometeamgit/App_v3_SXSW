@@ -40,16 +40,16 @@ public class PnlSettings : MonoBehaviour {
     /// Open Change Usename Window
     /// </summary>
     public void SettingsToChangeUserName() {
-        ChangeUsernameConstructor.OnActivated?.Invoke(true);
-        SettingsConstructor.OnActivated?.Invoke(false);
+        ChangeUsernameConstructor.OnShow?.Invoke();
+        SettingsConstructor.OnHide?.Invoke();
     }
 
     /// <summary>
     /// Open Change Password Window
     /// </summary>
     public void SettingsToChangePassword() {
-        ChangePasswordConstructor.OnActivated?.Invoke(true);
-        SettingsConstructor.OnActivated?.Invoke(false);
+        ChangePasswordConstructor.OnShow?.Invoke();
+        SettingsConstructor.OnHide?.Invoke();
     }
 
     /// <summary>
@@ -65,10 +65,10 @@ public class PnlSettings : MonoBehaviour {
     }
 
     private void UserLogOut() {
-        WelcomeConstructor.OnActivated?.Invoke(true);
-        HomeConstructor.OnActivated?.Invoke(false);
-        BottomMenuConstructor.OnActivated?.Invoke(false);
-        SettingsConstructor.OnActivated?.Invoke(false);
+        WelcomeConstructor.OnShow?.Invoke();
+        HomeConstructor.OnHide?.Invoke();
+        BottomMenuConstructor.OnHide?.Invoke();
+        SettingsConstructor.OnHide?.Invoke();
         _accountManager.LogOut();
     }
 
