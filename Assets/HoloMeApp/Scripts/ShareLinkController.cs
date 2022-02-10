@@ -9,16 +9,6 @@ using Firebase.DynamicLinks;
 public class ShareLinkController {
 
     /// <summary>
-    /// Share Social Link
-    /// </summary>
-    /// <param name="link"></param>
-    /// <param name="socialMetaTagParameters"></param>
-    public void ShareSocialLink(Uri link, SocialMetaTagParameters socialMetaTagParameters) {
-        string msg = socialMetaTagParameters.Title + "\n" + socialMetaTagParameters.Description + "\n" + link.AbsoluteUri;
-        ShareLink(msg);
-    }
-
-    /// <summary>
     /// Share Link
     /// </summary>
     /// <param name="link"></param>
