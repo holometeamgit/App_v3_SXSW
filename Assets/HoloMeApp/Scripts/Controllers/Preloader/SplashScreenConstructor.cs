@@ -17,6 +17,8 @@ namespace Beem {
 
         private SplashScreenController _preloaderController;
 
+        public static bool IsActive;
+
         [Inject]
         public void Construct(WebRequestHandler webRequestHandler) {
             _webRequestHandler = webRequestHandler;
@@ -40,14 +42,17 @@ namespace Beem {
         }
 
         private void SentCanUse() {
+            IsActive = true;
             _pnlSplashScreen.Show(false);
         }
 
         private void SentNeedUpdateApp() {
+            IsActive = true;
             _pnlSplashScreen.Show(true);
         }
 
         private void OnAuthSuccess() {
+            IsActive = false;
             CreateUsernameConstructor.OnShow?.Invoke();
             _pnlSplashScreen.Hide();
             _preloaderController.OnViewStartHide();

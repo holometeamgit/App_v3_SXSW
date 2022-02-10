@@ -15,12 +15,14 @@ public class ARenaConstructor : MonoBehaviour {
     public static Action onShowPinchToZoomMessage = delegate { };
     public static Action onPlaced = delegate { };
     public static Action onHideScanMessage = delegate { };
-    public static Action<StreamJsonData.Data, bool> OnShowPrerecorded = delegate { };
+    public static Action<StreamJsonData.Data> OnShowPrerecorded = delegate { };
     public static Action<ARMsgJSON.Data> OnShowARMessaging = delegate { };
     public static Action<StreamJsonData.Data> OnShowStadium = delegate { };
     public static Action<RoomJsonData> OnShowRoom = delegate { };
 
     public static Action OnHide = delegate { };
+
+    public static bool IsActive;
 
     private void OnEnable() {
         onRunTutorial += OnRunTutorial;
@@ -68,23 +70,28 @@ public class ARenaConstructor : MonoBehaviour {
         _pnlViewingExperience.HideScanMessage();
     }
 
-    private void ShowPrerecorded(StreamJsonData.Data data, bool isTeaser) {
-        _pnlViewingExperience.ShowPrerecorded(data, isTeaser);
+    private void ShowPrerecorded(StreamJsonData.Data data) {
+        IsActive = true;
+        _pnlViewingExperience.Show(data);
     }
 
     private void ShowARMessaging(ARMsgJSON.Data data) {
-        _pnlViewingExperience.ShowARMessaging(data);
+        IsActive = true;
+        _pnlViewingExperience.Show(data);
     }
 
     private void ShowStadium(StreamJsonData.Data data) {
-        _pnlViewingExperience.ShowStadium(data);
+        IsActive = true;
+        _pnlViewingExperience.Show(data);
     }
 
     private void ShowRoom(RoomJsonData data) {
-        _pnlViewingExperience.ShowRoom(data);
+        IsActive = true;
+        _pnlViewingExperience.Show(data);
     }
 
     private void Hide() {
+        IsActive = false;
         _pnlViewingExperience.Hide();
     }
 }

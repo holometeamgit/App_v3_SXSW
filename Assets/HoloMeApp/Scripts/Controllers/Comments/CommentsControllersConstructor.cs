@@ -15,6 +15,8 @@ namespace Beem {
         public static Action<StreamJsonData.Data> OnShow = delegate { };
         public static Action OnHide = delegate { };
 
+        public static bool IsActive;
+
         [Inject]
         public void Construct(WebRequestHandler webRequestHandler) {
             _webRequestHandler = webRequestHandler;
@@ -35,8 +37,8 @@ namespace Beem {
             _commentsController.onFailPosted += _pnlComments.OnFailPost;
             _commentsController.onFetchedTotalCommentsCount += _pnlComments.OnRefreshUpdateCommentsCount;
 
-            OnShow += _pnlComments.Show;
-            OnHide += _pnlComments.Hide;
+            OnShow += Show;
+            OnHide += Hide;
         }
 
         private void OnDestroy() {
@@ -53,8 +55,18 @@ namespace Beem {
             _commentsController.onFailPosted -= _pnlComments.OnFailPost;
             _commentsController.onFetchedTotalCommentsCount -= _pnlComments.OnRefreshUpdateCommentsCount;
 
-            OnShow -= _pnlComments.Show;
-            OnHide -= _pnlComments.Hide;
+            OnShow -= Show;
+            OnHide -= Hide;
+        }
+
+        private void Show(StreamJsonData.Data data) {
+            IsActive = true;
+            _pnlComments.Show(data);
+        }
+
+        private void Hide() {
+            IsActive = false;
+            _pnlComments.Hide();
         }
     }
 }

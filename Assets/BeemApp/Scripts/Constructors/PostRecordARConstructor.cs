@@ -13,6 +13,8 @@ public class PostRecordARConstructor : MonoBehaviour {
     public static Action<RecordARData> OnShow = delegate { };
     public static Action OnHide = delegate { };
 
+    public static bool IsActive;
+
     private void OnEnable() {
         OnShow += Show;
         OnHide += Hide;
@@ -24,10 +26,12 @@ public class PostRecordARConstructor : MonoBehaviour {
     }
 
     private void Show(RecordARData recordARData) {
+        IsActive = true;
         pnlPostRecord.Show(recordARData);
     }
 
     private void Hide() {
-        pnlPostRecord.Deactivate();
+        IsActive = false;
+        pnlPostRecord.Hide();
     }
 }

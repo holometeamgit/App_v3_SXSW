@@ -15,6 +15,8 @@ public class WarningConstructor : MonoBehaviour {
     public static Action<GeneralPopUpData> OnShow = delegate { };
     public static Action OnHide = delegate { };
 
+    public static bool IsActive;
+
     private void OnEnable() {
         OnShow += Show;
         OnHide += Hide;
@@ -26,6 +28,7 @@ public class WarningConstructor : MonoBehaviour {
     }
 
     private void Show(GeneralPopUpData data) {
+        IsActive = true;
         if (data.FuncBtnData != null) {
             pnlGenericError.ActivateDoubleButton(data.Title, data.Description, data.CloseBtnData.Title, data.FuncBtnData.Title, data.CloseBtnData.OnClick, data.FuncBtnData.OnClick);
         } else {
@@ -34,6 +37,7 @@ public class WarningConstructor : MonoBehaviour {
     }
 
     private void Hide() {
+        IsActive = false;
         pnlGenericError.Deactivate();
     }
 }

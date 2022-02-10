@@ -11,8 +11,6 @@ public class PnlViewingExperience : MonoBehaviour {
     [SerializeField]
     GameObject scanAnimationItems;
     [SerializeField]
-    CanvasGroup canvasGroup;
-    [SerializeField]
     RectTransform scanMessageRT;
     [SerializeField]
     private bool skipTutorial;
@@ -117,83 +115,99 @@ public class PnlViewingExperience : MonoBehaviour {
         //messageRT.DOAnchorPosY(0, messageAnimationSpeed);
         scanMessageRT.DOScale(Vector3.zero, animationSpeed).SetDelay(messageAnimationSpeed);
     }
-    public void ShowPrerecorded(StreamJsonData.Data data, bool isTeaser) {
-        SharedActivationFunctions();
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, data.title } });
-        _hologramHandler.PlayIfPlaced(isTeaser ? data.teaser_s3_url : data.stream_s3_url, data.user_id);
-        _hologramHandler.TogglePreRecordedVideoRenderer(true);
-        if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
-        {
-            HideScanMessage();
+
+    public void Show<T>(T data) {
+        InitARena();
+
+        if (data is StreamJsonData.Data) {
+            if ((data as StreamJsonData.Data).HasStreamUrl) {
+                ShowPrerecorded(data as StreamJsonData.Data);
+            } else if ((data as StreamJsonData.Data).HasAgoraChannel) {
+                ShowStadium(data as StreamJsonData.Data);
+            }
+        } else if (data is ARMsgJSON.Data) {
+            ShowARMessaging(data as ARMsgJSON.Data);
+        } else if (data is RoomJsonData) {
+            ShowRoom(data as RoomJsonData);
         }
+
+        CheckTutorialComplete();
+    }
+
+    /// <summary>
+    /// Placement for Prerecorded
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="isTeaser"></param>
+    private void ShowPrerecorded(StreamJsonData.Data data) {
+        InitHologramVideo(data.CanGetTeaser ? data.teaser_s3_url : data.stream_s3_url);
+        SendAnalyticsMessage("Prerecorded", data.user, data.id.ToString());
     }
 
     /// <summary>
     /// Placement for AR Messaging
     /// </summary>
     /// <param name="data"></param>
-    public void ShowARMessaging(ARMsgJSON.Data data) {
-        SharedActivationFunctions();
-        _hologramHandler.PlayIfPlaced(data.ar_message_s3_link);
-        _hologramHandler.TogglePreRecordedVideoRenderer(true);
-        if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
-        {
-            HideScanMessage();
-        }
+    private void ShowARMessaging(ARMsgJSON.Data data) {
+        InitHologramVideo(data.ar_message_s3_link);
+        SendAnalyticsMessage("AR Message", data.user, data.id.ToString());
     }
 
     /// <summary>
     /// Placement for Room
     /// </summary>
     /// <param name="data"></param>
-    public void ShowRoom(RoomJsonData data) {
-        SharedActivationFunctions();
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, "Live Stream: " + data.agora_channel }, { AnalyticParameters.ParamPerformanceID, data.id } });
-        _hologramHandler.TogglePreRecordedVideoRenderer(false);
-        _hologramHandler.AssignStreamName(data.agora_channel);
-        _hologramHandler.StartTrackingStream();
-        if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
-        {
-            HideScanMessage();
-        }
+    private void ShowRoom(RoomJsonData data) {
+        InitHologramStream(data.agora_channel);
+        SendAnalyticsMessage("Room", data.user, data.id.ToString());
     }
 
     /// <summary>
     /// Placement for Stadium
     /// </summary>
     /// <param name="data"></param>
-    public void ShowStadium(StreamJsonData.Data data) {
-        SharedActivationFunctions();
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, "Live Stream: " + data.agora_channel }, { AnalyticParameters.ParamPerformanceID, data.id.ToString() } });
-        _hologramHandler.TogglePreRecordedVideoRenderer(false);
-        _hologramHandler.AssignStreamName(data.agora_channel);
-        _hologramHandler.StartTrackingStream();
-        if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
-        {
+    private void ShowStadium(StreamJsonData.Data data) {
+        InitHologramStream(data.agora_channel);
+        SendAnalyticsMessage("Stadium", data.user, data.id.ToString());
+    }
+
+    private void InitARena() {
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+        ARController.onActivated?.Invoke(true);
+        gameObject.SetActive(true);
+    }
+
+    private void SendAnalyticsMessage(string type, string username, string id) {
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyStartPerformance, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamEventName, $"{type}: {username}" }, { AnalyticParameters.ParamPerformanceID, id } });
+    }
+
+    private void CheckTutorialComplete() {
+        if (tutorialState == TutorialState.TutorialComplete) {
             HideScanMessage();
         }
     }
-    void SharedActivationFunctions() {
-        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
-        ARController.onActivated?.Invoke(true);
-        canvasGroup.alpha = 0;
-        gameObject.SetActive(true);
+
+    private void InitHologramVideo(string link) {
         _hologramHandler.InitSession();
-        FadeInCanvas();
+        _hologramHandler.TogglePreRecordedVideoRenderer(true);
+        _hologramHandler.PlayIfPlaced(link);
     }
-    void FadeInCanvas() {
-        canvasGroup.DOFade(1, .5f);
+
+    private void InitHologramStream(string agoraChannel) {
+        _hologramHandler.InitSession();
+        _hologramHandler.TogglePreRecordedVideoRenderer(false);
+        _hologramHandler.AssignStreamName(agoraChannel);
+        _hologramHandler.StartTrackingStream();
     }
-    public void FadeOutCanvas() {
-        HideScanAnimation();
-        canvasGroup.DOFade(0, .5f);
-    }
+
+    /// <summary>
+    /// Hide Arena
+    /// </summary>
     public void Hide() {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         ARController.onActivated?.Invoke(false);
         _hologramHandler.StopVideo();
-        FadeOutCanvas();
-        HomeConstructor.OnShow?.Invoke();
-        BottomMenuConstructor.OnShow?.Invoke();
+        HideScanAnimation();
+        gameObject.SetActive(false);
     }
 }

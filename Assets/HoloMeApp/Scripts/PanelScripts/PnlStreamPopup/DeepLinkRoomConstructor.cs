@@ -25,6 +25,8 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
     public static Action<DeepLinkRoomData> OnShow = delegate { };
     public static Action OnHide = delegate { };
 
+    public static bool IsActive;
+
     [Inject]
     public void Construct(UserWebManager userWebManager) {
         _userWebManager = userWebManager;
@@ -37,13 +39,22 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
     private void Construct() {
         _pnlRoomPopupController = new DeepLinkRoomPopupController(_roomPopupShowChecker, _streamerCountUpdater, _userWebManager);
 
-        OnShow += _pnlRoomPopup.Show;
-        OnHide += _pnlRoomPopup.Hide;
-
+        OnShow += Show;
+        OnHide += Hide;
     }
 
     private void OnDestroy() {
-        OnShow -= _pnlRoomPopup.Show;
-        OnHide -= _pnlRoomPopup.Hide;
+        OnShow -= Show;
+        OnHide -= Hide;
+    }
+
+    private void Show(DeepLinkRoomData data) {
+        IsActive = true;
+        _pnlRoomPopup.Show(data);
+    }
+
+    private void Hide() {
+        IsActive = false;
+        _pnlRoomPopup.Hide();
     }
 }

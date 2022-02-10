@@ -113,7 +113,7 @@ public class PnlPostRecord : MonoBehaviour {
     /// <summary>
     /// Deactivate
     /// </summary>
-    public void Deactivate() {
+    public void Hide() {
         videoPlayerController?.OnResume();
         gameObject.SetActive(false);
     }

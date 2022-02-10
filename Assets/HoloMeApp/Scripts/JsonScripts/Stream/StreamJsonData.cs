@@ -79,6 +79,8 @@ public class StreamJsonData {
             get { return !string.IsNullOrWhiteSpace(teaser_s3_url); }
         }
 
+        public bool CanGetTeaser;
+
         public bool HasTeaserPreview {
             get { return !string.IsNullOrWhiteSpace(preview_teaser_s3_url); }
         }

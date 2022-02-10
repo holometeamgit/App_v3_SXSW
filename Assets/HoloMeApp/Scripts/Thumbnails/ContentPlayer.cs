@@ -138,11 +138,12 @@ public class ContentPlayer {
     /// <param name="roomJsonData"></param>
     private void PlayPrerecorded(StreamJsonData.Data data) { //TODO split it to other class
         _permissionController.CheckCameraMicAccess(() => {
+            data.CanGetTeaser = false;
             DeepLinkStreamConstructor.OnHide?.Invoke();
             HomeConstructor.OnHide?.Invoke();
             BottomMenuConstructor.OnHide?.Invoke();
             SettingsConstructor.OnHide?.Invoke();
-            ARenaConstructor.OnShowPrerecorded?.Invoke(data, false);
+            ARenaConstructor.OnShowPrerecorded?.Invoke(data);
             PrerecordedVideoConstructor.OnShow?.Invoke(data);
             UserName = data.user;
         });
@@ -154,11 +155,12 @@ public class ContentPlayer {
     /// <param name="data"></param>
     private void PlayTeaser(StreamJsonData.Data data) {
         _permissionController.CheckCameraMicAccess(() => {
+            data.CanGetTeaser = data.HasTeaser;
             DeepLinkStreamConstructor.OnHide?.Invoke();
             HomeConstructor.OnHide?.Invoke();
             BottomMenuConstructor.OnHide?.Invoke();
             SettingsConstructor.OnHide?.Invoke();
-            ARenaConstructor.OnShowPrerecorded?.Invoke(data, data.HasTeaser);
+            ARenaConstructor.OnShowPrerecorded?.Invoke(data);
             PrerecordedVideoConstructor.OnShow?.Invoke(data);
             UserName = data.user;
             _purchaseManager.SetPurchaseStreamData(data);

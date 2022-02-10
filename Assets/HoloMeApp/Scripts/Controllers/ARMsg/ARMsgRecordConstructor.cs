@@ -6,6 +6,7 @@ using System;
 public class ARMsgRecordConstructor : WindowConstructor {
     public static Action OnShow = delegate { };
     public static Action OnHide = delegate { };
+    public static bool IsActive;
 
     protected void OnEnable() {
         OnShow += Show;
@@ -18,10 +19,12 @@ public class ARMsgRecordConstructor : WindowConstructor {
     }
 
     protected void Show() {
+        IsActive = true;
         _window.SetActive(true);
     }
 
     protected void Hide() {
+        IsActive = false;
         _window.SetActive(false);
     }
 }

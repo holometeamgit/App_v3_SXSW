@@ -60,10 +60,6 @@ public class FocusSquareV2 : PlacementHandler {
     // Remove it and add normal stuff
     [SerializeField] private Transform _focusSquareV2Sprite;
 
-    [SerializeField] private GameObject _btnCloseStreamOverlay;
-    [SerializeField] private GameObject _btnCloseARMessaging;
-    [SerializeField] private GameObject _btnClosePrerecordedVideo;
-
     [Space(20)]
     [SerializeField] private ARSessionOrigin _arSessionOrigin;
 
@@ -508,16 +504,12 @@ public class FocusSquareV2 : PlacementHandler {
     }
 
     private bool IsOneOfButtonsCloseActive() {
-        return _btnCloseStreamOverlay.activeInHierarchy ||
-               _btnCloseARMessaging.activeInHierarchy ||
-               _btnClosePrerecordedVideo.activeInHierarchy;
+        return ARenaConstructor.IsActive;
 
     }
 
     private bool IsAllButtonsCloseNotActive() {
-        return !_btnCloseStreamOverlay.activeInHierarchy &&
-               !_btnCloseARMessaging.activeInHierarchy &&
-               !_btnClosePrerecordedVideo.activeInHierarchy;
+        return !ARenaConstructor.IsActive;
     }
 
     private void HandleOrientation() {

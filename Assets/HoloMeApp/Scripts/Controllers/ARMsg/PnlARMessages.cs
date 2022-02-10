@@ -22,7 +22,7 @@ public class PnlARMessages : MonoBehaviour {
     /// Initialization
     /// </summary>
     /// <param name="streamData">Stream Json data</param>
-    public void Init(ARMsgJSON.Data arMsgJSON) {
+    public void Show(ARMsgJSON.Data arMsgJSON) {
 
         gameObject.SetActive(true);
         _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
@@ -39,7 +39,7 @@ public class PnlARMessages : MonoBehaviour {
     /// <summary>
     /// Deactivate
     /// </summary>
-    public void Deactivate() {
+    public void Hide() {
         RecordARConstructor.OnHide?.Invoke();
         gameObject.SetActive(false);
     }

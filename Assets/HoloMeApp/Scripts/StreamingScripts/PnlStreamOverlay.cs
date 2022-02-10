@@ -266,6 +266,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private void UpdateLikes(StreamJsonData.Data data) {
         uiBtnLikes.Init(data.id);
         uiViewersTextLabelLikes.Init(data.id);
+        streamLikesRefresherView.StartCountAsync(data.id.ToString());
     }
 
     private void InitViewer() {
@@ -294,12 +295,19 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
             ShowAsViewer((data as RoomJsonData).agora_channel, (data as RoomJsonData).id, true);
 
             RefreshControls();
+
+            StartStreamCountUpdaters();
+
         } else if (data is StreamJsonData.Data) {
             InitViewer();
 
             ShowAsViewer((data as StreamJsonData.Data).agora_channel, (data as StreamJsonData.Data).agora_channel.ToString(), false);
 
             RefreshControls();
+
+            UpdateLikes(data as StreamJsonData.Data);
+
+            StartStreamCountUpdaters();
         }
     }
 
@@ -309,9 +317,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         _agoraController.IsRoom = isRoom;
         _agoraController.IsChannelCreator = false;
         _agoraController.JoinOrCreateChannel(false);
-
-        streamLikesRefresherView.StartCountAsync(streamID);
-        StartStreamCountUpdaters();
     }
 
     private void LeaveOnDestroy() {
@@ -323,10 +328,11 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     public void ShowLeaveWarning() {
-
-        if (!_agoraController.IsLive && _agoraController.IsChannelCreator)
+        if (!_agoraController.IsLive && _agoraController.IsChannelCreator) {
             StopStream();
-        else if (_agoraController.IsChannelCreator) {
+            HomeConstructor.OnShow?.Invoke();
+            BottomMenuConstructor.OnShow?.Invoke();
+        } else if (_agoraController.IsChannelCreator) {
             GeneralPopUpData.ButtonData funcButton = new GeneralPopUpData.ButtonData("Yes", CloseAsStreamer);
             GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("No", null);
             GeneralPopUpData data = new GeneralPopUpData("End the live stream?", "Closing this page will end the live stream and disconnect your users.", closeButton, funcButton);

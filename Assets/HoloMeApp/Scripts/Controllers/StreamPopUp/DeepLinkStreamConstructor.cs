@@ -12,6 +12,8 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
     public static Action<StreamJsonData.Data> OnShow = delegate { };
     public static Action OnHide = delegate { };
 
+    public static bool IsActive;
+
     private void Awake() {
         Construct();
     }
@@ -26,10 +28,12 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
     }
 
     private void ActivatePopup(StreamJsonData.Data data) {
+        IsActive = true;
         _pnlThumbnailPopup.Show(data);
     }
 
     private void Hide() {
+        IsActive = false;
         _pnlThumbnailPopup.Hide();
     }
 

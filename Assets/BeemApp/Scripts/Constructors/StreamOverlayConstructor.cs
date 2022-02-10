@@ -16,6 +16,8 @@ public class StreamOverlayConstructor : MonoBehaviour {
 
     public static Action OnHide = delegate { };
 
+    public static bool IsActive;
+
     private void OnEnable() {
         OnShowAsBroadcaster += ShowAsBroadcaster;
         OnShowAsRoomViewer += ShowAsRoomViewer;
@@ -31,18 +33,22 @@ public class StreamOverlayConstructor : MonoBehaviour {
     }
 
     private void ShowAsBroadcaster(BroadcasterData data) {
+        IsActive = true;
         _pnlStreamOverlay.Show(data);
     }
 
     private void ShowAsRoomViewer(RoomJsonData data) {
+        IsActive = true;
         _pnlStreamOverlay.Show(data);
     }
 
     private void ShowAsStadiumViewer(StreamJsonData.Data data) {
+        IsActive = true;
         _pnlStreamOverlay.Show(data);
     }
 
     private void Hide() {
+        IsActive = false;
         _pnlStreamOverlay.Hide();
     }
 

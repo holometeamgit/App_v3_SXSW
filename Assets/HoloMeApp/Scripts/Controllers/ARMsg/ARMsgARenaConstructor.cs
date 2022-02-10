@@ -2,10 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Beem.ARMsg;
-using Beem.Permissions;
-using System.Threading.Tasks;
-using System.Threading;
 
 /// <summary>
 /// Constructor for PnlARMessage
@@ -17,12 +13,16 @@ public class ARMsgARenaConstructor : MonoBehaviour {
     public static Action<ARMsgJSON.Data> OnShow = delegate { };
     public static Action OnHide = delegate { };
 
+    public static bool IsActive;
+
     private void Show(ARMsgJSON.Data data) {
-        _pnlARMessages.Init(data);
+        IsActive = true;
+        _pnlARMessages.Show(data);
     }
 
     private void Hide() {
-        _pnlARMessages.Deactivate();
+        IsActive = false;
+        _pnlARMessages.Hide();
     }
 
     private void OnEnable() {

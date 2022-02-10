@@ -16,6 +16,8 @@ public class PrerecordedVideoConstructor : MonoBehaviour {
 
     public static Action OnHide = delegate { };
 
+    public static bool IsActive;
+
     private void OnEnable() {
         OnShow += Show;
         OnHide += Hide;
@@ -27,10 +29,12 @@ public class PrerecordedVideoConstructor : MonoBehaviour {
     }
 
     private void Show(StreamJsonData.Data data) {
+        IsActive = true;
         _prerecordedVideoWindow.Show(data);
     }
 
     private void Hide() {
+        IsActive = false;
         _prerecordedVideoWindow.Hide();
     }
 }

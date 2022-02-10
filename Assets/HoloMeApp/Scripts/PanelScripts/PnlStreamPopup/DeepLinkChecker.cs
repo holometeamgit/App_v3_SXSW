@@ -13,10 +13,10 @@ using Zenject;
 public class DeepLinkChecker : MonoBehaviour {
 
     [SerializeField]
-    private List<GameObject> _activatedObjects;
+    private bool _requireSignIn = true;
 
     [SerializeField]
-    private bool _requireSignIn = true;
+    private bool _requireHomeScreen = true;
 
     private AuthController _authController;
 
@@ -42,13 +42,13 @@ public class DeepLinkChecker : MonoBehaviour {
             }
         }
 
-        foreach (var obj in _activatedObjects) {
-            if (obj.activeInHierarchy) {
-                return true;
+        if (_requireHomeScreen) {
+            if (!BottomMenuConstructor.IsActive) {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     private async Task WaitForCanShow() {

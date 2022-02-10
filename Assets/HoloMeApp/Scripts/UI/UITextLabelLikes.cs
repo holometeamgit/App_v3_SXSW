@@ -54,7 +54,7 @@ namespace Beem.UI {
 
         private void UpdateUIState() {
             likesCount.text = emptyTextIfZero && _count == 0 ? "" : _count.ToString();
-            
+
             if (imageToDisableIfZero) {
                 imageToDisableIfZero.gameObject.SetActive(_count > 0);
             }

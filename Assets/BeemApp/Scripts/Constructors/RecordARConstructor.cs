@@ -9,6 +9,7 @@ using UnityEngine;
 public class RecordARConstructor : WindowConstructor {
     public static Action OnShow = delegate { };
     public static Action OnHide = delegate { };
+    public static bool IsActive;
 
     protected void OnEnable() {
         OnShow += Show;
@@ -21,10 +22,12 @@ public class RecordARConstructor : WindowConstructor {
     }
 
     protected void Show() {
+        IsActive = true;
         _window.SetActive(true);
     }
 
     protected void Hide() {
+        IsActive = false;
         _window.SetActive(false);
     }
 }
