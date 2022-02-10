@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// needed for texture capture from ARMsgCameraPreview
+/// </summary>
 public class ARMsgTextureСapture : MonoBehaviour {
 
     [SerializeField]
-    ARMsgCameraPreview _arMsgCameraPreview;
+    private ARMsgCameraPreview _arMsgCameraPreview;
     [SerializeField]
-    RawImage _rawImage;
+    private RawImage _rawImage;
     [SerializeField]
-    AspectRatioFitter _aspectRatioFitter;
+    private AspectRatioFitter _aspectRatioFitter;
 
     private void Awake() {
         _arMsgCameraPreview.onTextureUpdated += UpdateDataRendering;
