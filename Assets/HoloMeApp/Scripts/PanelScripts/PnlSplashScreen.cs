@@ -1,10 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Events;
-using System.Threading.Tasks;
-using Beem.SSO;
-using System;
+﻿using UnityEngine;
 
 public class PnlSplashScreen : MonoBehaviour {
 
@@ -18,9 +12,9 @@ public class PnlSplashScreen : MonoBehaviour {
     /// Show Splash Screen window
     /// </summary>
     /// <param name="needUpdate"></param>
-    public void Show(bool needUpdate) {
+    public void Show(SplashScreenData data) {
         gameObject.SetActive(true);
-        updateRect.SetActive(needUpdate);
+        updateRect.SetActive(!data.IsLastVersion);
     }
 
     /// <summary>
