@@ -2,6 +2,9 @@
 using System;
 using Beem.Firebase.DynamicLink;
 
+/// <summary>
+/// Handler for all deeplinks
+/// </summary>
 public class DeepLinkHandler : MonoBehaviour {
     public enum Params {
         room,
