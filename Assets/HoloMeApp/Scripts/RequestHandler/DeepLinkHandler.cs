@@ -7,6 +7,7 @@ public class DeepLinkHandler : MonoBehaviour {
         room,
         message,
         live,
+        stadium,
         prerecorded
     }
 
@@ -14,40 +15,30 @@ public class DeepLinkHandler : MonoBehaviour {
     public Action<string, string> PasswordResetConfirmDeepLinkActivated;
     public Action<ServerAccessToken> OnCompleteSSOLoginGetted;
 
-    public void OnDynamicLinkActivated(string uriStr) {
+    private void DeepLinkActivated(string uriStr) {
 
         Uri uri = new Uri(uriStr);
 
-        HelperFunctions.DevLogError("Dynamic link: " + uriStr);
-        GetContentsParameters(uri);
-    }
-
-    public void OnDeepLinkActivated(string uriStr) {
-
-        Uri uri = new Uri(uriStr);
-
-        HelperFunctions.DevLogError("Deep link: " + uriStr);
+        HelperFunctions.DevLog("Deep link: " + uriStr);
         GetContentsParameters(uri);
     }
 
     private void OnEnable() {
 
-        HelperFunctions.DevLogError("Awake");
+        HelperFunctions.DevLog("Application.absoluteURL: " + Application.absoluteURL);
 
-        HelperFunctions.DevLogError("Application.absoluteURL: " + Application.absoluteURL);
-
-        DynamicLinksCallBacks.onReceivedDeepLink += OnDynamicLinkActivated;
-        Application.deepLinkActivated += OnDeepLinkActivated;
+        DynamicLinksCallBacks.onReceivedDeepLink += DeepLinkActivated;
+        Application.deepLinkActivated += DeepLinkActivated;
 
         if (!string.IsNullOrEmpty(Application.absoluteURL)) {
             // Cold start and Application.absoluteURL not null so process Deep Link.
-            OnDeepLinkActivated(Application.absoluteURL);
+            DeepLinkActivated(Application.absoluteURL);
         }
     }
 
     private void OnDisable() {
-        DynamicLinksCallBacks.onReceivedDeepLink -= OnDynamicLinkActivated;
-        Application.deepLinkActivated -= OnDeepLinkActivated;
+        DynamicLinksCallBacks.onReceivedDeepLink -= DeepLinkActivated;
+        Application.deepLinkActivated -= DeepLinkActivated;
     }
 
     private void GetContentsParameters(Uri uri) {
@@ -59,7 +50,10 @@ public class DeepLinkHandler : MonoBehaviour {
             StreamCallBacks.onReceiveARMsgLink?.Invoke(messageId);
         } else if (ContainParam(uri, Params.live.ToString())) {
             string username = GetParam(uri, Params.live.ToString());
-            StreamCallBacks.onReceiveStreamLink?.Invoke(username);
+            StreamCallBacks.onReceiveStadiumLink?.Invoke(username);
+        } else if (ContainParam(uri, Params.stadium.ToString())) {
+            string username = GetParam(uri, Params.stadium.ToString());
+            StreamCallBacks.onReceiveStadiumLink?.Invoke(username);
         } else if (ContainParam(uri, Params.prerecorded.ToString())) {
             string slug = GetParam(uri, Params.prerecorded.ToString());
             StreamCallBacks.onReceivePrerecordedLink?.Invoke(slug);
