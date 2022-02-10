@@ -8,7 +8,9 @@ namespace WindowManager.Extenject {
     public class WindowCaller : MonoBehaviour {
         [Header("Window Function")]
         [SerializeField]
-        protected WindowSignal _windowSignals = new WindowSignal();
+        protected string _id;
+        [SerializeField]
+        protected WindowSignalsType _windowSignalsType;
 
         protected WindowController _windowController;
 
@@ -21,7 +23,7 @@ namespace WindowManager.Extenject {
         /// Call Window
         /// </summary>
         public void CallWindow() {
-            _windowController.OnCalledSignal(_windowSignals);
+            _windowController.CallWindow(_id, _windowSignalsType);
         }
     }
 }
