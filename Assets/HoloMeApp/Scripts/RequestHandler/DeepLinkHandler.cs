@@ -20,7 +20,7 @@ public class DeepLinkHandler : MonoBehaviour {
 
         Uri uri = new Uri(uriStr);
 
-        HelperFunctions.DevLogError("Deep link: " + uriStr);
+        HelperFunctions.DevLog("Deep link: " + uriStr);
         GetContentsParameters(uri);
     }
 
@@ -31,7 +31,7 @@ public class DeepLinkHandler : MonoBehaviour {
 
     private void Start() {
 
-        HelperFunctions.DevLogError("Application.absoluteURL: " + Application.absoluteURL);
+        HelperFunctions.DevLog("Application.absoluteURL: " + Application.absoluteURL);
 
         if (!string.IsNullOrEmpty(Application.absoluteURL)) {
             // Cold start and Application.absoluteURL not null so process Deep Link.
