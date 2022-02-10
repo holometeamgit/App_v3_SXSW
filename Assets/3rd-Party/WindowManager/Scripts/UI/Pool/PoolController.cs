@@ -33,6 +33,13 @@ namespace WindowManager.Extenject {
             return _cachedObject.Find(x => x.name == assetId) != null;
         }
 
+        public bool IsActive(string assetId) {
+            if (Contain(assetId)) {
+                return Element(assetId).activeInHierarchy;
+            }
+            return false;
+        }
+
         private GameObject Element(string assetId) {
             return _cachedObject.Find(x => x.name == assetId);
         }

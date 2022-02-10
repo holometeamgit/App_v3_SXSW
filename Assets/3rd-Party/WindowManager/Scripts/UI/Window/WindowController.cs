@@ -97,6 +97,10 @@ namespace WindowManager.Extenject {
             _poolController.Hide(id);
         }
 
+        public bool IsActive(string id) {
+            return _poolController.IsActive(id);
+        }
+
         /// <summary>
         /// Check Escape
         /// </summary>
