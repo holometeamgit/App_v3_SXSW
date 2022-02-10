@@ -8,7 +8,8 @@ public class DeepLinkHandler : MonoBehaviour {
         message,
         live,
         stadium,
-        prerecorded
+        prerecorded,
+        username
     }
 
     public Action<string> VerificationDeepLinkActivated;
@@ -19,16 +20,18 @@ public class DeepLinkHandler : MonoBehaviour {
 
         Uri uri = new Uri(uriStr);
 
-        HelperFunctions.DevLog("Deep link: " + uriStr);
+        HelperFunctions.DevLogError("Deep link: " + uriStr);
         GetContentsParameters(uri);
     }
 
-    private void OnEnable() {
-
-        HelperFunctions.DevLog("Application.absoluteURL: " + Application.absoluteURL);
-
+    private void Awake() {
         DynamicLinksCallBacks.onReceivedDeepLink += DeepLinkActivated;
         Application.deepLinkActivated += DeepLinkActivated;
+    }
+
+    private void Start() {
+
+        HelperFunctions.DevLogError("Application.absoluteURL: " + Application.absoluteURL);
 
         if (!string.IsNullOrEmpty(Application.absoluteURL)) {
             // Cold start and Application.absoluteURL not null so process Deep Link.
@@ -36,15 +39,18 @@ public class DeepLinkHandler : MonoBehaviour {
         }
     }
 
-    private void OnDisable() {
+    private void OnDestroy() {
         DynamicLinksCallBacks.onReceivedDeepLink -= DeepLinkActivated;
         Application.deepLinkActivated -= DeepLinkActivated;
     }
 
     private void GetContentsParameters(Uri uri) {
         if (ContainParam(uri, Params.room.ToString())) {
-            string userName = GetParam(uri, Params.room.ToString());
-            StreamCallBacks.onReceiveRoomLink?.Invoke(userName);
+            string username = GetParam(uri, Params.room.ToString());
+            StreamCallBacks.onReceiveRoomLink?.Invoke(username);
+        } else if (ContainParam(uri, Params.username.ToString())) {
+            string username = GetParam(uri, Params.username.ToString());
+            StreamCallBacks.onReceiveRoomLink?.Invoke(username);
         } else if (ContainParam(uri, Params.message.ToString())) {
             string messageId = GetParam(uri, Params.message.ToString());
             StreamCallBacks.onReceiveARMsgLink?.Invoke(messageId);
