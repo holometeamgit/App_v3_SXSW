@@ -25,7 +25,7 @@ namespace Beem.UI {
         /// </summary>
         public void Share() {
             if (!string.IsNullOrWhiteSpace(_arMsgData.share_link.ToString())) {
-                _shareController.ShareLink(new Uri(_arMsgData.share_link));
+                _shareController.ShareLink(_arMsgData.share_link);
             }
         }
     }
