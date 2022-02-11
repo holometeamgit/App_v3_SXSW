@@ -1,12 +1,8 @@
 ﻿using UnityEngine;
-using DG.Tweening;
-using TMPro;
-using UnityEngine.Events;
 using System.Collections;
 using UnityEngine.UI;
 using agora_gaming_rtc;
 using Beem.UI;
-using Beem.Permissions;
 
 public class PnlStreamOverlay : AgoraMessageReceiver {
 
@@ -58,13 +54,10 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private StreamLikesRefresherView streamLikesRefresherView;
 
     [SerializeField]
+    StreamNotificationPopupWindow streamNotificationPopupWindow;
+
+    [SerializeField]
     StreamerCountUpdater[] streamCountUpdaters;
-
-    [SerializeField]
-    private RectTransform CentreMessage;
-
-    [SerializeField]
-    private TextMeshProUGUI txtCentreMessage;
 
     [SerializeField]
     private CanvasGroup canvasGroup;
@@ -85,7 +78,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private bool initialised;
     private int countDown;
-    private string tweenAnimationID = nameof(tweenAnimationID);
+
     private Coroutine countdownRoutine;
     private bool isChannelCreator;
     private bool isUsingFrontCamera;
@@ -154,8 +147,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     private void OnEnable() {
-        txtCentreMessage.text = string.Empty;
-        CentreMessage.localScale = Vector3.zero;
         ChatBtn.onOpen += OpenChat;
     }
 
@@ -383,7 +374,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
         _agoraController.Leave();
         cameraRenderImage.texture = null;
-        AnimatedFadeOutMessage();
+        streamNotificationPopupWindow.AnimatedFadeOutMessage();
         RefreshControls();
         //MenuConstructor.OnActivated(true);
     }
@@ -395,11 +386,11 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         isPushToTalkActive = enabled;
         SendPushToTalkStatusToViewers();
         if (isPushToTalkActive) {
-            AnimatedCentreTextMessage("Two way audio is on. \n Listeners can talk to you now.");
-            AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
+            streamNotificationPopupWindow.AnimatedCentreTextMessage("Two way audio is on. \n Listeners can talk to you now.");
+            streamNotificationPopupWindow.AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
         } else {
-            AnimatedCentreTextMessage("Two way audio is off.");
-            AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
+            streamNotificationPopupWindow.AnimatedCentreTextMessage("Two way audio is off.");
+            streamNotificationPopupWindow.AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
         }
     }
 
@@ -524,8 +515,8 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
                 }
                 togglePushToTalk.isOn = true; //Mute the mic
                 togglePushToTalk.interactable = true;
-                AnimatedCentreTextMessage("Tap the Talk button to enable \n your microphone");
-                AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
+                streamNotificationPopupWindow.AnimatedCentreTextMessage("Tap the Talk button to enable \n your microphone");
+                streamNotificationPopupWindow.AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
                 return;
             case MessageToViewerDisableTwoWayAudio:
                 if (LastMessageWasRecievedAlready(ref lastPushToTalkStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
@@ -538,28 +529,28 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
                 if (LastMessageWasRecievedAlready(ref lastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
-                AnimatedCentreTextMessage("Audio has been turned off \n by the broadcaster");
+                streamNotificationPopupWindow.AnimatedCentreTextMessage("Audio has been turned off \n by the broadcaster");
                 _agoraController.ToggleLiveStreamQuad(false);
                 return;
             case MessageToViewerBroadcasterVideoPaused:
                 if (LastMessageWasRecievedAlready(ref lastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
-                AnimatedCentreTextMessage("Video has been turned off \n by the broadcaster");
+                streamNotificationPopupWindow.AnimatedCentreTextMessage("Video has been turned off \n by the broadcaster");
                 _agoraController.ToggleLiveStreamQuad(true);
                 return;
             case MessageToViewerBroadcasterAudioAndVideoPaused:
                 if (LastMessageWasRecievedAlready(ref lastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
-                AnimatedCentreTextMessage("Video and Audio has been turned off \n by the broadcaster");
+                streamNotificationPopupWindow.AnimatedCentreTextMessage("Video and Audio has been turned off \n by the broadcaster");
                 _agoraController.ToggleLiveStreamQuad(true);
                 return;
             case MessageToViewerBroadcasterUnpaused:
                 if (LastMessageWasRecievedAlready(ref lastPauseStatusMessageReceived, message)) {//Prevent functions being called twice if receiving messages again (when a another user joins)
                     return;
                 }
-                AnimatedFadeOutMessage();
+                streamNotificationPopupWindow.AnimatedFadeOutMessage();
                 _agoraController.ToggleLiveStreamQuad(false);
                 return;
             case MessageToViewerStreamerLeft:
@@ -646,13 +637,13 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         cameraRenderImage.color = Color.black;
 
         if (!_agoraController.VideoIsReady || cameraRenderImage.texture == null)
-            AnimatedCentreTextMessage("Loading Preview");
+            streamNotificationPopupWindow.AnimatedCentreTextMessage("Loading Preview");
 
         while (!_agoraController.VideoIsReady || cameraRenderImage.texture == null) {
             yield return null;
         }
         //yield return new WaitForSeconds(3);
-        AnimatedFadeOutMessage();
+        streamNotificationPopupWindow.AnimatedFadeOutMessage();
         cameraRenderImage.color = Color.white;
         cameraRenderImage.SizeToParent();
     }
@@ -704,64 +695,36 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     private void ShowMicrophoneMuteStatusMessage(bool mute, bool autoHide = true) {
-        AnimatedCentreTextMessage("Your microphone is " + (mute ? "off" : "on") + ".");
+        streamNotificationPopupWindow.AnimatedCentreTextMessage("Your microphone is " + (mute ? "off" : "on") + ".");
         if (autoHide) {
-            AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
+            streamNotificationPopupWindow.AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
         }
     }
 
     public void ToggleVideo(bool hideVideo) { //Only called for stream host
         _hideVideo = hideVideo;
 
-        AnimatedCentreTextMessage("Your camera is " + (hideVideo ? "off" : "on") + ".");
+        streamNotificationPopupWindow.AnimatedCentreTextMessage("Your camera is " + (hideVideo ? "off" : "on") + ".");
 
         if (!_agoraController.IsLive) { //Don't hide if not live and camera is being disabled
             if (!hideVideo) {
-                AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
+                streamNotificationPopupWindow.AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
             }
         } else {
-            AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
+            streamNotificationPopupWindow.AnimatedFadeOutMessage(STATUS_MESSAGE_HIDE_DELAY);
         }
 
         SendVideoAudioPauseStatusToViewers();
 
-        //UpdateToggleMessageOff();
         _agoraController.ToggleVideo(hideVideo);
     }
-
-    //private void UpdateToggleMessageOff() {
-    //    if (_hideVideo && _muteAudio) {
-    //        AnimatedCentreTextMessage("Your camera is Off. \n Your microphone is Off.");
-    //    } else if (_hideVideo) {
-    //        AnimatedCentreTextMessage("Your camera is Off.");
-    //    } else if (_muteAudio) {
-    //        AnimatedCentreTextMessage("Your microphone is Off.");
-    //    } else {
-    //        AnimatedFadeOutMessage();
-    //    }
-    //    SendVideoAudioPauseStatusToViewers();
-    //}
-
-    //private void UpdateToggleMessageOff()
-    //{
-    //    if (_hideVideo)        {
-    //        AnimatedCentreTextMessage("Your camera is On.");
-    //        AnimatedFadeOutMessage(3);
-    //    } else if (_muteAudio)        {
-    //        AnimatedCentreTextMessage("Your microphone is On.");
-    //        AnimatedFadeOutMessage(3);
-    //    } else {
-    //        AnimatedFadeOutMessage();
-    //    }
-    //    SendVideoAudioPauseStatusToViewers();
-    //}
 
     IEnumerator CountDown() {
         countDown = 0;
 
         while (countDown >= 0) {
-            AnimatedCentreTextMessage(countDown > 0 ? countDown.ToString() : "ON AIR");
-            AnimatedFadeOutMessage(.5f);
+            streamNotificationPopupWindow.AnimatedCentreTextMessage(countDown > 0 ? countDown.ToString() : "ON AIR");
+            streamNotificationPopupWindow.AnimatedFadeOutMessage(.5f);
             countDown--;
             //yield return new WaitForSeconds(1);
             yield return new WaitForEndOfFrame();
@@ -770,18 +733,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         StartStream();
     }
 
-    private void AnimatedCentreTextMessage(string message) {
-        DOTween.Kill(tweenAnimationID);
-        CentreMessage.localScale = Vector3.zero;
-        txtCentreMessage.text = message;
-        txtCentreMessage.color = new Color(txtCentreMessage.color.r, txtCentreMessage.color.g, txtCentreMessage.color.b, 1);
-        CentreMessage.DOScale(Vector3.one, .1f).SetId(tweenAnimationID);
-    }
 
-    public void AnimatedFadeOutMessage(float delay = 0) {
-        txtCentreMessage.DOFade(0, .5f).SetDelay(delay).SetId(tweenAnimationID);
-        CentreMessage.DOScale(Vector3.zero, .1f).SetDelay(delay).SetId(tweenAnimationID);
-    }
 
     private void OnDisable() {
         StopAllCoroutines();
