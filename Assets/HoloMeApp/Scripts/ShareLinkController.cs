@@ -12,12 +12,7 @@ public class ShareLinkController {
     /// Share Link
     /// </summary>
     /// <param name="link"></param>
-    public void ShareLink(Uri link) {
-        ShareLink(link.AbsoluteUri);
-    }
-
-    protected void ShareLink(string msg) {
-
+    public void ShareLink(string msg) {
 #if !UNITY_EDITOR
         AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyShareEventPressed);
         new NativeShare().SetText(msg).Share();

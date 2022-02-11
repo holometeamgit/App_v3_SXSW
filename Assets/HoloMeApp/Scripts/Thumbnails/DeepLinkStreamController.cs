@@ -16,6 +16,9 @@ public class DeepLinkStreamController : MonoBehaviour {
     [SerializeField]
     private VideoUploader _videoUploader;
 
+    private const string TITLE = "You have been ivited to {0}'s Stadium";
+    private const string DESCRIPTION = "Click the link below to join {0}'s Stadium";
+
     private ShareLinkController _shareController = new ShareLinkController();
 
     private const string STATUS = "live";
@@ -138,7 +141,10 @@ public class DeepLinkStreamController : MonoBehaviour {
     }
 
     private void OnShare(StreamJsonData.Data data) {
-        _shareController.ShareLink(new Uri(data.share_link));
+        string title = string.Format(TITLE, data.user);
+        string description = string.Format(DESCRIPTION, data.user);
+        string msg = title + "\n" + description + "\n" + data.share_link;
+        _shareController.ShareLink(msg);
     }
 
 
