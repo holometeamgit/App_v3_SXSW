@@ -2,8 +2,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
-public class StreamNotificationPopupWindow : MonoBehaviour
-{
+public class StreamNotificationPopupWindow : MonoBehaviour {
     [SerializeField]
     private TextMeshProUGUI txtCentreMessage;
 
@@ -17,6 +16,10 @@ public class StreamNotificationPopupWindow : MonoBehaviour
         CentreMessage.localScale = Vector3.zero;
     }
 
+
+    /// <summary>
+    /// Show the message with a scale animation effect
+    /// </summary>
     public void AnimatedCentreTextMessage(string message) {
         DOTween.Kill(tweenAnimationID);
         CentreMessage.localScale = Vector3.zero;
@@ -25,6 +28,9 @@ public class StreamNotificationPopupWindow : MonoBehaviour
         CentreMessage.DOScale(Vector3.one, .1f).SetId(tweenAnimationID);
     }
 
+    /// <summary>
+    /// Hide the message
+    /// </summary>
     public void AnimatedFadeOutMessage(float delay = 0) {
         txtCentreMessage.DOFade(0, .5f).SetDelay(delay).SetId(tweenAnimationID);
         CentreMessage.DOScale(Vector3.zero, .1f).SetDelay(delay).SetId(tweenAnimationID);
