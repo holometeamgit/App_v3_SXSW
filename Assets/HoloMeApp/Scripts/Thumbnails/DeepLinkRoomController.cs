@@ -14,7 +14,7 @@ public class DeepLinkRoomController : MonoBehaviour {
     [SerializeField]
     private VideoUploader _videoUploader;
 
-    private const string TITLE = "You have been ivited to {0}'s Room";
+    private const string TITLE = "You have been invited to {0}'s Room";
     private const string DESCRIPTION = "Click the link below to join {0}'s Room";
 
     private ShareLinkController _shareController = new ShareLinkController();
@@ -43,7 +43,8 @@ public class DeepLinkRoomController : MonoBehaviour {
         GetRoomByUserName(username,
             (code, body) => Open(body),
             (code, body) => {
-                StreamCallBacks.onUserDoesntExist(code); HelperFunctions.DevLogError(code + " " + body);
+                StreamCallBacks.onUserDoesntExist(code);
+                HelperFunctions.DevLogError(code + " " + body);
             });
     }
 
