@@ -9,7 +9,7 @@ namespace Beem.ARMsg {
     /// </summary>
     public class RecordController : MonoBehaviour {
         [SerializeField]
-        private List<int> _timers = new List<int> { 10, 15, 30, 45, 60 };
+        private List<int> _timers = new List<int> { 15, 30, 45, 60, 10};
         private int _currentTimerID = 0;
 
         /// <summary>
@@ -25,6 +25,10 @@ namespace Beem.ARMsg {
         /// Setup Timer
         /// </summary>
         public void OnGetCurrentRecordTimer() {
+            CallBacks.onRecordTimerSet?.Invoke(_timers[_currentTimerID]);
+        }
+
+        private void Start() {
             CallBacks.onRecordTimerSet?.Invoke(_timers[_currentTimerID]);
         }
     }
