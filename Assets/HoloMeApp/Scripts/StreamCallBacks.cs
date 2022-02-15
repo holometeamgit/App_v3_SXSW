@@ -30,7 +30,7 @@ public class StreamCallBacks {
     #endregion
 
     #region deep link stream
-    public static Action<string> onReceiveStreamLink = delegate { };
+    public static Action<string> onReceiveStadiumLink = delegate { };
     public static Action<string> onReceivePrerecordedLink = delegate { };
     public static Action onOpenStream = delegate { }; // can subscribe on stream pnl
 
