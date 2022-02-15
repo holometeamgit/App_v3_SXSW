@@ -5,15 +5,20 @@ using TMPro;
 /// UI popup for opening rooms
 /// </summary>
 public class DeepLinkRoomPopup : MonoBehaviour {
-
-    [SerializeField]
-    private Color _highlightMSGColor;
     [SerializeField]
     private TMP_Text _titleText;
     [SerializeField]
     private TMP_Text _subtitleText;
     [SerializeField]
     private TMP_Text _usersCountText;
+
+    [SerializeField]
+    private GameObject _title;
+    [SerializeField]
+    private GameObject _subtitle;
+    [SerializeField]
+    private GameObject _usersCount;
+
     [SerializeField]
     private GameObject _btnClose;
     [SerializeField]
@@ -25,21 +30,21 @@ public class DeepLinkRoomPopup : MonoBehaviour {
     [SerializeField]
     private SwipePopUp _swipePopUp;
 
-    private const long USER_NOT_FOUND_CODE = 404;
-    private string _user;
+    private RoomJsonData _data;
 
     /// <summary>
     /// Call share event for current room
     /// </summary>
     public void Share() {
-        StreamCallBacks.onShareRoomLink?.Invoke(_user);
+        StreamCallBacks.onShareRoomLink?.Invoke(_data.user);
     }
 
     /// <summary>
     /// Call onOpenRoom event for open current room
     /// </summary>
     public void EnterRoom() {
-        StreamCallBacks.onOpenRoom?.Invoke();
+        StreamCallBacks.onPlayRoom?.Invoke(_data);
+        DeepLinkRoomConstructor.OnHide?.Invoke();
     }
 
     /// <summary>
@@ -49,22 +54,25 @@ public class DeepLinkRoomPopup : MonoBehaviour {
     public void Show(DeepLinkRoomData deepLinkRoomData) {
         gameObject.SetActive(true);
 
-        _user = deepLinkRoomData.User;
+        _swipePopUp.onHid -= Close;
+
+        _data = deepLinkRoomData.Data;
 
         _titleText.text = deepLinkRoomData.Title;
         _subtitleText.text = deepLinkRoomData.Description;
 
-        _titleText.gameObject.SetActive(deepLinkRoomData.Title.Length > 0);
-        _subtitleText.gameObject.SetActive(deepLinkRoomData.Description.Length > 0);
-        _usersCountText.gameObject.SetActive(deepLinkRoomData.UserCountTxt);
+        _title.SetActive(deepLinkRoomData.Title.Length > 0);
+        _subtitle.SetActive(deepLinkRoomData.Description.Length > 0);
+        _usersCount.SetActive(deepLinkRoomData.Online);
 
         _btnClose.SetActive(deepLinkRoomData.CloseBtn);
-        _btnShare.SetActive(deepLinkRoomData.User.Length > 0);
-        _btnEnterRoom.SetActive(deepLinkRoomData.EnterBtn);
+        _btnShare.SetActive(deepLinkRoomData.ShareBtn);
+        _btnEnterRoom.SetActive(deepLinkRoomData.Online);
 
-        _streamerCountUpdater.StartCheck(deepLinkRoomData.User, true);
-
-        _streamerCountUpdater.OnCountUpdated += UpdateUserCount;
+        if (deepLinkRoomData.Data != null && deepLinkRoomData.Online) {
+            _streamerCountUpdater.StartCheck(deepLinkRoomData.Data.user, true);
+            _streamerCountUpdater.OnCountUpdated += UpdateUserCount;
+        }
 
         _swipePopUp.Show();
 

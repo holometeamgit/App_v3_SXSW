@@ -339,8 +339,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private void CloseRoomAsViewerWhenStreamWasStopped() {
         if (_agoraController.IsRoom) {
-            StreamCallBacks.onRoomClosed?.Invoke();
-            DeepLinkRoomConstructor.OnShowAlert?.Invoke();
+            DeepLinkRoomConstructor.OnShow?.Invoke(null);
         }
     }
 

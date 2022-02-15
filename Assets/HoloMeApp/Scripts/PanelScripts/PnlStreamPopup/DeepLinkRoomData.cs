@@ -9,18 +9,18 @@ using UnityEngine;
 public class DeepLinkRoomData {
     private string _title;
     private string _description;
-    private string _user;
-    private bool _userCountTxt;
+    private RoomJsonData _data;
+    private bool _online;
     private bool _closeBtn;
-    private bool _enterBtn;
+    private bool _shareBtn;
 
-    public DeepLinkRoomData(string title, string description, string user, bool userCountTxt, bool closeBtn, bool enterBtn) {
+    public DeepLinkRoomData(string title, string description, RoomJsonData data, bool online, bool closeBtn, bool shareBtn) {
         _title = title;
         _description = description;
-        _user = user;
-        _userCountTxt = userCountTxt;
+        _data = data;
+        _online = online;
         _closeBtn = closeBtn;
-        _enterBtn = enterBtn;
+        _shareBtn = shareBtn;
     }
 
     public string Title {
@@ -35,15 +35,15 @@ public class DeepLinkRoomData {
         }
     }
 
-    public bool UserCountTxt {
+    public bool Online {
         get {
-            return _userCountTxt;
+            return _online;
         }
     }
 
-    public string User {
+    public RoomJsonData Data {
         get {
-            return _user;
+            return _data;
         }
     }
 
@@ -53,9 +53,9 @@ public class DeepLinkRoomData {
         }
     }
 
-    public bool EnterBtn {
+    public bool ShareBtn {
         get {
-            return _enterBtn;
+            return _shareBtn;
         }
     }
 }

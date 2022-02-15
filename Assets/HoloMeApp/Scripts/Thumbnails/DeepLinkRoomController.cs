@@ -43,7 +43,7 @@ public class DeepLinkRoomController : MonoBehaviour {
         GetRoomByUserName(username,
             (code, body) => Open(body),
             (code, body) => {
-                StreamCallBacks.onUserDoesntExist(code);
+                DeepLinkRoomConstructor.OnShowError?.Invoke(code);
                 HelperFunctions.DevLogError(code + " " + body);
             });
     }
@@ -52,6 +52,7 @@ public class DeepLinkRoomController : MonoBehaviour {
         RoomReceived(body,
             (data) => {
                 StreamCallBacks.onRoomDataReceived?.Invoke(data);
+                DeepLinkRoomConstructor.OnShow?.Invoke(data);
             });
     }
 

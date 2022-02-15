@@ -42,7 +42,7 @@ public class DeepLinkARMessageController : MonoBehaviour {
         GetARMessageById(id,
             (code, body) => Open(body),
             (code, body) => {
-                StreamCallBacks.onUserDoesntExist(code); HelperFunctions.DevLogError(code + " " + body);
+                HelperFunctions.DevLogError(code + " " + body);
             });
     }
 

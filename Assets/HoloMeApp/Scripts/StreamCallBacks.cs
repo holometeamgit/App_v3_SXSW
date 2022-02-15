@@ -10,16 +10,6 @@ public class StreamCallBacks {
     public static Action<string> onReceiveRoomLink = delegate { };
     public static Action<string> onReceiveARMsgLink = delegate { };
     public static Action<RoomJsonData> onRoomDataReceived = delegate { };
-    // from app to controller: notification that broadcaster stop room 
-    public static Action onRoomClosed = delegate { };
-
-    //from controller
-    public static Action<string> onShowPopUpRoomOnline = delegate { };
-    public static Action<int> onUpdateUserCount = delegate { };
-    public static Action<string> onShowPopUpRoomOffline = delegate { };
-    public static Action<string> onShowPopUpRoomEnded = delegate { };
-    public static Action<long> onUserDoesntExist = delegate { };
-    public static Action onClosePopUp = delegate { };
 
     //from ui
     public static Action onOpenRoom = delegate { };
