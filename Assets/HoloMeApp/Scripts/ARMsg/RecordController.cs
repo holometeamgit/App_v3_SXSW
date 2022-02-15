@@ -8,7 +8,6 @@ namespace Beem.ARMsg {
     /// Timer Controller for Record Beem me
     /// </summary>
     public class RecordController : MonoBehaviour {
-        [SerializeField]
         private List<int> _timers = new List<int> { 15, 30, 45, 60, 10};
         private int _currentTimerID = 0;
 
