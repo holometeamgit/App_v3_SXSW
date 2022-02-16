@@ -44,16 +44,34 @@ public class DeepLinkStreamPopup : UIThumbnail {
     ThumbnailElement thumbnailElement;
     private const int REFRESH_LAYOUT_TIME = 1000;
 
+    /// <summary>
+    /// Play
+    /// </summary>
     public override void Play() {
         Play(thumbnailElement.Data);
     }
 
+
+    /// <summary>
+    /// Play Teaser
+    /// </summary>
     public override void PlayTeaser() {
         Play(thumbnailElement.Data);
     }
 
+
+    /// <summary>
+    /// Buy
+    /// </summary>
     public override void Buy() {
         Buy(thumbnailElement.Data);
+    }
+
+    /// <summary>
+    /// Close
+    /// </summary>
+    public void Close() {
+        DeepLinkStreamConstructor.OnHide?.Invoke();
     }
 
     /// <summary>

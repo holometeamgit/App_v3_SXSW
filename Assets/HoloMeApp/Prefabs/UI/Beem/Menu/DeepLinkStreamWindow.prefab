@@ -400,7 +400,8 @@ MonoBehaviour:
   auAnimator: {fileID: 2016178056844718115}
   layoutGroup: {fileID: 2016178057370357989}
   _webRequestHandler: {fileID: 0}
-  _contentPlayer: {fileID: 0}
+  _purchaseManager: {fileID: 0}
+  _userWebManager: {fileID: 0}
 --- !u!95 &559953092
 Animator:
   serializedVersion: 3
@@ -2161,7 +2162,12 @@ PrefabInstance:
     - target: {fileID: 5695935672981078105, guid: 51bc126a31ed04debb6db67531f3bcba,
         type: 3}
       propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ClosePnl
+      value: Close
+      objectReference: {fileID: 0}
+    - target: {fileID: 5695935672981078105, guid: 51bc126a31ed04debb6db67531f3bcba,
+        type: 3}
+      propertyPath: OnSwitch.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: DeepLinkStreamPopup, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5695935672981078105, guid: 51bc126a31ed04debb6db67531f3bcba,
         type: 3}
