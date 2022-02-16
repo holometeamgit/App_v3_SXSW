@@ -43,7 +43,14 @@ public class DeepLinkRoomPopup : MonoBehaviour {
     /// Call onOpenRoom event for open current room
     /// </summary>
     public void EnterRoom() {
+        DeepLinkRoomConstructor.OnHide?.Invoke();
         StreamCallBacks.onPlayRoom?.Invoke(_data);
+    }
+
+    /// <summary>
+    /// Close popup
+    /// </summary>
+    public void Close() {
         DeepLinkRoomConstructor.OnHide?.Invoke();
     }
 
@@ -53,8 +60,6 @@ public class DeepLinkRoomPopup : MonoBehaviour {
     /// <param name="deepLinkRoomData"></param>
     public void Show(DeepLinkRoomData deepLinkRoomData) {
         gameObject.SetActive(true);
-
-        _swipePopUp.onHid -= Close;
 
         _data = deepLinkRoomData.Data;
 
@@ -75,21 +80,20 @@ public class DeepLinkRoomPopup : MonoBehaviour {
         }
 
         _swipePopUp.Show();
-
-        _swipePopUp.onHid += Close;
     }
 
     /// <summary>
     /// Hide Popup
     /// </summary>
     public void Hide() {
+        _swipePopUp.onHid += OnClose;
         _swipePopUp.Hide();
         _streamerCountUpdater.StopCheck();
         _streamerCountUpdater.OnCountUpdated -= UpdateUserCount;
     }
 
-    private void Close() {
-        _swipePopUp.onHid -= Close;
+    private void OnClose() {
+        _swipePopUp.onHid -= OnClose;
         gameObject.SetActive(false);
     }
 

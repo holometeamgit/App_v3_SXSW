@@ -61,11 +61,19 @@ public class DeepLinkChecker : MonoBehaviour {
         }
     }
 
-    private void OnDestroy() {
+    /// <summary>
+    /// Cancel Request
+    /// </summary>
+
+    public void Cancel() {
         if (_cancelTokenSource != null) {
             _cancelTokenSource.Cancel();
             _cancelTokenSource = null;
         }
+    }
+
+    private void OnDestroy() {
+        Cancel();
     }
 
     /// <summary>

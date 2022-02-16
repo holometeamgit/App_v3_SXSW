@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -16,40 +17,37 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
     [SerializeField]
     private Color _highlightMSGColor;
 
-    private RoomJsonData _data;
-
     public static Action<RoomJsonData> OnShow;
     public static Action<long> OnShowError;
     public static Action OnHide;
 
-    private bool isDisabled;
+    private RoomJsonData _data;
+
+    private CancellationTokenSource cancelTokenSource;
+    private CancellationToken cancellationToken;
     private const int DELAY = 5000;
 
     private void OnEnable() {
-        isDisabled = false;
         OnShow += Show;
         OnHide += Hide;
         OnShowError += ShowError;
+        StreamCallBacks.onRoomBroadcastFinished += ShowNoLongerLive;
     }
 
     private void OnDisable() {
-        isDisabled = true;
         OnShow -= Show;
         OnHide -= Hide;
         OnShowError -= ShowError;
+        StreamCallBacks.onRoomBroadcastFinished -= ShowNoLongerLive;
     }
 
-    private void Show(RoomJsonData data = null) {
-        if (!isDisabled) {
-            if (data != null) {
-                OnReceivedARMessageData(data, ShowData);
-            } else {
-                OnReceivedARMessageData(data, (roomJsondata) => ShowNoLongerOnline());
-            }
-        }
+    private void Show(RoomJsonData data) {
+        cancelTokenSource = new CancellationTokenSource();
+        cancellationToken = cancelTokenSource.Token;
+        OnReceivedData(data, ShowData);
     }
 
-    private void OnReceivedARMessageData(RoomJsonData data, Action<RoomJsonData> onSuccessTask) {
+    private void OnReceivedData(RoomJsonData data, Action<RoomJsonData> onSuccessTask) {
         _popupShowChecker.OnReceivedData(data, onSuccessTask);
     }
 
@@ -60,14 +58,20 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
             ShowOffline(data);
         }
 
-        if (!isDisabled) {
+        try {
             await Task.Delay(DELAY);
-            StreamCallBacks.onReceiveRoomLink?.Invoke(data.user);
+            if (!cancellationToken.IsCancellationRequested) {
+                StreamCallBacks.onReceiveRoomLink?.Invoke(data.user);
+            }
+        } finally {
+            if (cancelTokenSource != null) {
+                cancelTokenSource.Dispose();
+                cancelTokenSource = null;
+            }
         }
-
     }
 
-    private void ShowNoLongerOnline() {
+    private void ShowNoLongerLive() {
         if (_data != null) {
             string title = $"<color=#{ColorUtility.ToHtmlStringRGBA(_highlightMSGColor)}>{_data.user}</color> is no longer live";
             string description = string.Empty;
@@ -76,6 +80,7 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
             bool shareBtn = false;
             DeepLinkRoomData deepLinkRoomData = new DeepLinkRoomData(title, description, _data, online, closeBtn, shareBtn);
             _deepLinkRoomPopup.Show(deepLinkRoomData);
+            _data = null;
         }
     }
 
@@ -85,9 +90,9 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
         bool online = true;
         bool closeBtn = false;
         bool shareBtn = false;
-        _data = data;
         DeepLinkRoomData deepLinkRoomData = new DeepLinkRoomData(title, description, data, online, closeBtn, shareBtn);
         _deepLinkRoomPopup.Show(deepLinkRoomData);
+        _data = data;
     }
 
     private void ShowOffline(RoomJsonData data) {
@@ -98,25 +103,32 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
         bool shareBtn = true;
         DeepLinkRoomData deepLinkRoomData = new DeepLinkRoomData(title, description, data, online, closeBtn, shareBtn);
         _deepLinkRoomPopup.Show(deepLinkRoomData);
+        _data = null;
     }
 
     private void ShowError(long error) {
         if (error == 404) {
             string title = "THIS USER DOES NOT EXIST";
             string description = "Please make sure that the link you received is correct.";
-            RoomJsonData roomJsonData = null;
             bool userCountText = false;
             bool closeBtn = true;
             bool shareBtn = false;
-
-            DeepLinkRoomData deepLinkRoomData = new DeepLinkRoomData(title, description, roomJsonData, userCountText, closeBtn, shareBtn);
+            DeepLinkRoomData deepLinkRoomData = new DeepLinkRoomData(title, description, null, userCountText, closeBtn, shareBtn);
             _deepLinkRoomPopup.Show(deepLinkRoomData);
+            _data = null;
+        }
+    }
+
+    private void Cancel() {
+        if (cancelTokenSource != null) {
+            cancelTokenSource.Cancel();
+            cancelTokenSource = null;
         }
     }
 
     private void Hide() {
-        isDisabled = true;
-        _data = null;
         _deepLinkRoomPopup.Hide();
+        Cancel();
+        _popupShowChecker.Cancel();
     }
 }
