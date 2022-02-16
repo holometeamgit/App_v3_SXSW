@@ -9,24 +9,27 @@ using UnityEngine;
 /// <summary>
 /// Constructor for opening deep Link for ARMessage
 /// </summary>
-public class ARMsgDeeplinkConstructor : MonoBehaviour {
+public class DeeplinkARMsgConstructor : MonoBehaviour {
 
     [SerializeField]
     private DeepLinkChecker _popupShowChecker;
 
     private PermissionController _permissionController = new PermissionController();
 
-    public static Action<ARMsgJSON.Data> OnActivated = delegate { };
+    public static Action<ARMsgJSON.Data> OnShow = delegate { };
+    public static Action<long> OnShowError = delegate { };
 
     private void OnEnable() {
-        OnActivated += Activate;
+        OnShow += Show;
+        OnShowError += ShowError;
     }
 
     private void OnDisable() {
-        OnActivated -= Activate;
+        OnShow -= Show;
+        OnShowError -= ShowError;
     }
 
-    private void Activate(ARMsgJSON.Data data) {
+    private void Show(ARMsgJSON.Data data) {
         OnReceivedARMessageData(data, ActivateData);
     }
 
@@ -35,7 +38,6 @@ public class ARMsgDeeplinkConstructor : MonoBehaviour {
     }
 
     private void ActivateData(ARMsgJSON.Data data) {
-
         _permissionController.CheckCameraMicAccess(() => {
             MenuConstructor.OnActivated?.Invoke(false);
             HomeScreenConstructor.OnActivated?.Invoke(false);
@@ -45,6 +47,10 @@ public class ARMsgDeeplinkConstructor : MonoBehaviour {
             ARMsgARenaConstructor.OnActivatedARena?.Invoke(data);
             PnlRecord.CurrentUser = data.user;
         });
+    }
+
+    private void ShowError(long error) {
+        _popupShowChecker.OnReceivedData(() => WarningConstructor.ActivateSingleButton("This user or video doesn't exist", "Please make sure that the link you received is correct.", "Ok"));
     }
 
 }

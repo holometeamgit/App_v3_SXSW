@@ -13,9 +13,11 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
     private DeepLinkChecker _popupShowChecker;
 
     public static Action<StreamJsonData.Data> OnShow = delegate { };
+    public static Action<long> OnShowError = delegate { };
     public static Action OnHide = delegate { };
     private void OnEnable() {
         OnShow += Show;
+        OnShowError += ShowError;
         OnHide += Hide;
     }
 
@@ -33,6 +35,11 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
 
     private void OnDisable() {
         OnShow -= Show;
+        OnShowError -= ShowError;
         OnHide -= Hide;
+    }
+
+    private void ShowError(long error) {
+        _popupShowChecker.OnReceivedData(() => WarningConstructor.ActivateSingleButton("This page doesn't exist", "Please make sure that the link you received is correct.", "Ok"));
     }
 }

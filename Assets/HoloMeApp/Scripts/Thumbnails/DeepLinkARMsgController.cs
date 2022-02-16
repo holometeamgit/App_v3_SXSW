@@ -7,7 +7,7 @@ using UnityEngine;
 /// <summary>
 /// Deep Link Controller for Ar-messages
 /// </summary>
-public class DeepLinkARMessageController : MonoBehaviour {
+public class DeepLinkARMsgController : MonoBehaviour {
 
     [SerializeField]
     private WebRequestHandler _webRequestHandler;
@@ -26,15 +26,16 @@ public class DeepLinkARMessageController : MonoBehaviour {
             false);
     }
 
-    private void ARMessageReceived(string body, Action<ARMsgJSON.Data> onReceived) {
+    private void ARMessageReceived(string body, Action<ARMsgJSON.Data> onSuccess, Action<long> onFailed) {
         try {
             ARMsgJSON.Data arMsgJsonData = JsonUtility.FromJson<ARMsgJSON.Data>(body);
 
             HelperFunctions.DevLog("AR Message Recieved = " + body);
 
-            onReceived?.Invoke(arMsgJsonData);
+            onSuccess?.Invoke(arMsgJsonData);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
+            onFailed?.Invoke(404);
         }
     }
 
@@ -43,13 +44,18 @@ public class DeepLinkARMessageController : MonoBehaviour {
             (code, body) => Open(body),
             (code, body) => {
                 HelperFunctions.DevLogError(code + " " + body);
+                DeeplinkARMsgConstructor.OnShowError?.Invoke(code);
             });
     }
 
     private void Open(string body) {
         ARMessageReceived(body,
             (data) => {
-                ARMsgDeeplinkConstructor.OnActivated?.Invoke(data);
+                DeeplinkARMsgConstructor.OnShow?.Invoke(data);
+            },
+            (code) => {
+                HelperFunctions.DevLogError(code.ToString());
+                DeeplinkARMsgConstructor.OnShowError?.Invoke(code);
             });
     }
 

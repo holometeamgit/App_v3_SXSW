@@ -40,19 +40,20 @@ public class DeepLinkStreamController : MonoBehaviour {
         needHeaderAccessToken: false);
     }
 
-    private void StreamReceived(string body, Action<StreamJsonData.Data> onReceived) {
+    private void StreamReceived(string body, Action<StreamJsonData.Data> onSuccess, Action<long> onFailed) {
         try {
             StreamJsonData.Data data = JsonUtility.FromJson<StreamJsonData.Data>(body);
 
             HelperFunctions.DevLog("Stream Recieved = " + body);
 
-            onReceived?.Invoke(data);
+            onSuccess?.Invoke(data);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
+            onFailed?.Invoke(404);
         }
     }
 
-    private void StreamsReceived(string body, string username, Action<StreamJsonData.Data> onReceived) {
+    private void StreamsReceived(string body, string username, Action<StreamJsonData.Data> onSuccess, Action<long> onFailed) {
         try {
             HelperFunctions.DevLog("Streams Recieved = " + body);
 
@@ -74,41 +75,50 @@ public class DeepLinkStreamController : MonoBehaviour {
                 }
 
                 if (lastStreamData != null) {
-                    onReceived?.Invoke(lastStreamData);
+                    onSuccess?.Invoke(lastStreamData);
                 }
+            } else {
+                onFailed?.Invoke(404);
             }
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
+            onFailed?.Invoke(404);
         }
     }
 
-    private void OnOpenStream(string username) {
+    private void OnOpenStadium(string username) {
         GetStreamByUsername(username,
             (code, body) => {
-                OpenStream(body, username); ;
+                OpenStadium(body, username); ;
             },
             (code, body) => {
                 HelperFunctions.DevLogError(code + " " + body);
+                DeepLinkStreamConstructor.OnShowError?.Invoke(code);
             });
     }
 
-    private void OpenStream(string body, string username) {
+    private void OpenStadium(string body, string username) {
         StreamsReceived(body,
             username,
             (data) => {
                 if ((data.GetStage() == StreamJsonData.Data.Stage.Prerecorded && data.HasStreamUrl) || data.GetStage() == StreamJsonData.Data.Stage.Live) {
                     DeepLinkStreamConstructor.OnShow?.Invoke(data);
                 }
+            },
+            (code) => {
+                HelperFunctions.DevLogError(code.ToString());
+                DeepLinkStreamConstructor.OnShowError?.Invoke(code);
             });
     }
 
     private void OnOpenPrerecorded(string slug) {
         GetStreamBySlug(slug,
             (code, body) => {
-                OpenPrerecorded(body); ;
+                OpenPrerecorded(body);
             },
             (code, body) => {
                 HelperFunctions.DevLogError(code + " " + body);
+                DeepLinkStreamConstructor.OnShowError?.Invoke(code);
             });
     }
 
@@ -118,13 +128,17 @@ public class DeepLinkStreamController : MonoBehaviour {
                 if ((data.GetStage() == StreamJsonData.Data.Stage.Prerecorded && data.HasStreamUrl) || data.GetStage() == StreamJsonData.Data.Stage.Live) {
                     DeepLinkStreamConstructor.OnShow?.Invoke(data);
                 }
+            },
+            (code) => {
+                HelperFunctions.DevLogError(code.ToString());
+                DeepLinkStreamConstructor.OnShowError?.Invoke(code);
             });
     }
 
     private void Awake() {
         StreamCallBacks.onShareStreamLinkByUsername += OnShare;
         StreamCallBacks.onShareStreamLinkByData += OnShare;
-        StreamCallBacks.onReceiveStadiumLink += OnOpenStream;
+        StreamCallBacks.onReceiveStadiumLink += OnOpenStadium;
         StreamCallBacks.onReceivePrerecordedLink += OnOpenPrerecorded;
     }
 
@@ -141,6 +155,9 @@ public class DeepLinkStreamController : MonoBehaviour {
             username,
             (data) => {
                 OnShare(data);
+            },
+            (code) => {
+                HelperFunctions.DevLogError(code.ToString());
             });
     }
 
@@ -163,7 +180,7 @@ public class DeepLinkStreamController : MonoBehaviour {
     private void OnDestroy() {
         StreamCallBacks.onShareStreamLinkByUsername -= OnShare;
         StreamCallBacks.onShareStreamLinkByData -= OnShare;
-        StreamCallBacks.onReceiveStadiumLink -= OnOpenStream;
+        StreamCallBacks.onReceiveStadiumLink -= OnOpenStadium;
         StreamCallBacks.onReceivePrerecordedLink -= OnOpenPrerecorded;
     }
 

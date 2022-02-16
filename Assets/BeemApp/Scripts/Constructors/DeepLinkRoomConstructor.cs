@@ -29,15 +29,15 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
 
     private void OnEnable() {
         OnShow += Show;
-        OnHide += Hide;
         OnShowError += ShowError;
+        OnHide += Hide;
         StreamCallBacks.onRoomBroadcastFinished += ShowNoLongerLive;
     }
 
     private void OnDisable() {
         OnShow -= Show;
-        OnHide -= Hide;
         OnShowError -= ShowError;
+        OnHide -= Hide;
         StreamCallBacks.onRoomBroadcastFinished -= ShowNoLongerLive;
     }
 
@@ -107,16 +107,7 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
     }
 
     private void ShowError(long error) {
-        if (error == 404) {
-            string title = "THIS USER DOES NOT EXIST";
-            string description = "Please make sure that the link you received is correct.";
-            bool userCountText = false;
-            bool closeBtn = true;
-            bool shareBtn = false;
-            DeepLinkRoomData deepLinkRoomData = new DeepLinkRoomData(title, description, null, userCountText, closeBtn, shareBtn);
-            _deepLinkRoomPopup.Show(deepLinkRoomData);
-            _data = null;
-        }
+        _popupShowChecker.OnReceivedData(() => WarningConstructor.ActivateSingleButton("This user doesn't exist", "Please make sure that the link you received is correct.", "Ok"));
     }
 
     private void Cancel() {

@@ -27,15 +27,16 @@ public class DeepLinkRoomController : MonoBehaviour {
             needHeaderAccessToken: false);
     }
 
-    private void RoomReceived(string body, Action<RoomJsonData> onReceived) {
+    private void RoomReceived(string body, Action<RoomJsonData> OnSuccess, Action<long> onFailed) {
         try {
             RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(body);
 
             HelperFunctions.DevLog("Room Recieved = " + body);
 
-            onReceived?.Invoke(roomJsonData);
+            OnSuccess?.Invoke(roomJsonData);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
+            onFailed?.Invoke(404);
         }
     }
 
@@ -43,8 +44,8 @@ public class DeepLinkRoomController : MonoBehaviour {
         GetRoomByUserName(username,
             (code, body) => Open(body),
             (code, body) => {
-                DeepLinkRoomConstructor.OnShowError?.Invoke(code);
                 HelperFunctions.DevLogError(code + " " + body);
+                DeepLinkRoomConstructor.OnShowError(code);
             });
     }
 
@@ -53,6 +54,10 @@ public class DeepLinkRoomController : MonoBehaviour {
             (data) => {
                 StreamCallBacks.onRoomDataReceived?.Invoke(data);
                 DeepLinkRoomConstructor.OnShow?.Invoke(data);
+            },
+            code => {
+                HelperFunctions.DevLogError(code.ToString());
+                DeepLinkRoomConstructor.OnShowError(404);
             });
     }
 
@@ -71,7 +76,11 @@ public class DeepLinkRoomController : MonoBehaviour {
                 string description = string.Format(DESCRIPTION, data.user);
                 string msg = title + "\n" + description + "\n" + data.share_link;
                 _shareController.ShareLink(msg);
-            });
+            },
+            (code) => {
+                HelperFunctions.DevLogError(code.ToString());
+            }
+            );
     }
 
     private void Awake() {

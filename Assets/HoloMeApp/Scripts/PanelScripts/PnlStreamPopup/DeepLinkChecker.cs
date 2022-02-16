@@ -94,4 +94,20 @@ public class DeepLinkChecker : MonoBehaviour {
             }
         }, taskScheduler);
     }
+
+    /// <summary>
+    /// Receive Data
+    /// </summary>
+    public void OnReceivedData(Action onSuccessTask) {
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        WaitForCanShow().ContinueWith((task) => {
+
+            if (task.IsCanceled) {
+                HelperFunctions.DevLog("Previouses deeplink request was interrupted");
+
+            } else if (task.IsCompleted) {
+                onSuccessTask?.Invoke();
+            }
+        }, taskScheduler);
+    }
 }
