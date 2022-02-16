@@ -96,7 +96,9 @@ public class DeepLinkStreamController : MonoBehaviour {
         StreamsReceived(body,
             username,
             (data) => {
-                StreamCallBacks.onStreamDataReceived?.Invoke(data);
+                if ((data.GetStage() == StreamJsonData.Data.Stage.Prerecorded && data.HasStreamUrl) || data.GetStage() == StreamJsonData.Data.Stage.Live) {
+                    DeepLinkStreamConstructor.OnShow?.Invoke(data);
+                }
             });
     }
 
@@ -113,7 +115,9 @@ public class DeepLinkStreamController : MonoBehaviour {
     private void OpenPrerecorded(string body) {
         StreamReceived(body,
             (data) => {
-                StreamCallBacks.onStreamDataReceived?.Invoke(data);
+                if ((data.GetStage() == StreamJsonData.Data.Stage.Prerecorded && data.HasStreamUrl) || data.GetStage() == StreamJsonData.Data.Stage.Live) {
+                    DeepLinkStreamConstructor.OnShow?.Invoke(data);
+                }
             });
     }
 

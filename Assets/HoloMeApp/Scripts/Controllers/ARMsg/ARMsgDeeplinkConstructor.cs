@@ -1,3 +1,4 @@
+using Beem.Permissions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ public class ARMsgDeeplinkConstructor : MonoBehaviour {
 
     [SerializeField]
     private DeepLinkChecker _popupShowChecker;
+
+    private PermissionController _permissionController = new PermissionController();
 
     public static Action<ARMsgJSON.Data> OnActivated = delegate { };
 
@@ -32,7 +35,16 @@ public class ARMsgDeeplinkConstructor : MonoBehaviour {
     }
 
     private void ActivateData(ARMsgJSON.Data data) {
-        StreamCallBacks.onPlayARMessage?.Invoke(data);
+
+        _permissionController.CheckCameraMicAccess(() => {
+            MenuConstructor.OnActivated?.Invoke(false);
+            HomeScreenConstructor.OnActivated?.Invoke(false);
+            SettingsConstructor.OnActivated?.Invoke(false);
+            ARMsgRecordConstructor.OnActivated?.Invoke(false);
+            ARenaConstructor.onActivateForARMessaging?.Invoke(data);
+            ARMsgARenaConstructor.OnActivatedARena?.Invoke(data);
+            PnlRecord.CurrentUser = data.user;
+        });
     }
 
 }

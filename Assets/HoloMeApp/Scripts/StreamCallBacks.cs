@@ -27,18 +27,11 @@ public class StreamCallBacks {
     public static Action onCancelOpenContent = delegate { };
     #endregion
 
-    #region
-    public static Action<RoomJsonData> onPlayRoom = delegate { };
-    public static Action<ARMsgJSON.Data> onPlayARMessage = delegate { };
-    #endregion
-
     public static Action onGetLastRoomLink = delegate { };
     public static Action<string> onShareRoomLink = delegate { };
     public static Action<string> onShareStreamLinkByUsername = delegate { };
     public static Action<StreamJsonData.Data> onShareStreamLinkByData = delegate { };
-    public static Action<StreamJsonData.Data> onStreamDataReceived = delegate { };
     public static Action onRoomBroadcastFinished = delegate { };
-    public static Action onCloseStreamPopUp = delegate { };
 
     //when start stream on Agora
     public static Action<StreamStartResponseJsonData> onRoomCreated = delegate { };
