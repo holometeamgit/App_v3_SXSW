@@ -11,6 +11,9 @@ using System;
 [RequireComponent(typeof(RawImage), typeof(AspectRatioFitter))]
 public class ARMsgCameraPreview : MonoBehaviour {
 
+    public static int FRONT_CAMERA = 1;
+    public static int BACK_CAMERA = 0;
+
     public WebCamTexture cameraTexture { get; private set; }
     private RawImage rawImage;
     private AspectRatioFitter aspectFitter;
@@ -55,6 +58,7 @@ public class ARMsgCameraPreview : MonoBehaviour {
             _currectDeviceID = (_currectDeviceID + 1) % 2;
 
         _devicesName = devices[_currectDeviceID].name;
+        CallBacks.onCameraSwitched?.Invoke(_currectDeviceID);
     }
 
     private void StartStartCameraCoroutine() {
@@ -66,6 +70,28 @@ public class ARMsgCameraPreview : MonoBehaviour {
             StopCoroutine(_coroutine);
             _coroutine = null;
         }
+    }
+
+    private int GetCurrentCameraID() {
+        return _currectDeviceID;
+    }
+
+
+    private void OnEnable() {
+        StartStartCameraCoroutine();
+        CallBacks.onGetCurrentCameraID += GetCurrentCameraID;
+    }
+
+    private void OnDisable() {
+        StopStartCameraCoroutine();
+        if (cameraTexture != null)
+            cameraTexture.Stop();
+        CallBacks.onGetCurrentCameraID -= GetCurrentCameraID;
+    }
+
+    private void OnDestroy() {
+        CallBacks.onCanSwitchCamera -= CanSwitchCamera;
+        CallBacks.onSwitchCameraClicked -= SwitchCamera;
     }
 
     private IEnumerator StartCamera() {
@@ -94,21 +120,6 @@ public class ARMsgCameraPreview : MonoBehaviour {
         }
 
         onTextureUpdated?.Invoke();
-    }
-
-    private void OnEnable() {
-        StartStartCameraCoroutine();
-    }
-
-    private void OnDisable() {
-        StopStartCameraCoroutine();
-        if(cameraTexture != null)
-            cameraTexture.Stop();
-    }
-
-    private void OnDestroy() {
-        CallBacks.onCanSwitchCamera -= CanSwitchCamera;
-        CallBacks.onSwitchCameraClicked -= SwitchCamera;
     }
 
 }
