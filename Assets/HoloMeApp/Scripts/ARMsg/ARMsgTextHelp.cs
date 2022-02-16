@@ -4,6 +4,9 @@ using UnityEngine;
 using TMPro;
 using Beem.ARMsg;
 
+/// <summary>
+/// The class is responsible for changing the text depending on the selected phone camera
+/// </summary>
 public class ARMsgTextHelp : MonoBehaviour
 {
     [SerializeField]
