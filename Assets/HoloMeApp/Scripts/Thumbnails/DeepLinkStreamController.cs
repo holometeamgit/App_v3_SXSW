@@ -16,36 +16,15 @@ public class DeepLinkStreamController : MonoBehaviour {
     [SerializeField]
     private VideoUploader _videoUploader;
 
+    private const string TITLE = "You have been invited to {0}'s Stadium";
+    private const string DESCRIPTION = "Click the link below to join {0}'s Stadium";
+
     private ShareLinkController _shareController = new ShareLinkController();
 
-    private const string STREAM_TITLE = "Join {0}'s Live Stream";
-    private const string STREAM_DESCRIPTION = "Click the link to watch {0} in Augmented Reality.";
     private const string STATUS = "live";
     private const string USERNAME_FILTER = "user__username";
     private const string STATUS_FILTER = "status";
 
-    /// <summary>
-    /// Social Media for Streams
-    /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    public SocialMetaTagParameters SocialParameters(StreamJsonData.Data data) {
-        SocialMetaTagParameters socialMetaTagParameters;
-        if (data.GetStage() == StreamJsonData.Data.Stage.Live) {
-            socialMetaTagParameters = new SocialMetaTagParameters() {
-                Title = string.Format(STREAM_TITLE, data.user),
-                Description = string.Format(STREAM_DESCRIPTION, data.user),
-                ImageUrl = new Uri(_serverURLAPIScriptableObject.LogoLink)
-            };
-        } else {
-            socialMetaTagParameters = new SocialMetaTagParameters() {
-                Title = data.title,
-                Description = data.description,
-                ImageUrl = new Uri(_serverURLAPIScriptableObject.LogoLink)
-            };
-        }
-        return socialMetaTagParameters;
-    }
 
     private void GetStreamBySlug(string slug, Action<long, string> onSuccess, Action<long, string> onFailed) {
         _webRequestHandler.Get(GetRequestStreamBySlugURL(slug),
@@ -141,7 +120,7 @@ public class DeepLinkStreamController : MonoBehaviour {
     private void Awake() {
         StreamCallBacks.onShareStreamLinkByUsername += OnShare;
         StreamCallBacks.onShareStreamLinkByData += OnShare;
-        StreamCallBacks.onReceiveStreamLink += OnOpenStream;
+        StreamCallBacks.onReceiveStadiumLink += OnOpenStream;
         StreamCallBacks.onReceivePrerecordedLink += OnOpenPrerecorded;
     }
 
@@ -162,14 +141,25 @@ public class DeepLinkStreamController : MonoBehaviour {
     }
 
     private void OnShare(StreamJsonData.Data data) {
-        _shareController.ShareSocialLink(new Uri(data.share_link), SocialParameters(data));
+
+        string msg = string.Empty;
+
+        if (data.HasStreamUrl) {
+            msg = data.share_link;
+        } else if (data.HasAgoraChannel) {
+            string title = string.Format(TITLE, data.user);
+            string description = string.Format(DESCRIPTION, data.user);
+            msg = title + "\n" + description + "\n" + data.share_link;
+        }
+
+        _shareController.ShareLink(msg);
     }
 
 
     private void OnDestroy() {
         StreamCallBacks.onShareStreamLinkByUsername -= OnShare;
         StreamCallBacks.onShareStreamLinkByData -= OnShare;
-        StreamCallBacks.onReceiveStreamLink -= OnOpenStream;
+        StreamCallBacks.onReceiveStadiumLink -= OnOpenStream;
         StreamCallBacks.onReceivePrerecordedLink -= OnOpenPrerecorded;
     }
 

@@ -6,31 +6,28 @@ using System.Threading.Tasks;
 using Beem.SSO;
 using System;
 
-public class PnlSplashScreen : MonoBehaviour
-{
-    public Action onViewStartHide;
-    public Action onViewEnabled;
+public class PnlSplashScreen : MonoBehaviour {
 
-    [SerializeField] GameObject updateRect;
+    [SerializeField]
+    private GameObject updateRect;
 
-    [SerializeField] List<GameObject> specificAppleUIGONeedActive;
-    [SerializeField] Animator animator;
+    [SerializeField]
+    private Animator animator;
 
-    [SerializeField] UnityEvent OnLogInEvent;
-    [SerializeField] UnityEvent OnAuthorisationErrorEvent;
-
-    public void OnAuthorisation() {
-        HideSplashScreen();
-        OnLogInEvent.Invoke();
+    /// <summary>
+    /// Show Splash Screen window
+    /// </summary>
+    /// <param name="needUpdate"></param>
+    public void Show(bool needUpdate) {
+        gameObject.SetActive(true);
+        updateRect.SetActive(needUpdate);
     }
 
-    public void OnAuthorisationErrorInvoke() {
-        OnAuthorisationErrorEvent.Invoke();
+    /// <summary>
+    /// Hide SpashScreen Window
+    /// </summary>
+    public void Hide() {
         HideSplashScreen();
-    }
-
-    public void ShowNeedUpdate() {
-        updateRect.SetActive(true);
     }
 
     #region call from animation
@@ -45,20 +42,7 @@ public class PnlSplashScreen : MonoBehaviour
 
     #endregion
 
-    private void Awake() {
-#if UNITY_IOS
-        foreach (var appleUI in specificAppleUIGONeedActive) {
-            appleUI.SetActive(true);
-        }
-#endif
-    }
-
-    private void Start() {
-        onViewEnabled?.Invoke();
-    }
-
     private void HideSplashScreen() {
-        onViewStartHide?.Invoke();
         animator.SetBool("Hide", true);
     }
 }

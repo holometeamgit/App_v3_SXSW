@@ -23,7 +23,8 @@ public class ARMsgScreenRecorder : MonoBehaviour {
     private string _lastPathVideo;
     private const int MAX_HEIGH = 720;
     private const int BITRATE = 4000000;
-    private const int FRAMERATE = 30;
+
+    private Coroutine _startingRecordingCoroutine;
 
     private async void Start() {
 
@@ -43,35 +44,20 @@ public class ARMsgScreenRecorder : MonoBehaviour {
     /// Start recording screen
     /// </summary>
     public void StartRecording() {
-        var clock = new RealtimeClock();
-        int width;
-        int heigh;
-        AgoraSharedVideoConfig.GetResolution(screenWidth: Screen.width, screenHeigh: Screen.height, out width, out heigh, maxHeigh: MAX_HEIGH);
-        Application.targetFrameRate = FRAMERATE;
-        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
-
-        // Create a media device query for audio devices
-        var deviceQuery = new MediaDeviceQuery(MediaDeviceCriteria.AudioDevice);
-        // Get the device
-        audioDevice = deviceQuery.current as AudioDevice;
-
-        HelperFunctions.DevLog("vide record width " + width + " heigh " + heigh);
-
-        // Create recorder
-        recorder = new MP4Recorder(width, heigh,
-            framerate: FRAMERATE,
-            sampleRate: audioDevice.sampleRate, channelCount: audioDevice.channelCount,
-            recordingCallback: OnRecordComplete,
-            bitrate: BITRATE);
-        // Stream media samples
-        cameraInput = new CameraInput(recorder, clock, _camera);
-        audioDevice.StartRunning((sampleBuffer, timestamp) => recorder.CommitSamples(sampleBuffer, clock.Timestamp));
+        if(_startingRecordingCoroutine != null) {
+            StopCoroutine(_startingRecordingCoroutine);
+        }
+        _startingRecordingCoroutine = StartCoroutine(StartingRecording());
     }
 
     /// <summary>
     /// stop recording screeen
     /// </summary>
     public void StopRecord() {
+        if (_startingRecordingCoroutine != null) {
+            StopCoroutine(_startingRecordingCoroutine);
+        }
+
         audioDevice?.StopRunning();
         cameraInput?.Dispose();
         recorder?.Dispose();
@@ -92,5 +78,32 @@ public class ARMsgScreenRecorder : MonoBehaviour {
         return _lastPathVideo;
     }
 
+    private IEnumerator StartingRecording() {
+        var clock = new RealtimeClock();
+        int width;
+        int heigh;
+        AgoraSharedVideoConfig.GetResolution(screenWidth: Screen.width, screenHeigh: Screen.height, out width, out heigh, maxHeigh: MAX_HEIGH);
+        Application.targetFrameRate = AgoraSharedVideoConfig.FrameRate;
+        ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
+        yield return null;
+        // Create a media device query for audio devices
+        var deviceQuery = new MediaDeviceQuery(MediaDeviceCriteria.AudioDevice);
+        // Get the device
+        audioDevice = deviceQuery.current as AudioDevice;
+
+        HelperFunctions.DevLog("vide record width " + width + " heigh " + heigh);
+
+        // Create recorder
+        recorder = new MP4Recorder(width, heigh,
+            framerate: AgoraSharedVideoConfig.FrameRate,
+            sampleRate: audioDevice.sampleRate, channelCount: audioDevice.channelCount,
+            recordingCallback: OnRecordComplete,
+            bitrate: BITRATE);
+        yield return null;
+        // Stream media samples
+        cameraInput = new CameraInput(recorder, clock, _camera);
+        yield return null;
+        audioDevice.StartRunning((sampleBuffer, timestamp) => recorder.CommitSamples(sampleBuffer, clock.Timestamp));
+    }
 
 }

@@ -16,22 +16,38 @@ namespace Beem {
         private void Awake() {
             VersionChecker versionChecker = new VersionChecker(_generalAppAPIScriptableObject, _webRequestHandler);
             _preloaderController = new SplashScreenController(versionChecker);
-
-            _pnlSplashScreen.onViewEnabled += _preloaderController.Preload;
-            _pnlSplashScreen.onViewStartHide += _preloaderController.OnViewStartHide;
-
-            _preloaderController.onSentNeedUpdateApp += _pnlSplashScreen.ShowNeedUpdate;
-            _preloaderController.onSignIn += _pnlSplashScreen.OnAuthorisation;
-            _preloaderController.onFailSignIn += _pnlSplashScreen.OnAuthorisationErrorInvoke;
+            _preloaderController.Preload();
+            _preloaderController.onSentCanUse += SentCanUse;
+            _preloaderController.onSentNeedUpdateApp += SentNeedUpdateApp;
+            _preloaderController.onSignIn += OnAuthSuccess;
+            _preloaderController.onFailSignIn += OnAuthFailed;
         }
 
         private void OnDestroy() {
-            _pnlSplashScreen.onViewEnabled -= _preloaderController.Preload;
-            _pnlSplashScreen.onViewStartHide -= _preloaderController.OnViewStartHide;
+            _preloaderController.onSentCanUse -= SentCanUse;
+            _preloaderController.onSentNeedUpdateApp -= SentNeedUpdateApp;
+            _preloaderController.onSignIn -= OnAuthSuccess;
+            _preloaderController.onFailSignIn -= OnAuthFailed;
+        }
 
-            _preloaderController.onSentNeedUpdateApp -= _pnlSplashScreen.ShowNeedUpdate;
-            _preloaderController.onSignIn -= _pnlSplashScreen.OnAuthorisation;
-            _preloaderController.onFailSignIn -= _pnlSplashScreen.OnAuthorisationErrorInvoke;
+        private void SentCanUse() {
+            _pnlSplashScreen.Show(false);
+        }
+
+        private void SentNeedUpdateApp() {
+            _pnlSplashScreen.Show(true);
+        }
+
+        private void OnAuthSuccess() {
+            CreateUsernameConstructor.OnActivated?.Invoke(true);
+            _pnlSplashScreen.Hide();
+            _preloaderController.OnViewStartHide();
+        }
+
+        private void OnAuthFailed() {
+            WelcomeConstructor.OnActivated?.Invoke(true);
+            _pnlSplashScreen.Hide();
+            _preloaderController.OnViewStartHide();
         }
     }
 }
