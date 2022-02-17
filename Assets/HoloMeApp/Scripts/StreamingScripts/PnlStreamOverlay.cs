@@ -153,6 +153,14 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         initialised = true;
     }
 
+    public void ShowInfoPopupStadium() {
+        InfoPopupConstructor.onActivate("HOW TO BROADCAST \n IN STADIUM", true, new Color(142f / 255f, 196f / 255f, 246f / 255f));
+    }
+
+    public void ShowInfoPopupRoom() {
+        InfoPopupConstructor.onActivate("HOW TO USE \n MY ROOM", true, new Color(131f / 255f, 168f / 255f, 240f / 255f));
+    }
+
     private void OnEnable() {
         txtCentreMessage.text = string.Empty;
         CentreMessage.localScale = Vector3.zero;
