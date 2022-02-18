@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// Gallery View
 /// </summary>
-public class GalleryView : MonoBehaviour {
+public class GalleryWindow : MonoBehaviour {
 
     [SerializeField]
     private CellView _cellView;
@@ -14,6 +14,10 @@ public class GalleryView : MonoBehaviour {
     private RectTransform _scrollViewRect;
     [SerializeField]
     private Transform _parent;
+    [SerializeField]
+    private GameObject _empty;
+    [SerializeField]
+    private GameObject _notEmpty;
 
     private CancellationTokenSource cancelTokenSource;
 
@@ -22,7 +26,7 @@ public class GalleryView : MonoBehaviour {
     }
 
     private void Test() {
-        int number = 25;
+        int number = 18;
 
         ARMsgJSON arMsgJSON = new ARMsgJSON();
 
@@ -44,17 +48,24 @@ public class GalleryView : MonoBehaviour {
     /// <param name="arMsgJSON"></param>
     public async void Show(ARMsgJSON arMsgJSON) {
         gameObject.SetActive(true);
-        cancelTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = cancelTokenSource.Token;
-        RectTransform rectTransform = _cellView.gameObject.GetComponent<RectTransform>();
-        _scrollViewRect.sizeDelta = new Vector2(_scrollViewRect.sizeDelta.x, (arMsgJSON.results.Count / 3 + 1) * rectTransform.sizeDelta.y);
+        if (arMsgJSON.count > 0) {
+            _empty.SetActive(false);
+            _notEmpty.SetActive(true);
+            cancelTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancelTokenSource.Token;
+            RectTransform rectTransform = _cellView.gameObject.GetComponent<RectTransform>();
+            //_scrollViewRect.sizeDelta = new Vector2(_scrollViewRect.sizeDelta.x, (arMsgJSON.results.Count / 3 + 1) * rectTransform.sizeDelta.y);
 
-        foreach (ARMsgJSON.Data item in arMsgJSON.results) {
-            if (!cancellationToken.IsCancellationRequested) {
-                CellView cell = Instantiate(_cellView, _parent);
-                cell.Show(item);
-                await Task.Yield();
+            foreach (ARMsgJSON.Data item in arMsgJSON.results) {
+                if (!cancellationToken.IsCancellationRequested) {
+                    CellView cell = Instantiate(_cellView, _parent);
+                    cell.Show(item);
+                    await Task.Yield();
+                }
             }
+        } else {
+            _empty.SetActive(true);
+            _notEmpty.SetActive(false);
         }
     }
 

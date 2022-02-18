@@ -23,7 +23,8 @@ public class CellView : MonoBehaviour {
         if (data.processing_status != ARMsgJSON.Data.COMPETED_STATUS) {
             ShowPreview(false);
         } else {
-            _screenshotView.Show(data, () => ShowPreview(true), () => ShowPreview(false));
+            //_screenshotView.Show(data, () => ShowPreview(true), () => ShowPreview(false));
+            _screenshotView.Init(data);
         }
     }
 

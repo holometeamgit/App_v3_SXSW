@@ -9,7 +9,7 @@ using UnityEngine;
 public class GalleryConstructor : MonoBehaviour {
 
     [SerializeField]
-    private GalleryView _galleryView;
+    private GalleryWindow _galleryView;
 
     public static Action<ARMsgJSON> OnShow = delegate { };
     public static Action OnHide = delegate { };
