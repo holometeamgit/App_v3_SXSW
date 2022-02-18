@@ -1,3 +1,4 @@
+using DynamicScrollRect;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,17 +10,11 @@ using UnityEngine;
 public class GalleryWindow : MonoBehaviour {
 
     [SerializeField]
-    private CellView _cellView;
-    [SerializeField]
-    private RectTransform _scrollViewRect;
-    [SerializeField]
-    private Transform _parent;
+    private ScrollContent _content = null;
     [SerializeField]
     private GameObject _empty;
     [SerializeField]
     private GameObject _notEmpty;
-
-    private CancellationTokenSource cancelTokenSource;
 
     private void Start() {
         Test();
@@ -46,34 +41,25 @@ public class GalleryWindow : MonoBehaviour {
     /// Show all elements
     /// </summary>
     /// <param name="arMsgJSON"></param>
-    public async void Show(ARMsgJSON arMsgJSON) {
+    public void Show(ARMsgJSON arMsgJSON) {
         gameObject.SetActive(true);
         if (arMsgJSON.count > 0) {
             _empty.SetActive(false);
             _notEmpty.SetActive(true);
-            cancelTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancelTokenSource.Token;
 
-            int columnCount = 3;
-            int rawCount = Mathf.CeilToInt(arMsgJSON.results.Count / columnCount);
-            for (int i = 0; i < rawCount; i++) {
-                for (int j = 0; j < columnCount; j++) {
-                    CellView cell = Instantiate(_cellView, _parent);
-                    RectTransform cellRect = cell.gameObject.GetComponent<RectTransform>();
-                    cell.Show(arMsgJSON.results[columnCount * i + j]);
-                    cellRect.localPosition -= Vector3.up * (i * cellRect.sizeDelta.y);
-                    cellRect.localPosition += Vector3.right * (j * cellRect.sizeDelta.x);
-                    await Task.Yield();
-                }
+            List<ScrollItemData> contentDatas = new List<ScrollItemData>();
+
+            for (int i = 0; i < arMsgJSON.count; i++) {
+                ARMsgScrollItem aRMsgScrollItem = new ARMsgScrollItem(i);
+                aRMsgScrollItem.Init(arMsgJSON.results[i]);
+                contentDatas.Add(aRMsgScrollItem);
             }
+
+            _content.InitScrollContent(contentDatas);
         } else {
             _empty.SetActive(true);
             _notEmpty.SetActive(false);
         }
-    }
-
-    private void UpdatePosition() {
-
     }
 
     /// <summary>
@@ -81,12 +67,5 @@ public class GalleryWindow : MonoBehaviour {
     /// </summary>
     public void Hide() {
         gameObject.SetActive(false);
-    }
-
-    private void OnDisable() {
-        if (cancelTokenSource != null) {
-            cancelTokenSource.Cancel();
-            cancelTokenSource = null;
-        }
     }
 }

@@ -1,3 +1,4 @@
+using DynamicScrollRect;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine.Video;
 /// <summary>
 /// Cell View
 /// </summary>
-public class CellView : MonoBehaviour {
+public class CellView : ScrollItem<ARMsgScrollItem> {
 
     [SerializeField]
     private CanvasGroup _loader;
@@ -23,14 +24,18 @@ public class CellView : MonoBehaviour {
         if (data.processing_status != ARMsgJSON.Data.COMPETED_STATUS) {
             ShowPreview(false);
         } else {
-            //_screenshotView.Show(data, () => ShowPreview(true), () => ShowPreview(false));
-            _screenshotView.Init(data);
+            _screenshotView.Show(data, () => ShowPreview(true), () => ShowPreview(false));
         }
     }
 
     private void ShowPreview(bool status) {
         _preview.alpha = status ? 1 : 0;
         _loader.alpha = status ? 0 : 1;
+    }
+
+    protected override void InitItemData(ARMsgScrollItem item) {
+        Show(item.Data);
+        base.InitItemData(item);
     }
 
 }
