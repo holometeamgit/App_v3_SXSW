@@ -62,7 +62,7 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
     }
 
     private void Awake() {
-        CallBacks.onDownloadStreamById += DownloadStreamByIdWithDelay;
+        CallBacks.onDownloadStreamById += DownloadStreamById;
     }
 
     private void DownloadStreamById(long id) {
@@ -79,11 +79,6 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
             OnErrorStreamByIdJsonDataLoaded?.Invoke(id);
         },
         needHeaderAccessToken: true);
-    }
-
-    private void DownloadStreamByIdWithDelay(long id) { //TODO need wait server confirmation
-        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(DOWNLOAD_STREAM_DELAY_TIME).ContinueWith((_) => DownloadStreamById(id), taskScheduler);
     }
 
     #region DownloadThumbnailsCallBack
@@ -155,14 +150,14 @@ public class ThumbnailWebDownloadManager : MonoBehaviour {
     }
 
     private void OnEnable() {
-        CallBacks.onStreamPurchasedAndUpdateOnServer += DownloadStreamByIdWithDelay;
+        CallBacks.onStreamPurchasedAndUpdateOnServer += DownloadStreamById;
     }
 
     private void OnDisable() {
-        CallBacks.onStreamPurchasedAndUpdateOnServer -= DownloadStreamByIdWithDelay;
+        CallBacks.onStreamPurchasedAndUpdateOnServer -= DownloadStreamById;
     }
 
     private void OnDestroy() {
-        CallBacks.onDownloadStreamById -= DownloadStreamByIdWithDelay;
+        CallBacks.onDownloadStreamById -= DownloadStreamById;
     }
 }

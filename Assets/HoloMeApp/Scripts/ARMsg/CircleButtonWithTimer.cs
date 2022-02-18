@@ -15,10 +15,24 @@ public class CircleButtonWithTimer : MonoBehaviour {
 
     [SerializeField]
     private Image _invertCountdown, _countdown;
-    public UnityEvent onStop;
+    [SerializeField]
+    private float delayTimer = 2;
+    [SerializeField]
+    private Counter _counter;
     private bool _pressed;
-    [SerializeField] private float MaxRecordingTime = 15f; // seconds
-    [SerializeField] private float delayTimer = 2;
+    private float _maxRecordingTime = 5f; // seconds
+
+    public UnityEvent onStop;
+
+    /// <summary>
+    /// SetTimerScale
+    /// </summary>
+    /// <param name="value">seconds</param>
+    public void SetMaxRecordingTime(int value) {
+        _maxRecordingTime = value;
+        if(_counter != null)
+            _counter.SetCounterTime(value);
+    }
 
     /// <summary>
     /// start animation
@@ -55,7 +69,7 @@ public class CircleButtonWithTimer : MonoBehaviour {
         yield return new WaitForSeconds(delayTimer);
         float startTime = Time.time, ratio = 0f;
 
-        while (!_pressed && (ratio = (Time.time - startTime) / MaxRecordingTime) < 1.0f) {
+        while (!_pressed && (ratio = (Time.time - startTime) / _maxRecordingTime) < 1.0f) {
             if (_countdown)
                 _countdown.fillAmount = ratio;
             if (_invertCountdown)
