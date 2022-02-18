@@ -19,15 +19,14 @@ public class DeepLinkRoomController : MonoBehaviour {
 
     private ShareLinkController _shareController = new ShareLinkController();
 
-    private void GetRoomByUserName(string username, Action<long, string> onSuccess, Action<long, string> onFailed) {
-        HelperFunctions.DevLog("Get Room By UserName " + username);
+    private void GetRoomByUserName(string username, Action<long, string> onSuccess, Action<WebRequestError> onFailed = null) {
         _webRequestHandler.Get(GetRoomUsernameUrl(username),
             (code, body) => { onSuccess?.Invoke(code, body); },
-            (code, body) => { onFailed?.Invoke(code, body); },
+            (code, body) => { onFailed?.Invoke(new WebRequestError(code, body)); },
             needHeaderAccessToken: false);
     }
 
-    private void RoomReceived(string body, Action<RoomJsonData> OnSuccess, Action<long> onFailed) {
+    private void RoomReceived(string body, Action<RoomJsonData> OnSuccess, Action<WebRequestError> onFailed = null) {
         try {
             RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(body);
 
@@ -36,17 +35,14 @@ public class DeepLinkRoomController : MonoBehaviour {
             OnSuccess?.Invoke(roomJsonData);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
-            onFailed?.Invoke(404);
+            onFailed?.Invoke(new WebRequestError());
         }
     }
 
     private void OnOpen(string username) {
         GetRoomByUserName(username,
             (code, body) => Open(body),
-            (code, body) => {
-                HelperFunctions.DevLogError(code + " " + body);
-                DeepLinkRoomConstructor.OnShowError(code);
-            });
+            DeepLinkRoomConstructor.OnShowError);
     }
 
     private void Open(string body) {
@@ -54,19 +50,12 @@ public class DeepLinkRoomController : MonoBehaviour {
             (data) => {
                 StreamCallBacks.onRoomDataReceived?.Invoke(data);
                 DeepLinkRoomConstructor.OnShow?.Invoke(data);
-            },
-            code => {
-                HelperFunctions.DevLogError(code.ToString());
-                DeepLinkRoomConstructor.OnShowError(404);
-            });
+            }, DeepLinkRoomConstructor.OnShowError);
     }
 
     private void OnShare(string username) {
         GetRoomByUserName(username,
-            (code, body) => Share(body),
-            (code, body) => {
-                HelperFunctions.DevLogError(code + " " + body);
-            });
+            (code, body) => Share(body));
     }
 
     private void Share(string body) {
@@ -76,11 +65,7 @@ public class DeepLinkRoomController : MonoBehaviour {
                 string description = string.Format(DESCRIPTION, data.user);
                 string msg = title + "\n" + description + "\n" + data.share_link;
                 _shareController.ShareLink(msg);
-            },
-            (code) => {
-                HelperFunctions.DevLogError(code.ToString());
-            }
-            );
+            });
     }
 
     private void Awake() {

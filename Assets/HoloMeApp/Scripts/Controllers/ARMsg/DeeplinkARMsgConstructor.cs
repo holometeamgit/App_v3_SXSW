@@ -17,7 +17,7 @@ public class DeeplinkARMsgConstructor : MonoBehaviour {
     private PermissionController _permissionController = new PermissionController();
 
     public static Action<ARMsgJSON.Data> OnShow = delegate { };
-    public static Action<long> OnShowError = delegate { };
+    public static Action<WebRequestError> OnShowError = delegate { };
 
     private void OnEnable() {
         OnShow += Show;
@@ -49,7 +49,7 @@ public class DeeplinkARMsgConstructor : MonoBehaviour {
         });
     }
 
-    private void ShowError(long error) {
+    private void ShowError(WebRequestError webRequestError) {
         _popupShowChecker.OnReceivedData(() => WarningConstructor.ActivateSingleButton("This user or video doesn't exist", "Please make sure that the link you received is correct.", "Ok"));
     }
 

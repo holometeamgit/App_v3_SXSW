@@ -26,21 +26,21 @@ public class DeepLinkStreamController : MonoBehaviour {
     private const string STATUS_FILTER = "status";
 
 
-    private void GetStreamBySlug(string slug, Action<long, string> onSuccess, Action<long, string> onFailed) {
+    private void GetStreamBySlug(string slug, Action<long, string> onSuccess, Action<WebRequestError> onFailed = null) {
         _webRequestHandler.Get(GetRequestStreamBySlugURL(slug),
             (code, body) => { onSuccess?.Invoke(code, body); },
-            (code, body) => { onFailed?.Invoke(code, body); },
+            (code, body) => { onFailed?.Invoke(new WebRequestError(code, body)); },
         needHeaderAccessToken: false);
     }
 
-    private void GetStreamByUsername(string username, Action<long, string> onSuccess, Action<long, string> onFailed) {
+    private void GetStreamByUsername(string username, Action<long, string> onSuccess, Action<WebRequestError> onFailed = null) {
         _webRequestHandler.Get(GetRequestStreamByUsernameURL(username, STATUS),
             (code, body) => { onSuccess?.Invoke(code, body); },
-            (code, body) => { onFailed?.Invoke(code, body); },
+            (code, body) => { onFailed?.Invoke(new WebRequestError(code, body)); },
         needHeaderAccessToken: false);
     }
 
-    private void StreamReceived(string body, Action<StreamJsonData.Data> onSuccess, Action<long> onFailed) {
+    private void StreamReceived(string body, Action<StreamJsonData.Data> onSuccess, Action<WebRequestError> onFailed = null) {
         try {
             StreamJsonData.Data data = JsonUtility.FromJson<StreamJsonData.Data>(body);
 
@@ -49,11 +49,11 @@ public class DeepLinkStreamController : MonoBehaviour {
             onSuccess?.Invoke(data);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
-            onFailed?.Invoke(404);
+            onFailed?.Invoke(new WebRequestError());
         }
     }
 
-    private void StreamsReceived(string body, string username, Action<StreamJsonData.Data> onSuccess, Action<long> onFailed) {
+    private void StreamsReceived(string body, string username, Action<StreamJsonData.Data> onSuccess, Action<WebRequestError> onFailed = null) {
         try {
             HelperFunctions.DevLog("Streams Recieved = " + body);
 
@@ -78,11 +78,11 @@ public class DeepLinkStreamController : MonoBehaviour {
                     onSuccess?.Invoke(lastStreamData);
                 }
             } else {
-                onFailed?.Invoke(404);
+                onFailed?.Invoke(new WebRequestError());
             }
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
-            onFailed?.Invoke(404);
+            onFailed?.Invoke(new WebRequestError());
         }
     }
 
@@ -90,36 +90,25 @@ public class DeepLinkStreamController : MonoBehaviour {
         GetStreamByUsername(username,
             (code, body) => {
                 OpenStadium(body, username); ;
-            },
-            (code, body) => {
-                HelperFunctions.DevLogError(code + " " + body);
-                DeepLinkStreamConstructor.OnShowError?.Invoke(code);
-            });
+            }, DeepLinkStreamConstructor.OnShowError);
     }
 
     private void OpenStadium(string body, string username) {
-        StreamsReceived(body,
-            username,
+        StreamsReceived(body, username,
             (data) => {
                 if ((data.GetStage() == StreamJsonData.Data.Stage.Prerecorded && data.HasStreamUrl) || data.GetStage() == StreamJsonData.Data.Stage.Live) {
                     DeepLinkStreamConstructor.OnShow?.Invoke(data);
+                } else {
+                    DeepLinkStreamConstructor.OnShowError?.Invoke(new WebRequestError());
                 }
-            },
-            (code) => {
-                HelperFunctions.DevLogError(code.ToString());
-                DeepLinkStreamConstructor.OnShowError?.Invoke(code);
-            });
+            }, DeepLinkStreamConstructor.OnShowError);
     }
 
     private void OnOpenPrerecorded(string slug) {
         GetStreamBySlug(slug,
             (code, body) => {
                 OpenPrerecorded(body);
-            },
-            (code, body) => {
-                HelperFunctions.DevLogError(code + " " + body);
-                DeepLinkStreamConstructor.OnShowError?.Invoke(code);
-            });
+            }, DeepLinkStreamConstructor.OnShowError);
     }
 
     private void OpenPrerecorded(string body) {
@@ -127,12 +116,10 @@ public class DeepLinkStreamController : MonoBehaviour {
             (data) => {
                 if ((data.GetStage() == StreamJsonData.Data.Stage.Prerecorded && data.HasStreamUrl) || data.GetStage() == StreamJsonData.Data.Stage.Live) {
                     DeepLinkStreamConstructor.OnShow?.Invoke(data);
+                } else {
+                    DeepLinkStreamConstructor.OnShowError?.Invoke(new WebRequestError());
                 }
-            },
-            (code) => {
-                HelperFunctions.DevLogError(code.ToString());
-                DeepLinkStreamConstructor.OnShowError?.Invoke(code);
-            });
+            }, DeepLinkStreamConstructor.OnShowError);
     }
 
     private void Awake() {
@@ -144,21 +131,11 @@ public class DeepLinkStreamController : MonoBehaviour {
 
     private void OnShare(string username) {
         GetStreamByUsername(username,
-            (code, body) => Share(body, username),
-            (code, body) => {
-                HelperFunctions.DevLogError(code + " " + body);
-            });
+            (code, body) => Share(body, username));
     }
 
     private void Share(string body, string username) {
-        StreamsReceived(body,
-            username,
-            (data) => {
-                OnShare(data);
-            },
-            (code) => {
-                HelperFunctions.DevLogError(code.ToString());
-            });
+        StreamsReceived(body, username, OnShare);
     }
 
     private void OnShare(StreamJsonData.Data data) {

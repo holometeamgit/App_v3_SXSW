@@ -18,7 +18,7 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
     private Color _highlightMSGColor;
 
     public static Action<RoomJsonData> OnShow;
-    public static Action<long> OnShowError;
+    public static Action<WebRequestError> OnShowError;
     public static Action OnHide;
 
     private RoomJsonData _data;
@@ -106,7 +106,7 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
         _data = null;
     }
 
-    private void ShowError(long error) {
+    private void ShowError(WebRequestError webRequestError) {
         _popupShowChecker.OnReceivedData(() => WarningConstructor.ActivateSingleButton("This user doesn't exist", "Please make sure that the link you received is correct.", "Ok"));
     }
 

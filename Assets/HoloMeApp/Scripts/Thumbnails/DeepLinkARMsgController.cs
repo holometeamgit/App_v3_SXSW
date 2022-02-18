@@ -18,15 +18,14 @@ public class DeepLinkARMsgController : MonoBehaviour {
     [SerializeField]
     private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
 
-    private void GetARMessageById(string id, Action<long, string> onSuccess, Action<long, string> onFailed) {
-        HelperFunctions.DevLog("Get AR Message By Id " + id);
+    private void GetARMessageById(string id, Action<long, string> onSuccess, Action<WebRequestError> onFailed = null) {
         _webRequestHandler.Get(GetARMessageIdUrl(id),
             (code, body) => { onSuccess?.Invoke(code, body); },
-            (code, body) => { onFailed?.Invoke(code, body); },
+            (code, body) => { onFailed?.Invoke(new WebRequestError(code, body)); },
             false);
     }
 
-    private void ARMessageReceived(string body, Action<ARMsgJSON.Data> onSuccess, Action<long> onFailed) {
+    private void ARMessageReceived(string body, Action<ARMsgJSON.Data> onSuccess, Action<WebRequestError> onFailed = null) {
         try {
             ARMsgJSON.Data arMsgJsonData = JsonUtility.FromJson<ARMsgJSON.Data>(body);
 
@@ -35,17 +34,14 @@ public class DeepLinkARMsgController : MonoBehaviour {
             onSuccess?.Invoke(arMsgJsonData);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
-            onFailed?.Invoke(404);
+            onFailed?.Invoke(new WebRequestError());
         }
     }
 
     private void OnOpen(string id) {
         GetARMessageById(id,
             (code, body) => Open(body),
-            (code, body) => {
-                HelperFunctions.DevLogError(code + " " + body);
-                DeeplinkARMsgConstructor.OnShowError?.Invoke(code);
-            });
+            DeeplinkARMsgConstructor.OnShowError);
     }
 
     private void Open(string body) {
@@ -53,10 +49,7 @@ public class DeepLinkARMsgController : MonoBehaviour {
             (data) => {
                 DeeplinkARMsgConstructor.OnShow?.Invoke(data);
             },
-            (code) => {
-                HelperFunctions.DevLogError(code.ToString());
-                DeeplinkARMsgConstructor.OnShowError?.Invoke(code);
-            });
+            DeeplinkARMsgConstructor.OnShowError);
     }
 
     private void Awake() {
