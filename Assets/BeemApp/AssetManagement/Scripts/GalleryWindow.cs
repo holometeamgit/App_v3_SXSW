@@ -26,7 +26,7 @@ public class GalleryWindow : MonoBehaviour {
     }
 
     private void Test() {
-        int number = 18;
+        int number = 30;
 
         ARMsgJSON arMsgJSON = new ARMsgJSON();
 
@@ -53,13 +53,16 @@ public class GalleryWindow : MonoBehaviour {
             _notEmpty.SetActive(true);
             cancelTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancelTokenSource.Token;
-            RectTransform rectTransform = _cellView.gameObject.GetComponent<RectTransform>();
-            //_scrollViewRect.sizeDelta = new Vector2(_scrollViewRect.sizeDelta.x, (arMsgJSON.results.Count / 3 + 1) * rectTransform.sizeDelta.y);
 
-            foreach (ARMsgJSON.Data item in arMsgJSON.results) {
-                if (!cancellationToken.IsCancellationRequested) {
+            int columnCount = 3;
+            int rawCount = Mathf.CeilToInt(arMsgJSON.results.Count / columnCount);
+            for (int i = 0; i < rawCount; i++) {
+                for (int j = 0; j < columnCount; j++) {
                     CellView cell = Instantiate(_cellView, _parent);
-                    cell.Show(item);
+                    RectTransform cellRect = cell.gameObject.GetComponent<RectTransform>();
+                    cell.Show(arMsgJSON.results[columnCount * i + j]);
+                    cellRect.localPosition -= Vector3.up * (i * cellRect.sizeDelta.y);
+                    cellRect.localPosition += Vector3.right * (j * cellRect.sizeDelta.x);
                     await Task.Yield();
                 }
             }
@@ -67,6 +70,10 @@ public class GalleryWindow : MonoBehaviour {
             _empty.SetActive(true);
             _notEmpty.SetActive(false);
         }
+    }
+
+    private void UpdatePosition() {
+
     }
 
     /// <summary>
