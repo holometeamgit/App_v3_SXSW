@@ -4,22 +4,26 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class PnlOpenHomeMenu : MonoBehaviour {
+
     [SerializeField]
-    public UnityEvent OnEnabled;
-    
+    public UnityEvent OnShowCanvas;
+
     [SerializeField]
-    public UnityEvent OnDisabled;
-    
+    public UnityEvent OnHideCanvas;
+
     [SerializeField]
     public Button btnOnEnableInvoke;
-    
-    [SerializeField]
-    Canvas panelCanvas;
-    
-    [SerializeField]
-    ScrollRectSnapButtonHorz scrollRectSnapButtonHorz;
 
-    PermissionController permissionController = new PermissionController();
+    [SerializeField]
+    public Image imgPermissionRequired;
+
+    [SerializeField]
+    private Canvas panelCanvas;
+
+    [SerializeField]
+    private ScrollRectSnapButtonHorz scrollRectSnapButtonHorz;
+
+    private PermissionController permissionController = new PermissionController();
 
     private void OnEnable() {
         btnOnEnableInvoke?.onClick?.Invoke();
@@ -29,7 +33,6 @@ public class PnlOpenHomeMenu : MonoBehaviour {
     /// Enables the panel's canvas and fire enable events
     /// </summary>
     public void Activate() {
-        OnEnabled?.Invoke();
         panelCanvas.enabled = true;
         //scrollRectSnapButtonHorz.ReactivateCurrentIndex();
     }
@@ -39,17 +42,18 @@ public class PnlOpenHomeMenu : MonoBehaviour {
     /// </summary>
     public void HideCanvas() {
         panelCanvas.enabled = false;
+        OnHideCanvas?.Invoke();
     }
 
     public void ShowCanvas() {
-        permissionController.CheckCameraMicAccess(() => { }, () => { });
+        permissionController.CheckCameraMicAccess(() => imgPermissionRequired.gameObject.SetActive(false), () => imgPermissionRequired.gameObject.SetActive(true));
         panelCanvas.enabled = true;
+        OnShowCanvas?.Invoke();
     }
 
     private void OnDisable() {
         //RoomTutorialConstructor.OnActivated?.Invoke(false);
         //StreamOverlayConstructor.onDeactivate?.Invoke();
-        OnDisabled?.Invoke();
         StreamOverlayConstructor.onDeactivate?.Invoke();
     }
 }
