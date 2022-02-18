@@ -1,21 +1,27 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
+/// <summary>
+/// Gallery View
+/// </summary>
 public class GalleryView : MonoBehaviour {
 
     [SerializeField]
-    private CellView cellView;
+    private CellView _cellView;
     [SerializeField]
-    private Transform parent;
+    private RectTransform _scrollViewRect;
+    [SerializeField]
+    private Transform _parent;
 
     private CancellationTokenSource cancelTokenSource;
-    private const int DELAY = 100;
 
     private void Start() {
+        Test();
+    }
 
+    private void Test() {
         int number = 25;
 
         ARMsgJSON arMsgJSON = new ARMsgJSON();
@@ -32,17 +38,31 @@ public class GalleryView : MonoBehaviour {
         Show(arMsgJSON);
     }
 
+    /// <summary>
+    /// Show all elements
+    /// </summary>
+    /// <param name="arMsgJSON"></param>
     public async void Show(ARMsgJSON arMsgJSON) {
+        gameObject.SetActive(true);
         cancelTokenSource = new CancellationTokenSource();
         CancellationToken cancellationToken = cancelTokenSource.Token;
-        GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, (arMsgJSON.results.Count / 3 + 1) * 350);
+        RectTransform rectTransform = _cellView.gameObject.GetComponent<RectTransform>();
+        _scrollViewRect.sizeDelta = new Vector2(_scrollViewRect.sizeDelta.x, (arMsgJSON.results.Count / 3 + 1) * rectTransform.sizeDelta.y);
+
         foreach (ARMsgJSON.Data item in arMsgJSON.results) {
             if (!cancellationToken.IsCancellationRequested) {
-                CellView cell = Instantiate(cellView, parent);
+                CellView cell = Instantiate(_cellView, _parent);
                 cell.Show(item);
                 await Task.Yield();
             }
         }
+    }
+
+    /// <summary>
+    /// Hide
+    /// </summary>
+    public void Hide() {
+        gameObject.SetActive(false);
     }
 
     private void OnDisable() {

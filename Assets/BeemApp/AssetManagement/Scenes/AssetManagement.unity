@@ -281,7 +281,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1577510533}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99978805
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -958,7 +958,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.30424637}
+  m_AnchoredPosition: {x: 0, y: -0.000013682337}
   m_SizeDelta: {x: 0, y: 375}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1717990155
@@ -1090,7 +1090,6 @@ GameObject:
   - component: {fileID: 1923289442}
   - component: {fileID: 1923289441}
   - component: {fileID: 1923289440}
-  - component: {fileID: 1923289443}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -1187,20 +1186,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1923289438}
   m_CullTransparentMesh: 1
---- !u!114 &1923289443
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1923289438}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3ff55380682b4749bd29507c5b9e9e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cellView: {fileID: 254005357242934334, guid: f16d3ff9d6f882e4e802f255787a08cb, type: 3}
-  parent: {fileID: 1717990153}
 --- !u!1 &1974913173
 GameObject:
   m_ObjectHideFlags: 0
@@ -1473,6 +1458,7 @@ GameObject:
   - component: {fileID: 437625982206565703}
   - component: {fileID: 6660818466728679364}
   - component: {fileID: 8559427820072535606}
+  - component: {fileID: 4925215090033921074}
   m_Layer: 5
   m_Name: GalleryWindow
   m_TagString: Untagged
@@ -1501,6 +1487,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &4925215090033921074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4925215090033921072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3ff55380682b4749bd29507c5b9e9e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cellView: {fileID: 0}
+  _scrollViewRect: {fileID: 0}
+  _parent: {fileID: 0}
 --- !u!222 &4925215090033921084
 CanvasRenderer:
   m_ObjectHideFlags: 0

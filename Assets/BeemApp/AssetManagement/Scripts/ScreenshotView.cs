@@ -1,14 +1,25 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Video;
 
+/// <summary>
+/// Screenshot View
+/// </summary>
 public class ScreenshotView : MonoBehaviour {
     [SerializeField]
     private VideoPlayer _videoPlayer;
     [SerializeField]
     private int _maxHeight = 345;
+
+    /// <summary>
+    /// Shot Preview
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="onSuccess"></param>
+    /// <param name="onFail"></param>
     public void Show(ARMsgJSON.Data data, Action onSuccess, Action onFail) {
         int videoWidth;
         int videoHeight;
@@ -25,10 +36,12 @@ public class ScreenshotView : MonoBehaviour {
                 (player) => {
                     onSuccess?.Invoke();
                     _videoPlayer.Play();
-                    _videoPlayer.Pause();
+                    _videoPlayer.Stop();
                 };
         } else {
             onSuccess?.Invoke();
+            _videoPlayer.Play();
+            _videoPlayer.Stop();
         }
     }
 

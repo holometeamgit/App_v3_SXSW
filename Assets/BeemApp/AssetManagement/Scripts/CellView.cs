@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
-
+/// <summary>
+/// Cell View
+/// </summary>
 public class CellView : MonoBehaviour {
 
     [SerializeField]
@@ -13,6 +15,10 @@ public class CellView : MonoBehaviour {
     [SerializeField]
     private ScreenshotView _screenshotView;
 
+    /// <summary>
+    /// Show Cell Information
+    /// </summary>
+    /// <param name="data"></param>
     public void Show(ARMsgJSON.Data data) {
         if (data.processing_status != ARMsgJSON.Data.COMPETED_STATUS) {
             ShowPreview(false);
