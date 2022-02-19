@@ -27,16 +27,18 @@ namespace Beem.Firebase.CloudMessage {
             await task;
 
             if (task.IsCompleted) {
-                GUIUtility.systemCopyBuffer = task.Result;
                 HelperFunctions.DevLog("GetTokenAsync: " + task.Result);
             }
         }
 
         protected void Subscribe() {
-            GetTokenAsync();
+            //GetTokenAsync();
             FirebaseMessaging.TokenReceived += OnTokenReceived;
             FirebaseMessaging.MessageReceived += OnMessageReceived;
-            FirebaseMessaging.SubscribeAsync(TOPIC);
+            if (PlayerPrefs.GetInt("Test") == 0) {
+                PlayerPrefs.SetInt("Test", 1);
+                FirebaseMessaging.SubscribeAsync(TOPIC);
+            }
 
         }
 
@@ -44,11 +46,9 @@ namespace Beem.Firebase.CloudMessage {
             FirebaseCallBacks.onInit -= Subscribe;
             FirebaseMessaging.TokenReceived -= OnTokenReceived;
             FirebaseMessaging.MessageReceived -= OnMessageReceived;
-            FirebaseMessaging.UnsubscribeAsync(TOPIC);
         }
 
         private void OnTokenReceived(object sender, TokenReceivedEventArgs token) {
-            GUIUtility.systemCopyBuffer = token.Token;
             HelperFunctions.DevLog("Received Registration Token: " + token.Token);
         }
 
