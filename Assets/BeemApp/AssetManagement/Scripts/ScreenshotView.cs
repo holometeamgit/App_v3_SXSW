@@ -2,6 +2,7 @@ using Beem.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +21,7 @@ public class ScreenshotView : MonoBehaviour {
     [SerializeField]
     private int _maxHeight = 345;
 
+    private CancellationTokenSource cancelTokenSource;
     private RenderTexture rt;
     private int videoWidth;
     private int videoHeight;
@@ -53,6 +55,7 @@ public class ScreenshotView : MonoBehaviour {
     }
 
     private void OnEnable() {
+        cancelTokenSource = new CancellationTokenSource();
         if (!_videoPlayer.isPrepared) {
             _onFailed?.Invoke();
             _videoPlayer.prepareCompleted +=
@@ -68,10 +71,28 @@ public class ScreenshotView : MonoBehaviour {
     }
 
     private async void UpdatePreview() {
+        CancellationToken cancellationToken = cancelTokenSource.Token;
         AgoraSharedVideoConfig.GetResolution(screenWidth: (int)_videoPlayer.pixelAspectRatioNumerator, screenHeigh: (int)_videoPlayer.pixelAspectRatioDenominator, out videoWidth, out videoHeight, _maxHeight);
         _rectTransform.sizeDelta = new Vector2(videoWidth, videoHeight);
         _videoPlayer.Play();
-        await Task.Delay(DELAY);
+        if (!cancellationToken.IsCancellationRequested) {
+            await Task.Delay(DELAY);
+        }
+        _videoPlayer.Stop();
+    }
+
+    /// <summary>
+    /// Clear Info
+    /// </summary>
+    public void Cancel() {
+        if (cancelTokenSource != null) {
+            cancelTokenSource.Cancel();
+            cancelTokenSource = null;
+        }
+    }
+
+    private void OnDisable() {
+        Cancel();
         _videoPlayer.Stop();
     }
 
