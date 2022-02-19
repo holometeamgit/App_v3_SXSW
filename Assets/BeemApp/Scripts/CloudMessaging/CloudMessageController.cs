@@ -32,11 +32,11 @@ namespace Beem.Firebase.CloudMessage {
         }
 
         protected void Subscribe() {
-            //GetTokenAsync();
             FirebaseMessaging.TokenReceived += OnTokenReceived;
             FirebaseMessaging.MessageReceived += OnMessageReceived;
             if (PlayerPrefs.GetInt("Test") == 0) {
                 PlayerPrefs.SetInt("Test", 1);
+                GetTokenAsync();
                 FirebaseMessaging.SubscribeAsync(TOPIC);
             }
 
