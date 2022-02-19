@@ -46,10 +46,6 @@ public class PnlRecord : MonoBehaviour {
     Text txtWaterMarkText;
 
     [Space]
-
-    [SerializeField]
-    private ContentPlayer _contentPlayer;
-
     [SerializeField]
     private HologramHandler _hologramHandler;
 
@@ -58,6 +54,8 @@ public class PnlRecord : MonoBehaviour {
     private bool recordMicrophone = true;
 
     public bool Recording { get; set; }
+
+    public static string CurrentUser;
 
     private IMediaRecorder videoRecorder;
     private IClock recordingClock;
@@ -110,11 +108,10 @@ public class PnlRecord : MonoBehaviour {
         btnToggleMode.onClick.AddListener(() => ChangeMode = mode == Mode.Video ? Mode.Photo : Mode.Video);
         videoButtonContainerPosition = rtButtonContainer.anchoredPosition;
         canvasGroup.alpha = 0;
-
-        _contentPlayer.OnPlayFromUser += user => txtWaterMarkText.text = "@" + user; //Gameobject must be active in the editor for this to work correctly
     }
 
     private void OnEnable() {
+        txtWaterMarkText.text = "@" + CurrentUser; //Gameobject must be active in the editor for this to work correctly
         canvasGroup?.DOFade(1, .5f);
     }
 
