@@ -12,7 +12,8 @@ public class DeepLinkHandler : MonoBehaviour {
         live,
         stadium,
         prerecorded,
-        username
+        username,
+        gallery
     }
 
     public Action<string> VerificationDeepLinkActivated;
@@ -23,7 +24,7 @@ public class DeepLinkHandler : MonoBehaviour {
 
         Uri uri = new Uri(uriStr);
 
-        HelperFunctions.DevLog("Deep link: " + uriStr);
+        HelperFunctions.DevLogError("Deep link: " + uriStr);
         GetContentsParameters(uri);
     }
 
@@ -66,6 +67,8 @@ public class DeepLinkHandler : MonoBehaviour {
         } else if (ContainParam(uri, Params.prerecorded.ToString())) {
             string slug = GetParam(uri, Params.prerecorded.ToString());
             StreamCallBacks.onReceivePrerecordedLink?.Invoke(slug);
+        } else if (ContainParam(uri, Params.gallery.ToString())) {
+            GalleryNotificationConstructor.OnShow?.Invoke();
         }
     }
 

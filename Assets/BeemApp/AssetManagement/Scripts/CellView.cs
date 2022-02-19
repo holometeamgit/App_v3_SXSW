@@ -1,6 +1,8 @@
+using Beem.UI;
 using DynamicScrollRect;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -16,6 +18,8 @@ public class CellView : ScrollItem<ARMsgScrollItem> {
     [SerializeField]
     private ScreenshotView _screenshotView;
 
+    private List<IARMsgDataView> _arMsgDataViews;
+
     /// <summary>
     /// Show Cell Information
     /// </summary>
@@ -26,6 +30,10 @@ public class CellView : ScrollItem<ARMsgScrollItem> {
         } else {
             _screenshotView.Show(data, () => ShowPreview(true), () => ShowPreview(false));
         }
+
+        _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
+
+        _arMsgDataViews.ForEach(x => x.Init(data));
     }
 
     private void ShowPreview(bool status) {

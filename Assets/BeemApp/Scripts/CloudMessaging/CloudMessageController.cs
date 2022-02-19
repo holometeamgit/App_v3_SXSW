@@ -54,7 +54,7 @@ namespace Beem.Firebase.CloudMessage {
 
         private void OnMessageReceived(object sender, MessageReceivedEventArgs e) {
             if (e.Message.Data.ContainsKey("dl")) {
-                HelperFunctions.DevLog($"Message Deep Link: {e.Message.MessageId}");
+                HelperFunctions.DevLogError($"Message Deep Link: {e.Message.Data["dl"]}");
                 DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(e.Message.Data["dl"]);
             }
         }
