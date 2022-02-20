@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using Beem.Permissions;
 using WindowManager.Extenject;
+using Zenject;
 
 /// <summary>
 /// UI popup for opening rooms
@@ -32,13 +33,16 @@ public class DeepLinkRoomPopup : MonoBehaviour {
     [SerializeField]
     private SwipePopUp _swipePopUp;
 
-    [Space]
-    [SerializeField]
     private UserWebManager _userWebManager;
 
     private PermissionController _permissionController = new PermissionController();
 
     private RoomJsonData _data;
+
+    [Inject]
+    public void Construct(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
+    }
 
     /// <summary>
     /// Call share event for current room
