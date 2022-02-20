@@ -38,6 +38,13 @@
         <action android:name="com.google.firebase.MESSAGING_EVENT" />
       </intent-filter>
     </service>
+    <service android:name="com.google.firebase.messaging.MessageForwardingService"
+     android:permission="android.permission.BIND_JOB_SERVICE"
+     android:exported="false" >
+      <intent-filter>
+        <action android:name="com.google.firebase.MESSAGING_EVENT" />
+      </intent-filter>
+    </service>
     <service android:name="com.clevertap.android.sdk.pushnotification.CTNotificationIntentService" android:exported="false">
       <intent-filter>
         <action android:name="com.clevertap.PUSH_EVENT" />
