@@ -8,7 +8,8 @@ using Zenject;
 /// Manager for initialization LikesController and adding all subscriptions
 /// </summary>
 public class LikesManager : MonoBehaviour {
-    [SerializeField] VideoUploader _videoUploader;
+    [SerializeField]
+    private VideoUploader _videoUploader;
 
     private LikesController _likesController;
     private WebRequestHandler _webRequestHandler;

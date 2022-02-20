@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
+/// <summary>
+/// Installer for all currentcontrollers
+/// </summary>
 public class ControllerInstaller : MonoInstaller {
     public override void InstallBindings() {
         Container.BindInterfacesAndSelfTo<WebRequestHandler>().FromComponentInHierarchy(false).AsSingle();

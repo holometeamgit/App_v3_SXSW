@@ -8,7 +8,8 @@ using Zenject;
 /// Manager for initialization ViewsCounterController and adding all subscriptions
 /// </summary>
 public class ViewsCounterManager : MonoBehaviour {
-    [SerializeField] VideoUploader _videoUploader;
+    [SerializeField]
+    private VideoUploader _videoUploader;
 
     private ViewsCounterController _viewsCounterController;
     private WebRequestHandler _webRequestHandler;

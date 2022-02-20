@@ -4,17 +4,18 @@ using UnityEngine;
 using Beem.Firebase.DynamicLink;
 using Firebase.DynamicLinks;
 using System;
+using Zenject;
 
 /// <summary>
 /// Deep Link Controller for StreamData
 /// </summary>
 public class DeepLinkStreamController : MonoBehaviour {
     [SerializeField]
-    private WebRequestHandler _webRequestHandler;
-    [SerializeField]
     private ServerURLAPIScriptableObject _serverURLAPIScriptableObject;
     [SerializeField]
     private VideoUploader _videoUploader;
+
+    private WebRequestHandler _webRequestHandler;
 
     private const string TITLE = "You have been invited to {0}'s Stadium";
     private const string DESCRIPTION = "Click the link below to join {0}'s Stadium";
@@ -25,6 +26,10 @@ public class DeepLinkStreamController : MonoBehaviour {
     private const string USERNAME_FILTER = "user__username";
     private const string STATUS_FILTER = "status";
 
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+    }
 
     private void GetStreamBySlug(string slug, Action<long, string> onSuccess, Action<WebRequestError> onFailed = null) {
         _webRequestHandler.Get(GetRequestStreamBySlugURL(slug),
