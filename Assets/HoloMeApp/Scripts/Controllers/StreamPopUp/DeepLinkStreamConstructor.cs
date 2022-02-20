@@ -2,24 +2,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WindowManager.Extenject;
 
+/// <summary>
+/// DeepLink Stream Costructor
+/// </summary>
 public class DeepLinkStreamConstructor : MonoBehaviour {
     [SerializeField]
-    private PnlThumbnailPopup _pnlThumbnailPopup;
+    private DeepLinkStreamPopup _pnlThumbnailPopup;
     [SerializeField]
     private DeepLinkChecker _popupShowChecker;
 
     public static Action<StreamJsonData.Data> OnShow = delegate { };
+    public static Action<WebRequestError> OnShowError = delegate { };
     public static Action OnHide = delegate { };
-
-    public static bool IsActive;
-
-    private void Awake() {
-        Construct();
-    }
-
-    private void Construct() {
+    private void OnEnable() {
         OnShow += Show;
+        OnShowError += ShowError;
         OnHide += Hide;
     }
 
@@ -28,17 +27,22 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
     }
 
     private void ActivatePopup(StreamJsonData.Data data) {
-        IsActive = true;
         _pnlThumbnailPopup.Show(data);
     }
 
     private void Hide() {
-        IsActive = false;
         _pnlThumbnailPopup.Hide();
     }
 
-    private void OnDestroy() {
+    private void OnDisable() {
         OnShow -= Show;
+        OnShowError -= ShowError;
         OnHide -= Hide;
+    }
+
+    private void ShowError(WebRequestError webRequestError) {
+        GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Ok", null);
+        GeneralPopUpData data = new GeneralPopUpData("This page doesn't exist", "Please make sure that the link you received is correct.", closeButton);
+        _popupShowChecker.OnReceivedData(() => WarningConstructor.OnShow?.Invoke(data));
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using WindowManager.Extenject;
 
 /// <summary>
 /// Deep Link Room Constructor
@@ -107,7 +108,9 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
     }
 
     private void ShowError(WebRequestError webRequestError) {
-        _popupShowChecker.OnReceivedData(() => WarningConstructor.ActivateSingleButton("This user doesn't exist", "Please make sure that the link you received is correct.", "Ok"));
+        GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Ok", null);
+        GeneralPopUpData data = new GeneralPopUpData("This user doesn't exist", "Please make sure that the link you received is correct.", closeButton);
+        _popupShowChecker.OnReceivedData(() => WarningConstructor.OnShow?.Invoke(data));
     }
 
     private void Cancel() {

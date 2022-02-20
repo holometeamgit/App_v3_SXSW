@@ -41,15 +41,15 @@ public class DeepLinkARMsgController : MonoBehaviour {
     private void OnOpen(string id) {
         GetARMessageById(id,
             (code, body) => Open(body),
-            DeeplinkARMsgConstructor.OnShowError);
+            DeepLinkARMsgConstructor.OnShowError);
     }
 
     private void Open(string body) {
         ARMessageReceived(body,
             (data) => {
-                DeeplinkARMsgConstructor.OnShow?.Invoke(data);
+                DeepLinkARMsgConstructor.OnShow?.Invoke(data);
             },
-            DeeplinkARMsgConstructor.OnShowError);
+            DeepLinkARMsgConstructor.OnShowError);
     }
 
     private void Awake() {

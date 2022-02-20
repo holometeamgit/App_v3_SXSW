@@ -27,12 +27,12 @@ namespace Beem.UI {
         /// </summary>
         public void Open() {
             _permissionController.CheckCameraMicAccess(() => {
-                MenuConstructor.OnActivated?.Invoke(false);
-                HomeScreenConstructor.OnActivated?.Invoke(false);
-                SettingsConstructor.OnActivated?.Invoke(false);
-                ARMsgRecordConstructor.OnActivated?.Invoke(false);
-                ARenaConstructor.onActivateForARMessaging?.Invoke(_arMsgData);
-                ARMsgARenaConstructor.OnActivatedARena?.Invoke(_arMsgData);
+                HomeConstructor.OnHide?.Invoke();
+                BottomMenuConstructor.OnHide?.Invoke();
+                SettingsConstructor.OnHide?.Invoke();
+                ARMsgRecordConstructor.OnHide?.Invoke();
+                ARenaConstructor.OnShowARMessaging?.Invoke(_arMsgData);
+                ARMsgARenaConstructor.OnShow?.Invoke(_arMsgData);
                 CallBacks.OnCancelAllARMsgActions?.Invoke();
                 PnlRecord.CurrentUser = _arMsgData.user;
             });

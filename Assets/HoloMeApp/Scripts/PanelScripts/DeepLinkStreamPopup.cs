@@ -6,6 +6,7 @@ using TMPro;
 using Beem.SSO;
 using System.Threading.Tasks;
 using Beem.Permissions;
+using WindowManager.Extenject;
 
 public class DeepLinkStreamPopup : UIThumbnail {
 
@@ -105,9 +106,9 @@ public class DeepLinkStreamPopup : UIThumbnail {
     /// <param name="roomJsonData"></param>
     private void PlayStadium(StreamJsonData.Data data) { //TODO split it to other class
         if (data.user == _userWebManager.GetUsername()) {
-            WarningConstructor.ActivateSingleButton("Viewing as stream host",
-                "Please connect to the stream using a different account");
-
+            GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Ok", null);
+            GeneralPopUpData popUpData = new GeneralPopUpData("Viewing as stream host", "Please connect to the stream using a different account", closeButton);
+            WarningConstructor.OnShow?.Invoke(popUpData);
             return;
         }
 
@@ -117,10 +118,10 @@ public class DeepLinkStreamPopup : UIThumbnail {
 
         _permissionController.CheckCameraMicAccess(() => {
             DeepLinkStreamConstructor.OnHide?.Invoke();
-            MenuConstructor.OnActivated?.Invoke(false);
-            HomeScreenConstructor.OnActivated?.Invoke(false);
-            SettingsConstructor.OnActivated?.Invoke(false);
-            StreamOverlayConstructor.onActivatedAsViewer?.Invoke(data.agora_channel, data.id.ToString(), false);
+            BottomMenuConstructor.OnHide?.Invoke();
+            HomeConstructor.OnHide?.Invoke();
+            SettingsConstructor.OnHide?.Invoke();
+            StreamOverlayConstructor.OnShowAsStadiumViewer?.Invoke(data);
             PnlRecord.CurrentUser = data.user;
         });
     }
@@ -131,12 +132,13 @@ public class DeepLinkStreamPopup : UIThumbnail {
     /// <param name="roomJsonData"></param>
     private void PlayPrerecorded(StreamJsonData.Data data) { //TODO split it to other class
         _permissionController.CheckCameraMicAccess(() => {
+            data.CanGetTeaser = false;
             DeepLinkStreamConstructor.OnHide?.Invoke();
-            MenuConstructor.OnActivated?.Invoke(false);
-            HomeScreenConstructor.OnActivated?.Invoke(false);
-            SettingsConstructor.OnActivated?.Invoke(false);
-            ARenaConstructor.onActivateForPreRecorded?.Invoke(data, false);
-            PrerecordedVideoConstructor.OnActivated?.Invoke(data);
+            HomeConstructor.OnHide?.Invoke();
+            BottomMenuConstructor.OnHide?.Invoke();
+            SettingsConstructor.OnHide?.Invoke();
+            ARenaConstructor.OnShowPrerecorded?.Invoke(data);
+            PrerecordedVideoConstructor.OnShow?.Invoke(data);
             PnlRecord.CurrentUser = data.user;
         });
     }
@@ -147,12 +149,13 @@ public class DeepLinkStreamPopup : UIThumbnail {
     /// <param name="data"></param>
     private void PlayTeaser(StreamJsonData.Data data) {
         _permissionController.CheckCameraMicAccess(() => {
+            data.CanGetTeaser = data.HasTeaser;
             DeepLinkStreamConstructor.OnHide?.Invoke();
-            MenuConstructor.OnActivated?.Invoke(false);
-            HomeScreenConstructor.OnActivated?.Invoke(false);
-            SettingsConstructor.OnActivated?.Invoke(false);
-            ARenaConstructor.onActivateForPreRecorded?.Invoke(data, data.HasTeaser);
-            PrerecordedVideoConstructor.OnActivated?.Invoke(data);
+            HomeConstructor.OnHide?.Invoke();
+            BottomMenuConstructor.OnHide?.Invoke();
+            SettingsConstructor.OnHide?.Invoke();
+            ARenaConstructor.OnShowPrerecorded?.Invoke(data);
+            PrerecordedVideoConstructor.OnShow?.Invoke(data);
             PnlRecord.CurrentUser = data.user;
             _purchaseManager.SetPurchaseStreamData(data);
         });

@@ -187,8 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7eed44e116585482ca7ddafbcbef4f62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverURLAPI: {fileID: 11400000, guid: f753fd22d1e1d4c97803fa60aadd51bd, type: 2}
-  accountManager: {fileID: 921435837}
+  _serverURLAPI: {fileID: 0}
 --- !u!114 &98785881 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6978998255591863667, guid: 550d99768edf6c94d823b60c275d04d1,
@@ -397,10 +396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b12e3533f1364cb19d2976e48f5053c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  iapController: {fileID: 1428521455}
-  purchasesSaveManager: {fileID: 1011696630}
   purchaseAPISO: {fileID: 11400000, guid: fe37b0db6ef3c48d2ad410f4fc4856a0, type: 2}
-  webRequestHandler: {fileID: 35185073}
   backgroudGO: {fileID: 393484011}
 --- !u!1 &160864386
 GameObject:
@@ -431,7 +427,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &160864388
 MonoBehaviour:
@@ -518,7 +514,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &168994618
 MonoBehaviour:
@@ -729,7 +725,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 25
+  m_RootOrder: 26
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &210189155
 MonoBehaviour:
@@ -773,7 +769,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 18
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &221794777
 MonoBehaviour:
@@ -898,7 +894,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 23
+  m_RootOrder: 24
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &246367147
 MonoBehaviour:
@@ -948,7 +944,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &260455648
 MonoBehaviour:
@@ -992,7 +988,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &275978500
 MonoBehaviour:
@@ -1347,7 +1343,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 19
+  m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &345185935
 MonoBehaviour:
@@ -1419,6 +1415,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6ab356938dd61247911666390a57687, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &381868536
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 381868537}
+  - component: {fileID: 381868538}
+  m_Layer: 0
+  m_Name: DeepLinkARMsgConstructor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &381868537
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381868536}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_Children: []
+  m_Father: {fileID: 517767691}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &381868538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381868536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d336646ca6ba2bc4db1a88764ee01739, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _popupShowChecker: {fileID: 1000053068}
 --- !u!1 &393484011 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 341822576546490777, guid: 65df179e790acd447bf6c04ac7c9de46,
@@ -1565,6 +1605,7 @@ Transform:
   - {fileID: 1973115526}
   - {fileID: 880981731}
   - {fileID: 365765834}
+  - {fileID: 381868537}
   - {fileID: 7476427140802463114}
   - {fileID: 2141014400}
   - {fileID: 275978499}
@@ -1633,9 +1674,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0750600ded5304c54a39e6c934e78017, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  webRequestHandler: {fileID: 35185073}
-  accountManager: {fileID: 921435837}
-  authorizationAPI: {fileID: 11400000, guid: 2a13ba28f9eb4462bb252fadc63d1424, type: 2}
+  _authorizationAPI: {fileID: 0}
 --- !u!1 &532722645
 GameObject:
   m_ObjectHideFlags: 0
@@ -1723,7 +1762,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e954ae21a8d845489421b6b760e6940, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _webRequestHandler: {fileID: 35185073}
   _videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
 --- !u!114 &559953091 stripped
 MonoBehaviour:
@@ -2059,12 +2097,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9696d8b73ae31f469d09f9d9549d7b5, type: 3}
---- !u!1 &629896473 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7445761345165511365, guid: c2ac27870a7ecfb4bb2495bd494e411f,
-    type: 3}
-  m_PrefabInstance: {fileID: 7445761344569589724}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &630276740 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7099331171986514563, guid: 3ff4b42c454620047929d53f4ba74544,
@@ -2100,7 +2132,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 21
+  m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &635531462
 MonoBehaviour:
@@ -2641,7 +2673,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &881797804
 MonoBehaviour:
@@ -2705,10 +2737,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b958b859c1ce46c1bab18d13bcca260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pnlSplashScreen: {fileID: 3648487920778390904}
   _generalAppAPIScriptableObject: {fileID: 11400000, guid: bd4eaeedb3f2b4afbbde85cdd4349b00,
     type: 2}
-  _webRequestHandler: {fileID: 35185073}
 --- !u!1 &898386226
 GameObject:
   m_ObjectHideFlags: 0
@@ -2784,9 +2814,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96d26ba35ccfe4528a4404925c57618f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  authController: {fileID: 635890365}
-  authorizationAPI: {fileID: 11400000, guid: 2a13ba28f9eb4462bb252fadc63d1424, type: 2}
-  webRequestHandler: {fileID: 35185073}
+  _authorizationAPI: {fileID: 0}
   disablePersistance: 0
 --- !u!1 &942522482 stripped
 GameObject:
@@ -2829,10 +2857,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11c1981d561844ec950f222a5c3c87a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activatedObjects:
-  - {fileID: 3161963791150318576}
   _requireSignIn: 1
-  _authController: {fileID: 635890365}
+  _requireHomeScreen: 1
 --- !u!4 &1000053069
 Transform:
   m_ObjectHideFlags: 0
@@ -3118,11 +3144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9566792b028f44d13b2f2cc2c3634af9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  userWebManager: {fileID: 525544598}
-  authController: {fileID: 635890365}
-  webRequestHandler: {fileID: 35185073}
-  purchaseAPISO: {fileID: 11400000, guid: fe37b0db6ef3c48d2ad410f4fc4856a0, type: 2}
-  iapController: {fileID: 1428521455}
+  _purchaseAPISO: {fileID: 0}
 --- !u!1 &1037099604
 GameObject:
   m_ObjectHideFlags: 0
@@ -3400,9 +3422,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   liveStreamQuad: {fileID: 1386325299}
-  agoraRTMChatController: {fileID: 1399294100}
-  secondaryServerCalls: {fileID: 1485548532}
-  userWebManager: {fileID: 525544598}
   frameRate: 0
   videoSufaceStreamerRawTex: {fileID: 342812258}
 --- !u!114 &1146380146
@@ -3631,7 +3650,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 26
+  m_RootOrder: 27
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1313744754
 MonoBehaviour:
@@ -3861,7 +3880,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4816593cbf50c394ab8d2fb65d9c8522, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  userWebManager: {fileID: 525544598}
 --- !u!1 &1428521453
 GameObject:
   m_ObjectHideFlags: 0
@@ -4072,7 +4090,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 24
+  m_RootOrder: 25
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1454678233
 MonoBehaviour:
@@ -4176,9 +4194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db0668e25e2f0f249aaa218941ced659, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
-  webRequestHandler: {fileID: 35185073}
-  agoraRequests: {fileID: 1146380146}
+  _videoUploader: {fileID: 0}
 --- !u!1 &1500566620 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8071998731876317604, guid: 5901c8758b67e3a4fb4ec0ed7df48b08,
@@ -4320,7 +4336,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 16
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1589907265
 MonoBehaviour:
@@ -4572,8 +4588,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 556663bef7d534701a95e7995b8887ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  webRequestHandler: {fileID: 35185073}
-  videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
+  _videoUploader: {fileID: 0}
 --- !u!1001 &1691049189
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4789,9 +4804,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8fbccce0f286457b8f3c9f5988edc0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  accountManager: {fileID: 921435837}
-  webRequestHandler: {fileID: 35185073}
-  authorizationAPI: {fileID: 11400000, guid: 2a13ba28f9eb4462bb252fadc63d1424, type: 2}
+  _authorizationAPI: {fileID: 0}
 --- !u!1 &1707344584
 GameObject:
   m_ObjectHideFlags: 0
@@ -4821,7 +4834,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 28
+  m_RootOrder: 29
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1707344586
 MonoBehaviour:
@@ -4931,7 +4944,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d1e0ff8f3a0247479d17565d4faa96e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  internetConnactionLostGO: {fileID: 629896473}
+  _window: {fileID: 0}
 --- !u!1 &1732042866
 GameObject:
   m_ObjectHideFlags: 0
@@ -5131,7 +5144,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 17
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1787874234
 MonoBehaviour:
@@ -5231,7 +5244,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 27
+  m_RootOrder: 28
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1832899322
 MonoBehaviour:
@@ -5275,7 +5288,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1838592879
 MonoBehaviour:
@@ -5333,7 +5346,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccb4869d615124e13b8d859c5534059a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _webRequestHandler: {fileID: 35185073}
   _videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
   _pnlComments: {fileID: 855321824}
 --- !u!1 &1887626210
@@ -5365,7 +5377,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 20
+  m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1887626212
 MonoBehaviour:
@@ -5421,7 +5433,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 22
+  m_RootOrder: 23
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1933353329
 MonoBehaviour:
@@ -5575,7 +5587,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4052b3574c5147bbb180c8916ecf960, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _webRequestHandler: {fileID: 35185073}
   _videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
 --- !u!1001 &1988917483
 PrefabInstance:
@@ -5765,7 +5776,6 @@ GameObject:
   - component: {fileID: 2141014400}
   - component: {fileID: 2141014401}
   - component: {fileID: 2141014402}
-  - component: {fileID: 2141014403}
   m_Layer: 0
   m_Name: ARMsgConstructor
   m_TagString: Untagged
@@ -5785,7 +5795,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2141014401
 MonoBehaviour:
@@ -5800,8 +5810,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _window: {fileID: 799995373}
-  _arMsgAPI: {fileID: 11400000, guid: 6654356a8bcc64e8dbfcada070457098, type: 2}
-  _webRequestHandler: {fileID: 35185073}
 --- !u!114 &2141014402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5815,19 +5823,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pnlARMessages: {fileID: 98785881}
---- !u!114 &2141014403
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2141014399}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c89eaf9eb65ff4d4e990d1d3e454339f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _popupShowChecker: {fileID: 1000053068}
 --- !u!1 &2141595001
 GameObject:
   m_ObjectHideFlags: 0
@@ -5904,7 +5899,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2144165864
 MonoBehaviour:
@@ -6869,18 +6864,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 8988267776084550628}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3648487920778390904 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 656042969681713440, guid: 5cdcf2c072a11bf45b19b92102c6f8cf,
-    type: 3}
-  m_PrefabInstance: {fileID: 4303387304774988888}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec3b3dccb5d0d4043a9f114aa07ac5a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &4216901701776400175
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8861,7 +8844,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 517767691}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7476427140802463124
 GameObject:

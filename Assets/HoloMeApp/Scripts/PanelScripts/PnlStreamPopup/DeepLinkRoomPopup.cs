@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using Beem.Permissions;
+using WindowManager.Extenject;
 
 /// <summary>
 /// UI popup for opening rooms
@@ -51,18 +52,18 @@ public class DeepLinkRoomPopup : MonoBehaviour {
     /// </summary>
     public void EnterRoom() {
         if (_data.user == _userWebManager.GetUsername()) {
-            WarningConstructor.ActivateSingleButton("Viewing as stream host",
-                "Please connect to the stream using a different account");
+            GeneralPopUpData.ButtonData closeButton = new GeneralPopUpData.ButtonData("Ok", null);
+            GeneralPopUpData popUpData = new GeneralPopUpData("Viewing as stream host", "Please connect to the stream using a different account", closeButton);
 
             return;
         }
 
         _permissionController.CheckCameraMicAccess(() => {
             DeepLinkRoomConstructor.OnHide?.Invoke();
-            MenuConstructor.OnActivated?.Invoke(false);
-            HomeScreenConstructor.OnActivated?.Invoke(false);
-            SettingsConstructor.OnActivated?.Invoke(false);
-            StreamOverlayConstructor.onActivatedAsViewer?.Invoke(_data.agora_channel, _data.id, true);
+            BottomMenuConstructor.OnHide?.Invoke();
+            HomeConstructor.OnHide?.Invoke();
+            SettingsConstructor.OnHide?.Invoke();
+            StreamOverlayConstructor.OnShowAsRoomViewer?.Invoke(_data);
             PnlRecord.CurrentUser = _data.user;
         });
 
