@@ -2,6 +2,13 @@
 using Zenject;
 
 namespace WindowManager.Extenject {
+
+    public enum WindowSignalsType {
+        OpenWindow,
+        OpenPopup,
+        CloseWindow
+    }
+
     /// <summary>
     /// Controller for windows
     /// </summary>
@@ -20,30 +27,30 @@ namespace WindowManager.Extenject {
         /// <typeparam name="T"></typeparam>
         /// <param name="windowSignals"></param>
         /// <param name="parameter"></param>
-        public void OnCalledSignal<T>(WindowSignal windowSignals, T parameter) {
-            switch (windowSignals.WindowSignalsType) {
+        public void CallWindow<T>(string id, WindowSignalsType windowSignalsType, T parameter) {
+            switch (windowSignalsType) {
                 case WindowSignalsType.OpenWindow:
-                    OpenWindow(windowSignals.Id, parameter);
+                    OpenWindow(id, parameter);
                     break;
                 case WindowSignalsType.OpenPopup:
-                    OpenPopup(windowSignals.Id, parameter);
+                    OpenPopup(id, parameter);
                     break;
                 case WindowSignalsType.CloseWindow:
-                    CloseWindow(windowSignals.Id);
+                    CloseWindow(id, parameter);
                     break;
             }
         }
 
-        public void OnCalledSignal(WindowSignal windowSignals) {
-            switch (windowSignals.WindowSignalsType) {
+        public void CallWindow(string id, WindowSignalsType windowSignalsType) {
+            switch (windowSignalsType) {
                 case WindowSignalsType.OpenWindow:
-                    OpenWindow(windowSignals.Id);
+                    OpenWindow(id);
                     break;
                 case WindowSignalsType.OpenPopup:
-                    OpenPopup(windowSignals.Id);
+                    OpenPopup(id);
                     break;
                 case WindowSignalsType.CloseWindow:
-                    CloseWindow(windowSignals.Id);
+                    CloseWindow(id);
                     break;
             }
         }
@@ -95,6 +102,15 @@ namespace WindowManager.Extenject {
             }
 
             _poolController.Hide(id);
+        }
+
+        private void CloseWindow<T>(string id, T parameter) {
+            if (string.IsNullOrEmpty(id)) {
+                Debug.LogError("id is null or empty");
+                return;
+            }
+
+            _poolController.Hide(id, parameter);
         }
 
         public bool IsActive(string id) {
