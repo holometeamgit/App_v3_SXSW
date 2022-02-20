@@ -3,12 +3,16 @@ using UnityEngine.Android;
 using UnityEngine.UI;
 using System.Collections;
 using Beem.ARMsg;
+using System;
 
 /// <summary>
 /// ARMsgCameraPreview. Show WebCamTexture on the screen
 /// </summary>
 [RequireComponent(typeof(RawImage), typeof(AspectRatioFitter))]
 public class ARMsgCameraPreview : MonoBehaviour {
+
+    public static int FRONT_CAMERA = 1;
+    public static int BACK_CAMERA = 0;
 
     public WebCamTexture cameraTexture { get; private set; }
     private RawImage rawImage;
@@ -17,6 +21,16 @@ public class ARMsgCameraPreview : MonoBehaviour {
     private Coroutine _coroutine;
     private int _currectDeviceID = 0;
     private string _devicesName;
+
+    public Action onTextureUpdated;
+
+    public Texture GetTexture() {
+        return rawImage.texture;
+    }
+
+    public float GetAspectRatio() {
+        return aspectFitter.aspectRatio;
+    }
 
     private void Awake() {
         CallBacks.onCanSwitchCamera += CanSwitchCamera;
@@ -44,6 +58,7 @@ public class ARMsgCameraPreview : MonoBehaviour {
             _currectDeviceID = (_currectDeviceID + 1) % 2;
 
         _devicesName = devices[_currectDeviceID].name;
+        CallBacks.onCameraSwitched?.Invoke(_currectDeviceID);
     }
 
     private void StartStartCameraCoroutine() {
@@ -55,6 +70,28 @@ public class ARMsgCameraPreview : MonoBehaviour {
             StopCoroutine(_coroutine);
             _coroutine = null;
         }
+    }
+
+    private int GetCurrentCameraID() {
+        return _currectDeviceID;
+    }
+
+
+    private void OnEnable() {
+        StartStartCameraCoroutine();
+        CallBacks.onGetCurrentCameraID += GetCurrentCameraID;
+    }
+
+    private void OnDisable() {
+        StopStartCameraCoroutine();
+        if (cameraTexture != null)
+            cameraTexture.Stop();
+        CallBacks.onGetCurrentCameraID -= GetCurrentCameraID;
+    }
+
+    private void OnDestroy() {
+        CallBacks.onCanSwitchCamera -= CanSwitchCamera;
+        CallBacks.onSwitchCameraClicked -= SwitchCamera;
     }
 
     private IEnumerator StartCamera() {
@@ -73,28 +110,16 @@ public class ARMsgCameraPreview : MonoBehaviour {
                                                                                                                                                            // Setup preview shader with correct orientation
         rawImage.texture = cameraTexture;
         rawImage.material.SetFloat("_Rotation", cameraTexture.videoRotationAngle * Mathf.PI / 180f);
-        rawImage.material.SetFloat("_Scale", cameraTexture.videoVerticallyMirrored ? -1 : 1);
+        rawImage.material.SetFloat("_Scale", (cameraTexture.videoVerticallyMirrored) ? -1 : 1);
+        transform.localScale = _currectDeviceID == 1 ? new Vector3(-1, 1, 1) : new Vector3(1, 1, 1);
         // Scale the preview panel
         if (cameraTexture.videoRotationAngle == 90 || cameraTexture.videoRotationAngle == 270) {
             aspectFitter.aspectRatio = (float)cameraTexture.height / cameraTexture.width;
         } else {
             aspectFitter.aspectRatio = (float)cameraTexture.width / cameraTexture.height;
         }
-    }
 
-    private void OnEnable() {
-        StartStartCameraCoroutine();
-    }
-
-    private void OnDisable() {
-        StopStartCameraCoroutine();
-        if(cameraTexture != null)
-            cameraTexture.Stop();
-    }
-
-    private void OnDestroy() {
-        CallBacks.onCanSwitchCamera -= CanSwitchCamera;
-        CallBacks.onSwitchCameraClicked -= SwitchCamera;
+        onTextureUpdated?.Invoke();
     }
 
 }

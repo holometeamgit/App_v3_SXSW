@@ -3,12 +3,14 @@ using Beem.ARMsg;
 using Beem.Firebase.DynamicLink;
 using Firebase.DynamicLinks;
 using UnityEngine;
-using Zenject;
 
 /// <summary>
 /// Deep Link Controller for Ar-messages
 /// </summary>
-public class DeepLinkARMessageController : MonoBehaviour {
+public class DeepLinkARMsgController : MonoBehaviour {
+
+    [SerializeField]
+    private WebRequestHandler _webRequestHandler;
 
     [SerializeField]
     private ServerURLAPIScriptableObject _serverURLAPIScriptableObject;
@@ -16,47 +18,38 @@ public class DeepLinkARMessageController : MonoBehaviour {
     [SerializeField]
     private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
 
-    private WebRequestHandler _webRequestHandler;
-
-    [Inject]
-    public void Construct(WebRequestHandler webRequestHandler) {
-        _webRequestHandler = webRequestHandler;
-    }
-
-    private void GetARMessageById(string id, Action<long, string> onSuccess, Action<long, string> onFailed) {
-        HelperFunctions.DevLog("Get AR Message By Id " + id);
+    private void GetARMessageById(string id, Action<long, string> onSuccess, Action<WebRequestError> onFailed = null) {
         _webRequestHandler.Get(GetARMessageIdUrl(id),
             (code, body) => { onSuccess?.Invoke(code, body); },
-            (code, body) => { onFailed?.Invoke(code, body); },
+            (code, body) => { onFailed?.Invoke(new WebRequestError(code, body)); },
             false);
     }
 
-    private void ARMessageReceived(string body, Action<ARMsgJSON.Data> onReceived) {
+    private void ARMessageReceived(string body, Action<ARMsgJSON.Data> onSuccess, Action<WebRequestError> onFailed = null) {
         try {
             ARMsgJSON.Data arMsgJsonData = JsonUtility.FromJson<ARMsgJSON.Data>(body);
 
             HelperFunctions.DevLog("AR Message Recieved = " + body);
 
-            onReceived?.Invoke(arMsgJsonData);
+            onSuccess?.Invoke(arMsgJsonData);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
+            onFailed?.Invoke(new WebRequestError());
         }
     }
 
     private void OnOpen(string id) {
         GetARMessageById(id,
             (code, body) => Open(body),
-            (code, body) => {
-                DeepLinkRoomData deepLinkRoomData = new DeepLinkRoomData(code.ToString(), DeepLinkRoomData.Settings.NotExist);
-                DeepLinkRoomConstructor.OnShow?.Invoke(deepLinkRoomData); HelperFunctions.DevLogError(code + " " + body);
-            });
+            DeeplinkARMsgConstructor.OnShowError);
     }
 
     private void Open(string body) {
         ARMessageReceived(body,
             (data) => {
-                ARMsgPlayer.OnActivated?.Invoke(data);
-            });
+                DeeplinkARMsgConstructor.OnShow?.Invoke(data);
+            },
+            DeeplinkARMsgConstructor.OnShowError);
     }
 
     private void Awake() {

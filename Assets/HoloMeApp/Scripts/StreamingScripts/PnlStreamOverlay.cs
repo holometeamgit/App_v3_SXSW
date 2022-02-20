@@ -127,15 +127,14 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         if (initialised)
             return;
 
-        _agoraController.OnStreamerLeft += CloseAsViewer;
-        _agoraController.OnStreamerLeft += CloseRoomAsViewerWhenStreamWasStopped;
+        _agoraController.OnStreamerLeft += StreamFinished;
         _agoraController.OnCameraSwitched += () => {
             var videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
             if (videoSurface) {
                 isUsingFrontCamera = !isUsingFrontCamera;
             }
         };
-        _agoraController.OnPreviewStopped += () => videoSurface.SetEnable(false);
+        _agoraController.OnPreviewStopped += PreviewStopped;
         _agoraController.OnStreamWentOffline += StopStreamCountUpdaters;
         _agoraController.OnStreamWentOffline += () => TogglePreLiveControls(true);
         _agoraController.OnStreamWentLive += StartStatusUpdateRoutine;
@@ -355,6 +354,13 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         RecordARConstructor.OnHide?.Invoke();
     }
 
+    private void StreamFinished() {
+        CloseAsViewer();
+        if (_agoraController.IsRoom) {
+            StreamCallBacks.onRoomBroadcastFinished?.Invoke();
+        }
+    }
+
     private void CloseAsViewer() {
         StopStream();
         StreamOverlayConstructor.OnHide?.Invoke();
@@ -363,10 +369,8 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         RecordARConstructor.OnHide?.Invoke();
     }
 
-    private void CloseRoomAsViewerWhenStreamWasStopped() {
-        if (_agoraController.IsRoom) {
-            StreamCallBacks.onRoomClosed?.Invoke();
-        }
+    private void PreviewStopped() {
+        videoSurface.SetEnable(false);
     }
 
     public void ShareStream() {

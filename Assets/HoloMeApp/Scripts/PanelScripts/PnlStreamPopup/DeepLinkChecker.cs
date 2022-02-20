@@ -66,11 +66,19 @@ public class DeepLinkChecker : MonoBehaviour {
         }
     }
 
-    private void OnDestroy() {
+    /// <summary>
+    /// Cancel Request
+    /// </summary>
+
+    public void Cancel() {
         if (_cancelTokenSource != null) {
             _cancelTokenSource.Cancel();
             _cancelTokenSource = null;
         }
+    }
+
+    private void OnDestroy() {
+        Cancel();
     }
 
     /// <summary>
@@ -88,6 +96,22 @@ public class DeepLinkChecker : MonoBehaviour {
 
             } else if (task.IsCompleted) {
                 onSuccessTask?.Invoke(data);
+            }
+        }, taskScheduler);
+    }
+
+    /// <summary>
+    /// Receive Data
+    /// </summary>
+    public void OnReceivedData(Action onSuccessTask) {
+        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        WaitForCanShow().ContinueWith((task) => {
+
+            if (task.IsCanceled) {
+                HelperFunctions.DevLog("Previouses deeplink request was interrupted");
+
+            } else if (task.IsCompleted) {
+                onSuccessTask?.Invoke();
             }
         }, taskScheduler);
     }

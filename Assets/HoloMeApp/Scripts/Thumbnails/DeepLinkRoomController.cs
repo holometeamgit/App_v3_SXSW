@@ -2,78 +2,69 @@
 using Beem.Firebase.DynamicLink;
 using Firebase.DynamicLinks;
 using UnityEngine;
-using Zenject;
 
 /// <summary>
 /// Deep Link Controller for RoomData
 /// </summary>
 public class DeepLinkRoomController : MonoBehaviour {
     [SerializeField]
+    private WebRequestHandler _webRequestHandler;
+    [SerializeField]
     private ServerURLAPIScriptableObject _serverURLAPIScriptableObject;
     [SerializeField]
     private VideoUploader _videoUploader;
 
-    private WebRequestHandler _webRequestHandler;
-
-
-    [Inject]
-    public void Construct(WebRequestHandler webRequestHandler) {
-        _webRequestHandler = webRequestHandler;
-    }
-
-    private ShareLinkController _shareController = new ShareLinkController();
-
     private const string TITLE = "You have been invited to {0}'s Room";
     private const string DESCRIPTION = "Click the link below to join {0}'s Room";
 
-    private void GetRoomByUserName(string username, Action<long, string> onSuccess, Action<long, string> onFailed) {
-        HelperFunctions.DevLog("Get Room By UserName " + username);
+    private ShareLinkController _shareController = new ShareLinkController();
+
+    private void GetRoomByUserName(string username, Action<long, string> onSuccess, Action<WebRequestError> onFailed = null) {
         _webRequestHandler.Get(GetRoomUsernameUrl(username),
             (code, body) => { onSuccess?.Invoke(code, body); },
-            (code, body) => { onFailed?.Invoke(code, body); },
+            (code, body) => { onFailed?.Invoke(new WebRequestError(code, body)); },
             needHeaderAccessToken: false);
     }
 
-    private void RoomReceived(string body, Action<RoomJsonData> onReceived) {
+    private void RoomReceived(string body, Action<RoomJsonData> OnSuccess, Action<WebRequestError> onFailed = null) {
         try {
             RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(body);
 
             HelperFunctions.DevLog("Room Recieved = " + body);
 
-            onReceived?.Invoke(roomJsonData);
+            OnSuccess?.Invoke(roomJsonData);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
+            onFailed?.Invoke(new WebRequestError());
         }
     }
 
     private void OnOpen(string username) {
         GetRoomByUserName(username,
             (code, body) => Open(body),
-            (code, body) => {
-                DeepLinkRoomData deepLinkRoomData = new DeepLinkRoomData(code.ToString(), DeepLinkRoomData.Settings.NotExist);
-                DeepLinkRoomConstructor.OnShow?.Invoke(deepLinkRoomData); HelperFunctions.DevLogError(code + " " + body);
-            });
+            DeepLinkRoomConstructor.OnShowError);
     }
 
     private void Open(string body) {
         RoomReceived(body,
             (data) => {
                 StreamCallBacks.onRoomDataReceived?.Invoke(data);
-            });
+                DeepLinkRoomConstructor.OnShow?.Invoke(data);
+            }, DeepLinkRoomConstructor.OnShowError);
     }
 
     private void OnShare(string username) {
         GetRoomByUserName(username,
-            (code, body) => Share(body),
-            (code, body) => {
-                HelperFunctions.DevLogError(code + " " + body);
-            });
+            (code, body) => Share(body));
     }
 
     private void Share(string body) {
         RoomReceived(body,
             (data) => {
-                _shareController.ShareSocialLink(new Uri(data.share_link), SocialParameters(data.user));
+                string title = string.Format(TITLE, data.user);
+                string description = string.Format(DESCRIPTION, data.user);
+                string msg = title + "\n" + description + "\n" + data.share_link;
+                _shareController.ShareLink(msg);
             });
     }
 
@@ -89,14 +80,5 @@ public class DeepLinkRoomController : MonoBehaviour {
 
     private string GetRoomUsernameUrl(string username) {
         return _serverURLAPIScriptableObject.ServerURLMediaAPI + _videoUploader.GetRoomByUserName.Replace("{username}", username.ToString());
-    }
-
-    public SocialMetaTagParameters SocialParameters(string source) {
-        SocialMetaTagParameters socialMetaTagParameters = new SocialMetaTagParameters() {
-            Title = string.Format(TITLE, source),
-            Description = string.Format(DESCRIPTION, source),
-            ImageUrl = new Uri(_serverURLAPIScriptableObject.LogoLink)
-        };
-        return socialMetaTagParameters;
     }
 }

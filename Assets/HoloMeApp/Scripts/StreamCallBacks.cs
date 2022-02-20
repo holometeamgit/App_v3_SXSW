@@ -10,11 +10,6 @@ public class StreamCallBacks {
     public static Action<string> onReceiveRoomLink = delegate { };
     public static Action<string> onReceiveARMsgLink = delegate { };
     public static Action<RoomJsonData> onRoomDataReceived = delegate { };
-    // from app to controller: notification that broadcaster stop room 
-    public static Action onRoomClosed = delegate { };
-
-    //from controller
-    public static Action<int> onUpdateUserCount = delegate { };
 
     //from ui
     public static Action onOpenRoom = delegate { };
@@ -25,22 +20,26 @@ public class StreamCallBacks {
     #endregion
 
     #region deep link stream
-    public static Action<string> onReceiveStreamLink = delegate { };
+    public static Action<string> onReceiveStadiumLink = delegate { };
     public static Action<string> onReceivePrerecordedLink = delegate { };
     public static Action onOpenStream = delegate { }; // can subscribe on stream pnl
 
     public static Action onCancelOpenContent = delegate { };
     #endregion
 
-
     public static Action onGetLastRoomLink = delegate { };
     public static Action<string> onShareRoomLink = delegate { };
     public static Action<string> onShareStreamLinkByUsername = delegate { };
     public static Action<StreamJsonData.Data> onShareStreamLinkByData = delegate { };
+    public static Action onRoomBroadcastFinished = delegate { };
 
     //when start stream on Agora
     public static Action<StreamStartResponseJsonData> onRoomCreated = delegate { };
     public static Action<StreamStartResponseJsonData> onLiveStreamCreated = delegate { };
     public static Action onLiveStreamFinished = delegate { };
+
+    public static Action<int> onOpenComment = delegate { };
+
+    public static Action onCloseComments = delegate { };
     public static Action onCommentsClosed = delegate { };
 }

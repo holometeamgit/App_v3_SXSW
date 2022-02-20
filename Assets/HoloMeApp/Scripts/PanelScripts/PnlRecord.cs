@@ -13,7 +13,6 @@ using Beem.Permissions;
 using System.Threading.Tasks;
 using System.Threading;
 using Beem.Video;
-using Zenject;
 
 public class PnlRecord : MonoBehaviour {
 
@@ -46,6 +45,8 @@ public class PnlRecord : MonoBehaviour {
     [SerializeField]
     Text txtWaterMarkText;
 
+    [Space]
+    [SerializeField]
     private HologramHandler _hologramHandler;
 
     private Camera[] _cameras;
@@ -53,6 +54,8 @@ public class PnlRecord : MonoBehaviour {
     private bool recordMicrophone = true;
 
     public bool Recording { get; set; }
+
+    public static string CurrentUser;
 
     private IMediaRecorder videoRecorder;
     private IClock recordingClock;
@@ -100,11 +103,6 @@ public class PnlRecord : MonoBehaviour {
         }
     }
 
-    [Inject]
-    public void Construct(HologramHandler hologramHandler) {
-        _hologramHandler = hologramHandler;
-    }
-
     void Start() {
         ChangeMode = Mode.Video;
         btnToggleMode.onClick.AddListener(() => ChangeMode = mode == Mode.Video ? Mode.Photo : Mode.Video);
@@ -113,8 +111,8 @@ public class PnlRecord : MonoBehaviour {
     }
 
     private void OnEnable() {
+        txtWaterMarkText.text = "@" + CurrentUser; //Gameobject must be active in the editor for this to work correctly
         canvasGroup?.DOFade(1, .5f);
-        txtWaterMarkText.text = "@" + ContentPlayer.UserName;
     }
 
     private void OnDisable() {
@@ -186,8 +184,7 @@ public class PnlRecord : MonoBehaviour {
             MakeScreenshot();
         } else {
             lastRecordingPath = path;
-            RecordARData recordARData = new RecordARData(lastRecordingPath);
-            PostRecordARConstructor.OnShow?.Invoke(recordARData);
+            PostRecordARConstructor.OnActivatedVideo?.Invoke(path);
         }
     }
 
@@ -207,9 +204,7 @@ public class PnlRecord : MonoBehaviour {
 
         yield return new WaitForEndOfFrame();
         HideUI.onActivate(true);
-
-        RecordARData recordARData = new RecordARData(Sprite.Create(screenShot, new Rect(0, 0, Screen.width, Screen.height), new Vector2(0.5f, 0.5f)), screenShot, lastRecordingPath);
-        PostRecordARConstructor.OnShow?.Invoke(recordARData);
+        PostRecordARConstructor.OnActivatedScreenShot?.Invoke(Sprite.Create(screenShot, new Rect(0, 0, Screen.width, Screen.height), new Vector2(0.5f, 0.5f)), screenShot, lastRecordingPath);
         canvasGroup.alpha = 1;
         currentCoroutine = null;
         watermarkCanvasObject.SetActive(false);

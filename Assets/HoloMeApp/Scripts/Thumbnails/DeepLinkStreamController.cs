@@ -4,82 +4,56 @@ using UnityEngine;
 using Beem.Firebase.DynamicLink;
 using Firebase.DynamicLinks;
 using System;
-using Zenject;
 
 /// <summary>
 /// Deep Link Controller for StreamData
 /// </summary>
 public class DeepLinkStreamController : MonoBehaviour {
     [SerializeField]
+    private WebRequestHandler _webRequestHandler;
+    [SerializeField]
     private ServerURLAPIScriptableObject _serverURLAPIScriptableObject;
     [SerializeField]
     private VideoUploader _videoUploader;
 
-    private WebRequestHandler _webRequestHandler;
+    private const string TITLE = "You have been invited to {0}'s Stadium";
+    private const string DESCRIPTION = "Click the link below to join {0}'s Stadium";
 
     private ShareLinkController _shareController = new ShareLinkController();
 
-    private const string STREAM_TITLE = "Join {0}'s Live Stream";
-    private const string STREAM_DESCRIPTION = "Click the link to watch {0} in Augmented Reality.";
     private const string STATUS = "live";
     private const string USERNAME_FILTER = "user__username";
     private const string STATUS_FILTER = "status";
 
-    [Inject]
-    public void Construct(WebRequestHandler webRequestHandler) {
-        _webRequestHandler = webRequestHandler;
-    }
 
-    /// <summary>
-    /// Social Media for Streams
-    /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    public SocialMetaTagParameters SocialParameters(StreamJsonData.Data data) {
-        SocialMetaTagParameters socialMetaTagParameters;
-        if (data.GetStage() == StreamJsonData.Data.Stage.Live) {
-            socialMetaTagParameters = new SocialMetaTagParameters() {
-                Title = string.Format(STREAM_TITLE, data.user),
-                Description = string.Format(STREAM_DESCRIPTION, data.user),
-                ImageUrl = new Uri(_serverURLAPIScriptableObject.LogoLink)
-            };
-        } else {
-            socialMetaTagParameters = new SocialMetaTagParameters() {
-                Title = data.title,
-                Description = data.description,
-                ImageUrl = new Uri(_serverURLAPIScriptableObject.LogoLink)
-            };
-        }
-        return socialMetaTagParameters;
-    }
-
-    private void GetStreamBySlug(string slug, Action<long, string> onSuccess, Action<long, string> onFailed) {
+    private void GetStreamBySlug(string slug, Action<long, string> onSuccess, Action<WebRequestError> onFailed = null) {
         _webRequestHandler.Get(GetRequestStreamBySlugURL(slug),
             (code, body) => { onSuccess?.Invoke(code, body); },
-            (code, body) => { onFailed?.Invoke(code, body); },
+            (code, body) => { onFailed?.Invoke(new WebRequestError(code, body)); },
         needHeaderAccessToken: false);
     }
 
-    private void GetStreamByUsername(string username, Action<long, string> onSuccess, Action<long, string> onFailed) {
+    private void GetStreamByUsername(string username, Action<long, string> onSuccess, Action<WebRequestError> onFailed = null) {
         _webRequestHandler.Get(GetRequestStreamByUsernameURL(username, STATUS),
             (code, body) => { onSuccess?.Invoke(code, body); },
-            (code, body) => { onFailed?.Invoke(code, body); },
+            (code, body) => { onFailed?.Invoke(new WebRequestError(code, body)); },
         needHeaderAccessToken: false);
     }
 
-    private void StreamReceived(string body, Action<StreamJsonData.Data> onReceived) {
+    private void StreamReceived(string body, Action<StreamJsonData.Data> onSuccess, Action<WebRequestError> onFailed = null) {
         try {
             StreamJsonData.Data data = JsonUtility.FromJson<StreamJsonData.Data>(body);
 
             HelperFunctions.DevLog("Stream Recieved = " + body);
 
-            onReceived?.Invoke(data);
+            onSuccess?.Invoke(data);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
+            onFailed?.Invoke(new WebRequestError());
         }
     }
 
-    private void StreamsReceived(string body, string username, Action<StreamJsonData.Data> onReceived) {
+    private void StreamsReceived(string body, string username, Action<StreamJsonData.Data> onSuccess, Action<WebRequestError> onFailed = null) {
         try {
             HelperFunctions.DevLog("Streams Recieved = " + body);
 
@@ -101,81 +75,89 @@ public class DeepLinkStreamController : MonoBehaviour {
                 }
 
                 if (lastStreamData != null) {
-                    onReceived?.Invoke(lastStreamData);
+                    onSuccess?.Invoke(lastStreamData);
                 }
+            } else {
+                onFailed?.Invoke(new WebRequestError());
             }
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
+            onFailed?.Invoke(new WebRequestError());
         }
     }
 
-    private void OnOpenStream(string username) {
+    private void OnOpenStadium(string username) {
         GetStreamByUsername(username,
             (code, body) => {
-                OpenStream(body, username); ;
-            },
-            (code, body) => {
-                HelperFunctions.DevLogError(code + " " + body);
-            });
+                OpenStadium(body, username); ;
+            }, DeepLinkStreamConstructor.OnShowError);
     }
 
-    private void OpenStream(string body, string username) {
-        StreamsReceived(body,
-            username,
+    private void OpenStadium(string body, string username) {
+        StreamsReceived(body, username,
             (data) => {
-                DeepLinkStreamConstructor.OnShow?.Invoke(data);
-            });
+                if ((data.GetStage() == StreamJsonData.Data.Stage.Prerecorded && data.HasStreamUrl) || data.GetStage() == StreamJsonData.Data.Stage.Live) {
+                    DeepLinkStreamConstructor.OnShow?.Invoke(data);
+                } else {
+                    DeepLinkStreamConstructor.OnShowError?.Invoke(new WebRequestError());
+                }
+            }, DeepLinkStreamConstructor.OnShowError);
     }
 
     private void OnOpenPrerecorded(string slug) {
         GetStreamBySlug(slug,
             (code, body) => {
-                OpenPrerecorded(body); ;
-            },
-            (code, body) => {
-                HelperFunctions.DevLogError(code + " " + body);
-            });
+                OpenPrerecorded(body);
+            }, DeepLinkStreamConstructor.OnShowError);
     }
 
     private void OpenPrerecorded(string body) {
         StreamReceived(body,
             (data) => {
-                DeepLinkStreamConstructor.OnShow?.Invoke(data);
-            });
+                if ((data.GetStage() == StreamJsonData.Data.Stage.Prerecorded && data.HasStreamUrl) || data.GetStage() == StreamJsonData.Data.Stage.Live) {
+                    DeepLinkStreamConstructor.OnShow?.Invoke(data);
+                } else {
+                    DeepLinkStreamConstructor.OnShowError?.Invoke(new WebRequestError());
+                }
+            }, DeepLinkStreamConstructor.OnShowError);
     }
 
     private void Awake() {
         StreamCallBacks.onShareStreamLinkByUsername += OnShare;
         StreamCallBacks.onShareStreamLinkByData += OnShare;
-        StreamCallBacks.onReceiveStreamLink += OnOpenStream;
+        StreamCallBacks.onReceiveStadiumLink += OnOpenStadium;
         StreamCallBacks.onReceivePrerecordedLink += OnOpenPrerecorded;
     }
 
     private void OnShare(string username) {
         GetStreamByUsername(username,
-            (code, body) => Share(body, username),
-            (code, body) => {
-                HelperFunctions.DevLogError(code + " " + body);
-            });
+            (code, body) => Share(body, username));
     }
 
     private void Share(string body, string username) {
-        StreamsReceived(body,
-            username,
-            (data) => {
-                OnShare(data);
-            });
+        StreamsReceived(body, username, OnShare);
     }
 
     private void OnShare(StreamJsonData.Data data) {
-        _shareController.ShareSocialLink(new Uri(data.share_link), SocialParameters(data));
+
+        string msg = string.Empty;
+
+        if (data.HasStreamUrl) {
+            msg = data.share_link;
+        } else if (data.HasAgoraChannel) {
+            string title = string.Format(TITLE, data.user);
+            string description = string.Format(DESCRIPTION, data.user);
+            msg = title + "\n" + description + "\n" + data.share_link;
+        }
+
+        _shareController.ShareLink(msg);
     }
 
 
     private void OnDestroy() {
         StreamCallBacks.onShareStreamLinkByUsername -= OnShare;
         StreamCallBacks.onShareStreamLinkByData -= OnShare;
-        StreamCallBacks.onReceiveStreamLink -= OnOpenStream;
+        StreamCallBacks.onReceiveStadiumLink -= OnOpenStadium;
         StreamCallBacks.onReceivePrerecordedLink -= OnOpenPrerecorded;
     }
 

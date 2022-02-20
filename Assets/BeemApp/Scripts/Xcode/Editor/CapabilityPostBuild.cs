@@ -19,7 +19,7 @@ namespace Beem.Xcode {
         private static string[] applinks = new string[] {
             "applinks:ar.beem.me",
             "applinks:join.beem.me",
-            "applinks:beem.onelink.me"
+            "applinks:watch.beem.me"
         };
 
         private const int CallOrder = 2;

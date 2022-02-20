@@ -1,10 +1,10 @@
 using Beem.ARMsg;
 using Beem.Firebase.DynamicLink;
+using Beem.Permissions;
 using Firebase.DynamicLinks;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Zenject;
 
 namespace Beem.UI {
 
@@ -15,12 +15,8 @@ namespace Beem.UI {
     public class OpenARMessagesBtn : MonoBehaviour, IARMsgDataView {
 
         private ARMsgJSON.Data _arMsgData = default;
-        private ContentPlayer _contentPlayer;
 
-        [Inject]
-        public void Construct(UserWebManager userWebManager) {
-            _contentPlayer = new ContentPlayer(userWebManager);
-        }
+        private PermissionController _permissionController = new PermissionController();
 
         public void Init(ARMsgJSON.Data arMsgData) {
             _arMsgData = arMsgData;
@@ -30,9 +26,16 @@ namespace Beem.UI {
         /// Open AR Messages
         /// </summary>
         public void Open() {
-            _contentPlayer.PlayARMessage(_arMsgData);
-            ARMsgRecordConstructor.OnHide?.Invoke();
-            CallBacks.OnCancelAllARMsgActions?.Invoke();
+            _permissionController.CheckCameraMicAccess(() => {
+                MenuConstructor.OnActivated?.Invoke(false);
+                HomeScreenConstructor.OnActivated?.Invoke(false);
+                SettingsConstructor.OnActivated?.Invoke(false);
+                ARMsgRecordConstructor.OnActivated?.Invoke(false);
+                ARenaConstructor.onActivateForARMessaging?.Invoke(_arMsgData);
+                ARMsgARenaConstructor.OnActivatedARena?.Invoke(_arMsgData);
+                CallBacks.OnCancelAllARMsgActions?.Invoke();
+                PnlRecord.CurrentUser = _arMsgData.user;
+            });
         }
     }
 }
