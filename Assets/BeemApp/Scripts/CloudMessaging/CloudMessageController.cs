@@ -1,5 +1,6 @@
 using Beem.Firebase;
 using Beem.Firebase.DynamicLink;
+using Firebase.Extensions;
 using Firebase.Messaging;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,18 +28,29 @@ namespace Beem.Firebase.CloudMessage {
             await task;
 
             if (task.IsCompleted) {
-                HelperFunctions.DevLog("GetTokenAsync: " + task.Result);
+                HelperFunctions.DevLogError("GetTokenAsync: " + task.Result);
+            }
+        }
+
+        private async void RequestPermission() {
+            var task = FirebaseMessaging.GetTokenAsync();
+
+            await task;
+
+            if (task.IsCompleted) {
+                HelperFunctions.DevLogError("RequestPermission: " + task.Result);
             }
         }
 
         protected void Subscribe() {
+            FirebaseMessaging.TokenRegistrationOnInitEnabled = false;
+            GetTokenAsync();
+            RequestPermission();
             FirebaseMessaging.TokenReceived += OnTokenReceived;
             FirebaseMessaging.MessageReceived += OnMessageReceived;
-            if (PlayerPrefs.GetInt("Test") == 0) {
-                PlayerPrefs.SetInt("Test", 1);
-                GetTokenAsync();
-                FirebaseMessaging.SubscribeAsync(TOPIC);
-            }
+
+            FirebaseMessaging.SubscribeAsync(TOPIC);
+
 
         }
 
@@ -49,10 +61,35 @@ namespace Beem.Firebase.CloudMessage {
         }
 
         private void OnTokenReceived(object sender, TokenReceivedEventArgs token) {
-            HelperFunctions.DevLog("Received Registration Token: " + token.Token);
+            HelperFunctions.DevLogError("Received Registration Token: " + token.Token);
         }
 
         private void OnMessageReceived(object sender, MessageReceivedEventArgs e) {
+
+            HelperFunctions.DevLogError("Received a new message");
+            var notification = e.Message.Notification;
+            if (notification != null) {
+                HelperFunctions.DevLogError("title: " + notification.Title);
+                HelperFunctions.DevLogError("body: " + notification.Body);
+                var android = notification.Android;
+                if (android != null) {
+                    HelperFunctions.DevLogError("android channel_id: " + android.ChannelId);
+                }
+            }
+            if (e.Message.From.Length > 0)
+                HelperFunctions.DevLogError("from: " + e.Message.From);
+            if (e.Message.Link != null) {
+                HelperFunctions.DevLogError("link: " + e.Message.Link.ToString());
+            }
+            if (e.Message.Data.Count > 0) {
+                HelperFunctions.DevLogError("data:");
+                foreach (KeyValuePair<string, string> iter in
+                         e.Message.Data) {
+                    HelperFunctions.DevLogError("  " + iter.Key + ": " + iter.Value);
+                }
+            }
+
+
             if (e.Message.Data.ContainsKey("dl")) {
                 HelperFunctions.DevLogError($"Message Deep Link: {e.Message.Data["dl"]}");
                 DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(e.Message.Data["dl"]);
