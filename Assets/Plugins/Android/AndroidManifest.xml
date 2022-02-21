@@ -80,28 +80,8 @@
     </activity>
 
     <activity
-      android:name="com.google.firebase.MessagingUnityPlayerActivity"
+      android:name="com.google.firebase_workaround.MessagingUnityPlayerActivityWorkaround"
       android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen">
-
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter>
-
-      <intent-filter>
-        <action android:name="android.intent.action.VIEW" />
-
-        <category android:name="android.intent.category.DEFAULT" />
-        <category android:name="android.intent.category.BROWSABLE" />
-
-        <data android:scheme="https" android:host="join.beem.me" />
-        <data android:scheme="https" android:host="watch.beem.me" />
-        <data android:scheme="https" android:host="ar.beem.me" android:pathPrefix="/message/" />
-        <data android:scheme="https" android:host="ar.beem.me" android:pathPrefix="/room/" />
-        <data android:scheme="https" android:host="ar.beem.me" android:pathPrefix="/stadium/" />
-        <data android:scheme="https" android:host="ar.beem.me" android:pathPrefix="/prerecorded/" />
-        <data android:scheme="beemholomedl" android:host="beem.me" android:pathPrefix="/gallery/" />
-      </intent-filter>
 
       <meta-data
         android:name="unityplayer.UnityActivity"
@@ -128,6 +108,13 @@
       android:name="com.google.firebase.messaging.MessageForwardingService"
       android:permission="android.permission.BIND_JOB_SERVICE"
       android:exported="false">
+    </service>
+
+    <service
+      android:name="com.google.firebase.messaging.FirebaseMessagingService">
+      <intent-filter>
+        <action android:name="com.google.firebase.MESSAGING_EVENT" />
+      </intent-filter>
     </service>
 
     <meta-data
