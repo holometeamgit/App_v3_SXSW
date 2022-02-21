@@ -32,13 +32,10 @@ namespace Beem.Firebase.CloudMessage {
         }
 
         protected void Subscribe() {
+            GetTokenAsync();
             FirebaseMessaging.TokenReceived += OnTokenReceived;
             FirebaseMessaging.MessageReceived += OnMessageReceived;
-            if (PlayerPrefs.GetInt("Test") == 0) {
-                PlayerPrefs.SetInt("Test", 1);
-                GetTokenAsync();
-                FirebaseMessaging.SubscribeAsync(TOPIC);
-            }
+            FirebaseMessaging.SubscribeAsync(TOPIC);
 
         }
 
@@ -53,6 +50,28 @@ namespace Beem.Firebase.CloudMessage {
         }
 
         private void OnMessageReceived(object sender, MessageReceivedEventArgs e) {
+            HelperFunctions.DevLogWarning("Received a new message");
+            var notification = e.Message.Notification;
+            if (notification != null) {
+                HelperFunctions.DevLogWarning("title: " + notification.Title);
+                HelperFunctions.DevLogWarning("body: " + notification.Body);
+                var android = notification.Android;
+                if (android != null) {
+                    HelperFunctions.DevLogWarning("android channel_id: " + android.ChannelId);
+                }
+            }
+            if (e.Message.From.Length > 0)
+                HelperFunctions.DevLogWarning("from: " + e.Message.From);
+            if (e.Message.Link != null) {
+                HelperFunctions.DevLogWarning("link: " + e.Message.Link.ToString());
+            }
+            if (e.Message.Data.Count > 0) {
+                HelperFunctions.DevLogWarning("data:");
+                foreach (KeyValuePair<string, string> iter in
+                         e.Message.Data) {
+                    HelperFunctions.DevLogWarning("  " + iter.Key + ": " + iter.Value);
+                }
+            }
             if (e.Message.Data.ContainsKey("dl")) {
                 HelperFunctions.DevLogError($"Message Deep Link: {e.Message.Data["dl"]}");
                 DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(e.Message.Data["dl"]);
