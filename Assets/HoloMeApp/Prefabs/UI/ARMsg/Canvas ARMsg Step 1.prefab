@@ -513,6 +513,7 @@ GameObject:
   - component: {fileID: 5194872687668889991}
   - component: {fileID: 5194872687668889993}
   - component: {fileID: 5194872687668889990}
+  - component: {fileID: 2041544219676252670}
   m_Layer: 5
   m_Name: txtHelp
   m_TagString: Untagged
@@ -567,12 +568,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Your recording will start on the next
-
-    screen. Make sure your whole
-    body
-
-    can be seen throughout'
+  m_text: "The recording will start on the next\nscreen. Make sure the person you
+    are \nrecording is in full frame throughout"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 71e4f71fb3bf11649a5e5ae53c58fe9a, type: 2}
   m_sharedMaterial: {fileID: -5132721197388374977, guid: 71e4f71fb3bf11649a5e5ae53c58fe9a,
@@ -642,6 +639,31 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2041544219676252670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5194872687668889988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20102848c613644a1b86971b08c97562, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _text: {fileID: 5194872687668889990}
+  _stringForBackCamera: 'The recording will start on the next
+
+    screen. Make sure
+    the person you are
+
+    recording is in full frame throughout'
+  _stringForFrontCamera: 'Your recording will start on the next
+
+    screen. Make
+    sure your whole body
+
+    can be seen throughout'
 --- !u!1 &5194872687975954409
 GameObject:
   m_ObjectHideFlags: 0

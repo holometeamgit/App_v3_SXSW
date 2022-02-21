@@ -19,48 +19,43 @@ public class DeepLinkRoomController : MonoBehaviour {
 
     private ShareLinkController _shareController = new ShareLinkController();
 
-    private void GetRoomByUserName(string username, Action<long, string> onSuccess, Action<long, string> onFailed) {
-        HelperFunctions.DevLog("Get Room By UserName " + username);
+    private void GetRoomByUserName(string username, Action<long, string> onSuccess, Action<WebRequestError> onFailed = null) {
         _webRequestHandler.Get(GetRoomUsernameUrl(username),
             (code, body) => { onSuccess?.Invoke(code, body); },
-            (code, body) => { onFailed?.Invoke(code, body); },
+            (code, body) => { onFailed?.Invoke(new WebRequestError(code, body)); },
             needHeaderAccessToken: false);
     }
 
-    private void RoomReceived(string body, Action<RoomJsonData> onReceived) {
+    private void RoomReceived(string body, Action<RoomJsonData> OnSuccess, Action<WebRequestError> onFailed = null) {
         try {
             RoomJsonData roomJsonData = JsonUtility.FromJson<RoomJsonData>(body);
 
             HelperFunctions.DevLog("Room Recieved = " + body);
 
-            onReceived?.Invoke(roomJsonData);
+            OnSuccess?.Invoke(roomJsonData);
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
+            onFailed?.Invoke(new WebRequestError());
         }
     }
 
     private void OnOpen(string username) {
         GetRoomByUserName(username,
             (code, body) => Open(body),
-            (code, body) => {
-                StreamCallBacks.onUserDoesntExist(code);
-                HelperFunctions.DevLogError(code + " " + body);
-            });
+            DeepLinkRoomConstructor.OnShowError);
     }
 
     private void Open(string body) {
         RoomReceived(body,
             (data) => {
                 StreamCallBacks.onRoomDataReceived?.Invoke(data);
-            });
+                DeepLinkRoomConstructor.OnShow?.Invoke(data);
+            }, DeepLinkRoomConstructor.OnShowError);
     }
 
     private void OnShare(string username) {
         GetRoomByUserName(username,
-            (code, body) => Share(body),
-            (code, body) => {
-                HelperFunctions.DevLogError(code + " " + body);
-            });
+            (code, body) => Share(body));
     }
 
     private void Share(string body) {
