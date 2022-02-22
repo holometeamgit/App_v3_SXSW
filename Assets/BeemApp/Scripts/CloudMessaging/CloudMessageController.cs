@@ -36,6 +36,9 @@ namespace Beem.Firebase.CloudMessage {
             FirebaseMessaging.TokenReceived += OnTokenReceived;
             FirebaseMessaging.MessageReceived += OnMessageReceived;
             FirebaseMessaging.SubscribeAsync(TOPIC);
+#if UNITY_ANDROID
+            //StartCoroutine(LoadDLFromFCM());
+#endif
 
         }
 
@@ -48,6 +51,27 @@ namespace Beem.Firebase.CloudMessage {
         private void OnTokenReceived(object sender, TokenReceivedEventArgs token) {
             HelperFunctions.DevLog("Received Registration Token: " + token.Token);
         }
+
+#if UNITY_ANDROID
+
+        private IEnumerator LoadDLFromFCM() {
+
+            AndroidJavaClass UnityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject curActivity = UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+            AndroidJavaObject curIntent = curActivity.Call<AndroidJavaObject>("getIntent");
+
+            string dl = curIntent.Call<string>("getStringExtra", "dl");
+            HelperFunctions.DevLogError($"dl = {dl}");
+            if (!string.IsNullOrEmpty(dl)) {
+                Handheld.SetActivityIndicatorStyle(AndroidActivityIndicatorStyle.Large);
+                Handheld.StartActivityIndicator();
+                DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(dl);
+                yield return new WaitForSeconds(1f);
+            }
+            yield return new WaitForSeconds(1f);
+            StartCoroutine(LoadDLFromFCM());
+        }
+#endif
 
         private void OnMessageReceived(object sender, MessageReceivedEventArgs e) {
             HelperFunctions.DevLogWarning("Received a new message");
