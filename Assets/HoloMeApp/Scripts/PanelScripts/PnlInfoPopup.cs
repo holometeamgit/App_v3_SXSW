@@ -11,33 +11,58 @@ public class PnlInfoPopup : MonoBehaviour {
     private TextMeshProUGUI txtTitle;
 
     [SerializeField]
-    GameObject[] greenScreenHintGameObjects;
+    TextMeshProUGUI txtMessage;
 
     [SerializeField]
-    Image imgBackground;
+    private GameObject greenScreenHintGameObject;
+
+    [SerializeField]
+    private GameObject[] InfoObjects;
+
+    [SerializeField]
+    private Image imgBackground;
 
     /// <summary>
     /// Show the info popup panel
     /// </summary>
     /// <param name="showGreenScreenHint">This will disable or enable the green screen hint line</param>
     public void Activate(string title, bool showGreenScreenHint, Color backgroundColour) {
-        txtTitle.text = title;
+        ToggleHintIconLines(true);
+        greenScreenHintGameObject.SetActive(showGreenScreenHint);
+        AssignMessage(string.Empty);
+        Init(title, backgroundColour);
+    }
 
-        if (greenScreenHintGameObjects != null) {
-            foreach (GameObject greenScreen in greenScreenHintGameObjects) {
-                greenScreen.SetActive(showGreenScreenHint);
-            }
+
+    /// <summary>
+    /// Activate with sub message and no hint icons
+    /// </summary>
+    public void ActivateAsMessage(string title, string message, Color backgroundColour) {
+        ToggleHintIconLines(false);
+        AssignMessage(message);
+        Init(title, backgroundColour);
+    }
+
+    private void ToggleHintIconLines(bool enable) {
+        foreach (GameObject gameObject in InfoObjects) {
+            gameObject.SetActive(enable);
         }
+    }
 
+    private void Init(string title, Color backgroundColour) {
+        txtTitle.text = title;
         imgBackground.color = backgroundColour;
-
         imgBackground.rectTransform.anchoredPosition = new Vector2(imgBackground.rectTransform.anchoredPosition.x, -Screen.height);
-
         Sequence mySequence = DOTween.Sequence();
         mySequence.Append(imgBackground.rectTransform.DOAnchorPosY(Screen.height / 10, .5f));
         mySequence.Append(imgBackground.rectTransform.DOAnchorPosY(0, .5f).SetEase(Ease.OutQuad));
 
         gameObject.SetActive(true);
+    }
+
+    private void AssignMessage(string message) {
+        txtMessage.gameObject.SetActive(!string.IsNullOrEmpty(message));
+        txtMessage.text = message;
     }
 
     /// <summary>
