@@ -37,7 +37,6 @@ public class PnlOpenHomeMenu : MonoBehaviour {
     /// </summary>
     public void Activate() {
         panelCanvas.enabled = true;
-        //scrollRectSnapButtonHorz.ReactivateCurrentIndex();
     }
 
     /// <summary>
