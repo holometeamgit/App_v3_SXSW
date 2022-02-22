@@ -13,5 +13,6 @@ public class ARMessageBtn : MonoBehaviour {
     public void Open() {
         ARMessageTutorialConstructor.OnActivated?.Invoke(false);
         ARMsgRecordConstructor.OnActivated?.Invoke(true);
+        GalleryConstructor.OnHide?.Invoke();
     }
 }

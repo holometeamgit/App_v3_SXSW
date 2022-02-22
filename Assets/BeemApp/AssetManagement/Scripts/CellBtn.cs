@@ -1,0 +1,33 @@
+using Beem.Permissions;
+using Beem.UI;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CellBtn : MonoBehaviour, IARMsgDataView {
+
+    private ARMsgJSON.Data _arMsgData = default;
+
+    private PermissionController _permissionController = new PermissionController();
+
+    public void Init(ARMsgJSON.Data arMsgData) {
+        _arMsgData = arMsgData;
+    }
+
+    /// <summary>
+    /// Open AR Messages
+    /// </summary>
+    public void Open() {
+
+        _permissionController.CheckCameraMicAccess(() => {
+            MenuConstructor.OnActivated?.Invoke(false);
+            HomeScreenConstructor.OnActivated?.Invoke(false);
+            SettingsConstructor.OnActivated?.Invoke(false);
+            ARMsgRecordConstructor.OnActivated?.Invoke(false);
+            ARenaConstructor.onActivateForARMessaging?.Invoke(_arMsgData);
+            ARMsgARenaConstructor.OnActivatedARena?.Invoke(_arMsgData);
+            GalleryConstructor.OnHide?.Invoke();
+            PnlRecord.CurrentUser = _arMsgData.user;
+        });
+    }
+}

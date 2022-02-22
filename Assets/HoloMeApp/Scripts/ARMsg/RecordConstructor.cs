@@ -14,7 +14,7 @@ public class RecordConstructor : MonoBehaviour
     private RecordController _recordController;
 
     // Start is called before the first frame update
-    private void Start() {
+    private void Awake() {
         CallBacks.OnStartRecord += _recordButton.StartAnimation;
         CallBacks.onRecordTimerSet += _recordButton.SetMaxRecordingTime;
 
@@ -26,7 +26,7 @@ public class RecordConstructor : MonoBehaviour
     private void OnDestroy() {
         CallBacks.OnStartRecord -= _recordButton.StartAnimation;
         CallBacks.onRecordTimerSet -= _recordButton.SetMaxRecordingTime;
-        CallBacks.onSwitchRecordTimerClicked += _recordController.SwitchTimer;
-        CallBacks.onGetCurrevRecordTimerClicked += _recordController.OnGetCurrentRecordTimer;
+        CallBacks.onSwitchRecordTimerClicked -= _recordController.SwitchTimer;
+        CallBacks.onGetCurrevRecordTimerClicked -= _recordController.OnGetCurrentRecordTimer;
     }
 }

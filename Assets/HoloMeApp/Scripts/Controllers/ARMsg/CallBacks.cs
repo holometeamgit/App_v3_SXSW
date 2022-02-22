@@ -44,6 +44,8 @@ namespace Beem.ARMsg {
         public static Action onSwitchCameraClicked = delegate { };
 
         public static Func<bool> onCanSwitchCamera;
+        public static Action<int> onCameraSwitched;
+        public static Func<int> onGetCurrentCameraID;
         #endregion
 
         #region Record Timer Settings action

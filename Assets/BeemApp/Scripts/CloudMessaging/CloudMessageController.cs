@@ -27,8 +27,7 @@ namespace Beem.Firebase.CloudMessage {
             await task;
 
             if (task.IsCompleted) {
-                GUIUtility.systemCopyBuffer = task.Result;
-                HelperFunctions.DevLog("GetFCMTokenAsync: " + task.Result);
+                HelperFunctions.DevLog("GetTokenAsync: " + task.Result);
             }
         }
 
@@ -37,6 +36,9 @@ namespace Beem.Firebase.CloudMessage {
             FirebaseMessaging.TokenReceived += OnTokenReceived;
             FirebaseMessaging.MessageReceived += OnMessageReceived;
             FirebaseMessaging.SubscribeAsync(TOPIC);
+#if UNITY_ANDROID
+            //StartCoroutine(LoadDLFromFCM());
+#endif
 
         }
 
@@ -44,17 +46,58 @@ namespace Beem.Firebase.CloudMessage {
             FirebaseCallBacks.onInit -= Subscribe;
             FirebaseMessaging.TokenReceived -= OnTokenReceived;
             FirebaseMessaging.MessageReceived -= OnMessageReceived;
-            FirebaseMessaging.UnsubscribeAsync(TOPIC);
         }
 
         private void OnTokenReceived(object sender, TokenReceivedEventArgs token) {
-            GUIUtility.systemCopyBuffer = token.Token;
             HelperFunctions.DevLog("Received Registration Token: " + token.Token);
         }
 
+#if UNITY_ANDROID
+
+        private IEnumerator LoadDLFromFCM() {
+
+            AndroidJavaClass UnityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject curActivity = UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+            AndroidJavaObject curIntent = curActivity.Call<AndroidJavaObject>("getIntent");
+
+            string dl = curIntent.Call<string>("getStringExtra", "dl");
+            HelperFunctions.DevLogError($"dl = {dl}");
+            if (!string.IsNullOrEmpty(dl)) {
+                Handheld.SetActivityIndicatorStyle(AndroidActivityIndicatorStyle.Large);
+                Handheld.StartActivityIndicator();
+                DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(dl);
+                yield return new WaitForSeconds(1f);
+            }
+            yield return new WaitForSeconds(1f);
+            StartCoroutine(LoadDLFromFCM());
+        }
+#endif
+
         private void OnMessageReceived(object sender, MessageReceivedEventArgs e) {
+            HelperFunctions.DevLogWarning("Received a new message");
+            var notification = e.Message.Notification;
+            if (notification != null) {
+                HelperFunctions.DevLogWarning("title: " + notification.Title);
+                HelperFunctions.DevLogWarning("body: " + notification.Body);
+                var android = notification.Android;
+                if (android != null) {
+                    HelperFunctions.DevLogWarning("android channel_id: " + android.ChannelId);
+                }
+            }
+            if (e.Message.From.Length > 0)
+                HelperFunctions.DevLogWarning("from: " + e.Message.From);
+            if (e.Message.Link != null) {
+                HelperFunctions.DevLogWarning("link: " + e.Message.Link.ToString());
+            }
+            if (e.Message.Data.Count > 0) {
+                HelperFunctions.DevLogWarning("data:");
+                foreach (KeyValuePair<string, string> iter in
+                         e.Message.Data) {
+                    HelperFunctions.DevLogWarning("  " + iter.Key + ": " + iter.Value);
+                }
+            }
             if (e.Message.Data.ContainsKey("dl")) {
-                HelperFunctions.DevLog($"Message Deep Link: {e.Message.MessageId}");
+                HelperFunctions.DevLogError($"Message Deep Link: {e.Message.Data["dl"]}");
                 DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(e.Message.Data["dl"]);
             }
         }
