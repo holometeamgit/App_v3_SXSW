@@ -508,10 +508,8 @@ public class FocusSquareV2 : PlacementHandler {
     }
 
     private bool IsOneOfButtonsCloseActive() {
-        return //_btnCloseStreamOverlay.activeInHierarchy ||
-               _btnCloseARMessaging.activeInHierarchy ||
+        return _btnCloseARMessaging.activeInHierarchy ||
                _btnClosePrerecordedVideo.activeInHierarchy;
-
     }
 
     private bool IsAllButtonsCloseNotActive() {

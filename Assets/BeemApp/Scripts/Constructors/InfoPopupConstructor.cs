@@ -1,6 +1,9 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// Use this class to activate info popup
+/// </summary>
 public class InfoPopupConstructor : MonoBehaviour {
     [SerializeField]
     PnlInfoPopup pnlInfoPopup;

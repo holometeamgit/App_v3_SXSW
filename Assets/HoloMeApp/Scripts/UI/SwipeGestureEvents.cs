@@ -20,8 +20,7 @@ public class SwipeGestureEvents : MonoBehaviour {
     [SerializeField]
     UnityEvent OnSwipeDowne;
 
-    // Update is called once per frame
-    void Update() {
+    private void Update() {
 
         foreach (Touch touch in Input.touches) {
             if (touch.phase == TouchPhase.Began) {
@@ -45,7 +44,7 @@ public class SwipeGestureEvents : MonoBehaviour {
         }
     }
 
-    void CheckSwipe() {
+    private void CheckSwipe() {
         //Check if Vertical swipe
         if (VerticalMove() > SWIPE_THRESHOLD && VerticalMove() > HorizontalValMove()) {
 
@@ -73,30 +72,30 @@ public class SwipeGestureEvents : MonoBehaviour {
         }
     }
 
-    float VerticalMove() {
+    private float VerticalMove() {
         return Mathf.Abs(fingerDown.y - fingerUp.y);
     }
 
-    float HorizontalValMove() {
+    private float HorizontalValMove() {
         return Mathf.Abs(fingerDown.x - fingerUp.x);
     }
 
-    void OnSwipeUp() {
+    private void OnSwipeUp() {
         Debug.Log("Swipe UP");
         OnSwipeUpe?.Invoke();
     }
 
-    void OnSwipeDown() {
+    private void OnSwipeDown() {
         Debug.Log("Swipe Down");
         OnSwipeDowne?.Invoke();
     }
 
-    void OnSwipeLeft() {
+    private void OnSwipeLeft() {
         Debug.Log("Swipe Left");
         OnSwipeLefte?.Invoke();
     }
 
-    void OnSwipeRight() {
+    private void OnSwipeRight() {
         Debug.Log("Swipe Right");
         OnSwipeRighte?.Invoke();
     }

@@ -152,10 +152,16 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         initialised = true;
     }
 
+    /// <summary>
+    /// Show the info popup for stadium
+    /// </summary>
     public void ShowInfoPopupStadium() {
         InfoPopupConstructor.onActivate("HOW TO BROADCAST \n IN STADIUM", true, new Color(142f / 255f, 196f / 255f, 246f / 255f));
     }
 
+    /// <summary>
+    /// Show the info popup for room
+    /// </summary>
     public void ShowInfoPopupRoom() {
         InfoPopupConstructor.onActivate("HOW TO USE \n MY ROOM", true, new Color(131f / 255f, 168f / 255f, 240f / 255f));
     }
@@ -336,7 +342,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         _agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         StreamOverlayConstructor.onDeactivate?.Invoke();
-        //HomeScreenConstructor.OnActivated?.Invoke(true);
         MenuConstructor.OnActivated?.Invoke(true);
         RecordARConstructor.OnActivated?.Invoke(false);
     }
@@ -351,7 +356,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private void CloseAsViewer() {
         StopStream();
         StreamOverlayConstructor.onDeactivate?.Invoke();
-        //HomeScreenConstructor.OnActivated?.Invoke(true);
         MenuConstructor.OnActivated?.Invoke(true);
         RecordARConstructor.OnActivated?.Invoke(false);
     }
@@ -397,7 +401,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         cameraRenderImage.texture = null;
         AnimatedFadeOutMessage();
         RefreshControls();
-        //MenuConstructor.OnActivated(true);
     }
 
     /// <summary>

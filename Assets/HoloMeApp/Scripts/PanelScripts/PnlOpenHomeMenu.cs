@@ -3,6 +3,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+/// <summary>
+/// This class is responsible for running the open home screen menu overlay
+/// </summary>
 public class PnlOpenHomeMenu : MonoBehaviour {
 
     [SerializeField]
@@ -45,6 +48,9 @@ public class PnlOpenHomeMenu : MonoBehaviour {
         OnHideCanvas?.Invoke();
     }
 
+    /// <summary>
+    /// Show the canvas, checks camera permissions before enabling
+    /// </summary>
     public void ShowCanvas() {
         permissionController.CheckCameraMicAccess(() => imgPermissionRequired.gameObject.SetActive(false), () => imgPermissionRequired.gameObject.SetActive(true));
         panelCanvas.enabled = true;
@@ -52,8 +58,6 @@ public class PnlOpenHomeMenu : MonoBehaviour {
     }
 
     private void OnDisable() {
-        //RoomTutorialConstructor.OnActivated?.Invoke(false);
-        //StreamOverlayConstructor.onDeactivate?.Invoke();
         StreamOverlayConstructor.onDeactivate?.Invoke();
     }
 }
