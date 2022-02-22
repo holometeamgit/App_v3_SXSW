@@ -24,7 +24,7 @@ public class DeepLinkHandler : MonoBehaviour {
 
         Uri uri = new Uri(uriStr);
 
-        HelperFunctions.DevLogError("Deep link: " + uriStr);
+        HelperFunctions.DevLog("Deep link: " + uriStr);
         GetContentsParameters(uri);
     }
 
