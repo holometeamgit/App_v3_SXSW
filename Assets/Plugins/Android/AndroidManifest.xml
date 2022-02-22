@@ -85,14 +85,6 @@
       android:exported="false">
     </service>
 
-    <service
-      android:name="com.clevertap.android.sdk.pushnotification.CTNotificationIntentService"
-      android:exported="false">
-      <intent-filter>
-        <action android:name="com.clevertap.PUSH_EVENT" />
-      </intent-filter>
-    </service>
-
     <meta-data
       android:name="FCM_SENDER_ID"
       android:value="id:233061171188" />
