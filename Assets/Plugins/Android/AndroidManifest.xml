@@ -80,9 +80,12 @@
     </activity>
 
     <activity
-      android:name="com.google.firebase.MessagingUnityPlayerActivity"
+      android:name="com.google.firebase_workaround.MessagingUnityPlayerActivityWorkaround"
       android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen">
-
+      <intent-filter>
+        <action android:name="OPEN_ACTIVITY_1" />
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
       <meta-data
         android:name="unityplayer.UnityActivity"
         android:value="true" />
