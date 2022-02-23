@@ -250,10 +250,18 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     public void OpenAsStreamer() {
+        if (!_userWebManager.CanGoLive()) {
+            ShowPremiumRequiredMessage();
+        }
+
         Init();
         currentStreamId = "";
         _agoraController.IsRoom = false;
         StreamerOpenSharedFunctions();
+    }
+
+    private void ShowPremiumRequiredMessage() {
+        InfoPopupConstructor.onActivateAsMessage("PREMIUM FEATURE", "Please get in contact with us \n to explore Beeming live to \nthousands of people", new Color(142f / 255f, 196f / 255f, 246f / 255f));
     }
 
     /// <summary>
@@ -629,6 +637,11 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     /// Starts the stream, use countdown coroutine to start with delay
     /// </summary>
     public void StartStream() {
+        if (!_userWebManager.CanGoLive() && !_agoraController.IsRoom) {
+            ShowPremiumRequiredMessage();
+            return;
+        }
+
         MenuConstructor.OnActivateCanvas(false);
         TogglePreLiveControls(false);
         _agoraController.JoinOrCreateChannel(true);

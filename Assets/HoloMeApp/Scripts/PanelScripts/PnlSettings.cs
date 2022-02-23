@@ -12,8 +12,6 @@ public class PnlSettings : MonoBehaviour {
     [SerializeField]
     private GameObject _changePassword;
     [SerializeField]
-    private GameObject _btnStadium;
-    [SerializeField]
     private TMP_Text _txtNickname;
     [Space]
     [SerializeField]
@@ -24,9 +22,6 @@ public class PnlSettings : MonoBehaviour {
     private void OnEnable() {
         _changePassword.SetActive(_accountManager.GetLogInType() == LogInType.Email);
         _txtNickname.text = _userWebManager.GetUsername();
-
-        _btnStadium.SetActive(_userWebManager.CanGoLive());
-
         _userWebManager.OnUserAccountDeleted += UserLogOut;
     }
 

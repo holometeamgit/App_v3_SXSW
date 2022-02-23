@@ -6,16 +6,19 @@ using UnityEngine;
 /// </summary>
 public class InfoPopupConstructor : MonoBehaviour {
     [SerializeField]
-    PnlInfoPopup pnlInfoPopup;
+    private PnlInfoPopup pnlInfoPopup;
 
     public static Action<string, bool, Color> onActivate = delegate { };
+    public static Action<string, string, Color> onActivateAsMessage = delegate { };
 
     private void OnEnable() {
         onActivate += pnlInfoPopup.Activate;
+        onActivateAsMessage += pnlInfoPopup.ActivateAsMessage;
     }
 
     private void OnDisable() {
         onActivate -= pnlInfoPopup.Activate;
+        onActivateAsMessage -= pnlInfoPopup.ActivateAsMessage;
     }
 
 }
