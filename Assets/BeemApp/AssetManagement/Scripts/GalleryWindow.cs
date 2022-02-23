@@ -10,8 +10,6 @@ using UnityEngine;
 /// </summary>
 public class GalleryWindow : MonoBehaviour {
     [SerializeField]
-    private UserWebManager _userWebManager;
-    [SerializeField]
     private ScrollContent _content = null;
     [SerializeField]
     private GameObject pushNotificationPopUp;
@@ -20,14 +18,18 @@ public class GalleryWindow : MonoBehaviour {
     [SerializeField]
     private GameObject _notEmpty;
 
-    private const string TOPIC = "gallery/{0}";
+    [Space]
+    [SerializeField]
+    private UserWebManager _userWebManager;
+
+    private const string TOPIC = "gallery_{0}";
 
     private bool CanShowPushNotificationPopup {
         get {
-            return PlayerPrefs.GetInt("PushNotificationForARMessage", 1) == 1;
+            return PlayerPrefs.GetInt("PushNotificationForARMessage" + _userWebManager?.GetUsername(), 1) == 1;
         }
         set {
-            PlayerPrefs.SetInt("PushNotificationForARMessage", value ? 1 : 0);
+            PlayerPrefs.SetInt("PushNotificationForARMessage" + _userWebManager?.GetUsername(), value ? 1 : 0);
         }
     }
 
@@ -46,11 +48,12 @@ public class GalleryWindow : MonoBehaviour {
 
             for (int i = 0; i < arMsgJSON.count; i++) {
                 ARMsgScrollItem aRMsgScrollItem = new ARMsgScrollItem(i);
-                aRMsgScrollItem.Init(arMsgJSON.results[i]);
+                aRMsgScrollItem.Init(arMsgJSON.results[i], GalleryNotificationController.IsNew(arMsgJSON.results[i]));
                 contentDatas.Add(aRMsgScrollItem);
             }
 
             _content.InitScrollContent(contentDatas);
+            GalleryNotificationController.Clear();
         } else {
             _empty.SetActive(true);
             _notEmpty.SetActive(false);
@@ -68,7 +71,7 @@ public class GalleryWindow : MonoBehaviour {
     /// Allow Notification
     /// </summary>
     public void AllowNotification() {
-        FirebaseMessaging.SubscribeAsync(string.Format(TOPIC, _userWebManager.GetUsername()));
+        FirebaseMessaging.SubscribeAsync(string.Format(TOPIC, _userWebManager?.GetUsername()));
         pushNotificationPopUp.SetActive(false);
         CanShowPushNotificationPopup = false;
     }

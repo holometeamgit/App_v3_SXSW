@@ -1,6 +1,7 @@
 using Beem.Firebase;
 using Beem.Firebase.DynamicLink;
 using Firebase.Messaging;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -8,12 +9,10 @@ using UnityEngine;
 
 namespace Beem.Firebase.CloudMessage {
 
-    //INPROGRESS: This class is in progress
-
     /// <summary>
     /// CloudMessage Controller
     /// </summary>
-    public class CloudMessageController : MonoBehaviour {
+    public class FCMController : MonoBehaviour {
 
         private const string TOPIC = "Test";
 
@@ -51,11 +50,14 @@ namespace Beem.Firebase.CloudMessage {
         }
 
         private void OnMessageReceived(object sender, MessageReceivedEventArgs e) {
-            if (e.Message.Data.ContainsKey("dl")) {
-                HelperFunctions.DevLog($"Message Deep Link: {e.Message.Data["dl"]}");
-                DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(e.Message.Data["dl"]);
-            }
-        }
 
+            if (e.Message.Data.ContainsKey("message_type")) {
+                if (e.Message.Data["message_type"] == "gallery") {
+                    GalleryNotificationController galleryNotificationController = new GalleryNotificationController();
+                    galleryNotificationController.SetData(e.Message.Data);
+                }
+            }
+
+        }
     }
 }

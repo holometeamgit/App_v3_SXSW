@@ -17,6 +17,8 @@ public class CellView : ScrollItem<ARMsgScrollItem> {
     private CanvasGroup _preview;
     [SerializeField]
     private ScreenshotView _screenshotView;
+    [SerializeField]
+    private GameObject _newObj;
 
     private List<IARMsgDataView> _arMsgDataViews;
 
@@ -24,7 +26,8 @@ public class CellView : ScrollItem<ARMsgScrollItem> {
     /// Show Cell Information
     /// </summary>
     /// <param name="data"></param>
-    public void Show(ARMsgJSON.Data data) {
+    private void Show(ARMsgJSON.Data data, bool isNew) {
+        _newObj.SetActive(isNew);
         if (data.processing_status != ARMsgJSON.Data.COMPETED_STATUS) {
             ShowPreview(false);
         } else {
@@ -42,7 +45,7 @@ public class CellView : ScrollItem<ARMsgScrollItem> {
     }
 
     protected override void InitItemData(ARMsgScrollItem item) {
-        Show(item.Data);
+        Show(item.Data, item.IsNew);
         base.InitItemData(item);
     }
 
