@@ -5,20 +5,23 @@ using UnityEngine.Events;
 /// This class fires events when swipe is detected
 /// </summary>
 public class SwipeGestureEvents : MonoBehaviour {
+    [SerializeField]
+    private bool detectSwipeOnlyAfterRelease = false;
+
     private Vector2 fingerDown;
     private Vector2 fingerUp;
-    public bool detectSwipeOnlyAfterRelease = false;
-
-    public float SWIPE_THRESHOLD = 20f;
 
     [SerializeField]
-    UnityEvent OnSwipeRighte;
+    private float SWIPE_THRESHOLD = 20f;
+
     [SerializeField]
-    UnityEvent OnSwipeLefte;
+    private UnityEvent OnSwipeRighte;
     [SerializeField]
-    UnityEvent OnSwipeUpe;
+    private UnityEvent OnSwipeLefte;
     [SerializeField]
-    UnityEvent OnSwipeDowne;
+    private UnityEvent OnSwipeUpe;
+    [SerializeField]
+    private UnityEvent OnSwipeDowne;
 
     private void Update() {
 

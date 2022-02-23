@@ -11,7 +11,7 @@ public class PnlInfoPopup : MonoBehaviour {
     private TextMeshProUGUI txtTitle;
 
     [SerializeField]
-    TextMeshProUGUI txtMessage;
+    private TextMeshProUGUI txtMessage;
 
     [SerializeField]
     private GameObject greenScreenHintGameObject;

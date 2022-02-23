@@ -9,16 +9,16 @@ using UnityEngine.UI;
 public class PnlOpenHomeMenu : MonoBehaviour {
 
     [SerializeField]
-    public UnityEvent OnShowCanvas;
+    private UnityEvent OnShowCanvas;
 
     [SerializeField]
-    public UnityEvent OnHideCanvas;
+    private UnityEvent OnHideCanvas;
 
     [SerializeField]
-    public Button btnOnEnableInvoke;
+    private Button btnOnEnableInvoke;
 
     [SerializeField]
-    public Image imgPermissionRequired;
+    private Image imgPermissionRequired;
 
     [SerializeField]
     private Canvas panelCanvas;

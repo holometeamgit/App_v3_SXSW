@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
@@ -12,27 +11,27 @@ using TMPro;
 /// </summary>
 public class ScrollRectSnapButtonHorz : MonoBehaviour {
     [SerializeField]
-    ScrollRect scrollRect;
+    private ScrollRect scrollRect;
 
     [SerializeField]
-    Button[] buttons;
+    private Button[] buttons;
 
     [SerializeField]
-    float transitionSpeed = 0.25f;
+    private float transitionSpeed = 0.25f;
 
     [SerializeField]
-    Color selectedButtonColor;
+    private Color selectedButtonColor;
 
     [SerializeField]
-    float scaleUpFactor = 1.5f;
+    private float scaleUpFactor = 1.5f;
 
-    float segmentSectionSize;
+    private float segmentSectionSize;
 
-    int currentRegisteredIndex;
+    private int currentRegisteredIndex;
 
-    Color previousTextColor;
-    int previousIndex = -1;
-    bool originalColorAssigned;
+    private Color previousTextColor;
+    private int previousIndex = -1;
+    private bool originalColorAssigned;
 
     private void Awake() {
 
