@@ -132,8 +132,8 @@ public class DeepLinkStreamPopup : UIThumbnail {
     private void PlayPrerecorded(StreamJsonData.Data data) { //TODO split it to other class
         _permissionController.CheckCameraMicAccess(() => {
             DeepLinkStreamConstructor.OnHide?.Invoke();
+            ARMsgRecordConstructor.OnActivated(false);
             MenuConstructor.OnActivated?.Invoke(false);
-            HomeScreenConstructor.OnActivated?.Invoke(false);
             SettingsConstructor.OnActivated?.Invoke(false);
             ARenaConstructor.onActivateForPreRecorded?.Invoke(data, false);
             PrerecordedVideoConstructor.OnActivated?.Invoke(data);
