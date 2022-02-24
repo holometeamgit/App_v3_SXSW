@@ -28,7 +28,6 @@ namespace Beem.UI {
         public void Open() {
             _permissionController.CheckCameraMicAccess(() => {
                 MenuConstructor.OnActivated?.Invoke(false);
-                HomeScreenConstructor.OnActivated?.Invoke(false);
                 SettingsConstructor.OnActivated?.Invoke(false);
                 ARMsgRecordConstructor.OnActivated?.Invoke(false);
                 ARenaConstructor.onActivateForARMessaging?.Invoke(_arMsgData);

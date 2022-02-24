@@ -511,7 +511,6 @@ public class FocusSquareV2 : PlacementHandler {
         return _btnCloseStreamOverlay.activeInHierarchy ||
                _btnCloseARMessaging.activeInHierarchy ||
                _btnClosePrerecordedVideo.activeInHierarchy;
-
     }
 
     private bool IsAllButtonsCloseNotActive() {
