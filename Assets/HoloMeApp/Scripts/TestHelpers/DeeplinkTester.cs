@@ -37,15 +37,4 @@ public class DeeplinkTester : MonoBehaviour {
 
         StreamCallBacks.onRoomDataReceived?.Invoke(roomJsonData);
     }
-
-    //see popup -> click open -> wait 5 sec -> close stream -> you will see close popup
-    [ContextMenu("send that room was close ")]
-    private void TestClosedRoomEvent() {
-        TestOnlineRoomData();
-
-        TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task.Delay(5000).ContinueWith(task => {
-            StreamCallBacks.onRoomClosed?.Invoke();
-        }, taskScheduler);
-    }
 }

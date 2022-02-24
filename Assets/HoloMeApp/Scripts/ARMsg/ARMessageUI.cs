@@ -25,8 +25,13 @@ public class ARMessageUI : MonoBehaviour {
     /// Close ARMessage Steps
     /// </summary>
     public void CloseARMessageSteps() {
-        MenuConstructor.OnActivated?.Invoke(true);
-        //HomeScreenConstructor.OnActivated?.Invoke(true);
+        CallBacks.OnCancelAllARMsgActions?.Invoke();
+        MenuConstructor.OnActivateCanvas?.Invoke(true);
         ARMsgRecordConstructor.OnActivated?.Invoke(false);
+        ARMsgRecordConstructor.OnActivated?.Invoke(true);
+    }
+
+    public void ShowInfoPopupBeemMe() {
+        InfoPopupConstructor.onActivate("HOW TO RECORD \n YOUR HOLOGRAM \n MESSAGE", false, new Color(240f / 255f, 189f / 255f, 130f / 255f));
     }
 }

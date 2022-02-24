@@ -5,23 +5,25 @@ using UnityEngine.Events;
 /// This class fires events when swipe is detected
 /// </summary>
 public class SwipeGestureEvents : MonoBehaviour {
+    [SerializeField]
+    private bool detectSwipeOnlyAfterRelease = false;
+
     private Vector2 fingerDown;
     private Vector2 fingerUp;
-    public bool detectSwipeOnlyAfterRelease = false;
-
-    public float SWIPE_THRESHOLD = 20f;
 
     [SerializeField]
-    UnityEvent OnSwipeRighte;
-    [SerializeField]
-    UnityEvent OnSwipeLefte;
-    [SerializeField]
-    UnityEvent OnSwipeUpe;
-    [SerializeField]
-    UnityEvent OnSwipeDowne;
+    private float SWIPE_THRESHOLD = 20f;
 
-    // Update is called once per frame
-    void Update() {
+    [SerializeField]
+    private UnityEvent OnSwipeRighte;
+    [SerializeField]
+    private UnityEvent OnSwipeLefte;
+    [SerializeField]
+    private UnityEvent OnSwipeUpe;
+    [SerializeField]
+    private UnityEvent OnSwipeDowne;
+
+    private void Update() {
 
         foreach (Touch touch in Input.touches) {
             if (touch.phase == TouchPhase.Began) {
@@ -45,7 +47,7 @@ public class SwipeGestureEvents : MonoBehaviour {
         }
     }
 
-    void CheckSwipe() {
+    private void CheckSwipe() {
         //Check if Vertical swipe
         if (VerticalMove() > SWIPE_THRESHOLD && VerticalMove() > HorizontalValMove()) {
 
@@ -73,30 +75,30 @@ public class SwipeGestureEvents : MonoBehaviour {
         }
     }
 
-    float VerticalMove() {
+    private float VerticalMove() {
         return Mathf.Abs(fingerDown.y - fingerUp.y);
     }
 
-    float HorizontalValMove() {
+    private float HorizontalValMove() {
         return Mathf.Abs(fingerDown.x - fingerUp.x);
     }
 
-    void OnSwipeUp() {
+    private void OnSwipeUp() {
         Debug.Log("Swipe UP");
         OnSwipeUpe?.Invoke();
     }
 
-    void OnSwipeDown() {
+    private void OnSwipeDown() {
         Debug.Log("Swipe Down");
         OnSwipeDowne?.Invoke();
     }
 
-    void OnSwipeLeft() {
+    private void OnSwipeLeft() {
         Debug.Log("Swipe Left");
         OnSwipeLefte?.Invoke();
     }
 
-    void OnSwipeRight() {
+    private void OnSwipeRight() {
         Debug.Log("Swipe Right");
         OnSwipeRighte?.Invoke();
     }

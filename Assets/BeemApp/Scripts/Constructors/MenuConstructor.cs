@@ -21,6 +21,9 @@ public class MenuConstructor : WindowConstructor {
         OnActivateCanvas -= ActivateCanvas;
     }
 
+    /// <summary>
+    /// Enable of disable the canvas for this menu
+    /// </summary>
     public void ActivateCanvas(bool status) {
         if (!status)
             pnlOpenHomeMenu.HideCanvas();
@@ -29,8 +32,6 @@ public class MenuConstructor : WindowConstructor {
     }
 
     protected void Activate(bool status) {
-        print("MENU ACTIVATED");
-
         _window.SetActive(status);
         ActivateCanvas(status);
     }

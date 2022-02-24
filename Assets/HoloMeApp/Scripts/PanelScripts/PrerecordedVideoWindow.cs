@@ -133,7 +133,6 @@ public class PrerecordedVideoWindow : MonoBehaviour {
     public void Close() {
         RecordARConstructor.OnActivated?.Invoke(false);
         MenuConstructor.OnActivated?.Invoke(true);
-        HomeScreenConstructor.OnActivated?.Invoke(true);
         ARenaConstructor.onDeactivate?.Invoke();
         PrerecordedVideoConstructor.OnDeactivated?.Invoke();
     }
