@@ -33,8 +33,9 @@ public class ARMsgReadyInterrupter : MonoBehaviour, IARMsgDataView {
             "Copy link and exit", "Share",
             () => {
                 GUIUtility.systemCopyBuffer = currentData.share_link;
-                MenuConstructor.OnActivated?.Invoke(true);
+                MenuConstructor.OnActivateCanvas?.Invoke(true);
                 ARMsgRecordConstructor.OnActivated?.Invoke(false);
+                ARMsgRecordConstructor.OnActivated?.Invoke(true);
                 CallBacks.OnCancelAllARMsgActions?.Invoke();
 
             }, () => {
