@@ -16,7 +16,6 @@ public class ARMessageBtn : MonoBehaviour {
     public void Open() {
         _permissionController.CheckCameraMicAccess(() => {
             StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
-            ARMessageTutorialConstructor.OnActivated?.Invoke(false);
             ARMsgRecordConstructor.OnActivated?.Invoke(true);
         });
     }

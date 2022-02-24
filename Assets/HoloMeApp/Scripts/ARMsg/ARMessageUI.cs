@@ -25,8 +25,10 @@ public class ARMessageUI : MonoBehaviour {
     /// Close ARMessage Steps
     /// </summary>
     public void CloseARMessageSteps() {
-        MenuConstructor.OnActivated?.Invoke(true);
+        CallBacks.OnCancelAllARMsgActions?.Invoke();
+        MenuConstructor.OnActivateCanvas?.Invoke(true);
         ARMsgRecordConstructor.OnActivated?.Invoke(false);
+        ARMsgRecordConstructor.OnActivated?.Invoke(true);
     }
 
     public void ShowInfoPopupBeemMe() {
