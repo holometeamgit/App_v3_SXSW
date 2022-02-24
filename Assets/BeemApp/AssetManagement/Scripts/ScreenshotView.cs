@@ -17,28 +17,14 @@ public class ScreenshotView : MonoBehaviour {
     [SerializeField]
     private RawImage _image;
     [SerializeField]
-    private RectTransform _rectTransform;
-    [SerializeField]
     private int _maxHeight = 345;
 
     private CancellationTokenSource cancelTokenSource;
-    //private RenderTexture rt;
-    private int videoWidth;
-    private int videoHeight;
 
     private const int DELAY = 1000;
 
     private Action _onSuccess;
     private Action _onFailed;
-
-    /*private void Init() {
-        if (rt == null) {
-            rt = new RenderTexture(_maxHeight, _maxHeight, 16, RenderTextureFormat.ARGB32);
-            rt.Create();
-            _videoPlayer.targetTexture = rt;
-            _image.texture = rt;
-        }
-    }*/
 
     /// <summary>
     /// Shot Preview
@@ -77,18 +63,10 @@ public class ScreenshotView : MonoBehaviour {
 
         _image.texture = _videoPlayer.texture;
 
-        HelperFunctions.DevLogError($"width = {_videoPlayer.width}, height = {_videoPlayer.height}");
-        HelperFunctions.DevLogError($"pixelAspectRatioNumerator = {_videoPlayer.pixelAspectRatioNumerator}, pixelAspectRatioDenominator = {_videoPlayer.pixelAspectRatioDenominator}");
-
-        AgoraSharedVideoConfig.GetResolution(screenWidth: (int)_videoPlayer.pixelAspectRatioNumerator, screenHeigh: (int)_videoPlayer.pixelAspectRatioDenominator, out videoWidth, out videoHeight, _maxHeight);
-        _rectTransform.sizeDelta = new Vector2(videoWidth, videoHeight);
         _videoPlayer.Play();
         if (!cancellationToken.IsCancellationRequested) {
             await Task.Delay(DELAY);
         }
-
-        HelperFunctions.DevLogError($"2width = {_videoPlayer.width}, height = {_videoPlayer.height}");
-        HelperFunctions.DevLogError($"2pixelAspectRatioNumerator = {_videoPlayer.pixelAspectRatioNumerator}, pixelAspectRatioDenominator = {_videoPlayer.pixelAspectRatioDenominator}");
 
         _videoPlayer.Pause();
     }
