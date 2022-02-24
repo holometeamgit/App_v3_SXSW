@@ -16,8 +16,6 @@ public class ScreenshotView : MonoBehaviour {
     private VideoPlayer _videoPlayer;
     [SerializeField]
     private RawImage _image;
-    [SerializeField]
-    private int _maxHeight = 345;
 
     private CancellationTokenSource cancelTokenSource;
 
@@ -33,8 +31,6 @@ public class ScreenshotView : MonoBehaviour {
     /// <param name="onSuccess"></param>
     /// <param name="onFail"></param>
     public void Show(ARMsgJSON.Data data, Action onSuccess, Action onFail) {
-        //Init();
-
         _videoPlayer.url = data.ar_message_s3_link;
         _onSuccess = onSuccess;
         _onFailed = onFail;
