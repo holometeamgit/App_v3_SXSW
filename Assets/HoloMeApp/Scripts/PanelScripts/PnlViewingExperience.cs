@@ -168,6 +168,5 @@ public class PnlViewingExperience : MonoBehaviour {
         _hologramHandler.StopVideo();
         FadeOutCanvas();
         MenuConstructor.OnActivated?.Invoke(true);
-        HomeScreenConstructor.OnActivated?.Invoke(true);
     }
 }

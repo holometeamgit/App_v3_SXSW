@@ -152,6 +152,20 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         initialised = true;
     }
 
+    /// <summary>
+    /// Show the info popup for stadium
+    /// </summary>
+    public void ShowInfoPopupStadium() {
+        InfoPopupConstructor.onActivate("HOW TO BROADCAST \n IN STADIUM", true, new Color(142f / 255f, 196f / 255f, 246f / 255f));
+    }
+
+    /// <summary>
+    /// Show the info popup for room
+    /// </summary>
+    public void ShowInfoPopupRoom() {
+        InfoPopupConstructor.onActivate("HOW TO USE \n MY ROOM", true, new Color(131f / 255f, 168f / 255f, 240f / 255f));
+    }
+
     private void OnEnable() {
         txtCentreMessage.text = string.Empty;
         CentreMessage.localScale = Vector3.zero;
@@ -236,10 +250,18 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     public void OpenAsStreamer() {
+        if (!_userWebManager.CanGoLive()) {
+            ShowPremiumRequiredMessage();
+        }
+
         Init();
         currentStreamId = "";
         _agoraController.IsRoom = false;
         StreamerOpenSharedFunctions();
+    }
+
+    private void ShowPremiumRequiredMessage() {
+        InfoPopupConstructor.onActivateAsMessage("PREMIUM FEATURE", "Please get in contact with us \n to explore Beeming live to \nthousands of people", new Color(142f / 255f, 196f / 255f, 246f / 255f));
     }
 
     /// <summary>
@@ -261,18 +283,19 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         ARConstructor.onActivated?.Invoke(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
 
-        ToggleLocalAudio(false);
-        ToggleVideo(false);
+        _agoraController.ToggleLocalAudio(false);
+        _agoraController.ToggleVideo(false);
         isPushToTalkActive = false;
 
         StartCoroutine(OnPreviewReady());
         _agoraController.StartPreview();
         RefreshControls();
+        AnimatedFadeOutMessage();
     }
 
     public void OpenAsViewer(string channelName, string streamID, bool isRoom) {
         Init();
-        ToggleLocalAudio(true);
+        _agoraController.ToggleLocalAudio(true);
         lastPauseStatusMessageReceived = string.Empty;
         lastPushToTalkStatusMessageReceived = string.Empty;
         _agoraController.IsChannelCreator = false;
@@ -311,11 +334,16 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         else if (isChannelCreator)
             WarningConstructor.ActivateDoubleButton("End the live stream?",
                 "Closing this page will end the live stream and disconnect your users.",
-                onButtonOnePress: () => { CloseAsStreamer(); });
+                onButtonOnePress: () => { DeactivateLive(); });
         else
             WarningConstructor.ActivateDoubleButton("Disconnect from live stream?",
                 "Closing this page will disconnect you from the live stream",
                 onButtonOnePress: () => { CloseAsViewer(); });
+    }
+
+    private void DeactivateLive() {
+        StopStream();
+        MenuConstructor.OnActivated?.Invoke(true);
     }
 
     public void CloseAsStreamer() {
@@ -323,7 +351,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         _agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         StreamOverlayConstructor.onDeactivate?.Invoke();
-        HomeScreenConstructor.OnActivated?.Invoke(true);
         MenuConstructor.OnActivated?.Invoke(true);
         RecordARConstructor.OnActivated?.Invoke(false);
     }
@@ -338,7 +365,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private void CloseAsViewer() {
         StopStream();
         StreamOverlayConstructor.onDeactivate?.Invoke();
-        HomeScreenConstructor.OnActivated?.Invoke(true);
         MenuConstructor.OnActivated?.Invoke(true);
         RecordARConstructor.OnActivated?.Invoke(false);
     }
@@ -612,6 +638,12 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     /// Starts the stream, use countdown coroutine to start with delay
     /// </summary>
     public void StartStream() {
+        if (!_userWebManager.CanGoLive() && !_agoraController.IsRoom) {
+            ShowPremiumRequiredMessage();
+            return;
+        }
+
+        MenuConstructor.OnActivateCanvas(false);
         TogglePreLiveControls(false);
         _agoraController.JoinOrCreateChannel(true);
         RefreshControls(); //Is this call actually needed?
@@ -642,14 +674,10 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         videoSurface.SetEnable(true);
         cameraRenderImage.color = Color.black;
 
-        if (!_agoraController.VideoIsReady || cameraRenderImage.texture == null)
-            AnimatedCentreTextMessage("Loading Preview");
-
         while (!_agoraController.VideoIsReady || cameraRenderImage.texture == null) {
             yield return null;
         }
-        //yield return new WaitForSeconds(3);
-        AnimatedFadeOutMessage();
+
         cameraRenderImage.color = Color.white;
         cameraRenderImage.SizeToParent();
     }

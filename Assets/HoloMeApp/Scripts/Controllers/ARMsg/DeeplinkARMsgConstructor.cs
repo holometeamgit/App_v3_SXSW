@@ -40,7 +40,6 @@ public class DeeplinkARMsgConstructor : MonoBehaviour {
     private void ActivateData(ARMsgJSON.Data data) {
         _permissionController.CheckCameraMicAccess(() => {
             MenuConstructor.OnActivated?.Invoke(false);
-            HomeScreenConstructor.OnActivated?.Invoke(false);
             SettingsConstructor.OnActivated?.Invoke(false);
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
             ARenaConstructor.onActivateForARMessaging?.Invoke(data);
