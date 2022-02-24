@@ -60,8 +60,6 @@ public class DeepLinkRoomPopup : MonoBehaviour {
         _permissionController.CheckCameraMicAccess(() => {
             DeepLinkRoomConstructor.OnHide?.Invoke();
             MenuConstructor.OnActivated?.Invoke(false);
-            HomeScreenConstructor.OnActivated?.Invoke(false);
-            SettingsConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onActivatedAsViewer?.Invoke(_data.agora_channel, _data.id, true);
             PnlRecord.CurrentUser = _data.user;
         });
