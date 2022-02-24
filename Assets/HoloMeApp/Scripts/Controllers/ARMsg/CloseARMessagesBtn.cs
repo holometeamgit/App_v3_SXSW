@@ -23,7 +23,6 @@ namespace Beem.UI {
                ARMsgARenaConstructor.OnDeactivatedARena?.Invoke();
                ARenaConstructor.onDeactivate?.Invoke();
                MenuConstructor.OnActivated?.Invoke(true);
-               HomeScreenConstructor.OnActivated?.Invoke(true);
            },
            null,
            false);

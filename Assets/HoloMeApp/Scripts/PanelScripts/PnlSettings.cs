@@ -63,7 +63,6 @@ public class PnlSettings : MonoBehaviour {
     private void UserLogOut() {
         WelcomeConstructor.OnActivated?.Invoke(true);
         MenuConstructor.OnActivated?.Invoke(false);
-        HomeScreenConstructor.OnActivated?.Invoke(false);
         SettingsConstructor.OnActivated?.Invoke(false);
         _accountManager.LogOut();
     }

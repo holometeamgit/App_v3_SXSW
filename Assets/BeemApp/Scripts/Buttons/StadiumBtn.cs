@@ -16,7 +16,7 @@ public class StadiumBtn : MonoBehaviour {
 
         _permissionController.CheckCameraMicAccess(() => {
             SettingsConstructor.OnActivated?.Invoke(false);
-            HomeScreenConstructor.OnActivated?.Invoke(false);
+            ARMsgRecordConstructor.OnActivated?.Invoke(false);
             StreamCallBacks.onCloseComments?.Invoke();
             StreamOverlayConstructor.onActivatedAsStadiumBroadcaster?.Invoke();
             AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyGoLive, new Dictionary<string, string>() { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID } });

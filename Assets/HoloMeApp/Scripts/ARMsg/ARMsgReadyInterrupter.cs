@@ -34,7 +34,6 @@ public class ARMsgReadyInterrupter : MonoBehaviour, IARMsgDataView {
             () => {
                 GUIUtility.systemCopyBuffer = currentData.share_link;
                 MenuConstructor.OnActivated?.Invoke(true);
-                HomeScreenConstructor.OnActivated?.Invoke(true);
                 ARMsgRecordConstructor.OnActivated?.Invoke(false);
                 CallBacks.OnCancelAllARMsgActions?.Invoke();
 

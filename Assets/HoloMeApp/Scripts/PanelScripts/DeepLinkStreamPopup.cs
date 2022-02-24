@@ -118,7 +118,6 @@ public class DeepLinkStreamPopup : UIThumbnail {
         _permissionController.CheckCameraMicAccess(() => {
             DeepLinkStreamConstructor.OnHide?.Invoke();
             MenuConstructor.OnActivated?.Invoke(false);
-            HomeScreenConstructor.OnActivated?.Invoke(false);
             SettingsConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onActivatedAsViewer?.Invoke(data.agora_channel, data.id.ToString(), false);
             PnlRecord.CurrentUser = data.user;
@@ -149,7 +148,6 @@ public class DeepLinkStreamPopup : UIThumbnail {
         _permissionController.CheckCameraMicAccess(() => {
             DeepLinkStreamConstructor.OnHide?.Invoke();
             MenuConstructor.OnActivated?.Invoke(false);
-            HomeScreenConstructor.OnActivated?.Invoke(false);
             SettingsConstructor.OnActivated?.Invoke(false);
             ARenaConstructor.onActivateForPreRecorded?.Invoke(data, data.HasTeaser);
             PrerecordedVideoConstructor.OnActivated?.Invoke(data);
