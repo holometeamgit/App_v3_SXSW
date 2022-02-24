@@ -22,23 +22,23 @@ public class ScreenshotView : MonoBehaviour {
     private int _maxHeight = 345;
 
     private CancellationTokenSource cancelTokenSource;
-    private RenderTexture rt;
+    //private RenderTexture rt;
     private int videoWidth;
     private int videoHeight;
 
-    private const int DELAY = 100;
+    private const int DELAY = 1000;
 
     private Action _onSuccess;
     private Action _onFailed;
 
-    private void Init() {
+    /*private void Init() {
         if (rt == null) {
             rt = new RenderTexture(_maxHeight, _maxHeight, 16, RenderTextureFormat.ARGB32);
             rt.Create();
             _videoPlayer.targetTexture = rt;
             _image.texture = rt;
         }
-    }
+    }*/
 
     /// <summary>
     /// Shot Preview
@@ -47,7 +47,7 @@ public class ScreenshotView : MonoBehaviour {
     /// <param name="onSuccess"></param>
     /// <param name="onFail"></param>
     public void Show(ARMsgJSON.Data data, Action onSuccess, Action onFail) {
-        Init();
+        //Init();
 
         _videoPlayer.url = data.ar_message_s3_link;
         _onSuccess = onSuccess;
@@ -58,11 +58,7 @@ public class ScreenshotView : MonoBehaviour {
         cancelTokenSource = new CancellationTokenSource();
         if (!_videoPlayer.isPrepared) {
             _onFailed?.Invoke();
-            _videoPlayer.prepareCompleted +=
-                (player) => {
-                    _onSuccess?.Invoke();
-                    UpdatePreview();
-                };
+            _videoPlayer.prepareCompleted += Prepare;
             _videoPlayer.Prepare();
         } else {
             _onSuccess?.Invoke();
@@ -70,15 +66,31 @@ public class ScreenshotView : MonoBehaviour {
         }
     }
 
+    private void Prepare(VideoPlayer video) {
+        _onSuccess?.Invoke();
+        UpdatePreview();
+        _videoPlayer.prepareCompleted -= Prepare;
+    }
+
     private async void UpdatePreview() {
         CancellationToken cancellationToken = cancelTokenSource.Token;
+
+        _image.texture = _videoPlayer.texture;
+
+        HelperFunctions.DevLogError($"width = {_videoPlayer.width}, height = {_videoPlayer.height}");
+        HelperFunctions.DevLogError($"pixelAspectRatioNumerator = {_videoPlayer.pixelAspectRatioNumerator}, pixelAspectRatioDenominator = {_videoPlayer.pixelAspectRatioDenominator}");
+
         AgoraSharedVideoConfig.GetResolution(screenWidth: (int)_videoPlayer.pixelAspectRatioNumerator, screenHeigh: (int)_videoPlayer.pixelAspectRatioDenominator, out videoWidth, out videoHeight, _maxHeight);
         _rectTransform.sizeDelta = new Vector2(videoWidth, videoHeight);
         _videoPlayer.Play();
         if (!cancellationToken.IsCancellationRequested) {
             await Task.Delay(DELAY);
         }
-        _videoPlayer.Stop();
+
+        HelperFunctions.DevLogError($"2width = {_videoPlayer.width}, height = {_videoPlayer.height}");
+        HelperFunctions.DevLogError($"2pixelAspectRatioNumerator = {_videoPlayer.pixelAspectRatioNumerator}, pixelAspectRatioDenominator = {_videoPlayer.pixelAspectRatioDenominator}");
+
+        _videoPlayer.Pause();
     }
 
     /// <summary>
