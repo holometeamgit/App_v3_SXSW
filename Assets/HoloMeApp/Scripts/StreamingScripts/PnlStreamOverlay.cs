@@ -283,18 +283,19 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         ARConstructor.onActivated?.Invoke(false);
         cameraRenderImage.transform.parent.gameObject.SetActive(true);
 
-        ToggleLocalAudio(false);
-        ToggleVideo(false);
+        _agoraController.ToggleLocalAudio(false);
+        _agoraController.ToggleVideo(false);
         isPushToTalkActive = false;
 
         StartCoroutine(OnPreviewReady());
         _agoraController.StartPreview();
         RefreshControls();
+        AnimatedFadeOutMessage();
     }
 
     public void OpenAsViewer(string channelName, string streamID, bool isRoom) {
         Init();
-        ToggleLocalAudio(true);
+        _agoraController.ToggleLocalAudio(true);
         lastPauseStatusMessageReceived = string.Empty;
         lastPushToTalkStatusMessageReceived = string.Empty;
         _agoraController.IsChannelCreator = false;
@@ -673,14 +674,10 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         videoSurface.SetEnable(true);
         cameraRenderImage.color = Color.black;
 
-        if (!_agoraController.VideoIsReady || cameraRenderImage.texture == null)
-            AnimatedCentreTextMessage("Loading Preview");
-
         while (!_agoraController.VideoIsReady || cameraRenderImage.texture == null) {
             yield return null;
         }
-        //yield return new WaitForSeconds(3);
-        AnimatedFadeOutMessage();
+
         cameraRenderImage.color = Color.white;
         cameraRenderImage.SizeToParent();
     }
