@@ -64,10 +64,6 @@ namespace Beem.Permissions {
         /// <returns></returns>
         public void CheckCameraAccess(Action onSuccessed, Action onFailed = null) {
 
-#if UNITY_EDITOR
-            onSuccessed.Invoke();
-#else
-
             if (_permissionGranter.HasCameraAccess) {
                 onSuccessed.Invoke();
                 return;
@@ -87,7 +83,6 @@ namespace Beem.Permissions {
                     onFailed?.Invoke();
                 }
             }); ;
-#endif
         }
 
         /// <summary>
@@ -96,10 +91,6 @@ namespace Beem.Permissions {
         /// <returns></returns>
 
         public void CheckMicAccess(Action onSuccessed, Action onFailed = null) {
-
-#if UNITY_EDITOR
-            onSuccessed.Invoke();
-#else
 
             if (_permissionGranter.HasMicAccess) {
                 onSuccessed.Invoke();
@@ -120,7 +111,6 @@ namespace Beem.Permissions {
                     onFailed?.Invoke();
                 }
             }); ;
-#endif
         }
 
         private void OpenNotification(string accessName, Action onClosed) {
