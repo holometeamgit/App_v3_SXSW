@@ -17,10 +17,10 @@ public class ScreenshotView : MonoBehaviour {
     private VideoPlayer _videoPlayer;
     [SerializeField]
     private RawImage _image;
-    [SerializeField]
-    private Material _customMaterial;
+    //[SerializeField]
+    //private Material _customMaterial;
 
-    private Material _currentMaterial;
+    //private Material _currentMaterial;
     private CancellationTokenSource _cancelTokenSource;
     private ARMsgJSON.Data _data;
     private Action _onSuccess;
@@ -69,11 +69,11 @@ public class ScreenshotView : MonoBehaviour {
 
         _image.texture = _videoPlayer.texture;
 
-        if (_currentMaterial == null) {
-            _currentMaterial = Instantiate(_customMaterial);
-        }
+        //if (_currentMaterial == null) {
+        //    _currentMaterial = Instantiate(_customMaterial);
+        //}
 
-        _image.material = _currentMaterial;
+        //_image.material = _currentMaterial;
 
         _videoPlayer.Play();
         if (!cancellationToken.IsCancellationRequested) {
