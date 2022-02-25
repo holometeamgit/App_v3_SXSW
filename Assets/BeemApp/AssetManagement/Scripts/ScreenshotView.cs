@@ -80,7 +80,7 @@ public class ScreenshotView : MonoBehaviour {
             await Task.Delay(DELAY);
         }
 
-        //_videoPlayer.Pause();
+        _videoPlayer.Pause();
     }
 
     /// <summary>
