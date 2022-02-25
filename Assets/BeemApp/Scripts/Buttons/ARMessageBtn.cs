@@ -8,15 +8,11 @@ using UnityEngine;
 /// </summary>
 public class ARMessageBtn : MonoBehaviour {
 
-    private PermissionController _permissionController = new PermissionController();
-
     /// <summary>
     /// Open Btn
     /// </summary>
     public void Open() {
-        _permissionController.CheckCameraMicAccess(() => {
-            StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
-            ARMsgRecordConstructor.OnActivated?.Invoke(true);
-        });
+        StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
+        ARMsgRecordConstructor.OnActivated?.Invoke(true);
     }
 }

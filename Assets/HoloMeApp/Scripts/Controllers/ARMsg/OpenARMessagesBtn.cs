@@ -16,8 +16,6 @@ namespace Beem.UI {
 
         private ARMsgJSON.Data _arMsgData = default;
 
-        private PermissionController _permissionController = new PermissionController();
-
         public void Init(ARMsgJSON.Data arMsgData) {
             _arMsgData = arMsgData;
         }
@@ -26,14 +24,12 @@ namespace Beem.UI {
         /// Open AR Messages
         /// </summary>
         public void Open() {
-            _permissionController.CheckCameraMicAccess(() => {
-                MenuConstructor.OnActivated?.Invoke(false);
-                ARMsgRecordConstructor.OnActivated?.Invoke(false);
-                ARenaConstructor.onActivateForARMessaging?.Invoke(_arMsgData);
-                ARMsgARenaConstructor.OnActivatedARena?.Invoke(_arMsgData);
-                CallBacks.OnCancelAllARMsgActions?.Invoke();
-                PnlRecord.CurrentUser = _arMsgData.user;
-            });
+            MenuConstructor.OnActivated?.Invoke(false);
+            ARMsgRecordConstructor.OnActivated?.Invoke(false);
+            ARenaConstructor.onActivateForARMessaging?.Invoke(_arMsgData);
+            ARMsgARenaConstructor.OnActivatedARena?.Invoke(_arMsgData);
+            CallBacks.OnCancelAllARMsgActions?.Invoke();
+            PnlRecord.CurrentUser = _arMsgData.user;
         }
     }
 }

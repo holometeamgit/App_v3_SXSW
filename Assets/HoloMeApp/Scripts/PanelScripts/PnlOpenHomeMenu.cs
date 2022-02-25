@@ -1,4 +1,5 @@
 using Beem.Permissions;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -23,12 +24,21 @@ public class PnlOpenHomeMenu : MonoBehaviour {
     [SerializeField]
     private ScrollRectSnapButtonHorz scrollRectSnapButtonHorz;
 
-    private PermissionController permissionController = new PermissionController();
+    private PermissionController _permissionController = new PermissionController();
+
+
+    private const int DELAY = 10000;
 
     private void OnEnable() {
         btnOnEnableInvoke?.onClick?.Invoke();
-        permissionController.CheckCameraMicAccess(() => imgPermissionRequired.gameObject.SetActive(false), () => imgPermissionRequired.gameObject.SetActive(true));
+        imgPermissionRequired.gameObject.SetActive(true);
+        _permissionController.CheckCameraMicAccess(() => imgPermissionRequired.gameObject.SetActive(false), () => RecheckPermission());
         OnShowCanvas?.Invoke();
+    }
+
+    private async void RecheckPermission() {
+        await Task.Delay(DELAY);
+        _permissionController.CheckCameraMicAccess(() => imgPermissionRequired.gameObject.SetActive(false), () => RecheckPermission());
     }
 
     private void OnDisable() {
