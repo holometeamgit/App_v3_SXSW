@@ -92,7 +92,6 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     /// </summary>
     public void ChangePasswordToSettings() {
         ChangePasswordConstructor.OnActivated?.Invoke(false);
-        SettingsConstructor.OnActivated?.Invoke(true);
     }
 
     private void OnDisable() {

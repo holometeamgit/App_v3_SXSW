@@ -40,12 +40,13 @@ public class GalleryWindow : MonoBehaviour {
     public void Show(ARMsgJSON arMsgJSON) {
         gameObject.SetActive(true);
         pushNotificationPopUp.SetActive(CanShowPushNotificationPopup);
+
         if (arMsgJSON.count > 0) {
             _empty.SetActive(false);
             _notEmpty.SetActive(true);
 
             List<ScrollItemData> contentDatas = new List<ScrollItemData>();
-
+            arMsgJSON.results.Sort((x, y) => x.processing_status.CompareTo(y.processing_status));
             for (int i = 0; i < arMsgJSON.count; i++) {
                 ARMsgScrollItem aRMsgScrollItem = new ARMsgScrollItem(i);
                 aRMsgScrollItem.Init(arMsgJSON.results[i], GalleryNotificationController.IsNew(arMsgJSON.results[i]));

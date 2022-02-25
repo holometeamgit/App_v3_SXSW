@@ -14,9 +14,7 @@ public class RoomTutorialBtn : MonoBehaviour {
     /// </summary>
     public void Open() {
         _permissionController.CheckCameraMicAccess(() => {
-            SettingsConstructor.OnActivated?.Invoke(false);
             MenuConstructor.OnActivated?.Invoke(false);
-            StreamCallBacks.onCloseComments?.Invoke();
             RoomTutorialConstructor.OnActivated?.Invoke(true);
             AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyGoLive, new Dictionary<string, string>() { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID } });
         });

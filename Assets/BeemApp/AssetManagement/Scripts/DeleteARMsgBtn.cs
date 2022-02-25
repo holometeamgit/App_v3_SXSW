@@ -14,7 +14,7 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
     private WebRequestHandler GetWebRequestHandler {
         get {
 
-            if (_webRequestHandler = null) {
+            if (_webRequestHandler == null) {
                 _webRequestHandler = FindObjectOfType<WebRequestHandler>();
             }
 
@@ -22,12 +22,27 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
         }
     }
 
+    private UserWebManager _userWebManager;
+
+    private UserWebManager GetUserWebManager {
+        get {
+
+            if (_userWebManager == null) {
+                _userWebManager = FindObjectOfType<UserWebManager>();
+            }
+
+            return _userWebManager;
+        }
+    }
+
     private DeleteARMsgController _deleteARMsgController;
+    private GalleryController _galleryController;
 
     private ARMsgJSON.Data currentData;
 
     private void Start() {
         _deleteARMsgController = new DeleteARMsgController(_arMsgAPIScriptableObject, GetWebRequestHandler);
+        _galleryController = new GalleryController(_arMsgAPIScriptableObject, GetWebRequestHandler);
     }
 
     /// <summary>
@@ -42,13 +57,20 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
     }
 
     private void OnSuccess() {
+        _galleryController.GetAllArMessages(onSuccess: Show);
+    }
+
+    private void Show(ARMsgJSON data) {
         ARMsgARenaConstructor.OnDeactivatedARena?.Invoke();
         ARenaConstructor.onDeactivate?.Invoke();
-        MenuConstructor.OnActivated?.Invoke(true);
-        HomeScreenConstructor.OnActivated?.Invoke(true);
+
+        GalleryConstructor.OnShow?.Invoke(data);
     }
 
     public void Init(ARMsgJSON.Data data) {
         currentData = data;
+        if (currentData.user != GetUserWebManager.GetUsername()) {
+            gameObject.SetActive(false);
+        }
     }
 }

@@ -6,7 +6,9 @@ using UnityEngine;
 /// Settings Btn
 /// </summary>
 public class SettingsBtn : MonoBehaviour {
+    [SerializeField]
+    private bool isOpened;
     public void OnClick() {
-        SettingsConstructor.OnActivated?.Invoke(true);
+        SettingsConstructor.OnActivated?.Invoke(isOpened);
     }
 }

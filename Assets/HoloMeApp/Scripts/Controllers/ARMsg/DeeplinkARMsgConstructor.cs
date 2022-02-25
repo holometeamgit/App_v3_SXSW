@@ -40,8 +40,8 @@ public class DeeplinkARMsgConstructor : MonoBehaviour {
     private void ActivateData(ARMsgJSON.Data data) {
         _permissionController.CheckCameraMicAccess(() => {
             MenuConstructor.OnActivated?.Invoke(false);
-            SettingsConstructor.OnActivated?.Invoke(false);
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
+            StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
             ARenaConstructor.onActivateForARMessaging?.Invoke(data);
             ARMsgARenaConstructor.OnActivatedARena?.Invoke(data);
             PnlRecord.CurrentUser = data.user;

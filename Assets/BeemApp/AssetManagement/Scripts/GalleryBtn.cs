@@ -17,7 +17,7 @@ public class GalleryBtn : MonoBehaviour {
     private WebRequestHandler GetWebRequestHandler {
         get {
 
-            if (_webRequestHandler = null) {
+            if (_webRequestHandler == null) {
                 _webRequestHandler = FindObjectOfType<WebRequestHandler>();
             }
 
@@ -36,9 +36,23 @@ public class GalleryBtn : MonoBehaviour {
     /// </summary>
     public void OnClick() {
         if (open) {
-            _galleryController.GetAllArMessages(onSuccess: GalleryConstructor.OnShow);
+            _galleryController.GetAllArMessages(onSuccess: Show);
         } else {
-            GalleryConstructor.OnHide?.Invoke();
+            Hide();
         }
+    }
+
+    private void Show(ARMsgJSON data) {
+        StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
+        ARMsgRecordConstructor.OnActivated?.Invoke(false);
+        GalleryNotificationConstructor.OnHide?.Invoke();
+        MenuConstructor.OnActivated?.Invoke(false);
+        GalleryConstructor.OnShow?.Invoke(data);
+    }
+
+    private void Hide() {
+        GalleryConstructor.OnHide?.Invoke();
+        MenuConstructor.OnActivated?.Invoke(true);
+        ARMsgRecordConstructor.OnActivated?.Invoke(true);
     }
 }
