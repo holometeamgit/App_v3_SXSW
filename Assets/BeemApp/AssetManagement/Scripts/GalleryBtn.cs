@@ -53,6 +53,5 @@ public class GalleryBtn : MonoBehaviour {
     private void Hide() {
         GalleryConstructor.OnHide?.Invoke();
         MenuConstructor.OnActivated?.Invoke(true);
-        ARMsgRecordConstructor.OnActivated?.Invoke(true);
     }
 }

@@ -26,8 +26,6 @@ public class ARMsgProcessingInterrupter : MonoBehaviour {
         CallBacks.OnDeleteLastARMsgActions?.Invoke();
         CallBacks.OnCancelAllARMsgActions?.Invoke();
         MenuConstructor.OnActivated?.Invoke(true);
-        ARMsgRecordConstructor.OnActivated?.Invoke(false);
-        ARMsgRecordConstructor.OnActivated?.Invoke(true);
     }
 
     private void OnEnable() {

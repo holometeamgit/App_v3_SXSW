@@ -20,7 +20,6 @@ public class CellBtn : MonoBehaviour, IARMsgDataView {
     public void Open() {
         if (_arMsgData.processing_status == ARMsgJSON.Data.COMPETED_STATUS) {
             _permissionController.CheckCameraMicAccess(() => {
-                MenuConstructor.OnActivated?.Invoke(false);
                 ARMsgRecordConstructor.OnActivated?.Invoke(false);
                 ARenaConstructor.onActivateForARMessaging?.Invoke(_arMsgData);
                 ARMsgARenaConstructor.OnActivatedARena?.Invoke(_arMsgData);
