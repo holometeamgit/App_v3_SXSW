@@ -20,7 +20,7 @@ public class DeleteARMsgController {
     /// </summary>
     /// <param name="id"></param>
     public void DeleteARMessages(string id, Action onSuccess = null, Action onFailed = null) {
-        _webRequestHandler.Delete(GetRequestDeleteARMsgByIdURL(id), (code, body) => { OnSuccess(code, body, onFailed); }, (code, body) => { OnFailed(code, body, onFailed); });
+        _webRequestHandler.Delete(GetRequestDeleteARMsgByIdURL(id), (code, body) => { OnSuccess(code, body, onSuccess); }, (code, body) => { OnFailed(code, body, onFailed); });
     }
 
     private void OnSuccess(long code, string body, Action onSuccess) {
@@ -28,7 +28,7 @@ public class DeleteARMsgController {
     }
 
     private void OnFailed(long code, string body, Action onFailed) {
-        HelperFunctions.DevLogError(code + " " + body);
+        HelperFunctions.DevLogError("Failed" + code + " " + body);
         onFailed?.Invoke();
     }
 

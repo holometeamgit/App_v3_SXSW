@@ -21,42 +21,19 @@ public class PnlOpenHomeMenu : MonoBehaviour {
     private Image imgPermissionRequired;
 
     [SerializeField]
-    private Canvas panelCanvas;
-
-    [SerializeField]
     private ScrollRectSnapButtonHorz scrollRectSnapButtonHorz;
 
     private PermissionController permissionController = new PermissionController();
 
     private void OnEnable() {
         btnOnEnableInvoke?.onClick?.Invoke();
-    }
-
-    /// <summary>
-    /// Enables the panel's canvas and fire enable events
-    /// </summary>
-    public void Activate() {
-        panelCanvas.enabled = true;
-    }
-
-    /// <summary>
-    /// Hide the panel but keep it activated
-    /// </summary>
-    public void HideCanvas() {
-        panelCanvas.enabled = false;
-        OnHideCanvas?.Invoke();
-    }
-
-    /// <summary>
-    /// Show the canvas, checks camera permissions before enabling
-    /// </summary>
-    public void ShowCanvas() {
         permissionController.CheckCameraMicAccess(() => imgPermissionRequired.gameObject.SetActive(false), () => imgPermissionRequired.gameObject.SetActive(true));
-        panelCanvas.enabled = true;
         OnShowCanvas?.Invoke();
     }
 
     private void OnDisable() {
-        StreamOverlayConstructor.onDeactivate?.Invoke();
+        OnHideCanvas?.Invoke();
     }
+
+
 }

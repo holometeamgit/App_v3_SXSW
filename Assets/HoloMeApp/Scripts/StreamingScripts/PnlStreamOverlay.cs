@@ -643,7 +643,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
             return;
         }
 
-        MenuConstructor.OnActivateCanvas(false);
+        MenuConstructor.OnActivated(false);
         TogglePreLiveControls(false);
         _agoraController.JoinOrCreateChannel(true);
         RefreshControls(); //Is this call actually needed?

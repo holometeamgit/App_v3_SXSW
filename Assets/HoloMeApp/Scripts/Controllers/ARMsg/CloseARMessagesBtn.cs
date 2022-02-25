@@ -40,7 +40,7 @@ namespace Beem.UI {
         private void Show(ARMsgJSON data) {
             ARMsgARenaConstructor.OnDeactivatedARena?.Invoke();
             ARenaConstructor.onDeactivate?.Invoke();
-
+            MenuConstructor.OnActivated?.Invoke(false);
             GalleryConstructor.OnShow?.Invoke(data);
         }
 
