@@ -1,4 +1,5 @@
 using Beem.UI;
+using HoloMeSDK;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,13 +17,17 @@ public class ScreenshotView : MonoBehaviour {
     private VideoPlayer _videoPlayer;
     [SerializeField]
     private RawImage _image;
+    [SerializeField]
+    private Material _customMaterial;
 
-    private CancellationTokenSource cancelTokenSource;
+    private Material _currentMaterial;
+    private CancellationTokenSource _cancelTokenSource;
+    private ARMsgJSON.Data _data;
+    private Action _onSuccess;
+    private Action _onFailed;
 
     private const int DELAY = 1000;
 
-    private Action _onSuccess;
-    private Action _onFailed;
 
     /// <summary>
     /// Shot Preview
@@ -31,20 +36,25 @@ public class ScreenshotView : MonoBehaviour {
     /// <param name="onSuccess"></param>
     /// <param name="onFail"></param>
     public void Show(ARMsgJSON.Data data, Action onSuccess, Action onFail) {
-        _videoPlayer.url = data.ar_message_s3_link;
+        _data = data;
         _onSuccess = onSuccess;
         _onFailed = onFail;
     }
 
     private void OnEnable() {
-        cancelTokenSource = new CancellationTokenSource();
-        if (!_videoPlayer.isPrepared) {
-            _onFailed?.Invoke();
-            _videoPlayer.prepareCompleted += Prepare;
-            _videoPlayer.Prepare();
+        if (_data.processing_status == ARMsgJSON.Data.COMPETED_STATUS) {
+            _videoPlayer.url = _data.ar_message_s3_link;
+            _cancelTokenSource = new CancellationTokenSource();
+            if (!_videoPlayer.isPrepared) {
+                _onFailed?.Invoke();
+                _videoPlayer.prepareCompleted += Prepare;
+                _videoPlayer.Prepare();
+            } else {
+                _onSuccess?.Invoke();
+                UpdatePreview();
+            }
         } else {
-            _onSuccess?.Invoke();
-            UpdatePreview();
+            _onFailed?.Invoke();
         }
     }
 
@@ -55,25 +65,31 @@ public class ScreenshotView : MonoBehaviour {
     }
 
     private async void UpdatePreview() {
-        CancellationToken cancellationToken = cancelTokenSource.Token;
+        CancellationToken cancellationToken = _cancelTokenSource.Token;
 
         _image.texture = _videoPlayer.texture;
+
+        if (_currentMaterial == null) {
+            _currentMaterial = Instantiate(_customMaterial);
+        }
+
+        _image.material = _currentMaterial;
 
         _videoPlayer.Play();
         if (!cancellationToken.IsCancellationRequested) {
             await Task.Delay(DELAY);
         }
 
-        _videoPlayer.Pause();
+        //_videoPlayer.Pause();
     }
 
     /// <summary>
     /// Clear Info
     /// </summary>
     public void Cancel() {
-        if (cancelTokenSource != null) {
-            cancelTokenSource.Cancel();
-            cancelTokenSource = null;
+        if (_cancelTokenSource != null) {
+            _cancelTokenSource.Cancel();
+            _cancelTokenSource = null;
         }
     }
 

@@ -28,11 +28,8 @@ public class CellView : ScrollItem<ARMsgScrollItem> {
     /// <param name="data"></param>
     private void Show(ARMsgJSON.Data data, bool isNew) {
         _newObj.SetActive(isNew);
-        if (data.processing_status != ARMsgJSON.Data.COMPETED_STATUS) {
-            ShowPreview(false);
-        } else {
-            _screenshotView.Show(data, () => ShowPreview(true), () => ShowPreview(false));
-        }
+
+        _screenshotView.Show(data, () => ShowPreview(true), () => ShowPreview(false));
 
         _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
 
