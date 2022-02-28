@@ -39,8 +39,6 @@ public class PnlOpenHomeMenu : MonoBehaviour {
 
     private async void RecheckPermission() {
 
-        Debug.LogError($"HasCameraMicAccess = {_permissionController.HasCameraMicAccess}");
-
         _permissionRequired.SetActive(!_permissionController.HasCameraMicAccess);
 
         CancellationToken cancellationToken = _cancelTokenSource.Token;
