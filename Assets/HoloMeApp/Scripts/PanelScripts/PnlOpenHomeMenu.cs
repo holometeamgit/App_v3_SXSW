@@ -20,7 +20,7 @@ public class PnlOpenHomeMenu : MonoBehaviour {
     private Button btnOnEnableInvoke;
 
     [SerializeField]
-    private Image imgPermissionRequired;
+    private GameObject _permissionRequired;
 
     [SerializeField]
     private ScrollRectSnapButtonHorz scrollRectSnapButtonHorz;
@@ -28,22 +28,27 @@ public class PnlOpenHomeMenu : MonoBehaviour {
     private PermissionController _permissionController = new PermissionController();
     private CancellationTokenSource _cancelTokenSource;
 
-    private const int DELAY = 10000;
+    private const int DELAY = 3000;
 
     private void OnEnable() {
         btnOnEnableInvoke?.onClick?.Invoke();
-        imgPermissionRequired.gameObject.SetActive(true);
         _cancelTokenSource = new CancellationTokenSource();
-        _permissionController.CheckCameraMicAccess(() => imgPermissionRequired.gameObject.SetActive(false), () => RecheckPermission());
+        RecheckPermission();
         OnShowCanvas?.Invoke();
     }
 
     private async void RecheckPermission() {
+
+        Debug.LogError($"HasCameraMicAccess = {_permissionController.HasCameraMicAccess}");
+
+        _permissionRequired.SetActive(!_permissionController.HasCameraMicAccess);
+
         CancellationToken cancellationToken = _cancelTokenSource.Token;
-        if (!cancellationToken.IsCancellationRequested) {
+
+        if (!(_permissionController.HasCameraMicAccess || cancellationToken.IsCancellationRequested)) {
             await Task.Delay(DELAY);
+            RecheckPermission();
         }
-        _permissionController.CheckCameraMicAccess(() => imgPermissionRequired.gameObject.SetActive(false), () => RecheckPermission());
     }
 
     private void OnDisable() {

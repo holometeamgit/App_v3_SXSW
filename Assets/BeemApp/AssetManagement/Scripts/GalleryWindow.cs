@@ -12,7 +12,11 @@ public class GalleryWindow : MonoBehaviour {
     [SerializeField]
     private ScrollContent _content = null;
     [SerializeField]
-    private GameObject pushNotificationPopUp;
+    private GameObject _pushNotificationPopUp;
+    [SerializeField]
+    private RectTransform _scrollRect;
+    [SerializeField]
+    private RectTransform _arRect;
     [SerializeField]
     private GameObject _empty;
     [SerializeField]
@@ -39,7 +43,7 @@ public class GalleryWindow : MonoBehaviour {
     /// <param name="arMsgJSON"></param>
     public void Show(ARMsgJSON arMsgJSON) {
         gameObject.SetActive(true);
-        pushNotificationPopUp.SetActive(CanShowPushNotificationPopup);
+        RefreshScrollRectSize();
 
         if (arMsgJSON.count > 0) {
             _empty.SetActive(false);
@@ -61,6 +65,14 @@ public class GalleryWindow : MonoBehaviour {
         }
     }
 
+    private void RefreshScrollRectSize() {
+        _pushNotificationPopUp.SetActive(CanShowPushNotificationPopup);
+        Vector2 scrollDelta = _scrollRect.sizeDelta;
+        RectTransform pushRect = _pushNotificationPopUp.GetComponent<RectTransform>();
+        scrollDelta.y = Screen.height + _arRect.anchoredPosition.y - (CanShowPushNotificationPopup ? 1 : 0) * pushRect.sizeDelta.y;
+        _scrollRect.sizeDelta = scrollDelta;
+    }
+
     /// <summary>
     /// Hide
     /// </summary>
@@ -73,15 +85,15 @@ public class GalleryWindow : MonoBehaviour {
     /// </summary>
     public void AllowNotification() {
         FirebaseMessaging.SubscribeAsync(string.Format(TOPIC, _userWebManager?.GetUsername()));
-        pushNotificationPopUp.SetActive(false);
         CanShowPushNotificationPopup = false;
+        RefreshScrollRectSize();
     }
 
     /// <summary>
     /// Decline Notification
     /// </summary>
     public void DeclineNotification() {
-        pushNotificationPopUp.SetActive(false);
         CanShowPushNotificationPopup = false;
+        RefreshScrollRectSize();
     }
 }

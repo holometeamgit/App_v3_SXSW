@@ -42,7 +42,7 @@ public class ScreenshotView : MonoBehaviour {
     }
 
     private void OnEnable() {
-        if (_data.processing_status == ARMsgJSON.Data.COMPETED_STATUS) {
+        if (_data != null && _data.processing_status == ARMsgJSON.Data.COMPETED_STATUS) {
             _videoPlayer.url = _data.ar_message_s3_link;
             _cancelTokenSource = new CancellationTokenSource();
             if (!_videoPlayer.isPrepared) {
