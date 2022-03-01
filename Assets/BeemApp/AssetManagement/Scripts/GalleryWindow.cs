@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Gallery View
@@ -13,6 +14,8 @@ public class GalleryWindow : MonoBehaviour {
     private ScrollContent _content = null;
     [SerializeField]
     private GameObject _pushNotificationPopUp;
+    [SerializeField]
+    private CanvasScaler _canvasScaler = null;
     [SerializeField]
     private RectTransform _scrollRect;
     [SerializeField]
@@ -48,7 +51,7 @@ public class GalleryWindow : MonoBehaviour {
         if (arMsgJSON.count > 0) {
             _empty.SetActive(false);
             _notEmpty.SetActive(true);
-
+            _content.ClearContent();
             List<ScrollItemData> contentDatas = new List<ScrollItemData>();
             arMsgJSON.results.Sort((x, y) => x.processing_status.CompareTo(y.processing_status));
             for (int i = 0; i < arMsgJSON.count; i++) {
@@ -69,7 +72,7 @@ public class GalleryWindow : MonoBehaviour {
         _pushNotificationPopUp.SetActive(CanShowPushNotificationPopup);
         Vector2 scrollDelta = _scrollRect.sizeDelta;
         RectTransform pushRect = _pushNotificationPopUp.GetComponent<RectTransform>();
-        scrollDelta.y = Screen.height + _arRect.anchoredPosition.y - (CanShowPushNotificationPopup ? 1 : 0) * pushRect.sizeDelta.y;
+        scrollDelta.y = _canvasScaler.referenceResolution.y + _arRect.anchoredPosition.y - (CanShowPushNotificationPopup ? 1 : 0) * pushRect.sizeDelta.y;
         _scrollRect.sizeDelta = scrollDelta;
     }
 

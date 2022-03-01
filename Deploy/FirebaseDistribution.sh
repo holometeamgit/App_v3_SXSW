@@ -43,7 +43,7 @@ COMMIT_ID=$(parse_git_commit_id)
 
 echo "Creating Release Notes..."
 
-jq -n --arg config "$BUILD_TARGET" --arg type "$BEEM_BUILD_TYPE" --arg branch "$GIT_BRANCH" --arg message "$MESSAGE" --arg commitID "$COMMIT_ID" '$ARGS.named' > release_notes.json
+jq -n --arg config "$BUILD_TARGET" --arg branch "$GIT_BRANCH" --arg message "$MESSAGE" --arg commitID "$COMMIT_ID" '$ARGS.named' > release_notes.json
 
 echo "Uploading Build Result to Firebase Distribution..."
 

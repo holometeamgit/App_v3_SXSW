@@ -84,7 +84,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 343}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1888542056
@@ -324,7 +324,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 562.5, y: -410}
+  m_AnchoredPosition: {x: 562.5, y: -0}
   m_SizeDelta: {x: 1124, y: 2026}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &1341198155134283168
@@ -801,7 +801,7 @@ RectTransform:
   m_GameObject: {fileID: 3542212546388172569}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7542065624824724692}
   - {fileID: 6986205345053563187}
@@ -920,6 +920,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _content: {fileID: 1888542058}
   _pushNotificationPopUp: {fileID: 2528152271665882776}
+  _canvasScaler: {fileID: 4334607675737632137}
   _scrollRect: {fileID: 8891654214653465452}
   _arRect: {fileID: 8462710705116042367}
   _empty: {fileID: 8462710705823394019}
@@ -2690,7 +2691,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8462710706521359306
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2989,6 +2990,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Cell
+      objectReference: {fileID: 0}
+    - target: {fileID: 254005357304419968, guid: f16d3ff9d6f882e4e802f255787a08cb,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -232.03125
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f16d3ff9d6f882e4e802f255787a08cb, type: 3}
