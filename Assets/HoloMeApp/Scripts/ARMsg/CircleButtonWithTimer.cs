@@ -6,12 +6,15 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using Beem.ARMsg;
+using System;
 
 /// <summary>
 /// CircleButtonWithTimer. UI Circle like timer
 /// </summary>
 [RequireComponent(typeof(EventTrigger))]
 public class CircleButtonWithTimer : MonoBehaviour {
+
+    public Action<float> onTimerUpdated;
 
     [SerializeField]
     private Image _invertCountdown, _countdown;
@@ -21,6 +24,7 @@ public class CircleButtonWithTimer : MonoBehaviour {
     private Counter _counter;
     private bool _pressed;
     private float _maxRecordingTime = 5f; // seconds
+    private float _ratio = 0;
 
     public UnityEvent onStop;
 
@@ -30,7 +34,7 @@ public class CircleButtonWithTimer : MonoBehaviour {
     /// <param name="value">seconds</param>
     public void SetMaxRecordingTime(int value) {
         _maxRecordingTime = value;
-        if(_counter != null)
+        if (_counter != null)
             _counter.SetCounterTime(value);
     }
 
@@ -55,6 +59,9 @@ public class CircleButtonWithTimer : MonoBehaviour {
             _invertCountdown.fillAmount = 1.0f;
         if (_countdown)
             _countdown.fillAmount = 0.0f;
+
+        _ratio = 0;
+        onTimerUpdated?.Invoke(_ratio);
     }
 
     private void OnDisable() {
@@ -67,15 +74,23 @@ public class CircleButtonWithTimer : MonoBehaviour {
 
         // Animate the countdown
         yield return new WaitForSeconds(delayTimer);
-        float startTime = Time.time, ratio = 0f;
+        float startTime = Time.time;
+        _ratio = 0f;
 
-        while (!_pressed && (ratio = (Time.time - startTime) / _maxRecordingTime) < 1.0f) {
+        onTimerUpdated?.Invoke(_ratio);
+
+        while (!_pressed && (_ratio = (Time.time - startTime) / _maxRecordingTime) < 1.0f) {
+            onTimerUpdated?.Invoke(_ratio);
             if (_countdown)
-                _countdown.fillAmount = ratio;
+                _countdown.fillAmount = _ratio;
             if (_invertCountdown)
-                _invertCountdown.fillAmount = 1f - ratio;
+                _invertCountdown.fillAmount = 1f - _ratio;
             yield return null;
         }
+
+        _ratio = 1;
+
+        onTimerUpdated?.Invoke(_ratio);
         // Stop recording
         onStop?.Invoke();
     }
