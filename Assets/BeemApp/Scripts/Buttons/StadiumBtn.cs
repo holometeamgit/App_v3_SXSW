@@ -13,14 +13,10 @@ public class StadiumBtn : MonoBehaviour {
     /// Open Btn
     /// </summary>
     public void Open() {
-
         _permissionController.CheckCameraMicAccess(() => {
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onActivatedAsStadiumBroadcaster?.Invoke();
             AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyGoLive, new Dictionary<string, string>() { { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID } });
-
         });
-
-
     }
 }

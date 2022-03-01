@@ -65,8 +65,6 @@ public class PnlRecord : MonoBehaviour {
 
     private bool recordLengthFailed;
 
-    private PermissionController _permissionController = new PermissionController();
-
     private VideoPlayerController _videoPlayerController;
     private VideoPlayerController videoPlayerController {
         get {
@@ -123,9 +121,7 @@ public class PnlRecord : MonoBehaviour {
     /// start recording
     /// </summary>
     public void StartRecording() {
-        if (!_permissionController.PermissionGranter.HasMicAccess) {
-            recordMicrophone = false;
-        }
+        recordMicrophone = true;
 
         int videoWidth;
         int videoHeight;

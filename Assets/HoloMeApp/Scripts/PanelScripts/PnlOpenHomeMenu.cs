@@ -1,4 +1,6 @@
 using Beem.Permissions;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -18,45 +20,48 @@ public class PnlOpenHomeMenu : MonoBehaviour {
     private Button btnOnEnableInvoke;
 
     [SerializeField]
-    private Image imgPermissionRequired;
-
-    [SerializeField]
-    private Canvas panelCanvas;
+    private GameObject _permissionRequired;
 
     [SerializeField]
     private ScrollRectSnapButtonHorz scrollRectSnapButtonHorz;
 
-    private PermissionController permissionController = new PermissionController();
+    private PermissionController _permissionController = new PermissionController();
+    private CancellationTokenSource _cancelTokenSource;
+
+    private const int DELAY = 3000;
 
     private void OnEnable() {
         btnOnEnableInvoke?.onClick?.Invoke();
+        _cancelTokenSource = new CancellationTokenSource();
+        RecheckPermission();
+        OnShowCanvas?.Invoke();
     }
 
-    /// <summary>
-    /// Enables the panel's canvas and fire enable events
-    /// </summary>
-    public void Activate() {
-        panelCanvas.enabled = true;
+    private async void RecheckPermission() {
+
+        _permissionRequired.SetActive(!_permissionController.HasCameraMicAccess);
+
+        CancellationToken cancellationToken = _cancelTokenSource.Token;
+
+        if (!(_permissionController.HasCameraMicAccess || cancellationToken.IsCancellationRequested)) {
+            await Task.Delay(DELAY);
+            RecheckPermission();
+        }
     }
 
-    /// <summary>
-    /// Hide the panel but keep it activated
-    /// </summary>
-    public void HideCanvas() {
-        panelCanvas.enabled = false;
+    private void OnDisable() {
+        Cancel();
         OnHideCanvas?.Invoke();
     }
 
     /// <summary>
-    /// Show the canvas, checks camera permissions before enabling
+    /// Clear Info
     /// </summary>
-    public void ShowCanvas() {
-        permissionController.CheckCameraMicAccess(() => imgPermissionRequired.gameObject.SetActive(false), () => imgPermissionRequired.gameObject.SetActive(true));
-        panelCanvas.enabled = true;
-        OnShowCanvas?.Invoke();
+    public void Cancel() {
+        if (_cancelTokenSource != null) {
+            _cancelTokenSource.Cancel();
+            _cancelTokenSource = null;
+        }
     }
 
-    private void OnDisable() {
-        StreamOverlayConstructor.onDeactivate?.Invoke();
-    }
 }

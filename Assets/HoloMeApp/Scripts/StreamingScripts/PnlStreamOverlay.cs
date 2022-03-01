@@ -334,15 +334,22 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         else if (isChannelCreator)
             WarningConstructor.ActivateDoubleButton("End the live stream?",
                 "Closing this page will end the live stream and disconnect your users.",
-                onButtonOnePress: () => { DeactivateLive(); });
+                onButtonOnePress: () => { DeactivateLive(); OpenMenuScreen(); });
         else
             WarningConstructor.ActivateDoubleButton("Disconnect from live stream?",
                 "Closing this page will disconnect you from the live stream",
-                onButtonOnePress: () => { CloseAsViewer(); });
+                onButtonOnePress: () => { CloseAsViewer(); OpenMenuScreen(); });
     }
 
     private void DeactivateLive() {
         StopStream();
+        MenuConstructor.OnActivated?.Invoke(true);
+    }
+
+    /// <summary>
+    /// OpenMenuScreen
+    /// </summary>
+    public void OpenMenuScreen() {
         MenuConstructor.OnActivated?.Invoke(true);
     }
 
@@ -351,12 +358,12 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         _agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         StreamOverlayConstructor.onDeactivate?.Invoke();
-        MenuConstructor.OnActivated?.Invoke(true);
         RecordARConstructor.OnActivated?.Invoke(false);
     }
 
     private void StreamFinished() {
         CloseAsViewer();
+        OpenMenuScreen();
         if (_agoraController.IsRoom) {
             StreamCallBacks.onRoomBroadcastFinished?.Invoke();
         }
@@ -365,7 +372,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private void CloseAsViewer() {
         StopStream();
         StreamOverlayConstructor.onDeactivate?.Invoke();
-        MenuConstructor.OnActivated?.Invoke(true);
         RecordARConstructor.OnActivated?.Invoke(false);
     }
 
@@ -643,7 +649,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
             return;
         }
 
-        MenuConstructor.OnActivateCanvas(false);
+        MenuConstructor.OnActivated?.Invoke(false);
         TogglePreLiveControls(false);
         _agoraController.JoinOrCreateChannel(true);
         RefreshControls(); //Is this call actually needed?

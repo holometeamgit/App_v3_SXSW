@@ -9,7 +9,6 @@ using UnityEngine;
 public class ARMessageBtn : MonoBehaviour {
 
     private PermissionController _permissionController = new PermissionController();
-
     /// <summary>
     /// Open Btn
     /// </summary>

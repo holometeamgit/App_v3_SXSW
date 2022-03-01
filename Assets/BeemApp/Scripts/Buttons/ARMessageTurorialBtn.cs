@@ -7,17 +7,11 @@ using UnityEngine;
 /// </summary>
 public class ARMessageTurorialBtn : MonoBehaviour {
 
-    private PermissionController _permissionController = new PermissionController();
-
     /// <summary>
     /// Open Btn
     /// </summary>
     public void Open() {
-        _permissionController.CheckCameraMicAccess(() => {
-            SettingsConstructor.OnActivated?.Invoke(false);
-            MenuConstructor.OnActivated?.Invoke(false);
-            StreamCallBacks.onCloseComments?.Invoke();
-            ARMessageTutorialConstructor.OnActivated?.Invoke(true);
-        });
+        MenuConstructor.OnActivated?.Invoke(false);
+        ARMessageTutorialConstructor.OnActivated?.Invoke(true);
     }
 }

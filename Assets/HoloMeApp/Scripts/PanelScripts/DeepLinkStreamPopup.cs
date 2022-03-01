@@ -118,6 +118,8 @@ public class DeepLinkStreamPopup : UIThumbnail {
         _permissionController.CheckCameraMicAccess(() => {
             DeepLinkStreamConstructor.OnHide?.Invoke();
             MenuConstructor.OnActivated?.Invoke(false);
+            ARMsgRecordConstructor.OnActivated?.Invoke(false);
+            StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
             StreamOverlayConstructor.onActivatedAsViewer?.Invoke(data.agora_channel, data.id.ToString(), false);
             PnlRecord.CurrentUser = data.user;
         });
@@ -130,8 +132,9 @@ public class DeepLinkStreamPopup : UIThumbnail {
     private void PlayPrerecorded(StreamJsonData.Data data) { //TODO split it to other class
         _permissionController.CheckCameraMicAccess(() => {
             DeepLinkStreamConstructor.OnHide?.Invoke();
-            ARMsgRecordConstructor.OnActivated(false);
             MenuConstructor.OnActivated?.Invoke(false);
+            ARMsgRecordConstructor.OnActivated?.Invoke(false);
+            StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
             ARenaConstructor.onActivateForPreRecorded?.Invoke(data, false);
             PrerecordedVideoConstructor.OnActivated?.Invoke(data);
             PnlRecord.CurrentUser = data.user;
@@ -146,6 +149,8 @@ public class DeepLinkStreamPopup : UIThumbnail {
         _permissionController.CheckCameraMicAccess(() => {
             DeepLinkStreamConstructor.OnHide?.Invoke();
             MenuConstructor.OnActivated?.Invoke(false);
+            ARMsgRecordConstructor.OnActivated?.Invoke(false);
+            StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
             ARenaConstructor.onActivateForPreRecorded?.Invoke(data, data.HasTeaser);
             PrerecordedVideoConstructor.OnActivated?.Invoke(data);
             PnlRecord.CurrentUser = data.user;

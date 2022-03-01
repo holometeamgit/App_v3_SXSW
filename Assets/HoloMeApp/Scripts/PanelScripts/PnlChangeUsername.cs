@@ -62,7 +62,6 @@ public class PnlChangeUsername : MonoBehaviour {
     /// </summary>
     public void ChangeUserNameToSettings() {
         ChangeUsernameConstructor.OnActivated?.Invoke(false);
-        SettingsConstructor.OnActivated?.Invoke(true);
     }
 
     private void OnDisable() {

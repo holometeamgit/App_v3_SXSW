@@ -49,6 +49,24 @@ namespace Beem.Permissions {
             }
         }
 
+        public bool HasCameraMicAccess {
+            get {
+                return HasCameraAccess && HasMicAccess;
+            }
+        }
+
+        public bool HasCameraAccess {
+            get {
+                return _permissionGranter.HasCameraAccess;
+            }
+        }
+
+        public bool HasMicAccess {
+            get {
+                return _permissionGranter.HasMicAccess;
+            }
+        }
+
         /// <summary>
         /// Check Camera and Mic Access
         /// </summary>
@@ -64,11 +82,7 @@ namespace Beem.Permissions {
         /// <returns></returns>
         public void CheckCameraAccess(Action onSuccessed, Action onFailed = null) {
 
-#if UNITY_EDITOR
-            onSuccessed.Invoke();
-#else
-
-            if (_permissionGranter.HasCameraAccess) {
+            if (HasCameraAccess) {
                 onSuccessed.Invoke();
                 return;
             }
@@ -81,13 +95,12 @@ namespace Beem.Permissions {
 
 
             OpenNotification(CAMERA_ACCESS, () => {
-                if (_permissionGranter.HasCameraAccess) {
+                if (HasCameraAccess) {
                     onSuccessed?.Invoke();
                 } else {
                     onFailed?.Invoke();
                 }
             }); ;
-#endif
         }
 
         /// <summary>
@@ -97,11 +110,7 @@ namespace Beem.Permissions {
 
         public void CheckMicAccess(Action onSuccessed, Action onFailed = null) {
 
-#if UNITY_EDITOR
-            onSuccessed.Invoke();
-#else
-
-            if (_permissionGranter.HasMicAccess) {
+            if (HasMicAccess) {
                 onSuccessed.Invoke();
                 return;
             }
@@ -114,13 +123,12 @@ namespace Beem.Permissions {
 
 
             OpenNotification(MICROPHONE_ACCESS, () => {
-                if (_permissionGranter.HasMicAccess) {
+                if (HasMicAccess) {
                     onSuccessed?.Invoke();
                 } else {
                     onFailed?.Invoke();
                 }
             }); ;
-#endif
         }
 
         private void OpenNotification(string accessName, Action onClosed) {

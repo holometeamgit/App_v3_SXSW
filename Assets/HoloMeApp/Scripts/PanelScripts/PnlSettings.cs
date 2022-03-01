@@ -26,19 +26,10 @@ public class PnlSettings : MonoBehaviour {
     }
 
     /// <summary>
-    /// Back button pressed, disable settings and enable home screen
-    /// </summary>
-    public void BackPressed() {
-        MenuConstructor.OnActivated?.Invoke(true);
-        SettingsConstructor.OnActivated?.Invoke(false);
-    }
-
-    /// <summary>
     /// Open Change Usename Window
     /// </summary>
     public void SettingsToChangeUserName() {
         ChangeUsernameConstructor.OnActivated?.Invoke(true);
-        SettingsConstructor.OnActivated?.Invoke(false);
     }
 
     /// <summary>
@@ -46,7 +37,6 @@ public class PnlSettings : MonoBehaviour {
     /// </summary>
     public void SettingsToChangePassword() {
         ChangePasswordConstructor.OnActivated?.Invoke(true);
-        SettingsConstructor.OnActivated?.Invoke(false);
     }
 
     /// <summary>
@@ -62,8 +52,9 @@ public class PnlSettings : MonoBehaviour {
 
     private void UserLogOut() {
         WelcomeConstructor.OnActivated?.Invoke(true);
-        MenuConstructor.OnActivated?.Invoke(false);
+        GalleryConstructor.OnHide?.Invoke();
         SettingsConstructor.OnActivated?.Invoke(false);
+
         _accountManager.LogOut();
     }
 

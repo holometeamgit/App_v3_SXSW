@@ -13,8 +13,6 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
     private const float MinRecordingTime = 2; // seconds
     private const float AccidentTapTime = 0.2f;
 
-    private PermissionController _permissionController = new PermissionController();
-
     private void Start() {
         Reset();
     }
@@ -27,9 +25,7 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
     void IPointerDownHandler.OnPointerDown(PointerEventData eventData) {
         // Start counting
 
-        _permissionController.CheckMicAccess(() => {
-            StartCoroutine(Countdown());
-        });
+        StartCoroutine(Countdown());
     }
 
     void IPointerUpHandler.OnPointerUp(PointerEventData eventData) {
