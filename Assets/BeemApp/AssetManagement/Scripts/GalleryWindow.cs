@@ -14,6 +14,8 @@ public class GalleryWindow : MonoBehaviour {
     [SerializeField]
     private GameObject _pushNotificationPopUp;
     [SerializeField]
+    private int _height = 2436;
+    [SerializeField]
     private RectTransform _scrollRect;
     [SerializeField]
     private RectTransform _arRect;
@@ -69,7 +71,7 @@ public class GalleryWindow : MonoBehaviour {
         _pushNotificationPopUp.SetActive(CanShowPushNotificationPopup);
         Vector2 scrollDelta = _scrollRect.sizeDelta;
         RectTransform pushRect = _pushNotificationPopUp.GetComponent<RectTransform>();
-        scrollDelta.y = Screen.height + _arRect.anchoredPosition.y - (CanShowPushNotificationPopup ? 1 : 0) * pushRect.sizeDelta.y;
+        scrollDelta.y = _height + _arRect.anchoredPosition.y - (CanShowPushNotificationPopup ? 1 : 0) * pushRect.sizeDelta.y;
         HelperFunctions.DevLogError($"Screen.height = {Screen.height}, _arRect.anchoredPosition.y={_arRect.anchoredPosition.y}, scrollDelta.y = {scrollDelta.y}, pushRect.sizeDelta.y = {pushRect.sizeDelta.y}");
         _scrollRect.sizeDelta = scrollDelta;
     }

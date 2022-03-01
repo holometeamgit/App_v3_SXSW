@@ -64,14 +64,13 @@ public class ScreenshotView : MonoBehaviour {
     private async void UpdatePreview() {
         CancellationToken cancellationToken = _cancelTokenSource.Token;
 
-        _image.texture = _videoPlayer.texture;
+        _image.texture = _videoPlayer?.texture;
 
-        _videoPlayer.Play();
+        _videoPlayer?.Play();
         if (!cancellationToken.IsCancellationRequested) {
             await Task.Delay(DELAY);
+            _videoPlayer?.Pause();
         }
-
-        _videoPlayer.Pause();
     }
 
     /// <summary>
