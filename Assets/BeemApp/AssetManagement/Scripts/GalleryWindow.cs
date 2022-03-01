@@ -73,7 +73,6 @@ public class GalleryWindow : MonoBehaviour {
         Vector2 scrollDelta = _scrollRect.sizeDelta;
         RectTransform pushRect = _pushNotificationPopUp.GetComponent<RectTransform>();
         scrollDelta.y = _canvasScaler.referenceResolution.y + _arRect.anchoredPosition.y - (CanShowPushNotificationPopup ? 1 : 0) * pushRect.sizeDelta.y;
-        HelperFunctions.DevLogError($"Screen.height = {_canvasScaler.referenceResolution.y}, _arRect.anchoredPosition.y={_arRect.anchoredPosition.y}, scrollDelta.y = {scrollDelta.y}, pushRect.sizeDelta.y = {pushRect.sizeDelta.y}");
         _scrollRect.sizeDelta = scrollDelta;
     }
 
