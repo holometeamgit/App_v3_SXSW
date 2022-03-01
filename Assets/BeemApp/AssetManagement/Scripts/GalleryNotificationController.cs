@@ -11,44 +11,34 @@ public class GalleryNotificationController {
 
     private static List<ARMsgJSON.Data> _datas = new List<ARMsgJSON.Data>();
 
+    public static Action OnShow = delegate { };
+    public static Action OnHide = delegate { };
+
+    private const string ID = "id";
+    private const string USER = "user";
+
     public static bool IsNew(ARMsgJSON.Data data) {
         return _datas.Find(x => x.id == data.id && x.user == data.user && x.processing_status == ARMsgJSON.Data.COMPETED_STATUS) != null;
     }
 
+    /// <summary>
+    /// SetData
+    /// </summary>
+    /// <param name="data"></param>
     public void SetData(IDictionary<string, string> data) {
         ARMsgJSON.Data arMsgJsonData = new ARMsgJSON.Data();
 
-        if (data.ContainsKey("id")) {
-            arMsgJsonData.id = data["id"];
+        if (data.ContainsKey(ID)) {
+            arMsgJsonData.id = data[ID];
         }
 
-        if (data.ContainsKey("share_link")) {
-            arMsgJsonData.share_link = data["share_link"];
-        }
-
-        if (data.ContainsKey("ar_message_s3_link")) {
-            arMsgJsonData.ar_message_s3_link = data["ar_message_s3_link"];
-        }
-
-        if (data.ContainsKey("processing_status")) {
-            arMsgJsonData.processing_status = data["processing_status"];
-        }
-
-        if (data.ContainsKey("created_at")) {
-            arMsgJsonData.created_at = data["created_at"];
-        }
-
-        if (data.ContainsKey("processed_at")) {
-            arMsgJsonData.processed_at = data["processed_at"];
-        }
-
-        if (data.ContainsKey("user")) {
-            arMsgJsonData.user = data["user"];
+        if (data.ContainsKey(USER)) {
+            arMsgJsonData.user = data[USER];
         }
 
         _datas.Add(arMsgJsonData);
 
-        GalleryNotificationConstructor.OnShow?.Invoke();
+        OnShow?.Invoke();
     }
 
     /// <summary>

@@ -8,11 +8,14 @@ public class GalleryNotificationBtn : MonoBehaviour {
     [SerializeField]
     private bool open;
 
+    /// <summary>
+    /// On Click element
+    /// </summary>
     public void OnClick() {
         if (open) {
-            GalleryNotificationConstructor.OnShow?.Invoke();
+            GalleryNotificationController.OnShow?.Invoke();
         } else {
-            GalleryNotificationConstructor.OnHide?.Invoke();
+            GalleryNotificationController.OnHide?.Invoke();
         }
     }
 }

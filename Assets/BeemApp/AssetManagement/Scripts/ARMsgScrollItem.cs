@@ -27,6 +27,11 @@ public class ARMsgScrollItem : ScrollItemData {
 
     }
 
+    /// <summary>
+    /// Init data
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="isNew"></param>
     public void Init(ARMsgJSON.Data data, bool isNew) {
         _data = data;
         _isNew = isNew;

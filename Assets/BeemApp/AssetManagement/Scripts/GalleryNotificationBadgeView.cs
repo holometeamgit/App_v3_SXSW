@@ -1,34 +1,28 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 /// <summary>
-/// Gallery Notification Constructor
+/// Gallery Badge View
 /// </summary>
-public class GalleryNotificationConstructor : WindowConstructor {
-    public static Action OnShow = delegate { };
-    public static Action OnHide = delegate { };
+public class GalleryNotificationBadgeView : MonoBehaviour {
+    [SerializeField]
+    private GameObject _badge;
 
     private void OnEnable() {
         GalleryNotificationController.OnShow += Show;
         GalleryNotificationController.OnHide += Hide;
-        OnShow += Show;
-        OnHide += Hide;
     }
 
     private void OnDisable() {
         GalleryNotificationController.OnShow -= Show;
         GalleryNotificationController.OnHide -= Hide;
-        OnShow -= Show;
-        OnHide -= Hide;
     }
 
     private void Show() {
-        _window.SetActive(true);
+        _badge.SetActive(true);
     }
 
     private void Hide() {
-        _window.SetActive(false);
+        _badge.SetActive(false);
     }
 }

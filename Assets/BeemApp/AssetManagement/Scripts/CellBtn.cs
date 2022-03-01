@@ -4,6 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Btn for cell in AssetManagement
+/// </summary>
 public class CellBtn : MonoBehaviour, IARMsgDataView {
 
     private ARMsgJSON.Data _arMsgData = default;
