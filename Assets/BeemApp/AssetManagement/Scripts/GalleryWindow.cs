@@ -48,7 +48,7 @@ public class GalleryWindow : MonoBehaviour {
         if (arMsgJSON.count > 0) {
             _empty.SetActive(false);
             _notEmpty.SetActive(true);
-
+            _content.ClearContent();
             List<ScrollItemData> contentDatas = new List<ScrollItemData>();
             arMsgJSON.results.Sort((x, y) => x.processing_status.CompareTo(y.processing_status));
             for (int i = 0; i < arMsgJSON.count; i++) {
@@ -70,6 +70,7 @@ public class GalleryWindow : MonoBehaviour {
         Vector2 scrollDelta = _scrollRect.sizeDelta;
         RectTransform pushRect = _pushNotificationPopUp.GetComponent<RectTransform>();
         scrollDelta.y = Screen.height + _arRect.anchoredPosition.y - (CanShowPushNotificationPopup ? 1 : 0) * pushRect.sizeDelta.y;
+        HelperFunctions.DevLogError($"Screen.height = {Screen.height}, _arRect.anchoredPosition.y={_arRect.anchoredPosition.y}, scrollDelta.y = {scrollDelta.y}, pushRect.sizeDelta.y = {pushRect.sizeDelta.y}");
         _scrollRect.sizeDelta = scrollDelta;
     }
 
