@@ -12,6 +12,11 @@ public class BtnSwitchCamera : MonoBehaviour {
     private Button _switchBtn;
 
     private void OnEnable() {
+        StartCoroutine(DelayedInteractableCheck());
+    }
+
+    private IEnumerator DelayedInteractableCheck() {
+        yield return new WaitForEndOfFrame();
         _switchBtn.interactable = CallBacks.onCanSwitchCamera?.Invoke() ?? false;
     }
 
