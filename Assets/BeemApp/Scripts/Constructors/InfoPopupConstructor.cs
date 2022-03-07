@@ -8,8 +8,8 @@ public class InfoPopupConstructor : MonoBehaviour {
     [SerializeField]
     private PnlInfoPopup pnlInfoPopup;
 
-    public static Action<string, bool, Color> onActivate = delegate { };
-    public static Action<string, string, Color> onActivateAsMessage = delegate { };
+    public static Action<string, bool, PnlInfoPopupColour> onActivate = delegate { };
+    public static Action<string, string, PnlInfoPopupColour> onActivateAsMessage = delegate { };
 
     private void OnEnable() {
         onActivate += pnlInfoPopup.Activate;
