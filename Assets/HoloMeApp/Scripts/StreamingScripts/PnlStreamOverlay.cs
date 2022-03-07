@@ -156,14 +156,14 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     /// Show the info popup for stadium
     /// </summary>
     public void ShowInfoPopupStadium() {
-        InfoPopupConstructor.onActivate("HOW TO BROADCAST \n IN STADIUM", true, new Color(142f / 255f, 196f / 255f, 246f / 255f));
+        InfoPopupConstructor.onActivate("HOW TO BROADCAST \n IN STADIUM", true, PnlInfoPopupColour.Blue);
     }
 
     /// <summary>
     /// Show the info popup for room
     /// </summary>
     public void ShowInfoPopupRoom() {
-        InfoPopupConstructor.onActivate("HOW TO USE \n MY ROOM", true, new Color(131f / 255f, 168f / 255f, 240f / 255f));
+        InfoPopupConstructor.onActivate("HOW TO USE \n MY ROOM", true, PnlInfoPopupColour.Purple);
     }
 
     private void OnEnable() {
@@ -261,7 +261,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     private void ShowPremiumRequiredMessage() {
-        InfoPopupConstructor.onActivateAsMessage("PREMIUM FEATURE", "Please get in contact with us \n to explore Beeming live to \nthousands of people", new Color(142f / 255f, 196f / 255f, 246f / 255f));
+        InfoPopupConstructor.onActivateAsMessage("PREMIUM FEATURE", "Please get in contact with us \n to explore Beeming live to \nthousands of people", PnlInfoPopupColour.Blue);
     }
 
     /// <summary>

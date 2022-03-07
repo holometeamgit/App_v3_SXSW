@@ -20,13 +20,19 @@ public class PnlInfoPopup : MonoBehaviour {
     private GameObject[] InfoObjects;
 
     [SerializeField]
-    private Image imgBackground;
+    private Image subMenuBackground;
+
+    [SerializeField]
+    private Sprite[] imgGradientBackgroundColours;
+
+    [SerializeField]
+    private Image imgGradientBackground;
 
     /// <summary>
     /// Show the info popup panel
     /// </summary>
     /// <param name="showGreenScreenHint">This will disable or enable the green screen hint line</param>
-    public void Activate(string title, bool showGreenScreenHint, Color backgroundColour) {
+    public void Activate(string title, bool showGreenScreenHint, PnlInfoPopupColour backgroundColour) {
         ToggleHintIconLines(true);
         greenScreenHintGameObject.SetActive(showGreenScreenHint);
         AssignMessage(string.Empty);
@@ -37,7 +43,7 @@ public class PnlInfoPopup : MonoBehaviour {
     /// <summary>
     /// Activate with sub message and no hint icons
     /// </summary>
-    public void ActivateAsMessage(string title, string message, Color backgroundColour) {
+    public void ActivateAsMessage(string title, string message, PnlInfoPopupColour backgroundColour) {
         ToggleHintIconLines(false);
         AssignMessage(message);
         Init(title, backgroundColour);
@@ -49,14 +55,11 @@ public class PnlInfoPopup : MonoBehaviour {
         }
     }
 
-    private void Init(string title, Color backgroundColour) {
+    private void Init(string title, PnlInfoPopupColour backgroundColour) {
         txtTitle.text = title;
-        imgBackground.color = backgroundColour;
-        imgBackground.rectTransform.anchoredPosition = new Vector2(imgBackground.rectTransform.anchoredPosition.x, -Screen.height);
-        Sequence mySequence = DOTween.Sequence();
-        mySequence.Append(imgBackground.rectTransform.DOAnchorPosY(Screen.height / 10, .5f));
-        mySequence.Append(imgBackground.rectTransform.DOAnchorPosY(0, .5f).SetEase(Ease.OutQuad));
-
+        imgGradientBackground.sprite = imgGradientBackgroundColours[(int)backgroundColour];
+        subMenuBackground.rectTransform.anchoredPosition = new Vector2(subMenuBackground.rectTransform.anchoredPosition.x, -Screen.height);
+        subMenuBackground.rectTransform.DOAnchorPosY(0, .25f).SetEase(Ease.OutQuad);
         gameObject.SetActive(true);
     }
 
@@ -69,6 +72,6 @@ public class PnlInfoPopup : MonoBehaviour {
     /// Hide the popup
     /// </summary>
     public void Hide() {
-        imgBackground.rectTransform.DOAnchorPosY(-Screen.height, .25f).OnComplete(() => gameObject.SetActive(false));
+        subMenuBackground.rectTransform.DOAnchorPosY(-Screen.height, .25f).OnComplete(() => gameObject.SetActive(false));
     }
 }

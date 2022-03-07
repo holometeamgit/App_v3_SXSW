@@ -30,6 +30,6 @@ public class ARMessageUI : MonoBehaviour {
     }
 
     public void ShowInfoPopupBeemMe() {
-        InfoPopupConstructor.onActivate("HOW TO RECORD \n YOUR HOLOGRAM \n MESSAGE", false, new Color(240f / 255f, 189f / 255f, 130f / 255f));
+        InfoPopupConstructor.onActivate("HOW TO RECORD \n YOUR HOLOGRAM \n MESSAGE", false, PnlInfoPopupColour.Orange);
     }
 }
