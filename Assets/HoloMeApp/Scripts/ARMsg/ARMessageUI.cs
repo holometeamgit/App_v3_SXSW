@@ -27,6 +27,7 @@ public class ARMessageUI : MonoBehaviour {
     public void CloseARMessageSteps() {
         CallBacks.OnCancelAllARMsgActions?.Invoke();
         MenuConstructor.OnActivated?.Invoke(true);
+        ARMsgRecordConstructor.OnActivated?.Invoke(false);
     }
 
     public void ShowInfoPopupBeemMe() {
