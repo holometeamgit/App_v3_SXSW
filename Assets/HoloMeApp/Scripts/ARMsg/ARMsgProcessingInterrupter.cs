@@ -14,9 +14,9 @@ public class ARMsgProcessingInterrupter : MonoBehaviour {
     /// Request GenericError for interrupting
     /// </summary>
     public void Interrupt() {
-        WarningConstructor.ActivateDoubleButton("Before you go...",
-            "If you exit before processing has completed, you will lose your AR message",
-            "Exit", "Return",
+        WarningConstructor.ActivateDoubleButton("are you sure you want to quit?",
+            "You will lose your beem",
+            "quit", "stay",
             () => {
                 ImmediateInterruption();
             }, null, false);

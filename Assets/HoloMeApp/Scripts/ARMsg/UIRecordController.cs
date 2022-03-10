@@ -8,6 +8,7 @@ using UnityEngine.Events;
 public class UIRecordController : MonoBehaviour
 {
     public UnityEvent OnStopped;
+    private bool _tryInterrupt;
 
     /// <summary>
     /// StartRecord
@@ -23,12 +24,19 @@ public class UIRecordController : MonoBehaviour
         CallBacks.OnStopRecord?.Invoke();
     }
 
+    public void Interrupt() {
+        _tryInterrupt = true;
+        CallBacks.OnStopRecord?.Invoke();
+    }
+
     private void OnEnable() {
         CallBacks.OnVideoReadyPlay += OnRecordStopped;
     }
 
     private void OnRecordStopped() {
-        OnStopped?.Invoke();
+        if(!_tryInterrupt)
+            OnStopped?.Invoke();
+        _tryInterrupt = false;
     }
 
     private void OnDisable() {
