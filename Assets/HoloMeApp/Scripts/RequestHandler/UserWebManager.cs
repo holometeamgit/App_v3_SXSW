@@ -65,6 +65,10 @@ public class UserWebManager : MonoBehaviour {
         return userData.pk;
     }
 
+    /// <summary>
+    /// GetCapabilities
+    /// </summary>
+    /// <returns></returns>
     public List<string> GetCapabilities() {
         return userData?.profile?.capabilities;
     }
