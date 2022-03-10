@@ -4,18 +4,25 @@ using UnityEngine;
 using Beem.ARMsg;
 
 public class ARMsgUploadingRepeater : MonoBehaviour {
-    [SerializeField] ARMsgProcessingInterrupter _processingInterrupter;
+    [SerializeField]
+    private ARMsgProcessingInterrupter _processingInterrupter;
+
+    [SerializeField]
+    private GameObject _errorInfo;
+
+    [SerializeField]
+    private GameObject _defaultInfo;
+
+    /// <summary>
+    /// RetryUploading
+    /// </summary>
+    public void RetryUploading() {
+        CallBacks.OnUpdloadingUIOpened?.Invoke();
+        ShowError(false);
+    }
 
     private void OnUploadingError() {
-        WarningConstructor.ActivateDoubleButton("Connection Interupted",
-            "We lost connection whilst uploading your Beem",
-            "Exit", "Retry",
-            () => {
-                _processingInterrupter.ImmediateInterruption();
-            }, () => {
-                CallBacks.OnUpdloadingUIOpened?.Invoke();
-            }
-            , false);
+        ShowError(true);
     }
 
     private void OnEnable() {
@@ -24,5 +31,11 @@ public class ARMsgUploadingRepeater : MonoBehaviour {
 
     private void OnDisable() {
         CallBacks.OnARMsgUploadedError -= OnUploadingError;
+        ShowError(false);
+    }
+
+    private void ShowError(bool isShow) {
+        _errorInfo.SetActive(isShow);
+        _defaultInfo.SetActive(!isShow);
     }
 }
