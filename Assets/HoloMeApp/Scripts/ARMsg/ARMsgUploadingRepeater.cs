@@ -13,6 +13,9 @@ public class ARMsgUploadingRepeater : MonoBehaviour {
     [SerializeField]
     private GameObject _defaultInfo;
 
+    /// <summary>
+    /// RetryUploading
+    /// </summary>
     public void RetryUploading() {
         CallBacks.OnUpdloadingUIOpened?.Invoke();
         ShowError(false);

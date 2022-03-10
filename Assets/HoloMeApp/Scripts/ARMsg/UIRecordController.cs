@@ -24,6 +24,9 @@ public class UIRecordController : MonoBehaviour
         CallBacks.OnStopRecord?.Invoke();
     }
 
+    /// <summary>
+    /// Interrupt
+    /// </summary>
     public void Interrupt() {
         _tryInterrupt = true;
         CallBacks.OnStopRecord?.Invoke();
