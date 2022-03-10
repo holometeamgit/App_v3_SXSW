@@ -9,4 +9,5 @@ public class ProfileJsonData {
     public bool go_live_feature;
     public bool room_feature;
     public string profile_picture_s3_url;
+    public List<string> capabilities;
 }

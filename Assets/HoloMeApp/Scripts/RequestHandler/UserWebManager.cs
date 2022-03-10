@@ -65,6 +65,10 @@ public class UserWebManager : MonoBehaviour {
         return userData.pk;
     }
 
+    public List<string> GetCapabilities() {
+        return userData?.profile?.capabilities;
+    }
+
     /* public string GetUnituniqueName() {
          return GetEmail();
      }*/
@@ -145,6 +149,7 @@ public class UserWebManager : MonoBehaviour {
         try {
             userData = JsonUtility.FromJson<UserJsonData>(body);
             OnUserInfoLoaded?.Invoke();
+            CallBacks.onUserDataLoaded?.Invoke();
         } catch (System.Exception e) {
             HelperFunctions.DevLogError(e.Message);
         }
