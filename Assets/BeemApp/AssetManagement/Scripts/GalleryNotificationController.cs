@@ -18,7 +18,7 @@ public class GalleryNotificationController {
     private const string USER = "user";
 
     public static bool IsNew(ARMsgJSON.Data data) {
-        return _datas.Find(x => x.id == data.id && x.user == data.user && x.processing_status == ARMsgJSON.Data.COMPETED_STATUS) != null;
+        return _datas.Find(x => x.id == data.id && x.user == data.user && data.processing_status == ARMsgJSON.Data.COMPETED_STATUS) != null;
     }
 
     /// <summary>
