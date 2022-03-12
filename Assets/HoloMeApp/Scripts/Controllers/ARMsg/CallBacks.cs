@@ -16,7 +16,6 @@ namespace Beem.ARMsg {
 
         public static Func<string> OnGetVideoRecordedFilePath;
         public static Func<string> OnGetBGImgFilePath;
-        public static Func<bool> OnCheckContainLastUploadedARMsg;
         public static Func<string> OnGetLastARMsgShareLink;
         public static Func<ARMsgJSON.Data> OnGetARMsgByID;
         public static Func<ARMsgJSON.Data> OnGetLastReadyARMsgData;

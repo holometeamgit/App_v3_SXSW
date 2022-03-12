@@ -10,15 +10,9 @@ using Beem.ARMsg;
 public class ARMessageUI : MonoBehaviour {
     [SerializeField]
     private GameObject RecordSteps;
-    [SerializeField]
-    private UnityEvent OnHasLastUploadingFile;
 
     private void OnEnable() {
-        if (CallBacks.OnCheckContainLastUploadedARMsg != null && CallBacks.OnCheckContainLastUploadedARMsg.Invoke()) {
-            OnHasLastUploadingFile?.Invoke();
-        } else {
-            RecordSteps.gameObject.SetActive(true);
-        }
+        RecordSteps.gameObject.SetActive(true);
     }
 
     /// <summary>
