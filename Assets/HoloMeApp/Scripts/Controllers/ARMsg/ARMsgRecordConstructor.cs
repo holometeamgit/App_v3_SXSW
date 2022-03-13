@@ -22,7 +22,6 @@ public class ARMsgRecordConstructor : WindowConstructor {
         CallBacks.OnUpdloadingUIOpened += _arMsgController.UploadARMsg;
         CallBacks.OnCancelAllARMsgActions += _arMsgController.OnCancelAll;
         CallBacks.OnARMsgProcessingCheck += _arMsgController.GetLastUploadedARMsgInfo;
-        CallBacks.OnCheckContainLastUploadedARMsg += _arMsgController.CheckContainLastUploadedARMsg;
         CallBacks.OnDeleteLastARMsgActions += _arMsgController.DeleteLastARMsg;
         CallBacks.OnGetLastARMsgShareLink += _arMsgController.GetReadyShareLink;
         CallBacks.OnGetLastReadyARMsgData += _arMsgController.GetLastReadyARMsgData;
@@ -36,7 +35,6 @@ public class ARMsgRecordConstructor : WindowConstructor {
         CallBacks.OnUpdloadingUIOpened -= _arMsgController.UploadARMsg;
         CallBacks.OnCancelAllARMsgActions -= _arMsgController.OnCancelAll;
         CallBacks.OnARMsgProcessingCheck -= _arMsgController.GetLastUploadedARMsgInfo;
-        CallBacks.OnCheckContainLastUploadedARMsg -= _arMsgController.CheckContainLastUploadedARMsg;
         CallBacks.OnDeleteLastARMsgActions -= _arMsgController.DeleteLastARMsg;
         CallBacks.OnGetLastARMsgShareLink -= _arMsgController.GetReadyShareLink;
         CallBacks.OnGetLastReadyARMsgData -= _arMsgController.GetLastReadyARMsgData;
