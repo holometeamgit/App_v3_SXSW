@@ -9,20 +9,17 @@ public class GalleryNotificationBadgeView : MonoBehaviour {
     private GameObject _badge;
 
     private void OnEnable() {
-        GalleryNotificationController.OnShow += Show;
-        GalleryNotificationController.OnHide += Hide;
+        RefreshBadge();
+        GalleryNotificationController.OnShow += RefreshBadge;
+        GalleryNotificationController.OnHide += RefreshBadge;
     }
 
     private void OnDisable() {
-        GalleryNotificationController.OnShow -= Show;
-        GalleryNotificationController.OnHide -= Hide;
+        GalleryNotificationController.OnShow -= RefreshBadge;
+        GalleryNotificationController.OnHide -= RefreshBadge;
     }
 
-    private void Show() {
-        _badge.SetActive(true);
-    }
-
-    private void Hide() {
-        _badge.SetActive(false);
+    private void RefreshBadge() {
+        _badge.SetActive(GalleryNotificationController.ContainsNew());
     }
 }

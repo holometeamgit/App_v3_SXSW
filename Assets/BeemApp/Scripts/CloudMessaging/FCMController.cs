@@ -16,6 +16,9 @@ namespace Beem.Firebase.CloudMessage {
 
         private const string TOPIC = "Test";
 
+        private const string MSG_TYPE = "message_type_beem";
+        private const string GALLERY = "gallery";
+
         private void OnEnable() {
             FirebaseCallBacks.onInit += Subscribe;
         }
@@ -50,14 +53,10 @@ namespace Beem.Firebase.CloudMessage {
         }
 
         private void OnMessageReceived(object sender, MessageReceivedEventArgs e) {
-
-            if (e.Message.Data.ContainsKey("message_type")) {
-                if (e.Message.Data["message_type"] == "gallery") {
-                    GalleryNotificationController galleryNotificationController = new GalleryNotificationController();
-                    galleryNotificationController.SetData(e.Message.Data);
-                }
+            if (e.Message.Data.ContainsKey(MSG_TYPE) && e.Message.Data[MSG_TYPE] == GALLERY) {
+                GalleryNotificationController galleryNotificationController = new GalleryNotificationController();
+                galleryNotificationController.SetData(e.Message.Data);
             }
-
         }
     }
 }
