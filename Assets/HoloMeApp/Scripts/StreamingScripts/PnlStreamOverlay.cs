@@ -120,6 +120,9 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private const string MessageToAllViewerIsSpeaking = "ViewerSpeakingStarted";
     private const string MessageToAllViewerSpeakingStopped = "ViewerSpeakingStopped";
 
+    private const string KEY_SEEN_TUTORIAL_ROOM = nameof(KEY_SEEN_TUTORIAL_ROOM);
+    private const string KEY_SEEN_TUTORIAL_ARENA = nameof(KEY_SEEN_TUTORIAL_ARENA);
+
     void Init() {
         if (initialised)
             return;
@@ -247,6 +250,10 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         currentStreamId = "";
         _agoraController.IsRoom = true;
         StreamerOpenSharedFunctions();
+
+        if (!CheckIfTutorialWasRun(KEY_SEEN_TUTORIAL_ROOM)) {
+            ShowInfoPopupRoom();
+        }
     }
 
     public void OpenAsStreamer() {
@@ -254,10 +261,22 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
             ShowPremiumRequiredMessage();
         }
 
+        if (!CheckIfTutorialWasRun(KEY_SEEN_TUTORIAL_ARENA)) {
+            ShowInfoPopupStadium();
+        }
+
         Init();
         currentStreamId = "";
         _agoraController.IsRoom = false;
         StreamerOpenSharedFunctions();
+    }
+
+    private bool CheckIfTutorialWasRun(string key) {
+        if (PlayerPrefs.GetString(key, "") == "") {
+            PlayerPrefs.SetString(key, key);
+            return false;
+        }
+        return true;
     }
 
     private void ShowPremiumRequiredMessage() {
