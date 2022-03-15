@@ -21,6 +21,10 @@ public class GalleryNotificationController {
         return _datas.Find(x => x.id == data.id && x.user == data.user && data.processing_status == ARMsgJSON.Data.COMPETED_STATUS) != null;
     }
 
+    public static bool ContainsNew() {
+        return _datas.Count > 0;
+    }
+
     /// <summary>
     /// SetData
     /// </summary>
