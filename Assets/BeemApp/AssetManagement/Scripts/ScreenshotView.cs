@@ -17,11 +17,14 @@ public class ScreenshotView : MonoBehaviour {
     private VideoPlayer _videoPlayer;
     [SerializeField]
     private RawImage _image;
+    [SerializeField]
+    private Material _greenScreenRemoverMat;
 
     private CancellationTokenSource _cancelTokenSource;
     private ARMsgJSON.Data _data;
     private Action _onSuccess;
     private Action _onFailed;
+    private Material _currentMat;
 
     private const int DELAY = 1000;
 
@@ -40,6 +43,9 @@ public class ScreenshotView : MonoBehaviour {
 
     private void OnEnable() {
         if (_data != null && _data.processing_status == ARMsgJSON.Data.COMPETED_STATUS) {
+            if (_currentMat == null) {
+                _currentMat = new Material(_greenScreenRemoverMat);
+            }
             _videoPlayer.url = _data.ar_message_s3_link;
             _cancelTokenSource = new CancellationTokenSource();
             if (!_videoPlayer.isPrepared) {
@@ -55,6 +61,10 @@ public class ScreenshotView : MonoBehaviour {
         }
     }
 
+    private void OnRenderImage(RenderTexture source, RenderTexture destination) {
+        Debug.LogError($"source = {source.name}, destination = {destination.name}");
+    }
+
     private void Prepare(VideoPlayer video) {
         _onSuccess?.Invoke();
         UpdatePreview();
@@ -65,6 +75,7 @@ public class ScreenshotView : MonoBehaviour {
         CancellationToken cancellationToken = _cancelTokenSource.Token;
 
         _image.texture = _videoPlayer?.texture;
+        _image.material = _currentMat;
 
         _videoPlayer?.Play();
         if (!cancellationToken.IsCancellationRequested) {

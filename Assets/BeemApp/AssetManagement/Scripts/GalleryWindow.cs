@@ -18,12 +18,16 @@ public class GalleryWindow : MonoBehaviour {
     private CanvasScaler _canvasScaler = null;
     [SerializeField]
     private RectTransform _scrollRect;
+    //[SerializeField]
+    //private RectTransform _arRect;
     [SerializeField]
-    private RectTransform _arRect;
+    private Image _topGradient;
     [SerializeField]
     private GameObject _empty;
     [SerializeField]
     private GameObject _notEmpty;
+    [SerializeField]
+    private float _topShift = 400f;
 
     [Space]
     [SerializeField]
@@ -70,10 +74,12 @@ public class GalleryWindow : MonoBehaviour {
 
     private void RefreshScrollRectSize() {
         _pushNotificationPopUp.SetActive(CanShowPushNotificationPopup);
-        Vector2 scrollDelta = _scrollRect.sizeDelta;
+        Vector2 offsetMax = _scrollRect.offsetMax;
         RectTransform pushRect = _pushNotificationPopUp.GetComponent<RectTransform>();
-        scrollDelta.y = _canvasScaler.referenceResolution.y + _arRect.anchoredPosition.y - (CanShowPushNotificationPopup ? 1 : 0) * pushRect.sizeDelta.y;
-        _scrollRect.sizeDelta = scrollDelta;
+        float shift = (CanShowPushNotificationPopup ? 1 : 0) * pushRect.sizeDelta.y + _topShift;
+        _topGradient.fillAmount = shift / _canvasScaler.referenceResolution.y;
+        offsetMax.y = -shift;
+        _scrollRect.offsetMax = offsetMax;
     }
 
     /// <summary>
