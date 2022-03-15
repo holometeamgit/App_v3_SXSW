@@ -10,18 +10,13 @@ using Beem.ARMsg;
 public class ARMessageUI : MonoBehaviour {
     [SerializeField]
     private GameObject RecordSteps;
-    [SerializeField]
-    private UnityEvent OnHasLastUploadingFile;
 
     private const string KEY_SEEN_TUTORIAL_BEEMME = nameof(KEY_SEEN_TUTORIAL_BEEMME);
 
     private void OnEnable() {
-        if (CallBacks.OnCheckContainLastUploadedARMsg != null && CallBacks.OnCheckContainLastUploadedARMsg.Invoke()) {
-            OnHasLastUploadingFile?.Invoke();
-        } else {
-            RecordSteps.gameObject.SetActive(true);
-            ShowInfoPopUpFirstTime();
-        }
+	RecordSteps.gameObject.SetActive(true);
+        ShowInfoPopUpFirstTime();
+        
     }
 
     private void ShowInfoPopUpFirstTime() {
