@@ -61,10 +61,6 @@ public class ScreenshotView : MonoBehaviour {
         }
     }
 
-    private void OnRenderImage(RenderTexture source, RenderTexture destination) {
-        Debug.LogError($"source = {source.name}, destination = {destination.name}");
-    }
-
     private void Prepare(VideoPlayer video) {
         _onSuccess?.Invoke();
         UpdatePreview();
