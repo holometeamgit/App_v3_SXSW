@@ -17,10 +17,19 @@ public class GalleryNotificationController {
     private const string ID = "id";
     private const string USER = "user";
 
+    /// <summary>
+    /// Check on New Message
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
     public static bool IsNew(ARMsgJSON.Data data) {
         return _datas.Find(x => x.id == data.id && x.user == data.user && data.processing_status == ARMsgJSON.Data.COMPETED_STATUS) != null;
     }
 
+    /// <summary>
+    /// Contains New Messages
+    /// </summary>
+    /// <returns></returns>
     public static bool ContainsNew() {
         return _datas.Count > 0;
     }
