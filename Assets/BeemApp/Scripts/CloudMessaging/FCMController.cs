@@ -16,7 +16,7 @@ namespace Beem.Firebase.CloudMessage {
 
         private const string TOPIC = "Test";
 
-        private const string MSG_TYPE = "msg_type";
+        private const string MSG_TYPE = "message_type_beem";
         private const string GALLERY = "gallery";
 
         private void OnEnable() {
