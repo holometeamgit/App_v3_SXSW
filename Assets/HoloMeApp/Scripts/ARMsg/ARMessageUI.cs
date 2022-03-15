@@ -11,8 +11,19 @@ public class ARMessageUI : MonoBehaviour {
     [SerializeField]
     private GameObject RecordSteps;
 
+    private const string KEY_SEEN_TUTORIAL_BEEMME = nameof(KEY_SEEN_TUTORIAL_BEEMME);
+
     private void OnEnable() {
-        RecordSteps.gameObject.SetActive(true);
+	RecordSteps.gameObject.SetActive(true);
+        ShowInfoPopUpFirstTime();
+        
+    }
+
+    private void ShowInfoPopUpFirstTime() {
+        if (PlayerPrefs.GetString(KEY_SEEN_TUTORIAL_BEEMME, "") == "") {
+            PlayerPrefs.SetString(KEY_SEEN_TUTORIAL_BEEMME, KEY_SEEN_TUTORIAL_BEEMME);
+            ShowInfoPopupBeemMe();
+        }
     }
 
     /// <summary>
