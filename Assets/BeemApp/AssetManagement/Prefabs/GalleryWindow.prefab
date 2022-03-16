@@ -1127,7 +1127,7 @@ GameObject:
   - component: {fileID: 4078020254962114810}
   - component: {fileID: 2698163346796922024}
   - component: {fileID: 6917271042248517622}
-  - component: {fileID: 1267557022}
+  - component: {fileID: 756007768796717032}
   m_Layer: 5
   m_Name: CreateBeemBtn
   m_TagString: Untagged
@@ -1179,9 +1179,9 @@ MonoBehaviour:
   OnPress:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1267557022}
-        m_TargetAssemblyTypeName: ARMessageBtn, Assembly-CSharp
-        m_MethodName: Open
+      - m_Target: {fileID: 756007768796717032}
+        m_TargetAssemblyTypeName: GalleryBtn, Assembly-CSharp
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1282,7 +1282,7 @@ MonoBehaviour:
   m_graphics:
   - {fileID: 4044998025107030752}
   - {fileID: 4044998025004921334}
---- !u!114 &1267557022
+--- !u!114 &756007768796717032
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1291,9 +1291,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4044998025786506184}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc7451ebfcfaadf408a87bd18a6eef64, type: 3}
+  m_Script: {fileID: 11500000, guid: 4df1907bb6f97fe438b707851e666f63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _arMsgAPIScriptableObject: {fileID: 11400000, guid: 6654356a8bcc64e8dbfcada070457098,
+    type: 2}
+  open: 0
 --- !u!1 &4066608581989195737
 GameObject:
   m_ObjectHideFlags: 0
