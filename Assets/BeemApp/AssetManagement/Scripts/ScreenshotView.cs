@@ -42,12 +42,8 @@ public class ScreenshotView : MonoBehaviour {
     }
 
     private void OnEnable() {
-        if (_data != null && _data.processing_status == ARMsgJSON.Data.COMPETED_STATUS) {
-            if (_currentMat == null) {
-                _currentMat = new Material(_greenScreenRemoverMat);
-            }
+        if (_data != null && !string.IsNullOrEmpty(_data.ar_message_s3_link)) {
             _videoPlayer.url = _data.ar_message_s3_link;
-            _cancelTokenSource = new CancellationTokenSource();
             if (!_videoPlayer.isPrepared) {
                 _onFailed?.Invoke();
                 _videoPlayer.prepareCompleted += Prepare;
@@ -68,10 +64,15 @@ public class ScreenshotView : MonoBehaviour {
     }
 
     private async void UpdatePreview() {
+        _cancelTokenSource = new CancellationTokenSource();
         CancellationToken cancellationToken = _cancelTokenSource.Token;
 
         _image.texture = _videoPlayer?.texture;
-        _image.material = _currentMat;
+
+        if (_currentMat == null) {
+            _currentMat = new Material(_greenScreenRemoverMat);
+            _image.material = _currentMat;
+        }
 
         _videoPlayer?.Play();
         if (!cancellationToken.IsCancellationRequested) {

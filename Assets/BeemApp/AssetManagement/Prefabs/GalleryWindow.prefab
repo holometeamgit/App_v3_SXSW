@@ -307,10 +307,10 @@ RectTransform:
   m_Father: {fileID: 8462710706521359306}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -800}
-  m_SizeDelta: {x: 0, y: -800}
+  m_SizeDelta: {x: 1124, y: 1636}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &1341198155134283168
 GameObject:
@@ -711,7 +711,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6986205345053563187}
-  - component: {fileID: 5998004115726480027}
   m_Layer: 5
   m_Name: SafeAreaContent
   m_TagString: Untagged
@@ -742,18 +741,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5998004115726480027
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2956898921775441873}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18c0875e369825044991803544937ef9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3542212546388172569
 GameObject:
   m_ObjectHideFlags: 0
@@ -910,8 +897,11 @@ MonoBehaviour:
   _topGradient: {fileID: 9024639799405237130}
   _empty: {fileID: 8462710705823394019}
   _notEmpty: {fileID: 8462710706521359307}
+  _arMsgAPIScriptableObject: {fileID: 11400000, guid: 6654356a8bcc64e8dbfcada070457098,
+    type: 2}
   _topShift: 427
   _userWebManager: {fileID: 0}
+  _webRequestHandler: {fileID: 0}
 --- !u!1 &4044998025004921328
 GameObject:
   m_ObjectHideFlags: 0
@@ -1137,7 +1127,7 @@ GameObject:
   - component: {fileID: 4078020254962114810}
   - component: {fileID: 2698163346796922024}
   - component: {fileID: 6917271042248517622}
-  - component: {fileID: 1267557022}
+  - component: {fileID: 756007768796717032}
   m_Layer: 5
   m_Name: CreateBeemBtn
   m_TagString: Untagged
@@ -1189,9 +1179,9 @@ MonoBehaviour:
   OnPress:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1267557022}
-        m_TargetAssemblyTypeName: ARMessageBtn, Assembly-CSharp
-        m_MethodName: Open
+      - m_Target: {fileID: 756007768796717032}
+        m_TargetAssemblyTypeName: GalleryBtn, Assembly-CSharp
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1292,7 +1282,7 @@ MonoBehaviour:
   m_graphics:
   - {fileID: 4044998025107030752}
   - {fileID: 4044998025004921334}
---- !u!114 &1267557022
+--- !u!114 &756007768796717032
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1301,9 +1291,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4044998025786506184}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc7451ebfcfaadf408a87bd18a6eef64, type: 3}
+  m_Script: {fileID: 11500000, guid: 4df1907bb6f97fe438b707851e666f63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _arMsgAPIScriptableObject: {fileID: 11400000, guid: 6654356a8bcc64e8dbfcada070457098,
+    type: 2}
+  open: 0
 --- !u!1 &4066608581989195737
 GameObject:
   m_ObjectHideFlags: 0
