@@ -18,8 +18,6 @@ public class GalleryWindow : MonoBehaviour {
     private CanvasScaler _canvasScaler = null;
     [SerializeField]
     private RectTransform _scrollRect;
-    //[SerializeField]
-    //private RectTransform _arRect;
     [SerializeField]
     private Image _topGradient;
     [SerializeField]
@@ -27,12 +25,17 @@ public class GalleryWindow : MonoBehaviour {
     [SerializeField]
     private GameObject _notEmpty;
     [SerializeField]
+    private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
+    [SerializeField]
     private float _topShift = 400f;
 
     [Space]
     [SerializeField]
     private UserWebManager _userWebManager;
+    [SerializeField]
+    private WebRequestHandler _webRequestHandler;
 
+    private GalleryController _galleryController;
     private const string TOPIC = "gallery_{0}";
 
     private bool CanShowPushNotificationPopup {
@@ -42,6 +45,18 @@ public class GalleryWindow : MonoBehaviour {
         set {
             PlayerPrefs.SetInt("PushNotificationForARMessage" + _userWebManager?.GetUsername(), value ? 1 : 0);
         }
+    }
+
+    private void Start() {
+        _galleryController = new GalleryController(_arMsgAPIScriptableObject, _webRequestHandler);
+    }
+
+    private void OnEnable() {
+        GalleryNotificationController.OnShow += RefreshWindow;
+    }
+
+    private void OnDisable() {
+        GalleryNotificationController.OnShow += RefreshWindow;
     }
 
     /// <summary>
@@ -57,7 +72,7 @@ public class GalleryWindow : MonoBehaviour {
             _notEmpty.SetActive(true);
             _content.ClearContent();
             List<ScrollItemData> contentDatas = new List<ScrollItemData>();
-            arMsgJSON.results.Sort((x, y) => x.processing_status.CompareTo(y.processing_status));
+            arMsgJSON.results.Sort((x, y) => -x.CreatedAt.CompareTo(y.CreatedAt));
             for (int i = 0; i < arMsgJSON.count; i++) {
                 ARMsgScrollItem aRMsgScrollItem = new ARMsgScrollItem(i);
                 aRMsgScrollItem.Init(arMsgJSON.results[i], GalleryNotificationController.IsNew(arMsgJSON.results[i]));
@@ -80,6 +95,10 @@ public class GalleryWindow : MonoBehaviour {
         _topGradient.fillAmount = shift / _canvasScaler.referenceResolution.y;
         offsetMax.y = -shift;
         _scrollRect.offsetMax = offsetMax;
+    }
+
+    private void RefreshWindow() {
+        _galleryController.GetAllArMessages(onSuccess: Show);
     }
 
     /// <summary>
