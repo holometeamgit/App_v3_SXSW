@@ -20,12 +20,18 @@ public class ARMessageUI : MonoBehaviour {
         ARMsgRecordConstructor.OnActivated?.Invoke(false);
     }*/
 
+    /// <summary>
+    /// Reopen
+    /// </summary>
     public void Reopen() {
         CallBacks.OnCancelAllARMsgActions?.Invoke();
         ARMsgRecordConstructor.OnActivated?.Invoke(true);
         MenuConstructor.OnActivated?.Invoke(true);
     }
 
+    /// <summary>
+    /// ShowInfoPopupBeemMe
+    /// </summary>
     public void ShowInfoPopupBeemMe() {
         InfoPopupConstructor.onActivate("HOW TO RECORD \n YOUR HOLOGRAM \n MESSAGE", false, PnlInfoPopupColour.Orange);
     }
