@@ -33,11 +33,12 @@ public class UIRecordController : MonoBehaviour
     }
 
     private void OnEnable() {
+        _tryInterrupt = false;
         CallBacks.OnVideoReadyPlay += OnRecordStopped;
     }
 
     private void OnRecordStopped() {
-        if(!_tryInterrupt)
+        if (!_tryInterrupt)
             OnStopped?.Invoke();
         _tryInterrupt = false;
     }

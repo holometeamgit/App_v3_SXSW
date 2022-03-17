@@ -13,10 +13,20 @@ public class ARMessageUI : MonoBehaviour {
 
     private const string KEY_SEEN_TUTORIAL_BEEMME = nameof(KEY_SEEN_TUTORIAL_BEEMME);
 
-    private void OnEnable() {
-	RecordSteps.gameObject.SetActive(true);
-        ShowInfoPopUpFirstTime();
-        
+    /// <summary>
+    /// Reopen
+    /// </summary>
+    public void Reopen() {
+        CallBacks.OnCancelAllARMsgActions?.Invoke();
+        ARMsgRecordConstructor.OnActivated?.Invoke(true);
+        MenuConstructor.OnActivated?.Invoke(true);
+    }
+
+    /// <summary>
+    /// ShowInfoPopupBeemMe
+    /// </summary>
+    public void ShowInfoPopupBeemMe() {
+        InfoPopupConstructor.onActivate("HOW TO RECORD \n YOUR HOLOGRAM \n MESSAGE", false, PnlInfoPopupColour.Orange);
     }
 
     private void ShowInfoPopUpFirstTime() {
@@ -26,16 +36,13 @@ public class ARMessageUI : MonoBehaviour {
         }
     }
 
-    /// <summary>
-    /// Close ARMessage Steps
-    /// </summary>
-    public void CloseARMessageSteps() {
-        CallBacks.OnCancelAllARMsgActions?.Invoke();
+    private void OnEnable() {
+        RecordSteps.gameObject.SetActive(true);
+        ShowInfoPopUpFirstTime();
         MenuConstructor.OnActivated?.Invoke(true);
-        ARMsgRecordConstructor.OnActivated?.Invoke(false);
     }
 
-    public void ShowInfoPopupBeemMe() {
-        InfoPopupConstructor.onActivate("HOW TO RECORD \n YOUR HOLOGRAM \n MESSAGE", false, PnlInfoPopupColour.Orange);
+    private void OnDisable() {
+        CallBacks.OnCancelAllARMsgActions?.Invoke();
     }
 }
