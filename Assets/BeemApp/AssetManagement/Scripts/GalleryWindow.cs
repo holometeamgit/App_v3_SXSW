@@ -89,10 +89,12 @@ public class GalleryWindow : MonoBehaviour {
 
     private void RefreshScrollRectSize() {
         _pushNotificationPopUp.SetActive(CanShowPushNotificationPopup);
-        Vector2 offsetMax = _scrollRect.offsetMax;
+
         RectTransform pushRect = _pushNotificationPopUp.GetComponent<RectTransform>();
         float shift = (CanShowPushNotificationPopup ? 1 : 0) * pushRect.sizeDelta.y + _topShift;
         _topGradient.fillAmount = shift / _canvasScaler.referenceResolution.y;
+
+        Vector2 offsetMax = _scrollRect.offsetMax;
         offsetMax.y = -shift;
         _scrollRect.offsetMax = offsetMax;
     }
