@@ -13,13 +13,6 @@ public class ARMessageUI : MonoBehaviour {
 
     private const string KEY_SEEN_TUTORIAL_BEEMME = nameof(KEY_SEEN_TUTORIAL_BEEMME);
 
-    /*/// <summary>
-    /// Close ARMessage Steps
-    /// </summary>
-    public void CloseARMessageSteps() {
-        ARMsgRecordConstructor.OnActivated?.Invoke(false);
-    }*/
-
     /// <summary>
     /// Reopen
     /// </summary>
