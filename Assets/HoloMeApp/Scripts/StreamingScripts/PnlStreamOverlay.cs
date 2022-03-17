@@ -351,12 +351,12 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         if (!_agoraController.IsLive && isChannelCreator)
             StopStream();
         else if (isChannelCreator)
-            WarningConstructor.ActivateDoubleButton("End the live stream?",
-                "Closing this page will end the live stream and disconnect your users.",
+            WarningConstructor.ActivateDoubleButton("End the\nlivestream?",
+                "Closing this page will end the livestream\nand disconnect your users.",
                 onButtonOnePress: () => { DeactivateLive(); OpenMenuScreen(); });
         else
-            WarningConstructor.ActivateDoubleButton("Disconnect from live stream?",
-                "Closing this page will disconnect you from the live stream",
+            WarningConstructor.ActivateDoubleButton("Disconnect from\nlivestream?",
+                "Closing this page will end the livestream\nand disconnect your users.",
                 onButtonOnePress: () => { CloseAsViewer(); OpenMenuScreen(); });
     }
 

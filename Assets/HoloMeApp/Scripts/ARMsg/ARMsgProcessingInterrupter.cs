@@ -16,11 +16,10 @@ public class ARMsgProcessingInterrupter : MonoBehaviour {
     public void Interrupt() {
         WarningConstructor.ActivateDoubleButton("are you sure you want to quit?",
             "You will lose your beem",
-             "stay", "quit",
-            null,
+             "quit", "stay",
             () => {
                 ImmediateInterruption();
-            }, false);
+            }, null, false);
     }
 
     public void ImmediateInterruption() {
