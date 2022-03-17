@@ -85,7 +85,7 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
     }
 
     private void ShowOnline(RoomJsonData data) {
-        string title = $"<color=#{ColorUtility.ToHtmlStringRGBA(_highlightMSGColor)}>{data.user}</color>’s room is online";
+        string title = ConvertApostropheSmartToStraight($"<color=#{ColorUtility.ToHtmlStringRGBA(_highlightMSGColor)}>{data.user}</color>'s room is online");
         string description = string.Empty;
         bool online = true;
         bool closeBtn = false;
@@ -96,7 +96,7 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
     }
 
     private void ShowOffline(RoomJsonData data) {
-        string title = $"<color=#{ ColorUtility.ToHtmlStringRGBA(_highlightMSGColor)}>{data.user}</color>’s room is currently offline";
+        string title = ConvertApostropheSmartToStraight($"<color=#{ColorUtility.ToHtmlStringRGBA(_highlightMSGColor)}>{data.user}</color>'s room is currently offline");
         string description = string.Empty;
         bool online = false;
         bool closeBtn = false;
@@ -105,6 +105,14 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
         _deepLinkRoomPopup.Show(deepLinkRoomData);
         _data = null;
     }
+
+    private string ConvertApostropheSmartToStraight(string value) {
+        if (string.IsNullOrEmpty(value)) {
+            return "";
+        }
+        return value.Replace("’", "'");
+    }
+
 
     private void ShowError(WebRequestError webRequestError) {
         _popupShowChecker.OnReceivedData(() => WarningConstructor.ActivateSingleButton("This user doesn't exist", "Please make sure that the link you received is correct.", "Ok"));
