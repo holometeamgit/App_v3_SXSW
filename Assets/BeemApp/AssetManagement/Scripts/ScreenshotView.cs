@@ -39,9 +39,12 @@ public class ScreenshotView : MonoBehaviour {
         _data = data;
         _onSuccess = onSuccess;
         _onFailed = onFail;
+        if (gameObject.activeInHierarchy) {
+            Activate();
+        }
     }
 
-    private void OnEnable() {
+    private void Activate() {
         if (_data != null && !string.IsNullOrEmpty(_data.ar_message_s3_link)) {
             _videoPlayer.url = _data.ar_message_s3_link;
             if (!_videoPlayer.isPrepared) {
@@ -55,6 +58,10 @@ public class ScreenshotView : MonoBehaviour {
         } else {
             _onFailed?.Invoke();
         }
+    }
+
+    private void OnEnable() {
+        Activate();
     }
 
     private void Prepare(VideoPlayer video) {
