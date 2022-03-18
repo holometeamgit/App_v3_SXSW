@@ -42,8 +42,6 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
     }
 
     private void Show(RoomJsonData data) {
-        cancelTokenSource = new CancellationTokenSource();
-        cancellationToken = cancelTokenSource.Token;
         OnReceivedData(data, ShowData);
     }
 
@@ -52,6 +50,15 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
     }
 
     private async void ShowData(RoomJsonData data) {
+
+
+        if (cancellationToken != null && cancellationToken.IsCancellationRequested) {
+            return;
+        }
+
+        cancelTokenSource = new CancellationTokenSource();
+        cancellationToken = cancelTokenSource.Token;
+
         if (data.status == StreamJsonData.Data.LIVE_ROOM_STR) {
             ShowOnline(data);
         } else {
