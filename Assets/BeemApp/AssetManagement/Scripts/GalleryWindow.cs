@@ -56,7 +56,7 @@ public class GalleryWindow : MonoBehaviour {
     }
 
     private void OnDisable() {
-        GalleryNotificationController.OnShow += RefreshWindow;
+        GalleryNotificationController.OnShow -= RefreshWindow;
     }
 
     /// <summary>
