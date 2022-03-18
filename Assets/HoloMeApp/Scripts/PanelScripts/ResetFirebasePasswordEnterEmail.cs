@@ -7,11 +7,13 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     InputFieldController emailInputField;
 
     [SerializeField]
-    bool needShowWarning = true;
+    private bool needShowWarning = true;
 
     [Space]
     [SerializeField]
     private AuthController _authController;
+    [SerializeField]
+    private AccountManager _accountManager;
 
     public void ForgotPasswordBtnClick() {
         CallBacks.onResetPasswordClick?.Invoke();
@@ -73,8 +75,13 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     /// Switch reset password to sign in
     /// </summary>
     public void ResetPasswordToSignIn() {
+        ChangePasswordConstructor.OnActivated?.Invoke(false);
+        SettingsConstructor.OnActivated?.Invoke(false);
+        GalleryConstructor.OnHide?.Invoke();
         ResetPasswordConstructor.OnActivated?.Invoke(false);
         SignInConstructor.OnActivated?.Invoke(true);
+        _accountManager.LogOut();
+
     }
 
     private void OnEnable() {
