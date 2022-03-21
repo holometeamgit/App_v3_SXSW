@@ -52,7 +52,7 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
 
     public void Init(ARMsgJSON.Data data) {
         currentData = data;
-        if (currentData.user != GetUserWebManager.GetUsername()) {
+        if (currentData.user != _userWebManager.GetUsername()) {
             gameObject.SetActive(false);
         }
     }
