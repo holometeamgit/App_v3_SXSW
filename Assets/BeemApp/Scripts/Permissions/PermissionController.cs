@@ -17,25 +17,14 @@ namespace Beem.Permissions {
 
         private IPermissionGranter _permissionGranter;
 
-        public bool MicRequestComplete {
+        public bool RequestComplete {
             get {
-                return PlayerPrefs.GetString("Access for " + MICROPHONE_ACCESS, "false") == "true";
+                return PlayerPrefs.GetString("RequestPermissionComplete", "false") == "true";
             }
             private set {
-                PlayerPrefs.SetString("Access for " + MICROPHONE_ACCESS, value ? "true" : "false");
+                PlayerPrefs.SetString("RequestPermissionComplete", value ? "true" : "false");
             }
         }
-        public bool CameraRequestComplete {
-            get {
-                return PlayerPrefs.GetString("Access for " + CAMERA_ACCESS, "false") == "true";
-            }
-            private set {
-                PlayerPrefs.SetString("Access for " + CAMERA_ACCESS, value ? "true" : "false");
-            }
-        }
-
-        private const string CAMERA_ACCESS = "Camera";
-        private const string MICROPHONE_ACCESS = "Microphone";
 
         private const int DELAY = 3000;
 
@@ -57,13 +46,13 @@ namespace Beem.Permissions {
 
         public bool HasCameraAccess {
             get {
-                return _permissionGranter.HasCameraAccess;
+                return _permissionGranter.HasAccess(DevicePermissions.Camera);
             }
         }
 
         public bool HasMicAccess {
             get {
-                return _permissionGranter.HasMicAccess;
+                return _permissionGranter.HasAccess(DevicePermissions.Microphone);
             }
         }
 
@@ -79,15 +68,14 @@ namespace Beem.Permissions {
                 return;
             }
 
-            if (!CameraRequestComplete || !MicRequestComplete) {
-                _permissionGranter.RequestCameraMicAccess(onSuccessed, onFailed);
-                CameraRequestComplete = true;
-                CameraRequestComplete = true;
+            if (!RequestComplete) {
+                _permissionGranter.RequestAccess(new DevicePermissions[] { DevicePermissions.Camera, DevicePermissions.Microphone }, onSuccessed, onFailed);
+                RequestComplete = true;
                 return;
             }
 
 
-            OpenNotification(CAMERA_ACCESS + " and " + MICROPHONE_ACCESS, () => {
+            OpenNotification(DevicePermissions.Camera + " and " + DevicePermissions.Microphone, () => {
                 if (HasCameraMicAccess) {
                     onSuccessed?.Invoke();
                 } else {
@@ -97,64 +85,9 @@ namespace Beem.Permissions {
 
         }
 
-        /// <summary>
-        /// Check Camera Access
-        /// </summary>
-        /// <returns></returns>
-        public void CheckCameraAccess(Action onSuccessed, Action onFailed = null) {
-
-            if (HasCameraAccess) {
-                onSuccessed.Invoke();
-                return;
-            }
-
-            if (!CameraRequestComplete) {
-                _permissionGranter.RequestCameraAccess(onSuccessed, onFailed);
-                CameraRequestComplete = true;
-                return;
-            }
-
-
-            OpenNotification(CAMERA_ACCESS, () => {
-                if (HasCameraAccess) {
-                    onSuccessed?.Invoke();
-                } else {
-                    onFailed?.Invoke();
-                }
-            }); ;
-        }
-
-        /// <summary>
-        /// Check Microphone Access
-        /// </summary>
-        /// <returns></returns>
-
-        public void CheckMicAccess(Action onSuccessed, Action onFailed = null) {
-
-            if (HasMicAccess) {
-                onSuccessed.Invoke();
-                return;
-            }
-
-            if (!MicRequestComplete) {
-                _permissionGranter.RequestMicAccess(onSuccessed, onFailed);
-                MicRequestComplete = true;
-                return;
-            }
-
-
-            OpenNotification(MICROPHONE_ACCESS, () => {
-                if (HasMicAccess) {
-                    onSuccessed?.Invoke();
-                } else {
-                    onFailed?.Invoke();
-                }
-            }); ;
-        }
-
         private void OpenNotification(string accessName, Action onClosed) {
-            WarningConstructor.ActivateDoubleButton(accessName + " access Required!",
-                      "Please enable " + accessName + " access to use this app",
+            WarningConstructor.ActivateDoubleButton(accessName + " accesses Required!",
+                      "Please enable " + accessName + " accesses to use this app",
                       "Settings",
                       "Cancel",
                       () => {

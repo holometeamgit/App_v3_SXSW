@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Android;
 
@@ -9,32 +10,37 @@ namespace Beem.Permissions {
     /// </summary>
     public class AndroidPermission : IPermissionGranter {
 
-        public bool HasCameraAccess => Permission.HasUserAuthorizedPermission(Permission.Camera);
-        public bool HasMicAccess => Permission.HasUserAuthorizedPermission(Permission.Microphone);
-        public bool HasCameraMicAccess => HasCameraAccess && HasMicAccess;
+        private Dictionary<DevicePermissions, string> permissions = new Dictionary<DevicePermissions, string>() {
+            { DevicePermissions.Camera, Permission.Camera },
+            { DevicePermissions.Microphone, Permission.Microphone }
+        };
 
-        public void RequestMicAccess(Action onSuccessed, Action onFailed) {
-            var callbacks = new PermissionCallbacks();
-            callbacks.PermissionDenied += (value) => { onFailed?.Invoke(); };
-            callbacks.PermissionGranted += (value) => { onSuccessed?.Invoke(); };
-            callbacks.PermissionDeniedAndDontAskAgain += (value) => { onFailed?.Invoke(); };
-            Permission.RequestUserPermission(Permission.Microphone, callbacks);
+        public bool HasAccess(DevicePermissions devicePermission) {
+            return Permission.HasUserAuthorizedPermission(permissions[devicePermission]);
         }
 
-        public void RequestCameraAccess(Action onSuccessed, Action onFailed) {
-            var callbacks = new PermissionCallbacks();
-            callbacks.PermissionDenied += (value) => { onFailed?.Invoke(); };
-            callbacks.PermissionGranted += (value) => { onSuccessed?.Invoke(); };
-            callbacks.PermissionDeniedAndDontAskAgain += (value) => { onFailed?.Invoke(); };
-            Permission.RequestUserPermission(Permission.Camera, callbacks);
+        public bool HasAccesses(DevicePermissions[] devicePermissions) {
+            foreach (var item in devicePermissions) {
+                if (!Permission.HasUserAuthorizedPermission(permissions[item])) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
-        public void RequestCameraMicAccess(Action onSuccessed, Action onFailed) {
+        public void RequestAccess(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed) {
             var callbacks = new PermissionCallbacks();
             callbacks.PermissionDenied += (value) => { onFailed?.Invoke(); };
             callbacks.PermissionGranted += (value) => { onSuccessed?.Invoke(); };
             callbacks.PermissionDeniedAndDontAskAgain += (value) => { onFailed?.Invoke(); };
-            Permission.RequestUserPermissions(new string[] { Permission.Camera, Permission.Microphone }, callbacks);
+
+            string[] tempPermissions = new string[devicePermissions.Length];
+            for (int i = 0; i < devicePermissions.Length; i++) {
+                tempPermissions[i] = permissions[devicePermissions[i]];
+            }
+
+            Permission.RequestUserPermissions(tempPermissions, callbacks);
         }
 
         public void RequestSettings() {
