@@ -33,8 +33,6 @@ public class PrerecordedVideoWindow : MonoBehaviour {
     [SerializeField]
     private Toggle commentsToggle;
 
-    [Space]
-    [SerializeField]
     private PurchaseManager _purchaseManager;
     private HologramHandler _hologramHandler;
 
@@ -47,8 +45,9 @@ public class PrerecordedVideoWindow : MonoBehaviour {
     private bool isPinned = false;
 
     [Inject]
-    public void Construct(HologramHandler hologramHandler) {
+    public void Construct(HologramHandler hologramHandler, PurchaseManager purchaseManager) {
         _hologramHandler = hologramHandler;
+        _purchaseManager = purchaseManager;
     }
 
     /// <summary>

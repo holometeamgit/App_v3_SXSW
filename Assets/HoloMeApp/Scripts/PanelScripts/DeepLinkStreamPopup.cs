@@ -32,8 +32,6 @@ public class DeepLinkStreamPopup : UIThumbnail {
     [SerializeField]
     private VerticalLayoutGroup layoutGroup;
 
-    [Space]
-    [SerializeField]
     private PurchaseManager _purchaseManager;
     private UserWebManager _userWebManager;
     private WebRequestHandler _webRequestHandler;
@@ -44,9 +42,10 @@ public class DeepLinkStreamPopup : UIThumbnail {
     private const int REFRESH_LAYOUT_TIME = 1000;
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager) {
+    public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager, PurchaseManager purchaseManager) {
         _webRequestHandler = webRequestHandler;
         _userWebManager = userWebManager;
+        _purchaseManager = purchaseManager;
     }
 
     /// <summary>
