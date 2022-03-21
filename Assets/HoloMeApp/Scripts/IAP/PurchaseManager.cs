@@ -6,15 +6,12 @@ using UnityEngine.Purchasing;
 using Beem.SSO;
 using Zenject;
 
-public class PurchaseManager : MonoBehaviour
-{
+public class PurchaseManager : MonoBehaviour {
     public Action OnPurchaseStarted;
     public Action OnPurchaseSuccessful;
     public Action OnPurchaseCanceled;
     public Action OnServerPurchasedDataUpdated;
 
-    [SerializeField] IAPController iapController;
-    [SerializeField] PurchasesSaveManager purchasesSaveManager;
     [SerializeField] PurchaseAPIScriptableObject purchaseAPISO;
 
     [Space]//TODO change to signal when DI will add
@@ -22,10 +19,14 @@ public class PurchaseManager : MonoBehaviour
 
     StreamJsonData.Data streamData;
     private WebRequestHandler _webRequestHandler;
+    private IAPController _iapController;
+    private PurchasesSaveManager _purchasesSaveManager;
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler) {
+    public void Construct(WebRequestHandler webRequestHandler, IAPController iapController, PurchasesSaveManager purchasesSaveManager) {
         _webRequestHandler = webRequestHandler;
+        _iapController = iapController;
+        _purchasesSaveManager = purchasesSaveManager;
     }
 
     public void SetPurchaseStreamData(StreamJsonData.Data data) {
@@ -39,17 +40,17 @@ public class PurchaseManager : MonoBehaviour
     public void Purchase() {
         if (streamData == null || streamData.is_bought)
             return;
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed, new Dictionary<string, string> { {AnalyticParameters.ParamProductID, streamData.product_type.product_id}, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, streamData.user_id.ToString() } } );
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchasePressed, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, streamData.user_id.ToString() } });
         backgroudGO.SetActive(true);
-        iapController.BuyTicket(streamData.product_type.product_id);
+        _iapController.BuyTicket(streamData.product_type.product_id);
         OnPurchaseStarted?.Invoke();
     }
 
     private void Awake() {
-        iapController.OnPurchaseHandler += OnPurchaseCallBack;
-        iapController.OnPurchaseFailedHandler += OnPurchaseFailCallBack;
-        purchasesSaveManager.OnAllDataSended += AllPurchasedDataSentOnServerCallBack;
-        purchasesSaveManager.OnFailSentToserver += HideBackgroud;
+        _iapController.OnPurchaseHandler += OnPurchaseCallBack;
+        _iapController.OnPurchaseFailedHandler += OnPurchaseFailCallBack;
+        _purchasesSaveManager.OnAllDataSended += AllPurchasedDataSentOnServerCallBack;
+        _purchasesSaveManager.OnFailSentToserver += HideBackgroud;
     }
 
     private void Start() {
@@ -66,7 +67,7 @@ public class PurchaseManager : MonoBehaviour
         ProductJsonData productJsonData = new ProductJsonData();
         try {
             productJsonData = JsonUtility.FromJson<ProductJsonData>(body);
-            
+
         } catch (Exception e) {
             HelperFunctions.DevLogError(e.Message);
 
@@ -86,7 +87,7 @@ public class PurchaseManager : MonoBehaviour
             productIdList.Add(product.product_id);
         }
 
-        iapController.InitializePurchasing(productIdList);
+        _iapController.InitializePurchasing(productIdList);
     }
 
     private void ErrorProductListCallBack(long code, string body) {
@@ -99,19 +100,19 @@ public class PurchaseManager : MonoBehaviour
         //streamData.is_bought = true;
         //streamData.InvokeDataUpdated();
 
-        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, {AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, streamData.user_id.ToString() } });
-        AnalyticsCleverTapController.Instance.SendChargeEvent(new Dictionary<string, object> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() },{ "Currency", "USD" }, }, new List<Dictionary<string, object>>{ new Dictionary<string, object> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, streamData.user_id.ToString() } } });
+        AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyPurchaseSuccessful, new Dictionary<string, string> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, streamData.user_id.ToString() } });
+        AnalyticsCleverTapController.Instance.SendChargeEvent(new Dictionary<string, object> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() }, { "Currency", "USD" }, }, new List<Dictionary<string, object>> { new Dictionary<string, object> { { AnalyticParameters.ParamProductID, streamData.product_type.product_id }, { AnalyticParameters.ParamProductPrice, streamData.product_type.price.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, streamData.user_id.ToString() } } });
 
         StreamBillingJsonData streamBillingJsonData = new StreamBillingJsonData();
         streamBillingJsonData.bill.hash = product.receipt;
 
         CallBacks.onStreamPurchasedInStore?.Invoke(streamData.id);
-        purchasesSaveManager.SendToServer(streamData.id, streamBillingJsonData);
+        _purchasesSaveManager.SendToServer(streamData.id, streamBillingJsonData);
 
         streamData = null;
 
         OnPurchaseSuccessful?.Invoke();
-        
+
     }
 
     private void HideBackgroud() {
@@ -133,7 +134,7 @@ public class PurchaseManager : MonoBehaviour
         return _webRequestHandler.ServerURLMediaAPI + purchaseAPISO.GetProduct;
     }
 
-    private IEnumerator RepeatRequestProduct () {
+    private IEnumerator RepeatRequestProduct() {
         yield return new WaitForSeconds(1);
         GetProductList();
     }

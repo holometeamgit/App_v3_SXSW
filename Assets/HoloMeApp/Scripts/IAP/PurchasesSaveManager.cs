@@ -11,19 +11,19 @@ public class PurchasesSaveManager : MonoBehaviour {
 
     [SerializeField]
     PurchaseAPIScriptableObject purchaseAPISO;
-    [SerializeField]
-    IAPController iapController;
 
     private bool isBusy;
     private WebRequestHandler _webRequestHandler;
     private AuthController _authController;
     private UserWebManager _userWebManager;
+    private IAPController _iapController;
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler, AuthController authController, UserWebManager userWebManager) {
+    public void Construct(WebRequestHandler webRequestHandler, AuthController authController, UserWebManager userWebManager, IAPController iapController) {
         _webRequestHandler = webRequestHandler;
         _authController = authController;
         _userWebManager = userWebManager;
+        _iapController = iapController;
     }
 
     public void SendToServer(long id, StreamBillingJsonData streamBillingJsonData) {
