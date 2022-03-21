@@ -49,7 +49,7 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
     /// On Click
     /// </summary>
     public void OnClick() {
-        WarningConstructor.ActivateDoubleButton("Delete this beem?", "Deleting a beem is forever, are you sure?", "Delete", "Cancel", () => Delete());
+        WarningConstructor.ActivateDoubleButton("Delete this Beem?", "Deleting a Beem is forever, are you sure?", "Delete", "Cancel", () => Delete());
     }
 
     private void Delete() {
