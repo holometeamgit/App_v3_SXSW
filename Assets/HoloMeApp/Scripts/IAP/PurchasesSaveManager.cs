@@ -11,22 +11,22 @@ public class PurchasesSaveManager : MonoBehaviour {
 
     [SerializeField] UserWebManager userWebManager;
     [SerializeField]
-    AuthController authController;
-    [SerializeField]
     PurchaseAPIScriptableObject purchaseAPISO;
     [SerializeField]
     IAPController iapController;
 
     private bool isBusy;
     private WebRequestHandler _webRequestHandler;
+    private AuthController _authController;
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler) {
+    public void Construct(WebRequestHandler webRequestHandler, AuthController authController) {
         _webRequestHandler = webRequestHandler;
+        _authController = authController;
     }
 
     public void SendToServer(long id, StreamBillingJsonData streamBillingJsonData) {
-        AddData(authController.GetID(), id, streamBillingJsonData);
+        AddData(_authController.GetID(), id, streamBillingJsonData);
         CheckSubmittedData();
     }
 
@@ -41,7 +41,7 @@ public class PurchasesSaveManager : MonoBehaviour {
             return;
         }
 
-        string uniqName = authController.GetID();
+        string uniqName = _authController.GetID();
 
         if (string.IsNullOrWhiteSpace(uniqName)) {
             OnFailSentToserver?.Invoke();

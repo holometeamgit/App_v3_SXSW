@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using Zenject;
 
 public class AccountManager : MonoBehaviour {
-    public AuthController authController;
-
     [SerializeField]
     AuthorizationAPIScriptableObject authorizationAPI;
 
@@ -19,13 +17,15 @@ public class AccountManager : MonoBehaviour {
     private ActionWrapper _onCancelLogIn;
 
     private WebRequestHandler _webRequestHandler;
+    private AuthController _authController;
 
     private bool canLogIn = true;
     private const int QUICK_LOGIN_DELAY_TIME = 1000;
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler) {
+    public void Construct(WebRequestHandler webRequestHandler, AuthController authController) {
         _webRequestHandler = webRequestHandler;
+        _authController = authController;
     }
 
 
@@ -115,16 +115,16 @@ public class AccountManager : MonoBehaviour {
 
         ServerAccessToken accessToken = GetAccessToken();
 
-        if (accessToken == null && !authController.HasUser()) {
+        if (accessToken == null && !_authController.HasUser()) {
             ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
             //errorTypeCallBack?.Invoke();
             LogOut();
             return;
-        } else if (accessToken == null && authController.HasUser() && GetLogInType() != LogInType.None) {
+        } else if (accessToken == null && _authController.HasUser() && GetLogInType() != LogInType.None) {
             HelperFunctions.DevLog("Has firebase user. QuickLogIn Firebase");
-            authController.DoAfterReloadUser(() => CallBacks.onFirebaseSignInSuccess(GetLogInType())); //TODO need test 
+            _authController.DoAfterReloadUser(() => CallBacks.onFirebaseSignInSuccess(GetLogInType())); //TODO need test 
             return;
-        } else if (accessToken == null && authController.HasUser() && GetLogInType() == LogInType.None) {
+        } else if (accessToken == null && _authController.HasUser() && GetLogInType() == LogInType.None) {
             HelperFunctions.DevLog("Has firebase user but doesn't have LogInType");
             LogOut();
             ErrorRequestAccessTokenCallBack(0, "");// "Server Access Token file doesn't exist");
@@ -166,17 +166,17 @@ public class AccountManager : MonoBehaviour {
 
     private void LogInToServer(LogInType logInType) {
 
-        if (authController.IsNewUser())
+        if (_authController.IsNewUser())
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete);
 
         SaveLogInType(logInType);
 
-        if (logInType == LogInType.Email && !authController.IsVerifiried()) {
-            CallBacks.onNeedVerification?.Invoke(authController.GetEmail());
+        if (logInType == LogInType.Email && !_authController.IsVerifiried()) {
+            CallBacks.onNeedVerification?.Invoke(_authController.GetEmail());
             return;
         }
 
-        authController.GetFirebaseToken((firebaseAccessToken) => GetServerAccessToken(firebaseAccessToken), CallBacks.onFail);
+        _authController.GetFirebaseToken((firebaseAccessToken) => GetServerAccessToken(firebaseAccessToken), CallBacks.onFail);
     }
 
     private void GetServerAccessToken(string firebaseAccessToken) {

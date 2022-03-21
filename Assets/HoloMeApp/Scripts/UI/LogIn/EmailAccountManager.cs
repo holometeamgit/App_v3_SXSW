@@ -29,17 +29,17 @@ public class EmailAccountManager : MonoBehaviour {
     public Action<BadRequestChangePassword> OnErrorChangePassword;
 
     [SerializeField]
-    AccountManager accountManager;
-    [SerializeField]
     AuthorizationAPIScriptableObject authorizationAPI;
 
     private WebRequestHandler _webRequestHandler;
+    private AccountManager _accountManager;
 
     private string lastSignUpEmail;
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler) {
+    public void Construct(WebRequestHandler webRequestHandler, AccountManager accountManager) {
         _webRequestHandler = webRequestHandler;
+        _accountManager = accountManager;
     }
 
     public void SignUp(EmailSignUpJsonData emailSignUpJsonData) {
@@ -144,8 +144,8 @@ public class EmailAccountManager : MonoBehaviour {
     }
 
     private void VerifedCallBack(long code, string body) {
-        accountManager.SaveAccessToken(body);
-        accountManager.SaveLogInType(LogInType.Email);
+        _accountManager.SaveAccessToken(body);
+        _accountManager.SaveLogInType(LogInType.Email);
         OnVerified?.Invoke();
     }
 
@@ -164,8 +164,8 @@ public class EmailAccountManager : MonoBehaviour {
     }
 
     private void LogInCallBack(long code, string body) {
-        accountManager.SaveLogInType(LogInType.Email);
-        accountManager.SaveAccessToken(body);
+        _accountManager.SaveLogInType(LogInType.Email);
+        _accountManager.SaveAccessToken(body);
         OnLogIn?.Invoke();
     }
 

@@ -21,7 +21,6 @@ public class UserWebManager : MonoBehaviour {
     public Action OnUserAccountDeleted;
     public Action UserAccountDisabled;
 
-    [SerializeField] AccountManager accountManager;
     [SerializeField] AuthorizationAPIScriptableObject authorizationAPI;
 
     private UserJsonData userData;

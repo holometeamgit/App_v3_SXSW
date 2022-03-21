@@ -4,6 +4,7 @@ using UnityEngine;
 using Beem.SSO;
 using TMPro;
 using Beem.Permissions;
+using Zenject;
 
 /// <summary>
 /// Settings Pnl
@@ -15,9 +16,14 @@ public class PnlSettings : MonoBehaviour {
     private TMP_Text _txtNickname;
     [Space]
     [SerializeField]
-    private AccountManager _accountManager;
-    [SerializeField]
     private UserWebManager _userWebManager;
+
+    private AccountManager _accountManager;
+
+    [Inject]
+    public void Construct(AccountManager accountManager) {
+        _accountManager = accountManager;
+    }
 
     private void OnEnable() {
         _changePassword.SetActive(_accountManager.GetLogInType() == LogInType.Email);

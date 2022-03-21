@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class PnlSignUpEmail : MonoBehaviour {
     [SerializeField] EmailAccountManager emailAccountManager;
-    [SerializeField] AccountManager accountManager;
     [SerializeField] PnlEmailVerification pnlEmailVerification;
     [SerializeField] Switcher switcherToVerification;
     [SerializeField] InputFieldController inputFieldEmail;
@@ -19,7 +19,7 @@ public class PnlSignUpEmail : MonoBehaviour {
         emailSignUpJsonData.password1 = inputFieldPassword.text;
         emailSignUpJsonData.password2 = inputFieldConfirmPassword.text;
 
-        if(LocalDataVerification())
+        if (LocalDataVerification())
             emailAccountManager.SignUp(emailSignUpJsonData);
     }
 

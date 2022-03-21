@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using Zenject;
 
 /// <summary>
 /// checks requirements for opening PnlRoomPopup
@@ -17,12 +18,16 @@ public class DeepLinkChecker : MonoBehaviour {
     [SerializeField]
     private bool _requireSignIn = true;
 
-    [SerializeField]
-    private AuthController _authController;
-
     private CancellationTokenSource _cancelTokenSource;
     private CancellationToken _cancellationToken;
     private const int CHECK_COOLDOWN = 5000;
+
+    private AuthController _authController;
+
+    [Inject]
+    public void Construct(AuthController authController) {
+        _authController = authController;
+    }
 
     /// <summary>
     /// Condition for DeepLink PopUp

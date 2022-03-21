@@ -5,6 +5,7 @@ using Beem.SSO;
 using TMPro;
 using System.Threading.Tasks;
 using System;
+using Zenject;
 
 public class PnlEmailVerificationFirebase : MonoBehaviour {
     [SerializeField]
@@ -15,13 +16,16 @@ public class PnlEmailVerificationFirebase : MonoBehaviour {
     GameObject _resendBtn;
     [SerializeField] TMP_Text _resendMsg;
 
-    [Space]
-    [SerializeField]
     private AuthController _authController;
 
     private const int DELAY_TIME = 5000;
     private const int DELAY_FOR_TIMER = 1000;
     private const string TIMER_TEXT = "You can resend the email in ";
+
+    [Inject]
+    public void Construct(AuthController authController) {
+        _authController = authController;
+    }
 
     /// <summary>
     /// The method do actions after pressing the ResendVerification button

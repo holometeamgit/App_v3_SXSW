@@ -2,17 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Beem.SSO;
+using Zenject;
 
-public class PnlCheckPassword : MonoBehaviour
-{
+public class PnlCheckPassword : MonoBehaviour {
     [SerializeField] UserWebManager userWebManager;
     [SerializeField] EmailAccountManager emailAccountManager;
-    [SerializeField] AccountManager accountManager;
     [SerializeField] InputFieldController inputFieldPassword;
     [SerializeField] Switcher SwitchToNextMenu;
 
+    private AccountManager _accountManager;
+
+    [Inject]
+    public void Construct(AccountManager accountManager) {
+        _accountManager = accountManager;
+    }
+
     public void CheckPassword() {
-        if(LocalDataVerification())
+        if (LocalDataVerification())
             userWebManager.LoadUserInfo();
     }
 
@@ -57,7 +63,7 @@ public class PnlCheckPassword : MonoBehaviour
 
         userWebManager.OnUserInfoLoaded += CheckAccess;
 
-        if(accountManager.GetLogInType() != LogInType.Email)
+        if (_accountManager.GetLogInType() != LogInType.Email)
             SwitchToNextMenu.Switch();
     }
 

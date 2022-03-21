@@ -7,16 +7,17 @@ using Zenject;
 
 public class SSOAuthorization : MonoBehaviour {
     [SerializeField] DeepLinkHandler deepLinkHandler;
-    [SerializeField] AccountManager accountManager;
     [SerializeField] AuthorizationAPIScriptableObject authorizationAPI;
 
     [SerializeField] UnityEvent OnAuthorized;
 
     private WebRequestHandler _webRequestHandler;
+    private AccountManager _accountManager;
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler) {
+    public void Construct(WebRequestHandler webRequestHandler, AccountManager accountManager) {
         _webRequestHandler = webRequestHandler;
+        _accountManager = accountManager;
     }
 
     public void AppleLogIn() {
@@ -38,12 +39,12 @@ public class SSOAuthorization : MonoBehaviour {
 
     private void SSOLogIn(ServerAccessToken serverAccessToken) {
         Debug.Log("SSOLogIn");
-        if (serverAccessToken == null || accountManager.GetLogInType() != LogInType.None)
+        if (serverAccessToken == null || _accountManager.GetLogInType() != LogInType.None)
             return;
 
 
-        accountManager.SaveAccessToken(JsonUtility.ToJson(serverAccessToken));
-        accountManager.SaveLogInType(LogInType.SSO);
+        _accountManager.SaveAccessToken(JsonUtility.ToJson(serverAccessToken));
+        _accountManager.SaveLogInType(LogInType.SSO);
 
         OnAuthorized.Invoke();
     }

@@ -10,8 +10,6 @@ using Beem.SSO;
 using Zenject;
 
 public class AppleAccountManager : MonoBehaviour {
-    [SerializeField]
-    AccountManager accountManager;
 
     [Space]
     [SerializeField]
@@ -25,9 +23,12 @@ public class AppleAccountManager : MonoBehaviour {
 
     public UnityEvent OnAuthorized;
 
+    private AccountManager _accountManager;
+
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler) {
+    public void Construct(WebRequestHandler webRequestHandler, AccountManager accountManager) {
         _webRequestHandler = webRequestHandler;
+        _accountManager = accountManager;
     }
 
     public void SignInWithAppleButtonPressed() {
@@ -121,7 +122,7 @@ public class AppleAccountManager : MonoBehaviour {
 
     private void SaveAccessTokens() {
 
-        accountManager.SaveAccessToken(_accessToken);
+        _accountManager.SaveAccessToken(_accessToken);
         HelperFunctions.DevLog("Save Acceess token: \n" + _accessToken);
         _accessToken = null;
     }
@@ -181,7 +182,7 @@ public class AppleAccountManager : MonoBehaviour {
                 HelperFunctions.DevLog("Acceess token: \n" + data);
                 _accessToken = data;
                 SaveAccessTokens();
-                accountManager.SaveLogInType(LogInType.Apple);
+                _accountManager.SaveLogInType(LogInType.Apple);
                 OnAuthorized.Invoke();
                 break;
         }
