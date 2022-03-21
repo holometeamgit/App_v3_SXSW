@@ -18,9 +18,6 @@ public class AgoraController : MonoBehaviour {
     [SerializeField]
     GameObject liveStreamQuad;
 
-    [SerializeField]
-    SecondaryServerCalls secondaryServerCalls;
-
     TokenAgoraResponse tokenAgoraResponseChannel;
     TokenAgoraResponse tokenAgoraResponseRTM;
 
@@ -68,18 +65,20 @@ public class AgoraController : MonoBehaviour {
 
     private UserWebManager _userWebManager;
     private AgoraRTMChatController _agoraRTMChatController;
+    private SecondaryServerCalls _secondaryServerCalls;
 
     [Inject]
-    public void Construct(UserWebManager userWebManager, AgoraRTMChatController agoraRTMChatController) {
+    public void Construct(UserWebManager userWebManager, AgoraRTMChatController agoraRTMChatController, SecondaryServerCalls secondaryServerCalls) {
         _userWebManager = userWebManager;
         _agoraRTMChatController = agoraRTMChatController;
+        _secondaryServerCalls = secondaryServerCalls;
     }
 
     public void Start() {
         LoadEngine(AppId);
         frameRate = 30;
         _agoraRTMChatController.Init(AppId);
-        secondaryServerCalls.OnStreamStarted += (x, y, z) => SecondaryServerCallsComplete(x, y, z);
+        _secondaryServerCalls.OnStreamStarted += (x, y, z) => SecondaryServerCallsComplete(x, y, z);
 
         //iRtcEngine.OnUserEnableVideo = OnUserEnableVideoHandler;
         //iRtcEngine.OnUserEnableLocalVideo = OnUserEnableVideoHandler;
@@ -190,7 +189,7 @@ public class AgoraController : MonoBehaviour {
             return;
 
         if (channelCreator) {
-            secondaryServerCalls.StartStream(ChannelName, IsRoom);
+            _secondaryServerCalls.StartStream(ChannelName, IsRoom);
             maxViewerCountTracker = 0;
             AnalyticsController.Instance.StartTimer(AnalyticKeys.KeyViewLengthOfStream, AnalyticKeys.KeyViewLengthOfStream);
         } else {
@@ -200,7 +199,7 @@ public class AgoraController : MonoBehaviour {
 
     void GetViewerAgoraToken() {
         HelperFunctions.DevLog("Getting Agora Viewer Token For Channel Name " + ChannelName);
-        secondaryServerCalls.GetAgoraToken(OnViewerAgoraTokenReturned, ChannelName);
+        _secondaryServerCalls.GetAgoraToken(OnViewerAgoraTokenReturned, ChannelName);
     }
 
     void OnViewerAgoraTokenReturned(long code, string data) {
@@ -215,7 +214,7 @@ public class AgoraController : MonoBehaviour {
 
     void GetRTMLoginToken() {
         HelperFunctions.DevLog("Getting Agora RTM Token");
-        secondaryServerCalls.GetAgoraToken(OnRTMAgoraTokenReturned);
+        _secondaryServerCalls.GetAgoraToken(OnRTMAgoraTokenReturned);
     }
 
     void OnRTMAgoraTokenReturned(long code, string data) {
@@ -284,7 +283,7 @@ public class AgoraController : MonoBehaviour {
             StopCoroutine(sendThumbnailRoutine);
 
         if (IsChannelCreator) {
-            secondaryServerCalls.EndStream();
+            _secondaryServerCalls.EndStream();
             AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyMaxViewerCount, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamChannelName, ChannelName }, { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() }, { AnalyticParameters.ParamViewerCount, maxViewerCountTracker.ToString() } });
             AnalyticsController.Instance.StopTimer(AnalyticKeys.KeyViewLengthOfStream, new Dictionary<string, string> { { AnalyticParameters.ParamChannelName, ChannelName }, { AnalyticParameters.ParamDate, DateTime.Now.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() } });
         } else {
@@ -327,7 +326,7 @@ public class AgoraController : MonoBehaviour {
             data = originalSnapShot.EncodeToPNG();
         }
 
-        secondaryServerCalls.UploadPreviewImage(data);
+        _secondaryServerCalls.UploadPreviewImage(data);
     }
 
     private void ResetVideoQuadSurface() {
