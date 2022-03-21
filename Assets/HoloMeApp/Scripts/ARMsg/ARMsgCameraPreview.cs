@@ -80,6 +80,10 @@ public class ARMsgCameraPreview : MonoBehaviour {
 
 
     private void OnEnable() {
+        if (_currectDeviceID != 1) {
+            SwitchDevice();
+        }
+
         StartStartCameraCoroutine();
         CallBacks.onGetCurrentCameraID += GetCurrentCameraID;
     }
