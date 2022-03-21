@@ -51,11 +51,6 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
 
     private async void ShowData(RoomJsonData data) {
 
-
-        if (cancellationToken != null && cancellationToken.IsCancellationRequested) {
-            return;
-        }
-
         cancelTokenSource = new CancellationTokenSource();
         cancellationToken = cancelTokenSource.Token;
 
