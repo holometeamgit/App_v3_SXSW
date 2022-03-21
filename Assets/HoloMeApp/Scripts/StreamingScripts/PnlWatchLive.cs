@@ -10,15 +10,14 @@ public class PnlWatchLive : MonoBehaviour {
     [SerializeField]
     UnityEvent OnChannelNamePassed;
 
-    [SerializeField]
-    AgoraRequests agoraRequests;
-
     RequestChannelList requestChannelList;
     private AgoraController _agoraController;
+    private AgoraRequests _agoraRequests;
 
     [Inject]
-    public void Construct(AgoraController agoraController) {
+    public void Construct(AgoraController agoraController, AgoraRequests agoraRequests) {
         _agoraController = agoraController;
+        _agoraRequests = agoraRequests;
     }
 
     private void Awake() {
@@ -33,7 +32,7 @@ public class PnlWatchLive : MonoBehaviour {
         if (string.IsNullOrWhiteSpace(inputFieldController.text)) {
             inputFieldController.ShowWarning("Please enter a valid name");
         } else {
-            agoraRequests.MakeGetRequest(requestChannelList);
+            _agoraRequests.MakeGetRequest(requestChannelList);
         }
     }
 

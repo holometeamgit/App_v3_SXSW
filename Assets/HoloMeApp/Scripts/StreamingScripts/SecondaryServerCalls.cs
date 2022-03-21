@@ -8,8 +8,7 @@ public class SecondaryServerCalls : MonoBehaviour {
     [SerializeField]
     VideoUploader videoUploader;
 
-    [SerializeField]
-    AgoraRequests agoraRequests;
+    private AgoraRequests _agoraRequests;
 
     private WebRequestHandler _webRequestHandler;
 
@@ -24,8 +23,9 @@ public class SecondaryServerCalls : MonoBehaviour {
     RequestCloudRecordStop requestCloudRecordStop;
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler) {
+    public void Construct(WebRequestHandler webRequestHandler, AgoraRequests agoraRequests) {
         _webRequestHandler = webRequestHandler;
+        _agoraRequests = agoraRequests;
     }
 
     public void UploadPreviewImage(byte[] imageData) {
@@ -79,7 +79,7 @@ public class SecondaryServerCalls : MonoBehaviour {
         requestCloudRecordAcquire.OnSuccessAction -= OnAcquireComplete;
         requestCloudRecordAcquire.OnSuccessAction += OnAcquireComplete;
         requestCloudRecordAcquire.OnFailedAction = () => Debug.LogError("Cloud Record Acquire Error");
-        agoraRequests.MakePostRequest(requestCloudRecordAcquire, JsonUtility.ToJson(requestCloudRecordAcquire.AgoraCloudAcquireRequestData));
+        _agoraRequests.MakePostRequest(requestCloudRecordAcquire, JsonUtility.ToJson(requestCloudRecordAcquire.AgoraCloudAcquireRequestData));
     }
 
     void OnAcquireComplete() {
@@ -93,7 +93,7 @@ public class SecondaryServerCalls : MonoBehaviour {
         requestCloudRecordResource.StartCloudRecordRequestData.uid = requestCloudRecordAcquire.AgoraCloudAcquireRequestData.uid;
         requestCloudRecordResource.StartCloudRecordRequestData.cname = requestCloudRecordAcquire.AgoraCloudAcquireRequestData.cname;
         requestCloudRecordResource.StartCloudRecordRequestData.clientRequest.token = tokenAgoraResponse.token;
-        agoraRequests.MakePostRequest(requestCloudRecordResource, JsonUtility.ToJson(requestCloudRecordResource.StartCloudRecordRequestData));
+        _agoraRequests.MakePostRequest(requestCloudRecordResource, JsonUtility.ToJson(requestCloudRecordResource.StartCloudRecordRequestData));
         HelperFunctions.DevLog(JsonUtility.ToJson(requestCloudRecordResource.StartCloudRecordRequestData, true));
     }
 
@@ -169,7 +169,7 @@ public class SecondaryServerCalls : MonoBehaviour {
 
         HelperFunctions.DevLog("STOPPING CLOUD RECORDING:" + requestCloudRecordStop.RequestString);
         HelperFunctions.DevLog("PAYLOAD: " + JsonUtility.ToJson(payload, true));
-        agoraRequests.MakePostRequest(requestCloudRecordStop, JsonUtility.ToJson(payload));
+        _agoraRequests.MakePostRequest(requestCloudRecordStop, JsonUtility.ToJson(payload));
     }
 
     //void StopCloudRecordingCallback() {

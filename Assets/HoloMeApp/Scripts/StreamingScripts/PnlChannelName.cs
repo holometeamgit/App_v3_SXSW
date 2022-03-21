@@ -11,9 +11,6 @@ public class PnlChannelName : MonoBehaviour {
     UnityEvent OnChannelNamePassed;
 
     [SerializeField]
-    AgoraRequests agoraRequests;
-
-    [SerializeField]
     GameObject btnContinue;
 
     private UserWebManager _userWebManager;
