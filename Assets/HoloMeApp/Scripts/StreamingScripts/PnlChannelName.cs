@@ -11,19 +11,18 @@ public class PnlChannelName : MonoBehaviour {
     UnityEvent OnChannelNamePassed;
 
     [SerializeField]
-    AgoraController agoraController;
-
-    [SerializeField]
     AgoraRequests agoraRequests;
 
     [SerializeField]
     GameObject btnContinue;
 
     private UserWebManager _userWebManager;
+    private AgoraController _agoraController;
 
     [Inject]
-    public void Construct(UserWebManager userWebManager) {
+    public void Construct(UserWebManager userWebManager, AgoraController agoraController) {
         _userWebManager = userWebManager;
+        _agoraController = agoraController;
     }
 
     private void Awake() {
@@ -73,7 +72,7 @@ public class PnlChannelName : MonoBehaviour {
     private void OnEnable() {
         CheckConfirmFilmingGuidelines();
         inputFieldController.text = _userWebManager.GetUsername();
-        agoraController.ChannelName = inputFieldController.text;
+        _agoraController.ChannelName = inputFieldController.text;
         inputFieldController.interactable = false;
     }
 

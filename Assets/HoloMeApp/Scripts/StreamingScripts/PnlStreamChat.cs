@@ -6,10 +6,9 @@ using System.Collections;
 using Crosstales.BWF.Model;
 using Crosstales.BWF;
 using UnityEngine.Events;
+using Zenject;
 
 public class PnlStreamChat : AgoraMessageReceiver {
-    [SerializeField]
-    AgoraController agoraController;
 
     [SerializeField]
     AgoraRTMChatController agoraRTMChatController;
@@ -29,7 +28,14 @@ public class PnlStreamChat : AgoraMessageReceiver {
     [SerializeField]
     private UnityEvent OnMessageAdded;
 
+    private AgoraController _agoraController;
+
     Stack<GameObject> chatMessagePool = new Stack<GameObject>();
+
+    [Inject]
+    public void Construct(AgoraController agoraController) {
+        _agoraController = agoraController;
+    }
 
     private void Awake() {
         agoraRTMChatController.AddMessageReceiver(this);
@@ -56,14 +62,14 @@ public class PnlStreamChat : AgoraMessageReceiver {
 
         ChatMessageJsonData chatMessageJsonData;
 
-        if (!agoraController.IsLive && agoraController.IsChannelCreator) {
+        if (!_agoraController.IsLive && _agoraController.IsChannelCreator) {
             chatMessageJsonData = new ChatMessageJsonData { userName = "", message = "Channel must be live to post comments" };
         } else {
             chatMessageJsonData = new ChatMessageJsonData { userName = agoraRTMChatController.UserName, message = censoredText };
         }
         CreateChatMessageGO(chatMessageJsonData);
 
-        if (agoraController.IsLive)
+        if (_agoraController.IsLive)
             agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(chatMessageJsonData));
 
         StartRefreshLayoutRoutine();

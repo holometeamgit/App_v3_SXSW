@@ -78,8 +78,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     [SerializeField]
     private AnimatedTransition chat;
 
-    [Space]
-    [SerializeField]
     private AgoraController _agoraController;
     private UserWebManager _userWebManager;
 
@@ -124,8 +122,9 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private const string KEY_SEEN_TUTORIAL_ARENA = nameof(KEY_SEEN_TUTORIAL_ARENA);
 
     [Inject]
-    public void Construct(UserWebManager userWebManager) {
+    public void Construct(UserWebManager userWebManager, AgoraController agoraController) {
         _userWebManager = userWebManager;
+        _agoraController = agoraController;
     }
 
     void Init() {
