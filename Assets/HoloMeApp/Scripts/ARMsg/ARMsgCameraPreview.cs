@@ -54,10 +54,12 @@ public class ARMsgCameraPreview : MonoBehaviour {
 
     private void SwitchDevice() {
         WebCamDevice[] devices = WebCamTexture.devices;
+        HelperFunctions.DevLogError($"devices = {devices.Length}");
         if (devices.Length > 1)
             _currectDeviceID = (_currectDeviceID + 1) % 2;
 
         _devicesName = devices[_currectDeviceID].name;
+        HelperFunctions.DevLogError($"_devicesName = {_devicesName}");
         CallBacks.onCameraSwitched?.Invoke(_currectDeviceID);
     }
 

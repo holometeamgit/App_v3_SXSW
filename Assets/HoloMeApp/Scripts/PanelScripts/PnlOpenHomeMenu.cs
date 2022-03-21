@@ -32,17 +32,24 @@ public class PnlOpenHomeMenu : MonoBehaviour {
 
     private void OnEnable() {
         btnOnEnableInvoke?.onClick?.Invoke();
-        _cancelTokenSource = new CancellationTokenSource();
         RecheckPermission();
         OnShowCanvas?.Invoke();
     }
 
-    private async void RecheckPermission() {
-
+    private void RecheckPermission() {
         _permissionRequired.SetActive(!_permissionController.HasCameraMicAccess);
 
-        CancellationToken cancellationToken = _cancelTokenSource.Token;
+        _permissionController.CheckCameraMicAccess(OnSuccess, OnFailed);
+    }
 
+    private void OnSuccess() {
+        _permissionRequired.SetActive(false);
+    }
+
+    private async void OnFailed() {
+        _cancelTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = _cancelTokenSource.Token;
+        _permissionRequired.SetActive(true);
         if (!(_permissionController.HasCameraMicAccess || cancellationToken.IsCancellationRequested)) {
             await Task.Delay(DELAY);
             RecheckPermission();

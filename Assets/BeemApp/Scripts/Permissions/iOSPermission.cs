@@ -11,6 +11,8 @@ namespace Beem.Permissions {
 
         public bool HasCameraAccess => Application.HasUserAuthorization(UserAuthorization.WebCam);
 
+        public bool HasCameraMicAccess => HasMicAccess && HasCameraAccess;
+
         public void RequestCameraAccess(Action onSuccessed, Action onFailed) {
             RequestCameraAccessAsync(onSuccessed, onFailed);
         }
@@ -37,12 +39,29 @@ namespace Beem.Permissions {
             }
         }
 
+        public void RequestCameraMicAccess(Action onSuccessed, Action onFailed) {
+            RequestCameraMicAccessAsync(onSuccessed, onFailed);
+        }
+
+        private async void RequestCameraMicAccessAsync(Action onSuccessed, Action onFailed) {
+            await Application.RequestUserAuthorization(UserAuthorization.WebCam);
+            if (HasCameraAccess) {
+                await Application.RequestUserAuthorization(UserAuthorization.Microphone);
+                if (HasCameraMicAccess) {
+                    onSuccessed?.Invoke();
+                } else {
+                    onFailed?.Invoke();
+                }
+            } else {
+                onFailed?.Invoke();
+            }
+        }
+
         public void RequestSettings() {
 #if UNITY_IOS && !UNITY_EDITOR
         string url = iOSSettingsOpenerBindings.GetSettingsURL();
         Application.OpenURL(url);
 #endif
         }
-
     }
 }

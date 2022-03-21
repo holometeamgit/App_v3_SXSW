@@ -73,7 +73,28 @@ namespace Beem.Permissions {
         /// <returns></returns>
 
         public void CheckCameraMicAccess(Action onSuccessed, Action onFailed = null) {
-            CheckCameraAccess(() => CheckMicAccess(onSuccessed, onFailed), onFailed); ;
+
+            if (HasCameraMicAccess) {
+                onSuccessed.Invoke();
+                return;
+            }
+
+            if (!CameraRequestComplete || !MicRequestComplete) {
+                _permissionGranter.RequestCameraMicAccess(onSuccessed, onFailed);
+                CameraRequestComplete = true;
+                CameraRequestComplete = true;
+                return;
+            }
+
+
+            OpenNotification(CAMERA_ACCESS + " and " + MICROPHONE_ACCESS, () => {
+                if (HasCameraMicAccess) {
+                    onSuccessed?.Invoke();
+                } else {
+                    onFailed?.Invoke();
+                }
+            }); ;
+
         }
 
         /// <summary>

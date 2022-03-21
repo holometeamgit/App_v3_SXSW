@@ -11,6 +11,7 @@ namespace Beem.Permissions {
 
         public bool HasCameraAccess => Permission.HasUserAuthorizedPermission(Permission.Camera);
         public bool HasMicAccess => Permission.HasUserAuthorizedPermission(Permission.Microphone);
+        public bool HasCameraMicAccess => HasCameraAccess && HasMicAccess;
 
         public void RequestMicAccess(Action onSuccessed, Action onFailed) {
             var callbacks = new PermissionCallbacks();
@@ -26,6 +27,14 @@ namespace Beem.Permissions {
             callbacks.PermissionGranted += (value) => { onSuccessed?.Invoke(); };
             callbacks.PermissionDeniedAndDontAskAgain += (value) => { onFailed?.Invoke(); };
             Permission.RequestUserPermission(Permission.Camera, callbacks);
+        }
+
+        public void RequestCameraMicAccess(Action onSuccessed, Action onFailed) {
+            var callbacks = new PermissionCallbacks();
+            callbacks.PermissionDenied += (value) => { onFailed?.Invoke(); };
+            callbacks.PermissionGranted += (value) => { onSuccessed?.Invoke(); };
+            callbacks.PermissionDeniedAndDontAskAgain += (value) => { onFailed?.Invoke(); };
+            Permission.RequestUserPermissions(new string[] { Permission.Camera, Permission.Microphone }, callbacks);
         }
 
         public void RequestSettings() {

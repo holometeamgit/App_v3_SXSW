@@ -10,8 +10,14 @@ namespace Beem.Permissions {
 
         public bool HasMicAccess => true;
 
+        public bool HasCameraMicAccess => true;
+
         public void RequestCameraAccess(Action onSuccessed, Action onFailed) {
             Debug.LogError($"{nameof(EditorPermission)} Requested Camera Access Editor");
+        }
+
+        public void RequestCameraMicAccess(Action onSuccessed, Action onFailed) {
+            Debug.LogError($"{nameof(EditorPermission)} Requested Camera Mic Access Editor");
         }
 
         public void RequestMicAccess(Action onSuccessed, Action onFailed) {
