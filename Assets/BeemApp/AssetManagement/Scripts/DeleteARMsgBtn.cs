@@ -2,6 +2,7 @@ using Beem.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 /// <summary>
 /// Delete ARMsg Btn
 /// </summary>
@@ -10,17 +11,6 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
     private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
 
     private WebRequestHandler _webRequestHandler;
-
-    private WebRequestHandler GetWebRequestHandler {
-        get {
-
-            if (_webRequestHandler == null) {
-                _webRequestHandler = FindObjectOfType<WebRequestHandler>();
-            }
-
-            return _webRequestHandler;
-        }
-    }
 
     private UserWebManager _userWebManager;
 
@@ -40,9 +30,14 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
 
     private ARMsgJSON.Data currentData;
 
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+    }
+
     private void Start() {
-        _deleteARMsgController = new DeleteARMsgController(_arMsgAPIScriptableObject, GetWebRequestHandler);
-        _galleryController = new GalleryController(_arMsgAPIScriptableObject, GetWebRequestHandler);
+        _deleteARMsgController = new DeleteARMsgController(_arMsgAPIScriptableObject, _webRequestHandler);
+        _galleryController = new GalleryController(_arMsgAPIScriptableObject, _webRequestHandler);
     }
 
     /// <summary>

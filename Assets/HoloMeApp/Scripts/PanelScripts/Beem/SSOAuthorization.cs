@@ -3,15 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Beem.SSO;
+using Zenject;
 
-public class SSOAuthorization : MonoBehaviour
-{
+public class SSOAuthorization : MonoBehaviour {
     [SerializeField] DeepLinkHandler deepLinkHandler;
     [SerializeField] AccountManager accountManager;
-    [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] AuthorizationAPIScriptableObject authorizationAPI;
 
     [SerializeField] UnityEvent OnAuthorized;
+
+    private WebRequestHandler _webRequestHandler;
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+    }
 
     public void AppleLogIn() {
         Application.OpenURL(GetAppleLogInRequest());
@@ -43,11 +49,11 @@ public class SSOAuthorization : MonoBehaviour
     }
 
     private string GetAppleLogInRequest() {
-        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.AppleSSODeepLink;
+        return _webRequestHandler.ServerURLAuthAPI + authorizationAPI.AppleSSODeepLink;
     }
 
     private string GetGoogleLogInRequest() {
-        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.GoogleSSODeepLink;
+        return _webRequestHandler.ServerURLAuthAPI + authorizationAPI.GoogleSSODeepLink;
     }
 
 }

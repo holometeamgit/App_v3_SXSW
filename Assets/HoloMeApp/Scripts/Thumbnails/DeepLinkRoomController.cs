@@ -2,22 +2,28 @@
 using Beem.Firebase.DynamicLink;
 using Firebase.DynamicLinks;
 using UnityEngine;
+using Zenject;
 
 /// <summary>
 /// Deep Link Controller for RoomData
 /// </summary>
 public class DeepLinkRoomController : MonoBehaviour {
     [SerializeField]
-    private WebRequestHandler _webRequestHandler;
-    [SerializeField]
     private ServerURLAPIScriptableObject _serverURLAPIScriptableObject;
     [SerializeField]
     private VideoUploader _videoUploader;
+
+    private WebRequestHandler _webRequestHandler;
 
     private const string TITLE = "You have been invited to {0}'s Room";
     private const string DESCRIPTION = "Click the link below to join {0}'s Room";
 
     private ShareLinkController _shareController = new ShareLinkController();
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+    }
 
     private void GetRoomByUserName(string username, Action<long, string> onSuccess, Action<WebRequestError> onFailed = null) {
         _webRequestHandler.Get(GetRoomUsernameUrl(username),

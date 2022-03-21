@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Beem.SSO;
+using Zenject;
 
 public class PurchasesSaveManager : MonoBehaviour {
     public Action OnAllDataSended;
@@ -12,13 +13,17 @@ public class PurchasesSaveManager : MonoBehaviour {
     [SerializeField]
     AuthController authController;
     [SerializeField]
-    WebRequestHandler webRequestHandler;
-    [SerializeField]
     PurchaseAPIScriptableObject purchaseAPISO;
     [SerializeField]
     IAPController iapController;
 
     private bool isBusy;
+    private WebRequestHandler _webRequestHandler;
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+    }
 
     public void SendToServer(long id, StreamBillingJsonData streamBillingJsonData) {
         AddData(authController.GetID(), id, streamBillingJsonData);
@@ -105,7 +110,7 @@ public class PurchasesSaveManager : MonoBehaviour {
     }
 
     private void PostData(string uniqName, long id, StreamBillingJsonData streamBillingJsonData) {
-        webRequestHandler.Post(GetRequestRefreshTokenURL(id),
+        _webRequestHandler.Post(GetRequestRefreshTokenURL(id),
            streamBillingJsonData, WebRequestBodyType.JSON,
            (code, body) => { OnServerBillingSent(uniqName, id, streamBillingJsonData); isBusy = false; CheckSubmittedData(); },
            (code, body) => { OnServerErrorBillingSent(uniqName, id, streamBillingJsonData); isBusy = false; });
@@ -126,6 +131,6 @@ public class PurchasesSaveManager : MonoBehaviour {
     }
 
     private string GetRequestRefreshTokenURL(long id) {
-        return webRequestHandler.ServerURLMediaAPI + purchaseAPISO.SendPurchaseHash.Replace("{id}", id.ToString());
+        return _webRequestHandler.ServerURLMediaAPI + purchaseAPISO.SendPurchaseHash.Replace("{id}", id.ToString());
     }
 }

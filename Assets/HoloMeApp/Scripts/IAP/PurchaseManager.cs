@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Purchasing;
 using Beem.SSO;
+using Zenject;
 
 public class PurchaseManager : MonoBehaviour
 {
@@ -15,12 +16,17 @@ public class PurchaseManager : MonoBehaviour
     [SerializeField] IAPController iapController;
     [SerializeField] PurchasesSaveManager purchasesSaveManager;
     [SerializeField] PurchaseAPIScriptableObject purchaseAPISO;
-    [SerializeField] WebRequestHandler webRequestHandler;
 
     [Space]//TODO change to signal when DI will add
     [SerializeField] GameObject backgroudGO;
 
     StreamJsonData.Data streamData;
+    private WebRequestHandler _webRequestHandler;
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+    }
 
     public void SetPurchaseStreamData(StreamJsonData.Data data) {
         streamData = data;
@@ -53,7 +59,7 @@ public class PurchaseManager : MonoBehaviour
     #region products request
 
     private void GetProductList() {
-        webRequestHandler.Get(GetRequestProductURL(), ProductListCallBack, ErrorProductListCallBack, needHeaderAccessToken: false);
+        _webRequestHandler.Get(GetRequestProductURL(), ProductListCallBack, ErrorProductListCallBack, needHeaderAccessToken: false);
     }
 
     private void ProductListCallBack(long code, string body) {
@@ -124,7 +130,7 @@ public class PurchaseManager : MonoBehaviour
     }
 
     private string GetRequestProductURL() {
-        return webRequestHandler.ServerURLMediaAPI + purchaseAPISO.GetProduct;
+        return _webRequestHandler.ServerURLMediaAPI + purchaseAPISO.GetProduct;
     }
 
     private IEnumerator RepeatRequestProduct () {

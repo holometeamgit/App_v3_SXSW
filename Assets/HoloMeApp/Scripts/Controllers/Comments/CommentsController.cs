@@ -7,7 +7,7 @@ using System;
 namespace Beem.Content {
     public class CommentsController {
 
-        public Action<int,int> onDataFetched;
+        public Action<int, int> onDataFetched;
         public Action onFailDataFetched;
         public Action onPosted;
         public Action onFailPosted;
@@ -16,7 +16,7 @@ namespace Beem.Content {
         public Action onRefresh;
 
         PageLoader<CommentJsonData> _commentPageLoader;
-        WebRequestHandler _webRequestHandler;
+        private WebRequestHandler _webRequestHandler;
         CommentsContainer _commentsContainer;
 
         VideoUploader _videoUploaderAPI;
@@ -100,7 +100,7 @@ namespace Beem.Content {
             int newCount = _commentsContainer.Count() - prevCountItems;
 
             onDataFetched?.Invoke(count, newCount);
-            if(_afterRefresh) {
+            if (_afterRefresh) {
                 _afterRefresh = false;
                 onRefresh?.Invoke();
             }

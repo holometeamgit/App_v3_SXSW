@@ -4,14 +4,13 @@ using UnityEngine;
 using System;
 using Beem.SSO;
 using System.Threading.Tasks;
+using Zenject;
 
 public class AccountManager : MonoBehaviour {
     public AuthController authController;
 
     [SerializeField]
     AuthorizationAPIScriptableObject authorizationAPI;
-    [SerializeField]
-    WebRequestHandler webRequestHandler;
 
     [Tooltip("Use this to test multiple editor logins on the same PC")]
     [SerializeField]
@@ -19,8 +18,16 @@ public class AccountManager : MonoBehaviour {
 
     private ActionWrapper _onCancelLogIn;
 
+    private WebRequestHandler _webRequestHandler;
+
     private bool canLogIn = true;
     private const int QUICK_LOGIN_DELAY_TIME = 1000;
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+    }
+
 
     #region public authorization
 
@@ -125,7 +132,7 @@ public class AccountManager : MonoBehaviour {
         }
 
         canLogIn = false;
-        webRequestHandler.Post(GetRequestRefreshTokenURL(),
+        _webRequestHandler.Post(GetRequestRefreshTokenURL(),
             accessToken, WebRequestBodyType.JSON,
             (code, body) => { UpdateAccessToken(body); SuccessRequestAccessTokenCallBack(code, body); },
             ErrorRequestAccessTokenCallBack, onCancel: _onCancelLogIn, needHeaderAccessToken: false);
@@ -159,7 +166,7 @@ public class AccountManager : MonoBehaviour {
 
     private void LogInToServer(LogInType logInType) {
 
-        if(authController.IsNewUser())
+        if (authController.IsNewUser())
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyRegistrationComplete);
 
         SaveLogInType(logInType);
@@ -188,7 +195,7 @@ public class AccountManager : MonoBehaviour {
 
         FirebaseJsonToken firebaseJsonToken = new FirebaseJsonToken(firebaseAccessToken);
 
-        webRequestHandler.Post(url, firebaseJsonToken, WebRequestBodyType.JSON,
+        _webRequestHandler.Post(url, firebaseJsonToken, WebRequestBodyType.JSON,
             (code, data) => { SaveAccessToken(data); SuccessRequestAccessTokenCallBack(code, data); },
             ErrorRequestAccessTokenCallBack, onCancel: _onCancelLogIn, needHeaderAccessToken: false);
     }
@@ -211,11 +218,11 @@ public class AccountManager : MonoBehaviour {
 
     #region request urls
     private string GetRequestRefreshTokenURL() {
-        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.RefreshToken;
+        return _webRequestHandler.ServerURLAuthAPI + authorizationAPI.RefreshToken;
     }
 
     private string GetRequestAccessTokenURL() {
-        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.FirebaseToken;
+        return _webRequestHandler.ServerURLAuthAPI + authorizationAPI.FirebaseToken;
     }
 
     #endregion

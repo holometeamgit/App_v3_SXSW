@@ -2,15 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Beem.SSO;
+using Zenject;
 
 /// <summary>
 /// Constructor for initialization LikesController and adding all subscriptions
 /// </summary>
 public class LikesControllerConstructor : MonoBehaviour {
-    [SerializeField] WebRequestHandler _webRequestHandler;
     [SerializeField] VideoUploader _videoUploader;
 
     private LikesController _likesController;
+    private WebRequestHandler _webRequestHandler;
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+    }
 
     private void Awake() {
         _likesController = new LikesController(_webRequestHandler, _videoUploader);

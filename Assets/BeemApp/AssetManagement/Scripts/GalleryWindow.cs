@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 /// <summary>
 /// Gallery View
@@ -32,7 +33,6 @@ public class GalleryWindow : MonoBehaviour {
     [Space]
     [SerializeField]
     private UserWebManager _userWebManager;
-    [SerializeField]
     private WebRequestHandler _webRequestHandler;
 
     private GalleryController _galleryController;
@@ -45,6 +45,11 @@ public class GalleryWindow : MonoBehaviour {
         set {
             PlayerPrefs.SetInt("PushNotificationForARMessage" + _userWebManager?.GetUsername(), value ? 1 : 0);
         }
+    }
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
     }
 
     private void Start() {

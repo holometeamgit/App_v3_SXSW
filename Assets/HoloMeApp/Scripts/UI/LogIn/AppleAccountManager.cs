@@ -7,16 +7,17 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Collections.Generic;
 using Beem.SSO;
+using Zenject;
 
 public class AppleAccountManager : MonoBehaviour {
     [SerializeField]
     AccountManager accountManager;
-    [SerializeField]
-    WebRequestHandler webRequestHandler;
 
     [Space]
     [SerializeField]
     AuthorizationAPIScriptableObject authorizationAPI;
+
+    private WebRequestHandler _webRequestHandler;
 
     private IAppleAuthManager appleAuthManager;
 
@@ -24,13 +25,18 @@ public class AppleAccountManager : MonoBehaviour {
 
     public UnityEvent OnAuthorized;
 
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+    }
+
     public void SignInWithAppleButtonPressed() {
 
         HelperFunctions.DevLog("SignInWithAppleButtonPressed");
 
         if (!AppleAuthManager.IsCurrentPlatformSupported)
             return;
-            SignInWithApple();
+        SignInWithApple();
 
         //AttemptQuickLogin();
         //second plugin
@@ -41,7 +47,7 @@ public class AppleAccountManager : MonoBehaviour {
         return AppleAuthManager.IsCurrentPlatformSupported;
     }
 
-    public  void AttemptQuickLogin() {
+    public void AttemptQuickLogin() {
         if (!AppleAuthManager.IsCurrentPlatformSupported)
             return;
 
@@ -66,7 +72,7 @@ public class AppleAccountManager : MonoBehaviour {
                         0,
                         appleIdCredential.AuthorizationCode.Length);
 
-                
+
 
                 try {
                     HelperFunctions.DevLog(code);
@@ -81,17 +87,17 @@ public class AppleAccountManager : MonoBehaviour {
             error => {
                 // If Quick Login fails, we should show the normal sign in with apple menu, to allow for a normal Sign In with apple
                 var authorizationErrorCode = error.GetAuthorizationErrorCode();
-               Debug.LogWarning("Quick Login Failed " + authorizationErrorCode.ToString() + " " + error.ToString());
+                Debug.LogWarning("Quick Login Failed " + authorizationErrorCode.ToString() + " " + error.ToString());
             });
     }
-    
+
     void Start() {
         Init();
     }
 
     private void Init() {
 
-        
+
 
         HelperFunctions.DevLog("try Init Apple");
 
@@ -127,7 +133,7 @@ public class AppleAccountManager : MonoBehaviour {
             loginArgs,
             credential => {
                 var appleIdCredential = credential as IAppleIDCredential;
-                
+
                 if (appleIdCredential == null)
                     return;
 
@@ -190,15 +196,15 @@ public class AppleAccountManager : MonoBehaviour {
         Dictionary<string, T> formData = new Dictionary<string, T>();
         formData["code"] = appleAccessToken;
         //webRequestHandler.PostRequest(url, formData, WebRequestHandler.BodyType.XWWWFormUrlEncoded, responseCallBack, errorCallBack);
-        webRequestHandler.Get(GetGetRequestAccessTokenURL(appleAccessToken as string), responseCallBack, errorCallBack, needHeaderAccessToken: false);
+        _webRequestHandler.Get(GetGetRequestAccessTokenURL(appleAccessToken as string), responseCallBack, errorCallBack, needHeaderAccessToken: false);
     }
 
     private string GetRequestAccessTokenURL() {
-        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.AppleCompliteLogIn;
+        return _webRequestHandler.ServerURLAuthAPI + authorizationAPI.AppleCompliteLogIn;
     }
 
     private string GetGetRequestAccessTokenURL(string code) {
-        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.AppleCompliteLogIn + "/?code=" + code;
+        return _webRequestHandler.ServerURLAuthAPI + authorizationAPI.AppleCompliteLogIn + "/?code=" + code;
     }
     #endregion
 
