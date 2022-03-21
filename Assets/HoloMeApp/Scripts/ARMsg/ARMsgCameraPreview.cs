@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using System.Collections;
 using Beem.ARMsg;
 using System;
+using System.Threading.Tasks;
+using System.Threading;
 
 /// <summary>
 /// ARMsgCameraPreview. Show WebCamTexture on the screen
@@ -23,6 +25,8 @@ public class ARMsgCameraPreview : MonoBehaviour {
     private string _devicesName;
 
     public Action onTextureUpdated;
+    private const int DELAY = 3000;
+    private CancellationTokenSource _cancelTokenSource;
 
     public Texture GetTexture() {
         return rawImage.texture;
@@ -88,8 +92,34 @@ public class ARMsgCameraPreview : MonoBehaviour {
         CallBacks.onGetCurrentCameraID += GetCurrentCameraID;
     }
 
+    /*
+    private async void RecheckCamera() {
+
+        _cancelTokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken = _cancelTokenSource.Token;
+
+
+        HelperFunctions.DevLogError($"WebCamTexture.devices.Length = {WebCamTexture.devices.Length}");
+
+        while (WebCamTexture.devices.Length == 0 && !cancellationToken.IsCancellationRequested) {
+            await Task.Delay(DELAY);
+        }
+
+        HelperFunctions.DevLogError($"WebCamTexture.devices.Length2 = {WebCamTexture.devices.Length}");
+
+        SwitchDevice();
+    }*/
+
+    private void Cancel() {
+        if (_cancelTokenSource != null) {
+            _cancelTokenSource.Cancel();
+            _cancelTokenSource = null;
+        }
+    }
+
     private void OnDisable() {
         StopStartCameraCoroutine();
+        Cancel();
         if (cameraTexture != null)
             cameraTexture.Stop();
         CallBacks.onGetCurrentCameraID -= GetCurrentCameraID;
@@ -101,6 +131,10 @@ public class ARMsgCameraPreview : MonoBehaviour {
     }
 
     private IEnumerator StartCamera() {
+        HelperFunctions.DevLogError($"WebCamTexture.devices.Length = {WebCamTexture.devices.Length}");
+        yield return new WaitUntil(() => WebCamTexture.devices.Length == 0);
+        HelperFunctions.DevLogError($"WebCamTexture.devices.Length2 = {WebCamTexture.devices.Length}");
+        SwitchDevice();
         rawImage = GetComponent<RawImage>();
         aspectFitter = GetComponent<AspectRatioFitter>();
 
