@@ -163,7 +163,7 @@ public class InputFieldController : MonoBehaviour {
 
     private void DoOnEndEditPassword(string value = "") {
         if (isTrim) {
-            inputField.text = value.Replace(' ', '_');
+            inputField.text = value.Replace(" ", "");
         }
         OnEndEditPassword.Invoke();
     }
