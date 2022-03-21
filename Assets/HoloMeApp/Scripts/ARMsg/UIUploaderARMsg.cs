@@ -10,7 +10,7 @@ using Beem.ARMsg;
 public class UIUploaderARMsg : MonoBehaviour {
     [SerializeField]
     private UnityEvent OnARMsgUpdloadedEvent;
-
+    [SerializeField]
     private GalleryBtn _galleryBtn;
 
     private void Awake() {
@@ -42,7 +42,6 @@ public class UIUploaderARMsg : MonoBehaviour {
                  OpenGallery();
              },
             () => {
-
             }, false);
     }
 
@@ -56,8 +55,6 @@ public class UIUploaderARMsg : MonoBehaviour {
     }
 
     private void OpenGallery() {
-        if (_galleryBtn == null)
-            _galleryBtn = FindObjectOfType<GalleryBtn>();
         _galleryBtn.OnClick();
     }
 }
