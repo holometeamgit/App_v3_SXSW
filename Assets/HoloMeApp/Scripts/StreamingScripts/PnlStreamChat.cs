@@ -11,9 +11,6 @@ using Zenject;
 public class PnlStreamChat : AgoraMessageReceiver {
 
     [SerializeField]
-    AgoraRTMChatController agoraRTMChatController;
-
-    [SerializeField]
     GameObject chatMessagePrefabRef;
 
     [SerializeField]
@@ -29,20 +26,22 @@ public class PnlStreamChat : AgoraMessageReceiver {
     private UnityEvent OnMessageAdded;
 
     private AgoraController _agoraController;
+    private AgoraRTMChatController _agoraRTMChatController;
 
     Stack<GameObject> chatMessagePool = new Stack<GameObject>();
 
     [Inject]
-    public void Construct(AgoraController agoraController) {
+    public void Construct(AgoraController agoraController, AgoraRTMChatController agoraRTMChatController) {
         _agoraController = agoraController;
+        _agoraRTMChatController = agoraRTMChatController;
     }
 
     private void Awake() {
-        agoraRTMChatController.AddMessageReceiver(this);
+        _agoraRTMChatController.AddMessageReceiver(this);
     }
 
     private void OnDestroy() {
-        agoraRTMChatController.RemoveMessageReceiver(this);
+        _agoraRTMChatController.RemoveMessageReceiver(this);
     }
 
     public void OnEnable() {
@@ -65,12 +64,12 @@ public class PnlStreamChat : AgoraMessageReceiver {
         if (!_agoraController.IsLive && _agoraController.IsChannelCreator) {
             chatMessageJsonData = new ChatMessageJsonData { userName = "", message = "Channel must be live to post comments" };
         } else {
-            chatMessageJsonData = new ChatMessageJsonData { userName = agoraRTMChatController.UserName, message = censoredText };
+            chatMessageJsonData = new ChatMessageJsonData { userName = _agoraRTMChatController.UserName, message = censoredText };
         }
         CreateChatMessageGO(chatMessageJsonData);
 
         if (_agoraController.IsLive)
-            agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(chatMessageJsonData));
+            _agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(chatMessageJsonData));
 
         StartRefreshLayoutRoutine();
     }

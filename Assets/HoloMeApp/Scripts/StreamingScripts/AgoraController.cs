@@ -19,9 +19,6 @@ public class AgoraController : MonoBehaviour {
     GameObject liveStreamQuad;
 
     [SerializeField]
-    AgoraRTMChatController agoraRTMChatController;
-
-    [SerializeField]
     SecondaryServerCalls secondaryServerCalls;
 
     TokenAgoraResponse tokenAgoraResponseChannel;
@@ -70,16 +67,18 @@ public class AgoraController : MonoBehaviour {
     private const int VOICE_INDICATOR_SMOOTH = 3;
 
     private UserWebManager _userWebManager;
+    private AgoraRTMChatController _agoraRTMChatController;
 
     [Inject]
-    public void Construct(UserWebManager userWebManager) {
+    public void Construct(UserWebManager userWebManager, AgoraRTMChatController agoraRTMChatController) {
         _userWebManager = userWebManager;
+        _agoraRTMChatController = agoraRTMChatController;
     }
 
     public void Start() {
         LoadEngine(AppId);
         frameRate = 30;
-        agoraRTMChatController.Init(AppId);
+        _agoraRTMChatController.Init(AppId);
         secondaryServerCalls.OnStreamStarted += (x, y, z) => SecondaryServerCallsComplete(x, y, z);
 
         //iRtcEngine.OnUserEnableVideo = OnUserEnableVideoHandler;
@@ -244,7 +243,7 @@ public class AgoraController : MonoBehaviour {
     public void SecondaryServerCallsComplete(string viewerBroadcasterToken, string rtmToken, int streamID = -1) {
         this.streamID = streamID;
 
-        agoraRTMChatController.Login(rtmToken);
+        _agoraRTMChatController.Login(rtmToken);
         iRtcEngine.SetChannelProfile(IsRoom ? CHANNEL_PROFILE.CHANNEL_PROFILE_COMMUNICATION : CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
         if (IsChannelCreator) {
@@ -296,7 +295,7 @@ public class AgoraController : MonoBehaviour {
         ChannelCreatorUID = null;
 
         iRtcEngine.LeaveChannel();
-        agoraRTMChatController.LeaveChannel();
+        _agoraRTMChatController.LeaveChannel();
 
         IsLive = false;
         OnStreamWentOffline?.Invoke();
@@ -344,7 +343,7 @@ public class AgoraController : MonoBehaviour {
         if (IsChannelCreator) {
             ChannelCreatorUID = uid;
         }
-        agoraRTMChatController.JoinChannel(channelName);
+        _agoraRTMChatController.JoinChannel(channelName);
     }
 
     private void OnUserJoined(uint uid, int elapsed) {
@@ -488,7 +487,7 @@ public class AgoraController : MonoBehaviour {
 
     #region Messaging system
     public void AddAgoraMessageReceiver(AgoraMessageReceiver agoraMessageReceiver) {
-        agoraRTMChatController.AddMessageReceiver(agoraMessageReceiver);
+        _agoraRTMChatController.AddMessageReceiver(agoraMessageReceiver);
     }
 
     /// <summary>
@@ -502,7 +501,7 @@ public class AgoraController : MonoBehaviour {
         ChatMessageJsonData agoraStreamMessage = new ChatMessageJsonData { message = message };
         agoraStreamMessage.requestID = requestID;
 
-        agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(agoraStreamMessage));
+        _agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(agoraStreamMessage));
     }
     #endregion
 
