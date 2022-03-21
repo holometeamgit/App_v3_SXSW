@@ -1,26 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
-public class PnlChangeBio : MonoBehaviour
-{
-    [SerializeField] UserWebManager userWebManager;
+public class PnlChangeBio : MonoBehaviour {
     [SerializeField] InputFieldController bioInputField;
     [SerializeField] Switcher switchToSetting;
 
+    private UserWebManager _userWebManager;
+
+    [Inject]
+    public void Construct(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
+    }
+
     public void ChangeBio() {
-        userWebManager.UpdateUserData(bio: bioInputField?.text ?? null);
+        _userWebManager.UpdateUserData(bio: bioInputField?.text ?? null);
     }
 
     private void Start() {
-        userWebManager.LoadUserInfo();
+        _userWebManager.LoadUserInfo();
     }
 
     private void UserInfoLoadedCallBack() {
         if (!this.isActiveAndEnabled)
             return;
 
-        bioInputField.text = bioInputField.text == "" ? userWebManager.GetBio() ?? "" : bioInputField.text;
+        bioInputField.text = bioInputField.text == "" ? _userWebManager.GetBio() ?? "" : bioInputField.text;
     }
 
     private void UpdateUserDataCallBack() {
@@ -33,14 +39,14 @@ public class PnlChangeBio : MonoBehaviour
     }
 
     private void OnEnable() {
-        userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
-        userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
-        userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
+        _userWebManager.OnUserInfoLoaded += UserInfoLoadedCallBack;
+        _userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
+        _userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
     }
 
     private void OnDisable() {
-        userWebManager.OnUserInfoLoaded -= UserInfoLoadedCallBack;
-        userWebManager.OnUserInfoUploaded -= UpdateUserDataCallBack;
-        userWebManager.OnErrorUserUploaded -= ErrorUpdateUserDataCallBack;
+        _userWebManager.OnUserInfoLoaded -= UserInfoLoadedCallBack;
+        _userWebManager.OnUserInfoUploaded -= UpdateUserDataCallBack;
+        _userWebManager.OnErrorUserUploaded -= ErrorUpdateUserDataCallBack;
     }
 }

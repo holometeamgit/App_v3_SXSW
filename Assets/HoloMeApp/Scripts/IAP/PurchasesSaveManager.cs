@@ -9,7 +9,6 @@ public class PurchasesSaveManager : MonoBehaviour {
     public Action OnAllDataSended;
     public Action OnFailSentToserver;
 
-    [SerializeField] UserWebManager userWebManager;
     [SerializeField]
     PurchaseAPIScriptableObject purchaseAPISO;
     [SerializeField]
@@ -18,11 +17,13 @@ public class PurchasesSaveManager : MonoBehaviour {
     private bool isBusy;
     private WebRequestHandler _webRequestHandler;
     private AuthController _authController;
+    private UserWebManager _userWebManager;
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler, AuthController authController) {
+    public void Construct(WebRequestHandler webRequestHandler, AuthController authController, UserWebManager userWebManager) {
         _webRequestHandler = webRequestHandler;
         _authController = authController;
+        _userWebManager = userWebManager;
     }
 
     public void SendToServer(long id, StreamBillingJsonData streamBillingJsonData) {
@@ -31,7 +32,7 @@ public class PurchasesSaveManager : MonoBehaviour {
     }
 
     private void Awake() {
-        userWebManager.OnUserInfoLoaded += CheckSubmittedData;
+        _userWebManager.OnUserInfoLoaded += CheckSubmittedData;
     }
 
     private void CheckSubmittedData() {

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 namespace Beem.ARMsg {
 
@@ -8,13 +9,17 @@ namespace Beem.ARMsg {
     /// Timer Controller for Record Beem me
     /// </summary>
     public class RecordController : MonoBehaviour {
-        [SerializeField]
         private UserWebManager _userWebManager;
 
         private List<int> _timers = new List<int> { 15, 30, 45, 60, 10 };
         private int _currentTimerID = 0;
         private const int TIME_FOR_SUPER_USER = 300;
         private const string SUPER_USER_CAPABILITY = "PC__AR_BEEM_UP_TO_5_MINS";
+
+        [Inject]
+        public void Construct(UserWebManager userWebManager) {
+            _userWebManager = userWebManager;
+        }
 
         /// <summary>
         /// Switch Timer

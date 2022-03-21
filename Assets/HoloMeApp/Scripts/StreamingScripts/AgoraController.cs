@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class AgoraController : MonoBehaviour {
 
@@ -22,9 +23,6 @@ public class AgoraController : MonoBehaviour {
 
     [SerializeField]
     SecondaryServerCalls secondaryServerCalls;
-
-    [SerializeField]
-    UserWebManager userWebManager;
 
     TokenAgoraResponse tokenAgoraResponseChannel;
     TokenAgoraResponse tokenAgoraResponseRTM;
@@ -71,10 +69,12 @@ public class AgoraController : MonoBehaviour {
     private const int VOICE_INDICATOR_INTERVAL = 200;
     private const int VOICE_INDICATOR_SMOOTH = 3;
 
-    //void OnUserEnableVideoHandler(uint uid, bool enabled)
-    //{
-    //    print("OnUserEnableVideoHandler called");
-    //}
+    private UserWebManager _userWebManager;
+
+    [Inject]
+    public void Construct(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
+    }
 
     public void Start() {
         LoadEngine(AppId);
@@ -234,8 +234,7 @@ public class AgoraController : MonoBehaviour {
     /// </summary>
     public void SendViewerCountAnalyticsUpdate(int count) {
         if (IsChannelCreator) {
-            if (maxViewerCountTracker < count)
-            {
+            if (maxViewerCountTracker < count) {
                 maxViewerCountTracker = count;
             }
             AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyViewerCountUpdate, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamChannelName, ChannelName }, { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() }, { AnalyticParameters.ParamViewerCount, count.ToString() } });
@@ -246,7 +245,7 @@ public class AgoraController : MonoBehaviour {
         this.streamID = streamID;
 
         agoraRTMChatController.Login(rtmToken);
-        iRtcEngine.SetChannelProfile(IsRoom? CHANNEL_PROFILE.CHANNEL_PROFILE_COMMUNICATION : CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
+        iRtcEngine.SetChannelProfile(IsRoom ? CHANNEL_PROFILE.CHANNEL_PROFILE_COMMUNICATION : CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
         if (IsChannelCreator) {
             iRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
@@ -257,20 +256,20 @@ public class AgoraController : MonoBehaviour {
             EnableVideoPlayback(); //Must be called for viewers to view
             ToggleLocalVideo(true); //Disable local video freeze fix iOS
         }
-      
-        var result = iRtcEngine.JoinChannelByKey(viewerBroadcasterToken, ChannelName, null, Convert.ToUInt32(userWebManager.GetUserID()));
+
+        var result = iRtcEngine.JoinChannelByKey(viewerBroadcasterToken, ChannelName, null, Convert.ToUInt32(_userWebManager.GetUserID()));
 
         if (result < 0) {
             Debug.LogError("Agora Stream Join Failed!");
         } else {
             HelperFunctions.DevLog("Agora Stream Join Success!");
         }
-                
+
         if (IsChannelCreator && !IsRoom)//No thumbnails for rooms for now
             sendThumbnailRoutine = StartCoroutine(SendThumbnailData(true));
 
         IsLive = true;
-                
+
         OnStreamWentLive?.Invoke();
     }
 
@@ -281,7 +280,7 @@ public class AgoraController : MonoBehaviour {
 
         if (!IsLive)
             return;
-   
+
         if (sendThumbnailRoutine != null && !IsRoom)//No thumbnails for rooms for now
             StopCoroutine(sendThumbnailRoutine);
 
@@ -488,15 +487,14 @@ public class AgoraController : MonoBehaviour {
     }
 
     #region Messaging system
-    public void AddAgoraMessageReceiver(AgoraMessageReceiver agoraMessageReceiver)
-    {
+    public void AddAgoraMessageReceiver(AgoraMessageReceiver agoraMessageReceiver) {
         agoraRTMChatController.AddMessageReceiver(agoraMessageReceiver);
     }
 
     /// <summary>
     /// Sends string message to all users in a channel.
     /// </summary>
-    public void SendAgoraMessage(string message, int requestID =  AgoraMessageRequestIDs.IDStreamMessage) {
+    public void SendAgoraMessage(string message, int requestID = AgoraMessageRequestIDs.IDStreamMessage) {
         //HelperFunctions.DevLog($"Sending Agora Message {message}");
         //byte[] messageToBytes = Encoding.ASCII.GetBytes(message);
         //iRtcEngine.SendStreamMessage(agoraMessageStreamID, messageToBytes);

@@ -30,8 +30,6 @@ public class GalleryWindow : MonoBehaviour {
     [SerializeField]
     private float _topShift = 400f;
 
-    [Space]
-    [SerializeField]
     private UserWebManager _userWebManager;
     private WebRequestHandler _webRequestHandler;
 
@@ -48,8 +46,9 @@ public class GalleryWindow : MonoBehaviour {
     }
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler) {
+    public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager) {
         _webRequestHandler = webRequestHandler;
+        _userWebManager = userWebManager;
     }
 
     private void Start() {

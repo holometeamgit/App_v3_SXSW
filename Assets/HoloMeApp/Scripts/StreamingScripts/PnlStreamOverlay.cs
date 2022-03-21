@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using agora_gaming_rtc;
 using Beem.UI;
 using Beem.Permissions;
+using Zenject;
 
 public class PnlStreamOverlay : AgoraMessageReceiver {
 
@@ -80,7 +81,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     [Space]
     [SerializeField]
     private AgoraController _agoraController;
-    [SerializeField]
     private UserWebManager _userWebManager;
 
     private bool initialised;
@@ -122,6 +122,11 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private const string KEY_SEEN_TUTORIAL_ROOM = nameof(KEY_SEEN_TUTORIAL_ROOM);
     private const string KEY_SEEN_TUTORIAL_ARENA = nameof(KEY_SEEN_TUTORIAL_ARENA);
+
+    [Inject]
+    public void Construct(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
+    }
 
     void Init() {
         if (initialised)

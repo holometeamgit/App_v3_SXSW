@@ -19,15 +19,13 @@ public class PnlProfile : MonoBehaviour {
     private Toggle toggleEmailReceive;
 
 
-    [Space]
-    [SerializeField]
+    private AccountManager _accountManager;
     private UserWebManager _userWebManager;
 
-    private AccountManager _accountManager;
-
     [Inject]
-    public void Construct(AccountManager accountManager) {
+    public void Construct(AccountManager accountManager, UserWebManager userWebManager) {
         _accountManager = accountManager;
+        _userWebManager = userWebManager;
     }
 
     public void ChooseUsername() {

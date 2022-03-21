@@ -35,9 +35,7 @@ public class DeepLinkStreamPopup : UIThumbnail {
     [Space]
     [SerializeField]
     private PurchaseManager _purchaseManager;
-    [SerializeField]
     private UserWebManager _userWebManager;
-
     private WebRequestHandler _webRequestHandler;
 
     private PermissionController _permissionController = new PermissionController();
@@ -46,8 +44,9 @@ public class DeepLinkStreamPopup : UIThumbnail {
     private const int REFRESH_LAYOUT_TIME = 1000;
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler) {
+    public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager) {
         _webRequestHandler = webRequestHandler;
+        _userWebManager = userWebManager;
     }
 
     /// <summary>

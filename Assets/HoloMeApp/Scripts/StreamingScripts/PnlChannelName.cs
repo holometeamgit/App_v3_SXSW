@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using Crosstales.BWF;
+using Zenject;
 
 public class PnlChannelName : MonoBehaviour {
     [SerializeField]
@@ -18,14 +19,15 @@ public class PnlChannelName : MonoBehaviour {
     [SerializeField]
     GameObject btnContinue;
 
-    [SerializeField]
-    UserWebManager userWebManager;
+    private UserWebManager _userWebManager;
 
-    //RequestChannelList requestChannelList;
+    [Inject]
+    public void Construct(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
+    }
 
     private void Awake() {
         inputFieldController.characterLimit = HelperFunctions.ChannelNameCharacterLimit;
-        userWebManager = FindObjectOfType<UserWebManager>();
         //requestChannelList = new RequestChannelList();
         //requestChannelList.OnSuccessAction += OnChannelListOccupied;
     }
@@ -70,7 +72,7 @@ public class PnlChannelName : MonoBehaviour {
 
     private void OnEnable() {
         CheckConfirmFilmingGuidelines();
-        inputFieldController.text = userWebManager.GetUsername();
+        inputFieldController.text = _userWebManager.GetUsername();
         agoraController.ChannelName = inputFieldController.text;
         inputFieldController.interactable = false;
     }

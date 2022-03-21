@@ -14,15 +14,14 @@ public class PnlSettings : MonoBehaviour {
     private GameObject _changePassword;
     [SerializeField]
     private TMP_Text _txtNickname;
-    [Space]
-    [SerializeField]
-    private UserWebManager _userWebManager;
 
+    private UserWebManager _userWebManager;
     private AccountManager _accountManager;
 
     [Inject]
-    public void Construct(AccountManager accountManager) {
+    public void Construct(AccountManager accountManager, UserWebManager userWebManager) {
         _accountManager = accountManager;
+        _userWebManager = userWebManager;
     }
 
     private void OnEnable() {

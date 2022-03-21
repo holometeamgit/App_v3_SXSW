@@ -1,13 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class PnlChangeUsername : MonoBehaviour {
     [SerializeField] InputFieldController usernameInputField;
     [SerializeField] int userNameLimit = 30;
-    [Space]
-    [SerializeField]
+
     private UserWebManager _userWebManager;
+
+    [Inject]
+    public void Construct(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
+    }
+
 
     public void ChangeUsername() {
         if (LocalDataVerification())
