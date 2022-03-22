@@ -11,19 +11,11 @@ using UnityEngine.UI;
 public class PnlOpenHomeMenu : MonoBehaviour {
 
     [SerializeField]
-    private UnityEvent OnShowCanvas;
-
-    [SerializeField]
-    private UnityEvent OnHideCanvas;
-
-    [SerializeField]
-    private Button btnOnEnableInvoke;
-
+    private ScrollRectSnapButtonHorz _scrollRectSnapButtonHorz;
     [SerializeField]
     private GameObject _permissionRequired;
-
     [SerializeField]
-    private ScrollRectSnapButtonHorz scrollRectSnapButtonHorz;
+    private GameObject _permissionNotRequired;
 
     private PermissionController _permissionController = new PermissionController();
     private CancellationTokenSource _cancelTokenSource;
@@ -31,18 +23,27 @@ public class PnlOpenHomeMenu : MonoBehaviour {
     private const int DELAY = 3000;
 
     private void OnEnable() {
-        btnOnEnableInvoke?.onClick?.Invoke();
-        _cancelTokenSource = new CancellationTokenSource();
         RecheckPermission();
-        OnShowCanvas?.Invoke();
     }
 
-    private async void RecheckPermission() {
-
+    private void RecheckPermission() {
         _permissionRequired.SetActive(!_permissionController.HasCameraMicAccess);
+        _permissionNotRequired.SetActive(_permissionController.HasCameraMicAccess);
 
+        _permissionController.CheckCameraMicAccess(OnSuccess, OnFailed);
+    }
+
+    private void OnSuccess() {
+        _permissionRequired.SetActive(false);
+        _permissionNotRequired.SetActive(true);
+        _scrollRectSnapButtonHorz.ReactivateCurrentIndex();
+    }
+
+    private async void OnFailed() {
+        _cancelTokenSource = new CancellationTokenSource();
         CancellationToken cancellationToken = _cancelTokenSource.Token;
-
+        _permissionRequired.SetActive(true);
+        _permissionNotRequired.SetActive(false);
         if (!(_permissionController.HasCameraMicAccess || cancellationToken.IsCancellationRequested)) {
             await Task.Delay(DELAY);
             RecheckPermission();
@@ -51,7 +52,6 @@ public class PnlOpenHomeMenu : MonoBehaviour {
 
     private void OnDisable() {
         Cancel();
-        OnHideCanvas?.Invoke();
     }
 
     /// <summary>

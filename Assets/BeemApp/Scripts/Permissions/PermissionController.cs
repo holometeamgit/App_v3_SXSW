@@ -17,25 +17,14 @@ namespace Beem.Permissions {
 
         private IPermissionGranter _permissionGranter;
 
-        public bool MicRequestComplete {
+        public bool RequestComplete {
             get {
-                return PlayerPrefs.GetString("Access for " + MICROPHONE_ACCESS, "false") == "true";
+                return PlayerPrefs.GetString("RequestPermissionComplete", "false") == "true";
             }
             private set {
-                PlayerPrefs.SetString("Access for " + MICROPHONE_ACCESS, value ? "true" : "false");
+                PlayerPrefs.SetString("RequestPermissionComplete", value ? "true" : "false");
             }
         }
-        public bool CameraRequestComplete {
-            get {
-                return PlayerPrefs.GetString("Access for " + CAMERA_ACCESS, "false") == "true";
-            }
-            private set {
-                PlayerPrefs.SetString("Access for " + CAMERA_ACCESS, value ? "true" : "false");
-            }
-        }
-
-        private const string CAMERA_ACCESS = "Camera";
-        private const string MICROPHONE_ACCESS = "Microphone";
 
         private const int DELAY = 3000;
 
@@ -49,22 +38,22 @@ namespace Beem.Permissions {
             }
         }
 
+        /// <summary>
+        /// Check Camera and Microphone Accesses
+        /// </summary>
         public bool HasCameraMicAccess {
             get {
-                return HasCameraAccess && HasMicAccess;
+                return HasAccesses(new DevicePermissions[] { DevicePermissions.Camera, DevicePermissions.Microphone });
             }
         }
 
-        public bool HasCameraAccess {
-            get {
-                return _permissionGranter.HasCameraAccess;
-            }
-        }
-
-        public bool HasMicAccess {
-            get {
-                return _permissionGranter.HasMicAccess;
-            }
+        /// <summary>
+        /// Check Accesses from device permissions
+        /// </summary>
+        /// <param name="devicePermissions"></param>
+        /// <returns></returns>
+        public bool HasAccesses(DevicePermissions[] devicePermissions) {
+            return _permissionGranter.HasAccesses(devicePermissions);
         }
 
         /// <summary>
@@ -73,67 +62,63 @@ namespace Beem.Permissions {
         /// <returns></returns>
 
         public void CheckCameraMicAccess(Action onSuccessed, Action onFailed = null) {
-            CheckCameraAccess(() => CheckMicAccess(onSuccessed, onFailed), onFailed); ;
+            CheckAccesses(new DevicePermissions[] { DevicePermissions.Camera, DevicePermissions.Microphone }, onSuccessed, onFailed);
         }
 
         /// <summary>
-        /// Check Camera Access
+        /// Check Acceses
         /// </summary>
-        /// <returns></returns>
-        public void CheckCameraAccess(Action onSuccessed, Action onFailed = null) {
+        /// <param name="devicePermissions"></param>
+        /// <param name="onSuccessed"></param>
+        /// <param name="onFailed"></param>
+        public void CheckAccesses(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed = null) {
 
-            if (HasCameraAccess) {
+            if (HasAccesses(devicePermissions)) {
                 onSuccessed.Invoke();
                 return;
             }
 
-            if (!CameraRequestComplete) {
-                _permissionGranter.RequestCameraAccess(onSuccessed, onFailed);
-                CameraRequestComplete = true;
+            if (!RequestComplete) {
+                _permissionGranter.RequestAccess(devicePermissions, onSuccessed, onFailed);
+                RequestComplete = true;
                 return;
             }
 
 
-            OpenNotification(CAMERA_ACCESS, () => {
-                if (HasCameraAccess) {
+            OpenNotification(AccessesStrings(devicePermissions), () => {
+                if (HasAccesses(devicePermissions)) {
                     onSuccessed?.Invoke();
                 } else {
                     onFailed?.Invoke();
                 }
             }); ;
+
         }
 
-        /// <summary>
-        /// Check Microphone Access
-        /// </summary>
-        /// <returns></returns>
-
-        public void CheckMicAccess(Action onSuccessed, Action onFailed = null) {
-
-            if (HasMicAccess) {
-                onSuccessed.Invoke();
-                return;
+        private string AccessesStrings(DevicePermissions[] devicePermissions) {
+            switch (devicePermissions.Length) {
+                case 0:
+                    return string.Empty;
+                case 1:
+                    return devicePermissions[0].ToString();
+                default:
+                    string str = string.Empty;
+                    for (int i = 0; i < devicePermissions.Length; i++) {
+                        if (i < devicePermissions.Length - 2) {
+                            str += devicePermissions[i] + ", ";
+                        } else if (i == devicePermissions.Length - 2) {
+                            str += devicePermissions[i] + " and ";
+                        } else {
+                            str += devicePermissions[i];
+                        }
+                    }
+                    return str;
             }
-
-            if (!MicRequestComplete) {
-                _permissionGranter.RequestMicAccess(onSuccessed, onFailed);
-                MicRequestComplete = true;
-                return;
-            }
-
-
-            OpenNotification(MICROPHONE_ACCESS, () => {
-                if (HasMicAccess) {
-                    onSuccessed?.Invoke();
-                } else {
-                    onFailed?.Invoke();
-                }
-            }); ;
         }
 
         private void OpenNotification(string accessName, Action onClosed) {
-            WarningConstructor.ActivateDoubleButton(accessName + " access Required!",
-                      "Please enable " + accessName + " access to use this app",
+            WarningConstructor.ActivateDoubleButton(accessName + " accesses Required!",
+                      "Please enable " + accessName + " accesses to use this app",
                       "Settings",
                       "Cancel",
                       () => {
