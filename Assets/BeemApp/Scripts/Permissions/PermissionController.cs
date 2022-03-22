@@ -38,12 +38,20 @@ namespace Beem.Permissions {
             }
         }
 
+        /// <summary>
+        /// Check Camera and Microphone Accesses
+        /// </summary>
         public bool HasCameraMicAccess {
             get {
                 return HasAccesses(new DevicePermissions[] { DevicePermissions.Camera, DevicePermissions.Microphone });
             }
         }
 
+        /// <summary>
+        /// Check Accesses from device permissions
+        /// </summary>
+        /// <param name="devicePermissions"></param>
+        /// <returns></returns>
         public bool HasAccesses(DevicePermissions[] devicePermissions) {
             return _permissionGranter.HasAccesses(devicePermissions);
         }

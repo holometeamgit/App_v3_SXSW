@@ -14,12 +14,12 @@ namespace Beem.Permissions {
     public interface IGeneralPermission {
 
         /// <summary>
-        /// Has Access
+        /// Check permission from device
         /// </summary>
         bool HasAccess(DevicePermissions devicePermission);
 
         /// <summary>
-        /// Has Accesses
+        /// Check permissions from device
         /// </summary>
         bool HasAccesses(DevicePermissions[] devicePermissions);
 
