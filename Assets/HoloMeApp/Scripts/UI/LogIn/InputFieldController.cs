@@ -77,10 +77,6 @@ public class InputFieldController : MonoBehaviour {
         if (isEmail) {
             inputField.contentType = InputField.ContentType.EmailAddress;
         }
-
-        if (IsLowercase)
-            inputField.onValueChanged.AddListener((str) => inputField.text = str.ToLower());
-
     }
 
     public void ShowWarning(string warningMsg) {
@@ -163,7 +159,10 @@ public class InputFieldController : MonoBehaviour {
 
     private void DoOnEndEditPassword(string value = "") {
         if (isTrim) {
-            inputField.text = value.Replace(" ", "");
+            text = value.Replace(" ", "");
+        }
+        if (IsLowercase) {
+            text = text.ToLower();
         }
         OnEndEditPassword.Invoke();
     }
