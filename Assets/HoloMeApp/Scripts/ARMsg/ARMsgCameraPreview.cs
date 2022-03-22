@@ -4,8 +4,6 @@ using UnityEngine.UI;
 using System.Collections;
 using Beem.ARMsg;
 using System;
-using System.Threading.Tasks;
-using System.Threading;
 
 /// <summary>
 /// ARMsgCameraPreview. Show WebCamTexture on the screen
@@ -56,12 +54,10 @@ public class ARMsgCameraPreview : MonoBehaviour {
 
     private void SwitchDevice() {
         WebCamDevice[] devices = WebCamTexture.devices;
-        HelperFunctions.DevLogError($"devices = {devices.Length}");
         if (devices.Length > 1)
             _currectDeviceID = (_currectDeviceID + 1) % 2;
 
         _devicesName = devices[_currectDeviceID].name;
-        HelperFunctions.DevLogError($"_devicesName = {_devicesName}");
         CallBacks.onCameraSwitched?.Invoke(_currectDeviceID);
     }
 
