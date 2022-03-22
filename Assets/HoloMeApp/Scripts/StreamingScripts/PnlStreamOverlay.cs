@@ -392,6 +392,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         StopStream();
         StreamOverlayConstructor.onDeactivate?.Invoke();
         RecordARConstructor.OnActivated?.Invoke(false);
+        ARenaConstructor.onDeactivate?.Invoke();
     }
 
     private void PreviewStopped() {
