@@ -40,20 +40,12 @@ namespace Beem.Permissions {
 
         public bool HasCameraMicAccess {
             get {
-                return HasCameraAccess && HasMicAccess;
+                return HasAccesses(new DevicePermissions[] { DevicePermissions.Camera, DevicePermissions.Microphone });
             }
         }
 
-        public bool HasCameraAccess {
-            get {
-                return _permissionGranter.HasAccess(DevicePermissions.Camera);
-            }
-        }
-
-        public bool HasMicAccess {
-            get {
-                return _permissionGranter.HasAccess(DevicePermissions.Microphone);
-            }
+        public bool HasAccesses(DevicePermissions[] devicePermissions) {
+            return _permissionGranter.HasAccesses(devicePermissions);
         }
 
         /// <summary>
@@ -62,27 +54,58 @@ namespace Beem.Permissions {
         /// <returns></returns>
 
         public void CheckCameraMicAccess(Action onSuccessed, Action onFailed = null) {
+            CheckAccesses(new DevicePermissions[] { DevicePermissions.Camera, DevicePermissions.Microphone }, onSuccessed, onFailed);
+        }
 
-            if (HasCameraMicAccess) {
+        /// <summary>
+        /// Check Acceses
+        /// </summary>
+        /// <param name="devicePermissions"></param>
+        /// <param name="onSuccessed"></param>
+        /// <param name="onFailed"></param>
+        public void CheckAccesses(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed = null) {
+
+            if (HasAccesses(devicePermissions)) {
                 onSuccessed.Invoke();
                 return;
             }
 
             if (!RequestComplete) {
-                _permissionGranter.RequestAccess(new DevicePermissions[] { DevicePermissions.Camera, DevicePermissions.Microphone }, onSuccessed, onFailed);
+                _permissionGranter.RequestAccess(devicePermissions, onSuccessed, onFailed);
                 RequestComplete = true;
                 return;
             }
 
 
-            OpenNotification(DevicePermissions.Camera + " and " + DevicePermissions.Microphone, () => {
-                if (HasCameraMicAccess) {
+            OpenNotification(AccessesStrings(devicePermissions), () => {
+                if (HasAccesses(devicePermissions)) {
                     onSuccessed?.Invoke();
                 } else {
                     onFailed?.Invoke();
                 }
             }); ;
 
+        }
+
+        private string AccessesStrings(DevicePermissions[] devicePermissions) {
+            switch (devicePermissions.Length) {
+                case 0:
+                    return string.Empty;
+                case 1:
+                    return devicePermissions[0].ToString();
+                default:
+                    string str = string.Empty;
+                    for (int i = 0; i < devicePermissions.Length; i++) {
+                        if (i < devicePermissions.Length - 2) {
+                            str += devicePermissions[i] + ", ";
+                        } else if (i == devicePermissions.Length - 2) {
+                            str += devicePermissions[i] + " and ";
+                        } else {
+                            str += devicePermissions[i];
+                        }
+                    }
+                    return str;
+            }
         }
 
         private void OpenNotification(string accessName, Action onClosed) {
