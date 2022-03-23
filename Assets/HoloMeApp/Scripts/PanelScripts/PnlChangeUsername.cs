@@ -12,9 +12,7 @@ public class PnlChangeUsername : MonoBehaviour {
 
     private string GetUserName {
         get {
-            string username = RegexAlphaNumeric.RegexResult(usernameInputField?.text);
-            username = username.ToLower();
-            return username;
+            return usernameInputField?.text;
         }
     }
 

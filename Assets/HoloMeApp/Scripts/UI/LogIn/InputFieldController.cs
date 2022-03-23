@@ -158,6 +158,12 @@ public class InputFieldController : MonoBehaviour {
     }
 
     private void DoOnEndEditPassword(string value = "") {
+        if (isTrim) {
+            text = RegexAlphaNumeric.RegexResult(text);
+        }
+        if (IsLowercase) {
+            text = text.ToLower();
+        }
         OnEndEditPassword.Invoke();
     }
 
