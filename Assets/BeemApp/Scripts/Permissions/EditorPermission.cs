@@ -6,16 +6,18 @@ namespace Beem.Permissions {
     /// Permission for Editor
     /// </summary>
     public class EditorPermission : IPermissionGranter {
-        public bool HasCameraAccess => true;
-
-        public bool HasMicAccess => true;
-
-        public void RequestCameraAccess(Action onSuccessed, Action onFailed) {
-            Debug.LogError($"{nameof(EditorPermission)} Requested Camera Access Editor");
+        public bool HasAccess(DevicePermissions devicePermission) {
+            return true;
         }
 
-        public void RequestMicAccess(Action onSuccessed, Action onFailed) {
-            Debug.LogError($"{nameof(EditorPermission)} Requested Mic Access Editor");
+        public bool HasAccesses(DevicePermissions[] devicePermissions) {
+            return true;
+        }
+
+        public void RequestAccess(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed) {
+            foreach (var item in devicePermissions) {
+                Debug.LogError($"{nameof(EditorPermission)} Requested {item} Access Editor");
+            }
         }
 
         public void RequestSettings() {
