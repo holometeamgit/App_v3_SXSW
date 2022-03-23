@@ -72,8 +72,9 @@ public class GalleryWindow : MonoBehaviour {
             _notEmpty.SetActive(true);
             _content.ClearContent();
             List<ScrollItemData> contentDatas = new List<ScrollItemData>();
+            arMsgJSON.results.RemoveAll(x => x.processing_status == ARMsgJSON.Data.FAILED_STATUS);
             arMsgJSON.results.Sort((x, y) => -x.CreatedAt.CompareTo(y.CreatedAt));
-            for (int i = 0; i < arMsgJSON.count; i++) {
+            for (int i = 0; i < arMsgJSON.results.Count; i++) {
                 ARMsgScrollItem aRMsgScrollItem = new ARMsgScrollItem(i);
                 aRMsgScrollItem.Init(arMsgJSON.results[i], GalleryNotificationController.IsNew(arMsgJSON.results[i]));
                 contentDatas.Add(aRMsgScrollItem);
