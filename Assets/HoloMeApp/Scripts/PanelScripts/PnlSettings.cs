@@ -34,6 +34,7 @@ public class PnlSettings : MonoBehaviour {
     /// Open Change Usename Window
     /// </summary>
     public void SettingsToChangeUserName() {
+        SettingsConstructor.OnActivated?.Invoke(false);
         ChangeUsernameConstructor.OnActivated?.Invoke(true);
     }
 

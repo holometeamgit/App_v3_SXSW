@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Beem.Permissions {
@@ -7,34 +8,41 @@ namespace Beem.Permissions {
     /// </summary>
     public class iOSPermission : IPermissionGranter {
 
-        public bool HasMicAccess => Application.HasUserAuthorization(UserAuthorization.Microphone);
+        private Dictionary<DevicePermissions, UserAuthorization> permissions = new Dictionary<DevicePermissions, UserAuthorization>() {
+            { DevicePermissions.Camera, UserAuthorization.WebCam },
+            { DevicePermissions.Microphone, UserAuthorization.Microphone }
+        };
 
-        public bool HasCameraAccess => Application.HasUserAuthorization(UserAuthorization.WebCam);
-
-        public void RequestCameraAccess(Action onSuccessed, Action onFailed) {
-            RequestCameraAccessAsync(onSuccessed, onFailed);
+        public bool HasAccess(DevicePermissions devicePermission) {
+            return Application.HasUserAuthorization(permissions[devicePermission]);
         }
 
-        private async void RequestCameraAccessAsync(Action onSuccessed, Action onFailed) {
-            await Application.RequestUserAuthorization(UserAuthorization.WebCam);
-            if (HasCameraAccess) {
-                onSuccessed?.Invoke();
-            } else {
-                onFailed?.Invoke();
+        public bool HasAccesses(DevicePermissions[] devicePermissions) {
+            foreach (var item in devicePermissions) {
+                if (!Application.HasUserAuthorization(permissions[item])) {
+                    return false;
+                }
             }
+
+            return true;
         }
 
-        public void RequestMicAccess(Action onSuccessed, Action onFailed) {
-            RequestMicAccessAsync(onSuccessed, onFailed);
+        public void RequestAccess(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed) {
+            RequestAccessAsync(devicePermissions, onSuccessed, onFailed);
         }
 
-        private async void RequestMicAccessAsync(Action onSuccessed, Action onFailed) {
-            await Application.RequestUserAuthorization(UserAuthorization.Microphone);
-            if (HasMicAccess) {
-                onSuccessed?.Invoke();
-            } else {
-                onFailed?.Invoke();
+
+        private async void RequestAccessAsync(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed) {
+
+            foreach (var item in devicePermissions) {
+                await Application.RequestUserAuthorization(permissions[item]);
+                if (!Application.HasUserAuthorization(permissions[item])) {
+                    onFailed?.Invoke();
+                    return;
+                }
             }
+
+            onSuccessed?.Invoke();
         }
 
         public void RequestSettings() {
@@ -43,6 +51,5 @@ namespace Beem.Permissions {
         Application.OpenURL(url);
 #endif
         }
-
     }
 }
