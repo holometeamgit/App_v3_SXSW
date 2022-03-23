@@ -83,6 +83,9 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     [SerializeField]
     private UserWebManager _userWebManager;
 
+    [SerializeField]
+    private ExternalLinkRedirector externalLinkRedirector;
+
     private bool initialised;
     private int countDown;
     private string tweenAnimationID = nameof(tweenAnimationID);
@@ -279,8 +282,13 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         return true;
     }
 
-    private void ShowPremiumRequiredMessage() {
-        InfoPopupConstructor.onActivateAsMessage("PREMIUM FEATURE", "Please get in contact with us \n to explore Beeming live to \nthousands of people", PnlInfoPopupColour.Blue);
+    private void ShowPremiumRequiredMessage() {        
+        WarningConstructor.ActivateDoubleButton("PREMIUM FEATURE",
+          "Contact us to explore Beeming to millions of people",
+           "GET IN TOUCH", "CANCEL",
+          () => {
+              externalLinkRedirector.Redirect();
+          }, null, false);
     }
 
     /// <summary>
