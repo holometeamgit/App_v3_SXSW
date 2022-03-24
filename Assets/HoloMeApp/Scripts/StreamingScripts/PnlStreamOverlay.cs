@@ -365,7 +365,12 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         else
             WarningConstructor.ActivateDoubleButton("Disconnect from\nlivestream?",
                 "Closing this page will end the livestream\nand disconnect your users.",
-                onButtonOnePress: () => { CloseAsViewer(); OpenMenuScreen(); });
+                onButtonOnePress: () => { CloseAsViewer(); OpenMenuScreen(); StartCoroutine(DelayStartPrevew()); });
+    }
+
+    private IEnumerator DelayStartPrevew() {
+        yield return new WaitForSeconds(0.5f);
+        _agoraController.StartPreview();
     }
 
     private void DeactivateLive() {
@@ -401,6 +406,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         StreamOverlayConstructor.onDeactivate?.Invoke();
         RecordARConstructor.OnActivated?.Invoke(false);
         ARenaConstructor.onDeactivate?.Invoke();
+        ARConstructor.onActivated(false);
     }
 
     private void PreviewStopped() {
