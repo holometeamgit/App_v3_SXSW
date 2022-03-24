@@ -24,10 +24,10 @@ namespace Beem.UI {
             }
         }
 
-        private GalleryController _galleryController;
+        private GetAllARMessageController _galleryController;
 
         private void Start() {
-            _galleryController = new GalleryController(_arMsgAPIScriptableObject, GetWebRequestHandler);
+            _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, GetWebRequestHandler);
         }
 
         /// <summary>

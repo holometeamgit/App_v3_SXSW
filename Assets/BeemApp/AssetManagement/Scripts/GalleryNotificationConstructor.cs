@@ -6,29 +6,30 @@ using UnityEngine;
 /// <summary>
 /// Gallery Notification Constructor
 /// </summary>
-public class GalleryNotificationConstructor : WindowConstructor {
-    public static Action OnShow = delegate { };
+public class GalleryNotificationConstructor : MonoBehaviour {
+
+    [SerializeField]
+    private GalleryNotificationWindow _galleryNotificationWindow;
+
     public static Action OnHide = delegate { };
 
     private void OnEnable() {
         GalleryNotificationController.OnShow += Show;
         GalleryNotificationController.OnHide += Hide;
-        OnShow += Show;
         OnHide += Hide;
     }
 
     private void OnDisable() {
         GalleryNotificationController.OnShow -= Show;
         GalleryNotificationController.OnHide -= Hide;
-        OnShow -= Show;
         OnHide -= Hide;
     }
 
-    private void Show() {
-        _window.SetActive(true);
+    private void Show(ARMsgJSON.Data data) {
+        _galleryNotificationWindow.Show(data);
     }
 
     private void Hide() {
-        _window.SetActive(false);
+        _galleryNotificationWindow.Hide();
     }
 }
