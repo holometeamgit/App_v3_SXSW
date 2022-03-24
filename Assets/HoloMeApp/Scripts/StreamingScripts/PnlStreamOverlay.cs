@@ -369,7 +369,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     private IEnumerator DelayStartPrevew() {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(3);
         _agoraController.StartPreview();
     }
 
