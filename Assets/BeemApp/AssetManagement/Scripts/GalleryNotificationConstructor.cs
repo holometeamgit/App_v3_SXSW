@@ -24,8 +24,9 @@ public class GalleryNotificationConstructor : WindowConstructor {
         OnHide -= Hide;
     }
 
+    //TODO: Open Notification banner. It will be returned in next release
     private void Show() {
-        _window.SetActive(true);
+        //_window.SetActive(true);
     }
 
     private void Hide() {
