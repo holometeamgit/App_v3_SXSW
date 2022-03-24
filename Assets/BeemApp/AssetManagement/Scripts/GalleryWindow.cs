@@ -81,6 +81,7 @@ public class GalleryWindow : MonoBehaviour {
             }
 
             _content.InitScrollContent(contentDatas);
+            _content.DynamicScrollRect.verticalNormalizedPosition = 1;
             GalleryNotificationController.Clear();
         } else {
             _empty.SetActive(true);
