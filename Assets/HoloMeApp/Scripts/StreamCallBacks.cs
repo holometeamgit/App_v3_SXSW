@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 /// <summary>
 /// Call backs for streams
 /// </summary>
@@ -37,6 +36,8 @@ public class StreamCallBacks {
     public static Action<StreamStartResponseJsonData> onRoomCreated = delegate { };
     public static Action<StreamStartResponseJsonData> onLiveStreamCreated = delegate { };
     public static Action onLiveStreamFinished = delegate { };
+
+    public static Action<DeepLinkHandler.Params> onSelectedMode = delegate { };
 
     public static Action<int> onOpenComment = delegate { };
 

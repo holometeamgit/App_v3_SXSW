@@ -24,6 +24,24 @@ public class PnlOpenHomeMenu : MonoBehaviour {
 
     private void OnEnable() {
         RecheckPermission();
+        StreamCallBacks.onSelectedMode += SelectMode;
+    }
+
+    private void SelectMode(DeepLinkHandler.Params mode) {
+        switch (mode) {
+            case DeepLinkHandler.Params.message:
+                _scrollRectSnapButtonHorz.SelectIndex(0);
+                break;
+            case DeepLinkHandler.Params.room:
+            case DeepLinkHandler.Params.username:
+                _scrollRectSnapButtonHorz.SelectIndex(1);
+                break;
+            case DeepLinkHandler.Params.live:
+            case DeepLinkHandler.Params.stadium:
+            case DeepLinkHandler.Params.prerecorded:
+                _scrollRectSnapButtonHorz.SelectIndex(2);
+                break;
+        }
     }
 
     private void RecheckPermission() {
@@ -52,6 +70,7 @@ public class PnlOpenHomeMenu : MonoBehaviour {
 
     private void OnDisable() {
         Cancel();
+        StreamCallBacks.onSelectedMode -= SelectMode;
     }
 
     /// <summary>
