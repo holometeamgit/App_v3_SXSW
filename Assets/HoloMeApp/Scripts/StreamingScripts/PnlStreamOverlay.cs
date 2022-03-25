@@ -285,7 +285,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private void ShowPremiumRequiredMessage() {
         WarningConstructor.ActivateDoubleButton("PREMIUM FEATURE",
-          "Contact us to explore Beeming to millions of people",
+          "Contact us to explore\n Beeming to millions of people",
            "GET IN TOUCH", "CANCEL",
           () => {
               externalLinkRedirector.Redirect();
