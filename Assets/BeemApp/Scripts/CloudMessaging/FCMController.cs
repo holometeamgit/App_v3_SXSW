@@ -1,10 +1,4 @@
-using Beem.Firebase;
-using Beem.Firebase.DynamicLink;
 using Firebase.Messaging;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net.Http;
 using UnityEngine;
 
 namespace Beem.Firebase.CloudMessage {

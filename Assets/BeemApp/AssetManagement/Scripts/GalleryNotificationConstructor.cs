@@ -10,6 +10,8 @@ public class GalleryNotificationConstructor : MonoBehaviour {
 
     [SerializeField]
     private GalleryNotificationWindow _galleryNotificationWindow;
+    [SerializeField]
+    private DeepLinkChecker _popupShowChecker;
 
     public static Action OnHide = delegate { };
 
@@ -26,6 +28,14 @@ public class GalleryNotificationConstructor : MonoBehaviour {
     }
 
     private void Show(ARMsgJSON.Data data) {
+        OnReceivedARMessageData(data, ActivateData);
+    }
+
+    private void OnReceivedARMessageData(ARMsgJSON.Data data, Action<ARMsgJSON.Data> onSuccessTask) {
+        _popupShowChecker.OnReceivedData(data, onSuccessTask);
+    }
+
+    private void ActivateData(ARMsgJSON.Data data) {
         _galleryNotificationWindow.Show(data);
     }
 
