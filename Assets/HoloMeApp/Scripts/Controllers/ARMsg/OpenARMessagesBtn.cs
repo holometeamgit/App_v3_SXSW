@@ -1,5 +1,6 @@
 using Beem.ARMsg;
 using Beem.Firebase.DynamicLink;
+using Beem.Permissions;
 using Firebase.DynamicLinks;
 using System;
 using UnityEngine;
@@ -23,9 +24,12 @@ namespace Beem.UI {
         /// Open AR Messages
         /// </summary>
         public void Open() {
-            StreamCallBacks.onPlayARMessage?.Invoke(_arMsgData);
+            MenuConstructor.OnActivated?.Invoke(false);
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
+            ARenaConstructor.onActivateForARMessaging?.Invoke(_arMsgData);
+            ARMsgARenaConstructor.OnActivatedARena?.Invoke(_arMsgData);
             CallBacks.OnCancelAllARMsgActions?.Invoke();
+            PnlRecord.CurrentUser = _arMsgData.user;
         }
     }
 }

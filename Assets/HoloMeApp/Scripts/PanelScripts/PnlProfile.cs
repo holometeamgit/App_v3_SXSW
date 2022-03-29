@@ -24,9 +24,17 @@ public class PnlProfile : MonoBehaviour {
     [SerializeField]
     private UserWebManager _userWebManager;
 
+    private string GetUserName {
+        get {
+            string username = RegexAlphaNumeric.RegexResult(usernameInputField?.text);
+            username = username.ToLower();
+            return username;
+        }
+    }
+
     public void ChooseUsername() {
-        if (LocalDataVerification()) {
-            _userWebManager.UpdateUserData(userName: usernameInputField.text);
+        if (LocalDataVerification(GetUserName)) {
+            _userWebManager.UpdateUserData(userName: GetUserName);
             AnalyticsController.Instance.SendCustomEvent(AnalyticKeys.KeyProfileCreated, AnalyticParameters.ParamSignUpMethod, AnalyticsSignUpModeTracker.Instance.SignUpMethodUsed.ToString());
         }
     }
@@ -37,7 +45,7 @@ public class PnlProfile : MonoBehaviour {
     }
 
     private void UserInfoLoadedCallBack() {
-        usernameInputField.text = string.IsNullOrWhiteSpace(usernameInputField.text) ? _userWebManager.GetUsername() ?? "" : usernameInputField.text;
+        usernameInputField.text = string.IsNullOrWhiteSpace(GetUserName) ? _userWebManager.GetUsername() ?? "" : usernameInputField.text;
         if (_userWebManager.GetUsername() == null) {
             InputDataArea.SetActive(true);
         } else {
@@ -78,7 +86,6 @@ public class PnlProfile : MonoBehaviour {
     /// </summary>
     public void ProfileToMainMenu() {
         CreateUsernameConstructor.OnActivated?.Invoke(false);
-        HomeScreenConstructor.OnActivated?.Invoke(true);
         MenuConstructor.OnActivated?.Invoke(true);
     }
 
@@ -105,13 +112,13 @@ public class PnlProfile : MonoBehaviour {
         usernameInputField.text = "";
     }
 
-    private bool LocalDataVerification() {
-        if (string.IsNullOrWhiteSpace(usernameInputField.text))
+    private bool LocalDataVerification(string text) {
+        if (string.IsNullOrWhiteSpace(text))
             usernameInputField.ShowWarning("This field is compulsory");
-        else if (usernameInputField.text.Length > 20)
+        else if (text.Length > 20)
             usernameInputField.ShowWarning("Username must be 20 characters or less");
 
-        return !string.IsNullOrWhiteSpace(usernameInputField.text) &&
+        return !string.IsNullOrWhiteSpace(text) &&
             usernameInputField.text.Length <= 20;
     }
 

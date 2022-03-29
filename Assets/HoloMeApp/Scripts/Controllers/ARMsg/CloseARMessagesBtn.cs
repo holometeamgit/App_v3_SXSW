@@ -6,31 +6,43 @@ namespace Beem.UI {
     /// <summary>
     /// Close ARMessage Btn
     /// </summary>
-    public class CloseARMessagesBtn : MonoBehaviour, IARMsgDataView {
+    public class CloseARMessagesBtn : MonoBehaviour {
 
-        private ARMsgJSON.Data currentData;
+        [SerializeField]
+        private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
+
+        private WebRequestHandler _webRequestHandler;
+
+        private WebRequestHandler GetWebRequestHandler {
+            get {
+
+                if (_webRequestHandler == null) {
+                    _webRequestHandler = FindObjectOfType<WebRequestHandler>();
+                }
+
+                return _webRequestHandler;
+            }
+        }
+
+        private GalleryController _galleryController;
+
+        private void Start() {
+            _galleryController = new GalleryController(_arMsgAPIScriptableObject, GetWebRequestHandler);
+        }
 
         /// <summary>
-        /// Close ARMessage
+        /// On Click
         /// </summary>
-        public void Close() {
-
-            WarningConstructor.ActivateDoubleButton("Before you go...",
-           "If you exit you could lose your AR message if you don't share the link.",
-           "Copy link and exit", "Return",
-           () => {
-               GUIUtility.systemCopyBuffer = currentData.share_link;
-               ARMsgARenaConstructor.OnDeactivatedARena?.Invoke();
-               ARenaConstructor.onDeactivate?.Invoke();
-               MenuConstructor.OnActivated?.Invoke(true);
-               HomeScreenConstructor.OnActivated?.Invoke(true);
-           },
-           null,
-           false);
+        public void OnClick() {
+            _galleryController.GetAllArMessages(onSuccess: Show);
         }
 
-        public void Init(ARMsgJSON.Data data) {
-            currentData = data;
+        private void Show(ARMsgJSON data) {
+            ARMsgARenaConstructor.OnDeactivatedARena?.Invoke();
+            ARenaConstructor.onDeactivate?.Invoke();
+            MenuConstructor.OnActivated?.Invoke(false);
+            GalleryConstructor.OnShow?.Invoke(data);
         }
+
     }
 }

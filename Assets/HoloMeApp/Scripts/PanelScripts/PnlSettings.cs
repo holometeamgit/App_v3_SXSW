@@ -12,8 +12,6 @@ public class PnlSettings : MonoBehaviour {
     [SerializeField]
     private GameObject _changePassword;
     [SerializeField]
-    private GameObject _btnStadium;
-    [SerializeField]
     private TMP_Text _txtNickname;
     [Space]
     [SerializeField]
@@ -24,9 +22,6 @@ public class PnlSettings : MonoBehaviour {
     private void OnEnable() {
         _changePassword.SetActive(_accountManager.GetLogInType() == LogInType.Email);
         _txtNickname.text = _userWebManager.GetUsername();
-
-        _btnStadium.SetActive(_userWebManager.CanGoLive());
-
         _userWebManager.OnUserAccountDeleted += UserLogOut;
     }
 
@@ -34,8 +29,8 @@ public class PnlSettings : MonoBehaviour {
     /// Open Change Usename Window
     /// </summary>
     public void SettingsToChangeUserName() {
-        ChangeUsernameConstructor.OnActivated?.Invoke(true);
         SettingsConstructor.OnActivated?.Invoke(false);
+        ChangeUsernameConstructor.OnActivated?.Invoke(true);
     }
 
     /// <summary>
@@ -43,15 +38,14 @@ public class PnlSettings : MonoBehaviour {
     /// </summary>
     public void SettingsToChangePassword() {
         ChangePasswordConstructor.OnActivated?.Invoke(true);
-        SettingsConstructor.OnActivated?.Invoke(false);
     }
 
     /// <summary>
     /// Open Delete Account Window
     /// </summary>
     public void SettingsToDeleteAccount() {
-        WarningConstructor.ActivateDoubleButton("Delete account", "If you delete your account, you will lose \naccess to the Beem network.Are you sure \nyou want to continue?",
-          "Continue", "Cancel",
+        WarningConstructor.ActivateDoubleButton("Delete account", "If you delete your account, you will lose\naccess to the Beem network. Are you sure\nyou want to continue?",
+          "Cancel", "DELETE", null,
           () => {
               _userWebManager.DeleteUserAccount();
           });
@@ -59,9 +53,9 @@ public class PnlSettings : MonoBehaviour {
 
     private void UserLogOut() {
         WelcomeConstructor.OnActivated?.Invoke(true);
-        MenuConstructor.OnActivated?.Invoke(false);
-        HomeScreenConstructor.OnActivated?.Invoke(false);
+        GalleryConstructor.OnHide?.Invoke();
         SettingsConstructor.OnActivated?.Invoke(false);
+
         _accountManager.LogOut();
     }
 

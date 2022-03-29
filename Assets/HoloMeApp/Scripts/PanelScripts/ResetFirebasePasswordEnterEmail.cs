@@ -7,11 +7,13 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     InputFieldController emailInputField;
 
     [SerializeField]
-    bool needShowWarning = true;
+    private bool needShowWarning = true;
 
     [Space]
     [SerializeField]
     private AuthController _authController;
+    [SerializeField]
+    private AccountManager _accountManager;
 
     public void ForgotPasswordBtnClick() {
         CallBacks.onResetPasswordClick?.Invoke();
@@ -51,7 +53,7 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
         WarningConstructor.ActivateSingleButton("Change password",
             string.Format("Password change information has been sent to email {0}", emailInputField.text),
             "Continue",
-            () => { ResetPasswordToSignIn(); emailInputField.MobileInputField.gameObject.SetActive(true); });
+            () => { ResetPasswordToSignIn(); });
     }
 
     private void ErrorMsgCallBack(string msg) {
@@ -73,11 +75,17 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     /// Switch reset password to sign in
     /// </summary>
     public void ResetPasswordToSignIn() {
+        ChangePasswordConstructor.OnActivated?.Invoke(false);
+        SettingsConstructor.OnActivated?.Invoke(false);
+        GalleryConstructor.OnHide?.Invoke();
         ResetPasswordConstructor.OnActivated?.Invoke(false);
         SignInConstructor.OnActivated?.Invoke(true);
+        _accountManager.LogOut();
+
     }
 
     private void OnEnable() {
+        emailInputField.MobileInputField.gameObject.SetActive(true);
         if (string.IsNullOrWhiteSpace(emailInputField.text))
             emailInputField.text = _authController.GetEmail();
 
@@ -92,7 +100,6 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     /// </summary>
     public void ChangePasswordToSettings() {
         ChangePasswordConstructor.OnActivated?.Invoke(false);
-        SettingsConstructor.OnActivated?.Invoke(true);
     }
 
     private void OnDisable() {

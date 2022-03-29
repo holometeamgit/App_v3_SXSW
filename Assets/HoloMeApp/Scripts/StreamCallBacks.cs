@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 /// <summary>
 /// Call backs for streams
 /// </summary>
@@ -10,16 +9,6 @@ public class StreamCallBacks {
     public static Action<string> onReceiveRoomLink = delegate { };
     public static Action<string> onReceiveARMsgLink = delegate { };
     public static Action<RoomJsonData> onRoomDataReceived = delegate { };
-    // from app to controller: notification that broadcaster stop room 
-    public static Action onRoomClosed = delegate { };
-
-    //from controller
-    public static Action<string> onShowPopUpRoomOnline = delegate { };
-    public static Action<int> onUpdateUserCount = delegate { };
-    public static Action<string> onShowPopUpRoomOffline = delegate { };
-    public static Action<string> onShowPopUpRoomEnded = delegate { };
-    public static Action<long> onUserDoesntExist = delegate { };
-    public static Action onClosePopUp = delegate { };
 
     //from ui
     public static Action onOpenRoom = delegate { };
@@ -37,22 +26,18 @@ public class StreamCallBacks {
     public static Action onCancelOpenContent = delegate { };
     #endregion
 
-    #region
-    public static Action<RoomJsonData> onPlayRoom = delegate { };
-    public static Action<ARMsgJSON.Data> onPlayARMessage = delegate { };
-    #endregion
-
     public static Action onGetLastRoomLink = delegate { };
     public static Action<string> onShareRoomLink = delegate { };
     public static Action<string> onShareStreamLinkByUsername = delegate { };
     public static Action<StreamJsonData.Data> onShareStreamLinkByData = delegate { };
-    public static Action<StreamJsonData.Data> onStreamDataReceived = delegate { };
-    public static Action onCloseStreamPopUp = delegate { };
+    public static Action onRoomBroadcastFinished = delegate { };
 
     //when start stream on Agora
     public static Action<StreamStartResponseJsonData> onRoomCreated = delegate { };
     public static Action<StreamStartResponseJsonData> onLiveStreamCreated = delegate { };
     public static Action onLiveStreamFinished = delegate { };
+
+    public static Action<DeepLinkHandler.Params> onSelectedMode = delegate { };
 
     public static Action<int> onOpenComment = delegate { };
 

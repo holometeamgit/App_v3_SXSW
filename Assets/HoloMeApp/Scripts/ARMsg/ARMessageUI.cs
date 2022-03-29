@@ -10,23 +10,39 @@ using Beem.ARMsg;
 public class ARMessageUI : MonoBehaviour {
     [SerializeField]
     private GameObject RecordSteps;
-    [SerializeField]
-    private UnityEvent OnHasLastUploadingFile;
 
-    private void OnEnable() {
-        if (CallBacks.OnCheckContainLastUploadedARMsg != null && CallBacks.OnCheckContainLastUploadedARMsg.Invoke()) {
-            OnHasLastUploadingFile?.Invoke();
-        } else {
-            RecordSteps.gameObject.SetActive(true);
-        }
+    private const string KEY_SEEN_TUTORIAL_BEEMME = nameof(KEY_SEEN_TUTORIAL_BEEMME);
+
+    /// <summary>
+    /// Reopen
+    /// </summary>
+    public void Reopen() {
+        CallBacks.OnCancelAllARMsgActions?.Invoke();
+        ARMsgRecordConstructor.OnActivated?.Invoke(true);
+        MenuConstructor.OnActivated?.Invoke(true);
     }
 
     /// <summary>
-    /// Close ARMessage Steps
+    /// ShowInfoPopupBeemMe
     /// </summary>
-    public void CloseARMessageSteps() {
+    public void ShowInfoPopupBeemMe() {
+        InfoPopupConstructor.onActivate("HOW TO RECORD \n YOUR HOLOGRAM \n MESSAGE", false, PnlInfoPopupColour.Orange);
+    }
+
+    private void ShowInfoPopUpFirstTime() {
+        if (PlayerPrefs.GetString(KEY_SEEN_TUTORIAL_BEEMME, "") == "") {
+            PlayerPrefs.SetString(KEY_SEEN_TUTORIAL_BEEMME, KEY_SEEN_TUTORIAL_BEEMME);
+            ShowInfoPopupBeemMe();
+        }
+    }
+
+    private void OnEnable() {
+        RecordSteps.gameObject.SetActive(true);
+        ShowInfoPopUpFirstTime();
         MenuConstructor.OnActivated?.Invoke(true);
-        HomeScreenConstructor.OnActivated?.Invoke(true);
-        ARMsgRecordConstructor.OnActivated?.Invoke(false);
+    }
+
+    private void OnDisable() {
+        CallBacks.OnCancelAllARMsgActions?.Invoke();
     }
 }

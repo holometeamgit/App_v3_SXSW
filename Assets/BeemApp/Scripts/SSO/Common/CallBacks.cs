@@ -34,6 +34,8 @@ namespace Beem.SSO {
         public static Action onSignOutClick = delegate { };
         public static Action onSignOut = delegate { };
 
+        public static Action onUserDataLoaded = delegate { };
+
         public static Action onUserWasDeleted = delegate { };
 
         public static Action<string> onFail = delegate { };
