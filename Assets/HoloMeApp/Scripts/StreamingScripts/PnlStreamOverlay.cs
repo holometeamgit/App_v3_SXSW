@@ -109,6 +109,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private string lastPushToTalkStatusMessageReceived; //To stop audio toggling twice
 
     const int STATUS_MESSAGE_HIDE_DELAY = 3;
+    const int DELAY_FOR_PREVIEW = 3;
 
     private const char MessageSplitter = '+';
     private const string ToViewerTag = "ToViewer"; //Indicates message is for viewers only
@@ -282,9 +283,9 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         return true;
     }
 
-    private void ShowPremiumRequiredMessage() {        
+    private void ShowPremiumRequiredMessage() {
         WarningConstructor.ActivateDoubleButton("PREMIUM FEATURE",
-          "Contact us to explore Beeming to millions of people",
+          "Contact us to explore\n Beeming to millions of people",
            "GET IN TOUCH", "CANCEL",
           () => {
               externalLinkRedirector.Redirect();
@@ -365,7 +366,12 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         else
             WarningConstructor.ActivateDoubleButton("Disconnect from\nlivestream?",
                 "Closing this page will end the livestream\nand disconnect your users.",
-                onButtonOnePress: () => { CloseAsViewer(); OpenMenuScreen(); });
+                onButtonOnePress: () => { CloseAsViewer(); OpenMenuScreen(); StartCoroutine(DelayStartPrevew()); });
+    }
+
+    private IEnumerator DelayStartPrevew() {
+        yield return new WaitForSeconds(DELAY_FOR_PREVIEW);
+        _agoraController.StartPreview();
     }
 
     private void DeactivateLive() {
@@ -401,6 +407,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         StreamOverlayConstructor.onDeactivate?.Invoke();
         RecordARConstructor.OnActivated?.Invoke(false);
         ARenaConstructor.onDeactivate?.Invoke();
+        ARConstructor.onActivated(false);
     }
 
     private void PreviewStopped() {

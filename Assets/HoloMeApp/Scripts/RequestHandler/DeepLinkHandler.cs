@@ -48,24 +48,30 @@ public class DeepLinkHandler : MonoBehaviour {
     }
 
     private void GetContentsParameters(Uri uri) {
-        if (ContainParam(uri, Params.room.ToString())) {
+        if (ContainParam(uri, Params.message.ToString())) {
+            string messageId = GetParam(uri, Params.message.ToString());
+            StreamCallBacks.onReceiveARMsgLink?.Invoke(messageId);
+            StreamCallBacks.onSelectedMode?.Invoke(Params.message);
+        } else if (ContainParam(uri, Params.room.ToString())) {
             string username = GetParam(uri, Params.room.ToString());
             StreamCallBacks.onReceiveRoomLink?.Invoke(username);
+            StreamCallBacks.onSelectedMode?.Invoke(Params.room);
         } else if (ContainParam(uri, Params.username.ToString())) {
             string username = GetParam(uri, Params.username.ToString());
             StreamCallBacks.onReceiveRoomLink?.Invoke(username);
-        } else if (ContainParam(uri, Params.message.ToString())) {
-            string messageId = GetParam(uri, Params.message.ToString());
-            StreamCallBacks.onReceiveARMsgLink?.Invoke(messageId);
+            StreamCallBacks.onSelectedMode?.Invoke(Params.username);
         } else if (ContainParam(uri, Params.live.ToString())) {
             string username = GetParam(uri, Params.live.ToString());
             StreamCallBacks.onReceiveStadiumLink?.Invoke(username);
+            StreamCallBacks.onSelectedMode?.Invoke(Params.live);
         } else if (ContainParam(uri, Params.stadium.ToString())) {
             string username = GetParam(uri, Params.stadium.ToString());
             StreamCallBacks.onReceiveStadiumLink?.Invoke(username);
+            StreamCallBacks.onSelectedMode?.Invoke(Params.stadium);
         } else if (ContainParam(uri, Params.prerecorded.ToString())) {
             string slug = GetParam(uri, Params.prerecorded.ToString());
             StreamCallBacks.onReceivePrerecordedLink?.Invoke(slug);
+            StreamCallBacks.onSelectedMode?.Invoke(Params.prerecorded);
         }
     }
 
