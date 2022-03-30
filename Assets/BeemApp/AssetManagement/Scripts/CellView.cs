@@ -3,6 +3,7 @@ using DynamicScrollRect;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -19,6 +20,8 @@ public class CellView : ScrollItem<ARMsgScrollItem> {
     private ScreenshotView _screenshotView;
     [SerializeField]
     private GameObject _newObj;
+    [SerializeField]
+    private TMP_Text _processText;
 
     private List<IARMsgDataView> _arMsgDataViews;
 
@@ -29,7 +32,7 @@ public class CellView : ScrollItem<ARMsgScrollItem> {
     private void Show(ARMsgJSON.Data data, bool isNew) {
         _newObj.SetActive(isNew);
 
-        _screenshotView.Show(data, () => ShowPreview(true), () => ShowPreview(false));
+        _screenshotView.Show(data, () => ShowPreview(true), (text) => { ShowPreview(false); _processText.text = text; });
 
         _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
 

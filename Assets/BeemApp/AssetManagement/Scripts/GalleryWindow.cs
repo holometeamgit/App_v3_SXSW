@@ -33,7 +33,7 @@ public class GalleryWindow : MonoBehaviour {
     private UserWebManager _userWebManager;
     private WebRequestHandler _webRequestHandler;
 
-    private GalleryController _galleryController;
+    private GetAllARMessageController _galleryController;
     private const string TOPIC = "gallery_{0}";
 
     private bool CanShowPushNotificationPopup {
@@ -52,7 +52,7 @@ public class GalleryWindow : MonoBehaviour {
     }
 
     private void Start() {
-        _galleryController = new GalleryController(_arMsgAPIScriptableObject, _webRequestHandler);
+        _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, _webRequestHandler);
     }
 
     private void OnEnable() {
@@ -76,14 +76,16 @@ public class GalleryWindow : MonoBehaviour {
             _notEmpty.SetActive(true);
             _content.ClearContent();
             List<ScrollItemData> contentDatas = new List<ScrollItemData>();
+            arMsgJSON.results.RemoveAll(x => x.processing_status == ARMsgJSON.Data.FAILED_STATUS);
             arMsgJSON.results.Sort((x, y) => -x.CreatedAt.CompareTo(y.CreatedAt));
-            for (int i = 0; i < arMsgJSON.count; i++) {
+            for (int i = 0; i < arMsgJSON.results.Count; i++) {
                 ARMsgScrollItem aRMsgScrollItem = new ARMsgScrollItem(i);
                 aRMsgScrollItem.Init(arMsgJSON.results[i], GalleryNotificationController.IsNew(arMsgJSON.results[i]));
                 contentDatas.Add(aRMsgScrollItem);
             }
 
             _content.InitScrollContent(contentDatas);
+            _content.DynamicScrollRect.verticalNormalizedPosition = 1;
             GalleryNotificationController.Clear();
         } else {
             _empty.SetActive(true);
@@ -103,7 +105,7 @@ public class GalleryWindow : MonoBehaviour {
         _scrollRect.offsetMax = offsetMax;
     }
 
-    private void RefreshWindow() {
+    private void RefreshWindow(ARMsgJSON.Data data) {
         _galleryController.GetAllArMessages(onSuccess: Show);
     }
 

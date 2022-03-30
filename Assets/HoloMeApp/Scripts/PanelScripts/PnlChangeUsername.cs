@@ -1,23 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
-using Zenject;
 
 public class PnlChangeUsername : MonoBehaviour {
     [SerializeField] InputFieldController usernameInputField;
     [SerializeField] int userNameLimit = 30;
-
+    [Space]
+    [SerializeField]
     private UserWebManager _userWebManager;
 
-    [Inject]
-    public void Construct(UserWebManager userWebManager) {
-        _userWebManager = userWebManager;
+    private string GetUserName {
+        get {
+            string username = RegexAlphaNumeric.RegexResult(usernameInputField?.text);
+            username = username.ToLower();
+            return username;
+        }
     }
 
-
     public void ChangeUsername() {
-        if (LocalDataVerification())
-            _userWebManager.UpdateUserData(userName: usernameInputField?.text ?? null);
+        if (LocalDataVerification(GetUserName))
+            _userWebManager.UpdateUserData(userName: GetUserName);
     }
 
     private void Start() {
@@ -25,7 +28,7 @@ public class PnlChangeUsername : MonoBehaviour {
     }
 
     private void UserInfoLoadedCallBack() {
-        usernameInputField.text = string.IsNullOrWhiteSpace(usernameInputField.text) ? _userWebManager.GetUsername() ?? "" : usernameInputField.text;
+        usernameInputField.text = string.IsNullOrWhiteSpace(GetUserName) ? _userWebManager.GetUsername() ?? "" : usernameInputField.text;
     }
 
     private void UpdateUserDataCallBack() {
@@ -45,14 +48,13 @@ public class PnlChangeUsername : MonoBehaviour {
             usernameInputField.ShowWarning(badRequestData.detail);
     }
 
-    private bool LocalDataVerification() {
-        if (string.IsNullOrWhiteSpace(usernameInputField.text))
+    private bool LocalDataVerification(string text) {
+        if (string.IsNullOrWhiteSpace(text))
             usernameInputField.ShowWarning("This field is compulsory");
-        else if (usernameInputField.text.Length > 20)
+        else if (text.Length > 20)
             usernameInputField.ShowWarning("Username must be 20 characters or less");
 
-        return !string.IsNullOrWhiteSpace(usernameInputField.text) &&
-            usernameInputField.text.Length <= 20;
+        return !string.IsNullOrWhiteSpace(text) && text.Length <= 20;
     }
 
     private void OnEnable() {

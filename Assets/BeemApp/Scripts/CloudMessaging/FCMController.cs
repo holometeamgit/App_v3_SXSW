@@ -1,10 +1,4 @@
-using Beem.Firebase;
-using Beem.Firebase.DynamicLink;
 using Firebase.Messaging;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net.Http;
 using UnityEngine;
 
 namespace Beem.Firebase.CloudMessage {
@@ -13,6 +7,11 @@ namespace Beem.Firebase.CloudMessage {
     /// CloudMessage Controller
     /// </summary>
     public class FCMController : MonoBehaviour {
+        [SerializeField]
+        private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
+        [SerializeField]
+        private WebRequestHandler _webRequestHandler;
+
 
         private const string TOPIC = "Test";
 
@@ -54,7 +53,7 @@ namespace Beem.Firebase.CloudMessage {
 
         private void OnMessageReceived(object sender, MessageReceivedEventArgs e) {
             if (e.Message.Data.ContainsKey(MSG_TYPE) && e.Message.Data[MSG_TYPE] == GALLERY) {
-                GalleryNotificationController galleryNotificationController = new GalleryNotificationController();
+                GalleryNotificationController galleryNotificationController = new GalleryNotificationController(_arMsgAPIScriptableObject, _webRequestHandler);
                 galleryNotificationController.SetData(e.Message.Data);
             }
         }

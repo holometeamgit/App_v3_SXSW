@@ -57,6 +57,16 @@ public class ScrollRectSnapButtonHorz : MonoBehaviour {
     }
 
     /// <summary>
+    /// Select index
+    /// </summary>
+    public void SelectIndex(int index) {
+        index = Mathf.Clamp(index, 0, buttons.Length);
+        currentRegisteredIndex = index;
+        RegisterIndex(currentRegisteredIndex);
+        buttons[currentRegisteredIndex]?.onClick?.Invoke();
+    }
+
+    /// <summary>
     /// Select the next element to the right
     /// </summary>
     public void SelectRight() {
