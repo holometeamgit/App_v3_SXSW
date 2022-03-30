@@ -81,6 +81,9 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private AgoraController _agoraController;
     private UserWebManager _userWebManager;
 
+    [SerializeField]
+    private ExternalLinkRedirector externalLinkRedirector;
+
     private bool initialised;
     private int countDown;
     private string tweenAnimationID = nameof(tweenAnimationID);
@@ -104,6 +107,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private string lastPushToTalkStatusMessageReceived; //To stop audio toggling twice
 
     const int STATUS_MESSAGE_HIDE_DELAY = 3;
+    const int DELAY_FOR_PREVIEW = 3;
 
     private const char MessageSplitter = '+';
     private const string ToViewerTag = "ToViewer"; //Indicates message is for viewers only
@@ -284,7 +288,12 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     private void ShowPremiumRequiredMessage() {
-        InfoPopupConstructor.onActivateAsMessage("PREMIUM FEATURE", "Please get in contact with us \n to explore Beeming live to \nthousands of people", PnlInfoPopupColour.Blue);
+        WarningConstructor.ActivateDoubleButton("PREMIUM FEATURE",
+          "Contact us to explore\n Beeming to millions of people",
+           "GET IN TOUCH", "CANCEL",
+          () => {
+              externalLinkRedirector.Redirect();
+          }, null, false);
     }
 
     /// <summary>
@@ -361,7 +370,12 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         else
             WarningConstructor.ActivateDoubleButton("Disconnect from\nlivestream?",
                 "Closing this page will end the livestream\nand disconnect your users.",
-                onButtonOnePress: () => { CloseAsViewer(); OpenMenuScreen(); });
+                onButtonOnePress: () => { CloseAsViewer(); OpenMenuScreen(); StartCoroutine(DelayStartPrevew()); });
+    }
+
+    private IEnumerator DelayStartPrevew() {
+        yield return new WaitForSeconds(DELAY_FOR_PREVIEW);
+        _agoraController.StartPreview();
     }
 
     private void DeactivateLive() {
@@ -397,6 +411,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         StreamOverlayConstructor.onDeactivate?.Invoke();
         RecordARConstructor.OnActivated?.Invoke(false);
         ARenaConstructor.onDeactivate?.Invoke();
+        ARConstructor.onActivated(false);
     }
 
     private void PreviewStopped() {

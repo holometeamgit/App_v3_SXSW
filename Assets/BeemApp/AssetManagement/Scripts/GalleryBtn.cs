@@ -15,7 +15,7 @@ public class GalleryBtn : MonoBehaviour {
 
     private WebRequestHandler _webRequestHandler;
 
-    private GalleryController _galleryController;
+    private GetAllARMessageController _galleryController;
 
     [Inject]
     public void Construct(WebRequestHandler webRequestHandler) {
@@ -23,7 +23,7 @@ public class GalleryBtn : MonoBehaviour {
     }
 
     private void Start() {
-        _galleryController = new GalleryController(_arMsgAPIScriptableObject, _webRequestHandler);
+        _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, _webRequestHandler);
     }
 
     /// <summary>

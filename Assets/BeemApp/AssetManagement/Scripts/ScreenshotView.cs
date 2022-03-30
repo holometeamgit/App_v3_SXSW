@@ -23,10 +23,13 @@ public class ScreenshotView : MonoBehaviour {
     private CancellationTokenSource _cancelTokenSource;
     private ARMsgJSON.Data _data;
     private Action _onSuccess;
-    private Action _onFailed;
+    private Action<string> _onFailed;
     private Material _currentMat;
 
     private const int DELAY = 1000;
+    private const string LOADING = "Loading...";
+    private const string PROCESSING = "Processing...";
+    private const string FAILED = "Failed...";
 
 
     /// <summary>
@@ -35,25 +38,34 @@ public class ScreenshotView : MonoBehaviour {
     /// <param name="data"></param>
     /// <param name="onSuccess"></param>
     /// <param name="onFail"></param>
-    public void Show(ARMsgJSON.Data data, Action onSuccess, Action onFail) {
+    public void Show(ARMsgJSON.Data data, Action onSuccess, Action<string> onFail) {
         _data = data;
         _onSuccess = onSuccess;
         _onFailed = onFail;
     }
 
     private void OnEnable() {
-        if (_data != null && !string.IsNullOrEmpty(_data.ar_message_s3_link)) {
-            _videoPlayer.url = _data.ar_message_s3_link;
-            if (!_videoPlayer.isPrepared) {
-                _onFailed?.Invoke();
-                _videoPlayer.prepareCompleted += Prepare;
-                _videoPlayer.Prepare();
+        if (_data != null) {
+            if (!string.IsNullOrEmpty(_data.ar_message_s3_link)) {
+                _videoPlayer.url = _data.ar_message_s3_link;
+                if (!_videoPlayer.isPrepared) {
+                    _onFailed?.Invoke(LOADING);
+                    _videoPlayer.prepareCompleted += Prepare;
+                    _videoPlayer.Prepare();
+                } else {
+                    _onSuccess?.Invoke();
+                    UpdatePreview();
+                }
             } else {
-                _onSuccess?.Invoke();
-                UpdatePreview();
+                if (_data.processing_status == ARMsgJSON.Data.FAILED_STATUS) {
+                    _onFailed?.Invoke(FAILED);
+                } else {
+                    _onFailed?.Invoke(PROCESSING);
+                }
+
             }
         } else {
-            _onFailed?.Invoke();
+            _onFailed?.Invoke(FAILED);
         }
     }
 

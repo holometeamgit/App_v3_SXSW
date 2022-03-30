@@ -14,7 +14,7 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
     private UserWebManager _userWebManager;
 
     private DeleteARMsgController _deleteARMsgController;
-    private GalleryController _galleryController;
+    private GetAllARMessageController _galleryController;
 
     private ARMsgJSON.Data currentData;
 
@@ -26,7 +26,7 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
 
     private void Start() {
         _deleteARMsgController = new DeleteARMsgController(_arMsgAPIScriptableObject, _webRequestHandler);
-        _galleryController = new GalleryController(_arMsgAPIScriptableObject, _webRequestHandler);
+        _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, _webRequestHandler);
     }
 
     /// <summary>
