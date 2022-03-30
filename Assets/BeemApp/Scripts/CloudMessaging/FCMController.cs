@@ -1,5 +1,6 @@
 using Firebase.Messaging;
 using UnityEngine;
+using Zenject;
 
 namespace Beem.Firebase.CloudMessage {
 
@@ -9,7 +10,7 @@ namespace Beem.Firebase.CloudMessage {
     public class FCMController : MonoBehaviour {
         [SerializeField]
         private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
-        [SerializeField]
+
         private WebRequestHandler _webRequestHandler;
 
 
@@ -17,6 +18,11 @@ namespace Beem.Firebase.CloudMessage {
 
         private const string MSG_TYPE = "message_type_beem";
         private const string GALLERY = "gallery";
+
+        [Inject]
+        public void Construct(WebRequestHandler webRequestHandler) {
+            _webRequestHandler = webRequestHandler;
+        }
 
         private void OnEnable() {
             FirebaseCallBacks.onInit += Subscribe;
