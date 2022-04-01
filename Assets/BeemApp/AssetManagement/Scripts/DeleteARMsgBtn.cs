@@ -36,13 +36,13 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
     }
 
     private DeleteARMsgController _deleteARMsgController;
-    private GalleryController _galleryController;
+    private GetAllARMessageController _galleryController;
 
     private ARMsgJSON.Data currentData;
 
     private void Start() {
         _deleteARMsgController = new DeleteARMsgController(_arMsgAPIScriptableObject, GetWebRequestHandler);
-        _galleryController = new GalleryController(_arMsgAPIScriptableObject, GetWebRequestHandler);
+        _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, GetWebRequestHandler);
     }
 
     /// <summary>

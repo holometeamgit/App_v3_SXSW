@@ -35,7 +35,7 @@ public class GalleryWindow : MonoBehaviour {
     [SerializeField]
     private WebRequestHandler _webRequestHandler;
 
-    private GalleryController _galleryController;
+    private GetAllARMessageController _galleryController;
     private const string TOPIC = "gallery_{0}";
 
     private bool CanShowPushNotificationPopup {
@@ -48,7 +48,7 @@ public class GalleryWindow : MonoBehaviour {
     }
 
     private void Start() {
-        _galleryController = new GalleryController(_arMsgAPIScriptableObject, _webRequestHandler);
+        _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, _webRequestHandler);
     }
 
     private void OnEnable() {
@@ -101,7 +101,7 @@ public class GalleryWindow : MonoBehaviour {
         _scrollRect.offsetMax = offsetMax;
     }
 
-    private void RefreshWindow() {
+    private void RefreshWindow(ARMsgJSON.Data data) {
         _galleryController.GetAllArMessages(onSuccess: Show);
     }
 
