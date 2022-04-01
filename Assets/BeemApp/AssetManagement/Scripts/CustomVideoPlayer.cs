@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -21,6 +20,7 @@ public class CustomVideoPlayer {
         SuccessPreparing
     }
 
+    private CancellationTokenSource _cancelTokenSource;
     private VideoPlayer _videoPlayer;
     public CustomVideoPlayer(VideoPlayer videoPlayer) {
         _videoPlayer = videoPlayer;
@@ -32,12 +32,17 @@ public class CustomVideoPlayer {
     /// </summary>
     /// <param name="_url"></param>
     public async void PlayVideoFromURL(string _url, Action<Status> onChangeStatus) {
+        _cancelTokenSource = new CancellationTokenSource();
+        CancellationToken cancelTokenSource = _cancelTokenSource.Token;
         _videoPlayer.source = VideoSource.Url;
         _videoPlayer.url = _url;
         _videoPlayer.Prepare();
         onChangeStatus?.Invoke(Status.ProcessPreparing);
-        while (_videoPlayer.isPrepared == false) {
+        while (_videoPlayer.isPrepared == false && !cancelTokenSource.IsCancellationRequested) {
             await Task.Yield();
+        }
+        if (cancelTokenSource.IsCancellationRequested) {
+            return;
         }
         onChangeStatus?.Invoke(Status.SuccessPreparing);
         _videoPlayer.Play();
@@ -48,11 +53,7 @@ public class CustomVideoPlayer {
     /// </summary>
     /// <param name="_url"></param>
     public async void LoadVideoFromURL(string _url, Action<Status> onChangeStatus) {
-
-        string _pathToFile = Path.Combine(Application.streamingAssetsPath, _url.Split(Path.AltDirectorySeparatorChar).Last());
-
-        HelperFunctions.DevLogError(_pathToFile);
-
+        string _pathToFile = Path.Combine(Application.persistentDataPath, _url.Split(Path.AltDirectorySeparatorChar).Last());
         if (!File.Exists(_pathToFile)) {
             UnityWebRequest _videoRequest = UnityWebRequest.Get(_url);
             onChangeStatus?.Invoke(Status.ProcessLoading);
@@ -69,6 +70,17 @@ public class CustomVideoPlayer {
             onChangeStatus?.Invoke(Status.SuccessLoading);
             PlayVideoFromURL(_pathToFile, onChangeStatus);
         }
+    }
+
+    /// <summary>
+    /// StopVideo
+    /// </summary>
+    public void StopVideo() {
+        if (_cancelTokenSource != null) {
+            _cancelTokenSource.Cancel();
+            _cancelTokenSource = null;
+        }
+        _videoPlayer.Stop();
     }
 
 }
