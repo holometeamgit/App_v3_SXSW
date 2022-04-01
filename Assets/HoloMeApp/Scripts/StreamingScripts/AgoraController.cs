@@ -184,7 +184,7 @@ public class AgoraController : MonoBehaviour {
                 background_source_type = BACKGROUND_SOURCE_TYPE.BACKGROUND_COLOR,
                 color = Convert.ToUInt32(ColorUtility.ToHtmlStringRGB(Color.green), 16)
             };
-            iRtcEngine.EnableVirtualBackground(true, source);
+            iRtcEngine.EnableVirtualBackground(IsRoom, source);
             return iRtcEngine.EnableVideoObserver();
         } else {
             return -1;
@@ -468,7 +468,8 @@ public class AgoraController : MonoBehaviour {
                     background_source_type = BACKGROUND_SOURCE_TYPE.BACKGROUND_COLOR,
                     color = Convert.ToUInt32(ColorUtility.ToHtmlStringRGB(Color.green), 16)
                 };
-                iRtcEngine.EnableVirtualBackground(true, source);
+
+                iRtcEngine.EnableVirtualBackground(IsRoom, source);
             } else {
                 iRtcEngine.DisableVideo();
             }
