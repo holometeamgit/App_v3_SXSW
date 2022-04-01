@@ -35,9 +35,10 @@ public class ScreenshotView : MonoBehaviour {
         _data = data;
         _onSuccess = onSuccess;
         _onFailed = onFail;
+        Play();
     }
 
-    private void OnEnable() {
+    private void Play() {
         if (_data != null) {
             if (!string.IsNullOrEmpty(_data.ar_message_s3_link)) {
                 if (customVideoPlayer == null) {

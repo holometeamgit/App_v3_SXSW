@@ -32,6 +32,7 @@ public class CustomVideoPlayer {
     /// </summary>
     /// <param name="_url"></param>
     public async void PlayVideoFromURL(string _url, Action<Status> onChangeStatus) {
+        Cancel();
         _cancelTokenSource = new CancellationTokenSource();
         CancellationToken cancelTokenSource = _cancelTokenSource.Token;
         _videoPlayer.source = VideoSource.Url;
@@ -53,6 +54,7 @@ public class CustomVideoPlayer {
     /// </summary>
     /// <param name="_url"></param>
     public async void LoadVideoFromURL(string _url, Action<Status> onChangeStatus) {
+        Cancel();
         string _pathToFile = Path.Combine(Application.persistentDataPath, _url.Split(Path.AltDirectorySeparatorChar).Last());
         if (!File.Exists(_pathToFile)) {
             UnityWebRequest _videoRequest = UnityWebRequest.Get(_url);
@@ -72,14 +74,17 @@ public class CustomVideoPlayer {
         }
     }
 
-    /// <summary>
-    /// StopVideo
-    /// </summary>
-    public void StopVideo() {
+    private void Cancel() {
         if (_cancelTokenSource != null) {
             _cancelTokenSource.Cancel();
             _cancelTokenSource = null;
         }
+    }
+
+    /// <summary>
+    /// StopVideo
+    /// </summary>
+    public void StopVideo() {
         _videoPlayer.Stop();
     }
 
