@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -47,19 +48,27 @@ public class CustomVideoPlayer {
     /// </summary>
     /// <param name="_url"></param>
     public async void LoadVideoFromURL(string _url, Action<Status> onChangeStatus) {
-        UnityWebRequest _videoRequest = UnityWebRequest.Get(_url);
-        onChangeStatus?.Invoke(Status.ProcessLoading);
-        await _videoRequest.SendWebRequest();
 
-        if (_videoRequest.result != UnityWebRequest.Result.Success) {
-            onChangeStatus?.Invoke(Status.FailLoading);
+        string _pathToFile = Path.Combine(Application.streamingAssetsPath, _url.Split(Path.AltDirectorySeparatorChar).Last());
+
+        HelperFunctions.DevLogError(_pathToFile);
+
+        if (!File.Exists(_pathToFile)) {
+            UnityWebRequest _videoRequest = UnityWebRequest.Get(_url);
+            onChangeStatus?.Invoke(Status.ProcessLoading);
+            await _videoRequest.SendWebRequest();
+            if (_videoRequest.result != UnityWebRequest.Result.Success) {
+                onChangeStatus?.Invoke(Status.FailLoading);
+            } else {
+                byte[] videoBytes = _videoRequest.downloadHandler.data;
+                File.WriteAllBytes(_pathToFile, videoBytes);
+                onChangeStatus?.Invoke(Status.SuccessLoading);
+                PlayVideoFromURL(_pathToFile, onChangeStatus);
+            }
         } else {
-            byte[] _videoBytes = _videoRequest.downloadHandler.data;
-            string _pathToFile = Path.Combine(Application.persistentDataPath, _url);
-            Debug.LogError(_pathToFile);
-            File.WriteAllBytes(_pathToFile, _videoBytes);
             onChangeStatus?.Invoke(Status.SuccessLoading);
             PlayVideoFromURL(_pathToFile, onChangeStatus);
         }
     }
+
 }

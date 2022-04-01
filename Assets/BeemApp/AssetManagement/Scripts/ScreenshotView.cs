@@ -54,7 +54,7 @@ public class ScreenshotView : MonoBehaviour {
                 if (customVideoPlayer == null) {
                     customVideoPlayer = new CustomVideoPlayer(_videoPlayer);
                 }
-                customVideoPlayer.PlayVideoFromURL(_data.ar_message_s3_link, OnChangeStatus);
+                customVideoPlayer.LoadVideoFromURL(_data.ar_message_s3_link, OnChangeStatus);
                 /*_videoPlayer.url = _data.ar_message_s3_link;
                 if (!_videoPlayer.isPrepared) {
                     _onFailed?.Invoke(LOADING);
@@ -78,7 +78,6 @@ public class ScreenshotView : MonoBehaviour {
     }
 
     private void OnChangeStatus(Status status) {
-        Debug.LogError($"status = {status}");
 
         switch (status) {
             case Status.ProcessLoading:
