@@ -10,6 +10,11 @@ public class GetARMsgController {
     private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
     private WebRequestHandler _webRequestHandler;
 
+    /// <summary>
+    /// Constructor for GetARMsgController
+    /// </summary>
+    /// <param name="arMsgAPIScriptableObject"></param>
+    /// <param name="webRequestHandler"></param>
     public GetARMsgController(ARMsgAPIScriptableObject arMsgAPIScriptableObject, WebRequestHandler webRequestHandler) {
         _arMsgAPIScriptableObject = arMsgAPIScriptableObject;
         _webRequestHandler = webRequestHandler;
