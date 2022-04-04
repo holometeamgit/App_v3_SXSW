@@ -1,10 +1,4 @@
-using Beem.UI;
-using HoloMeSDK;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -20,13 +14,12 @@ public class ScreenshotView : MonoBehaviour {
     [SerializeField]
     private Material _greenScreenRemoverMat;
 
-    private CancellationTokenSource _cancelTokenSource;
     private ARMsgJSON.Data _data;
     private Action _onSuccess;
     private Action<string> _onFailed;
     private Material _currentMat;
+    private CustomVideoPlayer customVideoPlayer;
 
-    private const int DELAY = 1000;
     private const string LOADING = "Loading...";
     private const string PROCESSING = "Processing...";
     private const string FAILED = "Failed...";
@@ -42,20 +35,16 @@ public class ScreenshotView : MonoBehaviour {
         _data = data;
         _onSuccess = onSuccess;
         _onFailed = onFail;
+        Play();
     }
 
-    private void OnEnable() {
+    private void Play() {
         if (_data != null) {
             if (!string.IsNullOrEmpty(_data.ar_message_s3_link)) {
-                _videoPlayer.url = _data.ar_message_s3_link;
-                if (!_videoPlayer.isPrepared) {
-                    _onFailed?.Invoke(LOADING);
-                    _videoPlayer.prepareCompleted += Prepare;
-                    _videoPlayer.Prepare();
-                } else {
-                    _onSuccess?.Invoke();
-                    UpdatePreview();
+                if (customVideoPlayer == null) {
+                    customVideoPlayer = new CustomVideoPlayer(_videoPlayer);
                 }
+                customVideoPlayer.LoadVideoFromURL(_data.ar_message_s3_link, OnChangeStatus);
             } else {
                 if (_data.processing_status == ARMsgJSON.Data.FAILED_STATUS) {
                     _onFailed?.Invoke(FAILED);
@@ -69,43 +58,33 @@ public class ScreenshotView : MonoBehaviour {
         }
     }
 
-    private void Prepare(VideoPlayer video) {
-        _onSuccess?.Invoke();
-        UpdatePreview();
-        _videoPlayer.prepareCompleted -= Prepare;
-    }
+    private void OnChangeStatus(CustomVideoPlayer.Status status) {
 
-    private async void UpdatePreview() {
-        _cancelTokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken = _cancelTokenSource.Token;
+        switch (status) {
+            case CustomVideoPlayer.Status.ProcessLoading:
+            case CustomVideoPlayer.Status.ProcessPreparing:
+            case CustomVideoPlayer.Status.SuccessLoading:
+                _onFailed?.Invoke(LOADING);
+                break;
+            case CustomVideoPlayer.Status.FailLoading:
+                _onFailed?.Invoke(FAILED);
+                break;
+            case CustomVideoPlayer.Status.SuccessPreparing:
+                _onSuccess?.Invoke();
+                _image.texture = _videoPlayer?.texture;
 
-        _image.texture = _videoPlayer?.texture;
-
-        if (_currentMat == null) {
-            _currentMat = new Material(_greenScreenRemoverMat);
-            _image.material = _currentMat;
-        }
-
-        _videoPlayer?.Play();
-        if (!cancellationToken.IsCancellationRequested) {
-            await Task.Delay(DELAY);
-            _videoPlayer?.Pause();
-        }
-    }
-
-    /// <summary>
-    /// Clear Info
-    /// </summary>
-    public void Cancel() {
-        if (_cancelTokenSource != null) {
-            _cancelTokenSource.Cancel();
-            _cancelTokenSource = null;
+                if (_currentMat == null) {
+                    _currentMat = new Material(_greenScreenRemoverMat);
+                    _image.material = _currentMat;
+                }
+                break;
         }
     }
 
     private void OnDisable() {
-        Cancel();
-        _videoPlayer.Stop();
+        if (customVideoPlayer != null) {
+            _videoPlayer.Stop();
+        }
     }
 
 }
