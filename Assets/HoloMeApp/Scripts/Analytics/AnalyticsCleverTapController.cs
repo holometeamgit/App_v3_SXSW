@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction {
     public static AnalyticsCleverTapController Instance { get; private set; }
@@ -14,8 +15,12 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction {
     [SerializeField]
     CleverTapUnity cleverTapUnityComponent;
 
-    [SerializeField]
-    UserWebManager userWebManager;
+    private UserWebManager _userWebManager;
+
+    [Inject]
+    public void Construct(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
+    }
 
     void Awake() {
         if (Instance == null) {
@@ -26,7 +31,6 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction {
             //cleverTapUnityComponent = gameObject.AddComponent<CleverTapUnity>();
 
             cleverTapUnityComponent = HelperFunctions.GetTypeIfNull<CleverTapUnity>(cleverTapUnityComponent);
-            userWebManager = HelperFunctions.GetTypeIfNull<UserWebManager>(userWebManager);
 
             if (cleverTapUnityComponent.CLEVERTAP_ACCOUNT_ID != AccountID) {
                 Debug.LogError("CleverTap Account ID didn't match");
@@ -59,11 +63,11 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction {
         //}
 
         Dictionary<string, string> loginDetails = new Dictionary<string, string>();
-        loginDetails.Add("Email", userWebManager.GetEmail());
-        loginDetails.Add("Name", userWebManager.GetUsername());
-        loginDetails.Add("Username", userWebManager.GetUsername());
-        loginDetails.Add("UserID", userWebManager.GetUserID().ToString());
-        loginDetails.Add("Identity", userWebManager.GetUserID().ToString());
+        loginDetails.Add("Email", _userWebManager.GetEmail());
+        loginDetails.Add("Name", _userWebManager.GetUsername());
+        loginDetails.Add("Username", _userWebManager.GetUsername());
+        loginDetails.Add("UserID", _userWebManager.GetUserID().ToString());
+        loginDetails.Add("Identity", _userWebManager.GetUserID().ToString());
         CleverTapBinding.OnUserLogin(loginDetails);
 
 #if UNITY_ANDROID
@@ -102,7 +106,7 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction {
                 UpdateUserProfile();
             }
 
-            data?.Add(AnalyticParameters.ParamUserEmail, userWebManager.GetEmail() ?? "Not specified"); //Append email for CT only
+            data?.Add(AnalyticParameters.ParamUserEmail, _userWebManager.GetEmail() ?? "Not specified"); //Append email for CT only
             CleverTapBinding.RecordEvent(eventName, ConvertToStringObjectDictionary(data));
         } catch (Exception e) {
             Debug.LogError("CleverTap failed to send event " + eventName + " " + e);
@@ -114,7 +118,7 @@ public class AnalyticsCleverTapController : AnalyticsLibraryAbstraction {
             return;
 
         try {
-            chargeDetails?.Add(AnalyticParameters.ParamUserEmail, userWebManager.GetEmail() ?? "Not specified"); //Append email for CT only
+            chargeDetails?.Add(AnalyticParameters.ParamUserEmail, _userWebManager.GetEmail() ?? "Not specified"); //Append email for CT only
             CleverTapBinding.RecordChargedEventWithDetailsAndItems(chargeDetails, items);
         } catch (Exception e) {
             Debug.LogError("CleverTap failed to send charge event " + e);

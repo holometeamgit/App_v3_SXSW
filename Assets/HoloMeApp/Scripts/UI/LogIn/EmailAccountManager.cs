@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 using Beem.SSO;
+using Zenject;
 
 public class EmailAccountManager : MonoBehaviour {
     public Action OnSignUp;
@@ -28,13 +29,18 @@ public class EmailAccountManager : MonoBehaviour {
     public Action<BadRequestChangePassword> OnErrorChangePassword;
 
     [SerializeField]
-    AccountManager accountManager;
-    [SerializeField]
-    WebRequestHandler webRequestHandler;
-    [SerializeField]
     AuthorizationAPIScriptableObject authorizationAPI;
 
+    private WebRequestHandler _webRequestHandler;
+    private AccountManager _accountManager;
+
     private string lastSignUpEmail;
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler, AccountManager accountManager) {
+        _webRequestHandler = webRequestHandler;
+        _accountManager = accountManager;
+    }
 
     public void SignUp(EmailSignUpJsonData emailSignUpJsonData) {
         SignUpRequest(emailSignUpJsonData);
@@ -73,7 +79,7 @@ public class EmailAccountManager : MonoBehaviour {
     private void SignUpRequest(EmailSignUpJsonData emailSignUpJsonData) {
         string url = GetRequestURL(authorizationAPI.EmailSignUp);
         lastSignUpEmail = emailSignUpJsonData.email;
-        webRequestHandler.Post(url, emailSignUpJsonData, WebRequestBodyType.JSON,
+        _webRequestHandler.Post(url, emailSignUpJsonData, WebRequestBodyType.JSON,
             SignUpCallBack,
             ErrorSignUpCallBack, needHeaderAccessToken: false);
 
@@ -94,7 +100,7 @@ public class EmailAccountManager : MonoBehaviour {
             badRequestData.errorMsg = body;
             OnErrorSignUp?.Invoke(badRequestData);
             return;
-        } 
+        }
         OnErrorSignUp?.Invoke(badRequestData);
     }
     #endregion
@@ -104,7 +110,7 @@ public class EmailAccountManager : MonoBehaviour {
     private void ResentVerificationRequest(ResendVerifyJsonData resendVerifyJsonData) {
         string url = GetRequestURL(authorizationAPI.ResendVerification);
         lastSignUpEmail = resendVerifyJsonData.email;
-        webRequestHandler.Post(url, resendVerifyJsonData, WebRequestBodyType.JSON,
+        _webRequestHandler.Post(url, resendVerifyJsonData, WebRequestBodyType.JSON,
             ResentVerificationCallBack,
             ErrorResentVerificationBack, needHeaderAccessToken: false);
     }
@@ -132,14 +138,14 @@ public class EmailAccountManager : MonoBehaviour {
     #region verification
     private void VerifyRequest(VerifyKeyJsonData verifyKeyJsonData) {
         string url = GetRequestURL(authorizationAPI.EmailVerification);
-        webRequestHandler.Post(url, verifyKeyJsonData, WebRequestBodyType.JSON,
+        _webRequestHandler.Post(url, verifyKeyJsonData, WebRequestBodyType.JSON,
             VerifedCallBack,
             ErrorVerifyCallBack, needHeaderAccessToken: false);
     }
 
     private void VerifedCallBack(long code, string body) {
-        accountManager.SaveAccessToken(body);
-        accountManager.SaveLogInType(LogInType.Email);
+        _accountManager.SaveAccessToken(body);
+        _accountManager.SaveLogInType(LogInType.Email);
         OnVerified?.Invoke();
     }
 
@@ -152,14 +158,14 @@ public class EmailAccountManager : MonoBehaviour {
     #region Log In
     private void LogInRequest(EmailLogInJsonData emailLogInJsonData) {
         string url = GetRequestURL(authorizationAPI.EmailLogIn);
-        webRequestHandler.Post(url, emailLogInJsonData, WebRequestBodyType.JSON,
+        _webRequestHandler.Post(url, emailLogInJsonData, WebRequestBodyType.JSON,
             LogInCallBack,
             ErrorLogInCallBack, needHeaderAccessToken: false);
     }
 
     private void LogInCallBack(long code, string body) {
-        accountManager.SaveLogInType(LogInType.Email);
-        accountManager.SaveAccessToken(body);
+        _accountManager.SaveLogInType(LogInType.Email);
+        _accountManager.SaveAccessToken(body);
         OnLogIn?.Invoke();
     }
 
@@ -182,7 +188,7 @@ public class EmailAccountManager : MonoBehaviour {
     #region Reset Password
     private void StartResetPasswordRequest(ResetPasswordEmailJsonData resetPasswordEmailJsonData) {
         string url = GetRequestURL(authorizationAPI.ResetPassword);
-        webRequestHandler.Post(url, resetPasswordEmailJsonData, WebRequestBodyType.JSON,
+        _webRequestHandler.Post(url, resetPasswordEmailJsonData, WebRequestBodyType.JSON,
             StartResetPasswordCallBack,
             ErrorStartResetPasswordCallBack, needHeaderAccessToken: false);
     }
@@ -215,7 +221,7 @@ public class EmailAccountManager : MonoBehaviour {
     #region Reset Password verification
     private void ResetPasswordRequest(ResetPasswordJsonData resetPasswordJsonData) {
         string url = GetRequestURL(authorizationAPI.ResetPasswordConfirm);
-        webRequestHandler.Post(url, resetPasswordJsonData, WebRequestBodyType.JSON,
+        _webRequestHandler.Post(url, resetPasswordJsonData, WebRequestBodyType.JSON,
              ResetPasswordCallBack,
              ErrorResetPasswordCallBack, needHeaderAccessToken: false);
     }
@@ -242,10 +248,10 @@ public class EmailAccountManager : MonoBehaviour {
     #region Change Password 
     private void ChangePasswordRequest(PasswordChangeJsonData passwordChangeJsonData) {
         string url = GetRequestURL(authorizationAPI.ChangePassword);
-        webRequestHandler.Post(url, passwordChangeJsonData, WebRequestBodyType.JSON,
+        _webRequestHandler.Post(url, passwordChangeJsonData, WebRequestBodyType.JSON,
              ChangePasswordCallBack,
              ErrorChangePasswordCallBack,
-             needHeaderAccessToken:true);
+             needHeaderAccessToken: true);
     }
 
     private void ChangePasswordCallBack(long code, string body) {
@@ -268,6 +274,6 @@ public class EmailAccountManager : MonoBehaviour {
     #endregion
 
     private string GetRequestURL(string postfix) {
-        return webRequestHandler.ServerURLAuthAPI + postfix;
+        return _webRequestHandler.ServerURLAuthAPI + postfix;
     }
 }

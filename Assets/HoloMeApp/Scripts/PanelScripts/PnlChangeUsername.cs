@@ -2,13 +2,18 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using Zenject;
 
 public class PnlChangeUsername : MonoBehaviour {
     [SerializeField] InputFieldController usernameInputField;
     [SerializeField] int userNameLimit = 30;
-    [Space]
-    [SerializeField]
+
     private UserWebManager _userWebManager;
+
+    [Inject]
+    public void Construct(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
+    }
 
     private string GetUserName {
         get {

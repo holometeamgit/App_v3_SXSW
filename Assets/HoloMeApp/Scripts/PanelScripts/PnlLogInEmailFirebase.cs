@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Beem.SSO;
 using System.Threading.Tasks;
+using Zenject;
 
 public class PnlLogInEmailFirebase : MonoBehaviour {
 
@@ -12,8 +13,6 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     [SerializeField]
     GameObject LogInLoadingBackground;
 
-    [Space]
-    [SerializeField]
     private AccountManager _accountManager;
 
     private EmailVerificationTimer emailVerificationTimer = new EmailVerificationTimer();
@@ -21,6 +20,11 @@ public class PnlLogInEmailFirebase : MonoBehaviour {
     private const float COOLDOWN = 0.5f;
     private float nextTimeCanClick = 0;
     private const int TIME_FOR_AUTOHIDINGBG = 5000;
+
+    [Inject]
+    public void Construct(AccountManager accountManager) {
+        _accountManager = accountManager;
+    }
 
     public void LogIn() {
         HelperFunctions.DevLog("Start login");

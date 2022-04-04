@@ -3,15 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Beem.SSO;
+using Zenject;
 
-public class SSOAuthorization : MonoBehaviour
-{
+public class SSOAuthorization : MonoBehaviour {
     [SerializeField] DeepLinkHandler deepLinkHandler;
-    [SerializeField] AccountManager accountManager;
-    [SerializeField] WebRequestHandler webRequestHandler;
     [SerializeField] AuthorizationAPIScriptableObject authorizationAPI;
 
     [SerializeField] UnityEvent OnAuthorized;
+
+    private WebRequestHandler _webRequestHandler;
+    private AccountManager _accountManager;
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler, AccountManager accountManager) {
+        _webRequestHandler = webRequestHandler;
+        _accountManager = accountManager;
+    }
 
     public void AppleLogIn() {
         Application.OpenURL(GetAppleLogInRequest());
@@ -32,22 +39,22 @@ public class SSOAuthorization : MonoBehaviour
 
     private void SSOLogIn(ServerAccessToken serverAccessToken) {
         Debug.Log("SSOLogIn");
-        if (serverAccessToken == null || accountManager.GetLogInType() != LogInType.None)
+        if (serverAccessToken == null || _accountManager.GetLogInType() != LogInType.None)
             return;
 
 
-        accountManager.SaveAccessToken(JsonUtility.ToJson(serverAccessToken));
-        accountManager.SaveLogInType(LogInType.SSO);
+        _accountManager.SaveAccessToken(JsonUtility.ToJson(serverAccessToken));
+        _accountManager.SaveLogInType(LogInType.SSO);
 
         OnAuthorized.Invoke();
     }
 
     private string GetAppleLogInRequest() {
-        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.AppleSSODeepLink;
+        return _webRequestHandler.ServerURLAuthAPI + authorizationAPI.AppleSSODeepLink;
     }
 
     private string GetGoogleLogInRequest() {
-        return webRequestHandler.ServerURLAuthAPI + authorizationAPI.GoogleSSODeepLink;
+        return _webRequestHandler.ServerURLAuthAPI + authorizationAPI.GoogleSSODeepLink;
     }
 
 }

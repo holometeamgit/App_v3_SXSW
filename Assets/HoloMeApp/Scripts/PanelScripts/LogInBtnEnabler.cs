@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Beem.SSO;
+using Zenject;
 
 public class LogInBtnEnabler : MonoBehaviour {
     [Serializable]
@@ -19,9 +20,12 @@ public class LogInBtnEnabler : MonoBehaviour {
     [SerializeField]
     GameObject LogInGoogleGO;
 
-    [Space]
-    [SerializeField]
     private WebRequestHandler _webRequestHandler;
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+    }
 
     public void CheckPlatform() {
 #if !UNITY_IOS

@@ -2,18 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Beem.SSO;
+using Zenject;
 
-public class PnlCheckPassword : MonoBehaviour
-{
-    [SerializeField] UserWebManager userWebManager;
+public class PnlCheckPassword : MonoBehaviour {
     [SerializeField] EmailAccountManager emailAccountManager;
-    [SerializeField] AccountManager accountManager;
     [SerializeField] InputFieldController inputFieldPassword;
     [SerializeField] Switcher SwitchToNextMenu;
 
+    private AccountManager _accountManager;
+    private UserWebManager _userWebManager;
+
+    [Inject]
+    public void Construct(AccountManager accountManager, UserWebManager userWebManager) {
+        _accountManager = accountManager;
+        _userWebManager = userWebManager;
+    }
+
     public void CheckPassword() {
-        if(LocalDataVerification())
-            userWebManager.LoadUserInfo();
+        if (LocalDataVerification())
+            _userWebManager.LoadUserInfo();
     }
 
     private void Start() {
@@ -23,7 +30,7 @@ public class PnlCheckPassword : MonoBehaviour
     private void CheckAccess() {
         EmailLogInJsonData emailLogInJsonData = new EmailLogInJsonData();
 
-        emailLogInJsonData.username = userWebManager.GetUsername();
+        emailLogInJsonData.username = _userWebManager.GetUsername();
         emailLogInJsonData.password = inputFieldPassword.text;
 
         emailAccountManager.LogIn(emailLogInJsonData);
@@ -55,9 +62,9 @@ public class PnlCheckPassword : MonoBehaviour
         emailAccountManager.OnLogIn += LogInCallBack;
         emailAccountManager.OnErrorLogIn += ErrorLogInCallBack;
 
-        userWebManager.OnUserInfoLoaded += CheckAccess;
+        _userWebManager.OnUserInfoLoaded += CheckAccess;
 
-        if(accountManager.GetLogInType() != LogInType.Email)
+        if (_accountManager.GetLogInType() != LogInType.Email)
             SwitchToNextMenu.Switch();
     }
 
@@ -65,7 +72,7 @@ public class PnlCheckPassword : MonoBehaviour
         emailAccountManager.OnLogIn -= LogInCallBack;
         emailAccountManager.OnErrorLogIn -= ErrorLogInCallBack;
 
-        userWebManager.OnUserInfoLoaded -= CheckAccess;
+        _userWebManager.OnUserInfoLoaded -= CheckAccess;
     }
 
 }

@@ -3,10 +3,9 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class StreamerCountUpdater : MonoBehaviour {
-    [SerializeField]
-    private AgoraRequests agoraRequests;
     [SerializeField]
     private TextMeshProUGUI txtCount;
     [SerializeField]
@@ -23,13 +22,18 @@ public class StreamerCountUpdater : MonoBehaviour {
 
     public Action<int> OnCountUpdated = delegate { };
 
+    private AgoraRequests _agoraRequests;
+
+    [Inject]
+    public void Construct(AgoraRequests agoraRequests) {
+        _agoraRequests = agoraRequests;
+    }
+
     public void StartCheck(string channelName, bool isRoom) {
         if (!gameObject.activeInHierarchy)
             return;
 
         this.isRoom = isRoom;
-
-        agoraRequests = HelperFunctions.GetTypeIfNull<AgoraRequests>(agoraRequests);
 
         if (requestUserList == null) {
             requestUserList = new RequestUserList();
@@ -61,7 +65,7 @@ public class StreamerCountUpdater : MonoBehaviour {
         if (!waitingForResponse) {
             HelperFunctions.DevLog("Sending user count request");
             waitingForResponse = true;
-            agoraRequests.MakeGetRequest(requestUserList);
+            _agoraRequests.MakeGetRequest(requestUserList);
         }
     }
 
