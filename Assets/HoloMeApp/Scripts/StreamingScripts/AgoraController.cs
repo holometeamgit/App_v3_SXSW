@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class AgoraController : MonoBehaviour {
 
@@ -16,15 +17,6 @@ public class AgoraController : MonoBehaviour {
 
     [SerializeField]
     GameObject liveStreamQuad;
-
-    [SerializeField]
-    AgoraRTMChatController agoraRTMChatController;
-
-    [SerializeField]
-    SecondaryServerCalls secondaryServerCalls;
-
-    [SerializeField]
-    UserWebManager userWebManager;
 
     TokenAgoraResponse tokenAgoraResponseChannel;
     TokenAgoraResponse tokenAgoraResponseRTM;
@@ -71,16 +63,22 @@ public class AgoraController : MonoBehaviour {
     private const int VOICE_INDICATOR_INTERVAL = 200;
     private const int VOICE_INDICATOR_SMOOTH = 3;
 
-    //void OnUserEnableVideoHandler(uint uid, bool enabled)
-    //{
-    //    print("OnUserEnableVideoHandler called");
-    //}
+    private UserWebManager _userWebManager;
+    private AgoraRTMChatController _agoraRTMChatController;
+    private SecondaryServerCalls _secondaryServerCalls;
+
+    [Inject]
+    public void Construct(UserWebManager userWebManager, AgoraRTMChatController agoraRTMChatController, SecondaryServerCalls secondaryServerCalls) {
+        _userWebManager = userWebManager;
+        _agoraRTMChatController = agoraRTMChatController;
+        _secondaryServerCalls = secondaryServerCalls;
+    }
 
     public void Start() {
         LoadEngine(AppId);
         frameRate = 30;
-        agoraRTMChatController.Init(AppId);
-        secondaryServerCalls.OnStreamStarted += (x, y, z) => SecondaryServerCallsComplete(x, y, z);
+        _agoraRTMChatController.Init(AppId);
+        _secondaryServerCalls.OnStreamStarted += (x, y, z) => SecondaryServerCallsComplete(x, y, z);
 
         //iRtcEngine.OnUserEnableVideo = OnUserEnableVideoHandler;
         //iRtcEngine.OnUserEnableLocalVideo = OnUserEnableVideoHandler;
@@ -180,11 +178,6 @@ public class AgoraController : MonoBehaviour {
         }
 
         if (iRtcEngine.EnableVideo() == 0) {
-            VirtualBackgroundSource source = new VirtualBackgroundSource {
-                background_source_type = BACKGROUND_SOURCE_TYPE.BACKGROUND_COLOR,
-                color = Convert.ToUInt32(ColorUtility.ToHtmlStringRGB(Color.green), 16)
-            };
-            iRtcEngine.EnableVirtualBackground(IsRoom, source);
             return iRtcEngine.EnableVideoObserver();
         } else {
             return -1;
@@ -196,7 +189,7 @@ public class AgoraController : MonoBehaviour {
             return;
 
         if (channelCreator) {
-            secondaryServerCalls.StartStream(ChannelName, IsRoom);
+            _secondaryServerCalls.StartStream(ChannelName, IsRoom);
             maxViewerCountTracker = 0;
             AnalyticsController.Instance.StartTimer(AnalyticKeys.KeyViewLengthOfStream, AnalyticKeys.KeyViewLengthOfStream);
         } else {
@@ -206,7 +199,7 @@ public class AgoraController : MonoBehaviour {
 
     void GetViewerAgoraToken() {
         HelperFunctions.DevLog("Getting Agora Viewer Token For Channel Name " + ChannelName);
-        secondaryServerCalls.GetAgoraToken(OnViewerAgoraTokenReturned, ChannelName);
+        _secondaryServerCalls.GetAgoraToken(OnViewerAgoraTokenReturned, ChannelName);
     }
 
     void OnViewerAgoraTokenReturned(long code, string data) {
@@ -221,7 +214,7 @@ public class AgoraController : MonoBehaviour {
 
     void GetRTMLoginToken() {
         HelperFunctions.DevLog("Getting Agora RTM Token");
-        secondaryServerCalls.GetAgoraToken(OnRTMAgoraTokenReturned);
+        _secondaryServerCalls.GetAgoraToken(OnRTMAgoraTokenReturned);
     }
 
     void OnRTMAgoraTokenReturned(long code, string data) {
@@ -249,7 +242,7 @@ public class AgoraController : MonoBehaviour {
     public void SecondaryServerCallsComplete(string viewerBroadcasterToken, string rtmToken, int streamID = -1) {
         this.streamID = streamID;
 
-        agoraRTMChatController.Login(rtmToken);
+        _agoraRTMChatController.Login(rtmToken);
         iRtcEngine.SetChannelProfile(IsRoom ? CHANNEL_PROFILE.CHANNEL_PROFILE_COMMUNICATION : CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
         if (IsChannelCreator) {
@@ -262,7 +255,7 @@ public class AgoraController : MonoBehaviour {
             ToggleLocalVideo(true); //Disable local video freeze fix iOS
         }
 
-        var result = iRtcEngine.JoinChannelByKey(viewerBroadcasterToken, ChannelName, null, Convert.ToUInt32(userWebManager.GetUserID()));
+        var result = iRtcEngine.JoinChannelByKey(viewerBroadcasterToken, ChannelName, null, Convert.ToUInt32(_userWebManager.GetUserID()));
 
         if (result < 0) {
             Debug.LogError("Agora Stream Join Failed!");
@@ -290,7 +283,7 @@ public class AgoraController : MonoBehaviour {
             StopCoroutine(sendThumbnailRoutine);
 
         if (IsChannelCreator) {
-            secondaryServerCalls.EndStream();
+            _secondaryServerCalls.EndStream();
             AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyMaxViewerCount, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamChannelName, ChannelName }, { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() }, { AnalyticParameters.ParamViewerCount, maxViewerCountTracker.ToString() } });
             AnalyticsController.Instance.StopTimer(AnalyticKeys.KeyViewLengthOfStream, new Dictionary<string, string> { { AnalyticParameters.ParamChannelName, ChannelName }, { AnalyticParameters.ParamDate, DateTime.Now.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() } });
         } else {
@@ -301,7 +294,7 @@ public class AgoraController : MonoBehaviour {
         ChannelCreatorUID = null;
 
         iRtcEngine.LeaveChannel();
-        agoraRTMChatController.LeaveChannel();
+        _agoraRTMChatController.LeaveChannel();
 
         IsLive = false;
         OnStreamWentOffline?.Invoke();
@@ -333,7 +326,7 @@ public class AgoraController : MonoBehaviour {
             data = originalSnapShot.EncodeToPNG();
         }
 
-        secondaryServerCalls.UploadPreviewImage(data);
+        _secondaryServerCalls.UploadPreviewImage(data);
     }
 
     private void ResetVideoQuadSurface() {
@@ -349,7 +342,7 @@ public class AgoraController : MonoBehaviour {
         if (IsChannelCreator) {
             ChannelCreatorUID = uid;
         }
-        agoraRTMChatController.JoinChannel(channelName);
+        _agoraRTMChatController.JoinChannel(channelName);
     }
 
     private void OnUserJoined(uint uid, int elapsed) {
@@ -464,12 +457,6 @@ public class AgoraController : MonoBehaviour {
         if (iRtcEngine != null) {
             if (!pauseVideo) {
                 iRtcEngine.EnableVideo();
-                VirtualBackgroundSource source = new VirtualBackgroundSource {
-                    background_source_type = BACKGROUND_SOURCE_TYPE.BACKGROUND_COLOR,
-                    color = Convert.ToUInt32(ColorUtility.ToHtmlStringRGB(Color.green), 16)
-                };
-
-                iRtcEngine.EnableVirtualBackground(IsRoom, source);
             } else {
                 iRtcEngine.DisableVideo();
             }
@@ -499,7 +486,7 @@ public class AgoraController : MonoBehaviour {
 
     #region Messaging system
     public void AddAgoraMessageReceiver(AgoraMessageReceiver agoraMessageReceiver) {
-        agoraRTMChatController.AddMessageReceiver(agoraMessageReceiver);
+        _agoraRTMChatController.AddMessageReceiver(agoraMessageReceiver);
     }
 
     /// <summary>
@@ -513,7 +500,7 @@ public class AgoraController : MonoBehaviour {
         ChatMessageJsonData agoraStreamMessage = new ChatMessageJsonData { message = message };
         agoraStreamMessage.requestID = requestID;
 
-        agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(agoraStreamMessage));
+        _agoraRTMChatController.SendMessageToChannel(JsonUtility.ToJson(agoraStreamMessage));
     }
     #endregion
 

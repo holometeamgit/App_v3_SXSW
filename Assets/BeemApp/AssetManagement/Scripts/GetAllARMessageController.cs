@@ -1,15 +1,18 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 /// <summary>
 /// Controller for get all messages
 /// </summary>
-public class GalleryController {
+public class GetAllARMessageController {
     private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
     private WebRequestHandler _webRequestHandler;
 
-    public GalleryController(ARMsgAPIScriptableObject arMsgAPIScriptableObject, WebRequestHandler webRequestHandler) {
+    /// <summary>
+    /// Constructor for GetAllARMessageController
+    /// </summary>
+    /// <param name="arMsgAPIScriptableObject"></param>
+    /// <param name="webRequestHandler"></param>
+    public GetAllARMessageController(ARMsgAPIScriptableObject arMsgAPIScriptableObject, WebRequestHandler webRequestHandler) {
         _arMsgAPIScriptableObject = arMsgAPIScriptableObject;
         _webRequestHandler = webRequestHandler;
     }

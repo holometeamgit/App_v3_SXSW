@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 /// <summary>
 /// This is the universal Analytics class used to call same tracking calls across all libraries
 /// </summary>
-public class AnalyticsController : MonoBehaviour
-{
+public class AnalyticsController : MonoBehaviour {
     public static AnalyticsController Instance { get; private set; }
 
     Dictionary<string, AnalyticsDwellTracker> dwellTimers = new Dictionary<string, AnalyticsDwellTracker>();
@@ -18,21 +18,21 @@ public class AnalyticsController : MonoBehaviour
     [SerializeField]
     AnalyticsLibraryAbstraction[] analyticsLibraryAbstractions;
 
-    [SerializeField]
-    UserWebManager userWebManager;
+    private UserWebManager _userWebManager;
 
-    public string GetUserID
-    {
-        get
-        {
-            return userWebManager.GetUserID().ToString();
+    public string GetUserID {
+        get {
+            return _userWebManager.GetUserID().ToString();
         }
     }
 
-    private void Awake()
-    {
-        if (Instance == null)
-        {
+    [Inject]
+    public void Construct(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
+    }
+
+    private void Awake() {
+        if (Instance == null) {
             Instance = this;
 #if DEV
             if (!enableDebugTracking)
@@ -41,17 +41,14 @@ public class AnalyticsController : MonoBehaviour
             DontDestroyOnLoad(Instance);
 
             //CallBacks.onSignInSuccess += () => Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin);
-            userWebManager.OnLoadUserDataAfterLogIn += () => Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin);
-        }
-        else
-        {
+            _userWebManager.OnLoadUserDataAfterLogIn += () => Instance.SendCustomEvent(AnalyticKeys.KeyUserLogin);
+        } else {
             Debug.LogError($"{nameof(AnalyticsController)} Instance Already Exists!");
             Destroy(Instance);
         }
     }
 
-    private void AppendDevString(ref string eventName)
-    {
+    private void AppendDevString(ref string eventName) {
 #if DEV
         eventName = "dev_" + eventName;
 #endif
@@ -61,13 +58,11 @@ public class AnalyticsController : MonoBehaviour
     /// Use this to send the same event through selected analytic controllers, this is for cases where you don't want to send an event through all controllers just a selected few
     /// Auto appends userID
     /// </summary>
-    public void SendCustomEventToSpecifiedControllers(AnalyticsLibraryAbstraction[] analyticsControllers, string eventName, Dictionary<string, string> data)
-    {
+    public void SendCustomEventToSpecifiedControllers(AnalyticsLibraryAbstraction[] analyticsControllers, string eventName, Dictionary<string, string> data) {
         if (disableTracking)
             return;
 
-        if (string.IsNullOrWhiteSpace(eventName))
-        {
+        if (string.IsNullOrWhiteSpace(eventName)) {
             Debug.LogError("Custom event name wasn't specified");
             return;
         }
@@ -76,32 +71,26 @@ public class AnalyticsController : MonoBehaviour
 
         HelperFunctions.DevLog($"Custom Event Sent {eventName} with data {data}");
 
-        if (userWebManager != null && userWebManager.GetUserID() != -1)
-        {
-            if (!String.IsNullOrEmpty(userWebManager.GetUsername())){
-                data.Add(AnalyticParameters.ParamUserName, userWebManager.GetUsername().ToString());
+        if (_userWebManager != null && _userWebManager.GetUserID() != -1) {
+            if (!String.IsNullOrEmpty(_userWebManager.GetUsername())) {
+                data.Add(AnalyticParameters.ParamUserName, _userWebManager.GetUsername().ToString());
             }
-            data.Add(AnalyticParameters.ParamUserID, userWebManager.GetUserID().ToString()); //Add user ID to tracking variable
-            data.Add(AnalyticParameters.ParamUserType, userWebManager.CanGoLive() ? AnalyticParameters.ParamBroadcaster : AnalyticParameters.ParamViewer);
-        }
-        else
-        {
+            data.Add(AnalyticParameters.ParamUserID, _userWebManager.GetUserID().ToString()); //Add user ID to tracking variable
+            data.Add(AnalyticParameters.ParamUserType, _userWebManager.CanGoLive() ? AnalyticParameters.ParamBroadcaster : AnalyticParameters.ParamViewer);
+        } else {
             Debug.LogError(nameof(UserWebManager) + " was null");
         }
 
-        foreach (var analyticsController in analyticsControllers)
-        {
+        foreach (var analyticsController in analyticsControllers) {
             analyticsController.SendCustomEvent(eventName, data);
-        }               
+        }
     }
 
-    public void SendCustomEvent(string eventName)
-    {
+    public void SendCustomEvent(string eventName) {
         if (disableTracking)
             return;
 
-        if (string.IsNullOrWhiteSpace(eventName))
-        {
+        if (string.IsNullOrWhiteSpace(eventName)) {
             Debug.LogError("Custom event name wasn't specified");
             return;
         }
@@ -115,16 +104,14 @@ public class AnalyticsController : MonoBehaviour
         //    analyticsController.SendCustomEvent(eventName);
         //}
 
-        SendCustomEvent(eventName, new Dictionary<string,string>());
+        SendCustomEvent(eventName, new Dictionary<string, string>());
     }
 
-    public void SendCustomEvent(string eventName, string dataName, object data)
-    {
+    public void SendCustomEvent(string eventName, string dataName, object data) {
         if (disableTracking)
             return;
 
-        if (string.IsNullOrWhiteSpace(eventName))
-        {
+        if (string.IsNullOrWhiteSpace(eventName)) {
             Debug.LogError("Custom event name wasn't specified");
             return;
         }
@@ -141,13 +128,11 @@ public class AnalyticsController : MonoBehaviour
         SendCustomEvent(eventName, dataDictionary);
     }
 
-    public void SendCustomEvent(string eventName, Dictionary<string, string> data)
-    {
+    public void SendCustomEvent(string eventName, Dictionary<string, string> data) {
         if (disableTracking)
             return;
 
-        if (string.IsNullOrWhiteSpace(eventName))
-        {
+        if (string.IsNullOrWhiteSpace(eventName)) {
             Debug.LogError("Custom event name wasn't specified");
             return;
         }
@@ -156,32 +141,26 @@ public class AnalyticsController : MonoBehaviour
 
         HelperFunctions.DevLog($"Custom Event Sent {eventName} with data {data}");
 
-        if (userWebManager != null && userWebManager.GetUserID() != -1)
-        {
-            if (!String.IsNullOrEmpty(userWebManager.GetUsername())){
-                data.Add(AnalyticParameters.ParamUserName, userWebManager.GetUsername().ToString());
+        if (_userWebManager != null && _userWebManager.GetUserID() != -1) {
+            if (!String.IsNullOrEmpty(_userWebManager.GetUsername())) {
+                data.Add(AnalyticParameters.ParamUserName, _userWebManager.GetUsername().ToString());
             }
-            data.Add(AnalyticParameters.ParamUserID, userWebManager.GetUserID().ToString()); //Add user ID to tracking variable
-            data.Add(AnalyticParameters.ParamUserType, userWebManager.CanGoLive() ? AnalyticParameters.ParamBroadcaster : AnalyticParameters.ParamViewer);
-        }
-        else
-        {
+            data.Add(AnalyticParameters.ParamUserID, _userWebManager.GetUserID().ToString()); //Add user ID to tracking variable
+            data.Add(AnalyticParameters.ParamUserType, _userWebManager.CanGoLive() ? AnalyticParameters.ParamBroadcaster : AnalyticParameters.ParamViewer);
+        } else {
             HelperFunctions.DevLogWarning($"{nameof(UserWebManager)} was null, (this may be intentional if the event is before login)");
         }
 
-        foreach (var analyticsController in analyticsLibraryAbstractions)
-        {
+        foreach (var analyticsController in analyticsLibraryAbstractions) {
             analyticsController.SendCustomEvent(eventName, data);
         }
     }
 
-    public void StartTimer(string timerKey, string timerName)
-    {
+    public void StartTimer(string timerKey, string timerName) {
         if (disableTracking)
             return;
 
-        if (dwellTimers.ContainsKey(timerKey))
-        {
+        if (dwellTimers.ContainsKey(timerKey)) {
             Debug.LogError("Timer already exists in collection " + timerKey);
             return; //dwellTimers[timerName];
         }
@@ -195,13 +174,11 @@ public class AnalyticsController : MonoBehaviour
         //return dwellTimer;
     }
 
-    public void StopTimer(string timerName,Dictionary<string, string> additonalData = null)
-    {
+    public void StopTimer(string timerName, Dictionary<string, string> additonalData = null) {
         if (disableTracking)
             return;
 
-        if (!dwellTimers.ContainsKey(timerName))
-        {
+        if (!dwellTimers.ContainsKey(timerName)) {
             Debug.LogError("Timer didn't exist in collection " + timerName);
             return;
         }
@@ -210,13 +187,11 @@ public class AnalyticsController : MonoBehaviour
         RemoveTimer(timer, timerName, timer.trackerName, timer.Timer, additonalData);
     }
 
-    public void StopTimer(string timerName, float customTime, Dictionary<string, string> additonalData = null)
-    {
+    public void StopTimer(string timerName, float customTime, Dictionary<string, string> additonalData = null) {
         if (disableTracking)
             return;
 
-        if (!dwellTimers.ContainsKey(timerName))
-        {
+        if (!dwellTimers.ContainsKey(timerName)) {
             Debug.LogError("Timer didn't exist in collection " + timerName);
             return;
         }
@@ -228,23 +203,21 @@ public class AnalyticsController : MonoBehaviour
     /// <param name="timerDictonaryKey">Required to remove timer</param>
     /// <param name="timerName">Name to be shown in analytics</param>
     /// <param name="elapsedTime">Time specified</param>
-    private void RemoveTimer(AnalyticsDwellTracker dwellTimercomponent, string timerDictonaryKey, string timerName, float elapsedTime, Dictionary<string, string> dataDictionary)
-    {
+    private void RemoveTimer(AnalyticsDwellTracker dwellTimercomponent, string timerDictonaryKey, string timerName, float elapsedTime, Dictionary<string, string> dataDictionary) {
         if (disableTracking)
             return;
 
         AppendDevString(ref timerName);
 
-        if(dataDictionary == null)
+        if (dataDictionary == null)
             dataDictionary = new Dictionary<string, string>();
         dataDictionary.Add(AnalyticParameters.ParamTime, elapsedTime.ToString());
-        dataDictionary.Add(AnalyticParameters.ParamUserID, userWebManager.GetUserID().ToString());
-        if (!String.IsNullOrEmpty(userWebManager.GetUsername())){
-            dataDictionary.Add(AnalyticParameters.ParamUserName, userWebManager.GetUsername().ToString());
+        dataDictionary.Add(AnalyticParameters.ParamUserID, _userWebManager.GetUserID().ToString());
+        if (!String.IsNullOrEmpty(_userWebManager.GetUsername())) {
+            dataDictionary.Add(AnalyticParameters.ParamUserName, _userWebManager.GetUsername().ToString());
         }
 
-        foreach (var analyticsController in analyticsLibraryAbstractions)
-        {
+        foreach (var analyticsController in analyticsLibraryAbstractions) {
             analyticsController.SendCustomEvent(timerName, dataDictionary);
         }
         dwellTimers.Remove(timerDictonaryKey);
@@ -253,26 +226,22 @@ public class AnalyticsController : MonoBehaviour
         Destroy(dwellTimercomponent);
     }
 
-    public int GetElapsedTime(string timerName)
-    {
+    public int GetElapsedTime(string timerName) {
         if (disableTracking)
             return 0;
 
-        if (!dwellTimers.ContainsKey(timerName))
-        {
+        if (!dwellTimers.ContainsKey(timerName)) {
             Debug.LogError("Timer didn't exist in collection " + timerName);
             return 0;
         }
         return dwellTimers[timerName].Timer;
     }
 
-    public void PauseTimer(string timerName)
-    {
+    public void PauseTimer(string timerName) {
         if (disableTracking)
             return;
 
-        if (!dwellTimers.ContainsKey(timerName))
-        {
+        if (!dwellTimers.ContainsKey(timerName)) {
             Debug.LogError("Timer didn't exist in collection " + timerName);
             return;
         }
@@ -280,13 +249,11 @@ public class AnalyticsController : MonoBehaviour
         dwellTimers[timerName].PauseTimer();
     }
 
-    public void ResumeTimer(string timerName)
-    {
+    public void ResumeTimer(string timerName) {
         if (disableTracking)
             return;
 
-        if (!dwellTimers.ContainsKey(timerName))
-        {
+        if (!dwellTimers.ContainsKey(timerName)) {
             Debug.LogError("Timer didn't exist in collection " + timerName);
             return;
         }

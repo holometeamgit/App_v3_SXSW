@@ -2,16 +2,15 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Networking;
+using Zenject;
 
 public class SecondaryServerCalls : MonoBehaviour {
     [SerializeField]
     VideoUploader videoUploader;
 
-    [SerializeField]
-    WebRequestHandler webRequestHandler;
+    private AgoraRequests _agoraRequests;
 
-    [SerializeField]
-    AgoraRequests agoraRequests;
+    private WebRequestHandler _webRequestHandler;
 
     public Action<string, string, int> OnStreamStarted;
     string streamName;
@@ -23,6 +22,12 @@ public class SecondaryServerCalls : MonoBehaviour {
     StreamStartResponseJsonData streamStartResponseJsonData;
     RequestCloudRecordStop requestCloudRecordStop;
 
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler, AgoraRequests agoraRequests) {
+        _webRequestHandler = webRequestHandler;
+        _agoraRequests = agoraRequests;
+    }
+
     public void UploadPreviewImage(byte[] imageData) {
         HelperFunctions.DevLog("UPLOADING PREVIEW IMAGE");
 
@@ -30,9 +35,9 @@ public class SecondaryServerCalls : MonoBehaviour {
 
         formData.Add("image", new MultipartRequestBinaryData("image", imageData, "VideoThumbnail.png"));
 
-        webRequestHandler.PostMultipart(webRequestHandler.ServerURLMediaAPI + videoUploader.UploadPreview.Replace("{id}", streamStartResponseJsonData.id.ToString()),
+        _webRequestHandler.PostMultipart(_webRequestHandler.ServerURLMediaAPI + videoUploader.UploadPreview.Replace("{id}", streamStartResponseJsonData.id.ToString()),
             formData,
-            webRequestHandler.LogCallback, webRequestHandler.ErrorLogCallback, needHeaderAccessToken: true);
+            _webRequestHandler.LogCallback, _webRequestHandler.ErrorLogCallback, needHeaderAccessToken: true);
     }
 
     public void StartStream(string streamName, bool isRoom) {
@@ -52,8 +57,8 @@ public class SecondaryServerCalls : MonoBehaviour {
 
     public void GetAgoraToken(ResponseDelegate callback, string channelName = "") {
         string channelParam = channelName == "" ? channelName : $"?channel={channelName}";
-        webRequestHandler.Get(webRequestHandler.ServerURLAuthAPI + videoUploader.GetStreamToken + channelParam, (x, y) => { callback(x, y); webRequestHandler.LogCallback(x, y); },
-            (x, y) => webRequestHandler.ErrorLogCallback(x, "Agora Record Token" + y), needHeaderAccessToken: true);
+        _webRequestHandler.Get(_webRequestHandler.ServerURLAuthAPI + videoUploader.GetStreamToken + channelParam, (x, y) => { callback(x, y); _webRequestHandler.LogCallback(x, y); },
+            (x, y) => _webRequestHandler.ErrorLogCallback(x, "Agora Record Token" + y), needHeaderAccessToken: true);
     }
 
     void AssignToken(long code, string data) {
@@ -74,7 +79,7 @@ public class SecondaryServerCalls : MonoBehaviour {
         requestCloudRecordAcquire.OnSuccessAction -= OnAcquireComplete;
         requestCloudRecordAcquire.OnSuccessAction += OnAcquireComplete;
         requestCloudRecordAcquire.OnFailedAction = () => Debug.LogError("Cloud Record Acquire Error");
-        agoraRequests.MakePostRequest(requestCloudRecordAcquire, JsonUtility.ToJson(requestCloudRecordAcquire.AgoraCloudAcquireRequestData));
+        _agoraRequests.MakePostRequest(requestCloudRecordAcquire, JsonUtility.ToJson(requestCloudRecordAcquire.AgoraCloudAcquireRequestData));
     }
 
     void OnAcquireComplete() {
@@ -88,7 +93,7 @@ public class SecondaryServerCalls : MonoBehaviour {
         requestCloudRecordResource.StartCloudRecordRequestData.uid = requestCloudRecordAcquire.AgoraCloudAcquireRequestData.uid;
         requestCloudRecordResource.StartCloudRecordRequestData.cname = requestCloudRecordAcquire.AgoraCloudAcquireRequestData.cname;
         requestCloudRecordResource.StartCloudRecordRequestData.clientRequest.token = tokenAgoraResponse.token;
-        agoraRequests.MakePostRequest(requestCloudRecordResource, JsonUtility.ToJson(requestCloudRecordResource.StartCloudRecordRequestData));
+        _agoraRequests.MakePostRequest(requestCloudRecordResource, JsonUtility.ToJson(requestCloudRecordResource.StartCloudRecordRequestData));
         HelperFunctions.DevLog(JsonUtility.ToJson(requestCloudRecordResource.StartCloudRecordRequestData, true));
     }
 
@@ -107,11 +112,11 @@ public class SecondaryServerCalls : MonoBehaviour {
         data.file_name_prefix = requestCloudRecordResource.StartCloudRecordRequestData.clientRequest.storageConfig.fileNamePrefix[0];
         data.title = streamName;
         //data.description = "";
-        HelperFunctions.DevLog(webRequestHandler.ServerURLMediaAPI + videoUploader.Stream);
-        webRequestHandler.Post(webRequestHandler.ServerURLMediaAPI + videoUploader.Stream,
+        HelperFunctions.DevLog(_webRequestHandler.ServerURLMediaAPI + videoUploader.Stream);
+        _webRequestHandler.Post(_webRequestHandler.ServerURLMediaAPI + videoUploader.Stream,
             data,
-            WebRequestBodyType.JSON, (x, y) => { CreateStreamSecondaryCallback(x, y); webRequestHandler.LogCallback(x, y); },
-            webRequestHandler.ErrorLogCallback, needHeaderAccessToken: true);
+            WebRequestBodyType.JSON, (x, y) => { CreateStreamSecondaryCallback(x, y); _webRequestHandler.LogCallback(x, y); },
+            _webRequestHandler.ErrorLogCallback, needHeaderAccessToken: true);
     }
 
     void CreateRoom() {
@@ -120,11 +125,11 @@ public class SecondaryServerCalls : MonoBehaviour {
         data.agora_sid = requestCloudRecordResource.CloudRecordResponseData.sid;
         data.agora_channel = requestCloudRecordResource.StartCloudRecordRequestData.cname;
         data.status = StreamJsonData.Data.LIVE_ROOM_STR;
-        webRequestHandler.Put(webRequestHandler.ServerURLMediaAPI + videoUploader.PutRoom,
+        _webRequestHandler.Put(_webRequestHandler.ServerURLMediaAPI + videoUploader.PutRoom,
             data,
             WebRequestBodyType.JSON,
-            (x, y) => { CreateStreamSecondaryCallback(x, y); webRequestHandler.LogCallback(x, "Put Room callback: " + y); },
-            (x, y) => webRequestHandler.ErrorLogCallback(x, "Put Room error callback: " + y), needHeaderAccessToken: true);
+            (x, y) => { CreateStreamSecondaryCallback(x, y); _webRequestHandler.LogCallback(x, "Put Room callback: " + y); },
+            (x, y) => _webRequestHandler.ErrorLogCallback(x, "Put Room error callback: " + y), needHeaderAccessToken: true);
     }
 
     void CreateStreamSecondaryCallback(long code, string data) {
@@ -164,7 +169,7 @@ public class SecondaryServerCalls : MonoBehaviour {
 
         HelperFunctions.DevLog("STOPPING CLOUD RECORDING:" + requestCloudRecordStop.RequestString);
         HelperFunctions.DevLog("PAYLOAD: " + JsonUtility.ToJson(payload, true));
-        agoraRequests.MakePostRequest(requestCloudRecordStop, JsonUtility.ToJson(payload));
+        _agoraRequests.MakePostRequest(requestCloudRecordStop, JsonUtility.ToJson(payload));
     }
 
     //void StopCloudRecordingCallback() {
@@ -179,16 +184,16 @@ public class SecondaryServerCalls : MonoBehaviour {
         data.agora_sid = requestCloudRecordResource.CloudRecordResponseData.sid;
         data.agora_channel = requestCloudRecordResource.StartCloudRecordRequestData.cname;
         data.status = string.Empty;
-        webRequestHandler.Put(webRequestHandler.ServerURLMediaAPI + videoUploader.PutRoom,
+        _webRequestHandler.Put(_webRequestHandler.ServerURLMediaAPI + videoUploader.PutRoom,
             data,
-            WebRequestBodyType.JSON, (x, y) => webRequestHandler.LogCallback(x, "Put Room Closed callback: " + y),
-            (x, y) => webRequestHandler.ErrorLogCallback(x, "Put Room Closed error callback: " + y), needHeaderAccessToken: true);
+            WebRequestBodyType.JSON, (x, y) => _webRequestHandler.LogCallback(x, "Put Room Closed callback: " + y),
+            (x, y) => _webRequestHandler.ErrorLogCallback(x, "Put Room Closed error callback: " + y), needHeaderAccessToken: true);
     }
 
     void StopSecondaryServer() {
         HelperFunctions.DevLog("STOPPING STREAM SECONDARY SERVER");
         StreamStatusJsonData data = new StreamStatusJsonData { status = StreamJsonData.Data.STOP_STR };
-        HelperFunctions.DevLog(webRequestHandler.ServerURLMediaAPI + videoUploader.StreamStatus.Replace("{id}", streamStartResponseJsonData.id.ToString()));
+        HelperFunctions.DevLog(_webRequestHandler.ServerURLMediaAPI + videoUploader.StreamStatus.Replace("{id}", streamStartResponseJsonData.id.ToString()));
         StreamStatusChange(data);
     }
 
@@ -199,10 +204,10 @@ public class SecondaryServerCalls : MonoBehaviour {
 
     void StreamStatusChange(StreamStatusJsonData data) {
         HelperFunctions.DevLog($"Stream status changed " + data.status);
-        webRequestHandler.PatchRequest(webRequestHandler.ServerURLMediaAPI + videoUploader.StreamStatus.Replace("{id}",
+        _webRequestHandler.PatchRequest(_webRequestHandler.ServerURLMediaAPI + videoUploader.StreamStatus.Replace("{id}",
             streamStartResponseJsonData.id.ToString()), data, WebRequestBodyType.JSON,
-            (x, y) => { webRequestHandler.LogCallback(x, y); HelperFunctions.DevLog("STREAM STOPPED SECONDARY SERVER"); },
-            webRequestHandler.ErrorLogCallback, needHeaderAccessToken: true);
+            (x, y) => { _webRequestHandler.LogCallback(x, y); HelperFunctions.DevLog("STREAM STOPPED SECONDARY SERVER"); },
+            _webRequestHandler.ErrorLogCallback, needHeaderAccessToken: true);
         StreamCallBacks.onLiveStreamFinished?.Invoke();
     }
 }

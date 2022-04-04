@@ -14,7 +14,7 @@ namespace Beem {
         public Action onSentCanUse;
 
         GeneralAppAPIScriptableObject _generalAppAPIScriptableObject;
-        WebRequestHandler _webRequestHandler;
+        private WebRequestHandler _webRequestHandler;
 
         private const int DELAY_REPEAT = 2000;
         private const string DEFAULT_MIN_VERSION = "0";
@@ -55,9 +55,9 @@ namespace Beem {
                     continue;
                 }
 #elif UNITY_ANDROID
-            if (version.platform != AppVersionJsonData.ANDROID_PLATFORM) {
-                continue;
-            }
+                if (version.platform != AppVersionJsonData.ANDROID_PLATFORM) {
+                    continue;
+                }
 #endif
                 if (CompareVersions(version.min_support_version, currentMinVersionWithForceUpdate) > 0 && version.forced_update) {
                     currentMinVersionWithForceUpdate = version.min_support_version;

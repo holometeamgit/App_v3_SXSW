@@ -3,6 +3,7 @@ using Beem.ARMsg;
 using Beem.Firebase.DynamicLink;
 using Firebase.DynamicLinks;
 using UnityEngine;
+using Zenject;
 
 /// <summary>
 /// Deep Link Controller for Ar-messages
@@ -10,13 +11,17 @@ using UnityEngine;
 public class DeepLinkARMsgController : MonoBehaviour {
 
     [SerializeField]
-    private WebRequestHandler _webRequestHandler;
-
-    [SerializeField]
     private ServerURLAPIScriptableObject _serverURLAPIScriptableObject;
 
     [SerializeField]
     private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
+
+    private WebRequestHandler _webRequestHandler;
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+    }
 
     private void GetARMessageById(string id, Action<long, string> onSuccess, Action<WebRequestError> onFailed = null) {
         _webRequestHandler.Get(GetARMessageIdUrl(id),
