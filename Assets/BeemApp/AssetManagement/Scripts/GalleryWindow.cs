@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 /// <summary>
 /// Gallery View
@@ -29,13 +30,10 @@ public class GalleryWindow : MonoBehaviour {
     [SerializeField]
     private float _topShift = 400f;
 
-    [Space]
-    [SerializeField]
     private UserWebManager _userWebManager;
-    [SerializeField]
     private WebRequestHandler _webRequestHandler;
 
-    private GalleryController _galleryController;
+    private GetAllARMessageController _galleryController;
     private const string TOPIC = "gallery_{0}";
 
     private bool CanShowPushNotificationPopup {
@@ -47,8 +45,14 @@ public class GalleryWindow : MonoBehaviour {
         }
     }
 
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager) {
+        _webRequestHandler = webRequestHandler;
+        _userWebManager = userWebManager;
+    }
+
     private void Start() {
-        _galleryController = new GalleryController(_arMsgAPIScriptableObject, _webRequestHandler);
+        _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, _webRequestHandler);
     }
 
     private void OnEnable() {
@@ -101,7 +105,7 @@ public class GalleryWindow : MonoBehaviour {
         _scrollRect.offsetMax = offsetMax;
     }
 
-    private void RefreshWindow() {
+    private void RefreshWindow(ARMsgJSON.Data data) {
         _galleryController.GetAllArMessages(onSuccess: Show);
     }
 

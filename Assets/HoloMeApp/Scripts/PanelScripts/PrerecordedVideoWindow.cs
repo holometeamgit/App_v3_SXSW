@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 /// <summary>
 /// Panel for Prerecorded Video
@@ -32,10 +33,7 @@ public class PrerecordedVideoWindow : MonoBehaviour {
     [SerializeField]
     private Toggle commentsToggle;
 
-    [Space]
-    [SerializeField]
     private PurchaseManager _purchaseManager;
-    [SerializeField]
     private HologramHandler _hologramHandler;
 
     private StreamJsonData.Data _streamData = default;
@@ -46,6 +44,11 @@ public class PrerecordedVideoWindow : MonoBehaviour {
 
     private bool isPinned = false;
 
+    [Inject]
+    public void Construct(HologramHandler hologramHandler, PurchaseManager purchaseManager) {
+        _hologramHandler = hologramHandler;
+        _purchaseManager = purchaseManager;
+    }
 
     /// <summary>
     /// Initialization

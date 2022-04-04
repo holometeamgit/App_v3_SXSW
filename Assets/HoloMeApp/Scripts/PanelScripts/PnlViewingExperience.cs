@@ -5,6 +5,7 @@ using TMPro;
 using System.Collections;
 using System;
 using Beem.Permissions;
+using Zenject;
 
 public class PnlViewingExperience : MonoBehaviour {
     [SerializeField]
@@ -15,8 +16,7 @@ public class PnlViewingExperience : MonoBehaviour {
     RectTransform scanMessageRT;
     [SerializeField]
     private bool skipTutorial;
-    [Space]
-    [SerializeField]
+
     private HologramHandler _hologramHandler;
 
     Coroutine scanAnimationRoutine;
@@ -31,6 +31,12 @@ public class PnlViewingExperience : MonoBehaviour {
     string tapToPlaceStr = "To see your chosen performer, tap the white circle when it appears on the floor";
     private enum TutorialState { MessageScan, MessageTapToPlace, WaitingForTap, WaitingForPinch, TutorialComplete };
     TutorialState tutorialState = TutorialState.MessageScan;
+
+    [Inject]
+    public void Construct(HologramHandler hologramHandler) {
+        _hologramHandler = hologramHandler;
+    }
+
     void OnEnable() {
         scanAnimationItems.SetActive(false);
         if (!tutorialDisplayed) {

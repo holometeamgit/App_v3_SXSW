@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Zenject;
 
 /// <summary>
 /// Purchase success Event
@@ -14,25 +15,20 @@ public class PurchaseView : MonoBehaviour {
 
     private PurchaseManager _purchaseManager;
 
-    private PurchaseManager purchaseManager {
-        get {
-            if (_purchaseManager == null) {
-                _purchaseManager = FindObjectOfType<PurchaseManager>();
-            }
-
-            return _purchaseManager;
-        }
+    [Inject]
+    public void Construct(PurchaseManager purchaseManager) {
+        _purchaseManager = purchaseManager;
     }
 
     private void OnEnable() {
-        if (purchaseManager != null) {
-            purchaseManager.OnPurchaseSuccessful += OnPurchaseSuccess;
+        if (_purchaseManager != null) {
+            _purchaseManager.OnPurchaseSuccessful += OnPurchaseSuccess;
         }
     }
 
     private void OnDisable() {
-        if (purchaseManager != null) {
-            purchaseManager.OnPurchaseSuccessful -= OnPurchaseSuccess;
+        if (_purchaseManager != null) {
+            _purchaseManager.OnPurchaseSuccessful -= OnPurchaseSuccess;
         }
     }
 

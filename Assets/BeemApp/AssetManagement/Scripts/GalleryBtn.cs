@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 /// <summary>
 /// Gallery Btn
@@ -14,21 +15,15 @@ public class GalleryBtn : MonoBehaviour {
 
     private WebRequestHandler _webRequestHandler;
 
-    private WebRequestHandler GetWebRequestHandler {
-        get {
+    private GetAllARMessageController _galleryController;
 
-            if (_webRequestHandler == null) {
-                _webRequestHandler = FindObjectOfType<WebRequestHandler>();
-            }
-
-            return _webRequestHandler;
-        }
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
     }
 
-    private GalleryController _galleryController;
-
     private void Start() {
-        _galleryController = new GalleryController(_arMsgAPIScriptableObject, GetWebRequestHandler);
+        _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, _webRequestHandler);
     }
 
     /// <summary>

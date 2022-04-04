@@ -10,13 +10,17 @@ public class GalleryNotificationBadgeView : MonoBehaviour {
 
     private void OnEnable() {
         RefreshBadge();
-        GalleryNotificationController.OnShow += RefreshBadge;
+        GalleryNotificationController.OnShow += Show;
         GalleryNotificationController.OnHide += RefreshBadge;
     }
 
     private void OnDisable() {
-        GalleryNotificationController.OnShow -= RefreshBadge;
+        GalleryNotificationController.OnShow -= Show;
         GalleryNotificationController.OnHide -= RefreshBadge;
+    }
+
+    private void Show(ARMsgJSON.Data data) {
+        RefreshBadge();
     }
 
     private void RefreshBadge() {

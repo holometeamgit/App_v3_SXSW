@@ -2,6 +2,7 @@ using Beem.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 /// <summary>
 /// Delete ARMsg Btn
 /// </summary>
@@ -10,39 +11,22 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
     private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
 
     private WebRequestHandler _webRequestHandler;
-
-    private WebRequestHandler GetWebRequestHandler {
-        get {
-
-            if (_webRequestHandler == null) {
-                _webRequestHandler = FindObjectOfType<WebRequestHandler>();
-            }
-
-            return _webRequestHandler;
-        }
-    }
-
     private UserWebManager _userWebManager;
 
-    private UserWebManager GetUserWebManager {
-        get {
-
-            if (_userWebManager == null) {
-                _userWebManager = FindObjectOfType<UserWebManager>();
-            }
-
-            return _userWebManager;
-        }
-    }
-
     private DeleteARMsgController _deleteARMsgController;
-    private GalleryController _galleryController;
+    private GetAllARMessageController _galleryController;
 
     private ARMsgJSON.Data currentData;
 
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager) {
+        _webRequestHandler = webRequestHandler;
+        _userWebManager = userWebManager;
+    }
+
     private void Start() {
-        _deleteARMsgController = new DeleteARMsgController(_arMsgAPIScriptableObject, GetWebRequestHandler);
-        _galleryController = new GalleryController(_arMsgAPIScriptableObject, GetWebRequestHandler);
+        _deleteARMsgController = new DeleteARMsgController(_arMsgAPIScriptableObject, _webRequestHandler);
+        _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, _webRequestHandler);
     }
 
     /// <summary>
@@ -68,7 +52,7 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
 
     public void Init(ARMsgJSON.Data data) {
         currentData = data;
-        if (currentData.user != GetUserWebManager.GetUsername()) {
+        if (currentData.user != _userWebManager.GetUsername()) {
             gameObject.SetActive(false);
         }
     }
