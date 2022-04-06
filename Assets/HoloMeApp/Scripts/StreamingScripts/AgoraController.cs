@@ -150,6 +150,14 @@ public class AgoraController : MonoBehaviour {
 
         if (EnableVideoPlayback() == 0) {
             if (iRtcEngine.StartPreview() == 0) {
+
+                VirtualBackgroundSource source = new VirtualBackgroundSource {
+                    background_source_type = BACKGROUND_SOURCE_TYPE.BACKGROUND_COLOR,
+                    color = Convert.ToUInt32(ColorUtility.ToHtmlStringRGB(Color.green), 16)
+                };
+
+                iRtcEngine.EnableVirtualBackground(IsRoom, source);
+
                 HelperFunctions.DevLog("Agora Preview Started");
                 if (iRtcEngine.EnableLocalVideo(true) == 0) {
                     VideoIsReady = true;
@@ -457,6 +465,12 @@ public class AgoraController : MonoBehaviour {
         if (iRtcEngine != null) {
             if (!pauseVideo) {
                 iRtcEngine.EnableVideo();
+                VirtualBackgroundSource source = new VirtualBackgroundSource {
+                    background_source_type = BACKGROUND_SOURCE_TYPE.BACKGROUND_COLOR,
+                    color = Convert.ToUInt32(ColorUtility.ToHtmlStringRGB(Color.green), 16)
+                };
+
+                iRtcEngine.EnableVirtualBackground(IsRoom, source);
             } else {
                 iRtcEngine.DisableVideo();
             }
