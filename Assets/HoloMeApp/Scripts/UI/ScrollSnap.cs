@@ -7,7 +7,7 @@ using System;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(ScrollRect), typeof(CanvasGroup))]
-public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
+public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler {
     [SerializeField] public int startingIndex = 0;
     [SerializeField] public bool wrapAround = false;
     [SerializeField] public float lerpTimeMilliSeconds = 200f;
@@ -18,11 +18,11 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
     public class OnProgressEvent : UnityEvent<float, int> { }
     public OnProgressEvent onProgress;
 
-    public class OnLerpCompleteEvent : UnityEvent { }
-    public OnLerpCompleteEvent onLerpComplete;
+    public UnityEvent onLerpComplete;
 
-    public class OnReleaseEvent : UnityEvent<int> { }
-    public OnReleaseEvent onRelease;
+    public Action<int> onRelease;
+    public Action onStartDrag;
+    public Action onInitialized;
 
     [SerializeField] float cellWidth;
     [SerializeField] UnityEvent[] OnIndexSnapEvent;
@@ -37,6 +37,12 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
     private float lerpStartedAt;
     private Vector2 releasedPosition;
     private Vector2 targetPosition;
+
+    private int _maxIndex;
+
+    public int MaxIndex {
+        get { return _maxIndex; }
+    }
 
     public int CurrentIndex {
         get {
@@ -79,6 +85,13 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
     }
 
     /// <summary>
+    /// invoke action about begin drag
+    /// </summary>
+    public void OnBeginDrag(PointerEventData eventData) {
+        onStartDrag?.Invoke();
+    }
+
+    /// <summary>
     /// check index change on drag
     /// </summary>
     public void OnDrag(PointerEventData data) {
@@ -106,8 +119,6 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
         base.Awake();
         actualIndex = startingIndex;
         cellIndex = startingIndex;
-        this.onLerpComplete = new OnLerpCompleteEvent();
-        this.onRelease = new OnReleaseEvent();
         this.scrollRect = GetComponent<ScrollRect>();
         this.canvasGroup = GetComponent<CanvasGroup>();
         this.content = scrollRect.content;
@@ -124,6 +135,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
     protected override void Start() {
         base.Start();
         content.offsetMin = new Vector2(content.offsetMin.x, 0);
+        onInitialized?.Invoke();
     }
 
     private void ShiftLayoutElement() {
@@ -159,6 +171,13 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
         SnapToIndex(0);
     }
 
+    /// <summary>
+    /// Resets scroll view to first index
+    /// </summary>
+    public void ResetToLast() {
+        SnapToIndex(CalculateMaxIndex());
+    }
+
     private void SnapToIndex(int newCellIndex) {
         int maxIndex = CalculateMaxIndex();
         if (wrapAround && maxIndex > 0) {
@@ -170,7 +189,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
             actualIndex += newCellIndex - cellIndex;
             cellIndex = newCellIndex;
         }
-        onRelease.Invoke(cellIndex);
+        onRelease?.Invoke(cellIndex);
         if (OnIndexSnapEvent != null && OnIndexSnapEvent.Length - 1 >= cellIndex) {
             OnIndexSnapEvent?[cellIndex]?.Invoke();
         }
@@ -183,7 +202,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
             actualIndex += newCellIndex - cellIndex;
             cellIndex = newCellIndex;
         }
-        onRelease.Invoke(cellIndex);
+        onRelease?.Invoke(cellIndex);
         content.anchoredPosition = CalculateTargetPoisition(cellIndex);
     }
 
@@ -209,7 +228,8 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
 
     private int CalculateMaxIndex() {
         int cellPerFrame = Mathf.FloorToInt(scrollRect.GetComponent<RectTransform>().rect.size.x / cellWidth);
-        return LayoutElementCount() - cellPerFrame;
+        _maxIndex = LayoutElementCount() - cellPerFrame;
+        return _maxIndex;
     }
 
     private bool IndexShouldChangeFromDrag(PointerEventData data) {
