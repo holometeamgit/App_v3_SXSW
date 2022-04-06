@@ -24,14 +24,9 @@ public class PnlProfile : MonoBehaviour {
     [SerializeField]
     private UserWebManager _userWebManager;
 
-    private string GetUserName {
-        get {
-            string username = RegexAlphaNumeric.RegexResult(usernameInputField?.text);
-            username = username.ToLower();
-            return username;
-        }
-    }
-
+    /// <summary>
+    /// ChooseUsername 
+    /// </summary>
     public void ChooseUsername() {
         if (LocalDataVerification(GetUserName)) {
             _userWebManager.UpdateUserData(userName: GetUserName);
@@ -39,9 +34,35 @@ public class PnlProfile : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Switch profile to welcome
+    /// </summary>
+    public void ProfileToWelcome() {
+        CreateUsernameConstructor.OnActivated?.Invoke(false);
+        WelcomeConstructor.OnActivated?.Invoke(true);
+        _accountManager.LogOut();
+    }
+
+    /// <summary>
+    /// Switch profile to main menu
+    /// </summary>
+    public void ProfileToMainMenu() {
+        CreateUsernameConstructor.OnActivated?.Invoke(false);
+        OnboardingConstructor.OnActivated?.Invoke(true);
+    }
+
+
     private void Start() {
         usernameInputField.characterLimit = userNameLimit;
         _userWebManager.LoadUserInfo();
+    }
+
+    private string GetUserName {
+        get {
+            string username = RegexAlphaNumeric.RegexResult(usernameInputField?.text);
+            username = username.ToLower();
+            return username;
+        }
     }
 
     private void UserInfoLoadedCallBack() {
@@ -72,22 +93,7 @@ public class PnlProfile : MonoBehaviour {
         ProfileToMainMenu();
     }
 
-    /// <summary>
-    /// Switch profile to welcome
-    /// </summary>
-    public void ProfileToWelcome() {
-        CreateUsernameConstructor.OnActivated?.Invoke(false);
-        WelcomeConstructor.OnActivated?.Invoke(true);
-        _accountManager.LogOut();
-    }
 
-    /// <summary>
-    /// Switch profile to main menu
-    /// </summary>
-    public void ProfileToMainMenu() {
-        CreateUsernameConstructor.OnActivated?.Invoke(false);
-        OnboardingConstructor.OnActivated?.Invoke(true);
-    }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
 

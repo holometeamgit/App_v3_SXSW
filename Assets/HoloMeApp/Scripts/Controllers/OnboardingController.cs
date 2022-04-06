@@ -11,11 +11,12 @@ public class OnboardingController
         _userWebManager = userWebManager;
     }
 
+    /// <summary>
+    /// check is new user
+    /// </summary>
     public bool IsNewUser() {
-#if !UNITY_EDITOR
         if (PlayerPrefs.HasKey(_userWebManager.GetUsername() + SUFFIX))
             return false;
-#endif
 
         PlayerPrefs.SetString(_userWebManager.GetUsername() + SUFFIX, _userWebManager.GetUsername());
         PlayerPrefs.Save();

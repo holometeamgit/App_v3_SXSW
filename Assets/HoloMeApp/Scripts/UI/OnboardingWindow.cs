@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
+/// <summary>
+/// OnboardingWindow for new users
+/// </summary>
 public class OnboardingWindow : MonoBehaviour {
     public Action onOnboardingClose;
     public Action onOnboardingOpen;
@@ -30,10 +33,16 @@ public class OnboardingWindow : MonoBehaviour {
 
     private bool _initialized;
 
+    /// <summary>
+    /// Skip onboarding
+    /// </summary>
     public void Skip() {
         Close();
     }
 
+    /// <summary>
+    /// next onboarding screen
+    /// </summary>
     public void Next() {
         DisableInteration();
         if (_scrollSnap.CurrentIndex == 0) {
@@ -46,11 +55,17 @@ public class OnboardingWindow : MonoBehaviour {
         _scrollSnap.SnapToNext();
     }
 
+    /// <summary>
+    /// Prev onboarding screen
+    /// </summary>
     public void Prev() {
         DisableInteration();
         _scrollSnap.SnapToPrev();
     }
 
+    /// <summary>
+    /// Close onboarding
+    /// </summary>
     public void Close() {
         _btnNext.SetActive(false);
         _btnBack.SetActive(false);

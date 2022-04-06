@@ -24,6 +24,11 @@ public class OnboardingConstructor : WindowConstructor {
     }
 
     protected void Activate(bool status) {
+        if (!status) {
+            _window.SetActive(status);
+            return;
+        }
+
         if (_onboardingController.IsNewUser()) {
             _window.SetActive(status);
         } else {
