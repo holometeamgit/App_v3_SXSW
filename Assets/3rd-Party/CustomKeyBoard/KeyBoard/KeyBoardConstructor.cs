@@ -41,9 +41,9 @@ namespace Beem.KeyBoard {
 
         private void Show(InputField inputField) {
 
-            SetInputSettings(inputField);
-
             _keyBoardWindow.Show(inputField);
+
+            SetInputSettings(inputField);
 
             _keyBoardWindow.UpdateText();
         }
@@ -67,7 +67,7 @@ namespace Beem.KeyBoard {
             _keyBoardWindow.InputField.characterValidation = _currentUITextField.characterValidation;
             _keyBoardWindow.InputField.characterLimit = _currentUITextField.characterLimit;
             if (_currentUITextField.textComponent.gameObject.activeInHierarchy) {
-                _keyBoardWindow.Text = _inputSettings.Text;
+                _keyBoardWindow.Text = _currentUITextField.text;
             }
         }
 
