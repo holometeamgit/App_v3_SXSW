@@ -44,11 +44,11 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManager {
         } else if (_arMsgData.processing_status == ARMsgJSON.Data.PROCESSING_STATUS) {
             if (!CanShowPushNotificationPopup) {
                 WarningConstructor.ActivateSingleButton("Proccessing",
-                "Your hologram is processing\n, we can tell you when it's ready",
+                "Your hologram is processing,\nwe can tell you when it's ready",
                  "GOT IT!");
             } else {
                 WarningConstructor.ActivateDoubleButton("Proccessing",
-                    "Your hologram is processing\n, we can tell you when it's ready",
+                    "Your hologram is processing,\nwe can tell you when it's ready",
                     "Turn on notifications",
                     "Close",
                     () => {
