@@ -6,6 +6,7 @@ using TMPro;
 using Beem.SSO;
 using System.Threading.Tasks;
 using Beem.Permissions;
+using Zenject;
 
 public class DeepLinkStreamPopup : UIThumbnail {
 
@@ -31,18 +32,21 @@ public class DeepLinkStreamPopup : UIThumbnail {
     [SerializeField]
     private VerticalLayoutGroup layoutGroup;
 
-    [Space]
-    [SerializeField]
-    private WebRequestHandler _webRequestHandler;
-    [SerializeField]
     private PurchaseManager _purchaseManager;
-    [SerializeField]
     private UserWebManager _userWebManager;
+    private WebRequestHandler _webRequestHandler;
 
     private PermissionController _permissionController = new PermissionController();
 
     ThumbnailElement thumbnailElement;
     private const int REFRESH_LAYOUT_TIME = 1000;
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager, PurchaseManager purchaseManager) {
+        _webRequestHandler = webRequestHandler;
+        _userWebManager = userWebManager;
+        _purchaseManager = purchaseManager;
+    }
 
     /// <summary>
     /// Play

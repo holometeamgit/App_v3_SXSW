@@ -3,15 +3,20 @@ using System.Linq;
 using UnityEngine;
 using Beem.UI;
 using Beem.Permissions;
+using Zenject;
 
 /// <summary>
 /// Bar for Prerecorded Video
 /// </summary>
 public class PnlARMessages : MonoBehaviour {
-    [SerializeField]
     private HologramHandler _hologramHandler;
 
     private List<IARMsgDataView> _arMsgDataViews;
+
+    [Inject]
+    public void Construct(HologramHandler hologramHandler) {
+        _hologramHandler = hologramHandler;
+    }
 
     /// <summary>
     /// Initialization
