@@ -31,8 +31,7 @@ public class OnboardingWindow : MonoBehaviour {
     private bool _initialized;
 
     public void Skip() {
-        DisableInteration();
-        _scrollSnap.ResetToLast();
+        Close();
     }
 
     public void Next() {
@@ -52,6 +51,15 @@ public class OnboardingWindow : MonoBehaviour {
         _scrollSnap.SnapToPrev();
     }
 
+    public void Close() {
+        _btnNext.SetActive(false);
+        _btnBack.SetActive(false);
+        _btnStartHome.SetActive(false);
+        _skipBtn.SetActive(false);
+        _scrollController.SetActive(false);
+        CloseOnboarding();
+    }
+
     private void OnRelease(int index) {
         UpdateInteraction(index);
     }
@@ -64,26 +72,21 @@ public class OnboardingWindow : MonoBehaviour {
             _btnBack.SetActive(false);
             _btnStartHome.SetActive(false);
             _scrollController.SetActive(false);
-        } else if (index > 0 && index < (_scrollSnap.MaxIndex - 1)) {
+        } else if (index > 0 && index <= (_scrollSnap.MaxIndex - 1)) {
             _btnNext.SetActive(true);
             _btnBack.SetActive(true);
             _btnStartHome.SetActive(false);
             _scrollController.SetActive(true);
-        } else if (index == _scrollSnap.MaxIndex - 1) {
+        } else if (index == _scrollSnap.MaxIndex) {
             _btnNext.SetActive(false);
             _btnBack.SetActive(true);
             _btnStartHome.SetActive(true);
             _scrollController.SetActive(true);
-        } else if (index >= _scrollSnap.MaxIndex) {
-            _btnNext.SetActive(false);
-            _btnBack.SetActive(false);
-            _btnStartHome.SetActive(false);
-            _skipBtn.SetActive(false);
-            _scrollController.SetActive(false);
-        }
+        } 
     }
 
     private void CloseOnboarding() {
+        MenuConstructor.OnActivated?.Invoke(true);
         OnboardingConstructor.OnActivated?.Invoke(false);
         _scrollSnap.ResetToFirst();
     }
@@ -100,15 +103,9 @@ public class OnboardingWindow : MonoBehaviour {
         _initialized = true;
     }
 
-    private void CheckForClose() {
-        if(_scrollSnap.CurrentIndex == _scrollSnap.MaxIndex)
-            CloseOnboarding();
-    }
-
     private void OnEnable() {
         _scrollSnap.onStartDrag += DisableInteration;
         _scrollSnap.onLerpComplete.AddListener(EnableInteraction);
-        _scrollSnap.onLerpComplete.AddListener(CheckForClose);
         _scrollSnap.onRelease += OnRelease;
         _scrollSnap.onInitialized += OnInitialized;
         if (_initialized) {
@@ -120,7 +117,6 @@ public class OnboardingWindow : MonoBehaviour {
     private void OnDisable() {
         _scrollSnap.onStartDrag -= DisableInteration;
         _scrollSnap.onLerpComplete.RemoveListener(EnableInteraction);
-        _scrollSnap.onLerpComplete.RemoveListener(CheckForClose);
         _scrollSnap.onRelease -= OnRelease;
         _scrollSnap.onInitialized -= OnInitialized;
         onOnboardingClose?.Invoke();

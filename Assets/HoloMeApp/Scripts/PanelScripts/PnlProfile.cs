@@ -86,7 +86,7 @@ public class PnlProfile : MonoBehaviour {
     /// </summary>
     public void ProfileToMainMenu() {
         CreateUsernameConstructor.OnActivated?.Invoke(false);
-        MenuConstructor.OnActivated?.Invoke(true);
+        OnboardingConstructor.OnActivated?.Invoke(true);
     }
 
     private void ErrorUpdateUserDataCallBack(BadRequestUserUploadJsonData badRequestData) {
