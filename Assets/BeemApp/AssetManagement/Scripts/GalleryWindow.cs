@@ -80,7 +80,7 @@ public class GalleryWindow : MonoBehaviour {
             arMsgJSON.results.Sort((x, y) => -x.CreatedAt.CompareTo(y.CreatedAt));
             for (int i = 0; i < arMsgJSON.results.Count; i++) {
                 ARMsgScrollItem aRMsgScrollItem = new ARMsgScrollItem(i);
-                aRMsgScrollItem.Init(arMsgJSON.results[i], GalleryNotificationController.IsNew(arMsgJSON.results[i]));
+                aRMsgScrollItem.Init(arMsgJSON.results[i], _userWebManager, GalleryNotificationController.IsNew(arMsgJSON.results[i]));
                 contentDatas.Add(aRMsgScrollItem);
             }
 

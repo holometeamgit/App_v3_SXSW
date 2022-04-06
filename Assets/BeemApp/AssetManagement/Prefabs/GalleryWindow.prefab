@@ -900,8 +900,6 @@ MonoBehaviour:
   _arMsgAPIScriptableObject: {fileID: 11400000, guid: 6654356a8bcc64e8dbfcada070457098,
     type: 2}
   _topShift: 427
-  _userWebManager: {fileID: 0}
-  _webRequestHandler: {fileID: 0}
 --- !u!1 &4044998025004921328
 GameObject:
   m_ObjectHideFlags: 0
@@ -1043,7 +1041,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: CREATE A BEEM
+  m_text: CREATE A HOLOGRAM
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7df265c6440a64782a6be2e6f616010a, type: 2}
   m_sharedMaterial: {fileID: -3276266355631397516, guid: 7df265c6440a64782a6be2e6f616010a,
@@ -1862,7 +1860,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 1
-  m_FillAmount: 1
+  m_FillAmount: 0
   m_FillClockwise: 1
   m_FillOrigin: 1
   m_UseSpriteMesh: 0
@@ -2909,6 +2907,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 376881819}
     m_Modifications:
+    - target: {fileID: 254005356206636579, guid: f16d3ff9d6f882e4e802f255787a08cb,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 45
+      objectReference: {fileID: 0}
     - target: {fileID: 254005357242934332, guid: f16d3ff9d6f882e4e802f255787a08cb,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2947,12 +2950,12 @@ PrefabInstance:
     - target: {fileID: 254005357242934332, guid: f16d3ff9d6f882e4e802f255787a08cb,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 504
+      value: 327
       objectReference: {fileID: 0}
     - target: {fileID: 254005357242934332, guid: f16d3ff9d6f882e4e802f255787a08cb,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 504
+      value: 540
       objectReference: {fileID: 0}
     - target: {fileID: 254005357242934332, guid: f16d3ff9d6f882e4e802f255787a08cb,
         type: 3}
@@ -3022,7 +3025,22 @@ PrefabInstance:
     - target: {fileID: 254005357304419968, guid: f16d3ff9d6f882e4e802f255787a08cb,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: -226.125
+      value: -28.875
+      objectReference: {fileID: 0}
+    - target: {fileID: 924763576748266134, guid: f16d3ff9d6f882e4e802f255787a08cb,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -99.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 3525796006595500064, guid: f16d3ff9d6f882e4e802f255787a08cb,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 3525796006595500064, guid: f16d3ff9d6f882e4e802f255787a08cb,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 32
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f16d3ff9d6f882e4e802f255787a08cb, type: 3}

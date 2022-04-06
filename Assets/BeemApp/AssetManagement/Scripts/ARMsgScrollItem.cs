@@ -9,11 +9,18 @@ using UnityEngine;
 public class ARMsgScrollItem : ScrollItemData {
 
     private ARMsgJSON.Data _data;
+    private UserWebManager _userWebManager;
     private bool _isNew;
 
     public ARMsgJSON.Data Data {
         get {
             return _data;
+        }
+    }
+
+    public UserWebManager Manager {
+        get {
+            return _userWebManager;
         }
     }
 
@@ -32,8 +39,9 @@ public class ARMsgScrollItem : ScrollItemData {
     /// </summary>
     /// <param name="data"></param>
     /// <param name="isNew"></param>
-    public void Init(ARMsgJSON.Data data, bool isNew) {
+    public void Init(ARMsgJSON.Data data, UserWebManager userWebManager, bool isNew) {
         _data = data;
+        _userWebManager = userWebManager;
         _isNew = isNew;
     }
 }
