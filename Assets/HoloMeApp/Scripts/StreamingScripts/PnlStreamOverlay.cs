@@ -200,7 +200,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
             item.SetActive(room);
         }
         foreach (GameObject item in publicStreamsControls) {
-            item.SetActive(!room);
+            item.SetActive(!room && _userWebManager.CanGoLive());
         }
     }
 
@@ -255,6 +255,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         _agoraController.IsRoom = true;
         StreamerOpenSharedFunctions();
 
+        StadiumContactPopupConstructor.onActivate?.Invoke(false);
         if (!CheckIfTutorialWasRun(KEY_SEEN_TUTORIAL_ROOM)) {
             ShowInfoPopupRoom();
         }
@@ -263,9 +264,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     public void OpenAsStreamer() {
         if (!_userWebManager.CanGoLive()) {
             ShowPremiumRequiredMessage();
-        }
-
-        if (!CheckIfTutorialWasRun(KEY_SEEN_TUTORIAL_ARENA)) {
+        } else if (!CheckIfTutorialWasRun(KEY_SEEN_TUTORIAL_ARENA)) {
             ShowInfoPopupStadium();
         }
 
@@ -284,12 +283,15 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     private void ShowPremiumRequiredMessage() {
-        WarningConstructor.ActivateDoubleButton("PREMIUM FEATURE",
-          "Contact us to explore\n Beeming to millions of people",
-           "GET IN TOUCH", "CANCEL",
-          () => {
-              externalLinkRedirector.Redirect();
-          }, null, false);
+
+        StadiumContactPopupConstructor.onActivate?.Invoke(true);
+
+        //WarningConstructor.ActivateDoubleButton("PREMIUM FEATURE",
+        //  "Contact us to explore\n Beeming to millions of people",
+        //   "GET IN TOUCH", "CANCEL",
+        //  () => {
+        //      externalLinkRedirector.Redirect();
+        //  }, null, false);
     }
 
     /// <summary>
@@ -370,7 +372,8 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     private IEnumerator DelayStartPrevew() {
-        yield return new WaitForSeconds(DELAY_FOR_PREVIEW);
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
         _agoraController.StartPreview();
     }
 
@@ -387,6 +390,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     public void CloseAsStreamer() {
+        StadiumContactPopupConstructor.onActivate?.Invoke(false);
         StopStream();
         _agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
