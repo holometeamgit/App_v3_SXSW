@@ -66,14 +66,6 @@ public class PnlProfile : MonoBehaviour {
         _userWebManager.LoadUserInfo();
     }
 
-    private string GetUserName {
-        get {
-            string username = RegexAlphaNumeric.RegexResult(usernameInputField?.text);
-            username = username.ToLower();
-            return username;
-        }
-    }
-
     private void UserInfoLoadedCallBack() {
         usernameInputField.text = string.IsNullOrWhiteSpace(GetUserName) ? _userWebManager.GetUsername() ?? "" : usernameInputField.text;
         if (_userWebManager.GetUsername() == null) {
