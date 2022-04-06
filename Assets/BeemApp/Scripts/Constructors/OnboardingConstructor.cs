@@ -1,15 +1,21 @@
 
 using System;
 using UnityEngine;
+using Zenject;
 /// <summary>
 /// Constructor for Onboarding In Window
 /// </summary>
 public class OnboardingConstructor : WindowConstructor {
     public static Action<bool> OnActivated = delegate { };
 
-    [SerializeField]
+
     private UserWebManager _userWebManager;
     private OnboardingController _onboardingController;
+
+    [Inject]
+    public void Construct(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
+    }
 
     private void Awake() {
         _onboardingController = new OnboardingController(_userWebManager);
