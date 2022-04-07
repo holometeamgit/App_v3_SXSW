@@ -1,4 +1,5 @@
 
+using Mopsicus.Plugins;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -18,21 +19,34 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private bool _nativeKeyboardOnAndroid;
 
+        private MobileInputField mobileInputField;
+
         private void OnEnable() {
 #if UNITY_EDITOR
-            _inputField.enabled = false;
+            ActivateCustomField(true);
 #elif UNITY_IOS
-            _inputField.enabled = !_nativeKeyboardOniOS;
-            if(!_nativeKeyboardOniOS){
-               _inputField.shouldHideMobileInput = _hideMobileInput;
-            }
+            ActivateCustomField(_nativeKeyboardOniOS);
 #elif UNITY_ANDROID
-            _inputField.enabled = !_nativeKeyboardOnAndroid;
-            if(!_nativeKeyboardOnAndroid){
-               _inputField.shouldHideMobileInput = _hideMobileInput;
-            }
+            ActivateCustomField(_nativeKeyboardOnAndroid);
 #endif
+        }
 
+        private void ActivateCustomField(bool active) {
+            _inputField.enabled = !active;
+            if (!active) {
+                _inputField.shouldHideMobileInput = _hideMobileInput;
+                if (mobileInputField = null) {
+                    mobileInputField = gameObject.AddComponent<MobileInputField>();
+                    mobileInputField.IsWithDoneButton = false;
+                    mobileInputField.IsWithClearButton = false;
+                    mobileInputField.OnReturnPressedEvent.AddListener(() => _inputField.onEndEdit?.Invoke(_inputField.text));
+                }
+            } else {
+                if (mobileInputField != null) {
+                    mobileInputField.OnReturnPressedEvent.RemoveListener(() => _inputField.onEndEdit?.Invoke(_inputField.text));
+                    mobileInputField.enabled = false;
+                }
+            }
         }
 
         public void OnPointerClick(PointerEventData eventData) {
