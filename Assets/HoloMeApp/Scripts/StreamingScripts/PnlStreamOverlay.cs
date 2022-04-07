@@ -267,9 +267,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     public void OpenAsStreamer() {
         if (!_userWebManager.CanGoLive()) {
             ShowPremiumRequiredMessage();
-        }
-
-        if (!CheckIfTutorialWasRun(KEY_SEEN_TUTORIAL_ARENA)) {
+        } else if (!CheckIfTutorialWasRun(KEY_SEEN_TUTORIAL_ARENA)) {
             ShowInfoPopupStadium();
         }
 
