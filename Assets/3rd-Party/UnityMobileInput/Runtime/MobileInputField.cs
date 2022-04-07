@@ -378,7 +378,6 @@ namespace Mopsicus.Plugins {
             _config.FontSize = ((float)_inputObjectText.fontSize) * ratio;
             _config.TextColor = _inputObjectText.color;
             _config.Align = _inputObjectText.alignment.ToString();
-            Debug.LogError($"config.Aligh = {_config.Align}");
             _config.ContentType = _inputObject.contentType.ToString();
 
             Color backgroundColor = _inputObject.colors.normalColor;

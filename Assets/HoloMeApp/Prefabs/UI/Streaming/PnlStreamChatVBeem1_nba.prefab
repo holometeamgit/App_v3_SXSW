@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 9068296774790862910}
   - component: {fileID: 182003727585400315}
   - component: {fileID: 5424244886238418214}
+  - component: {fileID: 4146135697881894940}
   m_Layer: 5
   m_Name: ChatMessageBtn
   m_TagString: Untagged
@@ -91,6 +92,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inputField: {fileID: 5424244886238418214}
+  _mobileInputField: {fileID: 4146135697881894940}
   _hideMobileInput: 0
   _nativeKeyboardOniOS: 0
   _nativeKeyboardOnAndroid: 0
@@ -183,6 +185,26 @@ MonoBehaviour:
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_ShouldActivateOnSelect: 1
+--- !u!114 &4146135697881894940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 194619403636438535}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92594b9f3c977ba4b9516e80394752f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomFont: default
+  IsManualHideControl: 0
+  IsWithDoneButton: 0
+  IsWithClearButton: 0
+  ReturnKey: 2
+  OnReturnPressedEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1212504216664459313
 GameObject:
   m_ObjectHideFlags: 0
