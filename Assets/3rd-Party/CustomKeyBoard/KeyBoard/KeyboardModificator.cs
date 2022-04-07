@@ -32,6 +32,7 @@ namespace Beem.KeyBoard {
         }
 
         private void ActivateCustomField(bool active) {
+            _inputField.enabled = !active;
             _mobileInputField.enabled = !active;
             if (!active) {
                 _inputField.shouldHideMobileInput = _hideMobileInput;
