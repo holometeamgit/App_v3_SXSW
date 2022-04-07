@@ -204,7 +204,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
             item.SetActive(room);
         }
         foreach (GameObject item in publicStreamsControls) {
-            item.SetActive(!room);
+            item.SetActive(!room && _userWebManager.CanGoLive());
         }
     }
 
