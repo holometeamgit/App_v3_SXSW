@@ -14,32 +14,13 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private RectTransform _rectTransform;
         [SerializeField]
-        private float _baseHeight = 200;
+        private RectTransform _inputRectTranform;
         [Space]
         [SerializeField]
-        private RectTransform _textRectTransform;
-        [SerializeField]
-        private RectTransform _placeHolderRectTransform;
-        [SerializeField]
-        private float _baseTextHeight = 140;
-        [Space]
-        [SerializeField]
-        private float _baseShift = 50;
+        private float _baseShift = 60;
 
         public override void RefreshData(InputField inputField) {
-            if (inputField.textComponent.text.Length > 0) {
-                ChangeHeight(_rectTransform, _baseHeight + inputField.textComponent.preferredHeight - _baseShift);
-                ChangeHeight(_textRectTransform, _baseTextHeight + inputField.textComponent.preferredHeight - _baseShift);
-                ChangeHeight(_placeHolderRectTransform, _baseTextHeight + inputField.textComponent.preferredHeight - _baseShift);
-            } else {
-                ChangeHeight(_rectTransform, _baseHeight);
-                ChangeHeight(_textRectTransform, _baseTextHeight);
-                ChangeHeight(_placeHolderRectTransform, _baseTextHeight);
-            }
-        }
-
-        private void ChangeHeight(RectTransform rectTransform, float height) {
-            rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, height);
+            _rectTransform.sizeDelta = new Vector2(_rectTransform.sizeDelta.x, _inputRectTranform.sizeDelta.y + _baseShift);
         }
 
     }
