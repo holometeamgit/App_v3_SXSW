@@ -6,6 +6,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
+//TODO: Class in development
+/// <summary>
+/// Save First frame from video as texture
+/// </summary>
 public class CustomVideoPlayerController {
     private VideoPlayer _videoPlayer;
     private RawImage _rawImage;
@@ -14,11 +18,20 @@ public class CustomVideoPlayerController {
     private int _vidHeight;
     private int _vidWidth;
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="videoPlayer"></param>
+    /// <param name="rawImage"></param>
     public CustomVideoPlayerController(VideoPlayer videoPlayer, RawImage rawImage) {
         _rawImage = rawImage;
         _videoPlayer = videoPlayer;
     }
 
+    /// <summary>
+    /// Prepare video
+    /// </summary>
+    /// <param name="path_"></param>
     public void VideoPreparation(string path_) {
         _videoPlayer.url = path_;
         _videoPlayer.Stop();
@@ -28,8 +41,8 @@ public class CustomVideoPlayerController {
         _videoPlayer.Prepare();
         PrepareVideo();
     }
+
     private void FrameReady(VideoPlayer vp, long frameIndex) {
-        Debug.Log("FrameReady " + frameIndex);
         _videoPlayer.Pause();
         _rawImage.texture = vp.texture;
 
@@ -46,7 +59,6 @@ public class CustomVideoPlayerController {
             await Task.Yield();
         }
 
-        Debug.Log("Video PlayBack");
         _videoPlayer.Play();
 
         _vidWidth = Convert.ToInt32(_videoPlayer.width);
@@ -54,8 +66,6 @@ public class CustomVideoPlayerController {
 
         _videoPlayer.isLooping = true;
         _videoPlayer.renderMode = VideoRenderMode.MaterialOverride;
-
-        Debug.Log("Video height & width: " + _vidWidth + ", " + _vidHeight);
 
         while (!_thumbnailOk) {
             await Task.Yield();
