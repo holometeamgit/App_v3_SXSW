@@ -352,7 +352,7 @@ BOOL multiline;
     } else if ([alignment isEqualToString:@"MiddleLeft"]) {
         valign = UIControlContentVerticalAlignmentCenter;
         halign = UIControlContentHorizontalAlignmentLeft;
-        textAlign = NSTextAlignmentCenter;
+        textAlign = NSTextAlignmentLeft;
     } else if ([alignment isEqualToString:@"MiddleCenter"]) {
         valign = UIControlContentVerticalAlignmentCenter;
         halign = UIControlContentHorizontalAlignmentCenter;
