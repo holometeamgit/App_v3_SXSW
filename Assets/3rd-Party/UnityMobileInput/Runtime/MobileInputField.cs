@@ -475,7 +475,11 @@ namespace Mopsicus.Plugins {
             JsonObject data = new JsonObject();
             data["msg"] = CREATE;
             data["x"] = InvariantCultureString(rect.x / Screen.width);
-            data["y"] = InvariantCultureString(rect.y / Screen.height);
+            if (!_config.Multiline) {
+                data["y"] = InvariantCultureString(rect.y / Screen.height);
+            } else {
+                data["y"] = InvariantCultureString((rect.y - rect.height / 2f) / Screen.height);
+            }
             data["width"] = InvariantCultureString(rect.width / Screen.width);
             data["height"] = InvariantCultureString(rect.height / Screen.height);
             data["character_limit"] = _config.CharacterLimit;
@@ -570,7 +574,13 @@ namespace Mopsicus.Plugins {
             JsonObject data = new JsonObject();
             data["msg"] = SET_RECT;
             data["x"] = InvariantCultureString(rect.x / Screen.width);
-            data["y"] = InvariantCultureString(rect.y / Screen.height);
+
+            if (_inputObject.lineType == InputField.LineType.SingleLine) {
+                data["y"] = InvariantCultureString(rect.y / Screen.height);
+            } else {
+                data["y"] = InvariantCultureString((rect.y - rect.height / 2f) / Screen.height);
+            }
+
             data["width"] = InvariantCultureString(rect.width / Screen.width);
             data["height"] = InvariantCultureString(rect.height / Screen.height);
             this.Execute(data);
