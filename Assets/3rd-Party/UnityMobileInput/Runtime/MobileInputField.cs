@@ -479,7 +479,7 @@ namespace Mopsicus.Plugins {
             if (!_config.Multiline) {
                 data["y"] = InvariantCultureString(rect.y / Screen.height);
             } else {
-                data["y"] = InvariantCultureString((rect.y + rect.height / 2f) / Screen.height);
+                data["y"] = InvariantCultureString((rect.y + rect.height / 4f) / Screen.height);
             }
 #else
             data["y"] = InvariantCultureString(rect.y / Screen.height);
@@ -583,7 +583,7 @@ namespace Mopsicus.Plugins {
             if (_inputObject.lineType == InputField.LineType.SingleLine) {
                 data["y"] = InvariantCultureString(rect.y / Screen.height);
             } else {
-                data["y"] = InvariantCultureString((rect.y + rect.height / 2f) / Screen.height);
+                data["y"] = InvariantCultureString((rect.y + rect.height / 4f) / Screen.height);
             }
 #else
             data["y"] = InvariantCultureString(rect.y / Screen.height);
