@@ -44,9 +44,9 @@ public class ScreenshotView : MonoBehaviour {
         if (_data != null) {
             if (!string.IsNullOrEmpty(_data.ar_message_s3_link)) {
                 if (customVideoPlayer == null) {
-                    customVideoPlayer = new CustomVideoPlayer(_videoPlayer);
+                    customVideoPlayer = new CustomVideoPlayer(_videoPlayer, _image, _greenScreenRemoverMat, OnChangeStatus);
                 }
-                customVideoPlayer.LoadVideoFromURL(_data.ar_message_s3_link, OnChangeStatus);
+                customVideoPlayer.LoadVideoFromURL(_data.ar_message_s3_link);
             } else {
                 if (_data.processing_status == ARMsgJSON.Data.FAILED_STATUS) {
                     _onFailed?.Invoke(FAILED);
@@ -73,12 +73,12 @@ public class ScreenshotView : MonoBehaviour {
                 break;
             case CustomVideoPlayer.Status.SuccessPreparing:
                 _onSuccess?.Invoke();
-                _image.texture = _videoPlayer?.texture;
+                /*_image.texture = _videoPlayer?.texture;
                 _aspectRationFitter.aspectRatio = (float)_videoPlayer?.width / (float)_videoPlayer?.height;
                 if (_currentMat == null) {
                     _currentMat = new Material(_greenScreenRemoverMat);
                     _image.material = _currentMat;
-                }
+                }*/
                 break;
         }
     }
