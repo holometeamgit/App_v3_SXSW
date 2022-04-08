@@ -352,7 +352,7 @@ BOOL multiline;
     } else if ([alignment isEqualToString:@"MiddleLeft"]) {
         valign = UIControlContentVerticalAlignmentCenter;
         halign = UIControlContentHorizontalAlignmentLeft;
-        textAlign = NSTextAlignmentLeft;
+        textAlign = NSTextAlignmentCenter;
     } else if ([alignment isEqualToString:@"MiddleCenter"]) {
         valign = UIControlContentVerticalAlignmentCenter;
         halign = UIControlContentHorizontalAlignmentCenter;
@@ -420,8 +420,6 @@ BOOL multiline;
         textView.textColor = textColor;
         textView.backgroundColor = backgroundColor;
         textView.returnKeyType = returnKeyType;
-        textView.contentVerticalAlignment = valign;
-        textView.contentHorizontalAlignment = halign;
         textView.textAlignment = textAlign;
         textView.autocorrectionType = autoCorrection ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
         textView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
