@@ -253,6 +253,18 @@ NSString *plugin;
     editView.frame = CGRectMake(x, y, width, height);
 }
 
+- (void) viewDidLoad {
+     [textField addObserver:self forKeyPath:@"contentSize" options:(NSKeyValueObservingOptionNew) context:NULL];
+     [super viewDidLoad];
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+     UITextView *tv = object;
+     CGFloat topCorrect = ([tv bounds].size.height - [tv contentSize].height * [tv zoomScale])/2.0;
+     topCorrect = ( topCorrect < 0.0 ? 0.0 : topCorrect );
+     tv.contentOffset = (CGPoint){.x = 0, .y = -topCorrect};
+}
+
 BOOL multiline;
 
 - (void)create:(NSDictionary *)data {
