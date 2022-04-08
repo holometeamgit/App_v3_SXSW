@@ -381,8 +381,8 @@ namespace Mopsicus.Plugins {
             _config.Align = _inputObjectText.alignment.ToString();
             _config.ContentType = _inputObject.contentType.ToString();
 
-            Color backgroundColor = Color.white;// _inputObject.colors.normalColor;
-            //backgroundColor.a = 0;
+            Color backgroundColor = _inputObject.colors.normalColor;
+            backgroundColor.a = 0;
             _config.BackgroundColor = backgroundColor;
 
             _config.Multiline = (_inputObject.lineType == InputField.LineType.SingleLine) ? false : true;
@@ -478,7 +478,7 @@ namespace Mopsicus.Plugins {
             if (!_config.Multiline) {
                 data["y"] = InvariantCultureString(rect.y / Screen.height);
             } else {
-                data["y"] = InvariantCultureString((rect.y - rect.height / 2f) / Screen.height);
+                data["y"] = InvariantCultureString((rect.y + rect.height / 2f) / Screen.height);
             }
             data["width"] = InvariantCultureString(rect.width / Screen.width);
             data["height"] = InvariantCultureString(rect.height / Screen.height);
@@ -578,7 +578,7 @@ namespace Mopsicus.Plugins {
             if (_inputObject.lineType == InputField.LineType.SingleLine) {
                 data["y"] = InvariantCultureString(rect.y / Screen.height);
             } else {
-                data["y"] = InvariantCultureString((rect.y - rect.height / 2f) / Screen.height);
+                data["y"] = InvariantCultureString((rect.y + rect.height / 2f) / Screen.height);
             }
 
             data["width"] = InvariantCultureString(rect.width / Screen.width);
