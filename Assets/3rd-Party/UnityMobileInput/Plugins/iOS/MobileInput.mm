@@ -253,11 +253,6 @@ NSString *plugin;
     editView.frame = CGRectMake(x, y, width, height);
 }
 
-- (void) viewDidLoad {
-     [textField addObserver:self forKeyPath:@"contentSize" options:(NSKeyValueObservingOptionNew) context:NULL];
-     [super viewDidLoad];
-}
-
 BOOL multiline;
 
 - (void)create:(NSDictionary *)data {
@@ -426,9 +421,6 @@ BOOL multiline;
         textView.backgroundColor = backgroundColor;
         textView.returnKeyType = returnKeyType;
         textView.textAlignment = textAlign;
-        CGFloat topCorrect = ([textView bounds].size.height - [textView contentSize].height * [textView zoomScale])/2.0;
-        topCorrect = ( topCorrect < 0.0 ? 0.0 : topCorrect );
-        textView.contentOffset = (CGPoint){.x = 0, .y = -topCorrect};
         textView.autocorrectionType = autoCorrection ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
         textView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
         textView.placeholder = placeholder;
