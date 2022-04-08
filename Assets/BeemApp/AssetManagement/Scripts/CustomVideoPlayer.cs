@@ -14,11 +14,9 @@ using UnityEngine.Video;
 public class CustomVideoPlayer {
 
     public enum Status {
-        ProcessLoading,
-        FailLoading,
-        SuccessLoading,
-        ProcessPreparing,
-        SuccessPreparing
+        Processing,
+        Failed,
+        Successed
     }
 
     private CancellationTokenSource _cancelTokenSource;
@@ -26,7 +24,6 @@ public class CustomVideoPlayer {
     private RawImage _rawImage;
     private Material _greenScreenRemoverMat;
     private Action<Status> _onChangeStatus;
-    private UnityWebRequest _videoRequest;
     private Texture2D _thumbnail;
     private bool _thumbnailOk;
     private int _vidHeight;
@@ -41,28 +38,12 @@ public class CustomVideoPlayer {
 
     }
 
-
     /// <summary>
     /// Play Video
     /// </summary>
     /// <param name="url"></param>
-    public /*async*/ void PlayVideoFromURL(string url) {
-        /*Cancel();
-        _cancelTokenSource = new CancellationTokenSource();
-        CancellationToken cancelTokenSource = _cancelTokenSource.Token;
-        _videoPlayer.source = VideoSource.Url;
-        _videoPlayer.url = url;
-        _videoPlayer.Prepare();
-        _onChangeStatus?.Invoke(Status.ProcessPreparing);
-        while (_videoPlayer.isPrepared == false && !cancelTokenSource.IsCancellationRequested) {
-            await Task.Yield();
-        }
-        if (cancelTokenSource.IsCancellationRequested) {
-            return;
-        }
-        _onChangeStatus?.Invoke(Status.SuccessPreparing);
-        _videoPlayer.Play();*/
-        _onChangeStatus?.Invoke(Status.ProcessPreparing);
+    public void PlayVideoFromURL(string url) {
+        _onChangeStatus?.Invoke(Status.Processing);
         _videoPlayer.url = url;
         _videoPlayer.Stop();
         _videoPlayer.renderMode = VideoRenderMode.APIOnly;
@@ -95,7 +76,6 @@ public class CustomVideoPlayer {
         _vidHeight = Convert.ToInt32(_videoPlayer.height);
 
         _videoPlayer.isLooping = true;
-        _videoPlayer.renderMode = VideoRenderMode.MaterialOverride;
 
         while (!_thumbnailOk) {
             await Task.Yield();
@@ -103,7 +83,7 @@ public class CustomVideoPlayer {
 
         _videoPlayer.Play();
 
-        _onChangeStatus?.Invoke(Status.SuccessPreparing);
+        _onChangeStatus?.Invoke(Status.Successed);
 
         GC.Collect();
     }
@@ -125,21 +105,14 @@ public class CustomVideoPlayer {
 
         rTexture.Release();
 
-        string dirPath = Path.Combine(Application.persistentDataPath, "preview");
+        string previewFilePath = GetLocalPreviewPath(url);
 
-        if (!Directory.Exists(dirPath)) {
-            Directory.CreateDirectory(dirPath);
-        }
-
-        string fileName = url.Split(Path.AltDirectorySeparatorChar).Last().Split(Path.DirectorySeparatorChar).Last().Split('.').First() + ".png";
-
-        string _pathToFile = Path.Combine(dirPath, fileName);
-
-        if (!File.Exists(_pathToFile)) {
+        if (!File.Exists(previewFilePath)) {
 
             byte[] bytes = _thumbnail.EncodeToPNG();
 
-            File.WriteAllBytes(_pathToFile, bytes);
+            File.WriteAllBytes(previewFilePath, bytes);
+
         }
 
 
@@ -150,34 +123,90 @@ public class CustomVideoPlayer {
     /// Load Video
     /// </summary>
     /// <param name="url"></param>
-    public async void LoadVideoFromURL(string url) {
+    public void LoadVideoFromURL(string url) {
         Cancel();
-        string dirPath = Path.Combine(Application.persistentDataPath, "video");
 
-        if (!Directory.Exists(dirPath)) {
-            Directory.CreateDirectory(dirPath);
-        }
+        string previewFilePath = GetLocalPreviewPath(url);
 
-        string _pathToFile = Path.Combine(dirPath, url.Split(Path.AltDirectorySeparatorChar).Last());
+        if (!File.Exists(previewFilePath)) {
+            string videoFilePath = GetLocalVideoPath(url);
 
-        if (!File.Exists(_pathToFile)) {
-            if (_videoRequest != null && !_videoRequest.isDone) {
-                _videoRequest.Dispose();
-            }
-            _videoRequest = UnityWebRequest.Get(url);
-            _onChangeStatus?.Invoke(Status.ProcessLoading);
-            await _videoRequest.SendWebRequest();
-            if (_videoRequest.result != UnityWebRequest.Result.Success) {
-                _onChangeStatus?.Invoke(Status.FailLoading);
+            if (!File.Exists(videoFilePath)) {
+                LoadVideo(url);
             } else {
-                byte[] videoBytes = _videoRequest.downloadHandler.data;
-                File.WriteAllBytes(_pathToFile, videoBytes);
-                _onChangeStatus?.Invoke(Status.SuccessLoading);
-                PlayVideoFromURL(_pathToFile);
+                PlayVideoFromURL(videoFilePath);
             }
         } else {
-            _onChangeStatus?.Invoke(Status.SuccessLoading);
-            PlayVideoFromURL(_pathToFile);
+            LoadTexture(previewFilePath);
+        }
+    }
+
+    private string GetLocalVideoPath(string url) {
+        string videoPath = Path.Combine(Application.persistentDataPath, "video");
+
+        if (!Directory.Exists(videoPath)) {
+            Directory.CreateDirectory(videoPath);
+        }
+
+        string filename = url.Split(Path.AltDirectorySeparatorChar).Last().Split(Path.DirectorySeparatorChar).Last();
+
+        string path = Path.Combine(videoPath, filename);
+
+        path = Path.ChangeExtension(path, ".mp4");
+
+        return path;
+    }
+
+    private string GetLocalPreviewPath(string url) {
+        string videoPath = Path.Combine(Application.persistentDataPath, "preview");
+
+        if (!Directory.Exists(videoPath)) {
+            Directory.CreateDirectory(videoPath);
+        }
+
+        string filename = url.Split(Path.AltDirectorySeparatorChar).Last().Split(Path.DirectorySeparatorChar).Last();
+
+        string path = Path.Combine(videoPath, filename);
+
+        path = Path.ChangeExtension(path, ".png");
+
+        return path;
+    }
+
+    /// <summary>
+    /// Load video
+    /// </summary>
+    /// <param name="url"></param>
+    private async void LoadVideo(string url) {
+
+        string videoFilePath = GetLocalVideoPath(url);
+
+        UnityWebRequest request = UnityWebRequest.Get(url);
+        _onChangeStatus?.Invoke(Status.Processing);
+        await request.SendWebRequest();
+        if (request.result != UnityWebRequest.Result.Success) {
+            _onChangeStatus?.Invoke(Status.Failed);
+        } else {
+            byte[] videoBytes = request.downloadHandler.data;
+            File.WriteAllBytes(videoFilePath, videoBytes);
+            PlayVideoFromURL(videoFilePath);
+        }
+    }
+
+    /// <summary>
+    /// Load Texture
+    /// </summary>
+    /// <param name="url"></param>
+    private async void LoadTexture(string url) {
+        UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+        _onChangeStatus?.Invoke(Status.Processing);
+        await request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success) {
+            _onChangeStatus?.Invoke(Status.Failed);
+        } else {
+            _rawImage.texture = DownloadHandlerTexture.GetContent(request);
+            _onChangeStatus?.Invoke(Status.Successed);
         }
     }
 

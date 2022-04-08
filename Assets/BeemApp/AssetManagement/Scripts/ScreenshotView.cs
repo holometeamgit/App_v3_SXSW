@@ -19,7 +19,6 @@ public class ScreenshotView : MonoBehaviour {
     private ARMsgJSON.Data _data;
     private Action _onSuccess;
     private Action<string> _onFailed;
-    private Material _currentMat;
     private CustomVideoPlayer customVideoPlayer;
 
     private const string LOADING = "Loading...";
@@ -63,15 +62,13 @@ public class ScreenshotView : MonoBehaviour {
     private void OnChangeStatus(CustomVideoPlayer.Status status) {
 
         switch (status) {
-            case CustomVideoPlayer.Status.ProcessLoading:
-            case CustomVideoPlayer.Status.ProcessPreparing:
-            case CustomVideoPlayer.Status.SuccessLoading:
+            case CustomVideoPlayer.Status.Processing:
                 _onFailed?.Invoke(LOADING);
                 break;
-            case CustomVideoPlayer.Status.FailLoading:
+            case CustomVideoPlayer.Status.Failed:
                 _onFailed?.Invoke(FAILED);
                 break;
-            case CustomVideoPlayer.Status.SuccessPreparing:
+            case CustomVideoPlayer.Status.Successed:
                 _onSuccess?.Invoke();
                 /*_image.texture = _videoPlayer?.texture;
                 _aspectRationFitter.aspectRatio = (float)_videoPlayer?.width / (float)_videoPlayer?.height;
