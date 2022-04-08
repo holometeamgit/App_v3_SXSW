@@ -76,7 +76,7 @@ public class CustomVideoPlayer {
         _videoPlayer.Pause();
         _rawImage.texture = vp.texture;
 
-        _rawImage.texture = Get2DTexture();
+        _rawImage.texture = Get2DTexture(vp.url);
 
         _videoPlayer.sendFrameReadyEvents = false; //To stop frameReady events
         vp = null;
@@ -108,7 +108,8 @@ public class CustomVideoPlayer {
         GC.Collect();
     }
 
-    private Texture2D Get2DTexture() {
+    private Texture2D Get2DTexture(string url) {
+
         _thumbnail = new Texture2D(_rawImage.texture.width, _rawImage.texture.height, TextureFormat.RGBA32, false);
         RenderTexture cTexture = RenderTexture.active;
         RenderTexture rTexture = new RenderTexture(_rawImage.texture.width, _rawImage.texture.height, 32);
@@ -124,6 +125,24 @@ public class CustomVideoPlayer {
 
         rTexture.Release();
 
+        string dirPath = Path.Combine(Application.persistentDataPath, "preview");
+
+        if (!Directory.Exists(dirPath)) {
+            Directory.CreateDirectory(dirPath);
+        }
+
+        string fileName = url.Split(Path.AltDirectorySeparatorChar).Last().Split(Path.DirectorySeparatorChar).Last().Split('.').First() + ".png";
+
+        string _pathToFile = Path.Combine(dirPath, fileName);
+
+        if (!File.Exists(_pathToFile)) {
+
+            byte[] bytes = _thumbnail.EncodeToPNG();
+
+            File.WriteAllBytes(_pathToFile, bytes);
+        }
+
+
         return _thumbnail;
     }
 
@@ -133,7 +152,14 @@ public class CustomVideoPlayer {
     /// <param name="url"></param>
     public async void LoadVideoFromURL(string url) {
         Cancel();
-        string _pathToFile = Path.Combine(Application.persistentDataPath, url.Split(Path.AltDirectorySeparatorChar).Last());
+        string dirPath = Path.Combine(Application.persistentDataPath, "video");
+
+        if (!Directory.Exists(dirPath)) {
+            Directory.CreateDirectory(dirPath);
+        }
+
+        string _pathToFile = Path.Combine(dirPath, url.Split(Path.AltDirectorySeparatorChar).Last());
+
         if (!File.Exists(_pathToFile)) {
             if (_videoRequest != null && !_videoRequest.isDone) {
                 _videoRequest.Dispose();
