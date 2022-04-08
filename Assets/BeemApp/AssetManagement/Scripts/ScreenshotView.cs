@@ -72,7 +72,8 @@ public class ScreenshotView : MonoBehaviour {
             case CustomVideoPlayer.Status.SuccessPreparing:
                 _onSuccess?.Invoke();
                 _image.texture = _videoPlayer?.texture;
-                HelperFunctions.DevLogError($"width = {_videoPlayer.width}, height = {_videoPlayer.height}");
+
+                HelperFunctions.DevLogError($"width = {_videoPlayer.width}, height = {_videoPlayer.height},  _image.size = {_image.GetComponent<RectTransform>().sizeDelta}");
                 if (_currentMat == null) {
                     _currentMat = new Material(_greenScreenRemoverMat);
                     _image.material = _currentMat;
