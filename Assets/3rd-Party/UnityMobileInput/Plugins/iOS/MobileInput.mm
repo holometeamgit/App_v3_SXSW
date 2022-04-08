@@ -253,6 +253,11 @@ NSString *plugin;
     editView.frame = CGRectMake(x, y, width, height);
 }
 
+- (void) viewDidLoad {
+     [textField addObserver:self forKeyPath:@"contentSize" options:(NSKeyValueObservingOptionNew) context:NULL];
+     [super viewDidLoad];
+}
+
 BOOL multiline;
 
 - (void)create:(NSDictionary *)data {
