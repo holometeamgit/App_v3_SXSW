@@ -22,6 +22,7 @@ public class CustomVideoPlayer {
 
     private CancellationTokenSource _cancelTokenSource;
     private VideoPlayer _videoPlayer;
+    private UnityWebRequest _videoRequest;
     public CustomVideoPlayer(VideoPlayer videoPlayer) {
         _videoPlayer = videoPlayer;
     }
@@ -57,7 +58,10 @@ public class CustomVideoPlayer {
         Cancel();
         string _pathToFile = Path.Combine(Application.persistentDataPath, _url.Split(Path.AltDirectorySeparatorChar).Last());
         if (!File.Exists(_pathToFile)) {
-            UnityWebRequest _videoRequest = UnityWebRequest.Get(_url);
+            if (_videoRequest != null && !_videoRequest.isDone) {
+                _videoRequest.Dispose();
+            }
+            _videoRequest = UnityWebRequest.Get(_url);
             onChangeStatus?.Invoke(Status.ProcessLoading);
             await _videoRequest.SendWebRequest();
             if (_videoRequest.result != UnityWebRequest.Result.Success) {
@@ -85,6 +89,7 @@ public class CustomVideoPlayer {
     /// StopVideo
     /// </summary>
     public void StopVideo() {
+        Cancel();
         _videoPlayer.Stop();
     }
 

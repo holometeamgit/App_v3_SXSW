@@ -12,6 +12,8 @@ public class ScreenshotView : MonoBehaviour {
     [SerializeField]
     private RawImage _image;
     [SerializeField]
+    private AspectRatioFitter _aspectRationFitter;
+    [SerializeField]
     private Material _greenScreenRemoverMat;
 
     private ARMsgJSON.Data _data;
@@ -72,8 +74,7 @@ public class ScreenshotView : MonoBehaviour {
             case CustomVideoPlayer.Status.SuccessPreparing:
                 _onSuccess?.Invoke();
                 _image.texture = _videoPlayer?.texture;
-
-                HelperFunctions.DevLogError($"width = {_videoPlayer.width}, height = {_videoPlayer.height},  _image.size = {_image.GetComponent<RectTransform>().sizeDelta}");
+                _aspectRationFitter.aspectRatio = (float)_videoPlayer?.width / (float)_videoPlayer?.height;
                 if (_currentMat == null) {
                     _currentMat = new Material(_greenScreenRemoverMat);
                     _image.material = _currentMat;
