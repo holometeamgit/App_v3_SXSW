@@ -475,9 +475,12 @@ namespace Mopsicus.Plugins {
             JsonObject data = new JsonObject();
             data["msg"] = CREATE;
             data["x"] = InvariantCultureString(rect.x / Screen.width);
-            data["y"] = InvariantCultureString((rect.y + rect.height / 4f) / Screen.height);
+            data["y"] = InvariantCultureString(rect.y / Screen.height);
             data["width"] = InvariantCultureString(rect.width / Screen.width);
-            data["height"] = InvariantCultureString(this._inputObjectText.preferredHeight / Screen.height);
+            data["height"] = InvariantCultureString(rect.height / Screen.height);
+            Debug.LogError($"cachedTextGeneratorForLayout {this._inputObjectText.cachedTextGeneratorForLayout.lineCount}");
+            Debug.LogError($"this._inputObjectText.cachedTextGenerator.lineCount {this._inputObjectText.cachedTextGenerator.lineCount}");
+            Debug.LogError($"this._inputObjectText.preferredHeight {this._inputObjectText.preferredHeight}");
             data["character_limit"] = _config.CharacterLimit;
             data["text_color_r"] = InvariantCultureString(_config.TextColor.r);
             data["text_color_g"] = InvariantCultureString(_config.TextColor.g);
@@ -570,9 +573,13 @@ namespace Mopsicus.Plugins {
             JsonObject data = new JsonObject();
             data["msg"] = SET_RECT;
             data["x"] = InvariantCultureString(rect.x / Screen.width);
-            data["y"] = InvariantCultureString((rect.y + rect.height / 4f) / Screen.height);
+            data["y"] = InvariantCultureString(rect.y / Screen.height);
             data["width"] = InvariantCultureString(rect.width / Screen.width);
-            data["height"] = InvariantCultureString(this._inputObjectText.preferredHeight / Screen.height);
+
+            Debug.LogError($"cachedTextGeneratorForLayout2 {this._inputObjectText.cachedTextGeneratorForLayout.lineCount}");
+            Debug.LogError($"this._inputObjectText.preferredHeight2 {this._inputObjectText.preferredHeight}");
+
+            data["height"] = InvariantCultureString(rect.height / Screen.height);
             this.Execute(data);
         }
 
