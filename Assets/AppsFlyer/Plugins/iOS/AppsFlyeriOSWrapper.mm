@@ -18,7 +18,9 @@ extern "C" {
  
     const void _startSDK(bool shouldCallback, const char* objectName) {
         startRequestObjectName = stringFromChar(objectName);
-        
+        AppsFlyeriOSWarpper.didCallStart = YES;
+        [AppsFlyerAttribution shared].isBridgeReady = YES;
+        [[NSNotificationCenter defaultCenter] postNotificationName:AF_BRIDGE_SET object: [AppsFlyerAttribution shared]];
         [[AppsFlyerLib shared] startWithCompletionHandler:^(NSDictionary<NSString *,id> *dictionary, NSError *error) {
             if(shouldCallback){
                 if (error) {
@@ -94,7 +96,7 @@ extern "C" {
 
     const void _setOneLinkCustomDomains (int length, const char **oneLinkCustomDomains) {
         if(length > 0 && oneLinkCustomDomains) {
-            [[AppsFlyerLib shared] setResolveDeepLinkURLs:NSArrayFromCArray(length, oneLinkCustomDomains)];
+            [[AppsFlyerLib shared] setOneLinkCustomDomains:NSArrayFromCArray(length, oneLinkCustomDomains)];
         }
     }
 
@@ -207,6 +209,14 @@ extern "C" {
             [[AppsFlyerLib shared] setSharingFilter:NSArrayFromCArray(length, partners)];
         }
     }
+
+    const void _setSharingFilterForPartners (int length, const char **partners) {
+        if(length > 0 && partners) {
+            [[AppsFlyerLib shared] setSharingFilterForPartners:NSArrayFromCArray(length, partners)];
+        } else {
+            [[AppsFlyerLib shared] setSharingFilterForPartners:nil];
+        }
+    }
     
     const void _validateAndSendInAppPurchase (const char* productIdentifier, const char* price, const char* currency, const char* tranactionId, const char* additionalParameters, const char* objectName) {
 
@@ -221,7 +231,12 @@ extern "C" {
          success:^(NSDictionary *result){
                  unityCallBack(validateObjectName, VALIDATE_CALLBACK, stringFromdictionary(result));
          } failure:^(NSError *error, id response) {
+            if(response && [response isKindOfClass:[NSDictionary class]]) {
+                 NSDictionary* value = (NSDictionary*)response;
+                 unityCallBack(validateObjectName, VALIDATE_ERROR_CALLBACK, stringFromdictionary(value));
+             } else {
                  unityCallBack(validateObjectName, VALIDATE_ERROR_CALLBACK, error ? [[error localizedDescription] UTF8String] : "error");
+             }
          }];
     }
     
@@ -256,9 +271,19 @@ extern "C" {
         }
         [[AppsFlyerLib shared] setDeepLinkDelegate:_AppsFlyerdelegate];
     }
+
+    const void _setCurrentDeviceLanguage(const char* language) {
+        [[AppsFlyerLib shared] setCurrentDeviceLanguage:stringFromChar(language)];
+    }
 }
 
 @implementation AppsFlyeriOSWarpper
+
+static BOOL didCallStart;
++ (BOOL) didCallStart
+{ @synchronized(self) { return didCallStart; } }
++ (void) setDidCallStart:(BOOL)val
+{ @synchronized(self) { didCallStart = val; } }
 
 - (void)onConversionDataSuccess:(NSDictionary *)installData {
     unityCallBack(ConversionDataCallbackObject, GCD_CALLBACK, stringFromdictionary(installData));
@@ -285,6 +310,7 @@ extern "C" {
     
     if(result && result.deepLink){
         [dict setValue:result.deepLink.description forKey:@"deepLink"];
+        [dict setValue:@(result.deepLink.isDeferred) forKey:@"is_deferred"];
     }
     
     unityCallBack(onDeeplinkingObjectName, ON_DEEPLINKING, stringFromdictionary(dict));
