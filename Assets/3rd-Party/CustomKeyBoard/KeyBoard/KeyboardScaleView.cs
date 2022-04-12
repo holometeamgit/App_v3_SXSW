@@ -28,8 +28,6 @@ namespace Beem.KeyBoard {
 
         public override void RefreshData(InputField inputField) {
             if (inputField.textComponent.text.Length > 0) {
-                Debug.LogError($"lineCount {inputField.textComponent.cachedTextGeneratorForLayout.lineCount}");
-                Debug.LogError($"preferredHeight {inputField.textComponent.preferredHeight}");
                 ChangeHeight(_rectTransform, _baseHeight + inputField.textComponent.preferredHeight - _baseShift);
                 ChangeHeight(_textRectTransform, _baseTextHeight + inputField.textComponent.preferredHeight - _baseShift);
                 ChangeHeight(_placeHolderRectTransform, _baseTextHeight + inputField.textComponent.preferredHeight - _baseShift);
@@ -43,6 +41,5 @@ namespace Beem.KeyBoard {
         private void ChangeHeight(RectTransform rectTransform, float height) {
             rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, height);
         }
-
     }
 }
