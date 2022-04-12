@@ -381,8 +381,8 @@ namespace Mopsicus.Plugins {
             _config.Align = _inputObjectText.alignment.ToString();
             _config.ContentType = _inputObject.contentType.ToString();
 
-            Color backgroundColor = Color.white;//_inputObject.colors.normalColor;
-            //backgroundColor.a = 0;
+            Color backgroundColor = _inputObject.colors.normalColor;
+            backgroundColor.a = 0;
             _config.BackgroundColor = backgroundColor;
 
             _config.Multiline = (_inputObject.lineType == InputField.LineType.SingleLine) ? false : true;
