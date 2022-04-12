@@ -478,9 +478,6 @@ namespace Mopsicus.Plugins {
             data["y"] = InvariantCultureString(rect.y / Screen.height);
             data["width"] = InvariantCultureString(rect.width / Screen.width);
             data["height"] = InvariantCultureString(rect.height / Screen.height);
-            Debug.LogError($"cachedTextGeneratorForLayout {this._inputObjectText.cachedTextGeneratorForLayout.lineCount}");
-            Debug.LogError($"this._inputObjectText.cachedTextGenerator.lineCount {this._inputObjectText.cachedTextGenerator.lineCount}");
-            Debug.LogError($"this._inputObjectText.preferredHeight {this._inputObjectText.preferredHeight}");
             data["character_limit"] = _config.CharacterLimit;
             data["text_color_r"] = InvariantCultureString(_config.TextColor.r);
             data["text_color_g"] = InvariantCultureString(_config.TextColor.g);
@@ -575,10 +572,6 @@ namespace Mopsicus.Plugins {
             data["x"] = InvariantCultureString(rect.x / Screen.width);
             data["y"] = InvariantCultureString(rect.y / Screen.height);
             data["width"] = InvariantCultureString(rect.width / Screen.width);
-
-            Debug.LogError($"cachedTextGeneratorForLayout2 {this._inputObjectText.cachedTextGeneratorForLayout.lineCount}");
-            Debug.LogError($"this._inputObjectText.preferredHeight2 {this._inputObjectText.preferredHeight}");
-
             data["height"] = InvariantCultureString(rect.height / Screen.height);
             this.Execute(data);
         }
