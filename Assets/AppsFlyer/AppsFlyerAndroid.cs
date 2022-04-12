@@ -538,6 +538,17 @@ namespace AppsFlyerSDK
         }
 
         /// <summary>
+        /// Lets you configure how which partners should the SDK exclude from data-sharing.
+        /// </summary>
+        /// <param name="partners">partners to exclude from getting data</param>
+        public static void setSharingFilterForPartners(params string[] partners)
+        {
+#if !UNITY_EDITOR
+            appsFlyerAndroid.CallStatic("setSharingFilterForPartners", (object)partners);
+#endif
+        }
+
+        /// <summary>
         /// Register a Conversion Data Listener.
         /// Allows the developer to access the user attribution data in real-time for every new install, directly from the SDK level.
         /// By doing this you can serve users with personalized content or send them to specific activities within the app,
@@ -643,6 +654,17 @@ namespace AppsFlyerSDK
         }
 
         /// <summary>
+        /// Disables collection of various Advertising IDs by the SDK. This includes Google Advertising ID (GAID), OAID and Amazon Advertising ID (AAID)
+        /// </summary>
+        /// <param name="disable">disable boolean.</param>
+        public static void setDisableAdvertisingIdentifiers(bool disable)
+        {
+#if !UNITY_EDITOR
+             appsFlyerAndroid.CallStatic("setDisableAdvertisingIdentifiers", disable);
+#endif
+        }
+
+        /// <summary>
         /// Internal Helper Method.
         /// </summary>
         private static AndroidJavaObject getEmailType(EmailCryptType cryptType)
@@ -670,11 +692,15 @@ namespace AppsFlyerSDK
         {
             AndroidJavaObject map = new AndroidJavaObject("java.util.HashMap");
             IntPtr putMethod = AndroidJNIHelper.GetMethodID(map.GetRawClass(), "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+            jvalue[] val;
             if (dictionary != null)
             {
                 foreach (var entry in dictionary)
                 {
-                    AndroidJNI.CallObjectMethod(map.GetRawObject(), putMethod, AndroidJNIHelper.CreateJNIArgArray(new object[] { entry.Key, entry.Value }));
+                    val = AndroidJNIHelper.CreateJNIArgArray(new object[] { entry.Key, entry.Value });
+                    AndroidJNI.CallObjectMethod(map.GetRawObject(), putMethod,val);
+                    AndroidJNI.DeleteLocalRef(val[0].l);
+                    AndroidJNI.DeleteLocalRef(val[1].l);
                 }
             }
             
