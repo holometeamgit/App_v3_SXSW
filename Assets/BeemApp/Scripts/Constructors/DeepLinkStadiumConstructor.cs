@@ -54,7 +54,7 @@ public class DeepLinkStadiumConstructor : MonoBehaviour {
         cancelTokenSource = new CancellationTokenSource();
         cancellationToken = cancelTokenSource.Token;
 
-        if (data.status == StreamJsonData.Data.LIVE_ROOM_STR) {
+        if (data.status == StreamJsonData.Data.LIVE_STR) {
             ShowOnline(data);
         } else {
             ShowOffline(data);
