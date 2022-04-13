@@ -96,36 +96,36 @@ public class DeepLinkStreamController : MonoBehaviour {
         GetStreamByUsername(username,
             (code, body) => {
                 OpenStadium(body, username); ;
-            }, DeepLinkStreamConstructor.OnShowError);
+            }, DeepLinkStadiumConstructor.OnShowError);
     }
 
     private void OpenStadium(string body, string username) {
         StreamsReceived(body, username,
             (data) => {
                 if ((data.GetStage() == StreamJsonData.Data.Stage.Prerecorded && data.HasStreamUrl) || data.GetStage() == StreamJsonData.Data.Stage.Live) {
-                    DeepLinkStreamConstructor.OnShow?.Invoke(data);
+                    DeepLinkStadiumConstructor.OnShow?.Invoke(data);
                 } else {
-                    DeepLinkStreamConstructor.OnShowError?.Invoke(new WebRequestError());
+                    DeepLinkStadiumConstructor.OnShowError?.Invoke(new WebRequestError());
                 }
-            }, DeepLinkStreamConstructor.OnShowError);
+            }, DeepLinkStadiumConstructor.OnShowError);
     }
 
     private void OnOpenPrerecorded(string slug) {
         GetStreamBySlug(slug,
             (code, body) => {
                 OpenPrerecorded(body);
-            }, DeepLinkStreamConstructor.OnShowError);
+            }, DeepLinkPrerecordedConstructor.OnShowError);
     }
 
     private void OpenPrerecorded(string body) {
         StreamReceived(body,
             (data) => {
                 if ((data.GetStage() == StreamJsonData.Data.Stage.Prerecorded && data.HasStreamUrl) || data.GetStage() == StreamJsonData.Data.Stage.Live) {
-                    DeepLinkStreamConstructor.OnShow?.Invoke(data);
+                    DeepLinkPrerecordedConstructor.OnShow?.Invoke(data);
                 } else {
-                    DeepLinkStreamConstructor.OnShowError?.Invoke(new WebRequestError());
+                    DeepLinkPrerecordedConstructor.OnShowError?.Invoke(new WebRequestError());
                 }
-            }, DeepLinkStreamConstructor.OnShowError);
+            }, DeepLinkPrerecordedConstructor.OnShowError);
     }
 
     private void Awake() {

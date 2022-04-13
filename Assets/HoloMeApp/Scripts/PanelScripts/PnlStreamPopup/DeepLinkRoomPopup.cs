@@ -36,7 +36,10 @@ public class DeepLinkRoomPopup : MonoBehaviour {
 
     private PermissionController _permissionController = new PermissionController();
 
-    private RoomJsonData _data;
+    private bool _isRoom;
+    private string _id;
+    private string _username;
+    private string _agoraChannel;
 
     [Inject]
     public void Construct(UserWebManager userWebManager) {
@@ -47,17 +50,21 @@ public class DeepLinkRoomPopup : MonoBehaviour {
     /// Call share event for current room
     /// </summary>
     public void Share() {
-        StreamCallBacks.onShareRoomLink?.Invoke(_data.user);
+        StreamCallBacks.onShareRoomLink?.Invoke(_username);
     }
 
     /// <summary>
     /// Call onOpenRoom event for open current room
     /// </summary>
     public void EnterRoom() {
-        if (_data.user == _userWebManager.GetUsername()) {
+        if (_username == _userWebManager.GetUsername()) {
             WarningConstructor.ActivateSingleButton("Viewing as stream host",
                 "Please connect to the stream using a different account");
 
+            return;
+        }
+
+        if (_agoraChannel == "0" || string.IsNullOrWhiteSpace(_agoraChannel)) {
             return;
         }
 
@@ -66,8 +73,8 @@ public class DeepLinkRoomPopup : MonoBehaviour {
             MenuConstructor.OnActivated?.Invoke(false);
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
-            StreamOverlayConstructor.onActivatedAsViewer?.Invoke(_data.agora_channel, _data.id, true);
-            PnlRecord.CurrentUser = _data.user;
+            StreamOverlayConstructor.onActivatedAsViewer?.Invoke(_agoraChannel, _id, _isRoom);
+            PnlRecord.CurrentUser = _username;
         });
 
     }
@@ -83,10 +90,13 @@ public class DeepLinkRoomPopup : MonoBehaviour {
     /// Show DeepLinkRoomData
     /// </summary>
     /// <param name="deepLinkRoomData"></param>
-    public void Show(DeepLinkRoomData deepLinkRoomData) {
+    public void Show(DeepLinkStreamData deepLinkRoomData) {
         gameObject.SetActive(true);
 
-        _data = deepLinkRoomData.Data;
+        _isRoom = deepLinkRoomData.IsRoom;
+        _id = deepLinkRoomData.Id;
+        _username = deepLinkRoomData.Username;
+        _agoraChannel = deepLinkRoomData.AgoraChannel;
 
         _titleText.text = deepLinkRoomData.Title;
         _subtitleText.text = deepLinkRoomData.Description;
@@ -99,8 +109,8 @@ public class DeepLinkRoomPopup : MonoBehaviour {
         _btnShare.SetActive(deepLinkRoomData.ShareBtn);
         _btnEnterRoom.SetActive(deepLinkRoomData.Online);
 
-        if (deepLinkRoomData.Data != null && deepLinkRoomData.Online) {
-            _streamerCountUpdater.StartCheck(deepLinkRoomData.Data.user, true);
+        if (deepLinkRoomData.Online) {
+            _streamerCountUpdater.StartCheck(deepLinkRoomData.Username, true);
             _streamerCountUpdater.OnCountUpdated += UpdateUserCount;
         }
 

@@ -400,7 +400,9 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         CloseAsViewer();
         OpenMenuScreen();
         if (_agoraController.IsRoom) {
-            StreamCallBacks.onRoomBroadcastFinished?.Invoke();
+            DeepLinkRoomConstructor.OnBroadcastFinished?.Invoke();
+        } else {
+            DeepLinkStadiumConstructor.OnBroadcastFinished?.Invoke();
         }
     }
 

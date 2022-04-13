@@ -4,23 +4,36 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// DeepLink Room data
+/// DeepLink Stream data
 /// </summary>
-public class DeepLinkRoomData {
+public class DeepLinkStreamData {
+
     private string _title;
     private string _description;
-    private RoomJsonData _data;
+    private string _id;
+    private string _username;
+    private string _agoraChannel;
     private bool _online;
     private bool _closeBtn;
     private bool _shareBtn;
+    private bool _isRoom;
 
-    public DeepLinkRoomData(string title, string description, RoomJsonData data, bool online, bool closeBtn, bool shareBtn) {
+    public DeepLinkStreamData(bool isRoom, string title, string description, string id, string username, string agoraChannel, bool online, bool closeBtn, bool shareBtn) {
+        _isRoom = isRoom;
         _title = title;
         _description = description;
-        _data = data;
+        _id = id;
+        _username = username;
+        _agoraChannel = agoraChannel;
         _online = online;
         _closeBtn = closeBtn;
         _shareBtn = shareBtn;
+    }
+
+    public bool IsRoom {
+        get {
+            return _isRoom;
+        }
     }
 
     public string Title {
@@ -41,9 +54,21 @@ public class DeepLinkRoomData {
         }
     }
 
-    public RoomJsonData Data {
+    public string Id {
         get {
-            return _data;
+            return _id;
+        }
+    }
+
+    public string Username {
+        get {
+            return _username;
+        }
+    }
+
+    public string AgoraChannel {
+        get {
+            return _agoraChannel;
         }
     }
 
