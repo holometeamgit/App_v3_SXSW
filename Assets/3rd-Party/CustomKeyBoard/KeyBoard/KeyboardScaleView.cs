@@ -41,6 +41,5 @@ namespace Beem.KeyBoard {
         private void ChangeHeight(RectTransform rectTransform, float height) {
             rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, height);
         }
-
     }
 }

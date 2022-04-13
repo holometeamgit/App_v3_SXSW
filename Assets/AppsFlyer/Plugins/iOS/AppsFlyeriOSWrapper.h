@@ -7,6 +7,7 @@
 
 #import "AFUnityUtils.mm"
 #import "UnityAppController.h"
+#import "AppsFlyerAttribution.h"
 #if __has_include(<AppsFlyerLib/AppsFlyerLib.h>)
 #import <AppsFlyerLib/AppsFlyerLib.h>
 #else
@@ -14,14 +15,15 @@
 #endif
 
 @interface AppsFlyeriOSWarpper : NSObject <AppsFlyerLibDelegate, AppsFlyerDeepLinkDelegate>
-
++ (BOOL) didCallStart;
++ (void) setDidCallStart:(BOOL)val;
 @end
 
 
 static AppsFlyeriOSWarpper *_AppsFlyerdelegate;
 static const int kPushNotificationSize = 32;
 
-NSString* ConversionDataCallbackObject;
+static NSString* ConversionDataCallbackObject = @"AppsFlyerObject";
 
 static const char* VALIDATE_CALLBACK = "didFinishValidateReceipt";
 static const char* VALIDATE_ERROR_CALLBACK = "didFinishValidateReceiptWithError";
