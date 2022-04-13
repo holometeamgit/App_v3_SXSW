@@ -31,8 +31,6 @@ namespace Beem.KeyBoard {
                 Debug.LogError($"OnShowKeyboard3 isShown= {isShown}, height = {height}");
                 ChangePosition(height);
             }
-
-            Debug.LogError($"OnShowKeyboard4 isShown= {isShown}, height = {KeyboardHeight.GetKeyboardHeight(false)}");
         }
 
         private void ChangePosition(int height) {
