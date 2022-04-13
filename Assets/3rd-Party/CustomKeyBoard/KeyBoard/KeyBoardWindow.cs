@@ -56,7 +56,7 @@ namespace Beem.KeyBoard {
         /// Return button
         /// </summary>
         public void Return() {
-            KeyBoardConstructor.onShow?.Invoke(false, null, null);
+            KeyBoardConstructor.onHide?.Invoke();
         }
 
         /// <summary>
@@ -88,47 +88,55 @@ namespace Beem.KeyBoard {
         }
 
         /// <summary>
+        /// Hide Window
+        /// </summary>
+        public void Hide() {
+            _isShown = false;
+            gameObject.SetActive(_isShown);
+            MobileInputField.SetFocus(_isShown);
+            MobileInputField.gameObject.SetActive(_isShown);
+            _closeBtn.onClick.RemoveAllListeners();
+            _returnBtn.onClick.RemoveAllListeners();
+            InputField.onValueChanged.RemoveAllListeners();
+            MobileInputField.OnReturnPressedEvent.RemoveAllListeners();
+        }
+
+        /// <summary>
         /// Show Window
         /// </summary>
         /// <param name="isShown"></param>
-        public void Show(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
-            _isShown = isShown;
-            gameObject.SetActive(isShown);
-            MobileInputField.SetFocus(isShown);
-            MobileInputField.gameObject.SetActive(isShown);
+        public void Show(InputField inputField) {
+            _isShown = true;
+            gameObject.SetActive(_isShown);
+            MobileInputField.SetFocus(_isShown);
+            MobileInputField.gameObject.SetActive(_isShown);
 
-            if (isShown) {
+            UpdateText();
+            _returnBtn.onClick.AddListener(() => {
+                string text = InputField.text;
+                if (InputField.characterLimit == 0) {
+                    inputField.onEndEdit?.Invoke(text);
+                } else {
+                    string customText = text.Substring(0, Mathf.Min(InputField.characterLimit, text.Length));
+                    inputField.onEndEdit?.Invoke(customText);
+                }
+                Return();
+            });
+            _closeBtn.onClick.AddListener(() => {
+                Return();
+            });
+            MobileInputField.OnReturnPressedEvent.AddListener(() => {
+                inputField.onEndEdit?.Invoke(InputField.text);
+                Return();
+            });
+            InputField.onValueChanged.AddListener((text) => {
                 UpdateText();
-                _returnBtn.onClick.AddListener(() => {
-                    string text = InputField.text;
-                    if (InputField.characterLimit == 0) {
-                        submitEvent?.Invoke(text);
-                    } else {
-                        string customText = text.Substring(0, Mathf.Min(InputField.characterLimit, text.Length));
-                        submitEvent?.Invoke(customText);
-                    }
-                    Return();
-                });
-                _closeBtn.onClick.AddListener(() => {
-                    Return();
-                });
-                MobileInputField.OnReturnPressedEvent.AddListener(() => {
-                    submitEvent?.Invoke(InputField.text);
-                    Return();
-                });
-                InputField.onValueChanged.AddListener((text) => {
-                    UpdateText();
-                    onChangeEvent?.Invoke(text);
-                    if (text.Contains("\n")) {
-                        _returnBtn.onClick?.Invoke();
-                    }
-                });
-            } else {
-                _closeBtn.onClick.RemoveAllListeners();
-                _returnBtn.onClick.RemoveAllListeners();
-                InputField.onValueChanged.RemoveAllListeners();
-                MobileInputField.OnReturnPressedEvent.RemoveAllListeners();
-            }
+                inputField.onValueChanged?.Invoke(text);
+                if (text.Contains("\n")) {
+                    _returnBtn.onClick?.Invoke();
+                }
+            });
+
         }
     }
 }

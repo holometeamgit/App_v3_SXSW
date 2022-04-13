@@ -212,6 +212,7 @@ namespace Mopsicus.Plugins {
             base.OnEnable();
             coroutine = StartCoroutine(InitialzieOnNextFrame());
             if (_isMobileInputCreated) {
+                SetRectNative(this._inputObjectText.rectTransform);
                 this.SetVisible(true);
             } else {
                 onReady += SetVisible;
