@@ -44,6 +44,9 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private GameObject imgBackground;
 
     [SerializeField]
+    private GameObject cameraOffBackground;
+
+    [SerializeField]
     private Toggle togglePushToTalk;
 
     [SerializeField]
@@ -105,7 +108,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private string lastPauseStatusMessageReceived; //Intended for viewers use only it's record state of streamers pause situation and to prevent double calls
     private string lastPushToTalkStatusMessageReceived; //To stop audio toggling twice
-
+    
     const int STATUS_MESSAGE_HIDE_DELAY = 3;
     const int DELAY_FOR_PREVIEW = 3;
 
@@ -238,6 +241,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         controlsPresenter.SetActive(broadcaster);
         imgBackground.SetActive(broadcaster);
         controlsViewer.SetActive(!broadcaster);
+        cameraOffBackground.SetActive(false);
     }
 
     private void RefreshLiveControls(bool live) {
@@ -780,6 +784,8 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     public void ToggleVideo(bool hideVideo) { //Only called for stream host
         _hideVideo = hideVideo;
+
+        cameraOffBackground.SetActive(hideVideo);
 
         AnimatedCentreTextMessage("Your camera is " + (hideVideo ? "off" : "on") + ".");
 
