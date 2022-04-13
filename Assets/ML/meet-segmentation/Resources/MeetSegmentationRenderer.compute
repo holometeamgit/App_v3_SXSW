@@ -1,0 +1,23 @@
+// 
+//  Meet Segmentation
+//  Copyright (c) 2022 NatML Inc. All Rights Reserved.
+//
+
+#pragma kernel CSMain
+
+StructuredBuffer<float2> Map;
+RWTexture2D<float4> Result;
+
+[numthreads(16, 16, 1)]
+void CSMain (uint3 id : SV_DispatchThreadID) {
+    // Check
+    uint width, height;
+    Result.GetDimensions(width, height);
+    if (id.x * id.y >= width * height)
+        return;
+    // Softmax
+    float2 pvec = Map[id.x + width * (height - id.y - 1)];
+    float2 epvec = exp(pvec);
+    float p = epvec.y / (epvec.x + epvec.y);
+    Result[id.xy] = float4(p, p, p, 1.0);
+}
