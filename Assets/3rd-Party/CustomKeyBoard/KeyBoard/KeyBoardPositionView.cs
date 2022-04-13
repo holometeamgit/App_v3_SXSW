@@ -18,6 +18,7 @@ namespace Beem.KeyBoard {
         /// Update Keyboard Position
         /// </summary>
         public void UpdatePosition(bool isShown, int height = 0) {
+
             if (isShown) {
 #if UNITY_IOS
                 Debug.LogError($"OnShowKeyboard3 isShown= {isShown}, height = {Mathf.Max(keyBoardHeightiOS, height)}");
@@ -30,6 +31,8 @@ namespace Beem.KeyBoard {
                 Debug.LogError($"OnShowKeyboard3 isShown= {isShown}, height = {height}");
                 ChangePosition(height);
             }
+
+            Debug.LogError($"OnShowKeyboard4 isShown= {isShown}, height = {KeyboardHeight.GetKeyboardHeight(false)}");
         }
 
         private void ChangePosition(int height) {
