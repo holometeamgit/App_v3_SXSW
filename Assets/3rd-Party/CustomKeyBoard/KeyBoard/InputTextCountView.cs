@@ -14,6 +14,7 @@ namespace Beem.KeyBoard {
         private Text _text;
 
         private void OnEnable() {
+            UpdateText(_inputField.text);
             _inputField.onValueChanged.AddListener(UpdateText);
         }
 
