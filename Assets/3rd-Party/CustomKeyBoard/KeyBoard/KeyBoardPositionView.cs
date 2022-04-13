@@ -21,14 +21,11 @@ namespace Beem.KeyBoard {
 
             if (isShown) {
 #if UNITY_IOS
-                Debug.LogError($"OnShowKeyboard3 isShown= {isShown}, height = {Mathf.Max(keyBoardHeightiOS, height)}");
                 ChangePosition(Mathf.Max(keyBoardHeightiOS, height));
 #elif UNITY_ANDROID
-                Debug.LogError($"OnShowKeyboard3 isShown= {isShown}, height = {Mathf.Max(keyBoardHeightAndroid, height)}");
                 ChangePosition(Mathf.Max(keyBoardHeightAndroid, height));
 #endif
             } else {
-                Debug.LogError($"OnShowKeyboard3 isShown= {isShown}, height = {height}");
                 ChangePosition(height);
             }
         }
