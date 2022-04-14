@@ -34,10 +34,10 @@ public class UIUploaderARMsg : MonoBehaviour {
     }
 
     private void ShowPopupGoToGallery() {
-        WarningConstructor.ActivateDoubleButton("Capture complete!",
-            "Your hologram is now processing and we\n" +
-            " will notify you when it's ready to preview",
-            "go to your Beem gallery", "close",
+        WarningConstructor.ActivateDoubleButton("Capture\ncomplete!",
+            "Your hologram is now processing and we will\n" +
+            "notify you when it’s ready to preview",
+            "go to your gallery", "close",
              () => {
                  OpenGallery();
              },
