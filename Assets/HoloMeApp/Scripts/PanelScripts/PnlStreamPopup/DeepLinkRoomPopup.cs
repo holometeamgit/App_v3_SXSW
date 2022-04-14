@@ -74,6 +74,7 @@ public class DeepLinkRoomPopup : MonoBehaviour {
 
         _permissionController.CheckCameraMicAccess(() => {
             DeepLinkRoomConstructor.OnHide?.Invoke();
+            DeepLinkStadiumConstructor.OnHide?.Invoke();
             MenuConstructor.OnActivated?.Invoke(false);
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
@@ -88,6 +89,7 @@ public class DeepLinkRoomPopup : MonoBehaviour {
     /// </summary>
     public void Close() {
         DeepLinkRoomConstructor.OnHide?.Invoke();
+        DeepLinkStadiumConstructor.OnHide?.Invoke();
     }
 
     /// <summary>

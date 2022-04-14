@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -35,27 +36,36 @@ public class GetStadiumController {
     private void OnSuccess(long code, string body, string username, Action<StreamJsonData.Data> onSuccess, Action<WebRequestError> onFailed) {
         StreamJsonData data = JsonUtility.FromJson<StreamJsonData>(body);
         if (data.results.Count > 0) {
-
             StreamJsonData.Data lastStreamData = null;
 
-            foreach (StreamJsonData.Data item in data.results) {
-                if (lastStreamData != null) {
-                    if (item.StartDate.CompareTo(lastStreamData.StartDate) < 0 && item.user == username) {
-                        lastStreamData = item;
-                    }
-                } else {
-                    if (item.user == username) {
-                        lastStreamData = item;
-                    }
-                }
-            }
+            data.results.RemoveAll(x => !(x.GetStage() == StreamJsonData.Data.Stage.Prerecorded && x.HasStreamUrl) && !(x.GetStage() == StreamJsonData.Data.Stage.Live));
 
-            if (lastStreamData != null) {
-                if ((lastStreamData.GetStage() == StreamJsonData.Data.Stage.Prerecorded && lastStreamData.HasStreamUrl) || lastStreamData.GetStage() == StreamJsonData.Data.Stage.Live) {
-                    onSuccess?.Invoke(lastStreamData);
-                } else {
-                    onFailed?.Invoke(new WebRequestError());
+            if (data.results.Count > 0) {
+                foreach (StreamJsonData.Data item in data.results) {
+                    if (lastStreamData != null) {
+                        if (item.StartDate.CompareTo(lastStreamData.StartDate) < 0 && item.user == username) {
+                            lastStreamData = item;
+                        }
+                    } else {
+                        if (item.user == username) {
+                            lastStreamData = item;
+                        }
+                    }
                 }
+
+                if (lastStreamData != null) {
+                    if ((lastStreamData.GetStage() == StreamJsonData.Data.Stage.Prerecorded && lastStreamData.HasStreamUrl) || lastStreamData.GetStage() == StreamJsonData.Data.Stage.Live) {
+                        onSuccess?.Invoke(lastStreamData);
+                    } else {
+                        onFailed?.Invoke(new WebRequestError());
+                    }
+                }
+            } else {
+                lastStreamData = new StreamJsonData.Data {
+                    user = username,
+                    status = StreamJsonData.Data.STOP_STR
+                };
+                onSuccess?.Invoke(lastStreamData);
             }
         } else {
             onFailed?.Invoke(new WebRequestError());
@@ -68,6 +78,6 @@ public class GetStadiumController {
     }
 
     private string GetStadiumByUsername(string username) {
-        return _webRequestHandler.ServerURLMediaAPI + _videoUploaderScriptableObject.Stream + $"?{STATUS_FILTER}={STATUS}&{USERNAME_FILTER}={username}";
+        return _webRequestHandler.ServerURLMediaAPI + _videoUploaderScriptableObject.Stream + $"?{USERNAME_FILTER}={username}";
     }
 }
