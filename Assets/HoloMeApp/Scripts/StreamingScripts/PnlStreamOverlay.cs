@@ -418,17 +418,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         videoSurface.SetEnable(false);
     }
 
-    public void ShareStream() {
-
-        HelperFunctions.DevLog($"IsRoom = {_agoraController.IsRoom}, IsChannelCreator = {_agoraController.IsChannelCreator}, agoraController.ChannelName = {_agoraController.ChannelName}, currentStreamId = {currentStreamId}");
-
-        if (_agoraController.IsRoom) {
-            StreamCallBacks.onShareRoomLink?.Invoke(_agoraController.ChannelName);
-        } else {
-            StreamCallBacks.onShareStreamLinkByUsername?.Invoke(_agoraController.ChannelName);
-        }
-    }
-
     public void StartCountdown() {
         countdownRoutine = StartCoroutine(CountDown());
     }

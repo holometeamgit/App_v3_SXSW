@@ -9,7 +9,7 @@ using UnityEngine;
 /// <summary>
 /// Constructor for opening deep Link for ARMessage
 /// </summary>
-public class DeeplinkARMsgConstructor : MonoBehaviour {
+public class DeepLinkARMsgConstructor : MonoBehaviour {
 
     [SerializeField]
     private DeepLinkChecker _popupShowChecker;
