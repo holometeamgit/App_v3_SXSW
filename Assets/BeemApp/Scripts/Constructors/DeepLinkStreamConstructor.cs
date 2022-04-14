@@ -66,7 +66,7 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
         cancelTokenSource = new CancellationTokenSource();
         cancellationToken = cancelTokenSource.Token;
 
-        if (data.Status == StreamJsonData.Data.LIVE_ROOM_STR) {
+        if (data.Status == StreamJsonData.Data.LIVE_ROOM_STR || data.Status == StreamJsonData.Data.LIVE_STR) {
             ShowOnline(data);
         } else {
             ShowOffline(data);

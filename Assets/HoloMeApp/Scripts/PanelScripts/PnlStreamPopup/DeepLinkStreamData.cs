@@ -45,6 +45,7 @@ public class DeepLinkStreamData {
                 _description = ONLINE_DESCRIPTION;
                 break;
             case DeepLinkPopup.Offline:
+            default:
                 _title = OFFLINE_TITLE;
                 _description = OFFLINE_DESCRIPTION;
                 break;
