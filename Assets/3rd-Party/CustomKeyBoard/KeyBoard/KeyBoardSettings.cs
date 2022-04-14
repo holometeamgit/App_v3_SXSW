@@ -51,6 +51,13 @@ namespace Beem.KeyBoard {
             }
         }
 
+        private string _text;
+        public string Text {
+            get {
+                return _text;
+            }
+        }
+
         public KeyBoardSettings(InputField inputField) {
             _contentType = inputField.contentType;
             _inputType = inputField.inputType;
@@ -58,6 +65,7 @@ namespace Beem.KeyBoard {
             _keyboardType = inputField.keyboardType;
             _characterValidation = inputField.characterValidation;
             _characterLimit = inputField.characterLimit;
+            _text = inputField.text;
         }
     }
 
