@@ -25,13 +25,15 @@ public class GetRoomController {
     /// </summary>
     /// <param name="id"></param>
     public void GetRoomByUsername(string username, Action<RoomJsonData> onSuccess = null, Action<WebRequestError> onFailed = null) {
-        _webRequestHandler.Get(GetRoomByUsername(username), (code, body) => { OnSuccess(code, body, onSuccess); }, (code, body) => { OnFailed(code, body, onFailed); });
+        _webRequestHandler.Get(GetRoomByUsername(username), (code, body) => { OnSuccess(code, body, onSuccess, onFailed); }, (code, body) => { OnFailed(code, body, onFailed); });
     }
 
-    private void OnSuccess(long code, string body, Action<RoomJsonData> onSuccess) {
+    private void OnSuccess(long code, string body, Action<RoomJsonData> onSuccess, Action<WebRequestError> onFailed) {
         RoomJsonData data = JsonUtility.FromJson<RoomJsonData>(body);
         if (data != null) {
             onSuccess?.Invoke(data);
+        } else {
+            onFailed?.Invoke(new WebRequestError());
         }
     }
 

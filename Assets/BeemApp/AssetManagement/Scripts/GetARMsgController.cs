@@ -25,13 +25,15 @@ public class GetARMsgController {
     /// </summary>
     /// <param name="id"></param>
     public void GetARMsgById(string id, Action<ARMsgJSON.Data> onSuccess = null, Action<WebRequestError> onFailed = null) {
-        _webRequestHandler.Get(GetARMsgById(id), (code, body) => { OnSuccess(code, body, onSuccess); }, (code, body) => { OnFailed(code, body, onFailed); });
+        _webRequestHandler.Get(GetARMsgById(id), (code, body) => { OnSuccess(code, body, onSuccess, onFailed); }, (code, body) => { OnFailed(code, body, onFailed); });
     }
 
-    private void OnSuccess(long code, string body, Action<ARMsgJSON.Data> onSuccess) {
+    private void OnSuccess(long code, string body, Action<ARMsgJSON.Data> onSuccess, Action<WebRequestError> onFailed) {
         ARMsgJSON.Data data = JsonUtility.FromJson<ARMsgJSON.Data>(body);
         if (data != null) {
             onSuccess?.Invoke(data);
+        } else {
+            onFailed?.Invoke(new WebRequestError());
         }
     }
 
