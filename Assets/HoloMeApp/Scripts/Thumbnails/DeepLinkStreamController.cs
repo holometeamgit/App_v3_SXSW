@@ -27,7 +27,7 @@ public class DeepLinkStreamController : MonoBehaviour {
     }
 
     private void OnOpenPrerecorded(string slug) {
-        _getPrerecordedController.GetPrerecordedBySlug(slug, DeepLinkPrerecordedConstructor.OnShow, DeepLinkPrerecordedConstructor.OnShowError);
+        _getPrerecordedController.GetPrerecordedBySlug(slug, DeepLinkVideoConstructor.OnShow, DeepLinkVideoConstructor.OnShowError);
     }
 
     private void Awake() {

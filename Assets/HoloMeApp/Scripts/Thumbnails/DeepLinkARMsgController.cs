@@ -21,7 +21,7 @@ public class DeepLinkARMsgController : MonoBehaviour {
     }
 
     private void OnOpen(string id) {
-        _getARMsgController.GetARMsgById(id, DeepLinkARMsgConstructor.OnShow, DeepLinkARMsgConstructor.OnShowError);
+        _getARMsgController.GetARMsgById(id, DeepLinkVideoConstructor.OnShow, DeepLinkVideoConstructor.OnShowError);
     }
 
     private void Awake() {

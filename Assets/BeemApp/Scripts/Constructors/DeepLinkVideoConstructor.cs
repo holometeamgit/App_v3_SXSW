@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
-/// Constructor for opening deep Link for ARMessage
+/// Constructor for opening deep Link video
 /// </summary>
-public class DeepLinkARMsgConstructor : MonoBehaviour {
+public class DeepLinkVideoConstructor : MonoBehaviour {
 
     [SerializeField]
     private DeepLinkChecker _popupShowChecker;
 
     private PermissionController _permissionController = new PermissionController();
 
-    public static Action<ARMsgJSON.Data> OnShow = delegate { };
+    public static Action<IData> OnShow = delegate { };
     public static Action<WebRequestError> OnShowError = delegate { };
 
     private void OnEnable() {
@@ -29,22 +29,29 @@ public class DeepLinkARMsgConstructor : MonoBehaviour {
         OnShowError -= ShowError;
     }
 
-    private void Show(ARMsgJSON.Data data) {
+    private void Show(IData data) {
         OnReceivedARMessageData(data, ActivateData);
     }
 
-    private void OnReceivedARMessageData(ARMsgJSON.Data data, Action<ARMsgJSON.Data> onSuccessTask) {
+    private void OnReceivedARMessageData(IData data, Action<IData> onSuccessTask) {
         _popupShowChecker.OnReceivedData(data, onSuccessTask);
     }
 
-    private void ActivateData(ARMsgJSON.Data data) {
+    private void ActivateData(IData data) {
         _permissionController.CheckCameraMicAccess(() => {
             MenuConstructor.OnActivated?.Invoke(false);
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
-            ARenaConstructor.onActivateForARMessaging?.Invoke(data);
-            ARMsgARenaConstructor.OnActivatedARena?.Invoke(data);
-            PnlRecord.CurrentUser = data.user;
+
+            if (data is ARMsgJSON.Data) {
+                ARenaConstructor.onActivateForARMessaging?.Invoke(data as ARMsgJSON.Data);
+                ARMsgARenaConstructor.OnActivatedARena?.Invoke(data as ARMsgJSON.Data);
+            } else {
+                ARenaConstructor.onActivateForPreRecorded?.Invoke(data as StreamJsonData.Data, false);
+                PrerecordedVideoConstructor.OnActivated?.Invoke(data as StreamJsonData.Data);
+            }
+
+            PnlRecord.CurrentUser = data.Username;
         });
     }
 
