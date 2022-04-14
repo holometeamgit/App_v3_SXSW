@@ -31,7 +31,11 @@ public class GetPrerecordedController {
     private void OnSuccess(long code, string body, Action<StreamJsonData.Data> onSuccess, Action<WebRequestError> onFailed) {
         StreamJsonData.Data data = JsonUtility.FromJson<StreamJsonData.Data>(body);
         if (data != null) {
-            onSuccess?.Invoke(data);
+            if ((data.GetStage() == StreamJsonData.Data.Stage.Prerecorded && data.HasStreamUrl) || data.GetStage() == StreamJsonData.Data.Stage.Live) {
+                onSuccess?.Invoke(data);
+            } else {
+                onFailed?.Invoke(new WebRequestError());
+            }
         } else {
             onFailed?.Invoke(new WebRequestError());
         }

@@ -264,7 +264,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         }
     }
 
-    public void OpenAsStreamer() {
+    public void OpenAsStadiumBroadcaster() {
         if (!_userWebManager.CanGoLive()) {
             ShowPremiumRequiredMessage();
         } else if (!CheckIfTutorialWasRun(KEY_SEEN_TUTORIAL_ARENA)) {

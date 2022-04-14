@@ -35,11 +35,18 @@ public class DeepLinkRoomPopup : MonoBehaviour {
     private UserWebManager _userWebManager;
 
     private PermissionController _permissionController = new PermissionController();
+    private ShareLinkController _shareController = new ShareLinkController();
 
     private bool _isRoom;
     private string _id;
     private string _username;
     private string _agoraChannel;
+    private string _shareLink;
+
+    private const string TITLE = "You have been invited to {0}'s {1}";
+    private const string DESCRIPTION = "Click the link below to join {0}'s {1}";
+    private const string ROOM = "Room";
+    private const string STADIUM = "Stadium";
 
     [Inject]
     public void Construct(UserWebManager userWebManager) {
@@ -50,7 +57,12 @@ public class DeepLinkRoomPopup : MonoBehaviour {
     /// Call share event for current room
     /// </summary>
     public void Share() {
-        StreamCallBacks.onShareRoomLink?.Invoke(_username);
+        if (!string.IsNullOrWhiteSpace(_shareLink)) {
+            string title = string.Format(TITLE, _username, _isRoom ? ROOM : STADIUM);
+            string description = string.Format(DESCRIPTION, _username, _isRoom ? ROOM : STADIUM);
+            string msg = title + "\n" + description + "\n" + _shareLink;
+            _shareController.ShareLink(msg);
+        }
     }
 
     /// <summary>
@@ -96,6 +108,7 @@ public class DeepLinkRoomPopup : MonoBehaviour {
         _isRoom = deepLinkRoomData.IsRoom;
         _id = deepLinkRoomData.Id;
         _username = deepLinkRoomData.Username;
+        _shareLink = deepLinkRoomData.ShareLink;
         _agoraChannel = deepLinkRoomData.AgoraChannel;
 
         _titleText.text = deepLinkRoomData.Title;

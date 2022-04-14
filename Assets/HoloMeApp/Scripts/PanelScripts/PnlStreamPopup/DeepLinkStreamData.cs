@@ -12,18 +12,20 @@ public class DeepLinkStreamData {
     private string _description;
     private string _id;
     private string _username;
+    private string _shareLink;
     private string _agoraChannel;
     private bool _online;
     private bool _closeBtn;
     private bool _shareBtn;
     private bool _isRoom;
 
-    public DeepLinkStreamData(bool isRoom, string title, string description, string id, string username, string agoraChannel, bool online, bool closeBtn, bool shareBtn) {
+    public DeepLinkStreamData(bool isRoom, string title, string description, string id, string username, string shareLink, string agoraChannel, bool online, bool closeBtn, bool shareBtn) {
         _isRoom = isRoom;
         _title = title;
         _description = description;
         _id = id;
         _username = username;
+        _shareLink = shareLink;
         _agoraChannel = agoraChannel;
         _online = online;
         _closeBtn = closeBtn;
@@ -63,6 +65,12 @@ public class DeepLinkStreamData {
     public string Username {
         get {
             return _username;
+        }
+    }
+
+    public string ShareLink {
+        get {
+            return _shareLink;
         }
     }
 

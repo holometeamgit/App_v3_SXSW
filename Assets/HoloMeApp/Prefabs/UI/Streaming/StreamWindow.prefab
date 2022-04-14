@@ -6151,6 +6151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0ddd043ab54bfc4aae009ff111ab7cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
 --- !u!114 &9044590541034766842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9889,8 +9890,8 @@ GameObject:
   - component: {fileID: 7779969787145157968}
   - component: {fileID: 2243488664857400539}
   - component: {fileID: 8478400345685152681}
-  - component: {fileID: 8396117573217962791}
   - component: {fileID: 8545541831521408077}
+  - component: {fileID: 1711739136822045021}
   m_Layer: 5
   m_Name: btnShare
   m_TagString: Untagged
@@ -9984,18 +9985,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &8396117573217962791
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8320784632685483423}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d5ccbd42ab928241888e01fd02213c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8545541831521408077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10011,7 +10000,7 @@ MonoBehaviour:
   OnPress:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8396117573217962791}
+      - m_Target: {fileID: 1711739136822045021}
         m_TargetAssemblyTypeName: Beem.UI.ShareStreamBtn, Assembly-CSharp
         m_MethodName: Share
         m_Mode: 1
@@ -10023,6 +10012,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1711739136822045021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8320784632685483423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0ddd043ab54bfc4aae009ff111ab7cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
 --- !u!1 &8325672014985770698
 GameObject:
   m_ObjectHideFlags: 0
@@ -10353,6 +10355,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0ddd043ab54bfc4aae009ff111ab7cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
 --- !u!114 &7600432224000762267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11059,8 +11062,8 @@ GameObject:
   - component: {fileID: 1868080498428384961}
   - component: {fileID: 2495818098485147232}
   - component: {fileID: 3398840542562979533}
-  - component: {fileID: 7939809038882245318}
   - component: {fileID: 3000543191765311477}
+  - component: {fileID: 7322220130164434894}
   m_Layer: 5
   m_Name: btnShare
   m_TagString: Untagged
@@ -11154,18 +11157,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7939809038882245318
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8858580544628999647}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d5ccbd42ab928241888e01fd02213c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3000543191765311477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11181,7 +11172,7 @@ MonoBehaviour:
   OnPress:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7939809038882245318}
+      - m_Target: {fileID: 7322220130164434894}
         m_TargetAssemblyTypeName: Beem.UI.ShareStreamBtn, Assembly-CSharp
         m_MethodName: Share
         m_Mode: 1
@@ -11193,6 +11184,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &7322220130164434894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8858580544628999647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0ddd043ab54bfc4aae009ff111ab7cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
 --- !u!1 &8976243805708991731
 GameObject:
   m_ObjectHideFlags: 0

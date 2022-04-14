@@ -51,7 +51,11 @@ public class GetStadiumController {
             }
 
             if (lastStreamData != null) {
-                onSuccess?.Invoke(lastStreamData);
+                if ((lastStreamData.GetStage() == StreamJsonData.Data.Stage.Prerecorded && lastStreamData.HasStreamUrl) || lastStreamData.GetStage() == StreamJsonData.Data.Stage.Live) {
+                    onSuccess?.Invoke(lastStreamData);
+                } else {
+                    onFailed?.Invoke(new WebRequestError());
+                }
             }
         } else {
             onFailed?.Invoke(new WebRequestError());
