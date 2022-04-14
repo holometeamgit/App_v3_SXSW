@@ -92,7 +92,7 @@ public class DeepLinkHandler : MonoBehaviour {
         } else if (ContainParam(uri, Params.prerecorded.ToString())) {
             string slug = GetParam(uri, Params.prerecorded.ToString());
             _getPrerecordedController.GetPrerecordedBySlug(slug, DeepLinkVideoConstructor.OnShow, DeepLinkVideoConstructor.OnShowError);
-            StreamCallBacks.onSelectedMode?.Invoke(Params.prerecorded);
+            StreamCallBacks.onSelectedMode?.Invoke(Params.message);
         }
     }
 
