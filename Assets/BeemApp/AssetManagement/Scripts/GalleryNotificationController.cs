@@ -45,7 +45,7 @@ public class GalleryNotificationController {
     /// <param name="data"></param>
     public void SetData(IDictionary<string, string> data) {
         if (data.ContainsKey(ID)) {
-            _getARMsgController.GetARMessage(id: data[ID], onSuccess: Add);
+            _getARMsgController.GetARMsgById(id: data[ID], onSuccess: Add);
         }
     }
 

@@ -11,50 +11,17 @@ using Zenject;
 public class DeepLinkARMsgController : MonoBehaviour {
 
     [SerializeField]
-    private ServerURLAPIScriptableObject _serverURLAPIScriptableObject;
-
-    [SerializeField]
     private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
 
-    private WebRequestHandler _webRequestHandler;
+    private GetARMsgController _getARMsgController;
 
     [Inject]
     public void Construct(WebRequestHandler webRequestHandler) {
-        _webRequestHandler = webRequestHandler;
-    }
-
-    private void GetARMessageById(string id, Action<long, string> onSuccess, Action<WebRequestError> onFailed = null) {
-        _webRequestHandler.Get(GetARMessageIdUrl(id),
-            (code, body) => { onSuccess?.Invoke(code, body); },
-            (code, body) => { onFailed?.Invoke(new WebRequestError(code, body)); },
-            false);
-    }
-
-    private void ARMessageReceived(string body, Action<ARMsgJSON.Data> onSuccess, Action<WebRequestError> onFailed = null) {
-        try {
-            ARMsgJSON.Data arMsgJsonData = JsonUtility.FromJson<ARMsgJSON.Data>(body);
-
-            HelperFunctions.DevLog("AR Message Recieved = " + body);
-
-            onSuccess?.Invoke(arMsgJsonData);
-        } catch (Exception e) {
-            HelperFunctions.DevLogError(e.Message);
-            onFailed?.Invoke(new WebRequestError());
-        }
+        _getARMsgController = new GetARMsgController(_arMsgAPIScriptableObject, webRequestHandler);
     }
 
     private void OnOpen(string id) {
-        GetARMessageById(id,
-            (code, body) => Open(body),
-            DeeplinkARMsgConstructor.OnShowError);
-    }
-
-    private void Open(string body) {
-        ARMessageReceived(body,
-            (data) => {
-                DeeplinkARMsgConstructor.OnShow?.Invoke(data);
-            },
-            DeeplinkARMsgConstructor.OnShowError);
+        _getARMsgController.GetARMsgById(id, DeeplinkARMsgConstructor.OnShow, DeeplinkARMsgConstructor.OnShowError);
     }
 
     private void Awake() {
@@ -65,7 +32,4 @@ public class DeepLinkARMsgController : MonoBehaviour {
         StreamCallBacks.onReceiveARMsgLink -= OnOpen;
     }
 
-    private string GetARMessageIdUrl(string id) {
-        return _serverURLAPIScriptableObject.ServerURLMediaAPI + _arMsgAPIScriptableObject.ARMessageById.Replace("{id}", id.ToString());
-    }
 }
