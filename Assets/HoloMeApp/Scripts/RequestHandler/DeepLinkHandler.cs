@@ -1,11 +1,19 @@
 ﻿using UnityEngine;
 using System;
 using Beem.Firebase.DynamicLink;
+using Zenject;
 
 /// <summary>
 /// Handler for all deeplinks
 /// </summary>
 public class DeepLinkHandler : MonoBehaviour {
+
+    [SerializeField]
+    private VideoUploader _videoUploader;
+
+    [SerializeField]
+    private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
+
     public enum Params {
         room,
         message,
@@ -19,6 +27,19 @@ public class DeepLinkHandler : MonoBehaviour {
     public Action<string, string> PasswordResetConfirmDeepLinkActivated;
     public Action<ServerAccessToken> OnCompleteSSOLoginGetted;
 
+    private GetRoomController _getRoomController;
+    private GetStadiumController _getStadiumController;
+    private GetPrerecordedController _getPrerecordedController;
+    private GetARMsgController _getARMsgController;
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _getRoomController = new GetRoomController(_videoUploader, webRequestHandler);
+        _getStadiumController = new GetStadiumController(_videoUploader, webRequestHandler);
+        _getPrerecordedController = new GetPrerecordedController(_videoUploader, webRequestHandler);
+        _getARMsgController = new GetARMsgController(_arMsgAPIScriptableObject, webRequestHandler);
+    }
+
     private void DeepLinkActivated(string uriStr) {
 
         Uri uri = new Uri(uriStr);
@@ -28,7 +49,7 @@ public class DeepLinkHandler : MonoBehaviour {
     }
 
     private void Awake() {
-        DynamicLinksCallBacks.onReceivedDeepLink += DeepLinkActivated;
+        StreamCallBacks.onReceivedDeepLink += DeepLinkActivated;
         Application.deepLinkActivated += DeepLinkActivated;
     }
 
@@ -43,34 +64,34 @@ public class DeepLinkHandler : MonoBehaviour {
     }
 
     private void OnDestroy() {
-        DynamicLinksCallBacks.onReceivedDeepLink -= DeepLinkActivated;
+        StreamCallBacks.onReceivedDeepLink -= DeepLinkActivated;
         Application.deepLinkActivated -= DeepLinkActivated;
     }
 
     private void GetContentsParameters(Uri uri) {
         if (ContainParam(uri, Params.message.ToString())) {
             string messageId = GetParam(uri, Params.message.ToString());
-            StreamCallBacks.onReceiveARMsgLink?.Invoke(messageId);
+            _getARMsgController.GetARMsgById(messageId, DeepLinkVideoConstructor.OnShow, DeepLinkVideoConstructor.OnShowError);
             StreamCallBacks.onSelectedMode?.Invoke(Params.message);
         } else if (ContainParam(uri, Params.room.ToString())) {
             string username = GetParam(uri, Params.room.ToString());
-            StreamCallBacks.onReceiveRoomLink?.Invoke(username);
+            _getRoomController.GetRoomByUsername(username, DeepLinkStreamConstructor.OnShow, DeepLinkStreamConstructor.OnShowError);
             StreamCallBacks.onSelectedMode?.Invoke(Params.room);
         } else if (ContainParam(uri, Params.username.ToString())) {
             string username = GetParam(uri, Params.username.ToString());
-            StreamCallBacks.onReceiveRoomLink?.Invoke(username);
+            _getRoomController.GetRoomByUsername(username, DeepLinkStreamConstructor.OnShow, DeepLinkStreamConstructor.OnShowError);
             StreamCallBacks.onSelectedMode?.Invoke(Params.username);
         } else if (ContainParam(uri, Params.live.ToString())) {
             string username = GetParam(uri, Params.live.ToString());
-            StreamCallBacks.onReceiveStadiumLink?.Invoke(username);
+            _getStadiumController.GetStadiumByUsername(username, DeepLinkStreamConstructor.OnShow, DeepLinkStreamConstructor.OnShowError);
             StreamCallBacks.onSelectedMode?.Invoke(Params.live);
         } else if (ContainParam(uri, Params.stadium.ToString())) {
             string username = GetParam(uri, Params.stadium.ToString());
-            StreamCallBacks.onReceiveStadiumLink?.Invoke(username);
+            _getStadiumController.GetStadiumByUsername(username, DeepLinkStreamConstructor.OnShow, DeepLinkStreamConstructor.OnShowError);
             StreamCallBacks.onSelectedMode?.Invoke(Params.stadium);
         } else if (ContainParam(uri, Params.prerecorded.ToString())) {
             string slug = GetParam(uri, Params.prerecorded.ToString());
-            StreamCallBacks.onReceivePrerecordedLink?.Invoke(slug);
+            _getPrerecordedController.GetPrerecordedBySlug(slug, DeepLinkVideoConstructor.OnShow, DeepLinkVideoConstructor.OnShowError);
             StreamCallBacks.onSelectedMode?.Invoke(Params.prerecorded);
         }
     }

@@ -4,32 +4,12 @@
 /// Call backs for streams
 /// </summary>
 public class StreamCallBacks {
-    #region deep link room
+    #region deep link
     // from app to controller
-    public static Action<string> onReceiveRoomLink = delegate { };
-    public static Action<string> onReceiveARMsgLink = delegate { };
-    public static Action<RoomJsonData> onRoomDataReceived = delegate { };
-
-    //from ui
-    public static Action onOpenRoom = delegate { };
-    public static Action onShareRoom = delegate { };
-    public static Action onPopUpStartClosing = delegate { };
-    public static Action onPopUpClosed = delegate { };
-    public static Action onPopUpStartOpen = delegate { };
+    public static Action<string> onReceivedDeepLink = delegate { };
     #endregion
-
-    #region deep link stream
-    public static Action<string> onReceiveStadiumLink = delegate { };
-    public static Action<string> onReceivePrerecordedLink = delegate { };
-    public static Action onOpenStream = delegate { }; // can subscribe on stream pnl
-
-    public static Action onCancelOpenContent = delegate { };
-    #endregion
-
-    public static Action onGetLastRoomLink = delegate { };
 
     //when start stream on Agora
-    public static Action<StreamStartResponseJsonData> onRoomCreated = delegate { };
     public static Action<StreamStartResponseJsonData> onLiveStreamCreated = delegate { };
     public static Action onLiveStreamFinished = delegate { };
 

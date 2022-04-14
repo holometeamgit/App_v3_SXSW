@@ -4,11 +4,15 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using Zenject;
 
 /// <summary>
 /// Deep Link Stream Constructor
 /// </summary>
 public class DeepLinkStreamConstructor : MonoBehaviour {
+
+    [SerializeField]
+    private VideoUploader _videoUploader;
 
     [SerializeField]
     private DeepLinkPopup _deepLinkRoomPopup;
@@ -24,9 +28,18 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
 
     private IData _data;
 
+    private GetRoomController _getRoomController;
+    private GetStadiumController _getStadiumController;
+
     private CancellationTokenSource cancelTokenSource;
     private CancellationToken cancellationToken;
     private const int DELAY = 5000;
+
+    [Inject]
+    public void Construct(WebRequestHandler webRequestHandler) {
+        _getRoomController = new GetRoomController(_videoUploader, webRequestHandler);
+        _getStadiumController = new GetStadiumController(_videoUploader, webRequestHandler);
+    }
 
     private void OnEnable() {
         OnShow += Show;
@@ -65,9 +78,9 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
             await Task.Delay(DELAY);
             if (!cancellationToken.IsCancellationRequested) {
                 if (data is RoomJsonData) {
-                    StreamCallBacks.onReceiveRoomLink?.Invoke(data.Username);
+                    _getRoomController.GetRoomByUsername(data.Username, Show, ShowError);
                 } else {
-                    StreamCallBacks.onReceiveStadiumLink?.Invoke(data.Username);
+                    _getStadiumController.GetStadiumByUsername(data.Username, Show, ShowError);
                 }
             }
         } finally {
