@@ -85,7 +85,6 @@ public class CustomVideoPlayer {
     /// StopVideo
     /// </summary>
     public void StopVideo() {
-        Cancel();
         _videoPlayer.Stop();
     }
 
