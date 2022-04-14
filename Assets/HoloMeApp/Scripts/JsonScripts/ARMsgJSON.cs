@@ -5,8 +5,7 @@ using System.Collections.Generic;
 /// ARMsgJSON. Serializable class for communication with server 
 /// </summary>
 [Serializable]
-public class ARMsgJSON 
-{
+public class ARMsgJSON {
     public int count;
     public string next;
     public string previous;
@@ -16,7 +15,7 @@ public class ARMsgJSON
     /// subclass ARMsgJSON
     /// </summary>
     [Serializable]
-    public class Data {
+    public class Data : IData {
         public string id;
         public string share_link;
         public string ar_message_s3_link;
@@ -52,5 +51,11 @@ public class ARMsgJSON
                 return _processed_at;
             }
         }
+
+        public string Id => id;
+
+        public string ShareLink => share_link;
+
+        public string Username => user;
     }
 }

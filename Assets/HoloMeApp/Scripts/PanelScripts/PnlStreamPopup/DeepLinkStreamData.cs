@@ -10,31 +10,23 @@ public class DeepLinkStreamData {
 
     private string _title;
     private string _description;
-    private string _id;
-    private string _username;
-    private string _shareLink;
-    private string _agoraChannel;
+    private IData _data;
     private bool _online;
     private bool _closeBtn;
     private bool _shareBtn;
-    private bool _isRoom;
 
-    public DeepLinkStreamData(bool isRoom, string title, string description, string id, string username, string shareLink, string agoraChannel, bool online, bool closeBtn, bool shareBtn) {
-        _isRoom = isRoom;
+    public DeepLinkStreamData(string title, string description, IData data, bool online, bool closeBtn, bool shareBtn) {
         _title = title;
         _description = description;
-        _id = id;
-        _username = username;
-        _shareLink = shareLink;
-        _agoraChannel = agoraChannel;
+        _data = data;
         _online = online;
         _closeBtn = closeBtn;
         _shareBtn = shareBtn;
     }
 
-    public bool IsRoom {
+    public IData Data {
         get {
-            return _isRoom;
+            return _data;
         }
     }
 
@@ -53,30 +45,6 @@ public class DeepLinkStreamData {
     public bool Online {
         get {
             return _online;
-        }
-    }
-
-    public string Id {
-        get {
-            return _id;
-        }
-    }
-
-    public string Username {
-        get {
-            return _username;
-        }
-    }
-
-    public string ShareLink {
-        get {
-            return _shareLink;
-        }
-    }
-
-    public string AgoraChannel {
-        get {
-            return _agoraChannel;
         }
     }
 

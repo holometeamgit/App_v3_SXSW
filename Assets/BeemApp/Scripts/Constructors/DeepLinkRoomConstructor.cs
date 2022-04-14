@@ -81,8 +81,7 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
             bool online = false;
             bool closeBtn = true;
             bool shareBtn = false;
-            bool isRoom = true;
-            DeepLinkStreamData deepLinkRoomData = new DeepLinkStreamData(isRoom, title, description, _data.id, _data.user, _data.share_link, _data.agora_channel, online, closeBtn, shareBtn);
+            DeepLinkStreamData deepLinkRoomData = new DeepLinkStreamData(title, description, _data, online, closeBtn, shareBtn);
             _deepLinkRoomPopup.Show(deepLinkRoomData);
             _data = null;
         }
@@ -94,8 +93,7 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
         bool online = true;
         bool closeBtn = false;
         bool shareBtn = false;
-        bool isRoom = true;
-        DeepLinkStreamData deepLinkRoomData = new DeepLinkStreamData(isRoom, title, description, data.id, data.user, _data.share_link, data.agora_channel, online, closeBtn, shareBtn);
+        DeepLinkStreamData deepLinkRoomData = new DeepLinkStreamData(title, description, data, online, closeBtn, shareBtn);
         _deepLinkRoomPopup.Show(deepLinkRoomData);
         _data = data;
     }
@@ -106,8 +104,7 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
         bool online = false;
         bool closeBtn = false;
         bool shareBtn = true;
-        bool isRoom = true;
-        DeepLinkStreamData deepLinkRoomData = new DeepLinkStreamData(isRoom, title, description, data.id, data.user, _data.share_link, data.agora_channel, online, closeBtn, shareBtn);
+        DeepLinkStreamData deepLinkRoomData = new DeepLinkStreamData(title, description, data, online, closeBtn, shareBtn);
         _deepLinkRoomPopup.Show(deepLinkRoomData);
         _data = null;
     }

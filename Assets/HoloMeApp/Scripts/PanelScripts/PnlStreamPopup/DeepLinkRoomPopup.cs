@@ -37,11 +37,7 @@ public class DeepLinkRoomPopup : MonoBehaviour {
     private PermissionController _permissionController = new PermissionController();
     private ShareLinkController _shareController = new ShareLinkController();
 
-    private bool _isRoom;
-    private string _id;
-    private string _username;
-    private string _agoraChannel;
-    private string _shareLink;
+    private IData _data;
 
     private const string TITLE = "You have been invited to {0}'s {1}";
     private const string DESCRIPTION = "Click the link below to join {0}'s {1}";
@@ -57,10 +53,10 @@ public class DeepLinkRoomPopup : MonoBehaviour {
     /// Call share event for current room
     /// </summary>
     public void Share() {
-        if (!string.IsNullOrWhiteSpace(_shareLink)) {
-            string title = string.Format(TITLE, _username, _isRoom ? ROOM : STADIUM);
-            string description = string.Format(DESCRIPTION, _username, _isRoom ? ROOM : STADIUM);
-            string msg = title + "\n" + description + "\n" + _shareLink;
+        if (!string.IsNullOrWhiteSpace(_data.ShareLink)) {
+            string title = string.Format(TITLE, _data.Username, _data is RoomJsonData ? ROOM : STADIUM);
+            string description = string.Format(DESCRIPTION, _data.Username, _data is RoomJsonData ? ROOM : STADIUM);
+            string msg = title + "\n" + description + "\n" + _data.ShareLink;
             _shareController.ShareLink(msg);
         }
     }
@@ -69,14 +65,10 @@ public class DeepLinkRoomPopup : MonoBehaviour {
     /// Call onOpenRoom event for open current room
     /// </summary>
     public void EnterRoom() {
-        if (_username == _userWebManager.GetUsername()) {
+        if (_data.Username == _userWebManager.GetUsername()) {
             WarningConstructor.ActivateSingleButton("Viewing as stream host",
                 "Please connect to the stream using a different account");
 
-            return;
-        }
-
-        if (_agoraChannel == "0" || string.IsNullOrWhiteSpace(_agoraChannel)) {
             return;
         }
 
@@ -85,8 +77,8 @@ public class DeepLinkRoomPopup : MonoBehaviour {
             MenuConstructor.OnActivated?.Invoke(false);
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
-            StreamOverlayConstructor.onActivatedAsViewer?.Invoke(_agoraChannel, _id, _isRoom);
-            PnlRecord.CurrentUser = _username;
+            StreamOverlayConstructor.onActivatedAsViewer?.Invoke(_data.Username, _data.Id, _data is RoomJsonData);
+            PnlRecord.CurrentUser = _data.Username;
         });
 
     }
@@ -105,11 +97,7 @@ public class DeepLinkRoomPopup : MonoBehaviour {
     public void Show(DeepLinkStreamData deepLinkRoomData) {
         gameObject.SetActive(true);
 
-        _isRoom = deepLinkRoomData.IsRoom;
-        _id = deepLinkRoomData.Id;
-        _username = deepLinkRoomData.Username;
-        _shareLink = deepLinkRoomData.ShareLink;
-        _agoraChannel = deepLinkRoomData.AgoraChannel;
+        _data = deepLinkRoomData.Data;
 
         _titleText.text = deepLinkRoomData.Title;
         _subtitleText.text = deepLinkRoomData.Description;
@@ -122,8 +110,8 @@ public class DeepLinkRoomPopup : MonoBehaviour {
         _btnShare.SetActive(deepLinkRoomData.ShareBtn);
         _btnEnterRoom.SetActive(deepLinkRoomData.Online);
 
-        if (deepLinkRoomData.Online) {
-            _streamerCountUpdater.StartCheck(deepLinkRoomData.Username, true);
+        if (_data != null && deepLinkRoomData.Online) {
+            _streamerCountUpdater.StartCheck(_data.Username, true);
             _streamerCountUpdater.OnCountUpdated += UpdateUserCount;
         }
 

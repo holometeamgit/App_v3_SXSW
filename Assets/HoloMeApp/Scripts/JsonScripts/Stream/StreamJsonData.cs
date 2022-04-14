@@ -16,7 +16,7 @@ public class StreamJsonData {
     }
 
     [Serializable]
-    public class Data {
+    public class Data : IData {
         public Action OnDataUpdated;
 
         public enum Stage {
@@ -118,6 +118,12 @@ public class StreamJsonData {
                 return endDate;
             }
         }
+
+        public string Id => id.ToString();
+
+        public string ShareLink => share_link;
+
+        public string Username => user;
 
         public Stage GetStage() {
             return GetStage(status);
