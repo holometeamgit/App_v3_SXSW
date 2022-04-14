@@ -4,22 +4,22 @@
 /// Use this to keep UI elements within bounds of the screen safe area
 /// </summary>
 public class SafeAreaRescaler : MonoBehaviour {
-    
+
     [Tooltip("Check this to ignore bottom of screen")]
     [SerializeField]
     private bool ignoreLowerScreen = true;
 
     private RectTransform Panel;
     private Rect LastSafeArea = new Rect(0, 0, 0, 0);
-    
-    void Awake() {
+
+    private void Awake() {
         Panel = GetComponent<RectTransform>();
         Refresh();
     }
-    void Update() {
+    private void Update() {
         Refresh();
     }
-    void Refresh() {
+    private void Refresh() {
         Rect safeArea = GetSafeArea();
         if (ignoreLowerScreen) {
             safeArea = new Rect(safeArea.x, 0, safeArea.width, safeArea.height + safeArea.y);
@@ -28,10 +28,10 @@ public class SafeAreaRescaler : MonoBehaviour {
             ApplySafeArea(safeArea);
         }
     }
-    Rect GetSafeArea() {
+    private Rect GetSafeArea() {
         return Screen.safeArea;
     }
-    void ApplySafeArea(Rect r) {
+    private void ApplySafeArea(Rect r) {
         LastSafeArea = r;
         // Convert safe area rectangle from absolute pixels to normalised anchor coordinates
         Vector2 anchorMin = r.position;
