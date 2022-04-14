@@ -108,7 +108,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private string lastPauseStatusMessageReceived; //Intended for viewers use only it's record state of streamers pause situation and to prevent double calls
     private string lastPushToTalkStatusMessageReceived; //To stop audio toggling twice
-    
+
     const int STATUS_MESSAGE_HIDE_DELAY = 3;
     const int DELAY_FOR_PREVIEW = 3;
 
@@ -295,7 +295,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
            "GET IN TOUCH", "CANCEL",
           () => {
               externalLinkRedirector.Redirect();
-          }, null, false);
+          }, () => StreamCallBacks.onSelectedMode?.Invoke(DeepLinkHandler.Params.room), false);
     }
 
     /// <summary>
