@@ -21,8 +21,8 @@ public class DeepLinkRoomController : MonoBehaviour {
     private void OnOpen(string username) {
         _getRoomController.GetRoomByUsername(username, (data) => {
             StreamCallBacks.onRoomDataReceived?.Invoke(data);
-            DeepLinkRoomConstructor.OnShow?.Invoke(data);
-        }, DeepLinkRoomConstructor.OnShowError);
+            DeepLinkStreamConstructor.OnShow?.Invoke(data);
+        }, DeepLinkStreamConstructor.OnShowError);
     }
 
     private void Awake() {

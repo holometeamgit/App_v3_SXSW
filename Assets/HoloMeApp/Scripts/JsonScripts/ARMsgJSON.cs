@@ -57,5 +57,7 @@ public class ARMsgJSON {
         public string ShareLink => share_link;
 
         public string Username => user;
+
+        public string Status => processing_status;
     }
 }

@@ -15,6 +15,7 @@ public class RoomJsonData : IData {
 
     public string Username => user;
 
+    public string Status => status;
 }
 
 [Serializable]

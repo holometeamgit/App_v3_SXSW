@@ -23,7 +23,7 @@ public class DeepLinkStreamController : MonoBehaviour {
     }
 
     private void OnOpenStadium(string username) {
-        _getStadiumController.GetStadiumByUsername(username, DeepLinkStadiumConstructor.OnShow, DeepLinkStadiumConstructor.OnShowError);
+        _getStadiumController.GetStadiumByUsername(username, DeepLinkStreamConstructor.OnShow, DeepLinkStreamConstructor.OnShowError);
     }
 
     private void OnOpenPrerecorded(string slug) {

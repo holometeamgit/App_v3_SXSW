@@ -4,9 +4,9 @@ using Beem.Permissions;
 using Zenject;
 
 /// <summary>
-/// UI popup for opening rooms
+/// UI popup for opening deeplinks
 /// </summary>
-public class DeepLinkRoomPopup : MonoBehaviour {
+public class DeepLinkPopup : MonoBehaviour {
     [SerializeField]
     private TMP_Text _titleText;
     [SerializeField]
@@ -73,8 +73,7 @@ public class DeepLinkRoomPopup : MonoBehaviour {
         }
 
         _permissionController.CheckCameraMicAccess(() => {
-            DeepLinkRoomConstructor.OnHide?.Invoke();
-            DeepLinkStadiumConstructor.OnHide?.Invoke();
+            DeepLinkStreamConstructor.OnHide?.Invoke();
             MenuConstructor.OnActivated?.Invoke(false);
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
@@ -88,8 +87,7 @@ public class DeepLinkRoomPopup : MonoBehaviour {
     /// Close popup
     /// </summary>
     public void Close() {
-        DeepLinkRoomConstructor.OnHide?.Invoke();
-        DeepLinkStadiumConstructor.OnHide?.Invoke();
+        DeepLinkStreamConstructor.OnHide?.Invoke();
     }
 
     /// <summary>

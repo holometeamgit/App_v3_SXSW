@@ -9,4 +9,5 @@ public interface IData {
     string Id { get; }
     string ShareLink { get; }
     string Username { get; }
+    string Status { get; }
 }

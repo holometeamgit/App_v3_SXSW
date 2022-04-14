@@ -75,7 +75,7 @@ public class DeepLinkStreamPopup : UIThumbnail {
     /// Close
     /// </summary>
     public void Close() {
-        DeepLinkStadiumConstructor.OnHide?.Invoke();
+        DeepLinkStreamConstructor.OnHide?.Invoke();
     }
 
     /// <summary>
@@ -120,7 +120,7 @@ public class DeepLinkStreamPopup : UIThumbnail {
         }
 
         _permissionController.CheckCameraMicAccess(() => {
-            DeepLinkStadiumConstructor.OnHide?.Invoke();
+            DeepLinkStreamConstructor.OnHide?.Invoke();
             MenuConstructor.OnActivated?.Invoke(false);
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
@@ -135,7 +135,7 @@ public class DeepLinkStreamPopup : UIThumbnail {
     /// <param name="roomJsonData"></param>
     private void PlayPrerecorded(StreamJsonData.Data data) { //TODO split it to other class
         _permissionController.CheckCameraMicAccess(() => {
-            DeepLinkStadiumConstructor.OnHide?.Invoke();
+            DeepLinkStreamConstructor.OnHide?.Invoke();
             MenuConstructor.OnActivated?.Invoke(false);
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
@@ -151,7 +151,7 @@ public class DeepLinkStreamPopup : UIThumbnail {
     /// <param name="data"></param>
     private void PlayTeaser(StreamJsonData.Data data) {
         _permissionController.CheckCameraMicAccess(() => {
-            DeepLinkStadiumConstructor.OnHide?.Invoke();
+            DeepLinkStreamConstructor.OnHide?.Invoke();
             MenuConstructor.OnActivated?.Invoke(false);
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();

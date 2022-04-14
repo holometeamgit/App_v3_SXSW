@@ -125,6 +125,8 @@ public class StreamJsonData {
 
         public string Username => user;
 
+        public string Status => status;
+
         public Stage GetStage() {
             return GetStage(status);
         }

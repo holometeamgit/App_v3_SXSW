@@ -6,23 +6,23 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
-/// Deep Link Room Constructor
+/// Deep Link Stream Constructor
 /// </summary>
-public class DeepLinkRoomConstructor : MonoBehaviour {
+public class DeepLinkStreamConstructor : MonoBehaviour {
 
     [SerializeField]
-    private DeepLinkRoomPopup _deepLinkRoomPopup;
+    private DeepLinkPopup _deepLinkRoomPopup;
     [SerializeField]
     private DeepLinkChecker _popupShowChecker;
     [SerializeField]
     private Color _highlightMSGColor;
 
-    public static Action<RoomJsonData> OnShow;
+    public static Action<IData> OnShow;
     public static Action OnBroadcastFinished = delegate { };
     public static Action<WebRequestError> OnShowError;
     public static Action OnHide;
 
-    private RoomJsonData _data;
+    private IData _data;
 
     private CancellationTokenSource cancelTokenSource;
     private CancellationToken cancellationToken;
@@ -42,20 +42,20 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
         OnBroadcastFinished -= ShowNoLongerLive;
     }
 
-    private void Show(RoomJsonData data) {
+    private void Show(IData data) {
         OnReceivedData(data, ShowData);
     }
 
-    private void OnReceivedData(RoomJsonData data, Action<RoomJsonData> onSuccessTask) {
+    private void OnReceivedData(IData data, Action<IData> onSuccessTask) {
         _popupShowChecker.OnReceivedData(data, onSuccessTask);
     }
 
-    private async void ShowData(RoomJsonData data) {
+    private async void ShowData(IData data) {
 
         cancelTokenSource = new CancellationTokenSource();
         cancellationToken = cancelTokenSource.Token;
 
-        if (data.status == StreamJsonData.Data.LIVE_ROOM_STR) {
+        if (data.Status == StreamJsonData.Data.LIVE_ROOM_STR) {
             ShowOnline(data);
         } else {
             ShowOffline(data);
@@ -64,7 +64,11 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
         try {
             await Task.Delay(DELAY);
             if (!cancellationToken.IsCancellationRequested) {
-                StreamCallBacks.onReceiveRoomLink?.Invoke(data.user);
+                if (data is RoomJsonData) {
+                    StreamCallBacks.onReceiveRoomLink?.Invoke(data.Username);
+                } else {
+                    StreamCallBacks.onReceiveStadiumLink?.Invoke(data.Username);
+                }
             }
         } finally {
             if (cancelTokenSource != null) {
@@ -76,7 +80,7 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
 
     private void ShowNoLongerLive() {
         if (_data != null) {
-            string title = $"<color=#{ColorUtility.ToHtmlStringRGBA(_highlightMSGColor)}>{_data.user}</color> is no longer live";
+            string title = $"<color=#{ColorUtility.ToHtmlStringRGBA(_highlightMSGColor)}>{_data.Username}</color> is no longer live";
             string description = string.Empty;
             bool online = false;
             bool closeBtn = true;
@@ -87,8 +91,8 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
         }
     }
 
-    private void ShowOnline(RoomJsonData data) {
-        string title = ConvertApostropheSmartToStraight($"<color=#{ColorUtility.ToHtmlStringRGBA(_highlightMSGColor)}>{data.user}</color>'s room is online");
+    private void ShowOnline(IData data) {
+        string title = ConvertApostropheSmartToStraight($"<color=#{ColorUtility.ToHtmlStringRGBA(_highlightMSGColor)}>{data.Username}</color>'s is now online");
         string description = string.Empty;
         bool online = true;
         bool closeBtn = false;
@@ -98,12 +102,12 @@ public class DeepLinkRoomConstructor : MonoBehaviour {
         _data = data;
     }
 
-    private void ShowOffline(RoomJsonData data) {
-        string title = ConvertApostropheSmartToStraight($"<color=#{ColorUtility.ToHtmlStringRGBA(_highlightMSGColor)}>{data.user}</color>'s room is currently offline");
-        string description = string.Empty;
+    private void ShowOffline(IData data) {
+        string title = ConvertApostropheSmartToStraight($"<color=#{ColorUtility.ToHtmlStringRGBA(_highlightMSGColor)}>{data.Username}</color>'s is currently offline");
+        string description = "This page will refresh automatically\nwhen they go live";
         bool online = false;
         bool closeBtn = false;
-        bool shareBtn = true;
+        bool shareBtn = (data is RoomJsonData);
         DeepLinkStreamData deepLinkRoomData = new DeepLinkStreamData(title, description, data, online, closeBtn, shareBtn);
         _deepLinkRoomPopup.Show(deepLinkRoomData);
         _data = null;
