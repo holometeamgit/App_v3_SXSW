@@ -2,11 +2,14 @@ using UnityEngine;
 using TMPro;
 using Beem.Permissions;
 using Zenject;
+using System.Collections.Generic;
 
 /// <summary>
 /// UI popup for opening deeplinks
 /// </summary>
 public class DeepLinkPopup : MonoBehaviour {
+    [SerializeField]
+    private Color _highlightMSGColor;
     [SerializeField]
     private TMP_Text _titleText;
     [SerializeField]
@@ -39,8 +42,8 @@ public class DeepLinkPopup : MonoBehaviour {
 
     private IData _data;
 
-    private const string TITLE = "You have been invited to {0}'s {1}";
-    private const string DESCRIPTION = "Click the link below to join {0}'s {1}";
+    private const string LINK_TITLE = "You have been invited to {0}'s {1}";
+    private const string LINK_DESCRIPTION = "Click the link below to join {0}'s {1}";
     private const string ROOM = "Room";
     private const string STADIUM = "Stadium";
 
@@ -54,8 +57,8 @@ public class DeepLinkPopup : MonoBehaviour {
     /// </summary>
     public void Share() {
         if (!string.IsNullOrWhiteSpace(_data.ShareLink)) {
-            string title = string.Format(TITLE, _data.Username, _data is RoomJsonData ? ROOM : STADIUM);
-            string description = string.Format(DESCRIPTION, _data.Username, _data is RoomJsonData ? ROOM : STADIUM);
+            string title = string.Format(LINK_TITLE, _data.Username, _data is RoomJsonData ? ROOM : STADIUM);
+            string description = string.Format(LINK_DESCRIPTION, _data.Username, _data is RoomJsonData ? ROOM : STADIUM);
             string msg = title + "\n" + description + "\n" + _data.ShareLink;
             _shareController.ShareLink(msg);
         }
@@ -99,7 +102,7 @@ public class DeepLinkPopup : MonoBehaviour {
 
         _data = deepLinkRoomData.Data;
 
-        _titleText.text = deepLinkRoomData.Title;
+        _titleText.text = string.Format(deepLinkRoomData.Title, ColorUtility.ToHtmlStringRGBA(_highlightMSGColor), _data.Username);
         _subtitleText.text = deepLinkRoomData.Description;
 
         _title.SetActive(deepLinkRoomData.Title.Length > 0);
