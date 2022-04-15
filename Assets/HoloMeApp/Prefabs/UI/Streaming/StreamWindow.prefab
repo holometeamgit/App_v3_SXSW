@@ -338,6 +338,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 3263517314605670059}
+  - {fileID: 7498366493603539370}
   - {fileID: 8678356398779417323}
   - {fileID: 3766104011607352489}
   m_Father: {fileID: 0}
@@ -399,6 +400,7 @@ MonoBehaviour:
   - {fileID: 2808325810328948488}
   cameraRenderImage: {fileID: 2271563347322070468}
   imgBackground: {fileID: 7364478966963447752}
+  cameraOffBackground: {fileID: 7498366493603539371}
   togglePushToTalk: {fileID: 511427867901357408}
   gameObjectsToDisableWhileGoingLive:
   - {fileID: 6463988398054364340}
@@ -6044,8 +6046,6 @@ GameObject:
   - component: {fileID: 5282770122730598794}
   - component: {fileID: 4217474895403824881}
   - component: {fileID: 3850403376551214462}
-  - component: {fileID: 5170178102855240347}
-  - component: {fileID: 9044590541034766842}
   m_Layer: 5
   m_Name: btnShare
   m_TagString: Untagged
@@ -6127,49 +6127,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 9044590541034766842}
-        m_TargetAssemblyTypeName: BtnController, Assembly-CSharp
-        m_MethodName: BtnPress
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &5170178102855240347
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6198067206662430213}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0ddd043ab54bfc4aae009ff111ab7cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
---- !u!114 &9044590541034766842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6198067206662430213}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3ccf13f8c95b45239f9e6a367126280, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnPress:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5170178102855240347}
-        m_TargetAssemblyTypeName: Beem.UI.ShareRoomBtn, Assembly-CSharp
-        m_MethodName: Share
+      - m_Target: {fileID: 2118979325922400105}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: ShareStream
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6941,15 +6901,14 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 2342187594920880743}
+  m_Children: []
   m_Father: {fileID: 5302047904768611072}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 243}
-  m_SizeDelta: {x: 240, y: 240}
+  m_SizeDelta: {x: 282, y: 282}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5712148359559134851
 CanvasRenderer:
@@ -6979,7 +6938,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b4b1286cf1c4965439d2124126d9200f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8854ac233a4fa014aaa285d1d139ed35, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -8174,7 +8133,7 @@ RectTransform:
   - {fileID: 2723046388149429831}
   - {fileID: 7959975158359539424}
   m_Father: {fileID: 8852342891770140728}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -8193,6 +8152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18c0875e369825044991803544937ef9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreLowerScreen: 1
 --- !u!1 &7510947751559134523
 GameObject:
   m_ObjectHideFlags: 0
@@ -9258,81 +9218,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &7946735398708013610
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2342187594920880743}
-  - component: {fileID: 7331287730759959550}
-  - component: {fileID: 211749689061625299}
-  m_Layer: 5
-  m_Name: btnRecord
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &2342187594920880743
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7946735398708013610}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 282526091364839617}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0, y: -0}
-  m_SizeDelta: {x: 180, y: 180}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &7331287730759959550
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7946735398708013610}
-  m_CullTransparentMesh: 0
---- !u!114 &211749689061625299
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7946735398708013610}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6ef7ae2208e6c44fba2978f2ebe42b25, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 1
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &7986219136137327213
 GameObject:
   m_ObjectHideFlags: 0
@@ -9890,8 +9775,6 @@ GameObject:
   - component: {fileID: 7779969787145157968}
   - component: {fileID: 2243488664857400539}
   - component: {fileID: 8478400345685152681}
-  - component: {fileID: 8545541831521408077}
-  - component: {fileID: 1711739136822045021}
   m_Layer: 5
   m_Name: btnShare
   m_TagString: Untagged
@@ -9973,9 +9856,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8545541831521408077}
-        m_TargetAssemblyTypeName: BtnController, Assembly-CSharp
-        m_MethodName: BtnPress
+      - m_Target: {fileID: 2118979325922400105}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: ShareStream
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9985,46 +9868,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &8545541831521408077
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8320784632685483423}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3ccf13f8c95b45239f9e6a367126280, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnPress:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1711739136822045021}
-        m_TargetAssemblyTypeName: Beem.UI.ShareStreamBtn, Assembly-CSharp
-        m_MethodName: Share
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &1711739136822045021
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8320784632685483423}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0ddd043ab54bfc4aae009ff111ab7cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
 --- !u!1 &8325672014985770698
 GameObject:
   m_ObjectHideFlags: 0
@@ -10248,8 +10091,6 @@ GameObject:
   - component: {fileID: 6683590279554241463}
   - component: {fileID: 6341217874042256771}
   - component: {fileID: 8228575922628881390}
-  - component: {fileID: 2416747241770031093}
-  - component: {fileID: 7600432224000762267}
   m_Layer: 5
   m_Name: btnShare
   m_TagString: Untagged
@@ -10331,49 +10172,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7600432224000762267}
-        m_TargetAssemblyTypeName: BtnController, Assembly-CSharp
-        m_MethodName: BtnPress
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &2416747241770031093
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8436101301028588086}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0ddd043ab54bfc4aae009ff111ab7cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
---- !u!114 &7600432224000762267
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8436101301028588086}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3ccf13f8c95b45239f9e6a367126280, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnPress:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2416747241770031093}
-        m_TargetAssemblyTypeName: Beem.UI.ShareRoomBtn, Assembly-CSharp
-        m_MethodName: Share
+      - m_Target: {fileID: 2118979325922400105}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: ShareStream
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -11062,8 +10863,6 @@ GameObject:
   - component: {fileID: 1868080498428384961}
   - component: {fileID: 2495818098485147232}
   - component: {fileID: 3398840542562979533}
-  - component: {fileID: 3000543191765311477}
-  - component: {fileID: 7322220130164434894}
   m_Layer: 5
   m_Name: btnShare
   m_TagString: Untagged
@@ -11145,9 +10944,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3000543191765311477}
-        m_TargetAssemblyTypeName: BtnController, Assembly-CSharp
-        m_MethodName: BtnPress
+      - m_Target: {fileID: 2118979325922400105}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: ShareStream
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -11157,46 +10956,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3000543191765311477
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8858580544628999647}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3ccf13f8c95b45239f9e6a367126280, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnPress:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7322220130164434894}
-        m_TargetAssemblyTypeName: Beem.UI.ShareStreamBtn, Assembly-CSharp
-        m_MethodName: Share
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &7322220130164434894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8858580544628999647}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0ddd043ab54bfc4aae009ff111ab7cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
 --- !u!1 &8976243805708991731
 GameObject:
   m_ObjectHideFlags: 0
@@ -12017,7 +11776,7 @@ PrefabInstance:
     - target: {fileID: 8606712174516251040, guid: de650753e65ede242ba1d0f342eea0f8,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8606712174516251040, guid: de650753e65ede242ba1d0f342eea0f8,
         type: 3}
@@ -12246,12 +12005,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de650753e65ede242ba1d0f342eea0f8, type: 3}
---- !u!224 &8678356398779417323 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8606712174516251040, guid: de650753e65ede242ba1d0f342eea0f8,
-    type: 3}
-  m_PrefabInstance: {fileID: 1089475515308206923}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3367824556608844830 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2423625590728793941, guid: de650753e65ede242ba1d0f342eea0f8,
@@ -12276,6 +12029,143 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 621436e3907fda640956e0c097e91e30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &8678356398779417323 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8606712174516251040, guid: de650753e65ede242ba1d0f342eea0f8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1089475515308206923}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2564060966374436562
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8852342891770140728}
+    m_Modifications:
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447898988904662905, guid: 79a8a2c77695c489f84615a23afd9edf,
+        type: 3}
+      propertyPath: m_Name
+      value: defaultBG
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 79a8a2c77695c489f84615a23afd9edf, type: 3}
+--- !u!1 &7498366493603539371 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5447898988904662905, guid: 79a8a2c77695c489f84615a23afd9edf,
+    type: 3}
+  m_PrefabInstance: {fileID: 2564060966374436562}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &7498366493603539370 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+    type: 3}
+  m_PrefabInstance: {fileID: 2564060966374436562}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4723793387518978498
 PrefabInstance:
   m_ObjectHideFlags: 0
