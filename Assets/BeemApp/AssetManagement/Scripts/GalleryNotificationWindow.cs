@@ -35,7 +35,7 @@ public class GalleryNotificationWindow : MonoBehaviour {
     /// </summary>
     public void Open() {
         if (_data.processing_status == ARMsgJSON.Data.COMPETED_STATUS) {
-            DeeplinkARMsgConstructor.OnShow(_data);
+            DeepLinkVideoConstructor.OnShow(_data);
             Close();
         }
     }
