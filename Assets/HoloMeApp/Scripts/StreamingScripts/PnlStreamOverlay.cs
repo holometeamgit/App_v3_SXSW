@@ -260,7 +260,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         }
     }
 
-    public void OpenAsStreamer() {
+    public void OpenAsStadiumBroadcaster() {
         if (!_userWebManager.CanGoLive()) {
             ShowPremiumRequiredMessage();
         } else if (!CheckIfTutorialWasRun(KEY_SEEN_TUTORIAL_ARENA)) {
@@ -393,9 +393,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private void StreamFinished() {
         CloseAsViewer();
         OpenMenuScreen();
-        if (_agoraController.IsRoom) {
-            StreamCallBacks.onRoomBroadcastFinished?.Invoke();
-        }
+        DeepLinkStreamConstructor.OnBroadcastFinished?.Invoke();
     }
 
     private void CloseAsViewer() {
@@ -408,17 +406,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private void PreviewStopped() {
         videoSurface.SetEnable(false);
-    }
-
-    public void ShareStream() {
-
-        HelperFunctions.DevLog($"IsRoom = {_agoraController.IsRoom}, IsChannelCreator = {_agoraController.IsChannelCreator}, agoraController.ChannelName = {_agoraController.ChannelName}, currentStreamId = {currentStreamId}");
-
-        if (_agoraController.IsRoom) {
-            StreamCallBacks.onShareRoomLink?.Invoke(_agoraController.ChannelName);
-        } else {
-            StreamCallBacks.onShareStreamLinkByUsername?.Invoke(_agoraController.ChannelName);
-        }
     }
 
     public void StartCountdown() {

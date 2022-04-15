@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace Beem.UI {
     /// <summary>
-    /// Interface for ARMessageView
+    /// Interface for RoomView
     /// </summary>
 
-    public interface IARMsgDataView {
+    public interface IRoomDataView {
         /// <summary>
-        /// Init ARMsgDataView
+        /// Init RoomDataView
         /// </summary>
         /// <param name="data"></param>
-        void Init(ARMsgJSON.Data data);
+        void Init(RoomJsonData data);
     }
 }

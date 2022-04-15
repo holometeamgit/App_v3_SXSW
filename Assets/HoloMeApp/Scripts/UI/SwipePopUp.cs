@@ -126,7 +126,7 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         _swipedObjectTransform.offsetMin = _hideOffsetPosition;
         _canvasGroup.alpha = 0;
         StopAllCoroutines();
-        DeepLinkRoomConstructor.OnHide?.Invoke();
+        DeepLinkStreamConstructor.OnHide?.Invoke();
     }
 
     private void Init() {
@@ -139,7 +139,7 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
 
     private void Move(bool isShow) {
         StopAllCoroutines();
-        if(gameObject.activeInHierarchy)
+        if (gameObject.activeInHierarchy)
             StartCoroutine(MovingObject(isShow));
     }
 
