@@ -53,12 +53,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private GameObject[] gameObjectsToDisableWhileGoingLive;
 
     [SerializeField]
-    private UIBtnLikes uiBtnLikes;
-
-    [SerializeReference]
-    private UITextLabelLikes uiViewersTextLabelLikes;
-
-    [SerializeField]
     private StreamLikesRefresherView streamLikesRefresherView;
 
     [SerializeField]
@@ -108,7 +102,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private string lastPauseStatusMessageReceived; //Intended for viewers use only it's record state of streamers pause situation and to prevent double calls
     private string lastPushToTalkStatusMessageReceived; //To stop audio toggling twice
-    
+
     const int STATUS_MESSAGE_HIDE_DELAY = 3;
     const int DELAY_FOR_PREVIEW = 3;
 
@@ -189,8 +183,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private void RefreshStream(StreamStartResponseJsonData streamStartResponseJsonData) {
         currentStreamId = streamStartResponseJsonData.id.ToString();
         RefreshControls();
-        uiBtnLikes.Init(streamStartResponseJsonData.id);
-        uiViewersTextLabelLikes.Init(streamStartResponseJsonData.id);
         StartStreamCountUpdaters();
     }
 
@@ -347,8 +339,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
         long currentStreamIdLong = 0;
         long.TryParse(streamID, out currentStreamIdLong);
-        uiBtnLikes.Init(currentStreamIdLong);
-        uiViewersTextLabelLikes.Init(currentStreamIdLong);
         streamLikesRefresherView.StartCountAsync(streamID);
         StartStreamCountUpdaters();
     }
