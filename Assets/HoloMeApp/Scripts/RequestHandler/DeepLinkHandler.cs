@@ -72,28 +72,23 @@ public class DeepLinkHandler : MonoBehaviour {
         if (ContainParam(uri, Params.message.ToString())) {
             string messageId = GetParam(uri, Params.message.ToString());
             _getARMsgController.GetARMsgById(messageId, DeepLinkVideoConstructor.OnShow, DeepLinkVideoConstructor.OnShowError);
-            StreamCallBacks.onSelectedMode?.Invoke(Params.message);
         } else if (ContainParam(uri, Params.room.ToString())) {
             string username = GetParam(uri, Params.room.ToString());
             _getRoomController.GetRoomByUsername(username, DeepLinkStreamConstructor.OnShow, DeepLinkStreamConstructor.OnShowError);
-            StreamCallBacks.onSelectedMode?.Invoke(Params.room);
         } else if (ContainParam(uri, Params.username.ToString())) {
             string username = GetParam(uri, Params.username.ToString());
             _getRoomController.GetRoomByUsername(username, DeepLinkStreamConstructor.OnShow, DeepLinkStreamConstructor.OnShowError);
-            StreamCallBacks.onSelectedMode?.Invoke(Params.username);
         } else if (ContainParam(uri, Params.live.ToString())) {
             string username = GetParam(uri, Params.live.ToString());
             _getStadiumController.GetStadiumByUsername(username, DeepLinkStreamConstructor.OnShow, DeepLinkStreamConstructor.OnShowError);
-            StreamCallBacks.onSelectedMode?.Invoke(Params.live);
         } else if (ContainParam(uri, Params.stadium.ToString())) {
             string username = GetParam(uri, Params.stadium.ToString());
             _getStadiumController.GetStadiumByUsername(username, DeepLinkStreamConstructor.OnShow, DeepLinkStreamConstructor.OnShowError);
-            StreamCallBacks.onSelectedMode?.Invoke(Params.stadium);
         } else if (ContainParam(uri, Params.prerecorded.ToString())) {
             string slug = GetParam(uri, Params.prerecorded.ToString());
             _getPrerecordedController.GetPrerecordedBySlug(slug, DeepLinkVideoConstructor.OnShow, DeepLinkVideoConstructor.OnShowError);
-            StreamCallBacks.onSelectedMode?.Invoke(Params.message);
         }
+        StreamCallBacks.onSelectedMode?.Invoke(Params.room);
     }
 
     private bool ContainParam(Uri uri, string parameter) {
