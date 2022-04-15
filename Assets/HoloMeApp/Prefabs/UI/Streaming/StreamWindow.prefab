@@ -6046,6 +6046,8 @@ GameObject:
   - component: {fileID: 5282770122730598794}
   - component: {fileID: 4217474895403824881}
   - component: {fileID: 3850403376551214462}
+  - component: {fileID: 8262758196776435848}
+  - component: {fileID: 8923907276325306324}
   m_Layer: 5
   m_Name: btnShare
   m_TagString: Untagged
@@ -6127,9 +6129,49 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2118979325922400105}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: ShareStream
+      - m_Target: {fileID: 8923907276325306324}
+        m_TargetAssemblyTypeName: BtnController, Assembly-CSharp
+        m_MethodName: BtnPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &8262758196776435848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6198067206662430213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0ddd043ab54bfc4aae009ff111ab7cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
+--- !u!114 &8923907276325306324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6198067206662430213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3ccf13f8c95b45239f9e6a367126280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnPress:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8262758196776435848}
+        m_TargetAssemblyTypeName: Beem.UI.ShareStreamBtn, Assembly-CSharp
+        m_MethodName: Share
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9775,6 +9817,8 @@ GameObject:
   - component: {fileID: 7779969787145157968}
   - component: {fileID: 2243488664857400539}
   - component: {fileID: 8478400345685152681}
+  - component: {fileID: 2694718591670700069}
+  - component: {fileID: 7612451494162768760}
   m_Layer: 5
   m_Name: btnShare
   m_TagString: Untagged
@@ -9856,9 +9900,49 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2118979325922400105}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: ShareStream
+      - m_Target: {fileID: 7612451494162768760}
+        m_TargetAssemblyTypeName: BtnController, Assembly-CSharp
+        m_MethodName: BtnPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2694718591670700069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8320784632685483423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0ddd043ab54bfc4aae009ff111ab7cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
+--- !u!114 &7612451494162768760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8320784632685483423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3ccf13f8c95b45239f9e6a367126280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnPress:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2694718591670700069}
+        m_TargetAssemblyTypeName: Beem.UI.ShareStreamBtn, Assembly-CSharp
+        m_MethodName: Share
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10091,6 +10175,8 @@ GameObject:
   - component: {fileID: 6683590279554241463}
   - component: {fileID: 6341217874042256771}
   - component: {fileID: 8228575922628881390}
+  - component: {fileID: 7734887453548048480}
+  - component: {fileID: 5367510585907870896}
   m_Layer: 5
   m_Name: btnShare
   m_TagString: Untagged
@@ -10172,9 +10258,49 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2118979325922400105}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: ShareStream
+      - m_Target: {fileID: 5367510585907870896}
+        m_TargetAssemblyTypeName: BtnController, Assembly-CSharp
+        m_MethodName: BtnPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &7734887453548048480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8436101301028588086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0ddd043ab54bfc4aae009ff111ab7cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
+--- !u!114 &5367510585907870896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8436101301028588086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3ccf13f8c95b45239f9e6a367126280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnPress:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7734887453548048480}
+        m_TargetAssemblyTypeName: Beem.UI.ShareStreamBtn, Assembly-CSharp
+        m_MethodName: Share
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10863,6 +10989,8 @@ GameObject:
   - component: {fileID: 1868080498428384961}
   - component: {fileID: 2495818098485147232}
   - component: {fileID: 3398840542562979533}
+  - component: {fileID: 8049422592073812864}
+  - component: {fileID: 5054762181977246131}
   m_Layer: 5
   m_Name: btnShare
   m_TagString: Untagged
@@ -10944,9 +11072,49 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2118979325922400105}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: ShareStream
+      - m_Target: {fileID: 5054762181977246131}
+        m_TargetAssemblyTypeName: BtnController, Assembly-CSharp
+        m_MethodName: BtnPress
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &8049422592073812864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8858580544628999647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0ddd043ab54bfc4aae009ff111ab7cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _videoUploader: {fileID: 11400000, guid: 2d65092bd7116144d94bb0eb7b2fa6c9, type: 2}
+--- !u!114 &5054762181977246131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8858580544628999647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3ccf13f8c95b45239f9e6a367126280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnPress:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8049422592073812864}
+        m_TargetAssemblyTypeName: Beem.UI.ShareStreamBtn, Assembly-CSharp
+        m_MethodName: Share
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -12154,15 +12322,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 79a8a2c77695c489f84615a23afd9edf, type: 3}
---- !u!1 &7498366493603539371 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5447898988904662905, guid: 79a8a2c77695c489f84615a23afd9edf,
-    type: 3}
-  m_PrefabInstance: {fileID: 2564060966374436562}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &7498366493603539370 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5447898988904662904, guid: 79a8a2c77695c489f84615a23afd9edf,
+    type: 3}
+  m_PrefabInstance: {fileID: 2564060966374436562}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7498366493603539371 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5447898988904662905, guid: 79a8a2c77695c489f84615a23afd9edf,
     type: 3}
   m_PrefabInstance: {fileID: 2564060966374436562}
   m_PrefabAsset: {fileID: 0}
