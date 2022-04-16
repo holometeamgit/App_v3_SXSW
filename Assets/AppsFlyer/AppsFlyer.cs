@@ -7,7 +7,7 @@ namespace AppsFlyerSDK
     public class AppsFlyer : MonoBehaviour
     {
 
-        public static readonly string kAppsFlyerPluginVersion = "6.5.3";
+        public static readonly string kAppsFlyerPluginVersion = "6.1.3";
         public static string CallBackObjectName = null;
         private static EventHandler onRequestResponse;
         private static EventHandler onInAppResponse;
@@ -61,12 +61,6 @@ namespace AppsFlyerSDK
             }
 #elif UNITY_ANDROID && !UNITY_EDITOR
             AppsFlyerAndroid.initSDK(devKey, gameObject);
-#elif UNITY_WSA_10_0 && !UNITY_EDITOR
-            AppsFlyerWindows.InitSDK(devKey, appID, gameObject);
-            if (gameObject != null)
-            {
-                AppsFlyerWindows.GetConversionData(gameObject.name);
-            }
 #else
 
 #endif
@@ -83,8 +77,8 @@ namespace AppsFlyerSDK
             AppsFlyeriOS.startSDK(onRequestResponse != null, CallBackObjectName);
 #elif UNITY_ANDROID && !UNITY_EDITOR
             AppsFlyerAndroid.startSDK(onRequestResponse != null, CallBackObjectName);
-#elif UNITY_WSA_10_0 && !UNITY_EDITOR
-            AppsFlyerWindows.Start();
+#else
+
 #endif
         }
 
@@ -100,8 +94,6 @@ namespace AppsFlyerSDK
             AppsFlyeriOS.sendEvent(eventName, eventValues, onInAppResponse != null, CallBackObjectName);
 #elif UNITY_ANDROID && !UNITY_EDITOR
             AppsFlyerAndroid.sendEvent(eventName, eventValues, onInAppResponse != null, CallBackObjectName);
-#elif UNITY_WSA_10_0 && !UNITY_EDITOR
-            AppsFlyerWindows.LogEvent(eventName, eventValues);
 #else
 
 #endif
@@ -182,8 +174,6 @@ namespace AppsFlyerSDK
             AppsFlyeriOS.setCustomerUserID(id);
 #elif UNITY_ANDROID && !UNITY_EDITOR
             AppsFlyerAndroid.setCustomerUserId(id);
-#elif UNITY_WSA_10_0 && !UNITY_EDITOR
-            AppsFlyerWindows.SetCustomerUserId(id);
 #else
 
 #endif
@@ -312,10 +302,8 @@ namespace AppsFlyerSDK
             return AppsFlyeriOS.getAppsFlyerId();
 #elif UNITY_ANDROID && !UNITY_EDITOR
             return AppsFlyerAndroid.getAppsFlyerId();
-#elif UNITY_WSA_10_0 && !UNITY_EDITOR
-            return AppsFlyerWindows.GetAppsFlyerId();
 #else
-            return ""; 
+            return "";
 #endif
 
         }
@@ -391,7 +379,6 @@ namespace AppsFlyerSDK
         /// <summary>
         /// Used by advertisers to exclude all networks/integrated partners from getting data.
         /// </summary>
-        [Obsolete("Please use setSharingFilterForPartners api")]
         public static void setSharingFilterForAllPartners()
         {
 #if UNITY_IOS && !UNITY_EDITOR
@@ -407,28 +394,12 @@ namespace AppsFlyerSDK
         /// Used by advertisers to set some (one or more) networks/integrated partners to exclude from getting data.
         /// </summary>
         /// <param name="partners">partners to exclude from getting data</param>
-        [Obsolete("Please use setSharingFilterForPartners api")]
         public static void setSharingFilter(params string[] partners)
         {
 #if UNITY_IOS && !UNITY_EDITOR
             AppsFlyeriOS.setSharingFilter(partners);
 #elif UNITY_ANDROID && !UNITY_EDITOR
             AppsFlyerAndroid.setSharingFilter(partners);
-#else
-
-#endif
-        }
-
-        /// <summary>
-        /// Lets you configure how which partners should the SDK exclude from data-sharing.
-        /// </summary>
-        /// <param name="partners">partners to exclude from getting data</param>
-        public static void setSharingFilterForPartners(params string[] partners)
-        {
-#if UNITY_IOS && !UNITY_EDITOR
-            AppsFlyeriOS.setSharingFilterForPartners(partners);
-#elif UNITY_ANDROID && !UNITY_EDITOR
-            AppsFlyerAndroid.setSharingFilterForPartners(partners);
 #else
 
 #endif
@@ -451,8 +422,6 @@ namespace AppsFlyerSDK
             AppsFlyeriOS.getConversionData(objectName);
 #elif UNITY_ANDROID && !UNITY_EDITOR
             AppsFlyerAndroid.getConversionData(objectName);
-#elif UNITY_WSA_10_0 && !UNITY_EDITOR
-            AppsFlyerWindows.GetConversionData("");
 #else
 
 #endif
