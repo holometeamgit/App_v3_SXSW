@@ -44,16 +44,13 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private GameObject imgBackground;
 
     [SerializeField]
+    private GameObject cameraOffBackground;
+
+    [SerializeField]
     private Toggle togglePushToTalk;
 
     [SerializeField]
     private GameObject[] gameObjectsToDisableWhileGoingLive;
-
-    [SerializeField]
-    private UIBtnLikes uiBtnLikes;
-
-    [SerializeReference]
-    private UITextLabelLikes uiViewersTextLabelLikes;
 
     [SerializeField]
     private StreamLikesRefresherView streamLikesRefresherView;
@@ -186,8 +183,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private void RefreshStream(StreamStartResponseJsonData streamStartResponseJsonData) {
         currentStreamId = streamStartResponseJsonData.id.ToString();
         RefreshControls();
-        uiBtnLikes.Init(streamStartResponseJsonData.id);
-        uiViewersTextLabelLikes.Init(streamStartResponseJsonData.id);
         StartStreamCountUpdaters();
     }
 
@@ -238,6 +233,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         controlsPresenter.SetActive(broadcaster);
         imgBackground.SetActive(broadcaster);
         controlsViewer.SetActive(!broadcaster);
+        cameraOffBackground.SetActive(false);
     }
 
     private void RefreshLiveControls(bool live) {
@@ -264,7 +260,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         }
     }
 
-    public void OpenAsStreamer() {
+    public void OpenAsStadiumBroadcaster() {
         if (!_userWebManager.CanGoLive()) {
             ShowPremiumRequiredMessage();
         } else if (!CheckIfTutorialWasRun(KEY_SEEN_TUTORIAL_ARENA)) {
@@ -343,8 +339,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
         long currentStreamIdLong = 0;
         long.TryParse(streamID, out currentStreamIdLong);
-        uiBtnLikes.Init(currentStreamIdLong);
-        uiViewersTextLabelLikes.Init(currentStreamIdLong);
         streamLikesRefresherView.StartCountAsync(streamID);
         StartStreamCountUpdaters();
     }
@@ -399,9 +393,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private void StreamFinished() {
         CloseAsViewer();
         OpenMenuScreen();
-        if (_agoraController.IsRoom) {
-            StreamCallBacks.onRoomBroadcastFinished?.Invoke();
-        }
+        DeepLinkStreamConstructor.OnBroadcastFinished?.Invoke();
     }
 
     private void CloseAsViewer() {
@@ -414,17 +406,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private void PreviewStopped() {
         videoSurface.SetEnable(false);
-    }
-
-    public void ShareStream() {
-
-        HelperFunctions.DevLog($"IsRoom = {_agoraController.IsRoom}, IsChannelCreator = {_agoraController.IsChannelCreator}, agoraController.ChannelName = {_agoraController.ChannelName}, currentStreamId = {currentStreamId}");
-
-        if (_agoraController.IsRoom) {
-            StreamCallBacks.onShareRoomLink?.Invoke(_agoraController.ChannelName);
-        } else {
-            StreamCallBacks.onShareStreamLinkByUsername?.Invoke(_agoraController.ChannelName);
-        }
     }
 
     public void StartCountdown() {
@@ -780,6 +761,8 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     public void ToggleVideo(bool hideVideo) { //Only called for stream host
         _hideVideo = hideVideo;
+
+        cameraOffBackground.SetActive(hideVideo);
 
         AnimatedCentreTextMessage("Your camera is " + (hideVideo ? "off" : "on") + ".");
 

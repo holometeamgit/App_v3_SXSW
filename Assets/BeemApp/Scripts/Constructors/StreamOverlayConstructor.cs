@@ -34,7 +34,7 @@ public class StreamOverlayConstructor : MonoBehaviour {
     }
 
     private void OnActivatedAsStadiumBroadcaster() {
-        _pnlStreamOverlay.OpenAsStreamer();
+        _pnlStreamOverlay.OpenAsStadiumBroadcaster();
     }
 
     private void OnActivatedAsRoomBroadcaster() {

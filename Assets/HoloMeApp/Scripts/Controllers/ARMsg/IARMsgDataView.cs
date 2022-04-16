@@ -11,7 +11,7 @@ namespace Beem.UI {
         /// <summary>
         /// Init ARMsgDataView
         /// </summary>
-        /// <param name="arMsgJSON"></param>
-        void Init(ARMsgJSON.Data arMsgJSON);
+        /// <param name="data"></param>
+        void Init(ARMsgJSON.Data data);
     }
 }

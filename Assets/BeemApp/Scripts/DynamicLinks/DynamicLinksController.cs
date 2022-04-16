@@ -23,7 +23,7 @@ namespace Beem.Firebase.DynamicLink {
         }
 
         private void OnDynamicLink(string url) {
-            DynamicLinksCallBacks.onReceivedDeepLink?.Invoke(url);
+            StreamCallBacks.onReceivedDeepLink?.Invoke(url);
             HelperFunctions.DevLog($"Received dynamic link {url}");
         }
 

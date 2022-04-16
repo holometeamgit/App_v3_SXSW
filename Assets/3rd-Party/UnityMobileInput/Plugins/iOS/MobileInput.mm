@@ -83,6 +83,17 @@ NSString *plugin;
 @synthesize placeholder;
 @synthesize placeholderColor;
 
+-(void)layoutSubviews{
+    [self recenter];
+}
+
+-(void)recenter{
+    // using self.contentSize doesn't work correctly, have to calculate content size
+    CGSize contentSize = [self sizeThatFits:CGSizeMake(self.bounds.size.width, CGFLOAT_MAX)];
+    CGFloat topCorrection = (self.bounds.size.height - contentSize.height * self.zoomScale) / 2.0;
+    self.contentOffset = CGPointMake(0, -topCorrection);
+}
+
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
         [self awakeFromNib];

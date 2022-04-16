@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Beem.ARMsg;
+using System.Threading.Tasks;
 
 /// <summary>
 /// UIUploaderARMsg uploading ARMsg
@@ -12,6 +13,8 @@ public class UIUploaderARMsg : MonoBehaviour {
     private UnityEvent OnARMsgUpdloadedEvent;
     [SerializeField]
     private GalleryBtn _galleryBtn;
+
+    private Coroutine _coroutine;
 
     private void Awake() {
         CallBacks.OnARMsgUpdloaded += OnARMsgUpdloaded;
@@ -26,18 +29,30 @@ public class UIUploaderARMsg : MonoBehaviour {
     }
 
     private void OnARMsgUpdloaded() {
+        WarningConstructor.Deactivate();
+
+        if (_coroutine != null)
+            StopCoroutine(_coroutine);
+
+        _coroutine = StartCoroutine(OnARMsgUpdloadedDoing());
+    }
+
+    private IEnumerator OnARMsgUpdloadedDoing() {
+        yield return null;
         MenuConstructor.OnActivated?.Invoke(true);
         OnARMsgUpdloadedEvent?.Invoke();
 
-        //
+        
         ShowPopupGoToGallery();
+
+        _coroutine = null;
     }
 
     private void ShowPopupGoToGallery() {
-        WarningConstructor.ActivateDoubleButton("Capture complete!",
-            "Your hologram is now processing and we\n" +
-            " will notify you when it's ready to preview",
-            "go to your Beem gallery", "close",
+        WarningConstructor.ActivateDoubleButton("Capture\ncomplete!",
+            "Your hologram is now processing and we will\n" +
+            "notify you when it’s ready to preview",
+            "go to your gallery", "close",
              () => {
                  OpenGallery();
              },
