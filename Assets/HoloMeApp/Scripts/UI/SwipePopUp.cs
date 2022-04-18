@@ -126,7 +126,6 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         _swipedObjectTransform.offsetMin = _hideOffsetPosition;
         _canvasGroup.alpha = 0;
         StopAllCoroutines();
-        DeepLinkStreamConstructor.OnHide?.Invoke();
     }
 
     private void Init() {

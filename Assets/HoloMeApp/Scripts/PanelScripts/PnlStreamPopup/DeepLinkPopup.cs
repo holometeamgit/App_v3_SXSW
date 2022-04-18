@@ -133,6 +133,7 @@ public class DeepLinkPopup : MonoBehaviour {
 
     private void OnClose() {
         _swipePopUp.onHid -= OnClose;
+        DeepLinkStreamConstructor.OnHide?.Invoke();
         gameObject.SetActive(false);
     }
 
