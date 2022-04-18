@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 1348338060}
   - component: {fileID: 1348338059}
   - component: {fileID: 6867021906308509096}
-  - component: {fileID: 2705716758562899804}
   m_Layer: 5
   m_Name: Btn
   m_TagString: Untagged
@@ -121,19 +120,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 254005356880219208}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2705716758562899804}
-        m_TargetAssemblyTypeName: BtnController, Assembly-CSharp
-        m_MethodName: BtnPress
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &6867021906308509096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,33 +133,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50478cd532b026e4abf967b28a5391d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2705716758562899804
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1348338057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3ccf13f8c95b45239f9e6a367126280, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnPress:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6867021906308509096}
-        m_TargetAssemblyTypeName: CellBtn, Assembly-CSharp
-        m_MethodName: Open
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &254005356002333090
 GameObject:
   m_ObjectHideFlags: 0
@@ -690,6 +650,7 @@ MonoBehaviour:
   _aspectRationFitter: {fileID: 6327338445698584577}
   _greenScreenRemoverMat: {fileID: 2100000, guid: 075e8542b9e6c5f4c828c8e1af63ad18,
     type: 2}
+  _startState: 0
 --- !u!114 &6327338445698584577
 MonoBehaviour:
   m_ObjectHideFlags: 0

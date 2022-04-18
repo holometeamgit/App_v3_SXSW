@@ -22,6 +22,7 @@ public class CustomVideoPlayer {
     private VideoPlayer _videoPlayer;
     private Action<Status> _onChangeStatus;
     private bool _thumbnailOk;
+    public event Action<bool> onPlay;
 
     public CustomVideoPlayer(VideoPlayer videoPlayer, Action<Status> onChangeStatus) {
         _videoPlayer = videoPlayer;
@@ -48,7 +49,25 @@ public class CustomVideoPlayer {
     /// Play video
     /// </summary>
     public void Play() {
+        onPlay?.Invoke(true);
         _videoPlayer.Play();
+    }
+
+    /// <summary>
+    /// Pause video
+    /// </summary>
+    public void Pause() {
+        onPlay?.Invoke(false);
+        _videoPlayer.Pause();
+    }
+
+    /// <summary>
+    /// is Playing video
+    /// </summary>
+    public bool IsPlaying {
+        get {
+            return _videoPlayer.isPlaying;
+        }
     }
 
     private void FrameReady(VideoPlayer vp, long frameIndex) {
@@ -102,6 +121,7 @@ public class CustomVideoPlayer {
     /// StopVideo
     /// </summary>
     public void Stop() {
+        onPlay?.Invoke(false);
         _videoPlayer.Stop();
     }
 

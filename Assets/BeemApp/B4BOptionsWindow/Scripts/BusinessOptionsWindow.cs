@@ -17,7 +17,7 @@ public class BusinessOptionsWindow : MonoBehaviour {
     [SerializeField]
     private CellView _cellView;
     [SerializeField]
-    private GameObject _playBtn;
+    private SwipePopUp _swipePopUp;
 
     private List<IARMsgDataView> _arMsgDataViews;
 
@@ -34,11 +34,12 @@ public class BusinessOptionsWindow : MonoBehaviour {
     /// <param name="data"></param>
     public void Show(ARMsgJSON.Data data) {
         gameObject.SetActive(true);
-        _playBtn.SetActive(true);
         _cellView?.Show(data, _userWebManager);
         _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
 
         _arMsgDataViews.ForEach(x => x.Init(data));
+        _swipePopUp.Show();
+        _swipePopUp.onHid += OnClose;
     }
 
     /// <summary>
@@ -53,6 +54,11 @@ public class BusinessOptionsWindow : MonoBehaviour {
     /// Hide
     /// </summary>
     public void Hide() {
+        _swipePopUp.Hide();
+    }
+
+    private void OnClose() {
+        _swipePopUp.onHid -= OnClose;
         gameObject.SetActive(false);
     }
 }

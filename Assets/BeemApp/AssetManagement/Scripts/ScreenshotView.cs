@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
@@ -25,6 +26,11 @@ public class ScreenshotView : MonoBehaviour {
     private const string LOADING = "Loading...";
     private const string PROCESSING = "Processing...";
     private const string FAILED = "Failed...";
+
+    [SerializeField]
+    private bool _startState = true;
+
+    private bool _currentState = default;
 
 
     /// <summary>
@@ -69,6 +75,27 @@ public class ScreenshotView : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Pause
+    /// </summary>
+    public void Pause() {
+        if (customVideoPlayer != null) {
+            customVideoPlayer.Pause();
+        }
+    }
+
+    /// <summary>
+    /// Play or Pause
+    /// </summary>
+    public void PlayOrPause() {
+        _currentState = !_currentState;
+        if (!_currentState) {
+            Pause();
+        } else {
+            Play();
+        }
+    }
+
     private void OnChangeStatus(CustomVideoPlayer.Status status) {
 
         switch (status) {
@@ -85,6 +112,10 @@ public class ScreenshotView : MonoBehaviour {
                 if (_currentMat == null) {
                     _currentMat = new Material(_greenScreenRemoverMat);
                     _image.material = _currentMat;
+                }
+                _currentState = _startState;
+                if (_currentState) {
+                    Play();
                 }
                 break;
         }

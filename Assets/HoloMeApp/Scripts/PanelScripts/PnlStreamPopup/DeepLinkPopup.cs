@@ -119,20 +119,20 @@ public class DeepLinkPopup : MonoBehaviour {
         }
 
         _swipePopUp.Show();
+        _swipePopUp.onHid += OnClose;
     }
 
     /// <summary>
     /// Hide Popup
     /// </summary>
     public void Hide() {
-        _swipePopUp.onHid += OnClose;
         _swipePopUp.Hide();
-        _streamerCountUpdater.StopCheck();
-        _streamerCountUpdater.OnCountUpdated -= UpdateUserCount;
     }
 
     private void OnClose() {
         _swipePopUp.onHid -= OnClose;
+        _streamerCountUpdater.StopCheck();
+        _streamerCountUpdater.OnCountUpdated -= UpdateUserCount;
         DeepLinkStreamConstructor.OnHide?.Invoke();
         gameObject.SetActive(false);
     }

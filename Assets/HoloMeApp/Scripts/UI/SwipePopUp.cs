@@ -37,6 +37,9 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     [SerializeField]
     private float _time = 2;
 
+    [SerializeField]
+    private bool _isDragable = true;
+
     private CanvasScaler _canvasScaler;
 
     private Vector3 _initialPosition;
