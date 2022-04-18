@@ -30,7 +30,7 @@ public class CellView : ScrollItem<ARMsgScrollItem> {
     /// Show Cell Information
     /// </summary>
     /// <param name="data"></param>
-    private void Show(ARMsgJSON.Data data, UserWebManager userWebManager, bool isNew) {
+    public void Show(ARMsgJSON.Data data, UserWebManager userWebManager, bool isNew = false) {
         _newObj.SetActive(isNew);
 
         _screenshotView.Show(data, () => ShowPreview(true), (text) => { ShowPreview(false); _processText.text = text; });

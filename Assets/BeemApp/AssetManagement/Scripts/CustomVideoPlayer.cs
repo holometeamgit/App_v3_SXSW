@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 using UnityEngine.Video;
 
 /// <summary>
@@ -13,79 +14,94 @@ using UnityEngine.Video;
 public class CustomVideoPlayer {
 
     public enum Status {
-        ProcessLoading,
-        FailLoading,
-        SuccessLoading,
-        ProcessPreparing,
-        SuccessPreparing
+        Loading,
+        Successed,
+        Failed
     }
 
-    private CancellationTokenSource _cancelTokenSource;
     private VideoPlayer _videoPlayer;
-    public CustomVideoPlayer(VideoPlayer videoPlayer) {
+    private Action<Status> _onChangeStatus;
+    private bool _thumbnailOk;
+
+    public CustomVideoPlayer(VideoPlayer videoPlayer, Action<Status> onChangeStatus) {
         _videoPlayer = videoPlayer;
+        _onChangeStatus = onChangeStatus;
     }
 
 
     /// <summary>
     /// Play Video
     /// </summary>
-    /// <param name="_url"></param>
-    public async void PlayVideoFromURL(string _url, Action<Status> onChangeStatus) {
-        Cancel();
-        _cancelTokenSource = new CancellationTokenSource();
-        CancellationToken cancelTokenSource = _cancelTokenSource.Token;
-        _videoPlayer.source = VideoSource.Url;
-        _videoPlayer.url = _url;
+    /// <param name="url"></param>
+    public void PlayVideoFromURL(string url) {
+        _onChangeStatus?.Invoke(Status.Loading);
+        _videoPlayer.url = url;
+        _videoPlayer.Stop();
+        _videoPlayer.renderMode = VideoRenderMode.APIOnly;
+        _videoPlayer.sendFrameReadyEvents = true;
+        _videoPlayer.frameReady += FrameReady;
+        _videoPlayer.prepareCompleted += Prepare;
         _videoPlayer.Prepare();
-        onChangeStatus?.Invoke(Status.ProcessPreparing);
-        while (_videoPlayer.isPrepared == false && !cancelTokenSource.IsCancellationRequested) {
-            await Task.Yield();
-        }
-        if (cancelTokenSource.IsCancellationRequested) {
-            return;
-        }
-        onChangeStatus?.Invoke(Status.SuccessPreparing);
+    }
+
+    /// <summary>
+    /// Play video
+    /// </summary>
+    public void Play() {
         _videoPlayer.Play();
     }
+
+    private void FrameReady(VideoPlayer vp, long frameIndex) {
+        _videoPlayer.Pause();
+
+        _videoPlayer.sendFrameReadyEvents = false; //To stop frameReady events
+
+        _thumbnailOk = true;
+        _videoPlayer.frameReady -= FrameReady;
+    }
+
+    private async void Prepare(VideoPlayer vp) {
+        _videoPlayer.Play();
+
+        _videoPlayer.isLooping = true;
+
+        while (!_thumbnailOk) {
+            await Task.Yield();
+        }
+
+        _onChangeStatus?.Invoke(Status.Successed);
+
+        _videoPlayer.prepareCompleted -= Prepare;
+        GC.Collect();
+    }
+
 
     /// <summary>
     /// Load Video
     /// </summary>
     /// <param name="_url"></param>
-    public async void LoadVideoFromURL(string _url, Action<Status> onChangeStatus) {
-        Cancel();
+    public async void LoadVideoFromURL(string _url) {
         string _pathToFile = Path.Combine(Application.persistentDataPath, _url.Split(Path.AltDirectorySeparatorChar).Last());
         if (!File.Exists(_pathToFile)) {
             UnityWebRequest webRequest = UnityWebRequest.Get(_url);
-            onChangeStatus?.Invoke(Status.ProcessLoading);
+            _onChangeStatus?.Invoke(Status.Loading);
             await webRequest.SendWebRequest();
             if (webRequest.result != UnityWebRequest.Result.Success) {
-                onChangeStatus?.Invoke(Status.FailLoading);
+                _onChangeStatus?.Invoke(Status.Failed);
             } else {
                 byte[] videoBytes = webRequest.downloadHandler.data;
                 File.WriteAllBytes(_pathToFile, videoBytes);
-                onChangeStatus?.Invoke(Status.SuccessLoading);
-                PlayVideoFromURL(_pathToFile, onChangeStatus);
+                PlayVideoFromURL(_pathToFile);
             }
         } else {
-            onChangeStatus?.Invoke(Status.SuccessLoading);
-            PlayVideoFromURL(_pathToFile, onChangeStatus);
-        }
-    }
-
-    private void Cancel() {
-        if (_cancelTokenSource != null) {
-            _cancelTokenSource.Cancel();
-            _cancelTokenSource = null;
+            PlayVideoFromURL(_pathToFile);
         }
     }
 
     /// <summary>
     /// StopVideo
     /// </summary>
-    public void StopVideo() {
-        Cancel();
+    public void Stop() {
         _videoPlayer.Stop();
     }
 

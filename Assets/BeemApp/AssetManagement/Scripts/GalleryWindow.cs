@@ -21,18 +21,13 @@ public class GalleryWindow : MonoBehaviour {
     private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
 
     private UserWebManager _userWebManager;
-    private WebRequestHandler _webRequestHandler;
 
     private GetAllARMessageController _galleryController;
 
     [Inject]
     public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager) {
-        _webRequestHandler = webRequestHandler;
         _userWebManager = userWebManager;
-    }
-
-    private void Start() {
-        _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, _webRequestHandler);
+        _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, webRequestHandler);
     }
 
     private void OnEnable() {
