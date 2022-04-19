@@ -23,6 +23,8 @@ public class BusinessOptionsWindow : MonoBehaviour {
 
     private UserWebManager _userWebManager;
 
+    private ARMsgJSON.Data _data = null;
+
     [Inject]
     public void Construct(UserWebManager userWebManager) {
         _userWebManager = userWebManager;
@@ -33,6 +35,7 @@ public class BusinessOptionsWindow : MonoBehaviour {
     /// </summary>
     /// <param name="data"></param>
     public void Show(ARMsgJSON.Data data) {
+        _data = data;
         gameObject.SetActive(true);
         _cellView?.Show(data, _userWebManager);
         _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
@@ -43,12 +46,14 @@ public class BusinessOptionsWindow : MonoBehaviour {
     }
 
     /// <summary>
-    /// Close Business Options
+    /// Show data
     /// </summary>
-    public void Close() {
-        BusinessOptionsConstructor.OnHide?.Invoke();
+    /// <param name="data"></param>
+    public void Show() {
+        if (_data != null) {
+            Show(_data);
+        }
     }
-
 
     /// <summary>
     /// Hide
