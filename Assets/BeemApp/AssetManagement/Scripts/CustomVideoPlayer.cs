@@ -22,7 +22,6 @@ public class CustomVideoPlayer {
 
     private CancellationTokenSource _cancelTokenSource;
     private VideoPlayer _videoPlayer;
-    private UnityWebRequest _videoRequest;
     public CustomVideoPlayer(VideoPlayer videoPlayer) {
         _videoPlayer = videoPlayer;
     }
@@ -58,16 +57,13 @@ public class CustomVideoPlayer {
         Cancel();
         string _pathToFile = Path.Combine(Application.persistentDataPath, _url.Split(Path.AltDirectorySeparatorChar).Last());
         if (!File.Exists(_pathToFile)) {
-            if (_videoRequest != null && !_videoRequest.isDone) {
-                _videoRequest.Dispose();
-            }
-            _videoRequest = UnityWebRequest.Get(_url);
+            UnityWebRequest webRequest = UnityWebRequest.Get(_url);
             onChangeStatus?.Invoke(Status.ProcessLoading);
-            await _videoRequest.SendWebRequest();
-            if (_videoRequest.result != UnityWebRequest.Result.Success) {
+            await webRequest.SendWebRequest();
+            if (webRequest.result != UnityWebRequest.Result.Success) {
                 onChangeStatus?.Invoke(Status.FailLoading);
             } else {
-                byte[] videoBytes = _videoRequest.downloadHandler.data;
+                byte[] videoBytes = webRequest.downloadHandler.data;
                 File.WriteAllBytes(_pathToFile, videoBytes);
                 onChangeStatus?.Invoke(Status.SuccessLoading);
                 PlayVideoFromURL(_pathToFile, onChangeStatus);

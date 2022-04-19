@@ -11,7 +11,7 @@ namespace Beem.UI {
         /// <summary>
         /// Init StreamDataView
         /// </summary>
-        /// <param name="streamData"></param>
-        void Init(StreamJsonData.Data streamData);
+        /// <param name="data"></param>
+        void Init(StreamJsonData.Data data);
     }
 }
