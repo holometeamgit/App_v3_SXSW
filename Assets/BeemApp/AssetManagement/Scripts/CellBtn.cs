@@ -36,7 +36,7 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManager, IPointerD
 
     public void OnPointerUp(PointerEventData eventData) {
 
-        if (_arMsgData.processing_status == ARMsgJSON.Data.COMPETED_STATUS) {
+        if (_arMsgData.Status == ARMsgJSON.Data.COMPETED_STATUS) {
             if (Time.time - currentTime < LONG_CLICK_TIME) {
                 ARMsgRecordConstructor.OnActivated?.Invoke(false);
                 ARenaConstructor.onActivateForARMessaging?.Invoke(_arMsgData);
@@ -46,7 +46,7 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManager, IPointerD
             } else {
                 BusinessOptionsConstructor.OnShow?.Invoke(_arMsgData);
             }
-        } else if (_arMsgData.processing_status == ARMsgJSON.Data.PROCESSING_STATUS) {
+        } else if (_arMsgData.Status == ARMsgJSON.Data.PROCESSING_STATUS) {
             if (!CanShowPushNotificationPopup) {
                 WarningConstructor.ActivateSingleButton("Proccessing",
                 "Your hologram is processing,\nwe can tell you when it's ready",

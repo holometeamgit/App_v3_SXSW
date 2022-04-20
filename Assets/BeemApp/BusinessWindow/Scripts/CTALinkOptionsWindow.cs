@@ -23,16 +23,19 @@ public class CTALinkOptionsWindow : MonoBehaviour {
 
     [SerializeField]
     private GameObject _successEdit;
+    [SerializeField]
+    private GameObject _warning;
 
     private const int DELAY_FOR_SUCCESS = 3000;
 
     /// <summary>
     /// Show Window
     /// </summary>
-    public void Show() {
+    public void Show(bool isWarning = false) {
         gameObject.SetActive(true);
         _inputFields.SetActive(true);
         _successEdit.SetActive(false);
+        _warning.SetActive(isWarning);
         CheckText();
 
         foreach (var item in _customInputFields) {
