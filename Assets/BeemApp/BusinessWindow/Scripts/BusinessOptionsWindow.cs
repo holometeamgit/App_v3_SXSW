@@ -26,6 +26,7 @@ public class BusinessOptionsWindow : MonoBehaviour {
     private UserWebManager _userWebManager;
 
     private ARMsgJSON.Data _data = null;
+    private bool _existPreview = true;
 
     [Inject]
     public void Construct(UserWebManager userWebManager) {
@@ -36,10 +37,11 @@ public class BusinessOptionsWindow : MonoBehaviour {
     /// Show data
     /// </summary>
     /// <param name="data"></param>
-    public void Show(ARMsgJSON.Data data, bool videoCell = true) {
+    public void Show(ARMsgJSON.Data data, bool existPreview) {
         _data = data;
+        _existPreview = existPreview;
         gameObject.SetActive(true);
-        _videoCell.SetActive(videoCell);
+        _videoCell.SetActive(existPreview);
         _cellView?.Show(data, _userWebManager);
         _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
 
@@ -52,9 +54,9 @@ public class BusinessOptionsWindow : MonoBehaviour {
     /// Show data
     /// </summary>
     /// <param name="data"></param>
-    public void Show(bool videoCell = true) {
+    public void Show() {
         if (_data != null) {
-            Show(_data, videoCell);
+            Show(_data, _existPreview);
         }
     }
 

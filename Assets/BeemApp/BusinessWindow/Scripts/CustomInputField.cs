@@ -3,7 +3,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 /// <summary>
@@ -34,21 +36,14 @@ public class CustomInputField : MonoBehaviour {
         }
     }
 
-    public bool IsValid() {
+    public async Task<bool> IsValid() {
         if (isLink) {
-            string s = _mobileInputField.Text;
-            Uri resultURI;
-            if (!Regex.IsMatch(s, @"^http(s)?:\/\/", RegexOptions.IgnoreCase))
-                s = "https://" + s;
-
-            if (Uri.TryCreate(s, UriKind.Absolute, out resultURI))
-                return (resultURI.Scheme == Uri.UriSchemeHttp ||
-                        resultURI.Scheme == Uri.UriSchemeHttps);
-
-            return false;
+            UnityWebRequest webRequest = UnityWebRequest.Get(_mobileInputField.Text);
+            await webRequest.SendWebRequest();
+            return webRequest.result == UnityWebRequest.Result.Success;
+        } else {
+            return true;
         }
-
-        return true;
     }
 
     private void OnEnable() {

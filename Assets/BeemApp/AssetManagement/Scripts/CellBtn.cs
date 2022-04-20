@@ -37,14 +37,22 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManager, IPointerD
     public void OnPointerUp(PointerEventData eventData) {
 
         if (_arMsgData.Status == ARMsgJSON.Data.COMPETED_STATUS) {
-            if (Time.time - currentTime < LONG_CLICK_TIME) {
+            if (IsBusinessProfile) {
+                if (Time.time - currentTime < LONG_CLICK_TIME) {
+                    ARMsgRecordConstructor.OnActivated?.Invoke(false);
+                    ARenaConstructor.onActivateForARMessaging?.Invoke(_arMsgData);
+                    ARMsgARenaConstructor.OnActivatedARena?.Invoke(_arMsgData);
+                    GalleryConstructor.OnHide?.Invoke();
+                    PnlRecord.CurrentUser = _arMsgData.user;
+                } else {
+                    BusinessOptionsConstructor.OnShow?.Invoke(_arMsgData, true);
+                }
+            } else {
                 ARMsgRecordConstructor.OnActivated?.Invoke(false);
                 ARenaConstructor.onActivateForARMessaging?.Invoke(_arMsgData);
                 ARMsgARenaConstructor.OnActivatedARena?.Invoke(_arMsgData);
                 GalleryConstructor.OnHide?.Invoke();
                 PnlRecord.CurrentUser = _arMsgData.user;
-            } else {
-                BusinessOptionsConstructor.OnShow?.Invoke(_arMsgData);
             }
         } else if (_arMsgData.Status == ARMsgJSON.Data.PROCESSING_STATUS) {
             if (!CanShowPushNotificationPopup) {
@@ -61,6 +69,12 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManager, IPointerD
                         CanShowPushNotificationPopup = false;
                     });
             }
+        }
+    }
+
+    private bool IsBusinessProfile {
+        get {
+            return true;
         }
     }
 

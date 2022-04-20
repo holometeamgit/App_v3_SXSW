@@ -80,7 +80,9 @@ public class CTALinkOptionsWindow : MonoBehaviour {
     /// </summary>
     public async void UpdateDataButton() {
         foreach (var item in _customInputFields) {
-            if (!item.IsValid()) {
+            var valid = item.IsValid();
+            await valid;
+            if (valid.IsFaulted || !valid.Result) {
                 WarningConstructor.ActivateDoubleButton(message: "Something went wrong", buttonOneText: "Retry", buttonTwoText: "Cancel", onButtonOnePress: UpdateDataButton, isWarning: true);
                 return;
             }

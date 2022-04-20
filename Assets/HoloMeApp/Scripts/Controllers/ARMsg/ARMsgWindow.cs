@@ -6,9 +6,16 @@ using Beem.Permissions;
 using Zenject;
 
 /// <summary>
-/// Bar for Prerecorded Video
+/// Window for ARMsg
 /// </summary>
-public class PnlARMessages : MonoBehaviour {
+public class ARMsgWindow : MonoBehaviour {
+
+    [SerializeField]
+    private List<GameObject> businessButtons;
+
+    [SerializeField]
+    private List<GameObject> usualButtons;
+
     private HologramHandler _hologramHandler;
 
     private List<IARMsgDataView> _arMsgDataViews;
@@ -30,6 +37,16 @@ public class PnlARMessages : MonoBehaviour {
         _arMsgDataViews.ForEach(x => x.Init(arMsgJSON));
 
         _hologramHandler.SetOnPlacementUIHelperFinished(OnPlacementCompleted);
+
+        businessButtons.ForEach(x => x.SetActive(IsBusinessProfile));
+
+        usualButtons.ForEach(x => x.SetActive(!IsBusinessProfile));
+    }
+
+    private bool IsBusinessProfile {
+        get {
+            return true;
+        }
     }
 
     private void OnPlacementCompleted() {

@@ -11,7 +11,7 @@ public class BusinessOptionsConstructor : MonoBehaviour {
     [SerializeField]
     private BusinessOptionsWindow _businessOptionsView;
 
-    public static Action<ARMsgJSON.Data> OnShow = delegate { };
+    public static Action<ARMsgJSON.Data, bool> OnShow = delegate { };
     public static Action OnShowLast = delegate { };
     public static Action OnHide = delegate { };
 
@@ -27,8 +27,8 @@ public class BusinessOptionsConstructor : MonoBehaviour {
         OnHide -= Hide;
     }
 
-    private void Show(ARMsgJSON.Data data) {
-        _businessOptionsView.Show(data);
+    private void Show(ARMsgJSON.Data data, bool existPreview) {
+        _businessOptionsView.Show(data, existPreview);
     }
 
     private void Show() {
