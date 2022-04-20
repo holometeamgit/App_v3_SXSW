@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,11 +18,21 @@ public class CTALinkOptionsWindow : MonoBehaviour {
     [SerializeField]
     private SwipePopUp _swipePopUp;
 
+    [SerializeField]
+    private GameObject _inputFields;
+
+    [SerializeField]
+    private GameObject _successEdit;
+
+    private const int DELAY_FOR_SUCCESS = 3000;
+
     /// <summary>
     /// Show Window
     /// </summary>
     public void Show() {
         gameObject.SetActive(true);
+        _inputFields.SetActive(true);
+        _successEdit.SetActive(false);
         CheckText();
 
         foreach (var item in _customInputFields) {
@@ -61,9 +72,22 @@ public class CTALinkOptionsWindow : MonoBehaviour {
         CheckText();
     }
 
+    /// <summary>
+    /// Update Data Button
+    /// </summary>
+    public async void UpdateDataButton() {
+        foreach (var item in _customInputFields) {
+            if (!item.IsValid()) {
+                WarningConstructor.ActivateDoubleButton(message: "Something went wrong", buttonOneText: "Retry", buttonTwoText: "Cancel", onButtonOnePress: UpdateDataButton, isWarning: true);
+                return;
+            }
+        }
 
-    public void UpdateDataButton() {
-
+        _inputFields.SetActive(false);
+        _successEdit.SetActive(true);
+        await Task.Delay(DELAY_FOR_SUCCESS);
+        BusinessOptionsConstructor.OnShowLast?.Invoke();
+        CTALinkOptionsConstructor.OnHide?.Invoke();
     }
 
 }
