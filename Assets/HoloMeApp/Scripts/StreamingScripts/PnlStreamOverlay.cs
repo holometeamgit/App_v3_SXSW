@@ -287,7 +287,8 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
            "GET IN TOUCH", "CANCEL",
           () => {
               externalLinkRedirector.Redirect();
-          }, null, false);
+              StreamCallBacks.onSelectedMode?.Invoke(DeepLinkHandler.Params.room);
+          }, () => StreamCallBacks.onSelectedMode?.Invoke(DeepLinkHandler.Params.room), false);
     }
 
     /// <summary>
