@@ -24,11 +24,11 @@ public class PnlViewingExperience : MonoBehaviour {
     float messageAnimationSpeed = 0.25f;
     float messageTime = 10;
     float animationSpeed = 0.25f;
-    string scaneEnviromentStr = "Scan the floor in front of you by moving your phone slowly from side to side";
+    string scaneEnviromentStr = "Scan the floor by moving your phone from side to side";
 
-    string pinchToZoomStr = "Pinch to resize the hologram";
+    string pinchToZoomStr = "Pinch to resize your hologram";
 
-    string tapToPlaceStr = "To see your chosen performer, tap the white circle when it appears on the floor";
+    string tapToPlaceStr = "Tap the circle to place your hologram";
     private enum TutorialState { MessageScan, MessageTapToPlace, WaitingForTap, WaitingForPinch, TutorialComplete };
     TutorialState tutorialState = TutorialState.MessageScan;
 
