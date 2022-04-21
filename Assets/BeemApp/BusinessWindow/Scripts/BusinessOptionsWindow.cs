@@ -17,8 +17,6 @@ public class BusinessOptionsWindow : MonoBehaviour {
     [SerializeField]
     private CellView _cellView;
     [SerializeField]
-    private Mover _mover;
-    [SerializeField]
     private GameObject _videoCell;
 
     private List<IARMsgDataView> _arMsgDataViews;
@@ -46,8 +44,6 @@ public class BusinessOptionsWindow : MonoBehaviour {
         _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
 
         _arMsgDataViews.ForEach(x => x.Init(data));
-        _mover.ChangeState(true);
-        _mover.onEndMoving += OnClose;
     }
 
     /// <summary>
@@ -64,14 +60,7 @@ public class BusinessOptionsWindow : MonoBehaviour {
     /// Hide
     /// </summary>
     public void Hide() {
-        _mover.ChangeState(false);
-    }
-
-    private void OnClose(bool status) {
-        if (!status) {
-            _mover.onEndMoving -= OnClose;
-            gameObject.SetActive(false);
-        }
+        gameObject.SetActive(false);
     }
 
 }

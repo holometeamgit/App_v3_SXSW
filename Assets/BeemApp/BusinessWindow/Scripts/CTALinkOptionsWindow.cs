@@ -16,9 +16,6 @@ public class CTALinkOptionsWindow : MonoBehaviour {
     private Button _updateDataBtn;
 
     [SerializeField]
-    private Mover _mover;
-
-    [SerializeField]
     private GameObject _warning;
 
     /// <summary>
@@ -32,26 +29,16 @@ public class CTALinkOptionsWindow : MonoBehaviour {
         foreach (var item in _customInputFields) {
             item.GetInputField.onValueChanged.AddListener(OnValueChanged);
         }
-
-        _mover.ChangeState(true);
-        _mover.onEndMoving += OnClose;
     }
 
     /// <summary>
     /// Hide Window
     /// </summary>
     public void Hide() {
-        _mover.ChangeState(false);
-    }
-
-    private void OnClose(bool status) {
-        if (!status) {
-            _mover.onEndMoving -= OnClose;
-            foreach (var item in _customInputFields) {
-                item.GetInputField.onValueChanged.RemoveListener(OnValueChanged);
-            }
-            gameObject.SetActive(false);
+        foreach (var item in _customInputFields) {
+            item.GetInputField.onValueChanged.RemoveListener(OnValueChanged);
         }
+        gameObject.SetActive(false);
     }
 
     private void CheckText() {

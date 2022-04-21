@@ -45,6 +45,7 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManager, IPointerD
                     GalleryConstructor.OnHide?.Invoke();
                     PnlRecord.CurrentUser = _arMsgData.user;
                 } else {
+                    BlindOptionsConstructor.OnShow?.Invoke();
                     BusinessOptionsConstructor.OnShow?.Invoke(_arMsgData, true);
                 }
             } else {

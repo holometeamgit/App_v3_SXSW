@@ -9,10 +9,6 @@ using UnityEngine.UI;
 /// </summary>
 public class SuccessOptionsWindow : MonoBehaviour {
 
-    [SerializeField]
-    private Mover _mover;
-
-
     private const int DELAY_FOR_SUCCESS = 3000;
 
     /// <summary>
@@ -20,8 +16,6 @@ public class SuccessOptionsWindow : MonoBehaviour {
     /// </summary>
     public async void Show() {
         gameObject.SetActive(true);
-        _mover.ChangeState(true);
-        _mover.onEndMoving += OnClose;
 
         await Task.Delay(DELAY_FOR_SUCCESS);
         BusinessOptionsConstructor.OnShowLast?.Invoke();
@@ -32,14 +26,7 @@ public class SuccessOptionsWindow : MonoBehaviour {
     /// Hide Window
     /// </summary>
     public void Hide() {
-        _mover.ChangeState(false);
-    }
-
-    private void OnClose(bool status) {
-        if (!status) {
-            _mover.onEndMoving -= OnClose;
-            gameObject.SetActive(false);
-        }
+        gameObject.SetActive(false);
     }
 
 }
