@@ -25,7 +25,7 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     private bool active = false;
 
     private const string MOVE_KEY = "Moving";
-    private const float MOVE_CEIL = 0.5f;
+    private const float MOVE_CEIL = 0.3f;
 
     public event Action onStartMoving;
     public event Action<bool> onEndMoving;
@@ -35,7 +35,7 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     }
 
     public void OnDrag(PointerEventData eventData) {
-        CurrentStatus = eventData.position.y / _rect.sizeDelta.y;
+        CurrentStatus = Mathf.Clamp01(eventData.position.y / _rect.sizeDelta.y);
     }
 
     public void OnEndDrag(PointerEventData eventData) {
