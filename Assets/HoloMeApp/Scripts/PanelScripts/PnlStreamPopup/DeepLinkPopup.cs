@@ -118,8 +118,10 @@ public class DeepLinkPopup : MonoBehaviour {
             _streamerCountUpdater.OnCountUpdated += UpdateUserCount;
         }
 
-        _mover.ChangeState(true);
-        _mover.onEndMoving += OnClose;
+        if (!_mover.IsDragging) {
+            _mover.ChangeState(true);
+            _mover.onEndMoving += OnClose;
+        }
     }
 
     /// <summary>
@@ -135,7 +137,7 @@ public class DeepLinkPopup : MonoBehaviour {
             _streamerCountUpdater.StopCheck();
             _streamerCountUpdater.OnCountUpdated -= UpdateUserCount;
             gameObject.SetActive(false);
-            Close();
+            DeepLinkStreamConstructor.OnHideWithDrag?.Invoke();
         }
     }
 

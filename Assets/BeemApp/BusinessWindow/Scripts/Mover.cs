@@ -20,6 +20,9 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     [SerializeField]
     private float _speed = 1f;
 
+    public event Action<bool> onStartMoving;
+    public event Action<bool> onEndMoving;
+
     private Coroutine _enumerator;
 
     private bool active = false;
@@ -27,11 +30,21 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     private const string MOVE_KEY = "Moving";
     private const float MOVE_CEIL = 0.3f;
 
-    public event Action onStartMoving;
-    public event Action<bool> onEndMoving;
+    private bool isDragging;
+
+    public bool IsDragging {
+        get {
+            return isDragging;
+        }
+    }
+
+    private void OnDisable() {
+        Cancel();
+    }
 
     public void OnBeginDrag(PointerEventData eventData) {
         Cancel();
+        isDragging = true;
     }
 
     public void OnDrag(PointerEventData eventData) {
@@ -39,16 +52,20 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     }
 
     public void OnEndDrag(PointerEventData eventData) {
+        isDragging = false;
         ChangeValue(CurrentStatus > MOVE_CEIL ? 1f : 0f);
     }
 
     private void ChangeValue(float endValue) {
         Cancel();
-        _enumerator = StartCoroutine(Moving(endValue));
+        if (gameObject.activeInHierarchy) {
+            _enumerator = StartCoroutine(Moving(endValue));
+        }
     }
 
     private void Cancel() {
         if (_enumerator != null) {
+            isDragging = false;
             StopCoroutine(_enumerator);
             _enumerator = null;
         }
@@ -80,7 +97,7 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     }
 
     private IEnumerator Moving(float endValue) {
-        onStartMoving?.Invoke();
+        onStartMoving?.Invoke(endValue > MOVE_CEIL);
         float startValue = CurrentStatus;
         float currentValue = startValue;
         while (Mathf.Abs(currentValue - endValue) > 0.01f) {
