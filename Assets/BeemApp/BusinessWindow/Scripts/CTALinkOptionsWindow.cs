@@ -16,7 +16,7 @@ public class CTALinkOptionsWindow : MonoBehaviour {
     private Button _updateDataBtn;
 
     [SerializeField]
-    private SwipePopUp _swipePopUp;
+    private Mover _mover;
 
     [SerializeField]
     private GameObject _inputFields;
@@ -42,23 +42,25 @@ public class CTALinkOptionsWindow : MonoBehaviour {
             item.GetInputField.onValueChanged.AddListener(OnValueChanged);
         }
 
-        _swipePopUp.Show();
-        _swipePopUp.onHid += OnClose;
+        _mover.ChangeState(true);
+        _mover.onEndMoving += OnClose;
     }
 
     /// <summary>
     /// Hide Window
     /// </summary>
     public void Hide() {
-        _swipePopUp.Hide();
+        _mover.ChangeState(false);
     }
 
-    private void OnClose() {
-        _swipePopUp.onHid -= OnClose;
-        foreach (var item in _customInputFields) {
-            item.GetInputField.onValueChanged.RemoveListener(OnValueChanged);
+    private void OnClose(bool status) {
+        if (!status) {
+            _mover.onEndMoving -= OnClose;
+            foreach (var item in _customInputFields) {
+                item.GetInputField.onValueChanged.RemoveListener(OnValueChanged);
+            }
+            gameObject.SetActive(false);
         }
-        gameObject.SetActive(false);
     }
 
     private void CheckText() {

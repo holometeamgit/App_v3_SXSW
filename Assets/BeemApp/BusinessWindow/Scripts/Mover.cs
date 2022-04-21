@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Mover : MonoBehaviour, IPointerClickHandler, IDragHandler, IBeginDragHandler, IEndDragHandler {
+/// <summary>
+/// Mover
+/// </summary>
+public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler {
 
     [SerializeField]
     private Animator _animator;
@@ -17,38 +20,26 @@ public class Mover : MonoBehaviour, IPointerClickHandler, IDragHandler, IBeginDr
     [SerializeField]
     private float _speed = 1f;
 
-    [SerializeField]
-    private bool _startValue = false;
-
     private Coroutine _enumerator;
 
     private bool active = false;
-
-    private float currentDragValue;
 
     private const string MOVE_KEY = "Moving";
     private const float MOVE_CEIL = 0.5f;
 
     public event Action onStartMoving;
-    public event Action onEndMoving;
-
-    private void OnEnable() {
-        active = _startValue;
-        ChangeValue(active ? 1f : 0f);
-    }
+    public event Action<bool> onEndMoving;
 
     public void OnBeginDrag(PointerEventData eventData) {
         Cancel();
     }
 
     public void OnDrag(PointerEventData eventData) {
-        currentDragValue = eventData.position.y / _rect.sizeDelta.y;
-        CurrentStatus = currentDragValue;
-
+        CurrentStatus = eventData.position.y / _rect.sizeDelta.y;
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-        ChangeValue(currentDragValue > MOVE_CEIL ? 1f : 0f);
+        ChangeValue(CurrentStatus > MOVE_CEIL ? 1f : 0f);
     }
 
     private void ChangeValue(float endValue) {
@@ -63,15 +54,19 @@ public class Mover : MonoBehaviour, IPointerClickHandler, IDragHandler, IBeginDr
         }
     }
 
-    public void OnPointerClick(PointerEventData eventData) {
-        ChangeState();
-    }
-
     /// <summary>
     /// Change State
     /// </summary>
     public void ChangeState() {
         active = !active;
+        ChangeValue(active ? 1f : 0f);
+    }
+
+    /// <summary>
+    /// Change State
+    /// </summary>
+    public void ChangeState(bool state) {
+        active = state;
         ChangeValue(active ? 1f : 0f);
     }
 
@@ -95,7 +90,7 @@ public class Mover : MonoBehaviour, IPointerClickHandler, IDragHandler, IBeginDr
         }
         currentValue = endValue;
         CurrentStatus = currentValue;
-        onEndMoving?.Invoke();
+        onEndMoving?.Invoke(endValue > MOVE_CEIL);
     }
 
 
