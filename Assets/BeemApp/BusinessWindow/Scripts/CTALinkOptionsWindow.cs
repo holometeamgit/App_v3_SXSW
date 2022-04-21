@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// CTA Link Editor
+/// CTA Link Window
 /// </summary>
 public class CTALinkOptionsWindow : MonoBehaviour {
 
@@ -19,22 +19,13 @@ public class CTALinkOptionsWindow : MonoBehaviour {
     private Mover _mover;
 
     [SerializeField]
-    private GameObject _inputFields;
-
-    [SerializeField]
-    private GameObject _successEdit;
-    [SerializeField]
     private GameObject _warning;
-
-    private const int DELAY_FOR_SUCCESS = 3000;
 
     /// <summary>
     /// Show Window
     /// </summary>
     public void Show(bool isWarning = false) {
         gameObject.SetActive(true);
-        _inputFields.SetActive(true);
-        _successEdit.SetActive(false);
         _warning.SetActive(isWarning);
         CheckText();
 
@@ -90,11 +81,8 @@ public class CTALinkOptionsWindow : MonoBehaviour {
             }
         }
 
-        _inputFields.SetActive(false);
-        _successEdit.SetActive(true);
-        await Task.Delay(DELAY_FOR_SUCCESS);
-        BusinessOptionsConstructor.OnShowLast?.Invoke();
         CTALinkOptionsConstructor.OnHide?.Invoke();
+        SuccessOptionsConstructor.OnShow?.Invoke();
     }
 
 }
