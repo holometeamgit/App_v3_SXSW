@@ -53,7 +53,7 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManager, IWebReque
                     GalleryConstructor.OnHide?.Invoke();
                     PnlRecord.CurrentUser = _arMsgData.user;
                 } else {
-                    BlindOptionsConstructor.OnShow?.Invoke(_bussinessOptionsId, new object[] { _arMsgData, _userWebManager, _webRequestHandler, true });
+                    BlindOptionsConstructor.Show(_bussinessOptionsId, _arMsgData, _userWebManager, _webRequestHandler, true);
                 }
             } else {
                 ARMsgRecordConstructor.OnActivated?.Invoke(false);

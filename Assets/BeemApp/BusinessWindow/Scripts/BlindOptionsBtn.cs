@@ -18,9 +18,9 @@ public class BlindOptionsBtn : MonoBehaviour {
     /// </summary>
     public void OnClick() {
         if (isOpened) {
-            BlindOptionsConstructor.OnShow?.Invoke(_assetId, null);
+            BlindOptionsConstructor.Show(_assetId);
         } else {
-            BlindOptionsConstructor.OnHide?.Invoke();
+            BlindOptionsConstructor.Hide();
         }
     }
 }

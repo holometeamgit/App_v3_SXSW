@@ -11,24 +11,40 @@ public class BlindOptionsConstructor : MonoBehaviour {
     [SerializeField]
     private BlindOptionsWindow _blindOptionsWindow;
 
-    public static Action<string, object[]> OnShow = delegate { };
-    public static Action OnHide = delegate { };
+    public static event Action<string, object[]> OnShow = delegate { };
+    public static event Action OnHide = delegate { };
 
     private void OnEnable() {
-        OnShow += Show;
-        OnHide += Hide;
+        OnShow += ShowView;
+        OnHide += HideView;
     }
 
     private void OnDisable() {
-        OnShow -= Show;
-        OnHide -= Hide;
+        OnShow -= ShowView;
+        OnHide -= HideView;
     }
 
-    private void Show(string assetId, params object[] objects) {
+    /// <summary>
+    /// Show
+    /// </summary>
+    /// <param name="assetId"></param>
+    /// <param name="objects"></param>
+    public static void Show(string assetId, params object[] objects) {
+        OnShow?.Invoke(assetId, objects);
+    }
+
+    private void ShowView(string assetId, params object[] objects) {
         _blindOptionsWindow.Show(assetId, objects);
     }
 
-    private void Hide() {
+    /// <summary>
+    /// Hide
+    /// </summary>
+    public static void Hide() {
+        OnHide?.Invoke();
+    }
+
+    private void HideView() {
         _blindOptionsWindow.Hide();
     }
 }

@@ -9,6 +9,9 @@ using UnityEngine;
 
 public class ARMsgBusinessBtn : MonoBehaviour, IARMsgDataView, IUserWebManager, IWebRequestHandlerView {
 
+    [SerializeField]
+    private string _assetID = "BusinessOptionsView";
+
     private ARMsgJSON.Data _data;
     private WebRequestHandler _webRequestHandler;
     private UserWebManager _userWebManager;
@@ -26,6 +29,6 @@ public class ARMsgBusinessBtn : MonoBehaviour, IARMsgDataView, IUserWebManager, 
     }
 
     public void OnClick() {
-        BlindOptionsConstructor.OnShow?.Invoke("BusinessOptionsView", new object[] { _data, _userWebManager, _webRequestHandler, false });
+        BlindOptionsConstructor.Show(_assetID, _data, _userWebManager, _webRequestHandler, false);
     }
 }

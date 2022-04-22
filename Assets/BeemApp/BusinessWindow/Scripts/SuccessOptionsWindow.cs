@@ -22,7 +22,7 @@ public class SuccessOptionsWindow : MonoBehaviour, IBlindView {
     private SuccessOptionsData _successOptionsData;
 
     private const int DELAY_FOR_SUCCESS = 3000;
-
+    private const string BUSINESS_OPTIONS_VIEW = "BusinessOptionsView";
 
 
     /// <summary>
@@ -50,7 +50,7 @@ public class SuccessOptionsWindow : MonoBehaviour, IBlindView {
 
         await Task.Delay(DELAY_FOR_SUCCESS);
 
-        BlindOptionsConstructor.OnShow?.Invoke("BusinessOptionsView", null);
+        BlindOptionsConstructor.Show(BUSINESS_OPTIONS_VIEW);
     }
 
     private void Back() {

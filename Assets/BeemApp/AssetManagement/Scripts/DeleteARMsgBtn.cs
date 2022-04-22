@@ -35,7 +35,7 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView, IWebRequestHandlerV
         ARMsgARenaConstructor.OnDeactivatedARena?.Invoke();
         ARenaConstructor.onDeactivate?.Invoke();
         GalleryConstructor.OnShow?.Invoke(data);
-        BlindOptionsConstructor.OnHide?.Invoke();
+        BlindOptionsConstructor.Hide();
     }
 
     public void Init(ARMsgJSON.Data data) {

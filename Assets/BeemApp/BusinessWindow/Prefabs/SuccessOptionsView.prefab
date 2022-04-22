@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 3041009123780386789}
   - component: {fileID: 619439803273038466}
   - component: {fileID: 8235372622566560614}
+  - component: {fileID: 5503443138233376005}
   m_Layer: 5
   m_Name: AcceptImg
   m_TagString: Untagged
@@ -182,7 +183,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 723d0d7fc73c846b6a2f1ed4891f2099, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -267,6 +268,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5503443138233376005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1457110819585555595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54118f464d2ce554a8e947ec58126f14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioSource: {fileID: 8235372622566560614}
 --- !u!1 &2948665336954833558
 GameObject:
   m_ObjectHideFlags: 0
@@ -463,6 +477,8 @@ GameObject:
   m_Component:
   - component: {fileID: 17625923044528694}
   - component: {fileID: 4937964508634566775}
+  - component: {fileID: 5800875526637193522}
+  - component: {fileID: 9157428787870456175}
   m_Layer: 5
   m_Name: SuccessOptionsView
   m_TagString: Untagged
@@ -509,6 +525,37 @@ MonoBehaviour:
   _titleText: {fileID: 6125739845181444802}
   _descriptionText: {fileID: 3518040660660389359}
   _backBtn: {fileID: 7973972645396584293}
+--- !u!225 &5800875526637193522
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4429918520204893662}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!95 &9157428787870456175
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4429918520204893662}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 62a3081a2ef6052478879dfe44973712, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &4690970547191585633
 GameObject:
   m_ObjectHideFlags: 0

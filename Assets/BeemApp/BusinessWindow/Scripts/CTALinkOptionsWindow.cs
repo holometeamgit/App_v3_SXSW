@@ -24,6 +24,9 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
 
     private string _warningTxt;
 
+    private const string SUCCESS_OPTIONS_VIEW = "SuccessOptionsView";
+    private const string CTA_LINK_OPTIONS_VIEW = "CTALinkOptionsView";
+
     /// <summary>
     /// Show Window
     /// </summary>
@@ -89,9 +92,9 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
             }
         }
 
-        SuccessOptionsData data = new SuccessOptionsData(title: "Edit CTA", description: "The CTA information has\nbeen updated", backEvent: () => BlindOptionsConstructor.OnShow?.Invoke("CTALinkOptionsView", null));
+        SuccessOptionsData data = new SuccessOptionsData(title: "Edit CTA", description: "The CTA information has\nbeen updated", backEvent: () => BlindOptionsConstructor.Show(CTA_LINK_OPTIONS_VIEW));
 
-        BlindOptionsConstructor.OnShow?.Invoke("SuccessOptionsView", new object[] { data });
+        BlindOptionsConstructor.Show(SUCCESS_OPTIONS_VIEW, data);
     }
 
 }
