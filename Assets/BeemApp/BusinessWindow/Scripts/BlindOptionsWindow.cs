@@ -36,6 +36,7 @@ public class BlindOptionsWindow : MonoBehaviour {
                 GameObject tempView = Instantiate(handle.Task.Result);
                 tempView.name = assetId;
                 tempView.transform.SetParent(_parent);
+                tempView.transform.localScale = Vector3.one;
                 tempView.GetComponent<RectTransform>().offsetMax = Vector2.zero;
                 tempView.GetComponent<RectTransform>().offsetMin = Vector2.zero;
                 _blindViews.Add(tempView);

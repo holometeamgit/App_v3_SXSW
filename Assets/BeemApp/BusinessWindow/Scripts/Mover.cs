@@ -30,6 +30,8 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     private const string MOVE_KEY = "Moving";
     private const float MOVE_CEIL = 0.3f;
 
+    private Vector2 startPosition;
+
     private bool isDragging;
 
     public bool IsDragging {
@@ -44,10 +46,16 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
 
     public void OnBeginDrag(PointerEventData eventData) {
         Cancel();
+        startPosition = eventData.position;
         isDragging = true;
     }
 
     public void OnDrag(PointerEventData eventData) {
+
+
+        Debug.LogError($"Difference: {(eventData.position.y - startPosition.y) / _rect.sizeDelta.y}");
+        Debug.LogError($"Old: {(eventData.position.y) / _rect.sizeDelta.y}");
+
         CurrentStatus = Mathf.Clamp01(eventData.position.y / _rect.sizeDelta.y);
     }
 
