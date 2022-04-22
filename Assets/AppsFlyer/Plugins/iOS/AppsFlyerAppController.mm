@@ -8,20 +8,17 @@
 #import <Foundation/Foundation.h>
 #import "UnityAppController.h"
 #import "AppDelegateListener.h"
-#import "AppsFlyeriOSWrapper.h"
 #if __has_include(<AppsFlyerLib/AppsFlyerLib.h>)
 #import <AppsFlyerLib/AppsFlyerLib.h>
 #else
 #import "AppsFlyerLib.h"
 #endif
-#import <objc/message.h>
 
 /**
  Note if you would like to use method swizzeling see AppsFlyer+AppController.m
  If you are using swizzeling then comment out the method that is being swizzeled in AppsFlyerAppController.mm
  Only use swizzeling if there are conflicts with other plugins that needs to be resolved.
 */
-
 
 @interface AppsFlyerAppController : UnityAppController <AppDelegateListener>
 {
@@ -48,13 +45,6 @@
 
 - (void)didFinishLaunching:(NSNotification*)notification {
     NSLog(@"got didFinishLaunching = %@",notification.userInfo);
-
-
-    if (_AppsFlyerdelegate == nil) {
-        _AppsFlyerdelegate = [[AppsFlyeriOSWarpper alloc] init];
-    }
-    [[AppsFlyerLib shared] setDelegate:_AppsFlyerdelegate];
-
     if (notification.userInfo[@"url"]) {
         [self onOpenURL:notification];
     }
@@ -62,7 +52,7 @@
 
 -(void)didBecomeActive:(NSNotification*)notification {
     NSLog(@"got didBecomeActive(out) = %@", notification.userInfo);
-    if (didEnteredBackGround == YES && AppsFlyeriOSWarpper.didCallStart == YES) {
+    if (didEnteredBackGround == YES) {
         [[AppsFlyerLib shared] start];
         didEnteredBackGround = NO;
     }
@@ -74,10 +64,15 @@
 }
 
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler {
-    [[AppsFlyerAttribution shared] continueUserActivity:userActivity restorationHandler:restorationHandler];
+    [[AppsFlyerLib shared] continueUserActivity:userActivity restorationHandler:restorationHandler];
     return YES;
 }
 
+-(BOOL) application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary *)options {
+    NSLog(@"got openUrl: %@",url);
+    [[AppsFlyerLib shared] handleOpenUrl:url options:options];
+    return NO;
+}
 
 - (void)onOpenURL:(NSNotification*)notification {
     NSLog(@"got onOpenURL = %@", notification.userInfo);
@@ -89,7 +84,7 @@
     }
     
     if (url != nil) {
-        [[AppsFlyerAttribution shared] handleOpenUrl:url sourceApplication:sourceApplication annotation:nil];
+        [[AppsFlyerLib shared] handleOpenURL:url sourceApplication:sourceApplication withAnnotation:nil];
     }
     
 }
@@ -101,11 +96,9 @@
 
 @end
 
-#if !(AFSDK_SHOULD_SWIZZLE)
+//IMPL_APP_CONTROLLER_SUBCLASS(AppsFlyerAppController)
 
-IMPL_APP_CONTROLLER_SUBCLASS(AppsFlyerAppController)
 
-#endif
 /**
 Note if you would not like to use IMPL_APP_CONTROLLER_SUBCLASS you can replace it with the code below.
  <code>
