@@ -14,7 +14,7 @@ public class PnlContentOptionMenu : MonoBehaviour {
     }
 
     public void DeletePerformance() {
-        WarningConstructor.ActivateDoubleButton("Disconnect from live stream?", "Closing this page will disconnect you from the live stream",
+        WarningConstructor.ActivateDoubleButton("EXIT?", "Are you sure you want to leave?",
             onButtonOnePress: () => {
                 OnDelete();
             });

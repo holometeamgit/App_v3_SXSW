@@ -21,11 +21,11 @@ public class DeepLinkStreamData {
     private bool _closeBtn;
     private bool _shareBtn;
 
-    private const string NO_LONGER_LIVE_TITLE = "<color =#{0}>{1}</color> is no longer live";
+    private const string NO_LONGER_LIVE_TITLE = "<color=#{0}>{1}</color> is no longer live";
     private const string NO_LONGER_LIVE_DESCRIPTION = "";
-    private const string ONLINE_TITLE = "<color=#{0}>{1}</color>’s is now online";
+    private const string ONLINE_TITLE = "<color=#{0}>{1}</color>\'s is now online";
     private const string ONLINE_DESCRIPTION = "";
-    private const string OFFLINE_TITLE = "<color=#{0}>{1}</color>’s is currently offline";
+    private const string OFFLINE_TITLE = "<color=#{0}>{1}</color>\'s is currently offline";
     private const string OFFLINE_DESCRIPTION = "This page will refresh automatically\nwhen they go live";
 
     public DeepLinkStreamData(DeepLinkPopup deepLinkPopup, IData data) {
