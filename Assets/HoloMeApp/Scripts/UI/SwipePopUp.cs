@@ -62,8 +62,6 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
                 break;
             case AppearanceSide.Bottom:
                 deviation = _swipedObjectTransform.offsetMin.y + eventData.delta.y / _canvasScaler.transform.localScale.y;
-                Debug.LogError($"deviation {deviation} > MAX_DEVIATION {MAX_DEVIATION}");
-                Debug.LogError($"cond {deviation > MAX_DEVIATION}");
                 if (deviation > MAX_DEVIATION)
                     break;
                 VerticalMoving(eventData, Mathf.Abs(Mathf.Clamp((int)deviation, 0, (int)MAX_DEVIATION)));
