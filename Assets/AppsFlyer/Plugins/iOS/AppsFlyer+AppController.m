@@ -7,7 +7,6 @@
 
 #import <objc/runtime.h>
 #import "UnityAppController.h"
-#import "AppsFlyeriOSWrapper.h"
 #if __has_include(<AppsFlyerLib/AppsFlyerLib.h>)
 #import <AppsFlyerLib/AppsFlyerLib.h>
 #else
@@ -29,8 +28,6 @@ static IMP __original_openUrl_Imp __unused;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
 
-#if !AFSDK_SHOULD_SWIZZLE
-
         id swizzleFlag = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"AppsFlyerShouldSwizzle"];
         BOOL shouldSwizzle = swizzleFlag ? [swizzleFlag boolValue] : NO;
         
@@ -50,35 +47,9 @@ static IMP __original_openUrl_Imp __unused;
             Method method4 = class_getInstanceMethod([self class], @selector(application:openURL:options:));
             __original_openUrl_Imp = method_setImplementation(method4, (IMP)__swizzled_openURL);
             
-            if (_AppsFlyerdelegate == nil) {
-                _AppsFlyerdelegate = [[AppsFlyeriOSWarpper alloc] init];
-            }
            
             [self swizzleContinueUserActivity:[self class]];
         }
-#elif AFSDK_SHOULD_SWIZZLE
-        Method method1 = class_getInstanceMethod([self class], @selector(applicationDidBecomeActive:));
-        __original_applicationDidBecomeActive_Imp = method_setImplementation(method1, (IMP)__swizzled_applicationDidBecomeActive);
-                    
-        Method method2 = class_getInstanceMethod([self class], @selector(applicationDidEnterBackground:));
-        __original_applicationDidEnterBackground_Imp = method_setImplementation(method2, (IMP)__swizzled_applicationDidEnterBackground);
-            
-           
-        Method method3 = class_getInstanceMethod([self class], @selector(didReceiveRemoteNotification:));
-        __original_didReceiveRemoteNotification_Imp = method_setImplementation(method3, (IMP)__swizzled_didReceiveRemoteNotification);
-            
-           
-        Method method4 = class_getInstanceMethod([self class], @selector(application:openURL:options:));
-        __original_openUrl_Imp = method_setImplementation(method4, (IMP)__swizzled_openURL);
-            
-        if (_AppsFlyerdelegate == nil) {
-            _AppsFlyerdelegate = [[AppsFlyeriOSWarpper alloc] init];
-        }
-           
-        [self swizzleContinueUserActivity:[self class]];
-
-#endif
-
 
     });
 }
@@ -101,10 +72,10 @@ static IMP __original_openUrl_Imp __unused;
 
 BOOL __swizzled_continueUserActivity(id self, SEL _cmd, UIApplication* application, NSUserActivity* userActivity, void (^restorationHandler)(NSArray*)) {
     NSLog(@"swizzled continueUserActivity");
-    [[AppsFlyerAttribution shared] continueUserActivity:userActivity restorationHandler:restorationHandler];
+    [[AppsFlyerLib shared] continueUserActivity:userActivity restorationHandler:restorationHandler];
     
     if(__original_continueUserActivity_Imp){
-        return ((BOOL(*)(id, SEL, UIApplication*, NSUserActivity*, void (^)(NSArray*)))__original_continueUserActivity_Imp)(self, _cmd, application, userActivity, NULL);
+        return ((BOOL(*)(id, SEL, UIApplication*, NSUserActivity*))__original_continueUserActivity_Imp)(self, _cmd, application, userActivity);
     }
     
     return YES;
@@ -114,9 +85,8 @@ BOOL __swizzled_continueUserActivity(id self, SEL _cmd, UIApplication* applicati
 
 void __swizzled_applicationDidBecomeActive(id self, SEL _cmd, UIApplication* launchOptions) {
     NSLog(@"swizzled applicationDidBecomeActive");
-    [[AppsFlyerLib shared] setDelegate:_AppsFlyerdelegate];
-
-    if(didEnteredBackGround && AppsFlyeriOSWarpper.didCallStart == YES){
+    
+    if(didEnteredBackGround){
         [[AppsFlyerLib shared] start];
     }
     
@@ -150,7 +120,7 @@ BOOL __swizzled_didReceiveRemoteNotification(id self, SEL _cmd, UIApplication* a
 
 BOOL __swizzled_openURL(id self, SEL _cmd, UIApplication* application, NSURL* url, NSDictionary * options) {
     NSLog(@"swizzled openURL");
-    [[AppsFlyerAttribution shared] handleOpenUrl:url options:options];
+    [[AppsFlyerLib shared] handleOpenUrl:url options:options];
     if(__original_openUrl_Imp){
         return ((BOOL(*)(id, SEL, UIApplication*, NSURL*, NSDictionary*))__original_openUrl_Imp)(self, _cmd, application, url, options);
     }
