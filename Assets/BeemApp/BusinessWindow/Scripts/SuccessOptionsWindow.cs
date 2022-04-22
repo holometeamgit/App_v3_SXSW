@@ -1,32 +1,68 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
 /// Success Options Window
 /// </summary>
-public class SuccessOptionsWindow : MonoBehaviour {
+public class SuccessOptionsWindow : MonoBehaviour, IBlindView {
+
+    [SerializeField]
+    private TMP_Text _titleText;
+
+    [SerializeField]
+    private TMP_Text _descriptionText;
+
+    [SerializeField]
+    private BtnController _backBtn;
+
+    private SuccessOptionsData _successOptionsData;
 
     private const int DELAY_FOR_SUCCESS = 3000;
+
+
 
     /// <summary>
     /// Show Window
     /// </summary>
-    public async void Show() {
+    public async void Show(params object[] objects) {
+
+        if (objects != null && objects.Length > 0) {
+            foreach (var item in objects) {
+                if (item is SuccessOptionsData) {
+                    _successOptionsData = item as SuccessOptionsData;
+                }
+            }
+        }
+
+
         gameObject.SetActive(true);
 
+        if (_successOptionsData != null) {
+            _titleText.text = _successOptionsData.Title;
+            _descriptionText.text = _successOptionsData.Description;
+            _backBtn.OnPress.AddListener(Back);
+        }
+
+
         await Task.Delay(DELAY_FOR_SUCCESS);
-        BusinessOptionsConstructor.OnShowLast?.Invoke();
-        SuccessOptionsConstructor.OnHide?.Invoke();
+
+        BlindOptionsConstructor.OnShow?.Invoke("BusinessOptionsView", null);
+    }
+
+    private void Back() {
+        _successOptionsData.BackEvent?.Invoke();
+        _backBtn.OnPress.RemoveListener(Back);
     }
 
     /// <summary>
     /// Hide Window
     /// </summary>
+
     public void Hide() {
         gameObject.SetActive(false);
     }
-
 }

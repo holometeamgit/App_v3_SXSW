@@ -123,8 +123,7 @@ GameObject:
   - component: {fileID: 4261057074578068648}
   - component: {fileID: 8496655942959781315}
   - component: {fileID: 7345051750299873809}
-  - component: {fileID: 3670314914668535582}
-  - component: {fileID: 8474055573752339375}
+  - component: {fileID: 5990558494627210988}
   m_Layer: 5
   m_Name: BackBtn
   m_TagString: Untagged
@@ -261,8 +260,8 @@ MonoBehaviour:
   OnPress:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3670314914668535582}
-        m_TargetAssemblyTypeName: CloseCTALinkOptionsBtn, Assembly-CSharp
+      - m_Target: {fileID: 5990558494627210988}
+        m_TargetAssemblyTypeName: BlindOptionsBtn, Assembly-CSharp
         m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
@@ -273,19 +272,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 8474055573752339375}
-        m_TargetAssemblyTypeName: OpenLastBusinessOptionsBtn, Assembly-CSharp
-        m_MethodName: OnClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &3670314914668535582
+--- !u!114 &5990558494627210988
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -294,22 +281,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2672808156179614889}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9de5755f914c80448147d0f1f47e383, type: 3}
+  m_Script: {fileID: 11500000, guid: cce4c2284802b464c8b5737f8b3c2c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isOpened: 0
---- !u!114 &8474055573752339375
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2672808156179614889}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b272a2b6068027499226962d1b54ae3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  _assetId: BusinessOptionsView
   isOpened: 1
 --- !u!1 &3290689311068529507
 GameObject:
@@ -520,6 +495,7 @@ MonoBehaviour:
   - {fileID: 8393994184975762923}
   _updateDataBtn: {fileID: 1256990854858609986}
   _warning: {fileID: 3592040550387074301}
+  _warningText: {fileID: 7084470775288538551}
 --- !u!1 &4662055236771066465
 GameObject:
   m_ObjectHideFlags: 0
@@ -533,7 +509,6 @@ GameObject:
   - component: {fileID: 4049364773185679816}
   - component: {fileID: 1723515982599630776}
   - component: {fileID: 6970559693783068451}
-  - component: {fileID: 5555563933797278061}
   - component: {fileID: 4103482072617070576}
   m_Layer: 5
   m_Name: CloseBtn
@@ -671,18 +646,6 @@ MonoBehaviour:
   OnPress:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5555563933797278061}
-        m_TargetAssemblyTypeName: CloseCTALinkOptionsBtn, Assembly-CSharp
-        m_MethodName: OnClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 4103482072617070576}
         m_TargetAssemblyTypeName: BlindOptionsBtn, Assembly-CSharp
         m_MethodName: OnClick
@@ -695,19 +658,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &5555563933797278061
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4662055236771066465}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9de5755f914c80448147d0f1f47e383, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isOpened: 0
 --- !u!114 &4103482072617070576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -720,6 +670,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cce4c2284802b464c8b5737f8b3c2c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _assetId: 
   isOpened: 0
 --- !u!1 &4862139459402535684
 GameObject:

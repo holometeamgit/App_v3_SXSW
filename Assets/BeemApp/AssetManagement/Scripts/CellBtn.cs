@@ -9,13 +9,17 @@ using UnityEngine.EventSystems;
 /// <summary>
 /// Btn for cell in AssetManagement
 /// </summary>
-public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManager, IPointerDownHandler, IPointerUpHandler {
+public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManager, IWebRequestHandlerView, IPointerDownHandler, IPointerUpHandler {
+
+    [SerializeField]
+    private string _bussinessOptionsId;
 
     private ARMsgJSON.Data _arMsgData = default;
     private UserWebManager _userWebManager;
+    private WebRequestHandler _webRequestHandler;
     private const string TOPIC = "gallery_{0}";
     private float currentTime;
-    private const float LONG_CLICK_TIME = 0.2f;
+    private const float LONG_CLICK_TIME = 0.15f;
 
     private bool CanShowPushNotificationPopup {
         get {
@@ -34,6 +38,10 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManager, IPointerD
         _userWebManager = userWebManager;
     }
 
+    public void Init(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+    }
+
     public void OnPointerUp(PointerEventData eventData) {
 
         if (_arMsgData.Status == ARMsgJSON.Data.COMPETED_STATUS) {
@@ -45,8 +53,7 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManager, IPointerD
                     GalleryConstructor.OnHide?.Invoke();
                     PnlRecord.CurrentUser = _arMsgData.user;
                 } else {
-                    BlindOptionsConstructor.OnShow?.Invoke();
-                    BusinessOptionsConstructor.OnShow?.Invoke(_arMsgData, true);
+                    BlindOptionsConstructor.OnShow?.Invoke(_bussinessOptionsId, new object[] { _arMsgData, _userWebManager, _webRequestHandler, true });
                 }
             } else {
                 ARMsgRecordConstructor.OnActivated?.Invoke(false);

@@ -25,12 +25,13 @@ public class CellView : ScrollItem<ARMsgScrollItem> {
 
     private List<IARMsgDataView> _arMsgDataViews;
     private List<IUserWebManager> _userWebManagerViews;
+    private List<IWebRequestHandlerView> _webRequestHandlerViews;
 
     /// <summary>
     /// Show Cell Information
     /// </summary>
     /// <param name="data"></param>
-    public void Show(ARMsgJSON.Data data, UserWebManager userWebManager, bool isNew = false) {
+    public void Show(ARMsgJSON.Data data, UserWebManager userWebManager, WebRequestHandler webRequestHandler, bool isNew = false) {
         _newObj.SetActive(isNew);
 
         _screenshotView.Show(data, () => ShowPreview(true), (text) => { ShowPreview(false); _processText.text = text; });
@@ -42,6 +43,10 @@ public class CellView : ScrollItem<ARMsgScrollItem> {
         _userWebManagerViews = GetComponentsInChildren<IUserWebManager>().ToList();
 
         _userWebManagerViews.ForEach(x => x.Init(userWebManager));
+
+        _webRequestHandlerViews = GetComponentsInChildren<IWebRequestHandlerView>().ToList();
+
+        _webRequestHandlerViews.ForEach(x => x.Init(webRequestHandler));
     }
 
     private void ShowPreview(bool status) {
@@ -50,7 +55,7 @@ public class CellView : ScrollItem<ARMsgScrollItem> {
     }
 
     protected override void InitItemData(ARMsgScrollItem item) {
-        Show(item.Data, item.Manager, item.IsNew);
+        Show(item.Data, item.UserWebManager, item.WebRequestHandler, item.IsNew);
         base.InitItemData(item);
     }
 

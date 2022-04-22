@@ -317,8 +317,6 @@ GameObject:
   - component: {fileID: 3487387740877861340}
   - component: {fileID: 9128180620091191479}
   - component: {fileID: 7973972645396584293}
-  - component: {fileID: 4154697713433541226}
-  - component: {fileID: 3337264778521209310}
   m_Layer: 5
   m_Name: BackBtn
   m_TagString: Untagged
@@ -454,57 +452,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OnPress:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4154697713433541226}
-        m_TargetAssemblyTypeName: CloseCTALinkOptionsBtn, Assembly-CSharp
-        m_MethodName: OnClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 3337264778521209310}
-        m_TargetAssemblyTypeName: SuccessOptionsBtn, Assembly-CSharp
-        m_MethodName: OnClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &4154697713433541226
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3337264778521209309}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9de5755f914c80448147d0f1f47e383, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isOpened: 1
---- !u!114 &3337264778521209310
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3337264778521209309}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ab3dc40895c8a24c9e532389f67705f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isOpened: 0
+      m_Calls: []
 --- !u!1 &4429918520204893662
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,6 +506,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31250ea1c75d1bc4abeba9481d1e64a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _titleText: {fileID: 6125739845181444802}
+  _descriptionText: {fileID: 3518040660660389359}
+  _backBtn: {fileID: 7973972645396584293}
 --- !u!1 &4690970547191585633
 GameObject:
   m_ObjectHideFlags: 0
@@ -722,7 +673,7 @@ GameObject:
   - component: {fileID: 3708111450309514428}
   - component: {fileID: 2066247187607096012}
   - component: {fileID: 7780961649366649431}
-  - component: {fileID: 5473301747194304278}
+  - component: {fileID: 782672029187554839}
   m_Layer: 5
   m_Name: CloseBtn
   m_TagString: Untagged
@@ -859,8 +810,8 @@ MonoBehaviour:
   OnPress:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5473301747194304278}
-        m_TargetAssemblyTypeName: SuccessOptionsBtn, Assembly-CSharp
+      - m_Target: {fileID: 782672029187554839}
+        m_TargetAssemblyTypeName: BlindOptionsBtn, Assembly-CSharp
         m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
@@ -871,7 +822,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &5473301747194304278
+--- !u!114 &782672029187554839
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -880,9 +831,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5473301747194304277}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ab3dc40895c8a24c9e532389f67705f, type: 3}
+  m_Script: {fileID: 11500000, guid: cce4c2284802b464c8b5737f8b3c2c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _assetId: 
   isOpened: 0
 --- !u!1 &6458938156775655787
 GameObject:

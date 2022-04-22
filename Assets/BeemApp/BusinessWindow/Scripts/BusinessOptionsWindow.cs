@@ -1,6 +1,7 @@
 using Beem.UI;
 using DynamicScrollRect;
 using Firebase.Messaging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -12,7 +13,7 @@ using Zenject;
 /// <summary>
 /// Business View
 /// </summary>
-public class BusinessOptionsWindow : MonoBehaviour {
+public class BusinessOptionsWindow : MonoBehaviour, IBlindView {
 
     [SerializeField]
     private CellView _cellView;
@@ -22,45 +23,47 @@ public class BusinessOptionsWindow : MonoBehaviour {
     private List<IARMsgDataView> _arMsgDataViews;
 
     private UserWebManager _userWebManager;
+    private WebRequestHandler _webRequestHandler;
 
     private ARMsgJSON.Data _data = null;
     private bool _existPreview = true;
 
-    [Inject]
-    public void Construct(UserWebManager userWebManager) {
-        _userWebManager = userWebManager;
-    }
-
     /// <summary>
     /// Show data
     /// </summary>
     /// <param name="data"></param>
-    public void Show(ARMsgJSON.Data data, bool existPreview) {
-        _data = data;
-        _existPreview = existPreview;
-        gameObject.SetActive(true);
-        _videoCell.SetActive(existPreview);
-        _cellView?.Show(data, _userWebManager);
-        _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
+    public void Show(params object[] objects) {
 
-        _arMsgDataViews.ForEach(x => x.Init(data));
-    }
+        if (objects != null && objects.Length > 0) {
+            foreach (var item in objects) {
+                if (item is bool) {
+                    _existPreview = Convert.ToBoolean(item);
+                } else if (item is ARMsgJSON.Data) {
+                    _data = item as ARMsgJSON.Data;
+                } else if (item is UserWebManager) {
+                    _userWebManager = item as UserWebManager;
+                } else if (item is WebRequestHandler) {
+                    _webRequestHandler = item as WebRequestHandler;
+                }
+            }
+        }
 
-    /// <summary>
-    /// Show data
-    /// </summary>
-    /// <param name="data"></param>
-    public void Show() {
-        if (_data != null) {
-            Show(_data, _existPreview);
+        if (_data != null && _userWebManager != null && _webRequestHandler != null) {
+
+            gameObject.SetActive(true);
+            _videoCell.SetActive(_existPreview);
+            _cellView?.Show(_data, _userWebManager, _webRequestHandler);
+            _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
+
+            _arMsgDataViews.ForEach(x => x.Init(_data));
         }
     }
 
     /// <summary>
     /// Hide
     /// </summary>
+
     public void Hide() {
         gameObject.SetActive(false);
     }
-
 }

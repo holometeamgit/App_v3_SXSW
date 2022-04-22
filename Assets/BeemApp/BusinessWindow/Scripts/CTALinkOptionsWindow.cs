@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
 /// CTA Link Window
 /// </summary>
-public class CTALinkOptionsWindow : MonoBehaviour {
+public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
 
     [SerializeField]
     private CustomInputField[] _customInputFields;
@@ -18,12 +19,32 @@ public class CTALinkOptionsWindow : MonoBehaviour {
     [SerializeField]
     private GameObject _warning;
 
+    [SerializeField]
+    private TMP_Text _warningText;
+
+    private string _warningTxt;
+
     /// <summary>
     /// Show Window
     /// </summary>
-    public void Show(bool isWarning = false) {
+    public void Show(params object[] objects) {
+
+        if (objects != null && objects.Length > 0) {
+            foreach (var item in objects) {
+                if (item is string) {
+                    _warningTxt = item as string;
+                }
+            }
+        }
+
         gameObject.SetActive(true);
-        _warning.SetActive(isWarning);
+
+        _warning.SetActive(objects != null && objects.Length > 0);
+
+        if (!string.IsNullOrEmpty(_warningTxt)) {
+            _warningText.text = _warningTxt;
+        }
+
         CheckText();
 
         foreach (var item in _customInputFields) {
@@ -68,8 +89,9 @@ public class CTALinkOptionsWindow : MonoBehaviour {
             }
         }
 
-        CTALinkOptionsConstructor.OnHide?.Invoke();
-        SuccessOptionsConstructor.OnShow?.Invoke();
+        SuccessOptionsData data = new SuccessOptionsData(title: "Edit CTA", description: "The CTA information has\nbeen updated", backEvent: () => BlindOptionsConstructor.OnShow?.Invoke("CTALinkOptionsView", null));
+
+        BlindOptionsConstructor.OnShow?.Invoke("SuccessOptionsView", new object[] { data });
     }
 
 }

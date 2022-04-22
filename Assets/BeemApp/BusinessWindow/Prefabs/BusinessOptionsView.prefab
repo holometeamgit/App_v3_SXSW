@@ -1093,8 +1093,7 @@ GameObject:
   - component: {fileID: 4493098644092901950}
   - component: {fileID: 8980544616357175350}
   - component: {fileID: 3861349999674957778}
-  - component: {fileID: 1566280684395259591}
-  - component: {fileID: 4521612417278389492}
+  - component: {fileID: 3212414524404703561}
   m_Layer: 5
   m_Name: EditCTABtn
   m_TagString: Untagged
@@ -1232,8 +1231,8 @@ MonoBehaviour:
   OnPress:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1566280684395259591}
-        m_TargetAssemblyTypeName: CTALinkOptionsBtn, Assembly-CSharp
+      - m_Target: {fileID: 3212414524404703561}
+        m_TargetAssemblyTypeName: BlindOptionsBtn, Assembly-CSharp
         m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
@@ -1244,19 +1243,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 4521612417278389492}
-        m_TargetAssemblyTypeName: BusinessOptionsBtn, Assembly-CSharp
-        m_MethodName: OnClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &1566280684395259591
+--- !u!114 &3212414524404703561
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1265,23 +1252,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3191472834361248115}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9de5755f914c80448147d0f1f47e383, type: 3}
+  m_Script: {fileID: 11500000, guid: cce4c2284802b464c8b5737f8b3c2c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _assetId: CTALinkOptionsView
   isOpened: 1
---- !u!114 &4521612417278389492
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3191472834361248115}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b272a2b6068027499226962d1b54ae3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isOpened: 0
 --- !u!1 &4536606149561649483
 GameObject:
   m_ObjectHideFlags: 0
@@ -1577,6 +1552,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8257515678943969763}
   - component: {fileID: 8454566620459055059}
+  - component: {fileID: 5995493023800141248}
   m_Layer: 5
   m_Name: BusinessOptionsView
   m_TagString: Untagged
@@ -1620,6 +1596,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cellView: {fileID: 6035625559542845127}
   _videoCell: {fileID: 1777417686328873384}
+--- !u!225 &5995493023800141248
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5354603778512449188}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5746521609354145944
 GameObject:
   m_ObjectHideFlags: 0
@@ -2277,7 +2265,6 @@ GameObject:
   - component: {fileID: 360323871359739144}
   - component: {fileID: 3087555987721485176}
   - component: {fileID: 6741462530991045603}
-  - component: {fileID: 724666899114442960}
   - component: {fileID: 2209178516362630802}
   m_Layer: 5
   m_Name: CloseBtn
@@ -2415,18 +2402,6 @@ MonoBehaviour:
   OnPress:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 724666899114442960}
-        m_TargetAssemblyTypeName: CloseBusinessOptionsBtn, Assembly-CSharp
-        m_MethodName: OnClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 2209178516362630802}
         m_TargetAssemblyTypeName: BlindOptionsBtn, Assembly-CSharp
         m_MethodName: OnClick
@@ -2439,19 +2414,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &724666899114442960
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9043485208182449825}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b272a2b6068027499226962d1b54ae3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isOpened: 0
 --- !u!114 &2209178516362630802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2464,6 +2426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cce4c2284802b464c8b5737f8b3c2c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _assetId: 
   isOpened: 0
 --- !u!1001 &5783943470906551033
 PrefabInstance:
@@ -2589,18 +2552,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f16d3ff9d6f882e4e802f255787a08cb, type: 3}
---- !u!114 &5683779317530302419 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2208002820236918058, guid: f16d3ff9d6f882e4e802f255787a08cb,
+--- !u!224 &6035625559542845125 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 254005357242934332, guid: f16d3ff9d6f882e4e802f255787a08cb,
     type: 3}
   m_PrefabInstance: {fileID: 5783943470906551033}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9da2c98c108f55498699fce6695bebf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &6035625559542845127 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 254005357242934334, guid: f16d3ff9d6f882e4e802f255787a08cb,
@@ -2613,9 +2570,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0b909b7c7f0f354d9ac529aee45bdf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &6035625559542845125 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 254005357242934332, guid: f16d3ff9d6f882e4e802f255787a08cb,
+--- !u!114 &5683779317530302419 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2208002820236918058, guid: f16d3ff9d6f882e4e802f255787a08cb,
     type: 3}
   m_PrefabInstance: {fileID: 5783943470906551033}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9da2c98c108f55498699fce6695bebf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

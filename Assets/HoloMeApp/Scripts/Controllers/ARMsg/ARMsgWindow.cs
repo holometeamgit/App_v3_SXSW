@@ -17,12 +17,18 @@ public class ARMsgWindow : MonoBehaviour {
     private List<GameObject> usualButtons;
 
     private HologramHandler _hologramHandler;
+    private UserWebManager _userWebManager;
+    private WebRequestHandler _webRequestHandler;
 
     private List<IARMsgDataView> _arMsgDataViews;
+    private List<IUserWebManager> _userWebManagerViews;
+    private List<IWebRequestHandlerView> _webRequestHandlerViews;
 
     [Inject]
-    public void Construct(HologramHandler hologramHandler) {
+    public void Construct(HologramHandler hologramHandler, UserWebManager userWebManager, WebRequestHandler webRequestHandler) {
         _hologramHandler = hologramHandler;
+        _userWebManager = userWebManager;
+        _webRequestHandler = webRequestHandler;
     }
 
     /// <summary>
@@ -35,6 +41,14 @@ public class ARMsgWindow : MonoBehaviour {
         _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
 
         _arMsgDataViews.ForEach(x => x.Init(arMsgJSON));
+
+        _userWebManagerViews = GetComponentsInChildren<IUserWebManager>().ToList();
+
+        _userWebManagerViews.ForEach(x => x.Init(_userWebManager));
+
+        _webRequestHandlerViews = GetComponentsInChildren<IWebRequestHandlerView>().ToList();
+
+        _webRequestHandlerViews.ForEach(x => x.Init(_webRequestHandler));
 
         _hologramHandler.SetOnPlacementUIHelperFinished(OnPlacementCompleted);
 

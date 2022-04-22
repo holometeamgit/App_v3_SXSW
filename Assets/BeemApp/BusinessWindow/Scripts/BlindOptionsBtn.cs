@@ -8,6 +8,9 @@ using UnityEngine;
 public class BlindOptionsBtn : MonoBehaviour {
 
     [SerializeField]
+    private string _assetId;
+
+    [SerializeField]
     private bool isOpened;
 
     /// <summary>
@@ -15,7 +18,7 @@ public class BlindOptionsBtn : MonoBehaviour {
     /// </summary>
     public void OnClick() {
         if (isOpened) {
-            BlindOptionsConstructor.OnShow?.Invoke();
+            BlindOptionsConstructor.OnShow?.Invoke(_assetId, null);
         } else {
             BlindOptionsConstructor.OnHide?.Invoke();
         }

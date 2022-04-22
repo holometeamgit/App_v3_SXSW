@@ -1,12 +1,10 @@
 using Beem.UI;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
+
 /// <summary>
 /// Delete ARMsg Btn
 /// </summary>
-public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
+public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView, IWebRequestHandlerView, IUserWebManager {
     [SerializeField]
     private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
 
@@ -17,17 +15,6 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
     private GetAllARMessageController _galleryController;
 
     private ARMsgJSON.Data currentData;
-
-    [Inject]
-    public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager) {
-        _webRequestHandler = webRequestHandler;
-        _userWebManager = userWebManager;
-    }
-
-    private void Start() {
-        _deleteARMsgController = new DeleteARMsgController(_arMsgAPIScriptableObject, _webRequestHandler);
-        _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, _webRequestHandler);
-    }
 
     /// <summary>
     /// On Click
@@ -47,13 +34,22 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
     private void Show(ARMsgJSON data) {
         ARMsgARenaConstructor.OnDeactivatedARena?.Invoke();
         ARenaConstructor.onDeactivate?.Invoke();
-        BusinessOptionsConstructor.OnHide?.Invoke();
         GalleryConstructor.OnShow?.Invoke(data);
         BlindOptionsConstructor.OnHide?.Invoke();
     }
 
     public void Init(ARMsgJSON.Data data) {
         currentData = data;
+    }
+
+    public void Init(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+        _deleteARMsgController = new DeleteARMsgController(_arMsgAPIScriptableObject, _webRequestHandler);
+        _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, _webRequestHandler);
+    }
+
+    public void Init(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
         gameObject.SetActive(currentData.user == _userWebManager.GetUsername());
     }
 }
