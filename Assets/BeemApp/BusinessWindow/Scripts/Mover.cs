@@ -1,8 +1,10 @@
+using Mopsicus.Plugins;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 /// <summary>
 /// Mover
@@ -23,11 +25,13 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     public event Action<bool> onStartMoving;
     public event Action<bool> onEndMoving;
 
-    private Coroutine _enumerator;
 
+    private Coroutine _enumerator;
+    private CanvasScaler _canvasScaler;
     private bool active = false;
 
     private const string MOVE_KEY = "Moving";
+    private const string KEYBOARD_KEY = "Keyboard";
     private const float MOVE_CEIL = 0.3f;
 
     private Vector2 startPosition;
@@ -40,7 +44,13 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
         }
     }
 
+    private void OnEnable() {
+        _canvasScaler = GetComponentInParent<CanvasScaler>();
+        MobileInput.OnShowKeyboard += OnShowKeyboard;
+    }
+
     private void OnDisable() {
+        MobileInput.OnShowKeyboard -= OnShowKeyboard;
         Cancel();
     }
 
@@ -51,12 +61,7 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     }
 
     public void OnDrag(PointerEventData eventData) {
-
-
-        Debug.LogError($"Difference: {(eventData.position.y - startPosition.y) / _rect.sizeDelta.y}");
-        Debug.LogError($"Old: {(eventData.position.y) / _rect.sizeDelta.y}");
-
-        CurrentStatus = Mathf.Clamp01(eventData.position.y / _rect.sizeDelta.y);
+        CurrentStatus = Mathf.Clamp01(eventData.position.y / (Screen.height * (_rect.sizeDelta.y / _canvasScaler.referenceResolution.y)));
     }
 
     public void OnEndDrag(PointerEventData eventData) {
@@ -77,6 +82,10 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
             StopCoroutine(_enumerator);
             _enumerator = null;
         }
+    }
+
+    private void OnShowKeyboard(bool isShown, int height) {
+        _animator.SetBool(KEYBOARD_KEY, isShown);
     }
 
     /// <summary>
