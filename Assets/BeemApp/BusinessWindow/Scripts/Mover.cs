@@ -85,6 +85,7 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     }
 
     private void OnShowKeyboard(bool isShown, int height) {
+        Debug.LogError($"show {isShown}, height = {height}");
         _animator.SetBool(KEYBOARD_KEY, isShown);
     }
 
