@@ -91,20 +91,20 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
 
     private void ShowNoLongerLive() {
         if (_data != null) {
-            DeepLinkStreamData deepLinkStreamData = new DeepLinkStreamData(DeepLinkStreamData.DeepLinkPopup.NoLongerLive, _data);
+            DeepLinkUIData deepLinkStreamData = new DeepLinkUIData(DeepLinkUIData.DeepLinkPopup.NoLongerLive, _data);
             _deepLinkRoomPopup.Show(deepLinkStreamData);
             _data = null;
         }
     }
 
     private void ShowOnline(IData data) {
-        DeepLinkStreamData deepLinkStreamData = new DeepLinkStreamData(DeepLinkStreamData.DeepLinkPopup.Online, data);
+        DeepLinkUIData deepLinkStreamData = new DeepLinkUIData(DeepLinkUIData.DeepLinkPopup.Online, data);
         _deepLinkRoomPopup.Show(deepLinkStreamData);
         _data = data;
     }
 
     private void ShowOffline(IData data) {
-        DeepLinkStreamData deepLinkStreamData = new DeepLinkStreamData(DeepLinkStreamData.DeepLinkPopup.Offline, data);
+        DeepLinkUIData deepLinkStreamData = new DeepLinkUIData(DeepLinkUIData.DeepLinkPopup.Offline, data);
         _deepLinkRoomPopup.Show(deepLinkStreamData);
         _data = null;
     }

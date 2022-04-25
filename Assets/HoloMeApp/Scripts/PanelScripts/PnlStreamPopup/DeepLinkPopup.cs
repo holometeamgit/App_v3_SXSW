@@ -16,6 +16,8 @@ public class DeepLinkPopup : MonoBehaviour {
     private TMP_Text _subtitleText;
     [SerializeField]
     private TMP_Text _usersCountText;
+    [SerializeField]
+    private TMP_Text _enterText;
 
     [SerializeField]
     private GameObject _title;
@@ -96,24 +98,26 @@ public class DeepLinkPopup : MonoBehaviour {
     /// <summary>
     /// Show DeepLinkRoomData
     /// </summary>
-    /// <param name="deepLinkRoomData"></param>
-    public void Show(DeepLinkStreamData deepLinkRoomData) {
+    /// <param name="deepLinkUIData"></param>
+    public void Show(DeepLinkUIData deepLinkUIData) {
         gameObject.SetActive(true);
 
-        _data = deepLinkRoomData.Data;
+        _data = deepLinkUIData.Data;
 
-        _titleText.text = string.Format(deepLinkRoomData.Title, ColorUtility.ToHtmlStringRGBA(_highlightMSGColor), _data.Username);
-        _subtitleText.text = deepLinkRoomData.Description;
+        _titleText.text = string.Format(deepLinkUIData.Title, ColorUtility.ToHtmlStringRGBA(_highlightMSGColor), _data.Username);
+        _subtitleText.text = deepLinkUIData.Description;
+        _enterText.text = deepLinkUIData.ButtonText;
 
-        _title.SetActive(deepLinkRoomData.Title.Length > 0);
-        _subtitle.SetActive(deepLinkRoomData.Description.Length > 0);
-        _usersCount.SetActive(deepLinkRoomData.Online);
 
-        _btnClose.SetActive(deepLinkRoomData.CloseBtn);
-        _btnShare.SetActive(deepLinkRoomData.ShareBtn);
-        _btnEnterRoom.SetActive(deepLinkRoomData.Online);
+        _title.SetActive(deepLinkUIData.Title.Length > 0);
+        _subtitle.SetActive(deepLinkUIData.Description.Length > 0);
+        _usersCount.SetActive(deepLinkUIData.Online);
 
-        if (_data != null && deepLinkRoomData.Online) {
+        _btnClose.SetActive(deepLinkUIData.CloseBtn);
+        _btnShare.SetActive(deepLinkUIData.ShareBtn);
+        _btnEnterRoom.SetActive(deepLinkUIData.Online);
+
+        if (_data != null && deepLinkUIData.Online) {
             _streamerCountUpdater.StartCheck(_data.Username, true);
             _streamerCountUpdater.OnCountUpdated += UpdateUserCount;
         }
