@@ -65,8 +65,8 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
 
         cancelTokenSource = new CancellationTokenSource();
         cancellationToken = cancelTokenSource.Token;
-
-        if (data.Status == StreamJsonData.Data.LIVE_ROOM_STR || data.Status == StreamJsonData.Data.LIVE_STR) {
+        Debug.LogError(data.GetStatus + "," + data.GetUsername);
+        if (data.GetStatus == StreamJsonData.Data.LIVE_ROOM_STR || data.GetStatus == StreamJsonData.Data.LIVE_STR) {
             ShowOnline(data);
         } else {
             ShowOffline(data);
@@ -76,9 +76,9 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
             await Task.Delay(DELAY);
             if (!cancellationToken.IsCancellationRequested) {
                 if (data is RoomJsonData) {
-                    _getRoomController.GetRoomByUsername(data.Username, Show, ShowError);
+                    _getRoomController.GetRoomByUsername(data.GetUsername, Show, ShowError);
                 } else {
-                    _getStadiumController.GetStadiumByUsername(data.Username, Show, ShowError);
+                    _getStadiumController.GetStadiumByUsername(data.GetUsername, Show, ShowError);
                 }
             }
         } finally {

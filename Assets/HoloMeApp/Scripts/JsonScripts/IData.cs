@@ -6,8 +6,8 @@ using UnityEngine;
 /// Server Json Data
 /// </summary>
 public interface IData {
-    string Id { get; }
-    string ShareLink { get; }
-    string Username { get; }
-    string Status { get; }
+    string GetId { get; }
+    string GetShareLink { get; }
+    string GetUsername { get; }
+    string GetStatus { get; }
 }

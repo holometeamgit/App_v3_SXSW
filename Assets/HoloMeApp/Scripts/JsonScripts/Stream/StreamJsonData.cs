@@ -119,13 +119,13 @@ public class StreamJsonData {
             }
         }
 
-        public string Id => id.ToString();
+        public string GetId => id.ToString();
 
-        public string ShareLink => share_link;
+        public string GetShareLink => share_link;
 
-        public string Username => user;
+        public string GetUsername => user;
 
-        public string Status => status;
+        public string GetStatus => status;
 
         public Stage GetStage() {
             return GetStage(status);

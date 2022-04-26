@@ -58,10 +58,10 @@ public class DeepLinkPopup : MonoBehaviour {
     /// Call share event for current room
     /// </summary>
     public void Share() {
-        if (!string.IsNullOrWhiteSpace(_data.ShareLink)) {
-            string title = string.Format(LINK_TITLE, _data.Username, _data is RoomJsonData ? ROOM : STADIUM);
-            string description = string.Format(LINK_DESCRIPTION, _data.Username, _data is RoomJsonData ? ROOM : STADIUM);
-            string msg = title + "\n" + description + "\n" + _data.ShareLink;
+        if (!string.IsNullOrWhiteSpace(_data.GetShareLink)) {
+            string title = string.Format(LINK_TITLE, _data.GetUsername, _data is RoomJsonData ? ROOM : STADIUM);
+            string description = string.Format(LINK_DESCRIPTION, _data.GetUsername, _data is RoomJsonData ? ROOM : STADIUM);
+            string msg = title + "\n" + description + "\n" + _data.GetShareLink;
             _shareController.ShareLink(msg);
         }
     }
@@ -70,7 +70,7 @@ public class DeepLinkPopup : MonoBehaviour {
     /// Call onOpenRoom event for open current room
     /// </summary>
     public void EnterRoom() {
-        if (_data.Username == _userWebManager.GetUsername()) {
+        if (_data.GetUsername == _userWebManager.GetUsername()) {
             WarningConstructor.ActivateSingleButton("Viewing as stream host",
                 "Please connect to the stream using a different account");
 
@@ -82,8 +82,8 @@ public class DeepLinkPopup : MonoBehaviour {
             MenuConstructor.OnActivated?.Invoke(false);
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
-            StreamOverlayConstructor.onActivatedAsViewer?.Invoke(_data.Username, _data.Id, _data is RoomJsonData);
-            PnlRecord.CurrentUser = _data.Username;
+            StreamOverlayConstructor.onActivatedAsViewer?.Invoke(_data.GetUsername, _data.GetId, _data is RoomJsonData);
+            PnlRecord.CurrentUser = _data.GetUsername;
         });
 
     }
@@ -104,7 +104,7 @@ public class DeepLinkPopup : MonoBehaviour {
 
         _data = deepLinkUIData.Data;
 
-        _titleText.text = string.Format(deepLinkUIData.Title, ColorUtility.ToHtmlStringRGBA(_highlightMSGColor), _data.Username);
+        _titleText.text = string.Format(deepLinkUIData.Title, ColorUtility.ToHtmlStringRGBA(_highlightMSGColor), _data.GetUsername);
         _subtitleText.text = deepLinkUIData.Description;
         _enterText.text = deepLinkUIData.ButtonText;
 
@@ -118,7 +118,7 @@ public class DeepLinkPopup : MonoBehaviour {
         _btnEnterRoom.SetActive(deepLinkUIData.Online);
 
         if (_data != null && deepLinkUIData.Online) {
-            _streamerCountUpdater.StartCheck(_data.Username, true);
+            _streamerCountUpdater.StartCheck(_data.GetUsername, true);
             _streamerCountUpdater.OnCountUpdated += UpdateUserCount;
         }
 
