@@ -60,7 +60,6 @@ GameObject:
   m_Component:
   - component: {fileID: 739447364447682410}
   - component: {fileID: 739447364303504136}
-  - component: {fileID: 8913094435547429422}
   m_Layer: 5
   m_Name: SwipePopUp
   m_TagString: Untagged
@@ -100,25 +99,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!95 &8913094435547429422
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 739447364447682413}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 16af51d041a55924e8f97af949fa5ce7, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &739447364817319863
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,7 +130,7 @@ RectTransform:
   m_GameObject: {fileID: 739447364817319863}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 4645425148787255382}
   - {fileID: 739447363692138614}
@@ -349,8 +329,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7e9298db23c06a46b0c7869449a191a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animator: {fileID: 8913094435547429422}
   _rect: {fileID: 739447364447682410}
+  _canvasGroup: {fileID: 739447364303504136}
   _frequency: 0.02
   _speed: 1
 --- !u!1 &4000668549572165440

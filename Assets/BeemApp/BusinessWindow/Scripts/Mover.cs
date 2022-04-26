@@ -12,9 +12,9 @@ using UnityEngine.UI;
 public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler {
 
     [SerializeField]
-    private Animator _animator;
-    [SerializeField]
     private RectTransform _rect;
+    [SerializeField]
+    private CanvasGroup _canvasGroup;
 
     [SerializeField]
     private float _frequency = 0.02f;
@@ -30,11 +30,8 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     private CanvasScaler _canvasScaler;
     private bool active = false;
 
-    private const string MOVE_KEY = "Moving";
-    private const string KEYBOARD_KEY = "Keyboard";
+    private float _defaultHeight = 1520f;
     private const float MOVE_CEIL = 0.3f;
-
-    private Vector2 startPosition;
 
     private bool isDragging;
 
@@ -46,6 +43,7 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
 
     private void OnEnable() {
         _canvasScaler = GetComponentInParent<CanvasScaler>();
+        _defaultHeight = _rect.rect.height;
         InputFieldBtn.OnShowKeyboard += OnShowKeyboard;
     }
 
@@ -56,7 +54,6 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
 
     public void OnBeginDrag(PointerEventData eventData) {
         Cancel();
-        startPosition = eventData.position;
         isDragging = true;
     }
 
@@ -86,7 +83,10 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
 
     private void OnShowKeyboard(bool isShown, int height) {
         Debug.LogError($"show {isShown}, height = {height}");
-        _animator.SetBool(KEYBOARD_KEY, isShown);
+
+        _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _defaultHeight + (isShown ? height : 0));
+
+        CurrentStatus = 1f;
     }
 
     /// <summary>
@@ -107,10 +107,13 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
 
     protected float CurrentStatus {
         get {
-            return _animator.GetFloat(MOVE_KEY);
+            return _canvasGroup.alpha;
         }
         set {
-            _animator.SetFloat(MOVE_KEY, value);
+            _rect.anchoredPosition = Vector2.up * (value - 1) * _rect.rect.height;
+            _canvasGroup.alpha = value;
+            _canvasGroup.blocksRaycasts = value > MOVE_CEIL;
+            _canvasGroup.interactable = value > MOVE_CEIL;
         }
     }
 
