@@ -46,11 +46,11 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
 
     private void OnEnable() {
         _canvasScaler = GetComponentInParent<CanvasScaler>();
-        MobileInput.OnShowKeyboard += OnShowKeyboard;
+        InputFieldBtn.OnShowKeyboard += OnShowKeyboard;
     }
 
     private void OnDisable() {
-        MobileInput.OnShowKeyboard -= OnShowKeyboard;
+        InputFieldBtn.OnShowKeyboard -= OnShowKeyboard;
         Cancel();
     }
 
