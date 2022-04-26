@@ -9,13 +9,18 @@ using Zenject;
 /// Bar for Prerecorded Video
 /// </summary>
 public class PnlARMessages : MonoBehaviour {
+    [SerializeField]
+    private GameObject _deleteBtn;
+
     private HologramHandler _hologramHandler;
+    private UserWebManager _userWebManager;
 
     private List<IARMsgDataView> _arMsgDataViews;
 
     [Inject]
-    public void Construct(HologramHandler hologramHandler) {
+    public void Construct(HologramHandler hologramHandler, UserWebManager userWebManager) {
         _hologramHandler = hologramHandler;
+        _userWebManager = userWebManager;
     }
 
     /// <summary>
@@ -28,6 +33,8 @@ public class PnlARMessages : MonoBehaviour {
         _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
 
         _arMsgDataViews.ForEach(x => x.Init(arMsgJSON));
+
+        _deleteBtn.SetActive(arMsgJSON.user == _userWebManager.GetUsername());
 
         _hologramHandler.SetOnPlacementUIHelperFinished(OnPlacementCompleted);
     }
