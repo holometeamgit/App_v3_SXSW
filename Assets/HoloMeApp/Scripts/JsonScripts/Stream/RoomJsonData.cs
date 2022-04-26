@@ -9,13 +9,13 @@ public class RoomJsonData : IData {
     public string agora_channel;
     public string status;
 
-    public string Id => id;
+    public string GetId => id;
 
-    public string ShareLink => share_link;
+    public string GetShareLink => share_link;
 
-    public string Username => user;
+    public string GetUsername => user;
 
-    public string Status => status;
+    public string GetStatus => status;
 }
 
 [Serializable]
