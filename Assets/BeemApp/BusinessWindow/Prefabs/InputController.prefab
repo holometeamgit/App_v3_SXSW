@@ -167,6 +167,7 @@ GameObject:
   - component: {fileID: 7321590168112217580}
   - component: {fileID: 5500850239741748407}
   - component: {fileID: 4976165062989358556}
+  - component: {fileID: 8701339276172703134}
   m_Layer: 5
   m_Name: InputField
   m_TagString: Untagged
@@ -319,6 +320,23 @@ MonoBehaviour:
   OnReturnPressedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8701339276172703134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1802370411611701831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60feda77a1f25c643a64b9ba21871525, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _inputField: {fileID: 5500850239741748407}
+  _mobileInputField: {fileID: 4976165062989358556}
+  _hideMobileInput: 1
+  _nativeKeyboardOniOS: 0
+  _nativeKeyboardOnAndroid: 0
 --- !u!1 &2168686391178450316
 GameObject:
   m_ObjectHideFlags: 0
