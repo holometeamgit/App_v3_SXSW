@@ -16,9 +16,6 @@ public class CustomInputField : MonoBehaviour {
     private GameObject _clearBtn;
 
     [SerializeField]
-    private MobileInputField _mobileInputField;
-
-    [SerializeField]
     private InputField _inputField;
 
     [SerializeField]
@@ -27,6 +24,9 @@ public class CustomInputField : MonoBehaviour {
     public string Text {
         get {
             return _inputField.text;
+        }
+        set {
+            _inputField.text = value;
         }
     }
 
@@ -48,16 +48,10 @@ public class CustomInputField : MonoBehaviour {
 
     private void OnEnable() {
         _inputField.onValueChanged.AddListener(ChangeText);
-        //_mobileInputField.OnReturnPressedEvent.AddListener(OnReturnedPressed);
     }
 
     private void OnDisable() {
         _inputField.onValueChanged.RemoveListener(ChangeText);
-        //_mobileInputField.OnReturnPressedEvent.RemoveListener(OnReturnedPressed);
-    }
-
-    private void OnReturnedPressed() {
-        ChangeText(_mobileInputField.Text);
     }
 
     private void ChangeText(string text) {
@@ -69,7 +63,7 @@ public class CustomInputField : MonoBehaviour {
     /// </summary>
     /// <param name="text"></param>
     public void UpdateText(string text) {
-        _mobileInputField.Text = text;
+        Text = text;
         ChangeText(text);
     }
 
