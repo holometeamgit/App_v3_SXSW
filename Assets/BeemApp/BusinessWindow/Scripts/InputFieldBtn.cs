@@ -17,12 +17,12 @@ public class InputFieldBtn : MonoBehaviour, IPointerClickHandler {
 
     private void OnEnable() {
         _inputField.onEndEdit.AddListener(OnEndEdit);
-        _mobileInputField.OnReturnPressedEvent.AddListener(DeactivateKeyboard);
+        //_mobileInputField.OnReturnPressedEvent.AddListener(DeactivateKeyboard);
     }
 
     private void OnDisable() {
         _inputField.onEndEdit.RemoveListener(OnEndEdit);
-        _mobileInputField.OnReturnPressedEvent.RemoveListener(DeactivateKeyboard);
+        //_mobileInputField.OnReturnPressedEvent.RemoveListener(DeactivateKeyboard);
     }
 
     private void ActivateKeyboard() {

@@ -67,7 +67,7 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
 
     private void CheckText() {
         foreach (var item in _customInputFields) {
-            if (item.GetMobileInputField.Text.Length == 0) {
+            if (item.Text.Length == 0) {
                 _updateDataBtn.interactable = false;
                 return;
             }

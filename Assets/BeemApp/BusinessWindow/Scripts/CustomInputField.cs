@@ -24,9 +24,9 @@ public class CustomInputField : MonoBehaviour {
     [SerializeField]
     private bool isLink;
 
-    public MobileInputField GetMobileInputField {
+    public string Text {
         get {
-            return _mobileInputField;
+            return _inputField.text;
         }
     }
 
@@ -38,7 +38,7 @@ public class CustomInputField : MonoBehaviour {
 
     public async Task<bool> IsValid() {
         if (isLink) {
-            UnityWebRequest webRequest = UnityWebRequest.Get(_mobileInputField.Text);
+            UnityWebRequest webRequest = UnityWebRequest.Get(Text);
             await webRequest.SendWebRequest();
             return webRequest.result == UnityWebRequest.Result.Success;
         } else {
@@ -48,12 +48,12 @@ public class CustomInputField : MonoBehaviour {
 
     private void OnEnable() {
         _inputField.onValueChanged.AddListener(ChangeText);
-        _mobileInputField.OnReturnPressedEvent.AddListener(OnReturnedPressed);
+        //_mobileInputField.OnReturnPressedEvent.AddListener(OnReturnedPressed);
     }
 
     private void OnDisable() {
         _inputField.onValueChanged.RemoveListener(ChangeText);
-        _mobileInputField.OnReturnPressedEvent.RemoveListener(OnReturnedPressed);
+        //_mobileInputField.OnReturnPressedEvent.RemoveListener(OnReturnedPressed);
     }
 
     private void OnReturnedPressed() {
