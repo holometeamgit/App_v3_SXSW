@@ -44,11 +44,13 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     private void OnEnable() {
         _canvasScaler = GetComponentInParent<CanvasScaler>();
         _defaultHeight = _rect.rect.height;
-        MobileInput.OnShowKeyboard += OnShowKeyboard;
+        MobileInput.OnShowKeyboard += OnMobileKeyboard;
+        InputFieldBtn.OnShowKeyboard += OnInputField;
     }
 
     private void OnDisable() {
-        MobileInput.OnShowKeyboard -= OnShowKeyboard;
+        MobileInput.OnShowKeyboard -= OnMobileKeyboard;
+        InputFieldBtn.OnShowKeyboard -= OnInputField;
         Cancel();
     }
 
@@ -81,8 +83,16 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
         }
     }
 
-    private void OnShowKeyboard(bool isShown, int height) {
-        Debug.LogError($"show {isShown}, height = {height}");
+    private void OnMobileKeyboard(bool isShown, int height) {
+        Debug.LogError($"OnMobileKeyboard {isShown}, height = {height}");
+
+        //_rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _defaultHeight + (isShown ? height : 0));
+
+        //CurrentStatus = 1f;
+    }
+
+    private void OnInputField(bool isShown, int height) {
+        Debug.LogError($"OnInputField {isShown}, height = {height}");
 
         _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _defaultHeight + (isShown ? height : 0));
 

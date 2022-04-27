@@ -17,19 +17,19 @@ public class InputFieldBtn : MonoBehaviour, IPointerClickHandler {
 
     private void OnEnable() {
         _inputField.onEndEdit.AddListener(OnEndEdit);
-        //_mobileInputField.OnReturnPressedEvent.AddListener(DeactivateKeyboard);
     }
 
     private void OnDisable() {
         _inputField.onEndEdit.RemoveListener(OnEndEdit);
-        //_mobileInputField.OnReturnPressedEvent.RemoveListener(DeactivateKeyboard);
     }
 
     private void ActivateKeyboard() {
+        _mobileInputField.SetFocus(true);
         OnShowKeyboard?.Invoke(true, 350);
     }
 
     private void DeactivateKeyboard() {
+        _mobileInputField.SetFocus(false);
         OnShowKeyboard?.Invoke(false, 0);
     }
 
