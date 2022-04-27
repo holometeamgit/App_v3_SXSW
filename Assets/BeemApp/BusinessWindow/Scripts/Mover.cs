@@ -94,9 +94,9 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     private void OnInputField(bool isShown, int height) {
         Debug.LogError($"OnInputField {isShown}, height = {height}");
 
-        _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _defaultHeight + (isShown ? height : 0));
+        //_rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _defaultHeight + (isShown ? height : 0));
 
-        CurrentStatus = 1f;
+        //CurrentStatus = 1f;
     }
 
     /// <summary>
