@@ -27,6 +27,10 @@ public class InputFieldBtn : MonoBehaviour, IPointerClickHandler {
         _inputField.onEndEdit.RemoveListener(OnEndEdit);
     }
 
+    private void Update() {
+        _mobileInputField.SetRectNative();
+    }
+
     private void OnReturnPressed() {
         Debug.LogError("OnReturnPressed");
     }

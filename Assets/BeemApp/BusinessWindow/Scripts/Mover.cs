@@ -34,6 +34,7 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     private const float MOVE_CEIL = 0.3f;
 
     private bool isDragging;
+    private float currentStatus;
 
     public bool IsDragging {
         get {
@@ -44,12 +45,10 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     private void OnEnable() {
         _canvasScaler = GetComponentInParent<CanvasScaler>();
         _defaultHeight = _rect.rect.height;
-        MobileInput.OnShowKeyboard += OnMobileKeyboard;
         InputFieldBtn.OnShowKeyboard += OnInputField;
     }
 
     private void OnDisable() {
-        MobileInput.OnShowKeyboard -= OnMobileKeyboard;
         InputFieldBtn.OnShowKeyboard -= OnInputField;
         Cancel();
     }
@@ -83,20 +82,12 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
         }
     }
 
-    private void OnMobileKeyboard(bool isShown, int height) {
+    private void OnInputField(bool isShown, int height) {
         Debug.LogError($"OnMobileKeyboard {isShown}, height = {height}");
 
         _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _defaultHeight + (isShown ? height : 0));
 
         CurrentStatus = 1f;
-    }
-
-    private void OnInputField(bool isShown, int height) {
-        //Debug.LogError($"OnInputField {isShown}, height = {height}");
-
-        //_rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _defaultHeight + (isShown ? height : 0));
-
-        //CurrentStatus = 1f;
     }
 
     /// <summary>
@@ -115,15 +106,16 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
         ChangeValue(active ? 1f : 0f);
     }
 
-    protected float CurrentStatus {
+    public float CurrentStatus {
         get {
-            return _canvasGroup.alpha;
+            return currentStatus;
         }
         set {
-            _rect.anchoredPosition = Vector2.up * (value - 1) * _rect.rect.height;
-            _canvasGroup.alpha = value;
-            _canvasGroup.blocksRaycasts = value > MOVE_CEIL;
-            _canvasGroup.interactable = value > MOVE_CEIL;
+            currentStatus = value;
+            _rect.anchoredPosition = Vector2.up * (currentStatus - 1) * _rect.rect.height;
+            _canvasGroup.alpha = currentStatus;
+            _canvasGroup.blocksRaycasts = currentStatus > MOVE_CEIL;
+            _canvasGroup.interactable = currentStatus > MOVE_CEIL;
         }
     }
 
