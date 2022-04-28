@@ -33,18 +33,23 @@ public class InputFieldBtn : MonoBehaviour, IPointerClickHandler {
 
     private void OnMobileFocus(bool focus) {
         Debug.LogError("OnMobileFocus " + focus);
+        if (focus) {
+            OnShowKeyboard?.Invoke(true, 350);
+        } else {
+            OnShowKeyboard?.Invoke(false, 0);
+        }
     }
 
     private void ActivateKeyboard() {
         Debug.LogError("ActivateKeyboard");
-        _mobileInputField.SetFocus(true);
-        OnShowKeyboard?.Invoke(true, 350);
+        //_mobileInputField.SetFocus(true);
+        //OnShowKeyboard?.Invoke(true, 350);
     }
 
     private void DeactivateKeyboard() {
         Debug.LogError("DeactivateKeyboard");
-        _mobileInputField.SetFocus(false);
-        OnShowKeyboard?.Invoke(false, 0);
+        //_mobileInputField.SetFocus(false);
+        //OnShowKeyboard?.Invoke(false, 0);
     }
 
     private void OnEndEdit(string text) {
