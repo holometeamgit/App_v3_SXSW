@@ -28,7 +28,6 @@ namespace Beem.KeyBoard {
         }
 
         private void OnShowKeyboard(bool isShown, int height) {
-            Debug.LogError($"Base show {isShown}, height = {height}");
             if (isShown) {
                 if (height > _limit.x && height < _limit.y) {
                     _height = height;

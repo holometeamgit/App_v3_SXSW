@@ -17,12 +17,18 @@ public class InputFieldBtn : MonoBehaviour, IPointerClickHandler {
 
     private void OnEnable() {
         _mobileInputField.OnFocusChanged += OnMobileFocus;
+        _mobileInputField.OnReturnPressed += OnReturnPressed;
         _inputField.onEndEdit.AddListener(OnEndEdit);
     }
 
     private void OnDisable() {
         _mobileInputField.OnFocusChanged -= OnMobileFocus;
+        _mobileInputField.OnReturnPressed -= OnReturnPressed;
         _inputField.onEndEdit.RemoveListener(OnEndEdit);
+    }
+
+    private void OnReturnPressed() {
+        Debug.LogError("OnReturnPressed");
     }
 
     private void OnMobileFocus(bool focus) {
