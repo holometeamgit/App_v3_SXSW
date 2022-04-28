@@ -79,6 +79,12 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
         CheckText();
     }
 
+    private void EnableInput(bool status) {
+        foreach (var item in _customInputFields) {
+            item.gameObject.SetActive(status);
+        }
+    }
+
     /// <summary>
     /// Update Data Button
     /// </summary>
@@ -87,7 +93,8 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
             var valid = item.IsValid();
             await valid;
             if (valid.IsFaulted || !valid.Result) {
-                WarningConstructor.ActivateDoubleButton(message: "Something went wrong", buttonOneText: "Retry", buttonTwoText: "Cancel", onButtonOnePress: UpdateDataButton, isWarning: true);
+                EnableInput(false);
+                WarningConstructor.ActivateDoubleButton(message: "Something went wrong", buttonOneText: "Retry", buttonTwoText: "Cancel", onButtonOnePress: UpdateDataButton, onButtonTwoPress: () => EnableInput(true), isWarning: true);
                 return;
             }
         }

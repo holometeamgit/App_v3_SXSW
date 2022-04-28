@@ -19,14 +19,22 @@ public class CustomInputField : MonoBehaviour {
     private InputField _inputField;
 
     [SerializeField]
+    private MobileInputField _mobileInputField;
+
+    [SerializeField]
+    private int _keyboardHeight = 350;
+
+    public static Action<bool, int> OnShowKeyboard;
+
+    [SerializeField]
     private bool isLink;
 
     public string Text {
         get {
-            return _inputField.text;
+            return _mobileInputField.Text;
         }
         set {
-            _inputField.text = value;
+            _mobileInputField.Text = value;
         }
     }
 
@@ -47,11 +55,21 @@ public class CustomInputField : MonoBehaviour {
     }
 
     private void OnEnable() {
-        _inputField.onValueChanged.AddListener(ChangeText);
+        _inputField.onEndEdit.AddListener(ChangeText);
+        _mobileInputField.OnFocusChanged += OnMobileFocus;
     }
 
     private void OnDisable() {
-        _inputField.onValueChanged.RemoveListener(ChangeText);
+        _inputField.onEndEdit.RemoveListener(ChangeText);
+        _mobileInputField.OnFocusChanged -= OnMobileFocus;
+    }
+
+    private void Update() {
+        _mobileInputField.SetRectNative();
+    }
+
+    private void OnMobileFocus(bool focus) {
+        OnShowKeyboard?.Invoke(focus, focus ? _keyboardHeight : 0);
     }
 
     private void ChangeText(string text) {

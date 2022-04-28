@@ -11,6 +11,16 @@ using UnityEngine.UI;
 /// </summary>
 public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler {
 
+    public enum Position {
+        bottom,
+        top,
+        left,
+        right
+    }
+
+    [SerializeField]
+    private Position position = Position.bottom;
+
     [SerializeField]
     private RectTransform _rect;
     [SerializeField]
@@ -30,7 +40,6 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     private CanvasScaler _canvasScaler;
     private bool active = false;
 
-    private float _defaultHeight = 1520f;
     private const float MOVE_CEIL = 0.3f;
 
     private bool isDragging;
@@ -44,12 +53,10 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
 
     private void OnEnable() {
         _canvasScaler = GetComponentInParent<CanvasScaler>();
-        _defaultHeight = _rect.rect.height;
-        InputFieldBtn.OnShowKeyboard += OnInputField;
+        InitBasePosition();
     }
 
     private void OnDisable() {
-        InputFieldBtn.OnShowKeyboard -= OnInputField;
         Cancel();
     }
 
@@ -59,7 +66,7 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     }
 
     public void OnDrag(PointerEventData eventData) {
-        CurrentStatus = Mathf.Clamp01(eventData.position.y / (Screen.height * (_rect.sizeDelta.y / _canvasScaler.referenceResolution.y)));
+        CurrentStatus = Mathf.Clamp01(eventData.position.y / (Screen.height * (_rect.rect.height / _canvasScaler.referenceResolution.y)));
     }
 
     public void OnEndDrag(PointerEventData eventData) {
@@ -80,14 +87,6 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
             StopCoroutine(_enumerator);
             _enumerator = null;
         }
-    }
-
-    private void OnInputField(bool isShown, int height) {
-        Debug.LogError($"OnMobileKeyboard {isShown}, height = {height}");
-
-        _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _defaultHeight + (isShown ? height : 0));
-
-        CurrentStatus = 1f;
     }
 
     /// <summary>
@@ -112,10 +111,60 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
         }
         set {
             currentStatus = value;
-            _rect.anchoredPosition = Vector2.up * (currentStatus - 1) * _rect.rect.height;
-            _canvasGroup.alpha = currentStatus;
-            _canvasGroup.blocksRaycasts = currentStatus > MOVE_CEIL;
-            _canvasGroup.interactable = currentStatus > MOVE_CEIL;
+            UpdatePosition();
+        }
+    }
+
+    /// <summary>
+    /// Update Position
+    /// </summary>
+    public void UpdatePosition() {
+        switch (position) {
+            case Position.bottom:
+                _rect.anchoredPosition = (1 - CurrentStatus) * _rect.rect.height * Vector2.down;
+                break;
+            case Position.top:
+                _rect.anchoredPosition = (1 - CurrentStatus) * _rect.rect.height * Vector2.up;
+                break;
+            case Position.left:
+                _rect.anchoredPosition = (1 - CurrentStatus) * _rect.rect.width * Vector2.left;
+                break;
+            case Position.right:
+                _rect.anchoredPosition = (1 - CurrentStatus) * _rect.rect.width * Vector2.right;
+                break;
+        }
+
+        _canvasGroup.alpha = CurrentStatus;
+        _canvasGroup.blocksRaycasts = CurrentStatus > MOVE_CEIL;
+        _canvasGroup.interactable = CurrentStatus > MOVE_CEIL;
+    }
+
+    private void InitBasePosition() {
+        switch (position) {
+            case Position.bottom:
+                _rect.pivot = Vector2.right / 2f;
+                _rect.anchorMin = Vector2.zero;
+                _rect.anchorMax = Vector2.right;
+                _rect.anchoredPosition = Vector2.down * _rect.rect.height;
+                break;
+            case Position.top:
+                _rect.pivot = Vector2.one - Vector2.right / 2f;
+                _rect.anchorMin = Vector2.up;
+                _rect.anchorMax = Vector2.one;
+                _rect.anchoredPosition = Vector2.up * _rect.rect.height;
+                break;
+            case Position.left:
+                _rect.pivot = Vector2.up / 2f;
+                _rect.anchorMin = Vector2.zero;
+                _rect.anchorMax = Vector2.up;
+                _rect.anchoredPosition = Vector2.left * _rect.rect.width;
+                break;
+            case Position.right:
+                _rect.pivot = Vector2.one - Vector2.up / 2f;
+                _rect.anchorMin = Vector2.right;
+                _rect.anchorMax = Vector2.one;
+                _rect.anchoredPosition = Vector2.right * _rect.rect.width;
+                break;
         }
     }
 

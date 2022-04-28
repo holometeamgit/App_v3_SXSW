@@ -253,6 +253,7 @@ GameObject:
   - component: {fileID: 7170969192517224041}
   - component: {fileID: 2721137263996266877}
   - component: {fileID: 6453776796666207470}
+  - component: {fileID: 5820265920666944401}
   m_Layer: 5
   m_Name: imgGradientBG
   m_TagString: Untagged
@@ -329,10 +330,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7e9298db23c06a46b0c7869449a191a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  position: 0
   _rect: {fileID: 739447364447682410}
   _canvasGroup: {fileID: 739447364303504136}
   _frequency: 0.02
-  _speed: 1
+  _speed: 2
+--- !u!114 &5820265920666944401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3958456356494423723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39c7502b4987c1a4b8444df3d97d71f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rect: {fileID: 739447364447682410}
+  _mover: {fileID: 6453776796666207470}
 --- !u!1 &4000668549572165440
 GameObject:
   m_ObjectHideFlags: 0
