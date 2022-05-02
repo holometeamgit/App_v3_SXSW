@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Beem.SSO;
 using TMPro;
 using Beem.Permissions;
@@ -15,19 +16,45 @@ public class PnlSettings : MonoBehaviour {
     [SerializeField]
     private TMP_Text _txtNickname;
 
+    [SerializeField]
+    GameObject _businessGO;
+    [SerializeField]
+    private TMP_Text _txtBusinessName;
+    [SerializeField]
+    private GameObject _defaultBusinessLogoGO;
+    [SerializeField]
+    private Image _imgBusinessLogo;
+    [SerializeField]
+    GameObject _changeLogobtn;
+
     private UserWebManager _userWebManager;
     private AccountManager _accountManager;
+    private BusinessLogoController _businessLogoController;
 
     [Inject]
-    public void Construct(AccountManager accountManager, UserWebManager userWebManager) {
+    public void Construct(AccountManager accountManager, UserWebManager userWebManager, BusinessLogoController businessLogoController) {
         _accountManager = accountManager;
         _userWebManager = userWebManager;
+        _businessLogoController = businessLogoController;
     }
 
     private void OnEnable() {
-        _changePassword.SetActive(_accountManager.GetLogInType() == LogInType.Email);
+        CallBacks.OnBusinessLogoLoaded += OnUpdateBusinessLogoImage;
+
+_changePassword.SetActive(_accountManager.GetLogInType() == LogInType.Email);
         _txtNickname.text = _userWebManager.GetUsername();
         _userWebManager.OnUserAccountDeleted += UserLogOut;
+
+        bool isBuisenessProfile = _userWebManager.IsBusinessProfile();
+        _businessGO.SetActive(isBuisenessProfile);
+        _changeLogobtn.SetActive(isBuisenessProfile);
+
+        if (!isBuisenessProfile)
+            return;
+
+        string businessName = _userWebManager.GetUsername();
+        _txtBusinessName.text = string.IsNullOrEmpty(businessName) ? "B" : businessName[0].ToString();
+        _defaultBusinessLogoGO.SetActive(true);
     }
 
     /// <summary>
@@ -56,19 +83,6 @@ public class PnlSettings : MonoBehaviour {
           });
     }
 
-    private void UserLogOut() {
-        WelcomeConstructor.OnActivated?.Invoke(true);
-        GalleryConstructor.OnHide?.Invoke();
-        SettingsConstructor.OnActivated?.Invoke(false);
-
-        _accountManager.LogOut();
-    }
-
-
-    private void OnDisable() {
-        _userWebManager.OnUserAccountDeleted -= UserLogOut;
-    }
-
     /// <summary>
     /// Sign Up To Welcome
     /// </summary>
@@ -79,5 +93,28 @@ public class PnlSettings : MonoBehaviour {
             () => {
                 UserLogOut();
             });
+    }
+
+    private void UserLogOut() {
+        WelcomeConstructor.OnActivated?.Invoke(true);
+        GalleryConstructor.OnHide?.Invoke();
+        SettingsConstructor.OnActivated?.Invoke(false);
+
+        _defaultBusinessLogoGO.SetActive(true);
+        _imgBusinessLogo.gameObject.SetActive(false);
+
+        _accountManager.LogOut();
+    }
+
+    private void OnUpdateBusinessLogoImage() {
+        _imgBusinessLogo.sprite = _businessLogoController.GetCurrentLogoImage();
+        _imgBusinessLogo.gameObject.SetActive(_imgBusinessLogo.sprite != null);
+        _defaultBusinessLogoGO.SetActive(_imgBusinessLogo.sprite == null);
+    }
+
+
+    private void OnDisable() {
+        _userWebManager.OnUserAccountDeleted -= UserLogOut;
+        CallBacks.OnBusinessLogoLoaded -= OnUpdateBusinessLogoImage;
     }
 }

@@ -81,5 +81,10 @@ namespace Beem.SSO {
 
         public static Action<long> onDownloadStreamById = delegate { };
         #endregion
+
+        #region business account
+        public static Action OnBusinessLogoLoaded;
+
+        #endregion
     }
 }

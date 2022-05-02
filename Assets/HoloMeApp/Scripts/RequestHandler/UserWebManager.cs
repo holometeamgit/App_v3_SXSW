@@ -25,6 +25,7 @@ public class UserWebManager : MonoBehaviour {
 
     private UserJsonData userData;
     private WebRequestHandler _webRequestHandler;
+    private BusinessLogoController _businessLogoController;
 
     [Inject]
     public void Construct(WebRequestHandler webRequestHandler) {
@@ -81,6 +82,18 @@ public class UserWebManager : MonoBehaviour {
     /* public string GetUnituniqueName() {
          return GetEmail();
      }*/
+
+    /// <summary>
+    /// Return Business profile name
+    /// </summary>
+    /// <returns>Business Profile Name</returns>
+    public string GetBusinessProfileName() {
+        return "Beem";
+    }
+
+    public bool IsBusinessProfile() {
+        return true;
+    }
 
     public string GetFullName() {
         if (userData == null || string.IsNullOrEmpty(userData.first_name))
