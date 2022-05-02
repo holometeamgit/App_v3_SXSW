@@ -45,6 +45,7 @@ namespace Beem.Xcode {
             pbxProject.ReadFromString(File.ReadAllText(pbxPath));
             string targetGUID = pbxProject.GetUnityFrameworkTargetGuid();
             pbxProject.AddFrameworkToProject(targetGUID, "UserNotifications.framework", false);
+            pbxProject.AddFrameworkToProject(targetGUID, "Contacts.framework", false);
             File.WriteAllText(pbxPath, pbxProject.WriteToString());
 
         }

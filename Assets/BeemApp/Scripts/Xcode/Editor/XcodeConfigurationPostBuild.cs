@@ -19,12 +19,12 @@ namespace Beem.Xcode {
             "https://join.beem.me/prerecorded/**",
             "https://join.beem.me/live/**",
             "https://join.beem.me/stadium/**",
-            "https://watch.beem.me",
-            "https://watch.beem.me/room/**",
-            "https://watch.beem.me/message/**",
-            "https://watch.beem.me/prerecorded/**",
-            "https://watch.beem.me/live/**",
-            "https://watch.beem.me/stadium/**"
+        };
+
+        private static Dictionary<string, string> privacies = new Dictionary<string, string>() {
+            {"Privacy - Local Network Usage Description", "Beem uses this to find and connect to devices to cast to your TV"},
+            {"Privacy - Photo Library Usage Description", "Need for save recorded video"},
+            {"Privacy - Contacts Usage Description", "Access to contacts required" }
         };
 
         [PostProcessBuild]
@@ -38,11 +38,9 @@ namespace Beem.Xcode {
             // Get root
             PlistElementDict rootDict = plist.root;
 
-            // background location useage key (new in iOS 8)
-            rootDict.SetString("Privacy - Local Network Usage Description", "Beem uses this to find and connect to devices to cast to your TV");
-
-            //Access to photo and video
-            rootDict.SetString("Privacy - Photo Library Usage Description", "Need for save recorded video");
+            foreach (var item in privacies) {
+                rootDict.SetString(item.Key, item.Value);
+            }
 
             rootDict.SetBoolean("UIRequiresFullScreen", true);
 
