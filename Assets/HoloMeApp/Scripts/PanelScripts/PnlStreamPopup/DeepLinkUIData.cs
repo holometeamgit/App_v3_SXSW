@@ -24,12 +24,13 @@ public class DeepLinkUIData {
 
     private const string NO_LONGER_LIVE_TITLE = "<color=#{0}>{1}</color> is no longer live";
     private const string NO_LONGER_LIVE_DESCRIPTION = "";
-    private const string ONLINE_TITLE_STADIUM = "<color=#{0}>{1}</color>\'s is now online";
+    private const string ONLINE_TITLE_STADIUM = "<color=#{0}>{1}</color> is now online";
     private const string ONLINE_TITLE_ROOM = "<color=#{0}>{1}</color>\'s Room is now online";
     private const string ONLINE_BUTTON_TEXT_STADIUM = "Enter";
     private const string ONLINE_BUTTON_TEXT_ROOM = "Enter the Room";
     private const string ONLINE_DESCRIPTION = "";
-    private const string OFFLINE_TITLE = "<color=#{0}>{1}</color>\'s is currently offline";
+    private const string OFFLINE_TITLE_STADIUM = "<color=#{0}>{1}</color> is currently offline";
+    private const string OFFLINE_TITLE_ROOM = "<color=#{0}>{1}</color>\'s Room is currently offline";
     private const string OFFLINE_DESCRIPTION = "This page will refresh automatically\nwhen they go live";
 
     public DeepLinkUIData(DeepLinkPopup deepLinkPopup, IData data) {
@@ -51,7 +52,7 @@ public class DeepLinkUIData {
                 break;
             case DeepLinkPopup.Offline:
             default:
-                _title = OFFLINE_TITLE;
+                _title = (data is RoomJsonData) ? OFFLINE_TITLE_ROOM : OFFLINE_TITLE_STADIUM;
                 _description = OFFLINE_DESCRIPTION;
                 break;
         }
