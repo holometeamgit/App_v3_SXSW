@@ -45,7 +45,6 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
 
         if (objects != null && objects.Length > 0) {
             foreach (var item in objects) {
-                Debug.Log(item.GetType());
                 if (item is string) {
                     _warningTxt = item as string;
                 } else if (item is ARMsgJSON.Data) {
@@ -58,13 +57,7 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
 
         gameObject.SetActive(true);
 
-        _warning.SetActive(!string.IsNullOrEmpty(_warningTxt));
-
-        if (!string.IsNullOrEmpty(_warningTxt)) {
-            _warningText.text = _warningTxt;
-        }
-
-        Debug.LogError(_webRequestHandler);
+        ShowWarning(_warningTxt);
 
         if (_webRequestHandler != null) {
             _postARMsgExtDataController = new PostARMsgExtDataController(_arMsgAPIScriptableObject, _webRequestHandler);
@@ -76,18 +69,34 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
         }
 
         CheckText();
-
+        CustomInputField.OnShowKeyboard += OnInputField;
         _ctaLabel.GetInputField.onValueChanged.AddListener(OnValueChanged);
         _ctaUrl.GetInputField.onValueChanged.AddListener(OnValueChanged);
+    }
+
+    private void ShowWarning(string text) {
+        _warning.SetActive(!string.IsNullOrEmpty(text));
+
+        _warningText.text = text;
+    }
+
+    private void OnInputField(bool isShown, int height) {
+        if (isShown) {
+            ShowWarning(string.Empty);
+        } else {
+            ShowWarning(_warningTxt);
+        }
     }
 
     /// <summary>
     /// Hide Window
     /// </summary>
     public void Hide() {
+        CustomInputField.OnShowKeyboard -= OnInputField;
         _ctaLabel.GetInputField.onValueChanged.RemoveListener(OnValueChanged);
         _ctaUrl.GetInputField.onValueChanged.RemoveListener(OnValueChanged);
         gameObject.SetActive(false);
+        _warningTxt = string.Empty;
     }
 
     private void CheckText() {
@@ -125,8 +134,7 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
             cta_label = _ctaLabel.Text,
             cta_url = _ctaUrl.Text
         };
-        Debug.LogError(extContentData.cta_label);
-        Debug.LogError(extContentData.cta_url);
+
         _postARMsgExtDataController.PostARMsgExtDataById(_data.id, extContentData, ShowSuccess, (error) => ShowError());
 
     }

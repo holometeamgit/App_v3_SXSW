@@ -222,7 +222,6 @@ GameObject:
   - component: {fileID: 3033415271603423354}
   - component: {fileID: 1286468803902105727}
   - component: {fileID: 83497099960756309}
-  - component: {fileID: 7242148379275743008}
   - component: {fileID: 5634045199177867315}
   m_Layer: 5
   m_Name: ShareBtn
@@ -346,18 +345,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7242148379275743008
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1348028218041045612}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e61b900428aed6344918e0cfa9c37686, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5634045199177867315
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -373,9 +360,9 @@ MonoBehaviour:
   OnPress:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7242148379275743008}
-        m_TargetAssemblyTypeName: Beem.UI.ShareARMsgBtn, Assembly-CSharp
-        m_MethodName: Share
+      - m_Target: {fileID: 8454566620459055059}
+        m_TargetAssemblyTypeName: BusinessOptionsWindow, Assembly-CSharp
+        m_MethodName: OpenShareOptions
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

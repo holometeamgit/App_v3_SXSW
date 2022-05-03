@@ -19,6 +19,7 @@ public class BusinessOptionsWindow : MonoBehaviour, IBlindView {
     private UserWebManager _userWebManager;
     private BusinessProfileManager _businessProfileManager;
     private WebRequestHandler _webRequestHandler;
+    private ShareLinkController _shareController = new ShareLinkController();
 
     private ARMsgJSON.Data _data = null;
     private bool _existPreview = true;
@@ -65,6 +66,19 @@ public class BusinessOptionsWindow : MonoBehaviour, IBlindView {
     public void OpenCtaOptions() {
         BlindOptionsConstructor.Show(CTA_LINK_OPTIONS_VIEW, _data, _webRequestHandler);
     }
+
+    /// <summary>
+    /// Open Cta Options
+    /// </summary>
+    public void OpenShareOptions() {
+        if (_data.ext_content_data != null && _data.ext_content_data.Length > 0) {
+            _shareController.ShareLink(_data.share_link);
+        } else {
+            BlindOptionsConstructor.Show(CTA_LINK_OPTIONS_VIEW, "Please add the CTA information before sharing", _data, _webRequestHandler);
+        }
+    }
+
+
 
     /// <summary>
     /// Hide
