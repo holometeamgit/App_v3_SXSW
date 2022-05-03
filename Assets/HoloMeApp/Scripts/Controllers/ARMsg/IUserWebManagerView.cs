@@ -7,7 +7,7 @@ namespace Beem.UI {
     /// Interface for UserWebManager
     /// </summary>
 
-    public interface IUserWebManager {
+    public interface IUserWebManagerView {
         /// <summary>
         /// Init UserWebManager
         /// </summary>

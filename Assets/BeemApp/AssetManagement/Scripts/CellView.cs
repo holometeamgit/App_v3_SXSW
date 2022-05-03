@@ -24,14 +24,15 @@ public class CellView : ScrollItem<ARMsgScrollItem> {
     private TMP_Text _processText;
 
     private List<IARMsgDataView> _arMsgDataViews;
-    private List<IUserWebManager> _userWebManagerViews;
+    private List<IUserWebManagerView> _userWebManagerViews;
+    private List<IBusinessProfileManagerView> _businessProfileManagerViews;
     private List<IWebRequestHandlerView> _webRequestHandlerViews;
 
     /// <summary>
     /// Show Cell Information
     /// </summary>
     /// <param name="data"></param>
-    public void Show(ARMsgJSON.Data data, UserWebManager userWebManager, WebRequestHandler webRequestHandler, bool isNew = false) {
+    public void Show(ARMsgJSON.Data data, UserWebManager userWebManager, BusinessProfileManager businessProfileManager, WebRequestHandler webRequestHandler, bool isNew = false) {
         _newObj.SetActive(isNew);
 
         _screenshotView.Show(data, () => ShowPreview(true), (text) => { ShowPreview(false); _processText.text = text; });
@@ -40,9 +41,13 @@ public class CellView : ScrollItem<ARMsgScrollItem> {
 
         _arMsgDataViews.ForEach(x => x.Init(data));
 
-        _userWebManagerViews = GetComponentsInChildren<IUserWebManager>().ToList();
+        _userWebManagerViews = GetComponentsInChildren<IUserWebManagerView>().ToList();
 
         _userWebManagerViews.ForEach(x => x.Init(userWebManager));
+
+        _businessProfileManagerViews = GetComponentsInChildren<IBusinessProfileManagerView>().ToList();
+
+        _businessProfileManagerViews.ForEach(x => x.Init(businessProfileManager));
 
         _webRequestHandlerViews = GetComponentsInChildren<IWebRequestHandlerView>().ToList();
 
@@ -55,7 +60,7 @@ public class CellView : ScrollItem<ARMsgScrollItem> {
     }
 
     protected override void InitItemData(ARMsgScrollItem item) {
-        Show(item.Data, item.UserWebManager, item.WebRequestHandler, item.IsNew);
+        Show(item.Data, item.UserWebManager, item.BusinessProfileManager, item.WebRequestHandler, item.IsNew);
         base.InitItemData(item);
     }
 

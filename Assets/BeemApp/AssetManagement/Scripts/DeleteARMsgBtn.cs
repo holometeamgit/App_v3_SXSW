@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// Delete ARMsg Btn
 /// </summary>
-public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView, IWebRequestHandlerView, IUserWebManager {
+public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView, IWebRequestHandlerView, IUserWebManagerView {
     [SerializeField]
     private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
 

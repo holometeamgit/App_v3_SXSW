@@ -1,14 +1,8 @@
 using Beem.UI;
-using DynamicScrollRect;
-using Firebase.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
-using Zenject;
 
 /// <summary>
 /// Business View
@@ -23,10 +17,13 @@ public class BusinessOptionsWindow : MonoBehaviour, IBlindView {
     private List<IARMsgDataView> _arMsgDataViews;
 
     private UserWebManager _userWebManager;
+    private BusinessProfileManager _businessProfileManager;
     private WebRequestHandler _webRequestHandler;
 
     private ARMsgJSON.Data _data = null;
     private bool _existPreview = true;
+
+    private const string CTA_LINK_OPTIONS_VIEW = "CTALinkOptionsView";
 
     /// <summary>
     /// Show data
@@ -42,21 +39,31 @@ public class BusinessOptionsWindow : MonoBehaviour, IBlindView {
                     _data = item as ARMsgJSON.Data;
                 } else if (item is UserWebManager) {
                     _userWebManager = item as UserWebManager;
+                } else if (item is BusinessProfileManager) {
+                    _businessProfileManager = item as BusinessProfileManager;
+
                 } else if (item is WebRequestHandler) {
                     _webRequestHandler = item as WebRequestHandler;
                 }
             }
         }
 
-        if (_data != null && _userWebManager != null && _webRequestHandler != null) {
+        if (_data != null && _userWebManager != null && _businessProfileManager != null && _webRequestHandler != null) {
 
             gameObject.SetActive(true);
             _videoCell.SetActive(_existPreview);
-            _cellView?.Show(_data, _userWebManager, _webRequestHandler);
+            _cellView?.Show(_data, _userWebManager, _businessProfileManager, _webRequestHandler);
             _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
 
             _arMsgDataViews.ForEach(x => x.Init(_data));
         }
+    }
+
+    /// <summary>
+    /// Open Cta Options
+    /// </summary>
+    public void OpenCtaOptions() {
+        BlindOptionsConstructor.Show(CTA_LINK_OPTIONS_VIEW, _data, _webRequestHandler);
     }
 
     /// <summary>

@@ -18,18 +18,30 @@ public class ARMsgWindow : MonoBehaviour {
 
     private HologramHandler _hologramHandler;
     private UserWebManager _userWebManager;
+    private BusinessProfileManager _businessProfileManager;
     private WebRequestHandler _webRequestHandler;
 
     private List<IARMsgDataView> _arMsgDataViews;
-    private List<IUserWebManager> _userWebManagerViews;
+    private List<IUserWebManagerView> _userWebManagerViews;
+    private List<IBusinessProfileManagerView> _businessProfileManagerViews;
     private List<IWebRequestHandlerView> _webRequestHandlerViews;
 
     [Inject]
-    public void Construct(HologramHandler hologramHandler, UserWebManager userWebManager, WebRequestHandler webRequestHandler) {
+    public void Construct(HologramHandler hologramHandler, UserWebManager userWebManager, BusinessProfileManager businessProfileManager, WebRequestHandler webRequestHandler) {
         _hologramHandler = hologramHandler;
         _userWebManager = userWebManager;
+        _businessProfileManager = businessProfileManager;
         _webRequestHandler = webRequestHandler;
     }
+
+    private void SuccessedBusinessProfile(BusinessProfileData businessProfileData) {
+        ShowBusiness(true);
+    }
+
+    private void FailedBusinessProfile(WebRequestError error) {
+        ShowBusiness(false);
+    }
+
 
     /// <summary>
     /// Initialization
@@ -42,9 +54,13 @@ public class ARMsgWindow : MonoBehaviour {
 
         _arMsgDataViews.ForEach(x => x.Init(arMsgJSON));
 
-        _userWebManagerViews = GetComponentsInChildren<IUserWebManager>().ToList();
+        _userWebManagerViews = GetComponentsInChildren<IUserWebManagerView>().ToList();
 
         _userWebManagerViews.ForEach(x => x.Init(_userWebManager));
+
+        _businessProfileManagerViews = GetComponentsInChildren<IBusinessProfileManagerView>().ToList();
+
+        _businessProfileManagerViews.ForEach(x => x.Init(_businessProfileManager));
 
         _webRequestHandlerViews = GetComponentsInChildren<IWebRequestHandlerView>().ToList();
 
@@ -52,15 +68,14 @@ public class ARMsgWindow : MonoBehaviour {
 
         _hologramHandler.SetOnPlacementUIHelperFinished(OnPlacementCompleted);
 
-        businessButtons.ForEach(x => x.SetActive(IsBusinessProfile));
-
-        usualButtons.ForEach(x => x.SetActive(!IsBusinessProfile));
+        ShowBusiness(false);
+        _businessProfileManager.GetMyData(SuccessedBusinessProfile, FailedBusinessProfile);
     }
 
-    private bool IsBusinessProfile {
-        get {
-            return true;
-        }
+    private void ShowBusiness(bool status) {
+        businessButtons.ForEach(x => x.SetActive(status));
+
+        usualButtons.ForEach(x => x.SetActive(!status));
     }
 
     private void OnPlacementCompleted() {

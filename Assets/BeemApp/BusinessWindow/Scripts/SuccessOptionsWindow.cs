@@ -21,14 +21,10 @@ public class SuccessOptionsWindow : MonoBehaviour, IBlindView {
 
     private SuccessOptionsData _successOptionsData;
 
-    private const int DELAY_FOR_SUCCESS = 3000;
-    private const string BUSINESS_OPTIONS_VIEW = "BusinessOptionsView";
-
-
     /// <summary>
     /// Show Window
     /// </summary>
-    public async void Show(params object[] objects) {
+    public void Show(params object[] objects) {
 
         if (objects != null && objects.Length > 0) {
             foreach (var item in objects) {
@@ -47,10 +43,6 @@ public class SuccessOptionsWindow : MonoBehaviour, IBlindView {
             _backBtn.OnPress.AddListener(Back);
         }
 
-
-        await Task.Delay(DELAY_FOR_SUCCESS);
-
-        BlindOptionsConstructor.Show(BUSINESS_OPTIONS_VIEW);
     }
 
     private void Back() {

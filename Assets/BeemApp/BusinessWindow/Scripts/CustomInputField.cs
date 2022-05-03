@@ -26,9 +26,6 @@ public class CustomInputField : MonoBehaviour {
 
     public static Action<bool, int> OnShowKeyboard;
 
-    [SerializeField]
-    private bool isLink;
-
     public string Text {
         get {
             return _mobileInputField.Text;
@@ -41,16 +38,6 @@ public class CustomInputField : MonoBehaviour {
     public InputField GetInputField {
         get {
             return _inputField;
-        }
-    }
-
-    public async Task<bool> IsValid() {
-        if (isLink) {
-            UnityWebRequest webRequest = UnityWebRequest.Get(Text);
-            await webRequest.SendWebRequest();
-            return webRequest.result == UnityWebRequest.Result.Success;
-        } else {
-            return true;
         }
     }
 

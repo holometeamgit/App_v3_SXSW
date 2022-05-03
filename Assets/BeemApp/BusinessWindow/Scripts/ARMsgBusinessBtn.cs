@@ -7,7 +7,7 @@ using UnityEngine;
 /// Business Btn
 /// </summary>
 
-public class ARMsgBusinessBtn : MonoBehaviour, IARMsgDataView, IUserWebManager, IWebRequestHandlerView {
+public class ARMsgBusinessBtn : MonoBehaviour, IARMsgDataView, IUserWebManagerView, IWebRequestHandlerView {
 
     [SerializeField]
     private string _assetID = "BusinessOptionsView";
