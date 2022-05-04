@@ -45,19 +45,19 @@ namespace Beem.UI {
         }
 
         private void Share(StreamJsonData.Data data) {
-            if (!string.IsNullOrWhiteSpace(data.share_link.ToString())) {
-                string title = string.Format(TITLE, data.user, STADIUM);
-                string description = string.Format(DESCRIPTION, data.user, STADIUM);
-                string msg = title + "\n" + description + "\n" + data.share_link;
+            if (!string.IsNullOrWhiteSpace(data.GetShareLink.ToString())) {
+                string title = string.Format(TITLE, data.GetUsername, STADIUM);
+                string description = string.Format(DESCRIPTION, data.GetUsername, STADIUM);
+                string msg = title + "\n" + description + "\n" + data.GetShareLink;
                 _shareController.ShareLink(msg);
             }
         }
 
         private void Share(RoomJsonData data) {
-            if (!string.IsNullOrWhiteSpace(data.share_link.ToString())) {
-                string title = string.Format(TITLE, data.user, ROOM);
-                string description = string.Format(DESCRIPTION, data.user, ROOM);
-                string msg = title + "\n" + description + "\n" + data.share_link;
+            if (!string.IsNullOrWhiteSpace(data.GetShareLink.ToString())) {
+                string title = string.Format(TITLE, data.GetUsername, ROOM);
+                string description = string.Format(DESCRIPTION, data.GetUsername, ROOM);
+                string msg = title + "\n" + description + "\n" + data.GetShareLink;
                 _shareController.ShareLink(msg);
             }
         }

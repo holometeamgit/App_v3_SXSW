@@ -434,6 +434,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         _agoraController.Leave();
         cameraRenderImage.texture = null;
         AnimatedFadeOutMessage();
+        speechNotificationPopups.DeactivateAllPopups();
         RefreshControls();
     }
 

@@ -65,8 +65,7 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
 
         cancelTokenSource = new CancellationTokenSource();
         cancellationToken = cancelTokenSource.Token;
-
-        if (data.Status == StreamJsonData.Data.LIVE_ROOM_STR || data.Status == StreamJsonData.Data.LIVE_STR) {
+        if (data.GetStatus == StreamJsonData.Data.LIVE_ROOM_STR || data.GetStatus == StreamJsonData.Data.LIVE_STR) {
             ShowOnline(data);
         } else {
             ShowOffline(data);
@@ -76,9 +75,9 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
             await Task.Delay(DELAY);
             if (!cancellationToken.IsCancellationRequested) {
                 if (data is RoomJsonData) {
-                    _getRoomController.GetRoomByUsername(data.Username, Show, ShowError);
+                    _getRoomController.GetRoomByUsername(data.GetUsername, Show, ShowError);
                 } else {
-                    _getStadiumController.GetStadiumByUsername(data.Username, Show, ShowError);
+                    _getStadiumController.GetStadiumByUsername(data.GetUsername, Show, ShowError);
                 }
             }
         } finally {
@@ -91,20 +90,20 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
 
     private void ShowNoLongerLive() {
         if (_data != null) {
-            DeepLinkStreamData deepLinkStreamData = new DeepLinkStreamData(DeepLinkStreamData.DeepLinkPopup.NoLongerLive, _data);
+            DeepLinkUIData deepLinkStreamData = new DeepLinkUIData(DeepLinkUIData.DeepLinkPopup.NoLongerLive, _data);
             _deepLinkRoomPopup.Show(deepLinkStreamData);
             _data = null;
         }
     }
 
     private void ShowOnline(IData data) {
-        DeepLinkStreamData deepLinkStreamData = new DeepLinkStreamData(DeepLinkStreamData.DeepLinkPopup.Online, data);
+        DeepLinkUIData deepLinkStreamData = new DeepLinkUIData(DeepLinkUIData.DeepLinkPopup.Online, data);
         _deepLinkRoomPopup.Show(deepLinkStreamData);
         _data = data;
     }
 
     private void ShowOffline(IData data) {
-        DeepLinkStreamData deepLinkStreamData = new DeepLinkStreamData(DeepLinkStreamData.DeepLinkPopup.Offline, data);
+        DeepLinkUIData deepLinkStreamData = new DeepLinkUIData(DeepLinkUIData.DeepLinkPopup.Offline, data);
         _deepLinkRoomPopup.Show(deepLinkStreamData);
         _data = null;
     }

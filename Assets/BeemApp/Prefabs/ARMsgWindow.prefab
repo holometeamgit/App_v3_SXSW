@@ -317,6 +317,7 @@ GameObject:
   - component: {fileID: 8078316008130314001}
   - component: {fileID: 5948171743287307430}
   - component: {fileID: 3266257316951802351}
+  - component: {fileID: 3723609326801109804}
   m_Layer: 5
   m_Name: deleteBtn
   m_TagString: Untagged
@@ -479,6 +480,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _arMsgAPIScriptableObject: {fileID: 11400000, guid: 6654356a8bcc64e8dbfcada070457098,
     type: 2}
+--- !u!225 &3723609326801109804
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5611239307754161664}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5779583660778557360
 GameObject:
   m_ObjectHideFlags: 0
@@ -782,6 +795,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a8d0bf3a5cb5b14da48a044e362cdc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _deleteBtn: {fileID: 5611239307754161664}
 --- !u!223 &4707070866417173871
 Canvas:
   m_ObjectHideFlags: 0
