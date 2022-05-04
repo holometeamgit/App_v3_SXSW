@@ -12,7 +12,7 @@ using System.Threading;
 /// </summary>
 public class ARMsgARenaConstructor : MonoBehaviour {
     [SerializeField]
-    private PnlARMessages _pnlARMessages;
+    private ARMsgWindow _pnlARMessages;
 
     private ARMsgJSON.Data currentData;
 

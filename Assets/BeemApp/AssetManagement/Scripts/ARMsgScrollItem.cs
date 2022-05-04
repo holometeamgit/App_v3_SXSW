@@ -10,6 +10,8 @@ public class ARMsgScrollItem : ScrollItemData {
 
     private ARMsgJSON.Data _data;
     private UserWebManager _userWebManager;
+    private BusinessProfileManager _businessProfileManager;
+    private WebRequestHandler _webRequestHandler;
     private bool _isNew;
 
     public ARMsgJSON.Data Data {
@@ -18,9 +20,21 @@ public class ARMsgScrollItem : ScrollItemData {
         }
     }
 
-    public UserWebManager Manager {
+    public UserWebManager UserWebManager {
         get {
             return _userWebManager;
+        }
+    }
+
+    public BusinessProfileManager BusinessProfileManager {
+        get {
+            return _businessProfileManager;
+        }
+    }
+
+    public WebRequestHandler WebRequestHandler {
+        get {
+            return _webRequestHandler;
         }
     }
 
@@ -39,9 +53,11 @@ public class ARMsgScrollItem : ScrollItemData {
     /// </summary>
     /// <param name="data"></param>
     /// <param name="isNew"></param>
-    public void Init(ARMsgJSON.Data data, UserWebManager userWebManager, bool isNew) {
+    public void Init(ARMsgJSON.Data data, UserWebManager userWebManager, BusinessProfileManager businessProfileManager, WebRequestHandler webRequestHandler, bool isNew) {
         _data = data;
         _userWebManager = userWebManager;
+        _webRequestHandler = webRequestHandler;
+        _businessProfileManager = businessProfileManager;
         _isNew = isNew;
     }
 }

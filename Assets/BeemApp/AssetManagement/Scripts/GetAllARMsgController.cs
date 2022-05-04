@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// Controller for get all messages
 /// </summary>
-public class GetAllARMessageController {
+public class GetAllARMsgController {
     private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
     private WebRequestHandler _webRequestHandler;
 
@@ -12,7 +12,7 @@ public class GetAllARMessageController {
     /// </summary>
     /// <param name="arMsgAPIScriptableObject"></param>
     /// <param name="webRequestHandler"></param>
-    public GetAllARMessageController(ARMsgAPIScriptableObject arMsgAPIScriptableObject, WebRequestHandler webRequestHandler) {
+    public GetAllARMsgController(ARMsgAPIScriptableObject arMsgAPIScriptableObject, WebRequestHandler webRequestHandler) {
         _arMsgAPIScriptableObject = arMsgAPIScriptableObject;
         _webRequestHandler = webRequestHandler;
     }
