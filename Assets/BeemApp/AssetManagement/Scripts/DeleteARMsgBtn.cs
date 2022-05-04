@@ -12,7 +12,7 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView, IWebRequestHandlerV
     private UserWebManager _userWebManager;
 
     private DeleteARMsgController _deleteARMsgController;
-    private GetAllARMessageController _galleryController;
+    private GetAllARMsgController _galleryController;
 
     private ARMsgJSON.Data currentData;
 
@@ -45,7 +45,7 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView, IWebRequestHandlerV
     public void Init(WebRequestHandler webRequestHandler) {
         _webRequestHandler = webRequestHandler;
         _deleteARMsgController = new DeleteARMsgController(_arMsgAPIScriptableObject, _webRequestHandler);
-        _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, _webRequestHandler);
+        _galleryController = new GetAllARMsgController(_arMsgAPIScriptableObject, _webRequestHandler);
     }
 
     public void Init(UserWebManager userWebManager) {

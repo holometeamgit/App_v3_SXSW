@@ -23,7 +23,7 @@ public class ARMsgJSON {
         public string created_at;
         public string processed_at;
         public string user;
-        public ExtContentData[] ext_content_data;
+        public List<ExtContentData> ext_content_data;
 
         public static readonly string PROCESSING_STATUS = "PROCESSING";
         public static readonly string COMPETED_STATUS = "COMPLETED";
@@ -33,6 +33,7 @@ public class ARMsgJSON {
         /// <summary>
         /// Ext content Data
         /// </summary>
+        [Serializable]
         public class ExtContentData {
             public string cta_url;
             public string cta_label;

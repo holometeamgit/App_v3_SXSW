@@ -15,6 +15,7 @@ public class BusinessOptionsWindow : MonoBehaviour, IBlindView {
     private GameObject _videoCell;
 
     private List<IARMsgDataView> _arMsgDataViews;
+    private List<IWebRequestHandlerView> _webRequestHandlerViews;
 
     private UserWebManager _userWebManager;
     private BusinessProfileManager _businessProfileManager;
@@ -55,8 +56,9 @@ public class BusinessOptionsWindow : MonoBehaviour, IBlindView {
             _videoCell.SetActive(_existPreview);
             _cellView?.Show(_data, _userWebManager, _businessProfileManager, _webRequestHandler);
             _arMsgDataViews = GetComponentsInChildren<IARMsgDataView>().ToList();
-
             _arMsgDataViews.ForEach(x => x.Init(_data));
+            _webRequestHandlerViews = GetComponentsInChildren<IWebRequestHandlerView>().ToList();
+            _webRequestHandlerViews.ForEach(x => x.Init(_webRequestHandler));
         }
     }
 
@@ -71,7 +73,7 @@ public class BusinessOptionsWindow : MonoBehaviour, IBlindView {
     /// Open Cta Options
     /// </summary>
     public void OpenShareOptions() {
-        if (_data.ext_content_data != null && _data.ext_content_data.Length > 0) {
+        if (_data.ext_content_data != null && _data.ext_content_data.Count > 0) {
             _shareController.ShareLink(_data.share_link);
         } else {
             BlindOptionsConstructor.Show(CTA_LINK_OPTIONS_VIEW, "Please add the CTA information before sharing", _data, _webRequestHandler);

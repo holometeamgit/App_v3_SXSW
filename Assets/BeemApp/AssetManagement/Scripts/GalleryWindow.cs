@@ -24,14 +24,14 @@ public class GalleryWindow : MonoBehaviour {
     private BusinessProfileManager _businessProfileManager;
     private WebRequestHandler _webRequestHandler;
 
-    private GetAllARMessageController _galleryController;
+    private GetAllARMsgController _galleryController;
 
     [Inject]
     public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager, BusinessProfileManager businessProfileManager) {
         _userWebManager = userWebManager;
         _businessProfileManager = businessProfileManager;
         _webRequestHandler = webRequestHandler;
-        _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, webRequestHandler);
+        _galleryController = new GetAllARMsgController(_arMsgAPIScriptableObject, webRequestHandler);
     }
 
     private void OnEnable() {
