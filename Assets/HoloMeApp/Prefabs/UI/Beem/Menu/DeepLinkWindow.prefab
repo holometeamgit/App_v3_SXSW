@@ -437,6 +437,7 @@ MonoBehaviour:
   _titleText: {fileID: 250772399631725964}
   _subtitleText: {fileID: 2692156170055166814}
   _usersCountText: {fileID: 4548479638981899740}
+  _enterText: {fileID: 6812337594326006192}
   _title: {fileID: 1142456131360009765}
   _subtitle: {fileID: 654296604163964180}
   _usersCount: {fileID: 2566513408524556292}
@@ -1227,7 +1228,6 @@ GameObject:
   - component: {fileID: 6201945442577250968}
   - component: {fileID: 1389688785603779882}
   - component: {fileID: 5759077002216601774}
-  - component: {fileID: 7956415532362044472}
   m_Layer: 5
   m_Name: SwipePopUp
   m_TagString: Untagged
@@ -1277,25 +1277,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!95 &7956415532362044472
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3502210725664084973}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ba36f6a7c8507bc4c86eceeef4252c4d, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &3939749677459178874
 GameObject:
   m_ObjectHideFlags: 0
@@ -1651,8 +1632,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7e9298db23c06a46b0c7869449a191a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animator: {fileID: 7956415532362044472}
+  position: 0
   _rect: {fileID: 6201945442577250968}
+  _canvasGroup: {fileID: 5759077002216601774}
   _frequency: 0.02
   _speed: 1
 --- !u!1 &4946545463747924753

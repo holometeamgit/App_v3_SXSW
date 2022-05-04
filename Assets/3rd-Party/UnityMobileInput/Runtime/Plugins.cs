@@ -110,7 +110,6 @@ namespace Mopsicus.Plugins {
         /// </summary>
         /// <param name="data">data from plugin</param>
         void OnDataReceive(string data) {
-            Debug.LogError(data);
             if (!string.IsNullOrEmpty(data)) {
                 try {
                     JsonObject info = (JsonObject)JsonNode.ParseJsonString(data);
