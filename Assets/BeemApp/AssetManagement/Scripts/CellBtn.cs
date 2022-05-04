@@ -55,13 +55,13 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManagerView, IWebR
 
     public void OnPointerUp(PointerEventData eventData) {
 
-        if (_arMsgData.Status == ARMsgJSON.Data.COMPETED_STATUS) {
+        if (_arMsgData.GetStatus == ARMsgJSON.Data.COMPETED_STATUS) {
             if (Time.time - currentTime < LONG_CLICK_TIME) {
                 OpenARMsg();
             } else {
                 _businessProfileManager.GetMyData(SuccessedBusinessProfile, FailedBusinessProfile);
             }
-        } else if (_arMsgData.Status == ARMsgJSON.Data.PROCESSING_STATUS) {
+        } else if (_arMsgData.GetStatus == ARMsgJSON.Data.PROCESSING_STATUS) {
             if (!CanShowPushNotificationPopup) {
                 OpenProcessingPopup();
             } else {

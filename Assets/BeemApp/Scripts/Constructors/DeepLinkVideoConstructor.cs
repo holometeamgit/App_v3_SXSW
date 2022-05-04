@@ -51,7 +51,7 @@ public class DeepLinkVideoConstructor : MonoBehaviour {
                 PrerecordedVideoConstructor.OnActivated?.Invoke(data as StreamJsonData.Data);
             }
 
-            PnlRecord.CurrentUser = data.Username;
+            PnlRecord.CurrentUser = data.GetUsername;
         });
     }
 

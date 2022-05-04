@@ -62,12 +62,12 @@ public class ARMsgJSON {
             }
         }
 
-        public string Id => id;
+        public string GetId => id;
 
-        public string ShareLink => share_link;
+        public string GetShareLink => share_link;
 
-        public string Username => user;
+        public string GetUsername => user;
 
-        public string Status => processing_status;
+        public string GetStatus => processing_status;
     }
 }

@@ -21,8 +21,8 @@ namespace Beem.UI {
         /// </summary>
         public void Share() {
 
-            if (!string.IsNullOrWhiteSpace(_data.share_link.ToString())) {
-                _shareController.ShareLink(_data.share_link);
+            if (!string.IsNullOrWhiteSpace(_data.GetShareLink.ToString())) {
+                _shareController.ShareLink(_data.GetShareLink);
             }
         }
     }

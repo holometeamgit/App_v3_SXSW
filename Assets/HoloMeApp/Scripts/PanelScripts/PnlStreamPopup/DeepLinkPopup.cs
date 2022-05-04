@@ -16,6 +16,8 @@ public class DeepLinkPopup : MonoBehaviour {
     private TMP_Text _subtitleText;
     [SerializeField]
     private TMP_Text _usersCountText;
+    [SerializeField]
+    private TMP_Text _enterText;
 
     [SerializeField]
     private GameObject _title;
@@ -56,10 +58,10 @@ public class DeepLinkPopup : MonoBehaviour {
     /// Call share event for current room
     /// </summary>
     public void Share() {
-        if (!string.IsNullOrWhiteSpace(_data.ShareLink)) {
-            string title = string.Format(LINK_TITLE, _data.Username, _data is RoomJsonData ? ROOM : STADIUM);
-            string description = string.Format(LINK_DESCRIPTION, _data.Username, _data is RoomJsonData ? ROOM : STADIUM);
-            string msg = title + "\n" + description + "\n" + _data.ShareLink;
+        if (!string.IsNullOrWhiteSpace(_data.GetShareLink)) {
+            string title = string.Format(LINK_TITLE, _data.GetUsername, _data is RoomJsonData ? ROOM : STADIUM);
+            string description = string.Format(LINK_DESCRIPTION, _data.GetUsername, _data is RoomJsonData ? ROOM : STADIUM);
+            string msg = title + "\n" + description + "\n" + _data.GetShareLink;
             _shareController.ShareLink(msg);
         }
     }
@@ -68,7 +70,7 @@ public class DeepLinkPopup : MonoBehaviour {
     /// Call onOpenRoom event for open current room
     /// </summary>
     public void EnterRoom() {
-        if (_data.Username == _userWebManager.GetUsername()) {
+        if (_data.GetUsername == _userWebManager.GetUsername()) {
             WarningConstructor.ActivateSingleButton("Viewing as stream host",
                 "Please connect to the stream using a different account");
 
@@ -80,8 +82,8 @@ public class DeepLinkPopup : MonoBehaviour {
             MenuConstructor.OnActivated?.Invoke(false);
             ARMsgRecordConstructor.OnActivated?.Invoke(false);
             StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
-            StreamOverlayConstructor.onActivatedAsViewer?.Invoke(_data.Username, _data.Id, _data is RoomJsonData);
-            PnlRecord.CurrentUser = _data.Username;
+            StreamOverlayConstructor.onActivatedAsViewer?.Invoke(_data.GetUsername, _data.GetId, _data is RoomJsonData);
+            PnlRecord.CurrentUser = _data.GetUsername;
         });
 
     }
@@ -96,25 +98,27 @@ public class DeepLinkPopup : MonoBehaviour {
     /// <summary>
     /// Show DeepLinkRoomData
     /// </summary>
-    /// <param name="deepLinkRoomData"></param>
-    public void Show(DeepLinkStreamData deepLinkRoomData) {
+    /// <param name="deepLinkUIData"></param>
+    public void Show(DeepLinkUIData deepLinkUIData) {
         gameObject.SetActive(true);
 
-        _data = deepLinkRoomData.Data;
+        _data = deepLinkUIData.Data;
 
-        _titleText.text = string.Format(deepLinkRoomData.Title, ColorUtility.ToHtmlStringRGBA(_highlightMSGColor), _data.Username);
-        _subtitleText.text = deepLinkRoomData.Description;
+        _titleText.text = string.Format(deepLinkUIData.Title, ColorUtility.ToHtmlStringRGBA(_highlightMSGColor), _data.GetUsername);
+        _subtitleText.text = deepLinkUIData.Description;
+        _enterText.text = deepLinkUIData.ButtonText;
 
-        _title.SetActive(deepLinkRoomData.Title.Length > 0);
-        _subtitle.SetActive(deepLinkRoomData.Description.Length > 0);
-        _usersCount.SetActive(deepLinkRoomData.Online);
 
-        _btnClose.SetActive(deepLinkRoomData.CloseBtn);
-        _btnShare.SetActive(deepLinkRoomData.ShareBtn);
-        _btnEnterRoom.SetActive(deepLinkRoomData.Online);
+        _title.SetActive(deepLinkUIData.Title.Length > 0);
+        _subtitle.SetActive(deepLinkUIData.Description.Length > 0);
+        _usersCount.SetActive(deepLinkUIData.Online);
 
-        if (_data != null && deepLinkRoomData.Online) {
-            _streamerCountUpdater.StartCheck(_data.Username, true);
+        _btnClose.SetActive(deepLinkUIData.CloseBtn);
+        _btnShare.SetActive(deepLinkUIData.ShareBtn);
+        _btnEnterRoom.SetActive(deepLinkUIData.Online);
+
+        if (_data != null && deepLinkUIData.Online) {
+            _streamerCountUpdater.StartCheck(_data.GetUsername, true);
             _streamerCountUpdater.OnCountUpdated += UpdateUserCount;
         }
 
