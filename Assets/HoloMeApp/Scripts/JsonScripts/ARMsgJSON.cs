@@ -23,11 +23,21 @@ public class ARMsgJSON {
         public string created_at;
         public string processed_at;
         public string user;
+        public List<ExtContentData> ext_content_data;
 
         public static readonly string PROCESSING_STATUS = "PROCESSING";
         public static readonly string COMPETED_STATUS = "COMPLETED";
         public static readonly string FAILED_STATUS = "FAILED";
         public static readonly string IN_QUEUE_STATUS = "IN_QUEUE";
+
+        /// <summary>
+        /// Ext content Data
+        /// </summary>
+        [Serializable]
+        public class ExtContentData {
+            public string cta_url;
+            public string cta_label;
+        }
 
         private DateTime _created_at;
         private DateTime _processed_at;

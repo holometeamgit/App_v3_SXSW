@@ -15,7 +15,7 @@ namespace Beem.UI {
 
         private WebRequestHandler _webRequestHandler;
 
-        private GetAllARMessageController _galleryController;
+        private GetAllARMsgController _galleryController;
 
         [Inject]
         public void Construct(WebRequestHandler webRequestHandler) {
@@ -23,7 +23,7 @@ namespace Beem.UI {
         }
 
         private void Start() {
-            _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, _webRequestHandler);
+            _galleryController = new GetAllARMsgController(_arMsgAPIScriptableObject, _webRequestHandler);
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
@@ -26,6 +27,11 @@ public class ScreenshotView : MonoBehaviour {
     private const string PROCESSING = "Processing...";
     private const string FAILED = "Failed...";
 
+    [SerializeField]
+    private bool _startState = true;
+
+    private bool _currentState = default;
+
 
     /// <summary>
     /// Shot Preview
@@ -33,20 +39,20 @@ public class ScreenshotView : MonoBehaviour {
     /// <param name="data"></param>
     /// <param name="onSuccess"></param>
     /// <param name="onFail"></param>
-    public void Show(ARMsgJSON.Data data, Action onSuccess, Action<string> onFail) {
+    public void Show(ARMsgJSON.Data data, Action onSuccess = null, Action<string> onFail = null) {
         _data = data;
         _onSuccess = onSuccess;
         _onFailed = onFail;
-        Play();
+        Load();
     }
 
-    private void Play() {
+    private void Load() {
         if (_data != null) {
             if (!string.IsNullOrEmpty(_data.ar_message_s3_link)) {
                 if (customVideoPlayer == null) {
-                    customVideoPlayer = new CustomVideoPlayer(_videoPlayer);
+                    customVideoPlayer = new CustomVideoPlayer(_videoPlayer, OnChangeStatus);
                 }
-                customVideoPlayer.LoadVideoFromURL(_data.ar_message_s3_link, OnChangeStatus);
+                customVideoPlayer.LoadVideoFromURL(_data.ar_message_s3_link);
             } else {
                 if (_data.processing_status == ARMsgJSON.Data.FAILED_STATUS) {
                     _onFailed?.Invoke(FAILED);
@@ -60,24 +66,56 @@ public class ScreenshotView : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Play
+    /// </summary>
+    public void Play() {
+        if (customVideoPlayer != null) {
+            customVideoPlayer.Play();
+        }
+    }
+
+    /// <summary>
+    /// Pause
+    /// </summary>
+    public void Pause() {
+        if (customVideoPlayer != null) {
+            customVideoPlayer.Pause();
+        }
+    }
+
+    /// <summary>
+    /// Play or Pause
+    /// </summary>
+    public void PlayOrPause() {
+        _currentState = !_currentState;
+        if (!_currentState) {
+            Pause();
+        } else {
+            Play();
+        }
+    }
+
     private void OnChangeStatus(CustomVideoPlayer.Status status) {
 
         switch (status) {
-            case CustomVideoPlayer.Status.ProcessLoading:
-            case CustomVideoPlayer.Status.ProcessPreparing:
-            case CustomVideoPlayer.Status.SuccessLoading:
+            case CustomVideoPlayer.Status.Loading:
                 _onFailed?.Invoke(LOADING);
                 break;
-            case CustomVideoPlayer.Status.FailLoading:
+            case CustomVideoPlayer.Status.Failed:
                 _onFailed?.Invoke(FAILED);
                 break;
-            case CustomVideoPlayer.Status.SuccessPreparing:
+            case CustomVideoPlayer.Status.Successed:
                 _onSuccess?.Invoke();
-                _image.texture = _videoPlayer?.texture;
+                _image.texture = _videoPlayer.texture;
                 _aspectRationFitter.aspectRatio = (float)_videoPlayer?.width / (float)_videoPlayer?.height;
                 if (_currentMat == null) {
                     _currentMat = new Material(_greenScreenRemoverMat);
                     _image.material = _currentMat;
+                }
+                _currentState = _startState;
+                if (_currentState) {
+                    Play();
                 }
                 break;
         }
@@ -85,7 +123,7 @@ public class ScreenshotView : MonoBehaviour {
 
     private void OnDisable() {
         if (customVideoPlayer != null) {
-            _videoPlayer.Stop();
+            customVideoPlayer.Stop();
         }
     }
 

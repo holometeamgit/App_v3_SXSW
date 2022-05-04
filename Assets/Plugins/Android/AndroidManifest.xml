@@ -65,18 +65,20 @@
 				<category android:name="android.intent.category.DEFAULT" />
 				<category android:name="android.intent.category.BROWSABLE" />
 
-				<data android:scheme="https" android:host="join.beem.me" />
+				<data android:scheme="https" android:host="join.beem.me" android:pathPrefix="/message/" />
+				<data android:scheme="https" android:host="join.beem.me" android:pathPrefix="/room/" />
+				<data android:scheme="https" android:host="join.beem.me" android:pathPrefix="/stadium/" />
+				<data android:scheme="https" android:host="join.beem.me" android:pathPrefix="/prerecorded/" />
 
-				<data android:scheme="https" android:host="ar.beem.me" android:pathPrefix="/message/" />
-				<data android:scheme="https" android:host="ar.beem.me" android:pathPrefix="/room/" />
+				<data android:scheme="https" android:host="ar.beem.me" android:pathPrefix="/watch/" />
+				<data android:scheme="https" android:host="ar.beem.me" android:pathPrefix="/connect/" />
 				<data android:scheme="https" android:host="ar.beem.me" android:pathPrefix="/stadium/" />
 				<data android:scheme="https" android:host="ar.beem.me" android:pathPrefix="/prerecorded/" />
 
-				<data android:scheme="https" android:host="develop.dox285hd6n0rz.amplifyapp.com" android:pathPrefix="/message/" />
-				<data android:scheme="https" android:host="develop.dox285hd6n0rz.amplifyapp.com" android:pathPrefix="/room/" />
+				<data android:scheme="https" android:host="develop.dox285hd6n0rz.amplifyapp.com" android:pathPrefix="/watch/" />
+				<data android:scheme="https" android:host="develop.dox285hd6n0rz.amplifyapp.com" android:pathPrefix="/connect/" />
 				<data android:scheme="https" android:host="develop.dox285hd6n0rz.amplifyapp.com" android:pathPrefix="/stadium/" />
 				<data android:scheme="https" android:host="develop.dox285hd6n0rz.amplifyapp.com" android:pathPrefix="/prerecorded/" />
-
 			</intent-filter>
 
 			<meta-data android:name="unityplayer.UnityActivity"

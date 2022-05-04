@@ -50,4 +50,7 @@ public class AuthorizationAPIScriptableObject : ScriptableObject {
     public string DisableUser = "/user/disable/";
     [Tooltip("Post request upload profile pictures. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/User/post_user_profile_picture_")]
     public string ProfilePictures = "/user/disable/";
+
+    [Header("Profile")]
+    public string GetMyProfile = "/b_profile/me/";
 }
