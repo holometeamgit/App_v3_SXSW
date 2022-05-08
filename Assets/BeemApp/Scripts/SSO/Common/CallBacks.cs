@@ -83,7 +83,19 @@ namespace Beem.SSO {
         #endregion
 
         #region business account
-        public static Action OnBusinessLogoLoaded;
+        public static Action onBusinessLogoLoaded;
+        public static Action onUpdateLogoFromDevice;
+        public static Action onLogoSelected;
+        public static Action onUploadSelectedLogo;
+        public static Action onRemoveLogo;
+
+        public static Action onLogoUploaded;
+        public static Action onLogoUploadingError;
+
+        public static Func<bool> hasLogoOnDevice;
+        public static Func<Sprite> getLogoOnDevice;
+        //return logo just selected but not set like logo on the server
+        public static Func<Sprite> getSelectedLogoOnDevice; 
 
         #endregion
     }

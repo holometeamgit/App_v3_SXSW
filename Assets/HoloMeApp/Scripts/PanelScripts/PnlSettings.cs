@@ -39,7 +39,7 @@ public class PnlSettings : MonoBehaviour {
     }
 
     private void OnEnable() {
-        CallBacks.OnBusinessLogoLoaded += OnUpdateBusinessLogoImage;
+        CallBacks.onBusinessLogoLoaded += OnUpdateBusinessLogoImage;
 
 _changePassword.SetActive(_accountManager.GetLogInType() == LogInType.Email);
         _txtNickname.text = _userWebManager.GetUsername();
@@ -107,7 +107,7 @@ _changePassword.SetActive(_accountManager.GetLogInType() == LogInType.Email);
     }
 
     private void OnUpdateBusinessLogoImage() {
-        _imgBusinessLogo.sprite = _businessLogoController.GetCurrentLogoImage();
+        _imgBusinessLogo.sprite = CallBacks.getLogoOnDevice();
         _imgBusinessLogo.gameObject.SetActive(_imgBusinessLogo.sprite != null);
         _defaultBusinessLogoGO.SetActive(_imgBusinessLogo.sprite == null);
     }
@@ -115,6 +115,6 @@ _changePassword.SetActive(_accountManager.GetLogInType() == LogInType.Email);
 
     private void OnDisable() {
         _userWebManager.OnUserAccountDeleted -= UserLogOut;
-        CallBacks.OnBusinessLogoLoaded -= OnUpdateBusinessLogoImage;
+        CallBacks.onBusinessLogoLoaded -= OnUpdateBusinessLogoImage;
     }
 }

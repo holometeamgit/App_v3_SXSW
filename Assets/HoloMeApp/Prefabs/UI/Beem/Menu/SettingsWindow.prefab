@@ -987,7 +987,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -1123,7 +1123,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.02745098}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2017,15 +2017,15 @@ PrefabInstance:
     - {fileID: 5793784605799738163, guid: aa88fcbc81c7b4a1d83113967b5b31fe, type: 3}
     - {fileID: 95611351738348923, guid: aa88fcbc81c7b4a1d83113967b5b31fe, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: aa88fcbc81c7b4a1d83113967b5b31fe, type: 3}
---- !u!1 &6621967548592827652 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5793784605799738165, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
-    type: 3}
-  m_PrefabInstance: {fileID: 829326438302467633}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &6621967548592827653 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5793784605799738164, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
+    type: 3}
+  m_PrefabInstance: {fileID: 829326438302467633}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6621967548592827652 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5793784605799738165, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
     type: 3}
   m_PrefabInstance: {fileID: 829326438302467633}
   m_PrefabAsset: {fileID: 0}
@@ -2303,15 +2303,15 @@ PrefabInstance:
     - {fileID: 5793784605799738163, guid: aa88fcbc81c7b4a1d83113967b5b31fe, type: 3}
     - {fileID: 95611351738348923, guid: aa88fcbc81c7b4a1d83113967b5b31fe, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: aa88fcbc81c7b4a1d83113967b5b31fe, type: 3}
---- !u!224 &4856571604592020444 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5793784605799738164, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
-    type: 3}
-  m_PrefabInstance: {fileID: 1369562963486515432}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4856571604592020445 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5793784605799738165, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
+    type: 3}
+  m_PrefabInstance: {fileID: 1369562963486515432}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &4856571604592020444 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5793784605799738164, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
     type: 3}
   m_PrefabInstance: {fileID: 1369562963486515432}
   m_PrefabAsset: {fileID: 0}
@@ -2912,9 +2912,9 @@ MonoBehaviour:
   OnPress:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2275525968572402822}
-        m_TargetAssemblyTypeName: PnlSettings, Assembly-CSharp
-        m_MethodName: SettingsToChangeUserName
+      - m_Target: {fileID: 3688352149452343571}
+        m_TargetAssemblyTypeName: BtnChangeSplashScreenLogo, Assembly-CSharp
+        m_MethodName: SelectNewImg
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2924,6 +2924,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &3688352149452343571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5673577672261341644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c1bdfcb4ac0246f5997cb04c896b48d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 8001883493941913342}
 --- !u!1001 &3188286564015373905
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4079,15 +4092,15 @@ PrefabInstance:
     - {fileID: 5793784605799738163, guid: aa88fcbc81c7b4a1d83113967b5b31fe, type: 3}
     - {fileID: 95611351738348923, guid: aa88fcbc81c7b4a1d83113967b5b31fe, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: aa88fcbc81c7b4a1d83113967b5b31fe, type: 3}
---- !u!1 &1475795484644276697 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5793784605799738165, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
-    type: 3}
-  m_PrefabInstance: {fileID: 4908004721593750252}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1475795484644276696 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5793784605799738164, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
+    type: 3}
+  m_PrefabInstance: {fileID: 4908004721593750252}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1475795484644276697 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5793784605799738165, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
     type: 3}
   m_PrefabInstance: {fileID: 4908004721593750252}
   m_PrefabAsset: {fileID: 0}
@@ -4339,15 +4352,15 @@ PrefabInstance:
     - {fileID: 5793784605799738163, guid: aa88fcbc81c7b4a1d83113967b5b31fe, type: 3}
     - {fileID: 95611351738348923, guid: aa88fcbc81c7b4a1d83113967b5b31fe, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: aa88fcbc81c7b4a1d83113967b5b31fe, type: 3}
---- !u!1 &1478595528719560341 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5793784605799738165, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
-    type: 3}
-  m_PrefabInstance: {fileID: 4963721785861113248}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1478595528719560340 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5793784605799738164, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
+    type: 3}
+  m_PrefabInstance: {fileID: 4963721785861113248}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1478595528719560341 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5793784605799738165, guid: aa88fcbc81c7b4a1d83113967b5b31fe,
     type: 3}
   m_PrefabInstance: {fileID: 4963721785861113248}
   m_PrefabAsset: {fileID: 0}
@@ -6506,6 +6519,19 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8327258180696070069}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1703145420284248114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2591809855468289152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c1bdfcb4ac0246f5997cb04c896b48d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 8001883493941913342}
 --- !u!114 &4454183853232497452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6521,9 +6547,9 @@ MonoBehaviour:
   OnPress:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2275525968572402822}
-        m_TargetAssemblyTypeName: PnlSettings, Assembly-CSharp
-        m_MethodName: SettingsToChangeUserName
+      - m_Target: {fileID: 1703145420284248114}
+        m_TargetAssemblyTypeName: BtnChangeSplashScreenLogo, Assembly-CSharp
+        m_MethodName: SelectNewImg
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
