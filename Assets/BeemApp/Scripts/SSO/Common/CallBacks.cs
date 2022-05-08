@@ -84,7 +84,7 @@ namespace Beem.SSO {
 
         #region business account
         public static Action onBusinessLogoLoaded;
-        public static Action onUpdateLogoFromDevice;
+        public static Action onSelectLogoFromDevice;
         public static Action onLogoSelected;
         public static Action onUploadSelectedLogo;
         public static Action onRemoveLogo;

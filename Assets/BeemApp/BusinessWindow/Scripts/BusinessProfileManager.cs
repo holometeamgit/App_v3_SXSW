@@ -13,7 +13,7 @@ public class BusinessProfileManager : MonoBehaviour {
     private WebRequestHandler _webRequestHandler;
     private GetMyBusinessProfile getMyBusinessProfile;
 
-    private BusinessProfileData _data;
+    private BusinessProfileJsonData _data;
 
     [Inject]
     public void Construct(WebRequestHandler webRequestHandler) {
@@ -26,7 +26,7 @@ public class BusinessProfileManager : MonoBehaviour {
     /// </summary>
     /// <param name="onSuccess"></param>
     /// <param name="onFailed"></param>
-    public void GetMyData(Action<BusinessProfileData> onSuccess, Action<WebRequestError> onFailed = null) {
+    public void GetMyData(Action<BusinessProfileJsonData> onSuccess, Action<WebRequestError> onFailed = null) {
         if (_data == null) {
             getMyBusinessProfile.GetMyProfile((data) => OnSuccess(data, onSuccess), onFailed);
         } else {
@@ -34,7 +34,7 @@ public class BusinessProfileManager : MonoBehaviour {
         }
     }
 
-    private void OnSuccess(BusinessProfileData data, Action<BusinessProfileData> onSuccess) {
+    private void OnSuccess(BusinessProfileJsonData data, Action<BusinessProfileJsonData> onSuccess) {
         _data = data;
         onSuccess?.Invoke(_data);
     }

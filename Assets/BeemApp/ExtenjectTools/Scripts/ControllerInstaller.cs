@@ -23,6 +23,6 @@ public class ControllerInstaller : MonoInstaller {
         Container.BindInterfacesAndSelfTo<IAPController>().FromComponentInHierarchy(false).AsSingle();
         Container.BindInterfacesAndSelfTo<PurchasesSaveManager>().FromComponentInHierarchy(false).AsSingle();
 
-        Container.BindInterfacesAndSelfTo<BusinessLogoController>().AsSingle();
+        Container.BindInterfacesAndSelfTo<BusinessLogoController>().AsSingle().NonLazy();
     }
 }

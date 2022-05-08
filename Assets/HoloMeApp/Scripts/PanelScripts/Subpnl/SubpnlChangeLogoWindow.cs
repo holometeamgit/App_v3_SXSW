@@ -14,6 +14,9 @@ public class SubpnlChangeLogoWindow : MonoBehaviour, IBlindView {
     [SerializeField]
     private Button _btnRemoveLogo;
 
+    [SerializeField]
+    private string _nextWindowAssetId;
+
     public void Show(params object[] objects) {
         gameObject.SetActive(true);
     }
@@ -39,11 +42,17 @@ public class SubpnlChangeLogoWindow : MonoBehaviour, IBlindView {
         return CallBacks.getLogoOnDevice();
     }
 
+    private void MoveNextMenu() {
+        BlindOptionsConstructor.Show(_nextWindowAssetId);
+    }
+
     private void OnEnable() {
         CheckHasLogo();
+        CallBacks.onLogoSelected += MoveNextMenu;
     }
 
     private void OnDisable() {
         _btnRemoveLogo.interactable = false;
+        CallBacks.onLogoSelected -= MoveNextMenu;
     }
 }

@@ -24,13 +24,13 @@ public class GetMyBusinessProfile {
     /// Get My Business Profile
     /// </summary>
     /// <param name="id"></param>
-    public void GetMyProfile(Action<BusinessProfileData> onSuccess = null, Action<WebRequestError> onFailed = null) {
+    public void GetMyProfile(Action<BusinessProfileJsonData> onSuccess = null, Action<WebRequestError> onFailed = null) {
         _webRequestHandler.Get(GetProfile(), (code, body) => OnSuccess(code, body, onSuccess, onFailed), (code, body) => OnFailed(code, body, onFailed));
     }
 
-    private void OnSuccess(long code, string body, Action<BusinessProfileData> onSuccess, Action<WebRequestError> onFailed) {
+    private void OnSuccess(long code, string body, Action<BusinessProfileJsonData> onSuccess, Action<WebRequestError> onFailed) {
 
-        BusinessProfileData data = JsonUtility.FromJson<BusinessProfileData>(body);
+        BusinessProfileJsonData data = JsonUtility.FromJson<BusinessProfileJsonData>(body);
         if (data != null) {
             onSuccess?.Invoke(data);
         } else {

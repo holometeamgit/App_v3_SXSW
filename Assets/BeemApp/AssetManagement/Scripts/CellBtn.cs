@@ -45,7 +45,7 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManagerView, IWebR
         _businessProfileManager = businessProfileManager;
     }
 
-    private void SuccessedBusinessProfile(BusinessProfileData businessProfileData) {
+    private void SuccessedBusinessProfile(BusinessProfileJsonData businessProfileData) {
         OpenBusinessOptions();
     }
 

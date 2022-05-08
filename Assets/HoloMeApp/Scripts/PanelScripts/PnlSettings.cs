@@ -29,19 +29,18 @@ public class PnlSettings : MonoBehaviour {
 
     private UserWebManager _userWebManager;
     private AccountManager _accountManager;
-    private BusinessLogoController _businessLogoController;
 
     [Inject]
-    public void Construct(AccountManager accountManager, UserWebManager userWebManager, BusinessLogoController businessLogoController) {
+    public void Construct(AccountManager accountManager, UserWebManager userWebManager) {
         _accountManager = accountManager;
         _userWebManager = userWebManager;
-        _businessLogoController = businessLogoController;
     }
 
     private void OnEnable() {
         CallBacks.onBusinessLogoLoaded += OnUpdateBusinessLogoImage;
+        CallBacks.onLogoUploaded += OnUpdateBusinessLogoImage;
 
-_changePassword.SetActive(_accountManager.GetLogInType() == LogInType.Email);
+        _changePassword.SetActive(_accountManager.GetLogInType() == LogInType.Email);
         _txtNickname.text = _userWebManager.GetUsername();
         _userWebManager.OnUserAccountDeleted += UserLogOut;
 
@@ -107,6 +106,7 @@ _changePassword.SetActive(_accountManager.GetLogInType() == LogInType.Email);
     }
 
     private void OnUpdateBusinessLogoImage() {
+
         _imgBusinessLogo.sprite = CallBacks.getLogoOnDevice();
         _imgBusinessLogo.gameObject.SetActive(_imgBusinessLogo.sprite != null);
         _defaultBusinessLogoGO.SetActive(_imgBusinessLogo.sprite == null);
@@ -116,5 +116,6 @@ _changePassword.SetActive(_accountManager.GetLogInType() == LogInType.Email);
     private void OnDisable() {
         _userWebManager.OnUserAccountDeleted -= UserLogOut;
         CallBacks.onBusinessLogoLoaded -= OnUpdateBusinessLogoImage;
+        CallBacks.onLogoUploaded -= OnUpdateBusinessLogoImage;
     }
 }
