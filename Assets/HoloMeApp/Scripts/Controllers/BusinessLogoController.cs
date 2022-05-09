@@ -4,16 +4,23 @@ using UnityEngine;
 using Beem.SSO;
 using System.Threading.Tasks;
 using System.Threading;
+using Zenject;
 
 public class BusinessLogoController {
 
     private Sprite _logo;
     private Sprite _selectedLogoFromDevice;
+    private BusinessProfileManager _businessProfileManager;
+    private AuthorizationAPIScriptableObject _authorizationAPIScriptableObject;
+    private WebRequestHandler _webRequestHandler;
 
-    public BusinessLogoController() {
+    public BusinessLogoController(BusinessProfileManager businessProfileManager, AuthorizationAPIScriptableObject authorizationAPIScriptableObject) {
+        _businessProfileManager = businessProfileManager;
+        _authorizationAPIScriptableObject = authorizationAPIScriptableObject;
         CallBacks.onSelectLogoFromDevice += SelectNewImg;
         CallBacks.onUploadSelectedLogo += OnUploadSelectedLogo;
         CallBacks.onRemoveLogo += OnRemove;
+        CallBacks.onLoadLogo += LoadLogo;
 
         CallBacks.hasLogoOnDevice = HasLogo;
         CallBacks.getLogoOnDevice = GetCurrentLogoImage;
@@ -49,7 +56,7 @@ public class BusinessLogoController {
         if (string.IsNullOrWhiteSpace(path))
             return;
         Texture2D tex = NativeGallery.LoadImageAtPath(path);
-        _selectedLogoFromDevice = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+        _selectedLogoFromDevice = CreateSprite(tex);
 
         CallBacks.onLogoSelected?.Invoke();
     }
@@ -60,21 +67,52 @@ public class BusinessLogoController {
     }
     #endregion
 
-    #region upload img
-    private void OnUploadSelectedLogo() {
-        //TODO add closure for selected
+    #region load logo
+    private void LoadLogo() {
+        _businessProfileManager.GetMyData(OnLoadLogo, OnErrorLoading, forceUpdate: true);
+    }
 
+    private void OnLoadLogo(BusinessProfileJsonData businessProfileJsonData) {
+        string logoUrl = businessProfileJsonData.logo;
+        if (!string.IsNullOrWhiteSpace(logoUrl)) {
+            _webRequestHandler.GetTextureRequest(logoUrl,
+                (code, body, texture) => {
+                    UpdateLogo(CreateSprite((Texture2D)texture));
+                },
+                (code, body) => { });
+        }
+    }
+
+    private void OnErrorLoading(WebRequestError webRequestError) {
+        HelperFunctions.DevLogError(webRequestError.Code + ": " + webRequestError.Detail);
+    }
+
+    #endregion
+
+    #region upload logo
+    private void OnUploadSelectedLogo() {
         Sprite currentSelected = _selectedLogoFromDevice;
 
+        byte[] imageData = ImageConversion.EncodeToPNG(currentSelected.texture);
+
+        Dictionary<string, MultipartRequestBinaryData> formData = new Dictionary<string, MultipartRequestBinaryData>();
+        formData.Add("logo", new MultipartRequestBinaryData("logo", imageData, "logo.png"));
+
+        _webRequestHandler.PostMultipart(_webRequestHandler.ServerURLMediaAPI +
+            _authorizationAPIScriptableObject.UpdateLogo.Replace("{id}", _businessProfileManager.GetID()),
+            formData,
+            (code, body) => { OnUploaded(currentSelected); },
+            (code, body) => { OnUploadedError(); }, needHeaderAccessToken: true);
+/*
         var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         Task delay = Task.Delay(1000);
         delay.ContinueWith(taskTokenID => {
             OnUploaded(currentSelected);
-        }, taskScheduler);
+        }, taskScheduler);*/
     }
 
     private void OnUploaded(Sprite uploadedLogo) {
-        _logo = uploadedLogo;
+        UpdateLogo(uploadedLogo);
         CallBacks.onLogoUploaded?.Invoke();
     }
 
@@ -89,10 +127,20 @@ public class BusinessLogoController {
     }
     #endregion
 
+    private Sprite CreateSprite(Texture2D texture) {
+        return Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
+    }
+
+    private void UpdateLogo(Sprite newLogo) {
+        _logo = newLogo;
+        CallBacks.onBusinessLogoUpdated?.Invoke();
+    }
+
     ~BusinessLogoController() {
         CallBacks.onSelectLogoFromDevice -= SelectNewImg;
         CallBacks.onUploadSelectedLogo -= OnUploadSelectedLogo;
         CallBacks.onRemoveLogo -= OnRemove;
+        CallBacks.onLoadLogo -= LoadLogo;
 
         CallBacks.hasLogoOnDevice = null;
         CallBacks.getLogoOnDevice = null;

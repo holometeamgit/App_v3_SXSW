@@ -8,4 +8,5 @@ public class BusinessProfileJsonData {
     public string xlarge_splash;
     public string cta;
     public string cta_label;
+    public string logo;
 }

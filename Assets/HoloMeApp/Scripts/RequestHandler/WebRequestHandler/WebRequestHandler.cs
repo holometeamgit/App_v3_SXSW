@@ -20,6 +20,7 @@ public class WebRequestHandler : MonoBehaviour {
     private GetWebTextureRequest _getWebTextureRequest;
     private PostWebRequester _postWebRequester;
     private PostMultipartRequester _postMultipartRequester;
+    private PatchMultipartRequester _patchMultipartRequester;
     private PutWebRequester _putWebRequester;
     private PatchWebRequester _patchWebRequester;
     private DeleteWebRequester _deleteWebRequester;
@@ -46,6 +47,7 @@ public class WebRequestHandler : MonoBehaviour {
         _getWebTextureRequest = new GetWebTextureRequest();
         _postWebRequester = new PostWebRequester();
         _postMultipartRequester = new PostMultipartRequester();
+        _patchMultipartRequester = new PatchMultipartRequester();
         _putWebRequester = new PutWebRequester();
         _patchWebRequester = new PatchWebRequester();
         _deleteWebRequester = new DeleteWebRequester();
@@ -147,6 +149,39 @@ public class WebRequestHandler : MonoBehaviour {
 
         string currentHeaderAccessToken = needHeaderAccessToken ? _accountManager.GetAccessToken().access : null;
         _postMultipartRequester.PostMultipart(url, contentDictionary,
+            responseDelegate, errorTypeDelegate,
+            currentHeaderAccessToken,
+            onCancel: onCancel, uploadProgress: uploadProgress);
+
+    }
+
+    /// <summary>
+    /// Patch request multiple files 
+    /// </summary>
+    /// <param name="contentDictionary"> contain field name and path to file</param>
+    public void PatchMultipart(string url, Dictionary<string, string> contentPathDataDictionary,
+            ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
+            bool needHeaderAccessToken = true, ActionWrapper onCancel = null, Action<float> uploadProgress = null) {
+        Init();
+
+        string currentHeaderAccessToken = needHeaderAccessToken ? _accountManager.GetAccessToken().access : null;
+        _patchMultipartRequester.PatchMultipart(url, contentPathDataDictionary,
+            responseDelegate, errorTypeDelegate,
+            currentHeaderAccessToken,
+            onCancel: onCancel, uploadProgress: uploadProgress);
+    }
+
+    /// <summary>
+    /// Patch request multiple files 
+    /// </summary>
+    /// <param name="contentDictionary"> contain field name and binary file</param>
+    public void PatchMultipart(string url, Dictionary<string, MultipartRequestBinaryData> contentDictionary,
+            ResponseDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
+            bool needHeaderAccessToken = true, ActionWrapper onCancel = null, Action<float> uploadProgress = null) {
+        Init();
+
+        string currentHeaderAccessToken = needHeaderAccessToken ? _accountManager.GetAccessToken().access : null;
+        _patchMultipartRequester.PatchMultipart(url, contentDictionary,
             responseDelegate, errorTypeDelegate,
             currentHeaderAccessToken,
             onCancel: onCancel, uploadProgress: uploadProgress);

@@ -29,31 +29,25 @@ public class PnlSettings : MonoBehaviour {
 
     private UserWebManager _userWebManager;
     private AccountManager _accountManager;
+    private BusinessProfileManager _businessProfileManager;
 
     [Inject]
-    public void Construct(AccountManager accountManager, UserWebManager userWebManager) {
+    public void Construct(AccountManager accountManager, UserWebManager userWebManager, BusinessProfileManager businessProfileManager) {
         _accountManager = accountManager;
         _userWebManager = userWebManager;
+        _businessProfileManager = businessProfileManager;
     }
 
     private void OnEnable() {
-        CallBacks.onBusinessLogoLoaded += OnUpdateBusinessLogoImage;
-        CallBacks.onLogoUploaded += OnUpdateBusinessLogoImage;
+        CallBacks.onBusinessLogoUpdated += OnUpdateBusinessLogoImage;
+        CallBacks.onBusinessDataUpdated += OnBusinessDataUpdated;
 
         _changePassword.SetActive(_accountManager.GetLogInType() == LogInType.Email);
         _txtNickname.text = _userWebManager.GetUsername();
         _userWebManager.OnUserAccountDeleted += UserLogOut;
 
-        bool isBuisenessProfile = _userWebManager.IsBusinessProfile();
-        _businessGO.SetActive(isBuisenessProfile);
-        _changeLogobtn.SetActive(isBuisenessProfile);
-
-        if (!isBuisenessProfile)
-            return;
-
-        string businessName = _userWebManager.GetUsername();
-        _txtBusinessName.text = string.IsNullOrEmpty(businessName) ? "B" : businessName[0].ToString();
-        _defaultBusinessLogoGO.SetActive(true);
+        OnBusinessDataUpdated();
+        CallBacks.onLoadLogo?.Invoke();
     }
 
     /// <summary>
@@ -106,16 +100,29 @@ public class PnlSettings : MonoBehaviour {
     }
 
     private void OnUpdateBusinessLogoImage() {
-
         _imgBusinessLogo.sprite = CallBacks.getLogoOnDevice();
+
+        string businessName = _businessProfileManager.GetCTALable();
+        _txtBusinessName.text = string.IsNullOrEmpty(businessName) ? "B" : businessName[0].ToString();
         _imgBusinessLogo.gameObject.SetActive(_imgBusinessLogo.sprite != null);
         _defaultBusinessLogoGO.SetActive(_imgBusinessLogo.sprite == null);
+    }
+
+    private void OnBusinessDataUpdated() {
+        bool isBuisenessProfile = _businessProfileManager.IsBusinessProfile();
+        _businessGO.SetActive(isBuisenessProfile);
+        _changeLogobtn.SetActive(isBuisenessProfile);
+
+        if (!isBuisenessProfile)
+            return;
+
+        OnUpdateBusinessLogoImage();
     }
 
 
     private void OnDisable() {
         _userWebManager.OnUserAccountDeleted -= UserLogOut;
-        CallBacks.onBusinessLogoLoaded -= OnUpdateBusinessLogoImage;
-        CallBacks.onLogoUploaded -= OnUpdateBusinessLogoImage;
+        CallBacks.onBusinessLogoUpdated -= OnUpdateBusinessLogoImage;
+        CallBacks.onBusinessDataUpdated -= OnBusinessDataUpdated;
     }
 }
