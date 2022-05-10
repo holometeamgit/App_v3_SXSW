@@ -9,7 +9,6 @@ using Beem.SSO;
 /// Business Profile Manager
 /// </summary>
 public class BusinessProfileManager : MonoBehaviour {
-    [SerializeField]
     private AuthorizationAPIScriptableObject _authorizationAPIScriptableObject;
     private WebRequestHandler _webRequestHandler;
     private GetMyBusinessProfile getMyBusinessProfile;
@@ -17,8 +16,9 @@ public class BusinessProfileManager : MonoBehaviour {
     private BusinessProfileJsonData _data;
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler) {
+    public void Construct(WebRequestHandler webRequestHandler, AuthorizationAPIScriptableObject authorizationAPIScriptableObject) {
         _webRequestHandler = webRequestHandler;
+        _authorizationAPIScriptableObject = authorizationAPIScriptableObject;
         getMyBusinessProfile = new GetMyBusinessProfile(_authorizationAPIScriptableObject, _webRequestHandler);
     }
 
@@ -37,10 +37,6 @@ public class BusinessProfileManager : MonoBehaviour {
 
     public string GetID() {
         return _data == null ? null : _data.id;
-    }
-
-    public void RequestMyData() {
-        getMyBusinessProfile.GetMyProfile((data) => OnSuccess(data, _ => { }), _ => { });
     }
 
     public bool IsBusinessProfile() {
