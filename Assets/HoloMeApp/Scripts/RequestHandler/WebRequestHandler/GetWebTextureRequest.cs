@@ -27,8 +27,10 @@ public class GetWebTextureRequest : WebRequester {
 
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate,
-            onCancel, downloadProgress: downloadProgress,  maxTimesWait: MAX_TIMES_BEFORE_STOP_TEXTURE_REQUEST).ContinueWith((taskWebRequestData) => {
-        }, taskScheduler);
+            onCancel, downloadProgress: downloadProgress, maxTimesWait: MAX_TIMES_BEFORE_STOP_TEXTURE_REQUEST).ContinueWith((taskWebRequestData) => {
+                var result = taskWebRequestData.Result;
+                (responseDelegate as ResponseTextureDelegate)?.Invoke(result.Code, result.Body, result.Texture);
+            }, taskScheduler);
     }
 
     /// <summary>

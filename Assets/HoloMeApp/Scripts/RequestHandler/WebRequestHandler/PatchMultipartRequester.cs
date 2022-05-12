@@ -27,8 +27,6 @@ public class PatchMultipartRequester : WebRequester {
         contentDictionary = LoadingFile(contentPathDataDictionary);
 
         PatchMultipart(url, contentDictionary, responseDelegate, errorTypeDelegate, headerAccessToken, onCancel: onCancel, uploadProgress: uploadProgress);
-
-
     }
 
     /// <summary>
@@ -47,6 +45,8 @@ public class PatchMultipartRequester : WebRequester {
 
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, uploadProgress: uploadProgress, maxTimesWait: MAX_TIMES_BEFORE_PATCH_MULTIPART_STOP_REQUEST).ContinueWith((taskWebRequestData) => {
+            var result = taskWebRequestData.Result;
+            (responseDelegate as ResponseDelegate)?.Invoke(result.Code, result.Body);
         }, taskScheduler);
     }
 

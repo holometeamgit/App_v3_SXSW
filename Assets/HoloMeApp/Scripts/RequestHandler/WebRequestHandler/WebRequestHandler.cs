@@ -121,7 +121,6 @@ public class WebRequestHandler : MonoBehaviour {
             onCancel, progress);
     }
 
-
     /// <summary>
     /// Post request multiple files 
     /// </summary>
