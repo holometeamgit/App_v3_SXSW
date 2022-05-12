@@ -13,7 +13,7 @@ public class ControllerInstaller : MonoInstaller {
         Container.BindInterfacesAndSelfTo<AccountManager>().FromComponentInHierarchy(false).AsSingle();
         Container.BindInterfacesAndSelfTo<AuthController>().FromComponentInHierarchy(false).AsSingle();
         Container.BindInterfacesAndSelfTo<UserWebManager>().FromComponentInHierarchy(false).AsSingle();
-        Container.BindInterfacesAndSelfTo<BusinessProfileManager>().FromComponentInHierarchy(false).AsSingle();
+ //       Container.BindInterfacesAndSelfTo<BusinessProfileManager>().FromComponentInHierarchy(false).AsSingle();
         Container.BindInterfacesAndSelfTo<HologramHandler>().FromComponentInHierarchy(false).AsSingle();
         Container.BindInterfacesAndSelfTo<AgoraController>().FromComponentInHierarchy(false).AsSingle();
         Container.BindInterfacesAndSelfTo<PurchaseManager>().FromComponentInHierarchy(false).AsSingle();
@@ -24,5 +24,6 @@ public class ControllerInstaller : MonoInstaller {
         Container.BindInterfacesAndSelfTo<PurchasesSaveManager>().FromComponentInHierarchy(false).AsSingle();
 
         Container.BindInterfacesAndSelfTo<BusinessLogoController>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<BusinessProfileManager>().AsSingle().NonLazy();
     }
 }

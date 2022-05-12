@@ -7,16 +7,16 @@ using System.Threading;
 using Zenject;
 
 public class BusinessLogoController {
-
     private Sprite _logo;
     private Sprite _selectedLogoFromDevice;
     private BusinessProfileManager _businessProfileManager;
     private AuthorizationAPIScriptableObject _authorizationAPIScriptableObject;
     private WebRequestHandler _webRequestHandler;
 
-    public BusinessLogoController(BusinessProfileManager businessProfileManager, AuthorizationAPIScriptableObject authorizationAPIScriptableObject) {
+    public BusinessLogoController(BusinessProfileManager businessProfileManager, AuthorizationAPIScriptableObject authorizationAPIScriptableObject, WebRequestHandler webRequestHandler) {
         _businessProfileManager = businessProfileManager;
         _authorizationAPIScriptableObject = authorizationAPIScriptableObject;
+        _webRequestHandler = webRequestHandler;
         CallBacks.onSelectLogoFromDevice += SelectNewImg;
         CallBacks.onUploadSelectedLogo += OnUploadSelectedLogo;
         CallBacks.onRemoveLogo += OnRemove;
@@ -55,7 +55,8 @@ public class BusinessLogoController {
     private void OnGetImgPath(string path) {
         if (string.IsNullOrWhiteSpace(path))
             return;
-        Texture2D tex = NativeGallery.LoadImageAtPath(path);
+        Texture2D tex = NativeGallery.LoadImageAtPath(path, markTextureNonReadable: false);
+
         _selectedLogoFromDevice = CreateSprite(tex);
 
         CallBacks.onLogoSelected?.Invoke();
@@ -68,7 +69,7 @@ public class BusinessLogoController {
     #endregion
 
     #region load logo
-    private void LoadLogo() {
+    public void LoadLogo() {
         _businessProfileManager.GetMyData(OnLoadLogo, OnErrorLoading, forceUpdate: true);
     }
 
@@ -79,7 +80,7 @@ public class BusinessLogoController {
                 (code, body, texture) => {
                     UpdateLogo(CreateSprite((Texture2D)texture));
                 },
-                (code, body) => { });
+                (code, body) => { }, nonreadable: false);
         }
     }
 
@@ -92,14 +93,19 @@ public class BusinessLogoController {
     #region upload logo
     private void OnUploadSelectedLogo() {
         Sprite currentSelected = _selectedLogoFromDevice;
+        bool withTransparace = currentSelected.texture.format == TextureFormat.RGBA32;
 
-        byte[] imageData = ImageConversion.EncodeToPNG(currentSelected.texture);
+        byte[] imageData = withTransparace ? ImageConversion.EncodeToPNG(currentSelected.texture) : ImageConversion.EncodeToJPG(currentSelected.texture);
+
 
         Dictionary<string, MultipartRequestBinaryData> formData = new Dictionary<string, MultipartRequestBinaryData>();
-        formData.Add("logo", new MultipartRequestBinaryData("logo", imageData, "logo.png"));
+        formData.Add("logo", new MultipartRequestBinaryData("logo", imageData,
+            "logo." + (withTransparace ? "png" : "jpg")));
 
-        _webRequestHandler.PostMultipart(_webRequestHandler.ServerURLMediaAPI +
-            _authorizationAPIScriptableObject.UpdateLogo.Replace("{id}", _businessProfileManager.GetID()),
+        string url = _webRequestHandler.ServerURLMediaAPI +
+            _authorizationAPIScriptableObject.UpdateLogo.Replace("{id}", _businessProfileManager.GetID());
+
+        _webRequestHandler.PostMultipart(url,
             formData,
             (code, body) => { OnUploaded(currentSelected); },
             (code, body) => { OnUploadedError(); }, needHeaderAccessToken: true);

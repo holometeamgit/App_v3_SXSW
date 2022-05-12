@@ -208,12 +208,12 @@ public class WebRequestHandler : MonoBehaviour {
     /// get texture webrequest
     /// </summary>
     public void GetTextureRequest(string url, ResponseTextureDelegate responseDelegate, ErrorTypeDelegate errorTypeDelegate,
-        bool needHeaderAccessToken = true, ActionWrapper onCancel = null, Action<float> progress = null) {
+        bool needHeaderAccessToken = true, ActionWrapper onCancel = null, Action<float> progress = null, bool nonreadable = true) {
         Init();
 
         string currentHeaderAccessToken = needHeaderAccessToken ? _accountManager.GetAccessToken().access : null;
         _getWebTextureRequest.GetTextureRequest(url, responseDelegate, errorTypeDelegate,
             currentHeaderAccessToken,
-            onCancel, progress);
+            onCancel, progress, nonreadable);
     }
 }

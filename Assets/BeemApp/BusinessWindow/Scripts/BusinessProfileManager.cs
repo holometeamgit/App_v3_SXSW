@@ -8,15 +8,14 @@ using Beem.SSO;
 /// <summary>
 /// Business Profile Manager
 /// </summary>
-public class BusinessProfileManager : MonoBehaviour {
+public class BusinessProfileManager {
     private AuthorizationAPIScriptableObject _authorizationAPIScriptableObject;
     private WebRequestHandler _webRequestHandler;
     private GetMyBusinessProfile getMyBusinessProfile;
 
     private BusinessProfileJsonData _data;
 
-    [Inject]
-    public void Construct(WebRequestHandler webRequestHandler, AuthorizationAPIScriptableObject authorizationAPIScriptableObject) {
+    public BusinessProfileManager(WebRequestHandler webRequestHandler, AuthorizationAPIScriptableObject authorizationAPIScriptableObject) {
         _webRequestHandler = webRequestHandler;
         _authorizationAPIScriptableObject = authorizationAPIScriptableObject;
         getMyBusinessProfile = new GetMyBusinessProfile(_authorizationAPIScriptableObject, _webRequestHandler);
@@ -29,7 +28,11 @@ public class BusinessProfileManager : MonoBehaviour {
     /// <param name="onFailed"></param>
     public void GetMyData(Action<BusinessProfileJsonData> onSuccess, Action<WebRequestError> onFailed = null, bool forceUpdate = false) {
         if (_data == null || forceUpdate) {
-            getMyBusinessProfile.GetMyProfile((data) => OnSuccess(data, onSuccess), onFailed);
+            getMyBusinessProfile.GetMyProfile((code, body) => {
+                _data = GetBusinessProfileJsonData(body);
+                CallBacks.onBusinessDataUpdated?.Invoke();
+                onSuccess?.Invoke(_data);
+            }, onFailed);
         } else {
             onSuccess?.Invoke(_data);
         }
@@ -47,9 +50,17 @@ public class BusinessProfileManager : MonoBehaviour {
         return _data == null ? null : _data.cta_label;
     }
 
-    private void OnSuccess(BusinessProfileJsonData data, Action<BusinessProfileJsonData> onSuccess) {
-        _data = data;
-        onSuccess?.Invoke(_data);
-        CallBacks.onBusinessDataUpdated?.Invoke();
+    private void OnSuccess(long code, string body, Action<BusinessProfileJsonData> onSuccess, Action<WebRequestError> onFailed) {
+        BusinessProfileJsonData data = JsonUtility.FromJson<BusinessProfileJsonData>(body);
+        if (data != null) {
+            onSuccess.Invoke(data);
+        } else {
+            onFailed?.Invoke(new WebRequestError());
+        }
+    }
+
+    private BusinessProfileJsonData GetBusinessProfileJsonData(string body) {
+        BusinessProfileJsonData dataJson = JsonUtility.FromJson<BusinessProfileJsonData>(body);
+        return dataJson;
     }
 }

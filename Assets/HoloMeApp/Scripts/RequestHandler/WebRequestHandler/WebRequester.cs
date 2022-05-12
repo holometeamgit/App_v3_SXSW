@@ -17,9 +17,9 @@ public class WebRequester
     public class Result {
         public long Code;
         public string Body;
-        public Texture Texture;
+        public Texture2D Texture;
 
-        public Result(long code, string body, Texture texture = null) {
+        public Result(long code, string body, Texture2D texture = null) {
             Code = code;
             Body = body;
             Texture = texture;
@@ -55,7 +55,8 @@ public class WebRequester
             if (responseDelegate is ResponseDelegate) {
                 return new Result(request.responseCode, request.downloadHandler.text);
             } else if (responseDelegate is ResponseTextureDelegate) {
-                Texture texture = DownloadHandlerTexture.GetContent(request);
+                Texture2D texture = DownloadHandlerTexture.GetContent(request);
+
                 return new Result(request.responseCode, request.downloadHandler.text, texture);
             }
 
