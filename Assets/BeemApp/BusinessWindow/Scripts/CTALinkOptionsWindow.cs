@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using Beem.SSO;
 
 /// <summary>
 /// CTA Link Window
@@ -33,16 +34,16 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
     private WebRequestHandler _webRequestHandler;
     private PostARMsgExtDataController _postARMsgExtDataController;
 
-    private const int DELAY_FOR_SUCCESS = 3000;
-    private const string BUSINESS_OPTIONS_VIEW = "BusinessOptionsView";
-    private const string SUCCESS_OPTIONS_VIEW = "SuccessOptionsView";
+    private object[] _lastCallobjects;
+
+    private const string SUCCESS_OPTIONS_VIEW = "SubpnlCTALinkOptionsUpdatedWindow";
     private const string CTA_LINK_OPTIONS_VIEW = "CTALinkOptionsView";
 
     /// <summary>
     /// Show Window
     /// </summary>
     public void Show(params object[] objects) {
-
+        _lastCallobjects = objects;
         if (objects != null && objects.Length > 0) {
             foreach (var item in objects) {
                 if (item is string) {
@@ -107,11 +108,7 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
         CheckText();
     }
 
-    private void EnableInput(bool status) {
-        _ctaUrl.gameObject.SetActive(status);
-        _ctaLabel.gameObject.SetActive(status);
-    }
-
+    //TODO: move it all (UpdateDataButton,ShowError)  in controller
     /// <summary>
     /// Update Data Button
     /// </summary>
@@ -122,6 +119,8 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
             return;
         }
 
+        BlindOptionsConstructor.Show(SUCCESS_OPTIONS_VIEW);
+
         UnityWebRequest webRequest = UnityWebRequest.Get(_ctaUrl.Text);
         await webRequest.SendWebRequest();
         if (webRequest.result != UnityWebRequest.Result.Success) {
@@ -129,28 +128,19 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
             return;
         }
 
-
         ARMsgJSON.Data.ExtContentData extContentData = new ARMsgJSON.Data.ExtContentData {
             cta_label = _ctaLabel.Text,
             cta_url = _ctaUrl.Text
         };
 
-        _postARMsgExtDataController.PostARMsgExtDataById(_data.id, extContentData, ShowSuccess, (error) => ShowError());
-
+        _postARMsgExtDataController.PostARMsgExtDataById(_data.id, extContentData,
+            () => { CallBacks.onUpdatedCTA?.Invoke(); _lastCallobjects = null; },
+            _ => ShowError());
     }
 
     private void ShowError() {
-        EnableInput(false);
-        WarningConstructor.ActivateDoubleButton(message: "Something went wrong", buttonOneText: "Retry", buttonTwoText: "Cancel", onButtonOnePress: UpdateDataButton, onButtonTwoPress: () => EnableInput(true), isWarning: true);
+        WarningConstructor.ActivateDoubleButton(message: "Something went wrong",
+            buttonOneText: "Retry", buttonTwoText: "Cancel",
+            onButtonOnePress: UpdateDataButton, onButtonTwoPress: () => BlindOptionsConstructor.Show(CTA_LINK_OPTIONS_VIEW, _lastCallobjects), isWarning: true);
     }
-
-    private async void ShowSuccess() {
-        SuccessOptionsData data = new SuccessOptionsData(title: "Edit CTA", description: "The CTA information has\nbeen updated", backEvent: () => BlindOptionsConstructor.Show(CTA_LINK_OPTIONS_VIEW));
-        BlindOptionsConstructor.Show(SUCCESS_OPTIONS_VIEW, data);
-
-        await Task.Delay(DELAY_FOR_SUCCESS);
-
-        BlindOptionsConstructor.Show(BUSINESS_OPTIONS_VIEW);
-    }
-
 }

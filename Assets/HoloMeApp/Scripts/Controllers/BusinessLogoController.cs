@@ -21,6 +21,7 @@ public class BusinessLogoController {
         CallBacks.onUploadSelectedLogo += OnUploadSelectedLogo;
         CallBacks.onRemoveLogo += OnRemove;
         CallBacks.onLoadLogo += LoadLogo;
+        CallBacks.onSignInSuccess += LoadLogo;
 
         CallBacks.hasLogoOnDevice = HasLogo;
         CallBacks.getLogoOnDevice = GetCurrentLogoImage;
@@ -93,28 +94,32 @@ public class BusinessLogoController {
     #region upload logo
     private void OnUploadSelectedLogo() {
         Sprite currentSelected = _selectedLogoFromDevice;
-        bool withTransparace = currentSelected.texture.format == TextureFormat.RGBA32;
+        bool withTransparace = currentSelected.texture.format == TextureFormat.RGBA32 || currentSelected.texture.format == TextureFormat.ARGB32;
+
+        HelperFunctions.DevLog("withTransparace: " + withTransparace + " format: " + currentSelected.texture.format);
 
         byte[] imageData = withTransparace ? ImageConversion.EncodeToPNG(currentSelected.texture) : ImageConversion.EncodeToJPG(currentSelected.texture);
 
 
         Dictionary<string, MultipartRequestBinaryData> formData = new Dictionary<string, MultipartRequestBinaryData>();
-        formData.Add("logo", new MultipartRequestBinaryData("logo", imageData,
-            "logo." + (withTransparace ? "png" : "jpg")));
+        MultipartRequestBinaryData multipartRequestBinaryData = new MultipartRequestBinaryData(
+            "logo",
+            imageData,
+            "logo." + (withTransparace ? "png" : "jpg"));
+        formData.Add("logo", multipartRequestBinaryData);
 
         string url = _webRequestHandler.ServerURLMediaAPI +
             _authorizationAPIScriptableObject.UpdateLogo.Replace("{id}", _businessProfileManager.GetID());
 
+        HelperFunctions.DevLog(url);
+
+
         _webRequestHandler.PostMultipart(url,
             formData,
-            (code, body) => { OnUploaded(currentSelected); },
+            (code, body) => {
+                HelperFunctions.DevLog(code + ": " + body);
+                OnUploaded(currentSelected); },
             (code, body) => { OnUploadedError(); }, needHeaderAccessToken: true);
-/*
-        var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        Task delay = Task.Delay(1000);
-        delay.ContinueWith(taskTokenID => {
-            OnUploaded(currentSelected);
-        }, taskScheduler);*/
     }
 
     private void OnUploaded(Sprite uploadedLogo) {
@@ -147,6 +152,7 @@ public class BusinessLogoController {
         CallBacks.onUploadSelectedLogo -= OnUploadSelectedLogo;
         CallBacks.onRemoveLogo -= OnRemove;
         CallBacks.onLoadLogo -= LoadLogo;
+        CallBacks.onSignInSuccess -= LoadLogo;
 
         CallBacks.hasLogoOnDevice = null;
         CallBacks.getLogoOnDevice = null;

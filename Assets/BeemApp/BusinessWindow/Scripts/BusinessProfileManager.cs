@@ -29,9 +29,7 @@ public class BusinessProfileManager {
     public void GetMyData(Action<BusinessProfileJsonData> onSuccess, Action<WebRequestError> onFailed = null, bool forceUpdate = false) {
         if (_data == null || forceUpdate) {
             getMyBusinessProfile.GetMyProfile((code, body) => {
-                _data = GetBusinessProfileJsonData(body);
-                CallBacks.onBusinessDataUpdated?.Invoke();
-                onSuccess?.Invoke(_data);
+                OnSuccess(code, body, onSuccess, onFailed);
             }, onFailed);
         } else {
             onSuccess?.Invoke(_data);
@@ -53,7 +51,9 @@ public class BusinessProfileManager {
     private void OnSuccess(long code, string body, Action<BusinessProfileJsonData> onSuccess, Action<WebRequestError> onFailed) {
         BusinessProfileJsonData data = JsonUtility.FromJson<BusinessProfileJsonData>(body);
         if (data != null) {
-            onSuccess.Invoke(data);
+            _data = GetBusinessProfileJsonData(body);
+            CallBacks.onBusinessDataUpdated?.Invoke();
+            onSuccess?.Invoke(_data);
         } else {
             onFailed?.Invoke(new WebRequestError());
         }

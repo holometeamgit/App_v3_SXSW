@@ -59,13 +59,16 @@ public class PatchMultipartRequester : WebRequester {
         foreach (var content in contentDictionary) {
             form.AddBinaryData(content.Key, content.Value.Content, content.Value.FileName);
         }
-        byte[] boundary = UnityWebRequest.GenerateBoundary();
-        string contentType = String.Concat("multipart/form-data; boundary=", Encoding.UTF8.GetString(boundary));
+        //byte[] boundary = UnityWebRequest.GenerateBoundary();
+        //string contentType = String.Concat("multipart/form-data; boundary=", Encoding.UTF8.GetString(form.data));
 
-        UnityWebRequest request = UnityWebRequest.Post(url, form);
-        request.method = "PATCH";
+        var request = new UnityWebRequest(url, "PATCH");
+
         request.certificateHandler = new CustomCertificateHandler();
         request.downloadHandler = new DownloadHandlerBuffer();
+        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(form.data);
+        //request.SetRequestHeader("Content-Type", contentType);
+        request.SetRequestHeader("Content-Type", "application/json");
 
         if (headerAccessToken != null)
             request.SetRequestHeader("Authorization", "Bearer " + headerAccessToken);

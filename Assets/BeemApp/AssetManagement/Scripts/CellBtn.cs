@@ -10,13 +10,21 @@ using UnityEngine.EventSystems;
 /// Btn for cell in AssetManagement
 /// </summary>
 public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManagerView, IWebRequestHandlerView, IBusinessProfileManagerView, IPointerDownHandler, IPointerUpHandler {
+    private enum State {
+        Default,
+        Tap
+    }
+
     private ARMsgJSON.Data _arMsgData = default;
     private UserWebManager _userWebManager;
     private WebRequestHandler _webRequestHandler;
     private BusinessProfileManager _businessProfileManager;
+
+    private State _state;
+    private Coroutine _tapTimerCoroutine;
+
     private const string TOPIC = "gallery_{0}";
-    private float currentTime;
-    private const float LONG_CLICK_TIME = 0.15f;
+    private const float LONG_CLICK_TIME = 0.314f;
 
     private const string BUSINESS_OPTIONS_VIEW = "BusinessOptionsView";
 
@@ -53,21 +61,24 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManagerView, IWebR
         OpenARMsg();
     }
 
-    public void OnPointerUp(PointerEventData eventData) {
-
-        if (_arMsgData.GetStatus == ARMsgJSON.Data.COMPETED_STATUS) {
-            if (Time.time - currentTime < LONG_CLICK_TIME) {
-                OpenARMsg();
-            } else {
-                _businessProfileManager.GetMyData(SuccessedBusinessProfile, FailedBusinessProfile);
-            }
-        } else if (_arMsgData.GetStatus == ARMsgJSON.Data.PROCESSING_STATUS) {
+    public void OnPointerDown(PointerEventData eventData) {
+        if (_arMsgData.GetStatus == ARMsgJSON.Data.PROCESSING_STATUS) {
             if (!CanShowPushNotificationPopup) {
                 OpenProcessingPopup();
             } else {
                 OpenNotificationPopup();
             }
+        } else if (_arMsgData.GetStatus == ARMsgJSON.Data.COMPETED_STATUS) {
+            StartCoroutine(TapTimer());
         }
+    }
+
+    public void OnPointerUp(PointerEventData eventData) {
+        if (_state == State.Tap)
+            OpenARMsg();
+
+        StopTimer();
+        _state = State.Default;
     }
 
     private void OpenARMsg() {
@@ -99,7 +110,22 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManagerView, IWebR
               "GOT IT!");
     }
 
-    public void OnPointerDown(PointerEventData eventData) {
-        currentTime = Time.time;
+    private void StopTimer() {
+        if (_tapTimerCoroutine == null)
+            return;
+
+        StopCoroutine(_tapTimerCoroutine);
+        _tapTimerCoroutine = null;
+    }
+
+    private void OnDisable() {
+        StopTimer();
+    }
+
+    private IEnumerator TapTimer() {
+        _state = State.Tap;
+        yield return new WaitForSeconds(LONG_CLICK_TIME);
+        _state = State.Default;
+        _businessProfileManager.GetMyData(SuccessedBusinessProfile, FailedBusinessProfile);
     }
 }

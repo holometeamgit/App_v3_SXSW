@@ -99,8 +99,9 @@ namespace Beem.SSO {
         public static Func<bool> hasLogoOnDevice;
         public static Func<Sprite> getLogoOnDevice;
         //return logo just selected but not set like logo on the server
-        public static Func<Sprite> getSelectedLogoOnDevice; 
+        public static Func<Sprite> getSelectedLogoOnDevice;
 
+        public static Action onUpdatedCTA;
         #endregion
     }
 }
