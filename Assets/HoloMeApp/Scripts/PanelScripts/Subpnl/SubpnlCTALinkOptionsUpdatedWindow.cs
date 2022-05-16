@@ -29,6 +29,7 @@ public class SubpnlCTALinkOptionsUpdatedWindow : MonoBehaviour, IBlindView {
     }
 
     private void OnUpdatedCTA() {
+        Debug.LogError("OnUpdatedCTA");
         SuccessBlindOptions.SetActive(true);
         ProcessingGO.SetActive(false);
         _coroutine = StartCoroutine(HideInTime());
@@ -50,7 +51,9 @@ public class SubpnlCTALinkOptionsUpdatedWindow : MonoBehaviour, IBlindView {
     }
 
     private IEnumerator HideInTime() {
+        Debug.LogError("HideInTime Start");
         yield return new WaitForSeconds(_closeTime);
         _closeBtn.onClick?.Invoke();
+        Debug.LogError("HideInTime Finish");
     }
 }
