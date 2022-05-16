@@ -32,8 +32,8 @@ public class ThumbnailElement {
         Data.OnDataUpdated += () => { OnDataUpdated?.Invoke(); };
     }
 
-    private void FetchTeaserTextureCallBack(long code, string body, Texture texture) {
-        teaserTexture = texture;
+    private void FetchTeaserTextureCallBack(long code, string body, Texture2D texture) {
+        teaserTexture = (Texture)texture;
 
         FetchTexture();
     }
@@ -51,8 +51,8 @@ public class ThumbnailElement {
         }
     }
 
-    private void FetchTextureCallBack(long code, string body, Texture texture) {
-        this.texture = texture;
+    private void FetchTextureCallBack(long code, string body, Texture2D texture) {
+        this.texture = (Texture)texture;
         OnTextureLoaded?.Invoke();
     }
     private void ErrorFetchTextureCallBack(long code, string body) {

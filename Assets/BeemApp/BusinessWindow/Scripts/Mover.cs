@@ -27,10 +27,7 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     private CanvasGroup _canvasGroup;
 
     [SerializeField]
-    private float _frequency = 0.02f;
-
-    [SerializeField]
-    private float _speed = 1f;
+    private float _duration = 0.7f;
 
     public event Action<bool> onStartMoving;
     public event Action<bool> onEndMoving;
@@ -40,7 +37,7 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     private CanvasScaler _canvasScaler;
     private bool active = false;
 
-    private const float MOVE_CEIL = 0.3f;
+    private const float MOVE_CEIL = 0.78f;
 
     private bool isDragging;
     private float currentStatus;
@@ -172,10 +169,13 @@ public class Mover : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
         onStartMoving?.Invoke(endValue > MOVE_CEIL);
         float startValue = CurrentStatus;
         float currentValue = startValue;
-        while (Mathf.Abs(currentValue - endValue) > 0.01f) {
-            currentValue += (endValue - startValue) * _frequency * _speed;
+        float startTime = Time.time;
+        float t = (Time.time - startTime) / _duration;
+        while (t < 1.0f) {
+            t = (Time.time - startTime) / _duration;
+            currentValue = Mathf.SmoothStep(startValue, endValue, t);
             CurrentStatus = currentValue;
-            yield return new WaitForSeconds(_frequency);
+            yield return new WaitForEndOfFrame(); 
         }
         currentValue = endValue;
         CurrentStatus = currentValue;
