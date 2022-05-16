@@ -14,11 +14,23 @@ public class WebRequester
     protected const int MAX_TIMES_BEFORE_STOP_REQUEST = 20;
     protected const int REQUEST_CHECK_COOLDOWN = 250;
 
+    public class Result {
+        public long Code;
+        public string Body;
+        public Texture2D Texture;
+
+        public Result(long code, string body, Texture2D texture = null) {
+            Code = code;
+            Body = body;
+            Texture = texture;
+        }
+    }
+
     #region Async web request
     /// <summary>
     /// Async WebRequest with Retry 
     /// </summary>
-    protected async Task WebRequestWithRetryAsync<T>(Func<UnityWebRequest> createWebRequest,
+    protected async Task<Result> WebRequestWithRetryAsync<T>(Func<UnityWebRequest> createWebRequest,
         T responseDelegate, ErrorTypeDelegate errorTypeDelegate,
         ActionWrapper onCancel = null, Action<float> downloadProgress = null, Action<float> uploadProgress = null, int maxTimesWait = MAX_TIMES_BEFORE_STOP_REQUEST) {
 
@@ -41,11 +53,11 @@ public class WebRequester
             await RetryAsyncHelpe.RetryOnExceptionAsync<UnityWebRequestServerConnectionException>(async () => { await requestTask; });
 
             if (responseDelegate is ResponseDelegate) {
-                (responseDelegate as ResponseDelegate)?.Invoke(request.responseCode, request.downloadHandler.text);
+                return new Result(request.responseCode, request.downloadHandler.text);
             } else if (responseDelegate is ResponseTextureDelegate) {
-                Texture texture = DownloadHandlerTexture.GetContent(request);
-                (responseDelegate as ResponseTextureDelegate)?.Invoke(request.responseCode,
-                    request.downloadHandler.text, ((DownloadHandlerTexture)request.downloadHandler).texture);
+                Texture2D texture = DownloadHandlerTexture.GetContent(request);
+
+                return new Result(request.responseCode, request.downloadHandler.text, texture);
             }
 
         } catch (UnityWebRequestException uwrException) {
@@ -56,7 +68,6 @@ public class WebRequester
             errorTypeDelegate?.Invoke(uwrServerConnectionException.Code, uwrServerConnectionException.Message);
         } catch (Exception exception) {
             HelperFunctions.DevLogError("Exception: WebRequestError  " + request.uri + " " + exception.Message);
-            ///FIXME This error is called in the wrong sequence of actions due to Action
             errorTypeDelegate?.Invoke(500, "Failed to connect to server: " + exception.Message);
         } finally {
             if (onCancel != null) {
@@ -66,6 +77,7 @@ public class WebRequester
             request?.Dispose();
             UnityWebRequest.ClearCookieCache();
         }
+        return default;
     }
 
     /// <summary>
