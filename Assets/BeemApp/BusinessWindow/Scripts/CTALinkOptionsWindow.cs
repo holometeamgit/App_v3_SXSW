@@ -118,6 +118,7 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
     public async void UpdateDataButton() {
 
         if (_data == null || _postARMsgExtDataController == null) {
+            Debug.LogError("Error1");
             ShowError();
             return;
         }
@@ -125,6 +126,7 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
         UnityWebRequest webRequest = UnityWebRequest.Get(_ctaUrl.Text);
         await webRequest.SendWebRequest();
         if (webRequest.result != UnityWebRequest.Result.Success) {
+            Debug.LogError("Error2");
             ShowError();
             return;
         }
@@ -135,7 +137,11 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
             cta_url = _ctaUrl.Text
         };
 
+        Debug.LogError("Error3");
+
         _postARMsgExtDataController.PostARMsgExtDataById(_data.id, extContentData, ShowSuccess, (error) => ShowError());
+
+        Debug.LogError("Error4");
 
     }
 
