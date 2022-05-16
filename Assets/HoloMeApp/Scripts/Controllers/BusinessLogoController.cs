@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Threading;
 using Zenject;
 
+/// <summary>
+/// Controller helps upload and download logo for business account
+/// </summary>
 public class BusinessLogoController {
     private Sprite _logo;
     private Sprite _selectedLogoFromDevice;

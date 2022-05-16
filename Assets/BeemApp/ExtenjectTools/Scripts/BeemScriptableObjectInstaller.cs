@@ -4,16 +4,26 @@ using UnityEngine;
 using Zenject;
 using System;
 
+/// <summary>
+/// sets all the necessary scriptable object DATA to the container
+/// </summary>
 [CreateAssetMenu(fileName = "BeemScriptableObjectInstaller", menuName = "Installers/BeemScriptableObjectInstaller")]
 public class BeemScriptableObjectInstaller : ScriptableObjectInstaller<BeemScriptableObjectInstaller> {
 
-    public ARMsgAPIScriptableObject ARMsgAPIScriptableObject;
-    public AuthorizationAPIScriptableObject AuthorizationAPIScriptableObject;
-    public ExternalLinksScriptableObject ExternalLinksScriptableObject;
-    public GeneralAppAPIScriptableObject GeneralAppAPIScriptableObject;
-    public PurchaseAPIScriptableObject PurchaseAPIScriptableObject;
-    public ServerURLAPIScriptableObject ServerURLAPIScriptableObject;
-    public VideoUploader VideoUploader;
+    [SerializeField]
+    private ARMsgAPIScriptableObject ARMsgAPIScriptableObject;
+    [SerializeField]
+    private AuthorizationAPIScriptableObject AuthorizationAPIScriptableObject;
+    [SerializeField]
+    private ExternalLinksScriptableObject ExternalLinksScriptableObject;
+    [SerializeField]
+    private GeneralAppAPIScriptableObject GeneralAppAPIScriptableObject;
+    [SerializeField]
+    private PurchaseAPIScriptableObject PurchaseAPIScriptableObject;
+    [SerializeField]
+    private ServerURLAPIScriptableObject ServerURLAPIScriptableObject;
+    [SerializeField]
+    private VideoUploader VideoUploader;
 
     public override void InstallBindings() {
         Container.Bind<ARMsgAPIScriptableObject>().AsSingle().NonLazy();

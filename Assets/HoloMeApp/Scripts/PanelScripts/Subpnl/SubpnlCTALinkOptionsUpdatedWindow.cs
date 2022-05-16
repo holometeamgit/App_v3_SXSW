@@ -4,6 +4,9 @@ using UnityEngine;
 using Beem.SSO;
 using UnityEngine.UI;
 
+/// <summary>
+/// The window shows the status of the CTA update
+/// </summary>
 public class SubpnlCTALinkOptionsUpdatedWindow : MonoBehaviour, IBlindView {
     [SerializeField]
     private GameObject ProcessingGO;

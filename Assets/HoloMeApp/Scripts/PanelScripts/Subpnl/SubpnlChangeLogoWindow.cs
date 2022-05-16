@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using Beem.SSO;
 
+/// <summary>
+/// Pnl for Change Logo
+/// </summary>
 public class SubpnlChangeLogoWindow : MonoBehaviour, IBlindView {
     [SerializeField]
     private Image _imgLogo;

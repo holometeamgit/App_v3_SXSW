@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using Beem.SSO;
 
+/// <summary>
+/// Pnl Preview Business Logo for uploading 
+/// </summary>
 public class SubpnlPreviewLogoWindow : MonoBehaviour, IBlindView {
     [SerializeField]
     private Image _imgLogo;
