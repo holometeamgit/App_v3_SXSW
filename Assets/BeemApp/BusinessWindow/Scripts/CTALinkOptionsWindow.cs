@@ -115,21 +115,11 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
     public void UpdateDataButton() {
 
         if (_data == null || _postARMsgExtDataController == null) {
-            HelperFunctions.DevLogError("Error1");
             ShowError();
             return;
         }
 
         BlindOptionsConstructor.Show(SUCCESS_OPTIONS_VIEW);
-
-        /*UnityWebRequest webRequest = UnityWebRequest.Get(_ctaUrl.Text);
-        await webRequest.SendWebRequest();
-        if (webRequest.result != UnityWebRequest.Result.Success) {
-            ShowError();
-            return;
-        }*/
-
-        HelperFunctions.DevLogError("Error2");
 
         ARMsgJSON.Data.ExtContentData extContentData = new ARMsgJSON.Data.ExtContentData {
             cta_label = _ctaLabel.Text,
@@ -142,7 +132,6 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
     }
 
     private void ShowError() {
-        HelperFunctions.DevLogError("Error3");
         WarningConstructor.ActivateDoubleButton(message: "Something went wrong",
             buttonOneText: "Retry", buttonTwoText: "Cancel",
             onButtonOnePress: UpdateDataButton, onButtonTwoPress: () => BlindOptionsConstructor.Show(CTA_LINK_OPTIONS_VIEW, _lastCallobjects), isWarning: true);

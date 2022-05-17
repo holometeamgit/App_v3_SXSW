@@ -29,12 +29,10 @@ public class PostARMsgExtDataController {
     }
 
     private void OnSuccess(long code, string body, Action onSuccess) {
-        Debug.LogError("OnSuccess");
         onSuccess?.Invoke();
     }
 
     private void OnFailed(long code, string body, Action<WebRequestError> onFailed) {
-        Debug.LogError("OnFailed");
         HelperFunctions.DevLogError("Failed" + code + " " + body);
         onFailed?.Invoke(new WebRequestError(code, body));
     }
