@@ -20,4 +20,28 @@ public class ShareLinkController {
         HelperFunctions.DevLog(msg);
 #endif
     }
+
+    /// <summary>
+    /// Share Texture
+    /// </summary>
+    /// <param name="link"></param>
+    public void ShareTexture(Texture2D texture) {
+#if !UNITY_EDITOR
+        new NativeShare().AddFile(texture).Share();
+#else
+        HelperFunctions.DevLog(texture.ToString());
+#endif
+    }
+
+    /// <summary>
+    /// Share file
+    /// </summary>
+    /// <param name="link"></param>
+    public void ShareFile(string path) {
+#if !UNITY_EDITOR
+        new NativeShare().AddFile(path).Share();
+#else
+        HelperFunctions.DevLog(path);
+#endif
+    }
 }
