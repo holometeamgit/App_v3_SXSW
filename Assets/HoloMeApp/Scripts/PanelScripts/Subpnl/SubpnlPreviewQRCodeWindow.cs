@@ -23,6 +23,7 @@ public class SubpnlPreviewQRCodeWindow : MonoBehaviour, IBlindView {
         gameObject.SetActive(true);
         if (objects.Length > 0) {
             ARMsgJSON.Data data = objects[0] as ARMsgJSON.Data;
+            HelperFunctions.DevLog(data.share_link);
             CallBacks.onGetQRCode?.Invoke(data.share_link);
         }
     }
@@ -40,18 +41,18 @@ public class SubpnlPreviewQRCodeWindow : MonoBehaviour, IBlindView {
     }
 
     private void SaveImage(Texture2D texture) {
-        if (NativeGallery.CheckPermission(NativeGallery.PermissionType.Read) != NativeGallery.Permission.Granted) {
+        if (NativeGallery.CheckPermission(NativeGallery.PermissionType.Write) != NativeGallery.Permission.Granted) {
             RequestPermission();
         }
 
-        if (NativeGallery.CheckPermission(NativeGallery.PermissionType.Read) != NativeGallery.Permission.Granted)
+        if (NativeGallery.CheckPermission(NativeGallery.PermissionType.Write) != NativeGallery.Permission.Granted)
             return;
 
         NativeGallery.SaveImageToGallery(texture, "Beem", "QRCodeBeem"+ DateTime.Now + ".png");
     }
 
     private void RequestPermission() {
-        NativeGallery.RequestPermission(NativeGallery.PermissionType.Read);
+        NativeGallery.RequestPermission(NativeGallery.PermissionType.Write);
     }
 
     private void UpdateQRCode(Texture2D QRCOdeTexture) {

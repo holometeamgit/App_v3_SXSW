@@ -8,6 +8,8 @@ using UnityEngine.UI;
 using TMPro;
 using Zenject;
 using Beem.SSO;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 /// <summary>
 /// QRCode Generator
@@ -15,17 +17,26 @@ using Beem.SSO;
 public class QRCodeGenerator {
 
     private Texture2D _storeEncoding;
-    private QRCodeAdditionalInformationScriptableObject _QRCodeAdditionalInformationScriptableObject;
     private bool _isLock;
+    private Texture2D _boardingTexture;
+    private Texture2D _logoTexture;
 
     private const int WIDTH = 256;
     private const int HEIGHT = 256;
     private const string DEFAULR_QRCODE_STRING= "https://www.beem.me/";
 
-    public QRCodeGenerator(QRCodeAdditionalInformationScriptableObject qrCodeAdditionalInformationScriptableObject) {
-        _QRCodeAdditionalInformationScriptableObject = qrCodeAdditionalInformationScriptableObject;
+    public QRCodeGenerator() {
         _storeEncoding = new Texture2D(WIDTH, HEIGHT);
         CallBacks.onGetQRCode += GenerateQRCode;
+
+        var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        Addressables.LoadAssetAsync<Texture2D>("QRCodeBoard").Task.ContinueWith(task => {
+            _boardingTexture = task.Result;
+        }, taskScheduler);
+
+        Addressables.LoadAssetAsync<Texture2D>("QRCodeLogo").Task.ContinueWith(task => {
+            _logoTexture = task.Result;
+        }, taskScheduler);
     }
 
     /// <summary>
@@ -45,9 +56,13 @@ public class QRCodeGenerator {
                }, taskScheduler);*/
 
         EncodeString(qrcodeString);
+        _isLock = false;
+        CallBacks.onQRCodeCreated?.Invoke(_storeEncoding);
+
     }
 
     private void EncodeString(string qrcodeString) {
+        HelperFunctions.DevLog("EncodeString: " + qrcodeString);
         Color32[] convertPixelToTexture = GetColorsQrCode(qrcodeString);
         var result = AddAdditionalInfo(convertPixelToTexture, WIDTH, HEIGHT);
         EncodeTextureToQRCode(result);
@@ -81,10 +96,11 @@ public class QRCodeGenerator {
 
     private Color32[] AddAdditionalInfo(Color32[] qrcode, int widthQRCodeTexture, int heightQRCodeTexture) {
 
+        HelperFunctions.DevLog("AddAdditionalInfo");
 
-        Color32[] _boardingColors = _QRCodeAdditionalInformationScriptableObject.BoardingSprite.GetPixels32();
+        Color32[] _boardingColors = _boardingTexture.GetPixels32();
 
-        Color32[] _logoColors = _QRCodeAdditionalInformationScriptableObject.LogoSprite.GetPixels32();
+        Color32[] _logoColors = _logoTexture.GetPixels32();
         Color32 whiteColor = new Color32(255, 255, 255, 255);
 
         for (int height = 0; height < heightQRCodeTexture; height++) {
@@ -116,6 +132,7 @@ public class QRCodeGenerator {
     }
 
     ~QRCodeGenerator() {
+        HelperFunctions.DevLog("~QRCodeGenerator");
         CallBacks.onGetQRCode -= GenerateQRCode;
     }
 }

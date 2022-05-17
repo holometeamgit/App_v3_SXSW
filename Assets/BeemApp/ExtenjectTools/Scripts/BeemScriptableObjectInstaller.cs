@@ -25,9 +25,6 @@ public class BeemScriptableObjectInstaller : ScriptableObjectInstaller<BeemScrip
     [SerializeField]
     private VideoUploader VideoUploader;
 
-    [SerializeField]
-    private QRCodeAdditionalInformationScriptableObject QRCodeAdditionalInformationScriptableObject;
-
     public override void InstallBindings() {
         Container.Bind<ARMsgAPIScriptableObject>().AsSingle().NonLazy();
         Container.Bind<AuthorizationAPIScriptableObject>().AsSingle().NonLazy();
@@ -36,7 +33,5 @@ public class BeemScriptableObjectInstaller : ScriptableObjectInstaller<BeemScrip
         Container.Bind<PurchaseAPIScriptableObject>().AsSingle().NonLazy();
         Container.Bind<ServerURLAPIScriptableObject>().AsSingle().NonLazy();
         Container.Bind<VideoUploader>().AsSingle().NonLazy();
-
-        Container.Bind<QRCodeAdditionalInformationScriptableObject>().AsSingle().NonLazy();
     }
 }
