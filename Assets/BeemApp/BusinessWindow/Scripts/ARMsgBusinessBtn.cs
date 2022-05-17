@@ -7,14 +7,14 @@ using UnityEngine;
 /// Business Btn
 /// </summary>
 
-public class ARMsgBusinessBtn : MonoBehaviour, IARMsgDataView, IUserWebManagerView, IWebRequestHandlerView {
-
-    [SerializeField]
-    private string _assetID = "BusinessOptionsView";
+public class ARMsgBusinessBtn : MonoBehaviour, IARMsgDataView, IUserWebManagerView, IBusinessProfileManagerView, IWebRequestHandlerView {
 
     private ARMsgJSON.Data _data;
     private WebRequestHandler _webRequestHandler;
     private UserWebManager _userWebManager;
+    private BusinessProfileManager _businessProfileManager;
+
+    private const string BUSINESS_OPTIONS_VIEW = "BusinessOptionsView";
 
     public void Init(ARMsgJSON.Data data) {
         _data = data;
@@ -28,7 +28,11 @@ public class ARMsgBusinessBtn : MonoBehaviour, IARMsgDataView, IUserWebManagerVi
         _webRequestHandler = webRequestHandler;
     }
 
+    public void Init(BusinessProfileManager businessProfileManager) {
+        _businessProfileManager = businessProfileManager;
+    }
+
     public void OnClick() {
-        BlindOptionsConstructor.Show(_assetID, _data, _userWebManager, _webRequestHandler, false);
+        BlindOptionsConstructor.Show(BUSINESS_OPTIONS_VIEW, _data, _userWebManager, _businessProfileManager, _webRequestHandler, false);
     }
 }

@@ -112,7 +112,7 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
     /// <summary>
     /// Update Data Button
     /// </summary>
-    public async void UpdateDataButton() {
+    public void UpdateDataButton() {
 
         if (_data == null || _postARMsgExtDataController == null) {
             ShowError();
@@ -120,13 +120,6 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
         }
 
         BlindOptionsConstructor.Show(SUCCESS_OPTIONS_VIEW);
-
-        UnityWebRequest webRequest = UnityWebRequest.Get(_ctaUrl.Text);
-        await webRequest.SendWebRequest();
-        if (webRequest.result != UnityWebRequest.Result.Success) {
-            ShowError();
-            return;
-        }
 
         ARMsgJSON.Data.ExtContentData extContentData = new ARMsgJSON.Data.ExtContentData {
             cta_label = _ctaLabel.Text,
