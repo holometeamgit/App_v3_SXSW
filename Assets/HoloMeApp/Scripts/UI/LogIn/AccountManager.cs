@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using Zenject;
 
 public class AccountManager : MonoBehaviour {
-    [SerializeField]
-    AuthorizationAPIScriptableObject authorizationAPI;
+
+    private AuthorizationAPIScriptableObject _authorizationAPI;
 
     [Tooltip("Use this to test multiple editor logins on the same PC")]
     [SerializeField]
@@ -23,9 +23,10 @@ public class AccountManager : MonoBehaviour {
     private const int QUICK_LOGIN_DELAY_TIME = 1000;
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler, AuthController authController) {
+    public void Construct(WebRequestHandler webRequestHandler, AuthController authController, AuthorizationAPIScriptableObject authorizationAPI) {
         _webRequestHandler = webRequestHandler;
         _authController = authController;
+        _authorizationAPI = authorizationAPI;
     }
 
 
@@ -218,11 +219,11 @@ public class AccountManager : MonoBehaviour {
 
     #region request urls
     private string GetRequestRefreshTokenURL() {
-        return _webRequestHandler.ServerURLAuthAPI + authorizationAPI.RefreshToken;
+        return _webRequestHandler.ServerURLAuthAPI + _authorizationAPI.RefreshToken;
     }
 
     private string GetRequestAccessTokenURL() {
-        return _webRequestHandler.ServerURLAuthAPI + authorizationAPI.FirebaseToken;
+        return _webRequestHandler.ServerURLAuthAPI + _authorizationAPI.FirebaseToken;
     }
 
     #endregion

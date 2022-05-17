@@ -7,7 +7,7 @@ using Zenject;
 /// ARMsgConstructor. TODO convert it to DI in future 
 /// </summary>
 public class ARMsgRecordConstructor : WindowConstructor {
-    [SerializeField]
+
     private ARMsgAPIScriptableObject _arMsgAPI;
 
     private WebRequestHandler _webRequestHandler;
@@ -17,8 +17,9 @@ public class ARMsgRecordConstructor : WindowConstructor {
     public static Action<bool> OnActivated = delegate { };
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler) {
+    public void Construct(WebRequestHandler webRequestHandler, ARMsgAPIScriptableObject arMsgAPI) {
         _webRequestHandler = webRequestHandler;
+        _arMsgAPI = arMsgAPI;
     }
 
 
