@@ -24,5 +24,6 @@ public class ControllerInstaller : MonoInstaller {
 
         Container.BindInterfacesAndSelfTo<BusinessLogoController>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<BusinessProfileManager>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<QRCodeGenerator>().AsSingle().NonLazy();
     }
 }

@@ -26,6 +26,7 @@ public class BusinessOptionsWindow : MonoBehaviour, IBlindView {
     private bool _existPreview = true;
 
     private const string CTA_LINK_OPTIONS_VIEW = "CTALinkOptionsView";
+    private const string QRCODE_LINK_OPTIONS_VIEW = "SubpnlPreviewQRCodeWindow";
 
     /// <summary>
     /// Show data
@@ -67,6 +68,13 @@ public class BusinessOptionsWindow : MonoBehaviour, IBlindView {
     /// </summary>
     public void OpenCtaOptions() {
         BlindOptionsConstructor.Show(CTA_LINK_OPTIONS_VIEW, _data, _webRequestHandler);
+    }
+
+    /// <summary>
+    /// Open QR Code option
+    /// </summary>
+    public void OpenQRCodeOptions() {
+        BlindOptionsConstructor.Show(QRCODE_LINK_OPTIONS_VIEW, _data);
     }
 
     /// <summary>
