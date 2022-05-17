@@ -22,9 +22,9 @@ namespace Beem.Xcode {
         };
 
         private static Dictionary<string, string> privacies = new Dictionary<string, string>() {
-            {"Privacy - Local Network Usage Description", "Beem uses this to find and connect to devices to cast to your TV"},
-            {"Privacy - Photo Library Usage Description", "Need for save recorded video"},
-            {"Privacy - Contacts Usage Description", "Access to contacts required" }
+            {"NSLocalNetworkUsageDescription", "Beem uses this to find and connect to devices to cast to your TV"},
+            {"NSPhotoLibraryUsageDescription", "Need for save recorded video"},
+            {"NSContactsUsageDescription", "Access to contacts required" }
         };
 
         [PostProcessBuild]
