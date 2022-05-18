@@ -99,7 +99,7 @@ public class QRCodeGenerator {
             Options = new QrCodeEncodingOptions {
                 Height = height,
                 Width = width,
-                Margin = 1,
+                Margin = 2,
                 PureBarcode = false
             }
         };
