@@ -22,8 +22,8 @@ public class ARMsgScreenRecorder : MonoBehaviour {
     private AudioDevice audioDevice;
 
     private string _lastPathVideo;
-    private const int MAX_HEIGH = 720;
-    private const int MAX_HEIGH_FOR_BUSINESS = 1920;
+    private const int MAX_HEIGHT = 720;
+    private const int MAX_HEIGHT_FOR_BUSINESS = 1920;
     private const int BITRATE = 4000000;
 
     private Coroutine _startingRecordingCoroutine;
@@ -92,7 +92,7 @@ public class ARMsgScreenRecorder : MonoBehaviour {
         int heigh;
         AgoraSharedVideoConfig.GetResolution(screenWidth: Screen.width, screenHeigh: Screen.height,
             out width, out heigh,
-            maxHeigh: _businessProfileManager.IsBusinessProfile() ? MAX_HEIGH_FOR_BUSINESS : MAX_HEIGH);
+            maxHeigh: _businessProfileManager.IsBusinessProfile() ? MAX_HEIGHT_FOR_BUSINESS : MAX_HEIGHT);
         Application.targetFrameRate = AgoraSharedVideoConfig.FrameRate;
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
         yield return null;
