@@ -17,7 +17,6 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 public class QRCodeGenerator {
 
     private Texture2D _storeEncoding;
-    private bool _isLock;
     private Texture2D _boardingTexture;
     private Texture2D _logoTexture;
 
@@ -26,7 +25,7 @@ public class QRCodeGenerator {
     private const string DEFAULR_QRCODE_STRING= "https://www.beem.me/";
 
     public QRCodeGenerator() {
-        _storeEncoding = new Texture2D(WIDTH, HEIGHT);
+        _storeEncoding = new Texture2D(WIDTH, HEIGHT, TextureFormat.RGBA32, false);
         CallBacks.onGetQRCode += GenerateQRCode;
 
         var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
@@ -44,35 +43,16 @@ public class QRCodeGenerator {
     /// </summary>
     /// <param name="qrcodeString"></param>
     public void GenerateQRCode(string qrcodeString) {
-        if (_isLock)
-            return;
-
-        _isLock = true;
-
-        /*       var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-               EncodeStringAsync(qrcodeString).ContinueWith(task => {
-                   _isLock = false;
-                   CallBacks.onQRCodeCreated?.Invoke(_storeEncoding);
-               }, taskScheduler);*/
-
         EncodeString(qrcodeString);
-        _isLock = false;
         CallBacks.onQRCodeCreated?.Invoke(_storeEncoding);
 
     }
 
     private void EncodeString(string qrcodeString) {
-        HelperFunctions.DevLog("EncodeString: " + qrcodeString);
         Color32[] convertPixelToTexture = GetColorsQrCode(qrcodeString);
         var result = AddAdditionalInfo(convertPixelToTexture, WIDTH, HEIGHT);
         EncodeTextureToQRCode(result);
     }
-
-   /* private async Task EncodeStringAsync(string qrcodeString) {
-        Color32[] convertPixelToTexture = GetColorsQrCode(qrcodeString);
-        var result = await AddAdditionalInfo(convertPixelToTexture, WIDTH, HEIGHT);
-        EncodeTextureToQRCode(result);
-    }*/
 
     private Color32[] GetColorsQrCode(string qrCodeString) {
         string textWrite = string.IsNullOrEmpty(qrCodeString) ? DEFAULR_QRCODE_STRING : qrCodeString;
@@ -86,36 +66,31 @@ public class QRCodeGenerator {
         _storeEncoding.Apply();
     }
 
-    
-    private async Task<Color32[]> AddAdditionalInfoAsync(Color32[] qrcode, int widthQRCodeTexture, int heightQRCodeTexture) {
-
-        qrcode = AddAdditionalInfo(qrcode, widthQRCodeTexture, heightQRCodeTexture);
-
-        return qrcode;
-    }
-
     private Color32[] AddAdditionalInfo(Color32[] qrcode, int widthQRCodeTexture, int heightQRCodeTexture) {
-
-        HelperFunctions.DevLog("AddAdditionalInfo");
 
         Color32[] _boardingColors = _boardingTexture.GetPixels32();
 
         Color32[] _logoColors = _logoTexture.GetPixels32();
         Color32 whiteColor = new Color32(255, 255, 255, 255);
+        Color32[] result = new Color32[widthQRCodeTexture * heightQRCodeTexture];
 
         for (int height = 0; height < heightQRCodeTexture; height++) {
             for (int width = 0; width < widthQRCodeTexture; width++) {
                 int id = height * WIDTH + width;
+                result[id] = qrcode[id];
                 if (!_boardingColors[id].CompareRGB(whiteColor)) {
-                    qrcode[id] = _boardingColors[id];
+                    result[id] = _boardingColors[id];
+                    if(_boardingColors[id].a < 255) {
+                        result[id] = new Color32(0, 0, 0, _boardingColors[id].a);
+                    }
                 }
                 if (_logoColors[id].a > 100) {
-                    qrcode[id] = _logoColors[id];
+                    result[id] = _logoColors[id];
                 }
             }
         }
 
-        return qrcode;
+        return result;
     }
 
     private Color32[] Encode(string textForEncoding, int width, int height) {

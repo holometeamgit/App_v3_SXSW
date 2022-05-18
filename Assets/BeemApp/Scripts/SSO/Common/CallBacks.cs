@@ -107,6 +107,7 @@ namespace Beem.SSO {
         #region qrcode
         public static Action<string> onGetQRCode;
         public static Action<Texture2D> onQRCodeCreated;
+        public static Action onQRCodeSaved;
         #endregion
     }
 }

@@ -16,7 +16,12 @@ public class SubpnlPreviewQRCodeWindow : MonoBehaviour, IBlindView {
 
     [SerializeField]
     private Texture2D _defaultTexture;
+
+    [SerializeField]
+    private string _nextPnlName = "SubpnlQRCodeSavedWindow";
     private ShareLinkController _shareController = new ShareLinkController();
+
+    private const string SUBPNL_PREVIEW_QRCODE_OPTION = "SubpnlPreviewQRCodeWindow";
 
     public void Show(params object[] objects) {
         CallBacks.onQRCodeCreated += UpdateQRCode;
@@ -48,7 +53,8 @@ public class SubpnlPreviewQRCodeWindow : MonoBehaviour, IBlindView {
         if (NativeGallery.CheckPermission(NativeGallery.PermissionType.Write) != NativeGallery.Permission.Granted)
             return;
 
-        NativeGallery.SaveImageToGallery(texture, "Beem", "QRCodeBeem"+ DateTime.Now + ".png");
+        BlindOptionsConstructor.Show(_nextPnlName);
+        NativeGallery.SaveImageToGallery(texture, "Beem", "QRCodeBeem.png", OnSaveImageToGalleryCallBack);
     }
 
     private void RequestPermission() {
@@ -57,6 +63,23 @@ public class SubpnlPreviewQRCodeWindow : MonoBehaviour, IBlindView {
 
     private void UpdateQRCode(Texture2D QRCOdeTexture) {
         _imgQRCode.texture = QRCOdeTexture;
+    }
+
+    private void OnSaveImageToGalleryCallBack(bool success, string path) {
+        if (success) {
+            CallBacks.onQRCodeSaved?.Invoke();
+        } else {
+            if (NativeGallery.CheckPermission(NativeGallery.PermissionType.Write) != NativeGallery.Permission.Granted) {
+                WarningConstructor.ActivateDoubleButton(header: "Please allow access", message: "Beem needs to access your photo\nlibrary to perform this action",
+                    buttonOneText: "go to settings", buttonTwoText: "Cancel",
+                    onButtonOnePress: () => NativeGallery.OpenSettings(),
+                    onButtonTwoPress: () => BlindOptionsConstructor.Show(SUBPNL_PREVIEW_QRCODE_OPTION), isWarning: true);
+            } else {
+                WarningConstructor.ActivateSingleButton(header: "An error occurred while saving", message: "Please try share",
+                    buttonText: "Confirm",
+                    onBackPress: () => BlindOptionsConstructor.Show(SUBPNL_PREVIEW_QRCODE_OPTION), isWarning: true);
+            }
+        }
     }
 
     private void OnDisable() {
