@@ -36,11 +36,16 @@ public class SubpnlPreviewQRCodeWindow : MonoBehaviour, IBlindView {
     public void Hide() {
         gameObject.SetActive(false);
     }
-
+    /// <summary>
+    /// Save Image To Gallary
+    /// </summary>
     public void SaveImageToGallary() {
         SaveImage((Texture2D)_imgQRCode.texture);
     }
 
+    /// <summary>
+    /// Share Image
+    /// </summary>
     public void ShareImage() {
         _shareController.ShareTexture((Texture2D)_imgQRCode.texture);
     }

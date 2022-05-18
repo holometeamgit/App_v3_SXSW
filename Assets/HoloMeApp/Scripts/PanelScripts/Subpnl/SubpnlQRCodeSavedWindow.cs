@@ -4,6 +4,9 @@ using UnityEngine;
 using Beem.SSO;
 using UnityEngine.UI;
 
+/// <summary>
+/// Subpnl QRCode notification foe user that QRCode has Saved 
+/// </summary>
 public class SubpnlQRCodeSavedWindow : MonoBehaviour, IBlindView {
     [SerializeField]
     private GameObject ProcessingGO;
