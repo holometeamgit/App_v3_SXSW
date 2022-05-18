@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using NatSuite.Devices;
 using Beem.ARMsg;
 using System.Threading.Tasks;
+using Zenject;
 
 /// <summary>
 /// ARMsgScreenRecorder. Class for recording screen 
@@ -22,23 +23,11 @@ public class ARMsgScreenRecorder : MonoBehaviour {
 
     private string _lastPathVideo;
     private const int MAX_HEIGH = 720;
+    private const int MAX_HEIGH_FOR_BUSINESS = 1920;
     private const int BITRATE = 4000000;
 
     private Coroutine _startingRecordingCoroutine;
-
-    private async void Start() {
-
-        CallBacks.OnStartRecord += StartRecording;
-        CallBacks.OnStopRecord += StopRecord;
-        CallBacks.OnGetVideoRecordedFilePath += GetPathToFile;
-    }
-
-    private void OnDestroy() {
-        CallBacks.OnStartRecord -= StartRecording;
-        CallBacks.OnStopRecord -= StopRecord;
-        CallBacks.OnGetVideoRecordedFilePath -= GetPathToFile;
-        StopRecord();
-    }
+    BusinessProfileManager _businessProfileManager;
 
     /// <summary>
     /// Start recording screen
@@ -63,6 +52,18 @@ public class ARMsgScreenRecorder : MonoBehaviour {
         recorder?.Dispose();
     }
 
+    [Inject]
+    public void Constructor(BusinessProfileManager businessProfileManager) {
+        _businessProfileManager = businessProfileManager;
+    }
+
+    private async void Start() {
+
+        CallBacks.OnStartRecord += StartRecording;
+        CallBacks.OnStopRecord += StopRecord;
+        CallBacks.OnGetVideoRecordedFilePath += GetPathToFile;
+    }
+
     private void OnRecordComplete(string path) {
         Application.targetFrameRate = ApplicationSettingsHandler.TARGET_FRAAME_RATE;
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
@@ -78,11 +79,20 @@ public class ARMsgScreenRecorder : MonoBehaviour {
         return _lastPathVideo;
     }
 
+    private void OnDestroy() {
+        CallBacks.OnStartRecord -= StartRecording;
+        CallBacks.OnStopRecord -= StopRecord;
+        CallBacks.OnGetVideoRecordedFilePath -= GetPathToFile;
+        StopRecord();
+    }
+
     private IEnumerator StartingRecording() {
         var clock = new RealtimeClock();
         int width;
         int heigh;
-        AgoraSharedVideoConfig.GetResolution(screenWidth: Screen.width, screenHeigh: Screen.height, out width, out heigh, maxHeigh: MAX_HEIGH);
+        AgoraSharedVideoConfig.GetResolution(screenWidth: Screen.width, screenHeigh: Screen.height,
+            out width, out heigh,
+            maxHeigh: _businessProfileManager.IsBusinessProfile() ? MAX_HEIGH_FOR_BUSINESS : MAX_HEIGH);
         Application.targetFrameRate = AgoraSharedVideoConfig.FrameRate;
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(true);
         yield return null;
@@ -91,18 +101,15 @@ public class ARMsgScreenRecorder : MonoBehaviour {
         // Get the device
         audioDevice = deviceQuery.current as AudioDevice;
 
-        HelperFunctions.DevLog("vide record width " + width + " heigh " + heigh);
-
         // Create recorder
         recorder = new MP4Recorder(width, heigh,
             framerate: AgoraSharedVideoConfig.FrameRate,
             sampleRate: audioDevice.sampleRate, channelCount: audioDevice.channelCount,
             recordingCallback: OnRecordComplete,
             bitrate: BITRATE);
-        yield return null;
+
         // Stream media samples
         cameraInput = new CameraInput(recorder, clock, _camera);
-        yield return null;
         audioDevice.StartRunning((sampleBuffer, timestamp) => recorder.CommitSamples(sampleBuffer, clock.Timestamp));
     }
 
