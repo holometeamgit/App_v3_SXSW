@@ -46,6 +46,8 @@ public class PostMultipartRequester : WebRequester {
 
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, uploadProgress: uploadProgress, maxTimesWait: MAX_TIMES_BEFORE_POST_MULTIPART_STOP_REQUEST).ContinueWith((taskWebRequestData) => {
+            var result = taskWebRequestData.Result;
+            (responseDelegate as ResponseDelegate)?.Invoke(result.Code, result.Body);
         }, taskScheduler);
     }
 

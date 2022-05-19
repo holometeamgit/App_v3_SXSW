@@ -25,6 +25,8 @@ public class PutWebRequester : WebRequester {
 
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, uploadProgress: uploadProgress).ContinueWith((taskWebRequestData) => {
+            var result = taskWebRequestData.Result;
+            (responseDelegate as ResponseDelegate)?.Invoke(result.Code, result.Body);
         }, taskScheduler);
     }
 

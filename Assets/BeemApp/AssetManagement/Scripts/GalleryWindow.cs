@@ -21,18 +21,17 @@ public class GalleryWindow : MonoBehaviour {
     private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
 
     private UserWebManager _userWebManager;
+    private BusinessProfileManager _businessProfileManager;
     private WebRequestHandler _webRequestHandler;
 
-    private GetAllARMessageController _galleryController;
+    private GetAllARMsgController _galleryController;
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager) {
-        _webRequestHandler = webRequestHandler;
+    public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager, BusinessProfileManager businessProfileManager) {
         _userWebManager = userWebManager;
-    }
-
-    private void Start() {
-        _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, _webRequestHandler);
+        _businessProfileManager = businessProfileManager;
+        _webRequestHandler = webRequestHandler;
+        _galleryController = new GetAllARMsgController(_arMsgAPIScriptableObject, webRequestHandler);
     }
 
     private void OnEnable() {
@@ -63,7 +62,7 @@ public class GalleryWindow : MonoBehaviour {
             List<ScrollItemData> contentDatas = new List<ScrollItemData>();
             for (int i = 0; i < arMsgJSON.results.Count; i++) {
                 ARMsgScrollItem aRMsgScrollItem = new ARMsgScrollItem(i);
-                aRMsgScrollItem.Init(arMsgJSON.results[i], _userWebManager, GalleryNotificationController.IsNew(arMsgJSON.results[i]));
+                aRMsgScrollItem.Init(arMsgJSON.results[i], _userWebManager, _businessProfileManager, _webRequestHandler, GalleryNotificationController.IsNew(arMsgJSON.results[i]));
                 contentDatas.Add(aRMsgScrollItem);
             }
 

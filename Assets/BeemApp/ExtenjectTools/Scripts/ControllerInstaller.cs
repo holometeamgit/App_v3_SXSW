@@ -21,5 +21,9 @@ public class ControllerInstaller : MonoInstaller {
         Container.BindInterfacesAndSelfTo<AgoraRequests>().FromComponentInHierarchy(false).AsSingle();
         Container.BindInterfacesAndSelfTo<IAPController>().FromComponentInHierarchy(false).AsSingle();
         Container.BindInterfacesAndSelfTo<PurchasesSaveManager>().FromComponentInHierarchy(false).AsSingle();
+
+        Container.BindInterfacesAndSelfTo<BusinessLogoController>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<BusinessProfileManager>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<QRCodeGenerator>().AsSingle().NonLazy();
     }
 }

@@ -23,6 +23,7 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
     public static Action OnBroadcastFinished = delegate { };
     public static Action<WebRequestError> OnShowError;
     public static Action OnHide;
+    public static Action OnHideWithDrag;
 
     private IData _data;
 
@@ -43,6 +44,7 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
         OnShow += Show;
         OnShowError += ShowError;
         OnHide += Hide;
+        OnHideWithDrag += HideWithDrag;
         OnBroadcastFinished += ShowNoLongerLive;
     }
 
@@ -50,6 +52,7 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
         OnShow -= Show;
         OnShowError -= ShowError;
         OnHide -= Hide;
+        OnHideWithDrag -= HideWithDrag;
         OnBroadcastFinished -= ShowNoLongerLive;
     }
 
@@ -119,9 +122,13 @@ public class DeepLinkStreamConstructor : MonoBehaviour {
         }
     }
 
-    private void Hide() {
-        _deepLinkRoomPopup.Hide();
+    private void HideWithDrag() {
         Cancel();
         _popupShowChecker.Cancel();
+    }
+
+    private void Hide() {
+        HideWithDrag();
+        _deepLinkRoomPopup.Hide();
     }
 }

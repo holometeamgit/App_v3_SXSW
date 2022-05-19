@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 public class PnlWarning : MonoBehaviour {
     [SerializeField]
+    GameObject _titleGO;
+
+    [SerializeField]
+    GameObject _titleErrorGO;
+
+    [SerializeField]
     TextMeshProUGUI txtHeader;
+
+    [SerializeField]
+    TextMeshProUGUI txtErrorHeader;
 
     [SerializeField]
     TextMeshProUGUI txtMessage;
@@ -17,18 +26,20 @@ public class PnlWarning : MonoBehaviour {
     [SerializeField]
     Button btnRight;
 
-    [SerializeField]
-    Image imgWarning;
-
     const string DefaultHeader = "Error";
 
     const string DefaultMessage = "An error occurred please try again.";
 
-    private void SetMessages(string header, string message) {
+    private void SetMessages(string header, string message, bool isWarning = false) {
+        _titleGO.SetActive(!isWarning);
+        _titleErrorGO.SetActive(isWarning);
+
         if (header == null || (string.IsNullOrWhiteSpace(header) && header != "")) {
             txtHeader.gameObject.SetActive(false);
+            txtErrorHeader.gameObject.SetActive(false);
         } else {
             txtHeader.text = header == "" ? DefaultHeader : header;
+            txtErrorHeader.text = header == "" ? DefaultHeader : header;
         }
 
         txtMessage.text = message == "" ? DefaultMessage : message;
@@ -45,19 +56,17 @@ public class PnlWarning : MonoBehaviour {
     }
 
     public void ActivateSingleButton(string header = "", string message = "", string buttonText = "Back", UnityAction onBackPress = null, bool isWarning = false) {
-        SetMessages(header, message);
+        SetMessages(header, message, isWarning);
         SetupButton(btnLeft, buttonText, onBackPress);
         btnRight.gameObject.SetActive(false);
         gameObject.SetActive(true);
-        imgWarning.gameObject.SetActive(isWarning);
     }
 
     public void ActivateDoubleButton(string header = "", string message = "", string buttonOneText = "Yes", string buttonTwoText = "No", UnityAction onButtonOnePress = null, UnityAction onButtonTwoPress = null, bool isWarning = false) {
-        SetMessages(header, message);
+        SetMessages(header, message, isWarning);
         SetupButton(btnLeft, buttonOneText, onButtonOnePress);
         SetupButton(btnRight, buttonTwoText, onButtonTwoPress);
         gameObject.SetActive(true);
-        imgWarning.gameObject.SetActive(isWarning);
     }
 
     /// <summary>
@@ -69,6 +78,6 @@ public class PnlWarning : MonoBehaviour {
 
     private void OnDisable() {
         txtHeader.gameObject.SetActive(true);
-        imgWarning.gameObject.SetActive(false);
+        txtErrorHeader.gameObject.SetActive(true);
     }
 }

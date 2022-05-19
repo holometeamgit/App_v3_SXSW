@@ -1,31 +1,20 @@
 using Beem.UI;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
+
 /// <summary>
 /// Delete ARMsg Btn
 /// </summary>
-public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
+public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView, IWebRequestHandlerView, IUserWebManagerView {
     [SerializeField]
     private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
 
     private WebRequestHandler _webRequestHandler;
+    private UserWebManager _userWebManager;
 
     private DeleteARMsgController _deleteARMsgController;
-    private GetAllARMessageController _galleryController;
+    private GetAllARMsgController _galleryController;
 
     private ARMsgJSON.Data currentData;
-
-    [Inject]
-    public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager) {
-        _webRequestHandler = webRequestHandler;
-    }
-
-    private void Start() {
-        _deleteARMsgController = new DeleteARMsgController(_arMsgAPIScriptableObject, _webRequestHandler);
-        _galleryController = new GetAllARMessageController(_arMsgAPIScriptableObject, _webRequestHandler);
-    }
 
     /// <summary>
     /// On Click
@@ -46,9 +35,21 @@ public class DeleteARMsgBtn : MonoBehaviour, IARMsgDataView {
         ARMsgARenaConstructor.OnDeactivatedARena?.Invoke();
         ARenaConstructor.onDeactivate?.Invoke();
         GalleryConstructor.OnShow?.Invoke(data);
+        BlindOptionsConstructor.Hide();
     }
 
     public void Init(ARMsgJSON.Data data) {
         currentData = data;
+    }
+
+    public void Init(WebRequestHandler webRequestHandler) {
+        _webRequestHandler = webRequestHandler;
+        _deleteARMsgController = new DeleteARMsgController(_arMsgAPIScriptableObject, _webRequestHandler);
+        _galleryController = new GetAllARMsgController(_arMsgAPIScriptableObject, _webRequestHandler);
+    }
+
+    public void Init(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
+        gameObject.SetActive(currentData.user == _userWebManager.GetUsername());
     }
 }

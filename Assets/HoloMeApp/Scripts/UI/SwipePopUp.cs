@@ -56,7 +56,6 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         switch (_appearanceSide) {
             case AppearanceSide.Top:
                 deviation = _swipedObjectTransform.offsetMax.y + eventData.delta.y / _canvasScaler.transform.localScale.y;
-                Debug.Log("deviation " + deviation);
                 if (deviation < -MAX_DEVIATION)
                     break;
                 VerticalMoving(eventData, Mathf.Abs(Mathf.Clamp((int)deviation, (int)-MAX_DEVIATION, 0)));
@@ -126,7 +125,6 @@ public class SwipePopUp : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         _swipedObjectTransform.offsetMin = _hideOffsetPosition;
         _canvasGroup.alpha = 0;
         StopAllCoroutines();
-        DeepLinkStreamConstructor.OnHide?.Invoke();
     }
 
     private void Init() {

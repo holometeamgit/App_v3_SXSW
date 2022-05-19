@@ -35,7 +35,7 @@ public class DeepLinkPopup : MonoBehaviour {
     [SerializeField]
     private StreamerCountUpdater _streamerCountUpdater;
     [SerializeField]
-    private SwipePopUp _swipePopUp;
+    private Mover _mover;
 
     private UserWebManager _userWebManager;
 
@@ -122,22 +122,27 @@ public class DeepLinkPopup : MonoBehaviour {
             _streamerCountUpdater.OnCountUpdated += UpdateUserCount;
         }
 
-        _swipePopUp.Show();
+        if (!_mover.IsDragging) {
+            _mover.ChangeState(true);
+            _mover.onEndMoving += OnClose;
+        }
     }
 
     /// <summary>
     /// Hide Popup
     /// </summary>
     public void Hide() {
-        _swipePopUp.onHid += OnClose;
-        _swipePopUp.Hide();
-        _streamerCountUpdater.StopCheck();
-        _streamerCountUpdater.OnCountUpdated -= UpdateUserCount;
+        _mover.ChangeState(false);
     }
 
-    private void OnClose() {
-        _swipePopUp.onHid -= OnClose;
-        gameObject.SetActive(false);
+    private void OnClose(bool status) {
+        if (!status) {
+            _mover.onEndMoving -= OnClose;
+            _streamerCountUpdater.StopCheck();
+            _streamerCountUpdater.OnCountUpdated -= UpdateUserCount;
+            gameObject.SetActive(false);
+            DeepLinkStreamConstructor.OnHideWithDrag?.Invoke();
+        }
     }
 
     private void UpdateUserCount(int personInside) {
