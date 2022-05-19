@@ -9,6 +9,7 @@ using Zenject;
 public class PnlProfile : MonoBehaviour {
     [SerializeField] GameObject InputDataArea;
     [SerializeField] InputFieldController usernameInputField;
+    [SerializeField] InputFieldController phoneInputField;
     [SerializeField] int userNameLimit;
 
     [SerializeField] List<GameObject> backBtns;
@@ -43,6 +44,10 @@ public class PnlProfile : MonoBehaviour {
         }
     }
 
+    public void SendSms() {
+        CallBacks.onSignInPhone?.Invoke(phoneInputField.text, 60000);
+    }
+
     /// <summary>
     /// Switch profile to welcome
     /// </summary>
@@ -68,11 +73,11 @@ public class PnlProfile : MonoBehaviour {
 
     private void UserInfoLoadedCallBack() {
         usernameInputField.text = string.IsNullOrWhiteSpace(GetUserName) ? _userWebManager.GetUsername() ?? "" : usernameInputField.text;
-        if (_userWebManager.GetUsername() == null) {
-            InputDataArea.SetActive(true);
-        } else {
-            SwitchToMainMenu();
-        }
+        //if (_userWebManager.GetUsername() == null) {
+        InputDataArea.SetActive(true);
+        //} else {
+        //    SwitchToMainMenu();
+        //}
     }
 
     private void ErrorUserInfoLoadedCallBack() {
