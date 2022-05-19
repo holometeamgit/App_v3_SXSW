@@ -12,6 +12,8 @@ namespace Beem.SSO {
     /// Sign Up with email
     /// </summary>
     public class SignUpController : AbstractFirebaseController {
+        public SignUpController(FirebaseAuth auth) : base(auth) {
+        }
 
         private void SignUp(string profileName, string email, string password, string repeatPassword) {
             if (!EmailChecker.IsEmail(email))

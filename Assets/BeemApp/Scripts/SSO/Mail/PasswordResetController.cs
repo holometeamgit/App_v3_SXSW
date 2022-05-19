@@ -12,6 +12,9 @@ namespace Beem.SSO {
     /// Password reset
     /// </summary>
     public class PasswordResetController : AbstractFirebaseController {
+        public PasswordResetController(FirebaseAuth auth) : base(auth) {
+        }
+
         protected override void Subscribe() {
             CallBacks.onForgotAccount += ResetPassword;
         }

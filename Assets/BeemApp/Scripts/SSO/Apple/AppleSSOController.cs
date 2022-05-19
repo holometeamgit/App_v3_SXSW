@@ -23,6 +23,9 @@ namespace Beem.SSO {
 
         private IAppleAuthManager _appleAuthManager;
 
+        public AppleSSOController(FirebaseAuth auth) : base(auth) {
+        }
+
         protected override void Subscribe() {
             CallBacks.onSignInApple += CallSignInWithApple;
         }

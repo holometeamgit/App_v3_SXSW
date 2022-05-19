@@ -13,9 +13,6 @@ namespace Beem.SSO {
     /// Controller for Auth
     /// </summary>
     public class AuthController : MonoBehaviour {
-        [Header("Controllers")]
-        [SerializeField]
-        private List<AbstractFirebaseController> abstractFirebaseControllers = new List<AbstractFirebaseController>();
         private FirebaseAuth _auth;
         private BackEndTokenController _backEndTokenController;
 
@@ -62,9 +59,12 @@ namespace Beem.SSO {
 
         private void InitializeFirebase() {
             _auth = FirebaseAuth.DefaultInstance;
-            foreach (AbstractFirebaseController item in abstractFirebaseControllers) {
-                item.InitializeFirebase(_auth);
-            }
+            var signInController = new SignInController(_auth);
+            var signUpController = new SignUpController(_auth);
+            var googleSSOController = new GoogleSSOController(_auth);
+            var appleSSOController = new AppleSSOController(_auth);
+            var dmailVerificationController = new EmailVerificationController(_auth);
+            var phoneSSOController = new SignInPhoneController(_auth);
             HelperFunctions.DevLog("Firebase Init Success", "Firebase");
         }
 
