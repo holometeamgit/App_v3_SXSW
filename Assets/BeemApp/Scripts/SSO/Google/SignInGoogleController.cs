@@ -9,13 +9,13 @@ namespace Beem.SSO {
     /// <summary>
     /// Sign In and Sign Up via Google
     /// </summary>
-    public class GoogleSSOController : AbstractFirebaseController {
+    public class SignInGoogleController : AbstractFirebaseController {
 
         //private GoogleSignIn googleSignIn;
         private const string WEB_CLIENT_ID = "233061171188-67n8vv3f0kvnk7fhujm98kmthvc4mqtq.apps.googleusercontent.com";
         private GoogleSignInConfiguration configuration;
 
-        public GoogleSSOController(FirebaseAuth auth) : base(auth) {
+        public SignInGoogleController(FirebaseAuth auth) : base(auth) {
         }
 
         protected override void Subscribe() {

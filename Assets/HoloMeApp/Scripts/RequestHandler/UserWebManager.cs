@@ -54,6 +54,7 @@ public class UserWebManager : MonoBehaviour {
     }
 
     public void UpdateUserData(string userName = null,
+        string phoneNumber = null,
         string email = null,
         string first_name = null,
         string last_name = null,
@@ -61,7 +62,7 @@ public class UserWebManager : MonoBehaviour {
         string profile_picture_s3_url = null) {
 
         LoadUserInfo(() =>
-       UpdateUserDataAfterLoadUserInfo(userName, email, first_name, last_name,
+       UpdateUserDataAfterLoadUserInfo(userName, phoneNumber, email, first_name, last_name,
            bio, profile_picture_s3_url));
     }
 
@@ -148,12 +149,13 @@ public class UserWebManager : MonoBehaviour {
         return userData.email;
     }
 
-    private void UpdateUserDataAfterLoadUserInfo(string userName, string email,
+    private void UpdateUserDataAfterLoadUserInfo(string userName, string phoneNumber, string email,
         string first_name, string last_name, string bio, string profile_picture_s3_url) {
         if (userData == null)
             userData = new UserJsonData();
 
         userData.username = userName ?? userData.username;
+        userData.phoneNumber = phoneNumber ?? userData.phoneNumber;
         userData.email = email ?? userData.email;
         userData.first_name = first_name ?? userData.first_name;
         userData.last_name = last_name ?? userData.last_name;

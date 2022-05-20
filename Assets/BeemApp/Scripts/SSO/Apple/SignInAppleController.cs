@@ -19,11 +19,11 @@ namespace Beem.SSO {
     /// <summary>
     /// Sign In and Sign Up via Apple
     /// </summary>
-    public class AppleSSOController : AbstractFirebaseController {
+    public class SignInAppleController : AbstractFirebaseController {
 
         private IAppleAuthManager _appleAuthManager;
 
-        public AppleSSOController(FirebaseAuth auth) : base(auth) {
+        public SignInAppleController(FirebaseAuth auth) : base(auth) {
         }
 
         protected override void Subscribe() {

@@ -6,6 +6,7 @@
         Google,
         Facebook,
         SSO,
-        Email
+        Email,
+        Phone
     }
 }

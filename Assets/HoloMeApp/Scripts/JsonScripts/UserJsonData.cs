@@ -4,10 +4,10 @@ using UnityEngine;
 using System;
 
 [Serializable]
-public class UserJsonData
-{
+public class UserJsonData {
     public long pk;
     public string username;
+    public string phoneNumber;
     public string email;
     public string first_name;
     public string last_name;

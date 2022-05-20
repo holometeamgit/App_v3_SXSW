@@ -5,11 +5,19 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using Beem.SSO;
 using Zenject;
+using System;
 
 public class PnlProfile : MonoBehaviour {
     [SerializeField] GameObject InputDataArea;
-    [SerializeField] InputFieldController usernameInputField;
-    [SerializeField] InputFieldController phoneInputField;
+    [SerializeField]
+    private InputFieldController _usernameInputField;
+    [SerializeField]
+    private InputFieldController _phoneInputField;
+    [SerializeField]
+    private GameObject _smsBtn;
+    [SerializeField]
+    private InputFieldController _verificationCodeInputField;
+
     [SerializeField] int userNameLimit;
 
     [SerializeField] List<GameObject> backBtns;
@@ -31,12 +39,15 @@ public class PnlProfile : MonoBehaviour {
 
     private string GetUserName {
         get {
-            string username = RegexAlphaNumeric.RegexResult(usernameInputField?.text);
+            string username = RegexAlphaNumeric.RegexResult(_usernameInputField?.text);
             username = username.ToLower();
             return username;
         }
     }
 
+    /// <summary>
+    /// Choose Username
+    /// </summary>
     public void ChooseUsername() {
         if (LocalDataVerification(GetUserName)) {
             _userWebManager.UpdateUserData(userName: GetUserName);
@@ -44,8 +55,43 @@ public class PnlProfile : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Send Sms
+    /// </summary>
     public void SendSms() {
-        CallBacks.onSignInPhone?.Invoke(phoneInputField.text, 60000);
+        if (LocalVerificationCode(_phoneInputField)) {
+            CallBacks.onVerifiedPhone?.Invoke(_phoneInputField.text);
+            _smsBtn.SetActive(false);
+            _verificationCodeInputField.gameObject.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// Continue
+    /// </summary>
+    public void Continue() {
+#if UNITY_EDITOR
+        ChooseUsername();
+#else
+    SendVerificationCode();
+#endif
+    }
+
+    /// <summary>
+    /// Send VerificationCode
+    /// </summary>
+    public void SendVerificationCode() {
+        if (LocalVerificationCode(_verificationCodeInputField)) {
+            CallBacks.onSignInPhone?.Invoke(_verificationCodeInputField.text);
+        }
+    }
+
+    private bool LocalVerificationCode(InputFieldController inputField) {
+        if (string.IsNullOrWhiteSpace(inputField.text)) {
+            inputField.ShowWarning("This field is compulsory");
+        }
+
+        return !string.IsNullOrWhiteSpace(inputField.text);
     }
 
     /// <summary>
@@ -67,12 +113,12 @@ public class PnlProfile : MonoBehaviour {
 
 
     private void Start() {
-        usernameInputField.characterLimit = userNameLimit;
+        _usernameInputField.characterLimit = userNameLimit;
         _userWebManager.LoadUserInfo();
     }
 
     private void UserInfoLoadedCallBack() {
-        usernameInputField.text = string.IsNullOrWhiteSpace(GetUserName) ? _userWebManager.GetUsername() ?? "" : usernameInputField.text;
+        _usernameInputField.text = string.IsNullOrWhiteSpace(GetUserName) ? _userWebManager.GetUsername() ?? "" : _usernameInputField.text;
         //if (_userWebManager.GetUsername() == null) {
         InputDataArea.SetActive(true);
         //} else {
@@ -108,40 +154,40 @@ public class PnlProfile : MonoBehaviour {
             badRequestData.first_name.Count == 0 &&
             badRequestData.last_name.Count == 0 &&
             string.IsNullOrEmpty(badRequestData.detail))) {
-            usernameInputField.ShowWarning("Server Error " + badRequestData.code.ToString());
+            _usernameInputField.ShowWarning("Server Error " + badRequestData.code.ToString());
             return;
         }
 
         if (!string.IsNullOrEmpty(badRequestData.username)) {
-            usernameInputField.ShowWarning(badRequestData.username);
+            _usernameInputField.ShowWarning(badRequestData.username);
         }
 
         if (!string.IsNullOrEmpty(badRequestData.detail))
-            usernameInputField.ShowWarning(badRequestData.detail);
+            _usernameInputField.ShowWarning(badRequestData.detail);
     }
 
     private void ClearInputFieldData() {
-        usernameInputField.text = "";
+        _usernameInputField.text = "";
     }
 
     private bool LocalDataVerification(string text) {
         if (string.IsNullOrWhiteSpace(text))
-            usernameInputField.ShowWarning("This field is compulsory");
+            _usernameInputField.ShowWarning("This field is compulsory");
         else if (text.Length > 20)
-            usernameInputField.ShowWarning("Username must be 20 characters or less");
+            _usernameInputField.ShowWarning("Username must be 20 characters or less");
 
         return !string.IsNullOrWhiteSpace(text) &&
-            usernameInputField.text.Length <= 20;
+            _usernameInputField.text.Length <= 20;
     }
 
     private void ShowMsgForDeletedUser() {
-        usernameInputField.MobileInputField.gameObject.SetActive(false);
+        _usernameInputField.MobileInputField.gameObject.SetActive(false);
         WarningConstructor.ActivateDoubleButton(null,
             string.Format("This account has been deleted, contact support to reinstate. "),
             "Support",
             "Cancel",
-            () => { externalLinkRedirector.Redirect(); usernameInputField.MobileInputField.gameObject.SetActive(true); },
-            () => { usernameInputField.MobileInputField.gameObject.SetActive(true); }
+            () => { externalLinkRedirector.Redirect(); _usernameInputField.MobileInputField.gameObject.SetActive(true); },
+            () => { _usernameInputField.MobileInputField.gameObject.SetActive(true); }
         );
     }
 
@@ -151,12 +197,28 @@ public class PnlProfile : MonoBehaviour {
         _userWebManager.OnUserInfoUploaded += UpdateUserDataCallBack;
         _userWebManager.OnErrorUserUploaded += ErrorUpdateUserDataCallBack;
 
+        CallBacks.onFail += OnFailed;
+        CallBacks.onFirebaseSignInSuccess += onSuccess;
+
         InputDataArea.SetActive(false);
         _userWebManager.LoadUserInfo();
 
+        _smsBtn.SetActive(true);
+        _verificationCodeInputField.gameObject.SetActive(false);
         toggleEmailReceive.isOn = false;
         toggleEmailReceive.enabled = false;
         toggleEmailReceive.enabled = true;
+    }
+
+    private void onSuccess(LogInType obj) {
+        ChooseUsername();
+    }
+
+    private void OnFailed(string obj) {
+        HelperFunctions.DevLogError(obj);
+        if (obj.Contains("InvalidCode")) {
+            _phoneInputField.ShowWarning("Verification Code is wrong");
+        }
     }
 
     private void OnDisable() {
@@ -164,6 +226,9 @@ public class PnlProfile : MonoBehaviour {
         _userWebManager.OnErrorUserInfoLoaded -= ErrorUserInfoLoadedCallBack;
         _userWebManager.OnUserInfoUploaded -= UpdateUserDataCallBack;
         _userWebManager.OnErrorUserUploaded -= ErrorUpdateUserDataCallBack;
+
+        CallBacks.onFail -= OnFailed;
+        CallBacks.onFirebaseSignInSuccess -= onSuccess;
 
         ClearInputFieldData();
 

@@ -61,10 +61,11 @@ namespace Beem.SSO {
             _auth = FirebaseAuth.DefaultInstance;
             var signInController = new SignInController(_auth);
             var signUpController = new SignUpController(_auth);
-            var googleSSOController = new GoogleSSOController(_auth);
-            var appleSSOController = new AppleSSOController(_auth);
-            var dmailVerificationController = new EmailVerificationController(_auth);
-            var phoneSSOController = new SignInPhoneController(_auth);
+            var signInGoogleController = new SignInGoogleController(_auth);
+            var signInAppleController = new SignInAppleController(_auth);
+            var emailVerificationController = new EmailVerificationController(_auth);
+            var phoneVerificationController = new PhoneVerificationController(_auth);
+            var signInPhoneConroller = new SignInPhoneController(_auth);
             HelperFunctions.DevLog("Firebase Init Success", "Firebase");
         }
 
