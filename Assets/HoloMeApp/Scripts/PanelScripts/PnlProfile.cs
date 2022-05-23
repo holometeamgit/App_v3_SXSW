@@ -6,17 +6,27 @@ using UnityEngine.UI;
 using Beem.SSO;
 using Zenject;
 using System;
+using TMPro;
 
 public class PnlProfile : MonoBehaviour {
     [SerializeField] GameObject InputDataArea;
     [SerializeField]
     private InputFieldController _usernameInputField;
+
+    [Space]
     [SerializeField]
     private InputFieldController _phoneInputField;
     [SerializeField]
-    private GameObject _smsBtn;
+    private GameObject _smsWarning;
+    [SerializeField]
+    private GameObject _sendSmsBtn;
+    [SerializeField]
+    private GameObject _resendSmsBtn;
+    [SerializeField]
+    private TMP_Text _warningSmsTxt;
     [SerializeField]
     private InputFieldController _verificationCodeInputField;
+    [Space]
 
     [SerializeField] int userNameLimit;
 
@@ -27,6 +37,7 @@ public class PnlProfile : MonoBehaviour {
     [SerializeField]
     private Toggle toggleEmailReceive;
 
+    private const string SMS_TIMER_TEXT = "We've sent you a confirmation code via SMS\nResend code in {0:D1}:{1:D2}";
 
     private AccountManager _accountManager;
     private UserWebManager _userWebManager;
@@ -61,8 +72,11 @@ public class PnlProfile : MonoBehaviour {
     public void SendSms() {
         if (LocalVerificationCode(_phoneInputField)) {
             CallBacks.onVerifiedPhone?.Invoke(_phoneInputField.text);
-            _smsBtn.SetActive(false);
+            _sendSmsBtn.SetActive(false);
             _verificationCodeInputField.gameObject.SetActive(true);
+            _smsWarning.SetActive(true);
+            _warningSmsTxt.gameObject.SetActive(true);
+            _resendSmsBtn.SetActive(false);
         }
     }
 
@@ -203,7 +217,7 @@ public class PnlProfile : MonoBehaviour {
         InputDataArea.SetActive(false);
         _userWebManager.LoadUserInfo();
 
-        _smsBtn.SetActive(true);
+        _sendSmsBtn.SetActive(true);
         _verificationCodeInputField.gameObject.SetActive(false);
         toggleEmailReceive.isOn = false;
         toggleEmailReceive.enabled = false;
