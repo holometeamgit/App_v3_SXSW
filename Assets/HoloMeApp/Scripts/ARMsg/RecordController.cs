@@ -10,6 +10,7 @@ namespace Beem.ARMsg {
     /// </summary>
     public class RecordController : MonoBehaviour {
         private UserWebManager _userWebManager;
+        private BusinessProfileManager _businessProfileManager;
 
         private List<int> _timers = new List<int> { 15, 30, 45, 60, 10 };
         private int _currentTimerID = 0;
@@ -17,8 +18,9 @@ namespace Beem.ARMsg {
         private const string SUPER_USER_CAPABILITY = "PC__AR_BEEM_UP_TO_5_MINS";
 
         [Inject]
-        public void Construct(UserWebManager userWebManager) {
+        public void Construct(UserWebManager userWebManager, BusinessProfileManager businessProfileManager) {
             _userWebManager = userWebManager;
+            _businessProfileManager = businessProfileManager;
         }
 
         /// <summary>
@@ -45,8 +47,9 @@ namespace Beem.ARMsg {
 
         private void CheckForSuperUserTimer() {
             var capability = _userWebManager.GetCapabilities();
+            var isBusinessAccount = _businessProfileManager.IsBusinessProfile();
 
-            if (capability != null && capability.Contains(SUPER_USER_CAPABILITY))
+            if ((capability != null && capability.Contains(SUPER_USER_CAPABILITY)) || isBusinessAccount)
                 CallBacks.onRecordTimerSet?.Invoke(TIME_FOR_SUPER_USER);
             else
                 CallBacks.onRecordTimerSet?.Invoke(_timers[_currentTimerID]);
