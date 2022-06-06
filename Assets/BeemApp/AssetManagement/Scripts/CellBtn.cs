@@ -24,7 +24,6 @@ public class CellBtn : MonoBehaviour,
     private WebRequestHandler _webRequestHandler;
     private BusinessProfileManager _businessProfileManager;
 
-    private State _state;
     private Coroutine _tapTimerCoroutine;
 
     private const string TOPIC = "gallery_{0}";
@@ -48,6 +47,9 @@ public class CellBtn : MonoBehaviour,
         _businessProfileManager = businessProfileManager;
     }
 
+    /// <summary>
+    /// OpenUserARMsg
+    /// </summary>
     public void OpenUserARMsg() {
         OpenARMsg();
     }
@@ -64,13 +66,8 @@ public class CellBtn : MonoBehaviour,
         }
     }
 
-
-
     public void OnPointerUp(PointerEventData eventData) {
         StopTimer();
-        _state = State.Default;
-
-
     }
 
     private bool CanShowPushNotificationPopup {
@@ -132,9 +129,7 @@ public class CellBtn : MonoBehaviour,
     }
 
     private IEnumerator TapTimer() {
-        _state = State.Tap;
         yield return new WaitForSeconds(LONG_CLICK_TIME);
-        _state = State.Default;
         _businessProfileManager.GetMyData(SuccessedBusinessProfile, FailedBusinessProfile);
     }
 }
