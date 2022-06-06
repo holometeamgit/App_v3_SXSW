@@ -20,11 +20,6 @@ namespace Beem.ARMsg {
         [Inject]
         public void Construct(UserWebManager userWebManager, BusinessProfileManager businessProfileManager) {
             _userWebManager = userWebManager;
-        }
-
-
-        [Inject]
-        public void Constructor(BusinessProfileManager businessProfileManager) {
             _businessProfileManager = businessProfileManager;
         }
 
