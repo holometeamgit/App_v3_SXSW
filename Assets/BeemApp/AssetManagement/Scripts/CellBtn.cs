@@ -5,11 +5,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 /// <summary>
 /// Btn for cell in AssetManagement
 /// </summary>
-public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManagerView, IWebRequestHandlerView, IBusinessProfileManagerView, IPointerDownHandler, IPointerUpHandler {
+public class CellBtn : MonoBehaviour,
+    IARMsgDataView, IUserWebManagerView, IWebRequestHandlerView,
+    IBusinessProfileManagerView,
+    IPointerDownHandler, IPointerUpHandler {
     private enum State {
         Default,
         Tap
@@ -20,22 +24,12 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManagerView, IWebR
     private WebRequestHandler _webRequestHandler;
     private BusinessProfileManager _businessProfileManager;
 
-    private State _state;
     private Coroutine _tapTimerCoroutine;
 
     private const string TOPIC = "gallery_{0}";
     private const float LONG_CLICK_TIME = 0.314f;
 
     private const string BUSINESS_OPTIONS_VIEW = "BusinessOptionsView";
-
-    private bool CanShowPushNotificationPopup {
-        get {
-            return PlayerPrefs.GetInt("PushNotificationForARMessage" + _userWebManager?.GetUsername(), 1) == 1;
-        }
-        set {
-            PlayerPrefs.SetInt("PushNotificationForARMessage" + _userWebManager?.GetUsername(), value ? 1 : 0);
-        }
-    }
 
     public void Init(ARMsgJSON.Data arMsgData) {
         _arMsgData = arMsgData;
@@ -53,11 +47,10 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManagerView, IWebR
         _businessProfileManager = businessProfileManager;
     }
 
-    private void SuccessedBusinessProfile(BusinessProfileJsonData businessProfileData) {
-        OpenBusinessOptions();
-    }
-
-    private void FailedBusinessProfile(WebRequestError error) {
+    /// <summary>
+    /// OpenUserARMsg
+    /// </summary>
+    public void OpenUserARMsg() {
         OpenARMsg();
     }
 
@@ -69,16 +62,29 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManagerView, IWebR
                 OpenNotificationPopup();
             }
         } else if (_arMsgData.GetStatus == ARMsgJSON.Data.COMPETED_STATUS) {
-            StartCoroutine(TapTimer());
+            _tapTimerCoroutine = StartCoroutine(TapTimer());
         }
     }
 
     public void OnPointerUp(PointerEventData eventData) {
-        if (_state == State.Tap)
-            OpenARMsg();
-
         StopTimer();
-        _state = State.Default;
+    }
+
+    private bool CanShowPushNotificationPopup {
+        get {
+            return PlayerPrefs.GetInt("PushNotificationForARMessage" + _userWebManager?.GetUsername(), 1) == 1;
+        }
+        set {
+            PlayerPrefs.SetInt("PushNotificationForARMessage" + _userWebManager?.GetUsername(), value ? 1 : 0);
+        }
+    }
+
+    private void SuccessedBusinessProfile(BusinessProfileJsonData businessProfileData) {
+        OpenBusinessOptions();
+    }
+
+    private void FailedBusinessProfile(WebRequestError error) {
+        OpenARMsg();
     }
 
     private void OpenARMsg() {
@@ -123,9 +129,7 @@ public class CellBtn : MonoBehaviour, IARMsgDataView, IUserWebManagerView, IWebR
     }
 
     private IEnumerator TapTimer() {
-        _state = State.Tap;
         yield return new WaitForSeconds(LONG_CLICK_TIME);
-        _state = State.Default;
         _businessProfileManager.GetMyData(SuccessedBusinessProfile, FailedBusinessProfile);
     }
 }
