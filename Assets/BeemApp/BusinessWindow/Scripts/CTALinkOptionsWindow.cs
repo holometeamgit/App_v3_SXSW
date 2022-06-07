@@ -127,7 +127,9 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
         };
 
         _postARMsgExtDataController.PostARMsgExtDataById(_data.id, extContentData,
-            () => { CallBacks.onUpdatedCTA?.Invoke(); _lastCallobjects = null; },
+            () => {
+                CallBacks.onUpdatedCTA?.Invoke(); _lastCallobjects = null;
+                _data.ext_content_data[0] = extContentData; },
             _ => ShowError());
     }
 
