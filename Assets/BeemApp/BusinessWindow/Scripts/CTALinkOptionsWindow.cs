@@ -65,8 +65,15 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
         }
 
         if (_data != null && _data.ext_content_data != null) {
-            _ctaLabel.UpdateText(_data.ext_content_data[0].cta_label);
-            _ctaUrl.UpdateText(_data.ext_content_data[0].cta_url);
+            if (_data.ext_content_data.Count == 0) {
+                _ctaLabel.UpdateText("");
+                _ctaUrl.UpdateText("");
+            } else {
+                _ctaLabel.UpdateText(_data.ext_content_data[0].cta_label);
+                _ctaUrl.UpdateText(_data.ext_content_data[0].cta_url);
+            }
+
+
         }
 
         CheckText();
@@ -76,7 +83,7 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
     }
 
     private void ShowWarning(string text) {
-        _warning.SetActive(!string.IsNullOrEmpty(text));
+    //    _warning.SetActive(!string.IsNullOrEmpty(text));
 
         _warningText.text = text;
     }

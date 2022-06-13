@@ -18,7 +18,6 @@ public class QRCodeGenerator {
 
     private Texture2D _storeEncoding;
     private Texture2D _boardingTexture;
-    private Texture2D _logoTexture;
 
     private const int WIDTH = 256;
     private const int HEIGHT = 256;
@@ -31,10 +30,6 @@ public class QRCodeGenerator {
         var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         Addressables.LoadAssetAsync<Texture2D>("QRCodeBoard").Task.ContinueWith(task => {
             _boardingTexture = task.Result;
-        }, taskScheduler);
-
-        Addressables.LoadAssetAsync<Texture2D>("QRCodeLogo").Task.ContinueWith(task => {
-            _logoTexture = task.Result;
         }, taskScheduler);
     }
 
@@ -70,7 +65,6 @@ public class QRCodeGenerator {
 
         Color32[] _boardingColors = _boardingTexture.GetPixels32();
 
-        Color32[] _logoColors = _logoTexture.GetPixels32();
         Color32 whiteColor = new Color32(255, 255, 255, 255);
         Color32[] result = new Color32[widthQRCodeTexture * heightQRCodeTexture];
 
@@ -83,9 +77,6 @@ public class QRCodeGenerator {
                     if(_boardingColors[id].a < 255) {
                         result[id] = new Color32(0, 0, 0, _boardingColors[id].a);
                     }
-                }
-                if (_logoColors[id].a > 100) {
-                    result[id] = _logoColors[id];
                 }
             }
         }
