@@ -6,7 +6,7 @@ public class BusinessProfileJsonData {
     public string location;
     public string mobile_splash;
     public string xlarge_splash;
-    public string cta;
+    public string cta_url;
     public string cta_label;
     public string logo;
 }

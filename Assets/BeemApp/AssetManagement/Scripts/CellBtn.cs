@@ -62,7 +62,11 @@ public class CellBtn : MonoBehaviour,
                 OpenNotificationPopup();
             }
         } else if (_arMsgData.GetStatus == ARMsgJSON.Data.COMPETED_STATUS) {
-            _tapTimerCoroutine = StartCoroutine(TapTimer());
+            if (_arMsgData.ext_content_data.Count == 0) {
+                OpenARMsg();
+            } else {
+                _tapTimerCoroutine = StartCoroutine(TapTimer());
+            }
         }
     }
 
