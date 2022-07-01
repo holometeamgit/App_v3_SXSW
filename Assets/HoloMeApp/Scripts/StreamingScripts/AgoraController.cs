@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -75,8 +76,16 @@ public class AgoraController : MonoBehaviour {
     //{
     //    print("OnUserEnableVideoHandler called");
     //}
-
+    
+    public bool IsExternalVideoSource;
+    private Texture2D _texture;
+    private Rect _rect;
+    
     public void Start() {
+        _rect = new Rect(0, 0, Screen.width, Screen.height);
+        _texture = new Texture2D((int)_rect.width, (int)_rect.height,
+            TextureFormat.BGRA32, false);
+        
         LoadEngine(AppId);
         frameRate = 30;
         agoraRTMChatController.Init(AppId);
@@ -153,7 +162,17 @@ public class AgoraController : MonoBehaviour {
         if (EnableVideoPlayback() == 0) {
             if (iRtcEngine.StartPreview() == 0) {
                 HelperFunctions.DevLog("Agora Preview Started");
-                if (iRtcEngine.EnableLocalVideo(true) == 0) {
+                if (IsExternalVideoSource)
+                {
+                    if (iRtcEngine.SetExternalVideoSource(true, false) == 0)
+                    {
+                        _rect = new Rect(0, 0, Screen.width, Screen.height);
+                        _texture = new Texture2D((int)_rect.width, (int)_rect.height,
+                            TextureFormat.BGRA32, false);
+                    }
+                }
+
+                else if (iRtcEngine.EnableLocalVideo(true) == 0) {
                     VideoIsReady = true;
                 }
             } else {
@@ -228,7 +247,48 @@ public class AgoraController : MonoBehaviour {
             HelperFunctions.DevLogError(e.Message);
         }
     }
+    
+    private void Update()
+    {
+        if (IsExternalVideoSource && IsChannelCreator)
+        {
+            StartCoroutine(ShareScreenRoutine());
+        }
+    }
+    
+    private IEnumerator ShareScreenRoutine()
+    {
+        yield return new WaitForEndOfFrame();
+        
+        _texture.ReadPixels(_rect, 0, 0);
+        _texture.Apply();
+        
+        var bytes = _texture.GetRawTextureData();
+        var size = Marshal.SizeOf(bytes[0]) * bytes.Length;
+        var rtc = IRtcEngine.QueryEngine();
 
+        if (rtc == null)
+        {
+            yield break;
+        }
+        
+        var externalVideoFrame = new ExternalVideoFrame
+        {
+            type = ExternalVideoFrame.VIDEO_BUFFER_TYPE.VIDEO_BUFFER_RAW_DATA,
+            format = ExternalVideoFrame.VIDEO_PIXEL_FORMAT.VIDEO_PIXEL_BGRA,
+            buffer = bytes,
+            stride = (int)_rect.width,
+            height = (int)_rect.height,
+            cropLeft = 10,
+            cropTop = 10,
+            cropRight = 10,
+            cropBottom = 10,
+            rotation = 180,
+            timestamp = System.DateTime.Now.Ticks / 10000
+        };
+        
+        var a = rtc.PushVideoFrame(externalVideoFrame);
+    }
     /// <summary>
     /// Send viewer count for live stream, creator only
     /// </summary>
