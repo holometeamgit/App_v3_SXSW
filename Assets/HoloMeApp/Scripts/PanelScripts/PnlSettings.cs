@@ -26,6 +26,8 @@ public class PnlSettings : MonoBehaviour {
     private Image _imgBusinessLogo;
     [SerializeField]
     GameObject _changeLogobtn;
+    [SerializeField]
+    private Sprite _defaultLogo;
 
     private UserWebManager _userWebManager;
     private AccountManager _accountManager;
@@ -102,6 +104,9 @@ public class PnlSettings : MonoBehaviour {
     private void OnUpdateBusinessLogoImage() {
         _imgBusinessLogo.sprite = CallBacks.getLogoOnDevice();
 
+        if (_imgBusinessLogo.sprite == null)
+            _imgBusinessLogo.sprite = _defaultLogo;
+
         string businessName = _businessProfileManager.GetCTALable();
         _txtBusinessName.text = string.IsNullOrEmpty(businessName) ? "B" : businessName[0].ToString();
         _imgBusinessLogo.gameObject.SetActive(_imgBusinessLogo.sprite != null);
@@ -111,7 +116,7 @@ public class PnlSettings : MonoBehaviour {
     private void OnBusinessDataUpdated() {
         bool isBuisenessProfile = _businessProfileManager.IsBusinessProfile();
         _businessGO.SetActive(isBuisenessProfile);
-        _changeLogobtn.SetActive(isBuisenessProfile);
+        //_changeLogobtn.SetActive(isBuisenessProfile); //temporarily disable since 5.5.7
 
         if (!isBuisenessProfile)
             return;

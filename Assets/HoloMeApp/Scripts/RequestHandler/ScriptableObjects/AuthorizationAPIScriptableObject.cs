@@ -54,4 +54,5 @@ public class AuthorizationAPIScriptableObject : ScriptableObject {
     [Header("Profile")]
     public string GetMyProfile = "/b_profile/me/";
     public string UpdateLogo = "/b_profile/{id}/logo/update/";
+    public string DefaultLogoLink = "https://ar.beem.me/06f014a34d4c92d9a4ac.png";
 }

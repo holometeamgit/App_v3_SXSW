@@ -84,7 +84,20 @@ public class BusinessLogoController {
                 (code, body, texture) => {
                     UpdateLogo(CreateSprite((Texture2D)texture));
                 },
-                (code, body) => { }, nonreadable: false);
+                (code, body) => { TryLoadDefaultLogo(); }, nonreadable: false);
+        }
+    }
+
+    private void TryLoadDefaultLogo() {
+        string logoUrl = _authorizationAPIScriptableObject.DefaultLogoLink;
+        if (!string.IsNullOrWhiteSpace(logoUrl)) {
+            _webRequestHandler.GetTextureRequest(logoUrl,
+                (code, body, texture) => {
+                    UpdateLogo(CreateSprite((Texture2D)texture));
+                },
+                (code, body) => {
+                    _logo = null;
+                }, nonreadable: false);
         }
     }
 
