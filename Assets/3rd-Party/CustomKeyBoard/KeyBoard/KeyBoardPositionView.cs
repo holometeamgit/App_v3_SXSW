@@ -18,6 +18,7 @@ namespace Beem.KeyBoard {
         /// Update Keyboard Position
         /// </summary>
         public void UpdatePosition(bool isShown, int height = 0) {
+
             if (isShown) {
 #if UNITY_IOS
                 ChangePosition(Mathf.Max(keyBoardHeightiOS, height));

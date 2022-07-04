@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Beem.SSO;
 using UnityEngine.UI;
+using Zenject;
 
 public class PnlSignUpEmailFirebase : MonoBehaviour {
     [SerializeField]
@@ -14,12 +15,15 @@ public class PnlSignUpEmailFirebase : MonoBehaviour {
     [SerializeField]
     private Animator animator;
 
-    [Space]
-    [SerializeField]
-    private AccountManager _accountManager;
-
     private const float COOLDOWN = 0.5f;
     private float nextTimeCanClick = 0;
+
+    private AccountManager _accountManager;
+
+    [Inject]
+    public void Construct(AccountManager accountManager) {
+        _accountManager = accountManager;
+    }
 
     public void StopAnimation() {
         animator.enabled = false;

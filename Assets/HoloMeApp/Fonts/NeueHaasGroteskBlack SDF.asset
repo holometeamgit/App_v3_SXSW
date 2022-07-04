@@ -41,9 +41,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Ambient: 0.5
-    - _Bevel: 0.18
+    - _Bevel: 0.225
     - _BevelClamp: 0.41
-    - _BevelOffset: 0.243
+    - _BevelOffset: 0.265
     - _BevelRoundness: 0.391
     - _BevelWidth: 0
     - _BumpFace: 0
@@ -69,7 +69,7 @@ Material:
     - _Reflectivity: 10
     - _ScaleRatioA: 0.9
     - _ScaleRatioB: 0.73125
-    - _ScaleRatioC: 0.26864436
+    - _ScaleRatioC: 0.365625
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -82,10 +82,10 @@ Material:
     - _StencilWriteMask: 255
     - _TextureHeight: 1024
     - _TextureWidth: 1024
-    - _UnderlayDilate: 0.922
-    - _UnderlayOffsetX: 0.948
-    - _UnderlayOffsetY: 1
-    - _UnderlaySoftness: 0.8
+    - _UnderlayDilate: 0
+    - _UnderlayOffsetX: 1
+    - _UnderlayOffsetY: -1
+    - _UnderlaySoftness: 1
     - _VertexOffsetX: 0
     - _VertexOffsetY: 0
     - _WeightBold: 0.75
@@ -100,7 +100,7 @@ Material:
     - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
-    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.2509804}
   m_BuildTextureStacks: []
 --- !u!114 &11400000
 MonoBehaviour:
@@ -705,6 +705,20 @@ MonoBehaviour:
       m_Height: 67
     m_Scale: 1
     m_AtlasIndex: 0
+  - m_Index: 52
+    m_Metrics:
+      m_Width: 66.0625
+      m_Height: 73.796875
+      m_HorizontalBearingX: 2.875
+      m_HorizontalBearingY: 68.125
+      m_HorizontalAdvance: 71.8125
+    m_GlyphRect:
+      m_X: 599
+      m_Y: 359
+      m_Width: 67
+      m_Height: 75
+    m_Scale: 1
+    m_AtlasIndex: 0
   - m_Index: 53
     m_Metrics:
       m_Width: 55.703125
@@ -1237,20 +1251,6 @@ MonoBehaviour:
       m_Height: 15
     m_Scale: 1
     m_AtlasIndex: 0
-  - m_Index: 52
-    m_Metrics:
-      m_Width: 66.0625
-      m_Height: 73.796875
-      m_HorizontalBearingX: 2.875
-      m_HorizontalBearingY: 68.125
-      m_HorizontalAdvance: 71.8125
-    m_GlyphRect:
-      m_X: 599
-      m_Y: 359
-      m_Width: 67
-      m_Height: 75
-    m_Scale: 1
-    m_AtlasIndex: 0
   m_CharacterTable:
   - m_ElementType: 1
     m_Unicode: 13
@@ -1413,6 +1413,10 @@ MonoBehaviour:
     m_GlyphIndex: 51
     m_Scale: 1
   - m_ElementType: 1
+    m_Unicode: 81
+    m_GlyphIndex: 52
+    m_Scale: 1
+  - m_ElementType: 1
     m_Unicode: 82
     m_GlyphIndex: 53
     m_Scale: 1
@@ -1563,10 +1567,6 @@ MonoBehaviour:
   - m_ElementType: 1
     m_Unicode: 8230
     m_GlyphIndex: 364
-    m_Scale: 1
-  - m_ElementType: 1
-    m_Unicode: 81
-    m_GlyphIndex: 52
     m_Scale: 1
   m_AtlasTextures:
   - {fileID: 5200551972825857795}

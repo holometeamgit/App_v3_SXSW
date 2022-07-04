@@ -12,22 +12,18 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private KeyBoardWindow _keyBoardWindow;
 
-        public static Action<bool, InputField.OnChangeEvent, InputField.SubmitEvent> onShow = delegate { };
-        public static Action<bool, InputField.OnChangeEvent, InputField.SubmitEvent, UITextField> onUITextShow = delegate { };
+        public static Action<InputField> onShow = delegate { };
+        public static Action onHide = delegate { };
 
 
-        private UITextField _currentUITextField;
+        private InputField _currentUITextField;
         private KeyBoardSettings _inputSettings;
         private int _height;
         private Vector2Int _limit = new Vector2Int(826, 1200);
 
         private void Awake() {
-            Construct();
-        }
-
-        private void Construct() {
-            onShow += ShowWithoutField;
-            onUITextShow += ShowWithField;
+            onShow += Show;
+            onHide += Hide;
             MobileInput.OnShowKeyboard += OnShowKeyboard;
         }
 
@@ -39,65 +35,57 @@ namespace Beem.KeyBoard {
                     _height = _limit.x;
                 }
             }
+
             _keyBoardWindow.RefreshHeight(isShown, _height);
 
         }
 
-        private void Show(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
-            _keyBoardWindow.Show(isShown, onChangeEvent, submitEvent);
-        }
+        private void Show(InputField inputField) {
 
-        private void ShowWithoutField(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent) {
+            _keyBoardWindow.Show(inputField);
 
-            if (!isShown && _currentUITextField != null) {
-                ShowWithField(isShown, onChangeEvent, submitEvent, _currentUITextField);
-                return;
-            }
-
-            Show(isShown, onChangeEvent, submitEvent);
-
-            _keyBoardWindow.Text = string.Empty;
-            _keyBoardWindow.UpdateText();
-        }
-
-        private void ShowWithField(bool isShown, InputField.OnChangeEvent onChangeEvent, InputField.SubmitEvent submitEvent, UITextField uiTextField) {
-
-            Show(isShown, onChangeEvent, submitEvent);
-
-            if (isShown) {
-                ShowField(uiTextField);
-            } else {
-                HideField();
-            }
+            SetInputSettings(inputField);
 
             _keyBoardWindow.UpdateText();
         }
 
-        private void ShowField(UITextField uiTextField) {
-            _currentUITextField = uiTextField;
+        private void Hide() {
+
+            _keyBoardWindow.Hide();
+
+            RevertInputSettings();
+
+            _keyBoardWindow.UpdateText();
+        }
+
+        private void SetInputSettings(InputField inputField) {
+            _currentUITextField = inputField;
             _inputSettings = new KeyBoardSettings(_keyBoardWindow.InputField);
-            _keyBoardWindow.InputField.contentType = _currentUITextField.ContentType;
-            _keyBoardWindow.InputField.lineType = _currentUITextField.LineType;
-            _keyBoardWindow.InputField.inputType = _currentUITextField.InputType;
-            _keyBoardWindow.InputField.keyboardType = _currentUITextField.KeyboardType;
-            _keyBoardWindow.InputField.characterValidation = _currentUITextField.CharacterValidation;
-            _keyBoardWindow.Text = _currentUITextField.Text;
-            _keyBoardWindow.InputField.characterLimit = _currentUITextField.CharacterLimit;
+            _keyBoardWindow.InputField.contentType = _currentUITextField.contentType;
+            _keyBoardWindow.InputField.lineType = _currentUITextField.lineType;
+            _keyBoardWindow.InputField.inputType = _currentUITextField.inputType;
+            _keyBoardWindow.InputField.keyboardType = _currentUITextField.keyboardType;
+            _keyBoardWindow.InputField.characterValidation = _currentUITextField.characterValidation;
+            _keyBoardWindow.InputField.characterLimit = _currentUITextField.characterLimit;
+            if (_currentUITextField.textComponent.gameObject.activeInHierarchy) {
+                _keyBoardWindow.Text = _currentUITextField.text;
+            }
         }
 
-        private void HideField() {
+        private void RevertInputSettings() {
             _keyBoardWindow.InputField.contentType = _inputSettings.ContentType;
             _keyBoardWindow.InputField.lineType = _inputSettings.LineType;
             _keyBoardWindow.InputField.inputType = _inputSettings.InputType;
             _keyBoardWindow.InputField.keyboardType = _inputSettings.KeyboardType;
             _keyBoardWindow.InputField.characterValidation = _inputSettings.CharacterValidation;
             _keyBoardWindow.InputField.characterLimit = _inputSettings.CharacterLimit;
+            _keyBoardWindow.Text = string.Empty;
             _currentUITextField = null;
         }
 
         private void OnDestroy() {
-            onShow -= ShowWithoutField;
-            onUITextShow -= ShowWithField;
+            onShow -= Show;
+            onHide -= Hide;
             MobileInput.OnShowKeyboard -= OnShowKeyboard;
         }
     }

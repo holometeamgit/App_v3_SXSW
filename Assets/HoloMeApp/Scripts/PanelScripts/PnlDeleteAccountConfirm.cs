@@ -1,28 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
-public class PnlDeleteAccountConfirm : MonoBehaviour
-{
-    [SerializeField] UserWebManager userWebManager;
+public class PnlDeleteAccountConfirm : MonoBehaviour {
+
     [SerializeField] Switcher switchLogOut;
 
-    public void DeleteAccount()
-    {
-        //TODO: update it later 
-        userWebManager.DeleteUserAccount();
+    private UserWebManager _userWebManager;
+
+    [Inject]
+    public void Construct(UserWebManager userWebManager) {
+        _userWebManager = userWebManager;
     }
 
-    private void UserAccountDeletedCallBack()
-    {
+    public void DeleteAccount() {
+        //TODO: update it later 
+        _userWebManager.DeleteUserAccount();
+    }
+
+    private void UserAccountDeletedCallBack() {
         switchLogOut.Switch();
     }
 
     private void OnEnable() {
-        userWebManager.OnUserAccountDeleted += UserAccountDeletedCallBack;
+        _userWebManager.OnUserAccountDeleted += UserAccountDeletedCallBack;
     }
 
     private void OnDisable() {
-        userWebManager.OnUserAccountDeleted -= UserAccountDeletedCallBack;
+        _userWebManager.OnUserAccountDeleted -= UserAccountDeletedCallBack;
     }
 }

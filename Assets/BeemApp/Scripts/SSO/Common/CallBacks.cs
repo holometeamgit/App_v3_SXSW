@@ -81,5 +81,33 @@ namespace Beem.SSO {
 
         public static Action<long> onDownloadStreamById = delegate { };
         #endregion
+
+        #region business account
+        public static Action onBusinessDataUpdated;
+        public static Action onBusinessLogoUpdated;
+
+        public static Action onBusinessLogoLoaded;
+        public static Action onSelectLogoFromDevice;
+        public static Action onLogoSelected;
+        public static Action onUploadSelectedLogo;
+        public static Action onRemoveLogo;
+        public static Action onLoadLogo;
+
+        public static Action onLogoUploaded;
+        public static Action onLogoUploadingError;
+
+        public static Func<bool> hasLogoOnDevice;
+        public static Func<Sprite> getLogoOnDevice;
+        //return logo just selected but not set like logo on the server
+        public static Func<Sprite> getSelectedLogoOnDevice;
+
+        public static Action onUpdatedCTA;
+        #endregion
+
+        #region qrcode
+        public static Action<string> onGetQRCode;
+        public static Action<Texture2D> onQRCodeCreated;
+        public static Action onQRCodeSaved;
+        #endregion
     }
 }

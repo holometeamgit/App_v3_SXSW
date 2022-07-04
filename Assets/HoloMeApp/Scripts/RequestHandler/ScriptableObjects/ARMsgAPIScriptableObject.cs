@@ -11,8 +11,12 @@ public class ARMsgAPIScriptableObject : ScriptableObject {
     public string ARMessageUpload = "/ar-message/upload/";
     public string ImgBGFieldName = "background_photo";
     public string SourceVideoFieldName = "source_video";
+
     [Space]
     public string UserARMessages = "/ar-message/";
     public string ARMessageById = "/ar-message/{id}";
     public string DeleteARMessageById = "/ar-message/{id}";
+
+    [Space]
+    public string ARMessageExtData = "/ar-message/{id}/ext_data/";
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Zenject;
 
 /// <summary>
 /// Class for purchase calling
@@ -10,12 +11,9 @@ public class PurchaseBtn : MonoBehaviour, IPointerDownHandler {
 
     private PurchaseManager _purchaseManager;
 
-    private void OnEnable() {
-        Init();
-    }
-
-    private void Init() {
-        _purchaseManager = FindObjectOfType<PurchaseManager>();
+    [Inject]
+    public void Construct(PurchaseManager purchaseManager) {
+        _purchaseManager = purchaseManager;
     }
 
     public void OnPointerDown(PointerEventData eventData) {

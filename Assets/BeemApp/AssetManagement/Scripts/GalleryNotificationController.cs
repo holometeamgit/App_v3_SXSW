@@ -11,11 +11,16 @@ public class GalleryNotificationController {
 
     private static List<ARMsgJSON.Data> _datas = new List<ARMsgJSON.Data>();
 
-    public static Action OnShow = delegate { };
+    public static Action<ARMsgJSON.Data> OnShow = delegate { };
     public static Action OnHide = delegate { };
 
+    private GetARMsgController _getARMsgController;
+
     private const string ID = "id";
-    private const string USER = "user";
+
+    public GalleryNotificationController(ARMsgAPIScriptableObject arMsgAPIScriptableObject, WebRequestHandler webRequestHandler) {
+        _getARMsgController = new GetARMsgController(arMsgAPIScriptableObject, webRequestHandler);
+    }
 
     /// <summary>
     /// Check on New Message
@@ -39,19 +44,14 @@ public class GalleryNotificationController {
     /// </summary>
     /// <param name="data"></param>
     public void SetData(IDictionary<string, string> data) {
-        ARMsgJSON.Data arMsgJsonData = new ARMsgJSON.Data();
-
         if (data.ContainsKey(ID)) {
-            arMsgJsonData.id = data[ID];
+            _getARMsgController.GetARMsgById(id: data[ID], onSuccess: Add);
         }
+    }
 
-        if (data.ContainsKey(USER)) {
-            arMsgJsonData.user = data[USER];
-        }
-
-        _datas.Add(arMsgJsonData);
-
-        OnShow?.Invoke();
+    private void Add(ARMsgJSON.Data data) {
+        _datas.Add(data);
+        OnShow?.Invoke(data);
     }
 
     /// <summary>

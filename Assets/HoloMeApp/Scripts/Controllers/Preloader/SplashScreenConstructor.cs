@@ -3,15 +3,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 namespace Beem {
 
     public class SplashScreenConstructor : MonoBehaviour {
         [SerializeField] PnlSplashScreen _pnlSplashScreen;
         [SerializeField] GeneralAppAPIScriptableObject _generalAppAPIScriptableObject;
-        [SerializeField] WebRequestHandler _webRequestHandler;
+        private WebRequestHandler _webRequestHandler;
 
         private SplashScreenController _preloaderController;
+
+        [Inject]
+        public void Construct(WebRequestHandler webRequestHandler) {
+            _webRequestHandler = webRequestHandler;
+        }
 
         private void Awake() {
             VersionChecker versionChecker = new VersionChecker(_generalAppAPIScriptableObject, _webRequestHandler);

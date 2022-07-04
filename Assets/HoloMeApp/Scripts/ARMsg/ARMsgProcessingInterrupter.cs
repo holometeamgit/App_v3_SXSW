@@ -14,8 +14,8 @@ public class ARMsgProcessingInterrupter : MonoBehaviour {
     /// Request GenericError for interrupting
     /// </summary>
     public void Interrupt() {
-        WarningConstructor.ActivateDoubleButton("are you sure you want to quit?",
-            "You will lose your beem",
+        WarningConstructor.ActivateDoubleButton("Are you sure you\nwant to quit?",
+            "You will lose your hologram",
              "quit", "stay",
             () => {
                 ImmediateInterruption();

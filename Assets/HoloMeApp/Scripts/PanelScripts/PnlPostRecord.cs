@@ -4,6 +4,7 @@ using NatShare;
 using DG.Tweening;
 using UnityEngine.Video;
 using Beem.Video;
+using Zenject;
 
 public class PnlPostRecord : MonoBehaviour {
     [SerializeField]
@@ -29,8 +30,6 @@ public class PnlPostRecord : MonoBehaviour {
     [SerializeField]
     Button btnDownload;
 
-    [Space]
-    [SerializeField]
     private HologramHandler _hologramHandler;
 
     static string lastRecordingPath;
@@ -60,6 +59,11 @@ public class PnlPostRecord : MonoBehaviour {
 
             return _videoPlayerController;
         }
+    }
+
+    [Inject]
+    public void Construct(HologramHandler hologramHandler) {
+        _hologramHandler = hologramHandler;
     }
 
     public void ActivatePostVideo(string lastRecordPath) {

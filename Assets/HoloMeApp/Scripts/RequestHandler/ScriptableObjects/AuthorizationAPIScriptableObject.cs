@@ -39,29 +39,6 @@ public class AuthorizationAPIScriptableObject : ScriptableObject {
     [Tooltip("Get request complite Log In. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/Token/post_token_firebase_")]
     public string FirebaseToken = "/token/firebase/";
 
-    [Header("Facebook Authorization")]
-    [Tooltip("Get request facebook Log In. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/Login/get_social_auth_login_facebook_")]
-    public string FacebookLogIn = "/social-auth/login/facebook/";
-    [Tooltip("Get request complite Log In. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/Login/get_social_auth_complete_facebook_")]
-    public string FacebookCompliteLogIn = "/social-auth/complete/facebook/";
-
-    [Header("Google Authorization")]
-    [Tooltip("Get deeplink request Google")]
-    public string GoogleSSODeepLink = "/social-auth/login/google-oauth2/";
-    [Tooltip("Get request google Log In. Details here: https://devholo.me/docs/auth/#/Login/get_social_auth_login_google_oauth2_")]
-    public string GoogleLogIn = "/social-auth/login/facebook/";
-    [Tooltip("Get request complite Log In. Details here: https://devholo.me/docs/auth/#/Login/get_social_auth_complete_google_oauth2_")]
-    public string GoogleCompliteLogIn = "/social-auth/complete/facebook/";
-
-    [Header("Apple Authorization")]
-    [Tooltip("Get deeplink request Apple")]
-    public string AppleSSODeepLink = "/social-auth/deep-complete/apple-id";
-    [Tooltip("Get request Apple Log In. Details here: https://devholo.me/docs/auth/#/Login/get_social_auth_login_apple_id_")]
-    public string AppleLogIn = "/social-auth/login/apple-id/";
-    [Tooltip("Get request complite Log In. Details here: https://devholo.me/docs/auth/#/Login/get_social_auth_complete_apple_id_")]
-    public string AppleCompliteLogIn = "/social-auth/complete/apple-id";
-
-
     [Header("User")]
     [Tooltip("Get request user data. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/User/get_user_")]
     public string GetUser = "/user/";
@@ -73,4 +50,8 @@ public class AuthorizationAPIScriptableObject : ScriptableObject {
     public string DisableUser = "/user/disable/";
     [Tooltip("Post request upload profile pictures. Details here: https://devholo.me/docs/auth/?urls.primaryName=Auth%20Gateway#/User/post_user_profile_picture_")]
     public string ProfilePictures = "/user/disable/";
+
+    [Header("Profile")]
+    public string GetMyProfile = "/b_profile/me/";
+    public string UpdateLogo = "/b_profile/{id}/logo/update/";
 }
