@@ -107,6 +107,8 @@ public class PnlSettings : MonoBehaviour {
         if (_imgBusinessLogo.sprite == null)
             _imgBusinessLogo.sprite = _defaultLogo;
 
+        _imgBusinessLogo.preserveAspect = true;
+
         string businessName = _businessProfileManager.GetCTALable();
         _txtBusinessName.text = string.IsNullOrEmpty(businessName) ? "B" : businessName[0].ToString();
         _imgBusinessLogo.gameObject.SetActive(_imgBusinessLogo.sprite != null);

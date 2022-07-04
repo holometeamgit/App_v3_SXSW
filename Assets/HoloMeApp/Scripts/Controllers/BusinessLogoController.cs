@@ -85,6 +85,8 @@ public class BusinessLogoController {
                     UpdateLogo(CreateSprite((Texture2D)texture));
                 },
                 (code, body) => { TryLoadDefaultLogo(); }, nonreadable: false);
+        } else {
+            TryLoadDefaultLogo();
         }
     }
 
@@ -98,6 +100,8 @@ public class BusinessLogoController {
                 (code, body) => {
                     _logo = null;
                 }, nonreadable: false);
+        } else {
+            _logo = null;
         }
     }
 
