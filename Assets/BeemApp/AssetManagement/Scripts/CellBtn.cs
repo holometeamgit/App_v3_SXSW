@@ -62,11 +62,7 @@ public class CellBtn : MonoBehaviour,
                 OpenNotificationPopup();
             }
         } else if (_arMsgData.GetStatus == ARMsgJSON.Data.COMPETED_STATUS) {
-            if (_arMsgData.ext_content_data.Count == 0) {
-                OpenARMsg();
-            } else {
-                _tapTimerCoroutine = StartCoroutine(TapTimer());
-            }
+            _tapTimerCoroutine = StartCoroutine(TapTimer());
         }
     }
 
@@ -134,6 +130,11 @@ public class CellBtn : MonoBehaviour,
 
     private IEnumerator TapTimer() {
         yield return new WaitForSeconds(LONG_CLICK_TIME);
-        _businessProfileManager.GetMyData(SuccessedBusinessProfile, FailedBusinessProfile);
+
+        if (_arMsgData.ext_content_data == null || _arMsgData.ext_content_data.Count == 0) {
+            OpenARMsg();
+        } else {
+            _businessProfileManager.GetMyData(SuccessedBusinessProfile, FailedBusinessProfile);
+        }
     }
 }
