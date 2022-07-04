@@ -69,7 +69,9 @@ public class ARMsgWindow : MonoBehaviour {
         _hologramHandler.SetOnPlacementUIHelperFinished(OnPlacementCompleted);
 
         ShowBusiness(false);
-        _businessProfileManager.GetMyData(SuccessedBusinessProfile, FailedBusinessProfile);
+
+        if (arMsgJSON.ext_content_data != null && arMsgJSON.ext_content_data.Count > 0)
+            _businessProfileManager.GetMyData(SuccessedBusinessProfile, FailedBusinessProfile);
     }
 
     private void ShowBusiness(bool status) {
