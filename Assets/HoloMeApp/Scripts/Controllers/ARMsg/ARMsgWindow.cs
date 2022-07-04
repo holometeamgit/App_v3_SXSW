@@ -70,8 +70,9 @@ public class ARMsgWindow : MonoBehaviour {
 
         ShowBusiness(false);
 
-        if (arMsgJSON.ext_content_data != null && arMsgJSON.ext_content_data.Count > 0)
+        if (arMsgJSON.ext_content_data != null && arMsgJSON.ext_content_data.Count > 0) {
             _businessProfileManager.GetMyData(SuccessedBusinessProfile, FailedBusinessProfile);
+        }
     }
 
     private void ShowBusiness(bool status) {
