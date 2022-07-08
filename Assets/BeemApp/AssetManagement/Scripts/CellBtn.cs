@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Zenject;
 
 /// <summary>
 /// Btn for cell in AssetManagement
@@ -30,6 +31,8 @@ public class CellBtn : MonoBehaviour,
     private const float LONG_CLICK_TIME = 0.314f;
 
     private const string BUSINESS_OPTIONS_VIEW = "BusinessOptionsView";
+
+    SignalBus _signalBus;
 
     public void Init(ARMsgJSON.Data arMsgData) {
         _arMsgData = arMsgData;
@@ -68,6 +71,10 @@ public class CellBtn : MonoBehaviour,
 
     public void OnPointerUp(PointerEventData eventData) {
         StopTimer();
+    }
+
+    private void Start() {
+        _signalBus = FindObjectOfType<SignalBusMonoBehaviour>().SignalBus;
     }
 
     private bool CanShowPushNotificationPopup {
@@ -111,9 +118,18 @@ public class CellBtn : MonoBehaviour,
     }
 
     private void OpenProcessingPopup() {
-        WarningConstructor.ActivateSingleButton("Proccessing",
-             "Your hologram is processing,\nwe can tell you when it's ready",
-              "GOT IT!");
+        WarningConstructor.ActivateDoubleButton("Proccessing",
+               "Your hologram is processing,\nwe can tell you when it's ready",
+               "GOT IT!",
+               "DELETE",
+               () => {
+                   FirebaseMessaging.SubscribeAsync(string.Format(TOPIC, _userWebManager?.GetUsername()));
+                   CanShowPushNotificationPopup = false;
+               }, () => { Delete(); });
+    }
+
+    private void Delete() {
+        _signalBus.Fire(new DeleteARMsgSignal() { idARMsg = _arMsgData.id });
     }
 
     private void StopTimer() {

@@ -25,5 +25,18 @@ public class ControllerInstaller : MonoInstaller {
         Container.BindInterfacesAndSelfTo<BusinessLogoController>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<BusinessProfileManager>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<QRCodeGenerator>().AsSingle().NonLazy();
+
+        Container.BindInterfacesAndSelfTo<DeleteARMsgController>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<GetAllARMsgController>().AsSingle().NonLazy();
+
+        InstallSignals();
+    }
+
+    private void InstallSignals() {
+        SignalBusInstaller.Install(Container);
+
+        Container.DeclareSignal<DeleteARMsgSignal>();
+        Container.DeclareSignal<GetAllArMessagesSignal>();
+        Container.DeclareSignal<GetAllArMessagesSuccesSignal>();
     }
 }

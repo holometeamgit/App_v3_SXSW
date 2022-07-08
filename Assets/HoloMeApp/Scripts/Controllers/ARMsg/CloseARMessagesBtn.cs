@@ -15,29 +15,37 @@ namespace Beem.UI {
 
         private WebRequestHandler _webRequestHandler;
 
-        private GetAllARMsgController _galleryController;
+        SignalBus _signalBus;
 
         [Inject]
-        public void Construct(WebRequestHandler webRequestHandler) {
+        public void Construct(WebRequestHandler webRequestHandler, SignalBus signalBus) {
             _webRequestHandler = webRequestHandler;
+            _signalBus = signalBus;
         }
 
         private void Start() {
-            _galleryController = new GetAllARMsgController(_arMsgAPIScriptableObject, _webRequestHandler);
         }
 
         /// <summary>
         /// On Click
         /// </summary>
         public void OnClick() {
-            _galleryController.GetAllArMessages(onSuccess: Show);
+            _signalBus.Fire<GetAllArMessagesSignal>();
         }
 
-        private void Show(ARMsgJSON data) {
+        private void Show(GetAllArMessagesSuccesSignal signal) {
             ARMsgARenaConstructor.OnDeactivatedARena?.Invoke();
             ARenaConstructor.onDeactivate?.Invoke();
             MenuConstructor.OnActivated?.Invoke(false);
-            GalleryConstructor.OnShow?.Invoke(data);
+            GalleryConstructor.OnShow?.Invoke(signal.arMsgJSON);
+        }
+
+        private void OnEnable() {
+            _signalBus.Subscribe<GetAllArMessagesSuccesSignal>(Show);
+        }
+
+        private void OnDisable() {
+            _signalBus.Unsubscribe<GetAllArMessagesSuccesSignal>(Show);
         }
 
     }

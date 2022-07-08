@@ -2,34 +2,45 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 /// <summary>
 /// Delete ARMsgController
 /// </summary>
-public class DeleteARMsgController {
+public class DeleteARMsgController : IInitializable, IDisposable {
     private ARMsgAPIScriptableObject _arMsgAPIScriptableObject;
     private WebRequestHandler _webRequestHandler;
 
-    public DeleteARMsgController(ARMsgAPIScriptableObject arMsgAPIScriptableObject, WebRequestHandler webRequestHandler) {
+    readonly SignalBus _signalBus;
+
+    public DeleteARMsgController(SignalBus signalBus, ARMsgAPIScriptableObject arMsgAPIScriptableObject, WebRequestHandler webRequestHandler) {
         _arMsgAPIScriptableObject = arMsgAPIScriptableObject;
         _webRequestHandler = webRequestHandler;
+        _signalBus = signalBus;
+    }
+
+    public void Initialize() {
+        _signalBus.Subscribe<DeleteARMsgSignal>(DeleteARMessages);
+    }
+
+    public void Dispose() {
+        _signalBus.Unsubscribe<DeleteARMsgSignal>(DeleteARMessages);
     }
 
     /// <summary>
     /// Delete AR Message
     /// </summary>
     /// <param name="id"></param>
-    public void DeleteARMessages(string id, Action onSuccess = null, Action onFailed = null) {
-        _webRequestHandler.Delete(GetRequestDeleteARMsgByIdURL(id), (code, body) => { OnSuccess(code, body, onSuccess); }, (code, body) => { OnFailed(code, body, onFailed); });
+    public void DeleteARMessages(DeleteARMsgSignal deleteARMsgSignal) {
+        _webRequestHandler.Delete(GetRequestDeleteARMsgByIdURL(deleteARMsgSignal.idARMsg), OnSuccess , OnFailed);
     }
 
-    private void OnSuccess(long code, string body, Action onSuccess) {
-        onSuccess?.Invoke();
+    private void OnSuccess(long code, string body) {
+        _signalBus.Fire(new GetAllArMessagesSignal() { });
     }
 
-    private void OnFailed(long code, string body, Action onFailed) {
+    private void OnFailed(long code, string body) {
         HelperFunctions.DevLogError("Failed" + code + " " + body);
-        onFailed?.Invoke();
     }
 
     private string GetRequestDeleteARMsgByIdURL(string id) {
