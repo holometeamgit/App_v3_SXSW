@@ -58,15 +58,7 @@ public class CellBtn : MonoBehaviour,
     }
 
     public void OnPointerDown(PointerEventData eventData) {
-        if (_arMsgData.GetStatus == ARMsgJSON.Data.PROCESSING_STATUS) {
-            if (!CanShowPushNotificationPopup) {
-                OpenProcessingPopup();
-            } else {
-                OpenNotificationPopup();
-            }
-        } else if (_arMsgData.GetStatus == ARMsgJSON.Data.COMPETED_STATUS) {
-            _tapTimerCoroutine = StartCoroutine(TapTimer());
-        }
+        _tapTimerCoroutine = StartCoroutine(TapTimer());
     }
 
     public void OnPointerUp(PointerEventData eventData) {
@@ -95,11 +87,19 @@ public class CellBtn : MonoBehaviour,
     }
 
     private void OpenARMsg() {
-        ARMsgRecordConstructor.OnActivated?.Invoke(false);
-        ARenaConstructor.onActivateForARMessaging?.Invoke(_arMsgData);
-        ARMsgARenaConstructor.OnActivatedARena?.Invoke(_arMsgData);
-        GalleryConstructor.OnHide?.Invoke();
-        PnlRecord.CurrentUser = _arMsgData.user;
+        if (_arMsgData.GetStatus == ARMsgJSON.Data.PROCESSING_STATUS) {
+            if (!CanShowPushNotificationPopup) {
+                OpenProcessingPopup();
+            } else {
+                OpenNotificationPopup();
+            }
+        } else if (_arMsgData.GetStatus == ARMsgJSON.Data.COMPETED_STATUS) {
+            ARMsgRecordConstructor.OnActivated?.Invoke(false);
+            ARenaConstructor.onActivateForARMessaging?.Invoke(_arMsgData);
+            ARMsgARenaConstructor.OnActivatedARena?.Invoke(_arMsgData);
+            GalleryConstructor.OnHide?.Invoke();
+            PnlRecord.CurrentUser = _arMsgData.user;
+        }
     }
 
     private void OpenBusinessOptions() {
@@ -147,7 +147,7 @@ public class CellBtn : MonoBehaviour,
     private IEnumerator TapTimer() {
         yield return new WaitForSeconds(LONG_CLICK_TIME);
 
-        if (_arMsgData.ext_content_data == null || _arMsgData.ext_content_data.Count == 0) {
+        if (_arMsgData.ext_content_data == null || _arMsgData.ext_content_data.Count == 0 || _arMsgData.GetStatus == ARMsgJSON.Data.PROCESSING_STATUS) {
             OpenARMsg();
         } else {
             _businessProfileManager.GetMyData(SuccessedBusinessProfile, FailedBusinessProfile);
