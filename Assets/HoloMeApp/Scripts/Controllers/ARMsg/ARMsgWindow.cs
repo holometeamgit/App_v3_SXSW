@@ -35,7 +35,7 @@ public class ARMsgWindow : MonoBehaviour {
     }
 
     private void SuccessedBusinessProfile(BusinessProfileJsonData businessProfileData) {
-        ShowBusiness(true);
+        ShowBusiness(businessProfileData != null);
     }
 
     private void FailedBusinessProfile(WebRequestError error) {

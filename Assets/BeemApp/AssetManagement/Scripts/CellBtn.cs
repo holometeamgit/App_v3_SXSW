@@ -79,7 +79,11 @@ public class CellBtn : MonoBehaviour,
     }
 
     private void SuccessedBusinessProfile(BusinessProfileJsonData businessProfileData) {
-        OpenBusinessOptions();
+        if (businessProfileData != null) {
+            OpenBusinessOptions();
+        } else {
+            OpenARMsg();
+        }
     }
 
     private void FailedBusinessProfile(WebRequestError error) {

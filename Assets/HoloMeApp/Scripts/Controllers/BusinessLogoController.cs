@@ -78,6 +78,10 @@ public class BusinessLogoController {
     }
 
     private void OnLoadLogo(BusinessProfileJsonData businessProfileJsonData) {
+        if (businessProfileJsonData == null) {
+            return;
+        }
+
         string logoUrl = businessProfileJsonData.logo;
         if (!string.IsNullOrWhiteSpace(logoUrl)) {
             _webRequestHandler.GetTextureRequest(logoUrl,
