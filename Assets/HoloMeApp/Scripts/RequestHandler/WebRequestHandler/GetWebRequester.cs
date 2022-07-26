@@ -24,6 +24,8 @@ public class GetWebRequester : WebRequester {
         TaskScheduler taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         WebRequestWithRetryAsync(createWebRequest, responseDelegate, errorTypeDelegate, onCancel, downloadProgress: downloadProgress).ContinueWith((taskWebRequestData) => {
             var result = taskWebRequestData.Result;
+            if(result.Code > 200)
+                HelperFunctions.DevLogError("url: " + url);
             (responseDelegate as ResponseDelegate)?.Invoke(result.Code, result.Body);
         }, taskScheduler);
     }
