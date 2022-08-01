@@ -37,8 +37,7 @@ public class AgoraController : MonoBehaviour {
     private int agoraMessageStreamID;
     private int maxViewerCountTracker;
 
-    [HideInInspector]
-    public uint frameRate;
+
     public Action OnStreamerLeft;
     public Action OnCameraSwitched;
     public Action OnPreviewStopped;
@@ -76,7 +75,7 @@ public class AgoraController : MonoBehaviour {
 
     public void Start() {
         LoadEngine(AppId);
-        frameRate = 30;
+
         _agoraRTMChatController.Init(AppId);
         _secondaryServerCalls.OnStreamStarted += (x, y, z) => SecondaryServerCallsComplete(x, y, z);
 
@@ -148,33 +147,26 @@ public class AgoraController : MonoBehaviour {
             return;
         }
 
-        if (EnableVideoPlayback() == 0) {
-            if (iRtcEngine.StartPreview() == 0) {
-
-                VirtualBackgroundSource source = new VirtualBackgroundSource {
-                    background_source_type = BACKGROUND_SOURCE_TYPE.BACKGROUND_COLOR,
-                    color = Convert.ToUInt32(ColorUtility.ToHtmlStringRGB(Color.green), 16)
-                };
-
-                iRtcEngine.EnableVirtualBackground(IsRoom, source);
-
-                HelperFunctions.DevLog("Agora Preview Started");
-                if (iRtcEngine.EnableLocalVideo(true) == 0) {
-                    VideoIsReady = true;
-                }
-            } else {
-                HelperFunctions.DevLog("Agora Preview Failed");
-            }
-        }
+        //if (EnableVideoPlayback() == 0) {
+        //    if (iRtcEngine.StartPreview() == 0) {
+              
+        //        HelperFunctions.DevLog("Agora Preview Started");
+        //        if (iRtcEngine.EnableLocalVideo(true) == 0) {
+                   VideoIsReady = true;
+        //        }
+        //    } else {
+        //        HelperFunctions.DevLog("Agora Preview Failed");
+        //    }
+        //}
     }
 
     public void StopPreview() {
-        iRtcEngine.DisableVideo();
-        iRtcEngine.DisableVideoObserver();
-        if (iRtcEngine.StopPreview() == 0) {
-            HelperFunctions.DevLog("Agora Preview Stopped");
-        }
-        iRtcEngine.EnableLocalVideo(false);
+        //iRtcEngine.DisableVideo();
+        //iRtcEngine.DisableVideoObserver();
+        //if (iRtcEngine.StopPreview() == 0) {
+        //    HelperFunctions.DevLog("Agora Preview Stopped");
+        //}
+        //iRtcEngine.EnableLocalVideo(false);
         VideoIsReady = false;
         OnPreviewStopped?.Invoke();
     }
@@ -262,6 +254,8 @@ public class AgoraController : MonoBehaviour {
             EnableVideoPlayback(); //Must be called for viewers to view
             ToggleLocalVideo(true); //Disable local video freeze fix iOS
         }
+
+        iRtcEngine.SetExternalVideoSource(true, false);
 
         var result = iRtcEngine.JoinChannelByKey(viewerBroadcasterToken, ChannelName, null, Convert.ToUInt32(_userWebManager.GetUserID()));
 
@@ -385,7 +379,6 @@ public class AgoraController : MonoBehaviour {
         videoSurfaceQuadRef.SetForUser((uint)ChannelCreatorUID);
         videoSurfaceQuadRef.SetEnable(true);
         videoSurfaceQuadRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
-        videoSurfaceQuadRef.SetGameFps(frameRate);
     }
 
     private void OnVolumeIndicationHandler(AudioVolumeInfo[] speakers, int speakerNumber, int totalVolume) {
@@ -465,12 +458,6 @@ public class AgoraController : MonoBehaviour {
         if (iRtcEngine != null) {
             if (!pauseVideo) {
                 iRtcEngine.EnableVideo();
-                VirtualBackgroundSource source = new VirtualBackgroundSource {
-                    background_source_type = BACKGROUND_SOURCE_TYPE.BACKGROUND_COLOR,
-                    color = Convert.ToUInt32(ColorUtility.ToHtmlStringRGB(Color.green), 16)
-                };
-
-                iRtcEngine.EnableVirtualBackground(IsRoom, source);
             } else {
                 iRtcEngine.DisableVideo();
             }

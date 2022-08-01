@@ -89,7 +89,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private bool isUsingFrontCamera;
     private bool isPushToTalkActive;
 
-    VideoSurface videoSurface;
+    //VideoSurface videoSurface;
     string currentStreamId = string.Empty;
 
     //private Coroutine delayToggleAudioOffRoutine;  //TODO keeping here in case we revert to push to talk
@@ -156,7 +156,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
         StreamCallBacks.onLiveStreamCreated += RefreshStream;
 
-        AddVideoSurface();
+        //AddVideoSurface();
         initialised = true;
     }
 
@@ -406,7 +406,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     }
 
     private void PreviewStopped() {
-        videoSurface.SetEnable(false);
+        //videoSurface.SetEnable(false);
     }
 
     public void StartCountdown() {
@@ -685,19 +685,18 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         //}
     }
 
-    private void AddVideoSurface() {
-        videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
-        if (!videoSurface) {
-            videoSurface = cameraRenderImage.gameObject.AddComponent<VideoSurface>();
-            isUsingFrontCamera = true;
-            videoSurface.EnableFilpTextureApply(true, true);
-            videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);
-            videoSurface.SetGameFps(_agoraController.frameRate);
-        }
-    }
+    //private void AddVideoSurface() {
+    //    videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
+    //    if (!videoSurface) {
+    //        videoSurface = cameraRenderImage.gameObject.AddComponent<VideoSurface>();
+    //        isUsingFrontCamera = true;
+    //        videoSurface.EnableFilpTextureApply(true, true);
+    //        videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);            
+    //    }
+    //}
 
     IEnumerator OnPreviewReady() {
-        videoSurface.SetEnable(true);
+        //videoSurface.SetEnable(true);
         cameraRenderImage.color = Color.black;
 
         while (!_agoraController.VideoIsReady || cameraRenderImage.texture == null) {
