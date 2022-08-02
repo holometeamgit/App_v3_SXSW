@@ -65,12 +65,14 @@ public class AgoraController : MonoBehaviour {
     private UserWebManager _userWebManager;
     private AgoraRTMChatController _agoraRTMChatController;
     private SecondaryServerCalls _secondaryServerCalls;
+    private AgoraCustomTextureSender _agoraCustomTextureSender;
 
     [Inject]
-    public void Construct(UserWebManager userWebManager, AgoraRTMChatController agoraRTMChatController, SecondaryServerCalls secondaryServerCalls) {
+    public void Construct(UserWebManager userWebManager, AgoraRTMChatController agoraRTMChatController, SecondaryServerCalls secondaryServerCalls, AgoraCustomTextureSender agoraCustomTextureSender) {
         _userWebManager = userWebManager;
         _agoraRTMChatController = agoraRTMChatController;
         _secondaryServerCalls = secondaryServerCalls;
+        _agoraCustomTextureSender = agoraCustomTextureSender;
     }
 
     public void Start() {
@@ -149,10 +151,10 @@ public class AgoraController : MonoBehaviour {
 
         //if (EnableVideoPlayback() == 0) {
         //    if (iRtcEngine.StartPreview() == 0) {
-              
+
         //        HelperFunctions.DevLog("Agora Preview Started");
         //        if (iRtcEngine.EnableLocalVideo(true) == 0) {
-                   VideoIsReady = true;
+        VideoIsReady = true;
         //        }
         //    } else {
         //        HelperFunctions.DevLog("Agora Preview Failed");
@@ -265,8 +267,13 @@ public class AgoraController : MonoBehaviour {
             HelperFunctions.DevLog("Agora Stream Join Success!");
         }
 
-        if (IsChannelCreator && !IsRoom)//No thumbnails for rooms for now
+        if (IsChannelCreator) {//Start sending custom BG removal texture
+            _agoraCustomTextureSender.StartSendingTexture = true;
+        }
+
+        if (IsChannelCreator && !IsRoom) {//No thumbnails for rooms for now
             sendThumbnailRoutine = StartCoroutine(SendThumbnailData(true));
+        }
 
         IsLive = true;
 
@@ -285,6 +292,7 @@ public class AgoraController : MonoBehaviour {
             StopCoroutine(sendThumbnailRoutine);
 
         if (IsChannelCreator) {
+            _agoraCustomTextureSender.StartSendingTexture = false;
             _secondaryServerCalls.EndStream();
             AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyMaxViewerCount, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamChannelName, ChannelName }, { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() }, { AnalyticParameters.ParamViewerCount, maxViewerCountTracker.ToString() } });
             AnalyticsController.Instance.StopTimer(AnalyticKeys.KeyViewLengthOfStream, new Dictionary<string, string> { { AnalyticParameters.ParamChannelName, ChannelName }, { AnalyticParameters.ParamDate, DateTime.Now.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() } });

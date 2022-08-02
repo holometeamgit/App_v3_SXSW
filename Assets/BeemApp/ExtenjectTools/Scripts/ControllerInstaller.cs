@@ -1,7 +1,4 @@
 using Beem.SSO;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Zenject;
 
 /// <summary>
@@ -21,6 +18,7 @@ public class ControllerInstaller : MonoInstaller {
         Container.BindInterfacesAndSelfTo<AgoraRequests>().FromComponentInHierarchy(false).AsSingle();
         Container.BindInterfacesAndSelfTo<IAPController>().FromComponentInHierarchy(false).AsSingle();
         Container.BindInterfacesAndSelfTo<PurchasesSaveManager>().FromComponentInHierarchy(false).AsSingle();
+        Container.BindInterfacesAndSelfTo<AgoraCustomTextureSender>().FromComponentInHierarchy(false).AsSingle();
 
         Container.BindInterfacesAndSelfTo<BusinessLogoController>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<BusinessProfileManager>().AsSingle().NonLazy();
