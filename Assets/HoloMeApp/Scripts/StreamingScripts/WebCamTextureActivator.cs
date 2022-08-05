@@ -9,7 +9,7 @@ public class WebCamTextureActivator : MonoBehaviour {
     public WebCamInput.TextureUpdateEvent OnTextureUpdate = new WebCamInput.TextureUpdateEvent();
     private Quaternion _baseRotation;
 
-    void Start() {
+    void Awake() {
 
         var rawImg = GetComponent<RawImage>().materialForRendering;
         if (rawImg != null) {
