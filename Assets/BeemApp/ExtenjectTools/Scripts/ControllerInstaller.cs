@@ -19,6 +19,9 @@ public class ControllerInstaller : MonoInstaller {
         Container.BindInterfacesAndSelfTo<IAPController>().FromComponentInHierarchy(false).AsSingle();
         Container.BindInterfacesAndSelfTo<PurchasesSaveManager>().FromComponentInHierarchy(false).AsSingle();
         Container.BindInterfacesAndSelfTo<AgoraCustomTextureSender>().FromComponentInHierarchy(false).AsSingle();
+        Container.BindInterfacesAndSelfTo<BeemMLHandler>().FromComponentInHierarchy(true).AsSingle();
+        Container.BindInterfacesAndSelfTo<WebCamTextureActivator>().FromComponentInHierarchy(true).AsSingle();
+
 
         Container.BindInterfacesAndSelfTo<BusinessLogoController>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<BusinessProfileManager>().AsSingle().NonLazy();

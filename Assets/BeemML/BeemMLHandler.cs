@@ -2,7 +2,7 @@ using TensorFlowLite;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BeemML_WebcamSample : MonoBehaviour
+public class BeemMLHandler : MonoBehaviour
 {
     [Tooltip("View with raw image")]
     [SerializeField]
@@ -18,17 +18,15 @@ public class BeemML_WebcamSample : MonoBehaviour
 
     private BeemML beemMl;
 
-    private void Start()
+    public void EnableML()
     {
         beemMl = new BeemML(options);
-
         webCamTexScript.OnTextureUpdate.AddListener(OnTextureUpdate);
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         webCamTexScript.OnTextureUpdate.RemoveListener(OnTextureUpdate);
-
         beemMl?.Dispose();
     }
     
@@ -39,7 +37,6 @@ public class BeemML_WebcamSample : MonoBehaviour
     private void OnTextureUpdate(Texture texture)
     {
         beemMl.Invoke(texture);
-        
         outputView.material.SetTexture("_MaskTex", beemMl.GetResultTexture());
     }
 }

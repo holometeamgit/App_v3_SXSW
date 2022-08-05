@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
 using DG.Tweening;
 using TMPro;
-using UnityEngine.Events;
 using System.Collections;
 using UnityEngine.UI;
 using agora_gaming_rtc;
 using Beem.UI;
-using Beem.Permissions;
 using Zenject;
 
 public class PnlStreamOverlay : AgoraMessageReceiver {
@@ -77,6 +75,9 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private AgoraController _agoraController;
     private UserWebManager _userWebManager;
+    private BeemMLHandler _beemMLHandler;
+    private WebCamTextureActivator _webCamTextureActivator;
+
 
     [SerializeField]
     private ExternalLinkRedirector externalLinkRedirector;
@@ -123,9 +124,11 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private const string KEY_SEEN_TUTORIAL_ARENA = nameof(KEY_SEEN_TUTORIAL_ARENA);
 
     [Inject]
-    public void Construct(UserWebManager userWebManager, AgoraController agoraController) {
+    public void Construct(UserWebManager userWebManager, AgoraController agoraController, BeemMLHandler beemMLHandler, WebCamTextureActivator webCamTextureActivator) {
         _userWebManager = userWebManager;
         _agoraController = agoraController;
+        _beemMLHandler = beemMLHandler;
+        _webCamTextureActivator = webCamTextureActivator;
     }
 
     void Init() {
@@ -315,7 +318,9 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         isPushToTalkActive = false;
 
         StartCoroutine(OnPreviewReady());
-        _agoraController.StartPreview();
+        //_agoraController.StartPreview();
+        _webCamTextureActivator.ActivateCamera();
+        _beemMLHandler.EnableML();
         RefreshControls();
         AnimatedFadeOutMessage();
     }
@@ -368,7 +373,8 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private IEnumerator DelayStartPrevew() {
         yield return new WaitForSeconds(DELAY_FOR_PREVIEW);
-        _agoraController.StartPreview();
+        //_agoraController.StartPreview();
+        //_webCamTextureActivator.ActivateCamera();
     }
 
     private void DeactivateLive() {
@@ -385,7 +391,9 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     public void CloseAsStreamer() {
         StopStream();
-        _agoraController.StopPreview();
+        //_beemMLHandler
+        _webCamTextureActivator?.DisableCamera();
+        //_agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         StreamOverlayConstructor.onDeactivate?.Invoke();
         RecordARConstructor.OnActivated?.Invoke(false);
