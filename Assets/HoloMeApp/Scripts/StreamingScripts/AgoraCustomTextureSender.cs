@@ -10,31 +10,28 @@ public class AgoraCustomTextureSender : MonoBehaviour {
     public bool StartSendingTexture { get; set; }
 
     private Texture2D imgTexture;
-    private RawImage rawImage;
+
+    [SerializeField]
+    private RawImage rawImageRef;
+    [SerializeField]
+    private Material matToBlit;
+    [SerializeField]
+    private RenderTexture renderTex;
 
     private void Start() {
-        rawImage = GetComponent<RawImage>();
         StartSendingTexture = false;
-    }
-
-    private void AssignTexture() {
-        imgTexture = (Texture2D)rawImage.texture;
-        imgTexture.Apply();
     }
 
     private void Update() {
         if (StartSendingTexture) {
-
-            if (rawImage.texture != null) {
-                AssignTexture();
-                StartCoroutine(SendTexture());
-            }
+            StartCoroutine(SendTexture());
         }
     }
 
     IEnumerator SendTexture() {
         yield return new WaitForEndOfFrame();
 
+        imgTexture = TexToTex2D();
         // Gets the Raw Texture data from the texture and apply it to an array of bytes.
         byte[] bytes = imgTexture.GetRawTextureData();
         // Gives enough space for the bytes array.
@@ -66,5 +63,18 @@ public class AgoraCustomTextureSender : MonoBehaviour {
             // Pushes the external video frame with the frame you create.
             int a = rtc.PushVideoFrame(externalVideoFrame);
         }
+    }
+
+    private Texture2D TexToTex2D() {
+        var texture2D = new Texture2D(renderTex.width, renderTex.height, TextureFormat.RGBA32, false);
+        var currentRT = RenderTexture.active;
+
+        RenderTexture.active = renderTex;
+        texture2D.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
+        Graphics.Blit(rawImageRef.texture, renderTex, matToBlit);
+        texture2D.Apply();
+
+        RenderTexture.active = currentRT;
+        return texture2D;
     }
 }
