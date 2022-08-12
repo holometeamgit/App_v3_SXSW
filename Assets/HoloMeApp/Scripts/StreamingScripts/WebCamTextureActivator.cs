@@ -41,6 +41,10 @@ public class WebCamTextureActivator : MonoBehaviour {
     }
 
     private void Update() {
+
+        if (webCamTexture == null) {
+            return;
+        }
         if (!webCamTexture.didUpdateThisFrame) {
             return;
         }

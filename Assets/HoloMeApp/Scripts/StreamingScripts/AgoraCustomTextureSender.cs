@@ -71,7 +71,7 @@ public class AgoraCustomTextureSender : MonoBehaviour {
 
         RenderTexture.active = renderTex;
         texture2D.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
-        Graphics.Blit(rawImageRef.texture, renderTex, matToBlit);
+        //Graphics.Blit(rawImageRef.texture, renderTex, matToBlit);//Enable for use without camera
         texture2D.Apply();
 
         RenderTexture.active = currentRT;
