@@ -109,13 +109,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7762563672446435767}
+  - component: {fileID: 1969428873841197327}
   m_Layer: 6
   m_Name: StreamMLCameraView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7762563672446435767
 Transform:
   m_ObjectHideFlags: 0
@@ -133,6 +134,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1969428873841197327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2641181177974290694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6d5fe6f250029a4d8dbe699656bed2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agoraCustomTextureSender: {fileID: 6491446427717326280}
+  webCamTextureActivator: {fileID: 3593084739467710636}
+  beemMLHandler: {fileID: 5460976974386008694}
+  imgCameraPreview: {fileID: 4727862402726046056}
 --- !u!1 &4645098823476245319
 GameObject:
   m_ObjectHideFlags: 0
@@ -170,7 +187,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -221,7 +238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AspectMode: 3
+  m_AspectMode: 4
   m_AspectRatio: 0.46182266
 --- !u!114 &5460976974386008694
 MonoBehaviour:
@@ -329,7 +346,7 @@ Camera:
   far clip plane: 1000
   field of view: 100
   orthographic: 1
-  orthographic size: 1250
+  orthographic size: 1200
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -403,7 +420,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 1250
+  orthographic size: 1200
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2

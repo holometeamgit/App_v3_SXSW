@@ -35,11 +35,11 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     [Header("These Views")]
 
-    [SerializeField]
-    private RawImage cameraRenderImage;
+    //[SerializeField]
+    //private RawImage cameraRenderImage;
 
-    [SerializeField]
-    private GameObject imgBackground;
+    //[SerializeField]
+    //private GameObject imgBackground;
 
     [SerializeField]
     private GameObject cameraOffBackground;
@@ -75,10 +75,8 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private AgoraController _agoraController;
     private UserWebManager _userWebManager;
-    private BeemMLHandler _beemMLHandler;
-    private WebCamTextureActivator _webCamTextureActivator;
-
-
+    private PnlStreamMLCameraView _pnlStreamMLCameraView;
+ 
     [SerializeField]
     private ExternalLinkRedirector externalLinkRedirector;
 
@@ -124,11 +122,10 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private const string KEY_SEEN_TUTORIAL_ARENA = nameof(KEY_SEEN_TUTORIAL_ARENA);
 
     [Inject]
-    public void Construct(UserWebManager userWebManager, AgoraController agoraController, BeemMLHandler beemMLHandler, WebCamTextureActivator webCamTextureActivator) {
+    public void Construct(UserWebManager userWebManager, AgoraController agoraController, PnlStreamMLCameraView pnlStreamMLCameraView) {
         _userWebManager = userWebManager;
         _agoraController = agoraController;
-        _beemMLHandler = beemMLHandler;
-        _webCamTextureActivator = webCamTextureActivator;
+        _pnlStreamMLCameraView = pnlStreamMLCameraView;
     }
 
     void Init() {
@@ -136,12 +133,12 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
             return;
 
         _agoraController.OnStreamerLeft += StreamFinished;
-        _agoraController.OnCameraSwitched += () => {
-            var videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
-            if (videoSurface) {
-                isUsingFrontCamera = !isUsingFrontCamera;
-            }
-        };
+        //_agoraController.OnCameraSwitched += () => {
+        //    var videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
+        //    if (videoSurface) {
+        //        isUsingFrontCamera = !isUsingFrontCamera;
+        //    }
+        //};
         _agoraController.OnPreviewStopped += PreviewStopped;
         _agoraController.OnStreamWentOffline += StopStreamCountUpdaters;
         _agoraController.OnStreamWentOffline += () => TogglePreLiveControls(true);
@@ -234,7 +231,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private void RefreshBroadcasterControls(bool broadcaster) {
         controlsPresenter.SetActive(broadcaster);
-        imgBackground.SetActive(broadcaster);
+       // imgBackground.SetActive(broadcaster);
         controlsViewer.SetActive(!broadcaster);
         cameraOffBackground.SetActive(false);
     }
@@ -311,16 +308,15 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         isChannelCreator = true;
         gameObject.SetActive(true);
         ARConstructor.onActivated?.Invoke(false);
-        cameraRenderImage.transform.parent.gameObject.SetActive(true);
+        //cameraRenderImage.transform.parent.gameObject.SetActive(true);
 
         _agoraController.ToggleLocalAudio(false);
         _agoraController.ToggleVideo(false);
         isPushToTalkActive = false;
 
-        StartCoroutine(OnPreviewReady());
+        //StartCoroutine(OnPreviewReady());
         //_agoraController.StartPreview();
-        _webCamTextureActivator.ActivateCamera();
-        _beemMLHandler.EnableML();
+        _pnlStreamMLCameraView.ActivateCameraView();
         RefreshControls();
         AnimatedFadeOutMessage();
     }
@@ -336,7 +332,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         gameObject.SetActive(true);
         togglePushToTalk.interactable = false;
         ARenaConstructor.onActivateForStreaming?.Invoke(channelName, streamID, isRoom);
-        cameraRenderImage.transform.parent.gameObject.SetActive(false);
+        //cameraRenderImage.transform.parent.gameObject.SetActive(false);
         _agoraController.JoinOrCreateChannel(false);
         currentStreamId = streamID;
 
@@ -392,7 +388,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     public void CloseAsStreamer() {
         StopStream();
         //_beemMLHandler
-        _webCamTextureActivator?.DisableCamera();
+        _pnlStreamMLCameraView.DisableCameraView();
         //_agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         StreamOverlayConstructor.onDeactivate?.Invoke();
@@ -440,7 +436,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         streamLikesRefresherView.Cancel();
 
         _agoraController.Leave();
-        cameraRenderImage.texture = null;
+        //cameraRenderImage.texture = null;
         AnimatedFadeOutMessage();
         speechNotificationPopups.DeactivateAllPopups();
         RefreshControls();
@@ -703,17 +699,17 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     //    }
     //}
 
-    IEnumerator OnPreviewReady() {
-        //videoSurface.SetEnable(true);
-        cameraRenderImage.color = Color.black;
+    //IEnumerator OnPreviewReady() {
+    //    //videoSurface.SetEnable(true);
+    //    cameraRenderImage.color = Color.black;
 
-        while (!_agoraController.VideoIsReady || cameraRenderImage.texture == null) {
-            yield return null;
-        }
+    //    while (!_agoraController.VideoIsReady || cameraRenderImage.texture == null) {
+    //        yield return null;
+    //    }
 
-        cameraRenderImage.color = Color.white;
-        cameraRenderImage.SizeToParent();
-    }
+    //    cameraRenderImage.color = Color.white;
+    //    cameraRenderImage.SizeToParent();
+    //}
 
     //TODO keeping here in case we revert to push to talk
     ///// <summary>

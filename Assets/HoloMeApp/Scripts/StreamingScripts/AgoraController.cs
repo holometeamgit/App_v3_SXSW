@@ -65,14 +65,14 @@ public class AgoraController : MonoBehaviour {
     private UserWebManager _userWebManager;
     private AgoraRTMChatController _agoraRTMChatController;
     private SecondaryServerCalls _secondaryServerCalls;
-    private AgoraCustomTextureSender _agoraCustomTextureSender;
+    private PnlStreamMLCameraView _pnlStreamMLCameraView;
 
     [Inject]
-    public void Construct(UserWebManager userWebManager, AgoraRTMChatController agoraRTMChatController, SecondaryServerCalls secondaryServerCalls, AgoraCustomTextureSender agoraCustomTextureSender) {
+    public void Construct(UserWebManager userWebManager, AgoraRTMChatController agoraRTMChatController, SecondaryServerCalls secondaryServerCalls, PnlStreamMLCameraView pnlStreamMLCameraView) {
         _userWebManager = userWebManager;
         _agoraRTMChatController = agoraRTMChatController;
         _secondaryServerCalls = secondaryServerCalls;
-        _agoraCustomTextureSender = agoraCustomTextureSender;
+        _pnlStreamMLCameraView = pnlStreamMLCameraView;
     }
 
     public void Start() {
@@ -268,7 +268,7 @@ public class AgoraController : MonoBehaviour {
         }
 
         if (IsChannelCreator) {//Start sending custom BG removal texture
-            _agoraCustomTextureSender.StartSendingTexture = true;
+            _pnlStreamMLCameraView.StartSendingCustomTexture();
         }
 
         if (IsChannelCreator && !IsRoom) {//No thumbnails for rooms for now
@@ -292,7 +292,7 @@ public class AgoraController : MonoBehaviour {
             StopCoroutine(sendThumbnailRoutine);
 
         if (IsChannelCreator) {
-            _agoraCustomTextureSender.StartSendingTexture = false;
+            _pnlStreamMLCameraView.StopSendingCustomTexture();
             _secondaryServerCalls.EndStream();
             AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyMaxViewerCount, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamChannelName, ChannelName }, { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() }, { AnalyticParameters.ParamViewerCount, maxViewerCountTracker.ToString() } });
             AnalyticsController.Instance.StopTimer(AnalyticKeys.KeyViewLengthOfStream, new Dictionary<string, string> { { AnalyticParameters.ParamChannelName, ChannelName }, { AnalyticParameters.ParamDate, DateTime.Now.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() } });
