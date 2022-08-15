@@ -14,7 +14,23 @@ public class PnlStreamMLCameraView : MonoBehaviour {
     [SerializeField]
     private RawImage imgCameraPreview;
 
+    [SerializeField]
+    private Canvas textureStreamCanvas;
+
+    [SerializeField]
+    private Camera[] renderCameras;
+
     private bool hasBeenActivated;
+
+    private void Awake() {
+        textureStreamCanvas.renderMode = RenderMode.WorldSpace; //By starting canvas in screenspace Unity adjust viewport to fit perfectly with screen size, this allows accurate canvas size in world space
+        RectTransform rTrans = textureStreamCanvas.GetComponent<RectTransform>();
+        rTrans.anchoredPosition = Vector2.zero;
+
+        foreach(Camera camera in renderCameras) { //Set the height of the cameras to match the screen size
+            camera.orthographicSize = Screen.height / 2;
+        }
+    }
 
     public void ActivateCameraView() {
         if (hasBeenActivated) {
@@ -36,10 +52,10 @@ public class PnlStreamMLCameraView : MonoBehaviour {
     }
 
     public void StartSendingCustomTexture() {
-        agoraCustomTextureSender.StartSendingTexture = true;
+        agoraCustomTextureSender.StartSendingTextureUpdates();
     }
 
     public void StopSendingCustomTexture() {
-        agoraCustomTextureSender.StartSendingTexture = false;
+        agoraCustomTextureSender.StopSendingTextureRoutine();
     }
 }
