@@ -7,15 +7,10 @@ using UnityEngine.UI;
 [RequireComponent(typeof(RawImage))]
 public class AgoraCustomTextureSender : MonoBehaviour {
 
-    private Texture2D imgTexture;
-
-    [SerializeField]
-    private RawImage rawImageRef;
-    [SerializeField]
-    private Material matToBlit;
     [SerializeField]
     private RenderTexture renderTex;
 
+    private Texture2D imgTexture;
     private Coroutine sendTextureRoutine;
 
     public void StartSendingTextureUpdates() {

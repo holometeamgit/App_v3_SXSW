@@ -28,7 +28,7 @@ RectTransform:
   m_GameObject: {fileID: 2236275532696556403}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3721753958889958776}
   m_Father: {fileID: 7762563672446435767}
@@ -48,7 +48,7 @@ Canvas:
   m_GameObject: {fileID: 2236275532696556403}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_Camera: {fileID: 4071470676461730392}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -82,7 +82,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &5178910221872241042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -150,7 +150,6 @@ MonoBehaviour:
   webCamTextureActivator: {fileID: 3593084739467710636}
   beemMLHandler: {fileID: 5460976974386008694}
   imgCameraPreview: {fileID: 4727862402726046056}
-  textureStreamCanvas: {fileID: 2837359113713975680}
   renderCameras:
   - {fileID: 4071470676461730392}
   - {fileID: 8459323915953607463}
@@ -275,7 +274,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rawImageRef: {fileID: 4727862402726046056}
-  matToBlit: {fileID: 2100000, guid: 8bceefff34b214848891308bd437f0fd, type: 2}
   renderTex: {fileID: 8400000, guid: 81c260e8eb40e434f81b51a1505668f1, type: 2}
 --- !u!114 &3593084739467710636
 MonoBehaviour:
