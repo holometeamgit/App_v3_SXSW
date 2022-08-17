@@ -59,6 +59,7 @@ public class WebCamTextureActivator : MonoBehaviour {
                 return;
             }
 
+            print("ROTATION ANGLE = "+ webCamTexture.videoRotationAngle);
 
             rawImage.rectTransform.eulerAngles = new Vector3(0, 0, -webCamTexture.videoRotationAngle); //Correct image rotation
             imageFitter.aspectMode = AspectRatioFitter.AspectMode.None;
@@ -71,7 +72,7 @@ public class WebCamTextureActivator : MonoBehaviour {
                     rawImage.uvRect = new Rect(0, 1, 1, -1);  // Correct mirroring android
                     break;
                 case (90):
-                    rawImage.uvRect = new Rect(1, 0, -1, 1);  // Correct mirroring iOS
+                    rawImage.uvRect = new Rect(0, 0, 1, 1);  // Correct mirroring iOS
                     break;
                 default:
                     rawImage.uvRect = new Rect(1, 0, -1, 1);
