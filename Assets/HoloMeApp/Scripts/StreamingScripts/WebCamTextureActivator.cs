@@ -68,11 +68,11 @@ public class WebCamTextureActivator : MonoBehaviour {
             //}
 
             //2
-            aspectRatioFitter.aspectMode = AspectRatioFitter.AspectMode.None;
-            rawImage.rectTransform.eulerAngles = new Vector3(0, 0, -webCamTexture.videoRotationAngle); //Correct image rotation
-            rawImage.rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-            rawImage.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-            rawImage.SetNativeSize();
+            //aspectRatioFitter.aspectMode = AspectRatioFitter.AspectMode.None;
+            //rawImage.rectTransform.eulerAngles = new Vector3(0, 0, -webCamTexture.videoRotationAngle); //Correct image rotation
+            //rawImage.rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+            //rawImage.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            //rawImage.SetNativeSize();
             //rawImage.rectTransform.sizeDelta = new Vector2(Screen.height, Screen.width);
 
             //3
@@ -89,17 +89,30 @@ public class WebCamTextureActivator : MonoBehaviour {
             //rawImage.rectTransform.parent.parent.Find("StreamRenderTextureCamera").transform.rotation = Quaternion.Euler(0,0,-webCamTexture.videoRotationAngle);
             //rawImage.rectTransform.parent.parent.Find("StreamPreviewCamera").transform.rotation = Quaternion.Euler(0,0,-webCamTexture.videoRotationAngle);
 
-            switch (webCamTexture.videoRotationAngle) {
-                case (270):
-                    rawImage.uvRect = new Rect(0, 1, 1, -1); //Correct mirroring android
-                    break;
-                case (90):
-                    rawImage.uvRect = new Rect(0, 0, 1, 1);  //Correct mirroring iOS
-                    break;
-                default:
-                    rawImage.uvRect = new Rect(1, 0, -1, 1);
-                    break;
+            //5 Ivan's solution
+            rawImage.material.SetFloat("_Rotation", webCamTexture.videoRotationAngle * Mathf.PI / 180f);
+            rawImage.material.SetFloat("_Scale", (webCamTexture.videoVerticallyMirrored) ? -1 : 1);
+            //transform.localScale = new Vector3(-1, 1, 1);
+            rawImage.uvRect = new Rect(1, 0, -1, 1);
+            // Scale the preview panel
+            aspectRatioFitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
+            if (webCamTexture.videoRotationAngle == 90 || webCamTexture.videoRotationAngle == 270) {
+                aspectRatioFitter.aspectRatio = (float)webCamTexture.height / webCamTexture.width;
+            } else {
+                aspectRatioFitter.aspectRatio = (float)webCamTexture.width / webCamTexture.height;
             }
+
+            //switch (webCamTexture.videoRotationAngle) {
+            //    case (270):
+            //        rawImage.uvRect = new Rect(0, 1, 1, -1); //Correct mirroring android
+            //        break;
+            //    case (90):
+            //        rawImage.uvRect = new Rect(0, 0, 1, 1);  //Correct mirroring iOS
+            //        break;
+            //    default:
+            //        rawImage.uvRect = new Rect(1, 0, -1, 1);
+            //        break;
+            //}
 
             textureSetup = true;
         }

@@ -4,6 +4,8 @@ Shader "HLM/Unlit/MlBeemOutput"
     {
         _MainTex("Texture", 2D) = "white" {}
         _MaskTex("Mask", 2D) = "white" {}
+        _Rotation("Rotation", float) = 0
+        _Scale("Scale", float) = 1
         [Toggle] _Blur("Blur", Float) = 1
     }
         SubShader
@@ -41,12 +43,27 @@ Shader "HLM/Unlit/MlBeemOutput"
 
                 float _Blur;
 
+                uniform fixed _Rotation, _Scale;
+
                 v2f vert(appdata v)
                 {
                     v2f o;
                     o.vertex = UnityObjectToClipPos(v.vertex);
                     o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                     UNITY_TRANSFER_FOG(o,o.vertex);
+
+                    o.uv = v.uv - float2(0.5, 0.5);
+                    float s, c;
+                    sincos(_Rotation, s, c);
+                    float2x2 transform = mul(float2x2(
+                        float2(c, -s),
+                        float2(s, c)
+                        ), float2x2(
+                            float2(_Scale, 0.0),
+                            float2(0.0, 1.0)
+                            ));
+                    o.uv = mul(transform, o.uv) + float2(0.5, 0.5);
+
                     return o;
                 }
 
