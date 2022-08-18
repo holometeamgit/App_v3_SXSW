@@ -10,13 +10,13 @@ public class WebCamTextureActivator : MonoBehaviour {
     private WebCamTexture webCamTexture;
     private Material rawImageMat;
     private RawImage rawImage;
-    private AspectRatioFitter imageFitter;
+    private AspectRatioFitter aspectRatioFitter;
     private bool textureSetup;
 
     private void Awake() {
         rawImageMat = GetComponent<RawImage>().materialForRendering;
         rawImage = GetComponent<RawImage>();
-        imageFitter = GetComponent<AspectRatioFitter>();
+        aspectRatioFitter = GetComponent<AspectRatioFitter>();
     }
 
     private void OnEnable() {
@@ -59,20 +59,42 @@ public class WebCamTextureActivator : MonoBehaviour {
                 return;
             }
 
-            print("ROTATION ANGLE = "+ webCamTexture.videoRotationAngle);
+            //1
+            //aspectRatioFitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
+            //if (webCamTexture.videoRotationAngle == 90 || webCamTexture.videoRotationAngle == 270) {//If quad is rotated divide height by width instead
+            //    aspectRatioFitter.aspectRatio = (float)webCamTexture.height / webCamTexture.width;
+            //} else {
+            //    aspectRatioFitter.aspectRatio = (float)webCamTexture.width / webCamTexture.height;
+            //}
 
+            //2
+            aspectRatioFitter.aspectMode = AspectRatioFitter.AspectMode.None;
             rawImage.rectTransform.eulerAngles = new Vector3(0, 0, -webCamTexture.videoRotationAngle); //Correct image rotation
-            imageFitter.aspectMode = AspectRatioFitter.AspectMode.None;
             rawImage.rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
             rawImage.rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-            rawImage.rectTransform.sizeDelta = new Vector2(Screen.height, Screen.width);
+            rawImage.SetNativeSize();
+            //rawImage.rectTransform.sizeDelta = new Vector2(Screen.height, Screen.width);
+
+            //3
+            //aspectRatioFitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
+            //aspectRatioFitter.aspectRatio = (float)webCamTexture.width / webCamTexture.height;
+            //rawImage.rectTransform.parent.eulerAngles = new Vector3(0, 0, -webCamTexture.videoRotationAngle); //Correct image rotation on canvas transform
+            //if (webCamTexture.videoRotationAngle == 90) {
+            //    rawImage.rectTransform.parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-Screen.height / 2, Screen.width / 2); //Centre image if rotated
+            //}
+
+            //4 Rotate cameras with offset
+            //aspectRatioFitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
+            //aspectRatioFitter.aspectRatio = (float)webCamTexture.width / webCamTexture.height;
+            //rawImage.rectTransform.parent.parent.Find("StreamRenderTextureCamera").transform.rotation = Quaternion.Euler(0,0,-webCamTexture.videoRotationAngle);
+            //rawImage.rectTransform.parent.parent.Find("StreamPreviewCamera").transform.rotation = Quaternion.Euler(0,0,-webCamTexture.videoRotationAngle);
 
             switch (webCamTexture.videoRotationAngle) {
                 case (270):
-                    rawImage.uvRect = new Rect(0, 1, 1, -1);  // Correct mirroring android
+                    rawImage.uvRect = new Rect(0, 1, 1, -1); //Correct mirroring android
                     break;
                 case (90):
-                    rawImage.uvRect = new Rect(0, 0, 1, 1);  // Correct mirroring iOS
+                    rawImage.uvRect = new Rect(0, 0, 1, 1);  //Correct mirroring iOS
                     break;
                 default:
                     rawImage.uvRect = new Rect(1, 0, -1, 1);

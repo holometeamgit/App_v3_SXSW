@@ -38,7 +38,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &2837359113713975680
 Canvas:
   m_ObjectHideFlags: 0
@@ -150,6 +150,7 @@ MonoBehaviour:
   webCamTextureActivator: {fileID: 3593084739467710636}
   beemMLHandler: {fileID: 5460976974386008694}
   imgCameraPreview: {fileID: 4727862402726046056}
+  canvas: {fileID: 2837359113713975680}
   renderCameras:
   - {fileID: 4071470676461730392}
   - {fileID: 8459323915953607463}
@@ -273,7 +274,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b993d2a7191187a48bdbbeae69e0c773, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rawImageRef: {fileID: 4727862402726046056}
   renderTex: {fileID: 8400000, guid: 81c260e8eb40e434f81b51a1505668f1, type: 2}
 --- !u!114 &3593084739467710636
 MonoBehaviour:
@@ -287,7 +287,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c59504df6c4fa5849ae679a2cb85d02c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderTex: {fileID: 8400000, guid: 81c260e8eb40e434f81b51a1505668f1, type: 2}
   OnTextureUpdate:
     m_PersistentCalls:
       m_Calls: []
