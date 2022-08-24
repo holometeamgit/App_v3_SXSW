@@ -37,14 +37,7 @@ public class PnlStreamMLCameraView : MonoBehaviour {
         gameObject.SetActive(true);
         webcamInput.ActivateCamera();
         beemMLHandler.EnableML();
-        imgCameraPreview.enabled = false;
-        StartCoroutine(EnableRawTextureLate());
         hasBeenActivated = true;
-    }
-
-    private IEnumerator EnableRawTextureLate() { //Temp fix for bug where white mask shows on initial launch
-        yield return new WaitForSeconds(1);
-        imgCameraPreview.enabled = true;
     }
 
     public void DisableCameraView() {
