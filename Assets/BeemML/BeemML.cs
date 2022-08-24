@@ -56,9 +56,8 @@ namespace TensorFlowLite
 
         public BeemML(Options options) : base(options.modelFile, options.accelerator)
         {
-            resizeOptions = new TextureResizer.ResizeOptions()
-            {
-                aspectMode = AspectMode.None,
+            resizeOptions = new TextureResizer.ResizeOptions() {
+                aspectMode = AspectMode.None,//AspectMode.Fit,
                 rotationDegree = 0,
                 mirrorHorizontal = false,
                 mirrorVertical = false,

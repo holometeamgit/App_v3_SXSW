@@ -1,3 +1,5 @@
+using System.Collections;
+using TensorFlowLite;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,7 +7,7 @@ public class PnlStreamMLCameraView : MonoBehaviour {
     [SerializeField]
     private AgoraCustomTextureSender agoraCustomTextureSender;
     [SerializeField]
-    private WebCamTextureActivator webCamTextureActivator;
+    private WebCamInput webcamInput;
     [SerializeField]
     private BeemMLHandler beemMLHandler;
     [SerializeField]
@@ -24,7 +26,6 @@ public class PnlStreamMLCameraView : MonoBehaviour {
 
         RectTransform canvasRect = canvas.transform.GetComponent<RectTransform>();
         canvasRect.sizeDelta = new Vector2(Screen.width, Screen.height);//Set the world canvas to correct res in order to see picture
-        //canvasRect.anchoredPosition = new Vector2(-Screen.width / 2, -Screen.height / 2);//Centre canvas to cameras
     }
 
     public void ActivateCameraView() {
@@ -32,16 +33,23 @@ public class PnlStreamMLCameraView : MonoBehaviour {
             return;
         }
 
-        hasBeenActivated = true;
-        gameObject.SetActive(true);
         HelperFunctions.DevLog("Activate ML Camera View");
-        webCamTextureActivator.ActivateCamera();
+        gameObject.SetActive(true);
+        webcamInput.ActivateCamera();
         beemMLHandler.EnableML();
+        imgCameraPreview.enabled = false;
+        StartCoroutine(EnableRawTextureLate());
+        hasBeenActivated = true;
+    }
+
+    private IEnumerator EnableRawTextureLate() { //Temp fix for bug where white mask shows on initial launch
+        yield return new WaitForSeconds(1);
+        imgCameraPreview.enabled = true;
     }
 
     public void DisableCameraView() {
         HelperFunctions.DevLog("Disable ML Camera View");
-        webCamTextureActivator.DisableCamera();
+        webcamInput.DisableCamera();
         gameObject.SetActive(false);
         hasBeenActivated = false;
     }

@@ -14,7 +14,7 @@ namespace TensorFlowLite
 
         private static readonly int _UVRect = Shader.PropertyToID("_UVRect");
 
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             Material = useCustomMaterial
                 ? customMaterial

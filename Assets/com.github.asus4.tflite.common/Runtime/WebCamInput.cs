@@ -25,8 +25,13 @@ namespace TensorFlowLite
         private WebCamDevice[] _devices;
         private int _deviceIndex;
 
-        private void Start()
+        private bool hasActivated;
+
+        private void Activate()
         {
+            if (hasActivated)
+                return;
+
             _resizer = new TextureResizer();
             _devices = WebCamTexture.devices;
             var cameraName = Application.isEditor
@@ -46,9 +51,18 @@ namespace TensorFlowLite
                 
                 break;
             }
-            StartCamera(device);
+            hasActivated = true;
         }
 
+        public void ActivateCamera() {
+            Activate();
+            StartCamera(_devices[_deviceIndex]);
+        }
+
+        public void DisableCamera() {
+            StopCamera();
+        }
+          
         private void OnDestroy()
         {
             StopCamera();
@@ -57,13 +71,17 @@ namespace TensorFlowLite
 
         private void Update()
         {
+            if (_webCamTexture == null) {
+                return;
+            }
+
             if (!_webCamTexture.didUpdateThisFrame)
             {
                 return;
             }
 
             var tex = NormalizeWebcam(_webCamTexture, Screen.width, Screen.height, isFrontFacing);
-            OnTextureUpdate.Invoke(tex);
+            OnTextureUpdate?.Invoke(tex);
         }
 
         // Invoked by Unity Event

@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agoraCustomTextureSender: {fileID: 6491446427717326280}
-  webCamTextureActivator: {fileID: 3593084739467710636}
+  webcamInput: {fileID: 6396230754691153385}
   beemMLHandler: {fileID: 5460976974386008694}
   imgCameraPreview: {fileID: 4727862402726046056}
   canvas: {fileID: 2837359113713975680}
@@ -165,10 +165,12 @@ GameObject:
   - component: {fileID: 3721753958889958776}
   - component: {fileID: 3472118674182620160}
   - component: {fileID: 4727862402726046056}
-  - component: {fileID: 7004249225865436966}
+  - component: {fileID: 6396230754691153385}
+  - component: {fileID: 200913507831084720}
   - component: {fileID: 5460976974386008694}
   - component: {fileID: 6491446427717326280}
-  - component: {fileID: 3593084739467710636}
+  - component: {fileID: 3851149198771018796}
+  - component: {fileID: 965941478841844661}
   m_Layer: 6
   m_Name: CameraRenderImage
   m_TagString: Untagged
@@ -190,8 +192,8 @@ RectTransform:
   m_Father: {fileID: 1157991187348762965}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -219,7 +221,7 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -230,7 +232,7 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
---- !u!114 &7004249225865436966
+--- !u!114 &6396230754691153385
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -239,11 +241,55 @@ MonoBehaviour:
   m_GameObject: {fileID: 4645098823476245319}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Script: {fileID: 11500000, guid: 3f81f0d43e2d14fbbb064a205095507c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AspectMode: 4
-  m_AspectRatio: 0.46182266
+  editorCameraName: Trust QHD Webcam
+  preferKind: 1
+  isFrontFacing: 1
+  requestSize: {x: 1280, y: 720}
+  requestFps: 30
+  OnTextureUpdate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 200913507831084720}
+        m_TargetAssemblyTypeName: TensorFlowLite.CameraTextureBackground, TensorFlowLite.Common
+        m_MethodName: SetTexture
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5460976974386008694}
+        m_TargetAssemblyTypeName: BeemMLHandler, Assembly-CSharp
+        m_MethodName: OnTextureUpdate
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &200913507831084720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4645098823476245319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd6f7b5dfd6c243c5bcacc40ee7b38d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useCustomMaterial: 1
+  customMaterial: {fileID: 2100000, guid: 8bceefff34b214848891308bd437f0fd, type: 2}
 --- !u!114 &5460976974386008694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -256,7 +302,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ceccc700e6dc0748a412473037f30d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  webCamTexScript: {fileID: 3593084739467710636}
   outputView: {fileID: 4727862402726046056}
   options:
     modelFile: tflite_fixed_output2.tflite
@@ -275,7 +320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   renderTex: {fileID: 8400000, guid: 81c260e8eb40e434f81b51a1505668f1, type: 2}
---- !u!114 &3593084739467710636
+--- !u!114 &3851149198771018796
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -284,12 +329,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 4645098823476245319}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c59504df6c4fa5849ae679a2cb85d02c, type: 3}
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnTextureUpdate:
-    m_PersistentCalls:
-      m_Calls: []
+  m_AspectMode: 4
+  m_AspectRatio: 1
+--- !u!114 &965941478841844661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4645098823476245319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61aa8a791109024c924f7c50bee4053, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aspectRatioFitter: {fileID: 3851149198771018796}
 --- !u!1 &5964278205749366795
 GameObject:
   m_ObjectHideFlags: 0
@@ -359,7 +416,7 @@ Camera:
   m_TargetEye: 3
   m_HDR: 0
   m_AllowMSAA: 0
-  m_AllowDynamicResolution: 1
+  m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
@@ -433,7 +490,7 @@ Camera:
   m_TargetEye: 3
   m_HDR: 0
   m_AllowMSAA: 0
-  m_AllowDynamicResolution: 1
+  m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
