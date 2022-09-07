@@ -113,6 +113,8 @@ public class ScreenshotView : MonoBehaviour {
                 _currentState = _startState;
                 if (_currentState) {
                     Play();
+                } else {
+                    Pause();
                 }
                 break;
         }

@@ -80,6 +80,8 @@ public class CustomVideoPlayer {
     }
 
     private async void Prepare(VideoPlayer vp) {
+        //need this delay because we need wait one frame to start after prepare
+        await Task.Delay(100);
         _videoPlayer.Play();
 
         _videoPlayer.isLooping = true;
