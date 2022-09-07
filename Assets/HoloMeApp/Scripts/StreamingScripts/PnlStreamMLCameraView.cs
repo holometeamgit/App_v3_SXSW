@@ -13,7 +13,7 @@ public class PnlStreamMLCameraView : MonoBehaviour {
     [SerializeField]
     private RawImage imgCameraPreview;
     [SerializeField]
-    private Canvas canvas;
+    private Canvas[] canvases;
     [SerializeField]
     private Camera[] renderCameras;
 
@@ -24,8 +24,10 @@ public class PnlStreamMLCameraView : MonoBehaviour {
             camera.orthographicSize = Screen.height / 2;
         }
 
-        RectTransform canvasRect = canvas.transform.GetComponent<RectTransform>();
-        canvasRect.sizeDelta = new Vector2(Screen.width, Screen.height);//Set the world canvas to correct res in order to see picture
+        foreach (Canvas canvas in canvases) {
+            RectTransform canvasRect = canvas.transform.GetComponent<RectTransform>();
+            canvasRect.sizeDelta = new Vector2(Screen.width, Screen.height);//Set the world canvas to correct res in order to see picture
+        }
     }
 
     public void ActivateCameraView() {

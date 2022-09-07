@@ -17,6 +17,11 @@ namespace TensorFlowLite
         [SerializeField] private bool isFrontFacing = false;
         [SerializeField] private Vector2Int requestSize = new Vector2Int(1280, 720);
         [SerializeField] private int requestFps = 60;
+
+        [SerializeField] private Material cameraViewMat;
+        [SerializeField] private RenderTexture renTexCamView;
+        [SerializeField] private UnityEngine.UI.RawImage camerViewRenderRawImage;
+        [SerializeField] private UnityEngine.UI.RawImage outputViewRawImage;
         
         public TextureUpdateEvent OnTextureUpdate = new TextureUpdateEvent();
 
@@ -80,8 +85,25 @@ namespace TensorFlowLite
                 return;
             }
 
+            BlitTex();
+
             var tex = NormalizeWebcam(_webCamTexture, Screen.width, Screen.height, isFrontFacing);
             OnTextureUpdate?.Invoke(tex);
+        }
+
+
+        private void BlitTex() {
+            var texture2D = new Texture2D(renTexCamView.width, renTexCamView.height, TextureFormat.RGBA32, false);
+            var currentRT = RenderTexture.active;
+
+            RenderTexture.active = renTexCamView;
+            texture2D.ReadPixels(new Rect(0, 0, renTexCamView.width, renTexCamView.height), 0, 0);
+            Graphics.Blit(camerViewRenderRawImage.texture, renTexCamView, cameraViewMat);
+            texture2D.Apply();
+
+
+            RenderTexture.active = currentRT;
+            outputViewRawImage.texture = texture2D;
         }
 
         // Invoked by Unity Event
