@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Scripting;
+using UnityEngine.UI;
 
 namespace TensorFlowLite
 {
@@ -19,9 +20,9 @@ namespace TensorFlowLite
         [SerializeField] private int requestFps = 60;
 
         [SerializeField] private Material cameraViewMat;
-        [SerializeField] private RenderTexture renTexCamView;
-        [SerializeField] private UnityEngine.UI.RawImage camerViewRenderRawImage;
-        [SerializeField] private UnityEngine.UI.RawImage outputViewRawImage;
+        [SerializeField] private RawImage camerViewRenderRawImage;
+        [SerializeField] private RawImage outputViewRawImage;
+        private RenderTexture renTexCamView;
         
         public TextureUpdateEvent OnTextureUpdate = new TextureUpdateEvent();
 
@@ -93,6 +94,13 @@ namespace TensorFlowLite
 
 
         private void BlitTex() {
+
+            if(renTexCamView == null) { //Create rendertexture at screen resolution
+                renTexCamView = new RenderTexture(Screen.width, Screen.height, 16, RenderTextureFormat.ARGB32);
+                renTexCamView.Create();
+                RenderTexture.active = renTexCamView;
+            }
+
             var texture2D = new Texture2D(renTexCamView.width, renTexCamView.height, TextureFormat.RGBA32, false);
             var currentRT = RenderTexture.active;
 
