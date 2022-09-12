@@ -29,7 +29,7 @@ public class AgoraCustomTextureSender : MonoBehaviour {
 
     private IEnumerator SendTexture() {
         while (true) {
-            imgTexture = TexToTex2D();
+            MapRenderTextureToTex2D();
             // Gets the Raw Texture data from the texture and apply it to an array of bytes.
             byte[] bytes = imgTexture.GetRawTextureData();
             // Gives enough space for the bytes array.
@@ -66,16 +66,15 @@ public class AgoraCustomTextureSender : MonoBehaviour {
         }
     }
 
-    private Texture2D TexToTex2D() {
-        var texture2D = new Texture2D(renderTex.width, renderTex.height, TextureFormat.RGBA32, false);
+    private void MapRenderTextureToTex2D() {
+        if (imgTexture == null) {
+            imgTexture = new Texture2D(renderTex.width, renderTex.height, TextureFormat.RGBA32, false);
+        }
         var currentRT = RenderTexture.active;
-
         RenderTexture.active = renderTex;
-        texture2D.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
+        imgTexture.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
         //Graphics.Blit(rawImageRef.texture, renderTex, matToBlit);//Enable for use without camera
-        texture2D.Apply();
-
+        imgTexture.Apply();
         RenderTexture.active = currentRT;
-        return texture2D;
     }
 }
