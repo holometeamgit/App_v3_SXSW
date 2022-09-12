@@ -100,18 +100,13 @@ namespace TensorFlowLite
                 renTexCamView.Create();
                 RenderTexture.active = renTexCamView;
             }
-
-            var texture2D = new Texture2D(renTexCamView.width, renTexCamView.height, TextureFormat.RGBA32, false);
+                        
             var currentRT = RenderTexture.active;
-
             RenderTexture.active = renTexCamView;
-            texture2D.ReadPixels(new Rect(0, 0, renTexCamView.width, renTexCamView.height), 0, 0);
             Graphics.Blit(camerViewRenderRawImage.texture, renTexCamView, cameraViewMat);
-            texture2D.Apply();
-
-
+            
             RenderTexture.active = currentRT;
-            outputViewRawImage.texture = texture2D;
+            outputViewRawImage.texture = camerViewRenderRawImage.texture;
         }
 
         // Invoked by Unity Event
