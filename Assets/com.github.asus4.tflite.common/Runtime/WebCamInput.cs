@@ -92,7 +92,6 @@ namespace TensorFlowLite
             OnTextureUpdate?.Invoke(tex);
         }
 
-
         private void BlitTex() {
 
             if(renTexCamView == null) { //Create rendertexture at screen resolution
