@@ -1,4 +1,3 @@
-using System.Collections;
 using TensorFlowLite;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,21 +12,53 @@ public class PnlStreamMLCameraView : MonoBehaviour {
     [SerializeField]
     private RawImage imgCameraPreview;
     [SerializeField]
-    private Canvas[] canvases;
+    private Canvas senderGreenBGCanvas;
     [SerializeField]
-    private Camera[] renderCameras;
+    private Canvas noGreenBGCanvas;
+    [SerializeField]
+    private Camera renderTextureCamera;
+    [SerializeField]
+    private Camera previewCamera;
 
     private bool hasBeenActivated;
 
     private void Awake() {
-        foreach (Camera camera in renderCameras) { //Set the height of the cameras to match the screen size
-            camera.orthographicSize = Screen.height / 2;
-        }
+        SetCameraSize(renderTextureCamera);
+        SetCameraSize(previewCamera);
+        SetCanvasSize(senderGreenBGCanvas);
+        SetCanvasSize(noGreenBGCanvas);
+        EnableGreenBG();
+    }
 
-        foreach (Canvas canvas in canvases) {
-            RectTransform canvasRect = canvas.transform.GetComponent<RectTransform>();
-            canvasRect.sizeDelta = new Vector2(Screen.width, Screen.height);//Set the world canvas to correct res in order to see picture
-        }
+    /// <summary>
+    /// Set the height of the cameras to match the screen size
+    /// </summary>
+    private void SetCameraSize(Camera camera) {
+        camera.orthographicSize = Screen.height / 2;
+    }
+
+    /// <summary>
+    /// Corrects the canvases resolution
+    /// </summary>
+    private void SetCanvasSize(Canvas canvas) {
+        RectTransform canvasRect = canvas.transform.GetComponent<RectTransform>();
+        canvasRect.sizeDelta = new Vector2(Screen.width, Screen.height);//Set the world canvas to correct res in order to see picture
+    }
+
+    /// <summary>
+    /// Call to enable green background effect
+    /// </summary>
+    public void EnableGreenBG() {
+        previewCamera.cullingMask = (1 << LayerMask.NameToLayer("MlResult"));
+        noGreenBGCanvas.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Disable green background effect and display raw camera background
+    /// </summary>
+    public void DisableGreenBG() {
+        previewCamera.cullingMask = (1 << LayerMask.NameToLayer("CamPreviewNoML"));
+        noGreenBGCanvas.gameObject.SetActive(true);
     }
 
     public void ActivateCameraView() {

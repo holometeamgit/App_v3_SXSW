@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 4154386728066627791}
   - component: {fileID: 5178910221872241042}
   m_Layer: 6
-  m_Name: Canvas
+  m_Name: CanvasGreenBG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -214,7 +214,7 @@ GameObject:
   - component: {fileID: 566650597328358564}
   - component: {fileID: 6329636345698859759}
   m_Layer: 7
-  m_Name: CanvasCamClienView
+  m_Name: CanvasNoGreenBG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -311,7 +311,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7762563672446435767}
   - component: {fileID: 1969428873841197327}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: StreamMLCameraView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -329,8 +329,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 7721908841192445104}
   - {fileID: 5428000789406914230}
+  - {fileID: 7721908841192445104}
   - {fileID: 1157991187348762965}
   - {fileID: 3803920215504102355}
   m_Father: {fileID: 0}
@@ -352,12 +352,10 @@ MonoBehaviour:
   webcamInput: {fileID: 6396230754691153385}
   beemMLHandler: {fileID: 5460976974386008694}
   imgCameraPreview: {fileID: 4727862402726046056}
-  canvases:
-  - {fileID: 2837359113713975680}
-  - {fileID: 4320138982128641217}
-  renderCameras:
-  - {fileID: 4071470676461730392}
-  - {fileID: 8459323915953607463}
+  senderGreenBGCanvas: {fileID: 2837359113713975680}
+  noGreenBGCanvas: {fileID: 4320138982128641217}
+  renderTextureCamera: {fileID: 8459323915953607463}
+  previewCamera: {fileID: 4071470676461730392}
 --- !u!1 &4645098823476245319
 GameObject:
   m_ObjectHideFlags: 0
@@ -454,7 +452,6 @@ MonoBehaviour:
   requestSize: {x: 1280, y: 720}
   requestFps: 30
   cameraViewMat: {fileID: 2100000, guid: 09ba2932483114040aebf9d544171eb1, type: 2}
-  renTexCamView: {fileID: 8400000, guid: 0bf839315ad9d354898eedef06e65265, type: 2}
   camerViewRenderRawImage: {fileID: 4727862402726046056}
   outputViewRawImage: {fileID: 1381802150472323363}
   OnTextureUpdate:
@@ -577,7 +574,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5428000789406914230}
   - component: {fileID: 8459323915953607463}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: StreamRenderTextureCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -596,7 +593,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7762563672446435767}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &8459323915953607463
 Camera:
@@ -651,7 +648,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7721908841192445104}
   - component: {fileID: 4071470676461730392}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: StreamPreviewCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -670,7 +667,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7762563672446435767}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &4071470676461730392
 Camera:
