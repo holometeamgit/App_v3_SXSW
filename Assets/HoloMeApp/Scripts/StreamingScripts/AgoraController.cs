@@ -134,14 +134,8 @@ public class AgoraController : MonoBehaviour {
         encoderConfiguration.dimensions = new VideoDimensions() { width = width, height = height };
         HelperFunctions.DevLog("w" + encoderConfiguration.dimensions.width + " h " + encoderConfiguration.dimensions.height);
         encoderConfiguration.orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT;//ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE;
-        //iRtcEngine.SetVideoProfile(VIDEO_PROFILE_TYPE.VIDEO_PROFILE_PORTRAIT_720P_3,false);
         iRtcEngine.SetVideoEncoderConfiguration(encoderConfiguration);
     }
-
-    //void OnPreviewReady(uint i, bool b)
-    //{
-    //    HelperFunctions.DevLog("REMOTE USER CHANGED VIDEO SETTINGS");
-    //}
 
     public void StartPreview() {
         if (iRtcEngine == null) {
@@ -149,26 +143,10 @@ public class AgoraController : MonoBehaviour {
             return;
         }
 
-        //if (EnableVideoPlayback() == 0) {
-        //    if (iRtcEngine.StartPreview() == 0) {
-
-        //        HelperFunctions.DevLog("Agora Preview Started");
-        //        if (iRtcEngine.EnableLocalVideo(true) == 0) {
         VideoIsReady = true;
-        //        }
-        //    } else {
-        //        HelperFunctions.DevLog("Agora Preview Failed");
-        //    }
-        //}
     }
 
     public void StopPreview() {
-        //iRtcEngine.DisableVideo();
-        //iRtcEngine.DisableVideoObserver();
-        //if (iRtcEngine.StopPreview() == 0) {
-        //    HelperFunctions.DevLog("Agora Preview Stopped");
-        //}
-        //iRtcEngine.EnableLocalVideo(false);
         VideoIsReady = false;
         OnPreviewStopped?.Invoke();
     }

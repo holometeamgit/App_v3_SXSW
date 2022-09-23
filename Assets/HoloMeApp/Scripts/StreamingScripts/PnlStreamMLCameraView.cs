@@ -20,6 +20,9 @@ public class PnlStreamMLCameraView : MonoBehaviour {
     [SerializeField]
     private Camera previewCamera;
 
+    private const string GREEN_BG_LAYER = "MlResult";
+    private const string NO_GREEN_BG_LAYER = "CamPreviewNoML";
+
     private bool hasBeenActivated;
 
     private void Awake() {
@@ -49,7 +52,7 @@ public class PnlStreamMLCameraView : MonoBehaviour {
     /// Call to enable green background effect
     /// </summary>
     public void EnableGreenBG() {
-        previewCamera.cullingMask = (1 << LayerMask.NameToLayer("MlResult"));
+        previewCamera.cullingMask = 1 << LayerMask.NameToLayer(GREEN_BG_LAYER);
         noGreenBGCanvas.gameObject.SetActive(false);
     }
 
@@ -57,7 +60,7 @@ public class PnlStreamMLCameraView : MonoBehaviour {
     /// Disable green background effect and display raw camera background
     /// </summary>
     public void DisableGreenBG() {
-        previewCamera.cullingMask = (1 << LayerMask.NameToLayer("CamPreviewNoML"));
+        previewCamera.cullingMask = 1 << LayerMask.NameToLayer(NO_GREEN_BG_LAYER);
         noGreenBGCanvas.gameObject.SetActive(true);
     }
 

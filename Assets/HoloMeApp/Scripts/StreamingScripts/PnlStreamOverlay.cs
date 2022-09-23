@@ -3,7 +3,6 @@ using DG.Tweening;
 using TMPro;
 using System.Collections;
 using UnityEngine.UI;
-using agora_gaming_rtc;
 using Beem.UI;
 using Zenject;
 
@@ -34,12 +33,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private Selectable[] onlineInteractableControlToggle;
 
     [Header("These Views")]
-
-    //[SerializeField]
-    //private RawImage cameraRenderImage;
-
-    //[SerializeField]
-    //private GameObject imgBackground;
 
     [SerializeField]
     private GameObject cameraOffBackground;
@@ -76,7 +69,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private AgoraController _agoraController;
     private UserWebManager _userWebManager;
     private PnlStreamMLCameraView _pnlStreamMLCameraView;
- 
+
     [SerializeField]
     private ExternalLinkRedirector externalLinkRedirector;
 
@@ -88,7 +81,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
     private bool isUsingFrontCamera;
     private bool isPushToTalkActive;
 
-    //VideoSurface videoSurface;
     string currentStreamId = string.Empty;
 
     //private Coroutine delayToggleAudioOffRoutine;  //TODO keeping here in case we revert to push to talk
@@ -133,13 +125,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
             return;
 
         _agoraController.OnStreamerLeft += StreamFinished;
-        //_agoraController.OnCameraSwitched += () => {
-        //    var videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
-        //    if (videoSurface) {
-        //        isUsingFrontCamera = !isUsingFrontCamera;
-        //    }
-        //};
-        _agoraController.OnPreviewStopped += PreviewStopped;
         _agoraController.OnStreamWentOffline += StopStreamCountUpdaters;
         _agoraController.OnStreamWentOffline += () => TogglePreLiveControls(true);
         _agoraController.OnStreamWentLive += StartStatusUpdateRoutine;
@@ -148,15 +133,12 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         _agoraController.OnUserViewerJoined += SendChannelCreatorUIDToViewers;
         _agoraController.OnSpeechDetected += SendViewerIsSpeakingMessage;
         _agoraController.OnNoSpeechDetected += DisableSpeakingMessage;
-
         _agoraController.AddAgoraMessageReceiver(this);
-        //cameraRenderImage.materialForRendering.SetFloat("_UseBlendTex", 0);
 
         AssignStreamCountUpdaterAnalyticsEvent();
 
         StreamCallBacks.onLiveStreamCreated += RefreshStream;
 
-        //AddVideoSurface();
         initialised = true;
     }
 
@@ -231,7 +213,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private void RefreshBroadcasterControls(bool broadcaster) {
         controlsPresenter.SetActive(broadcaster);
-       // imgBackground.SetActive(broadcaster);
         controlsViewer.SetActive(!broadcaster);
         cameraOffBackground.SetActive(false);
     }
@@ -308,14 +289,11 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         isChannelCreator = true;
         gameObject.SetActive(true);
         ARConstructor.onActivated?.Invoke(false);
-        //cameraRenderImage.transform.parent.gameObject.SetActive(true);
 
         _agoraController.ToggleLocalAudio(false);
         _agoraController.ToggleVideo(false);
         isPushToTalkActive = false;
 
-        //StartCoroutine(OnPreviewReady());
-        //_agoraController.StartPreview();
         _pnlStreamMLCameraView.ActivateCameraView();
         RefreshControls();
         AnimatedFadeOutMessage();
@@ -332,7 +310,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         gameObject.SetActive(true);
         togglePushToTalk.interactable = false;
         ARenaConstructor.onActivateForStreaming?.Invoke(channelName, streamID, isRoom);
-        //cameraRenderImage.transform.parent.gameObject.SetActive(false);
         _agoraController.JoinOrCreateChannel(false);
         currentStreamId = streamID;
 
@@ -369,8 +346,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     private IEnumerator DelayStartPrevew() {
         yield return new WaitForSeconds(DELAY_FOR_PREVIEW);
-        //_agoraController.StartPreview();
-        //_webCamTextureActivator.ActivateCamera();
     }
 
     private void DeactivateLive() {
@@ -387,9 +362,7 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
 
     public void CloseAsStreamer() {
         StopStream();
-        //_beemMLHandler
         _pnlStreamMLCameraView.DisableCameraView();
-        //_agoraController.StopPreview();
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         StreamOverlayConstructor.onDeactivate?.Invoke();
         RecordARConstructor.OnActivated?.Invoke(false);
@@ -407,10 +380,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         RecordARConstructor.OnActivated?.Invoke(false);
         ARenaConstructor.onDeactivate?.Invoke();
         ARConstructor.onActivated(false);
-    }
-
-    private void PreviewStopped() {
-        //videoSurface.SetEnable(false);
     }
 
     public void StartCountdown() {
@@ -436,7 +405,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         streamLikesRefresherView.Cancel();
 
         _agoraController.Leave();
-        //cameraRenderImage.texture = null;
         AnimatedFadeOutMessage();
         speechNotificationPopups.DeactivateAllPopups();
         RefreshControls();
@@ -688,28 +656,6 @@ public class PnlStreamOverlay : AgoraMessageReceiver {
         //    item.SetActive(!value && agoraController.IsLive);
         //}
     }
-
-    //private void AddVideoSurface() {
-    //    videoSurface = cameraRenderImage.GetComponent<VideoSurface>();
-    //    if (!videoSurface) {
-    //        videoSurface = cameraRenderImage.gameObject.AddComponent<VideoSurface>();
-    //        isUsingFrontCamera = true;
-    //        videoSurface.EnableFilpTextureApply(true, true);
-    //        videoSurface.SetVideoSurfaceType(AgoraVideoSurfaceType.RawImage);            
-    //    }
-    //}
-
-    //IEnumerator OnPreviewReady() {
-    //    //videoSurface.SetEnable(true);
-    //    cameraRenderImage.color = Color.black;
-
-    //    while (!_agoraController.VideoIsReady || cameraRenderImage.texture == null) {
-    //        yield return null;
-    //    }
-
-    //    cameraRenderImage.color = Color.white;
-    //    cameraRenderImage.SizeToParent();
-    //}
 
     //TODO keeping here in case we revert to push to talk
     ///// <summary>
