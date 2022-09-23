@@ -37,8 +37,7 @@ public class AgoraController : MonoBehaviour {
     private int agoraMessageStreamID;
     private int maxViewerCountTracker;
 
-    [HideInInspector]
-    public uint frameRate;
+
     public Action OnStreamerLeft;
     public Action OnCameraSwitched;
     public Action OnPreviewStopped;
@@ -66,17 +65,19 @@ public class AgoraController : MonoBehaviour {
     private UserWebManager _userWebManager;
     private AgoraRTMChatController _agoraRTMChatController;
     private SecondaryServerCalls _secondaryServerCalls;
+    private PnlStreamMLCameraView _pnlStreamMLCameraView;
 
     [Inject]
-    public void Construct(UserWebManager userWebManager, AgoraRTMChatController agoraRTMChatController, SecondaryServerCalls secondaryServerCalls) {
+    public void Construct(UserWebManager userWebManager, AgoraRTMChatController agoraRTMChatController, SecondaryServerCalls secondaryServerCalls, PnlStreamMLCameraView pnlStreamMLCameraView) {
         _userWebManager = userWebManager;
         _agoraRTMChatController = agoraRTMChatController;
         _secondaryServerCalls = secondaryServerCalls;
+        _pnlStreamMLCameraView = pnlStreamMLCameraView;
     }
 
     public void Start() {
         LoadEngine(AppId);
-        frameRate = 30;
+
         _agoraRTMChatController.Init(AppId);
         _secondaryServerCalls.OnStreamStarted += (x, y, z) => SecondaryServerCallsComplete(x, y, z);
 
@@ -133,14 +134,8 @@ public class AgoraController : MonoBehaviour {
         encoderConfiguration.dimensions = new VideoDimensions() { width = width, height = height };
         HelperFunctions.DevLog("w" + encoderConfiguration.dimensions.width + " h " + encoderConfiguration.dimensions.height);
         encoderConfiguration.orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT;//ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE;
-        //iRtcEngine.SetVideoProfile(VIDEO_PROFILE_TYPE.VIDEO_PROFILE_PORTRAIT_720P_3,false);
         iRtcEngine.SetVideoEncoderConfiguration(encoderConfiguration);
     }
-
-    //void OnPreviewReady(uint i, bool b)
-    //{
-    //    HelperFunctions.DevLog("REMOTE USER CHANGED VIDEO SETTINGS");
-    //}
 
     public void StartPreview() {
         if (iRtcEngine == null) {
@@ -148,33 +143,10 @@ public class AgoraController : MonoBehaviour {
             return;
         }
 
-        if (EnableVideoPlayback() == 0) {
-            if (iRtcEngine.StartPreview() == 0) {
-
-                VirtualBackgroundSource source = new VirtualBackgroundSource {
-                    background_source_type = BACKGROUND_SOURCE_TYPE.BACKGROUND_COLOR,
-                    color = Convert.ToUInt32(ColorUtility.ToHtmlStringRGB(Color.green), 16)
-                };
-
-                iRtcEngine.EnableVirtualBackground(IsRoom, source);
-
-                HelperFunctions.DevLog("Agora Preview Started");
-                if (iRtcEngine.EnableLocalVideo(true) == 0) {
-                    VideoIsReady = true;
-                }
-            } else {
-                HelperFunctions.DevLog("Agora Preview Failed");
-            }
-        }
+        VideoIsReady = true;
     }
 
     public void StopPreview() {
-        iRtcEngine.DisableVideo();
-        iRtcEngine.DisableVideoObserver();
-        if (iRtcEngine.StopPreview() == 0) {
-            HelperFunctions.DevLog("Agora Preview Stopped");
-        }
-        iRtcEngine.EnableLocalVideo(false);
         VideoIsReady = false;
         OnPreviewStopped?.Invoke();
     }
@@ -263,6 +235,8 @@ public class AgoraController : MonoBehaviour {
             ToggleLocalVideo(true); //Disable local video freeze fix iOS
         }
 
+        iRtcEngine.SetExternalVideoSource(true, false);
+
         var result = iRtcEngine.JoinChannelByKey(viewerBroadcasterToken, ChannelName, null, Convert.ToUInt32(_userWebManager.GetUserID()));
 
         if (result < 0) {
@@ -271,8 +245,13 @@ public class AgoraController : MonoBehaviour {
             HelperFunctions.DevLog("Agora Stream Join Success!");
         }
 
-        if (IsChannelCreator && !IsRoom)//No thumbnails for rooms for now
+        if (IsChannelCreator) {//Start sending custom BG removal texture
+            _pnlStreamMLCameraView.StartSendingCustomTexture();
+        }
+
+        if (IsChannelCreator && !IsRoom) {//No thumbnails for rooms for now
             sendThumbnailRoutine = StartCoroutine(SendThumbnailData(true));
+        }
 
         IsLive = true;
 
@@ -291,6 +270,7 @@ public class AgoraController : MonoBehaviour {
             StopCoroutine(sendThumbnailRoutine);
 
         if (IsChannelCreator) {
+            _pnlStreamMLCameraView.StopSendingCustomTexture();
             _secondaryServerCalls.EndStream();
             AnalyticsController.Instance.SendCustomEventToSpecifiedControllers(new AnalyticsLibraryAbstraction[] { AnalyticsCleverTapController.Instance, AnalyticsAmplitudeController.Instance }, AnalyticKeys.KeyMaxViewerCount, new System.Collections.Generic.Dictionary<string, string> { { AnalyticParameters.ParamChannelName, ChannelName }, { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() }, { AnalyticParameters.ParamViewerCount, maxViewerCountTracker.ToString() } });
             AnalyticsController.Instance.StopTimer(AnalyticKeys.KeyViewLengthOfStream, new Dictionary<string, string> { { AnalyticParameters.ParamChannelName, ChannelName }, { AnalyticParameters.ParamDate, DateTime.Now.ToString() }, { AnalyticParameters.ParamBroadcasterUserID, AnalyticsController.Instance.GetUserID }, { AnalyticParameters.ParamPerformanceID, streamID.ToString() }, { AnalyticParameters.ParamIsRoom, IsRoom.ToString() } });
@@ -385,7 +365,6 @@ public class AgoraController : MonoBehaviour {
         videoSurfaceQuadRef.SetForUser((uint)ChannelCreatorUID);
         videoSurfaceQuadRef.SetEnable(true);
         videoSurfaceQuadRef.SetVideoSurfaceType(AgoraVideoSurfaceType.Renderer);
-        videoSurfaceQuadRef.SetGameFps(frameRate);
     }
 
     private void OnVolumeIndicationHandler(AudioVolumeInfo[] speakers, int speakerNumber, int totalVolume) {
@@ -465,12 +444,6 @@ public class AgoraController : MonoBehaviour {
         if (iRtcEngine != null) {
             if (!pauseVideo) {
                 iRtcEngine.EnableVideo();
-                VirtualBackgroundSource source = new VirtualBackgroundSource {
-                    background_source_type = BACKGROUND_SOURCE_TYPE.BACKGROUND_COLOR,
-                    color = Convert.ToUInt32(ColorUtility.ToHtmlStringRGB(Color.green), 16)
-                };
-
-                iRtcEngine.EnableVirtualBackground(IsRoom, source);
             } else {
                 iRtcEngine.DisableVideo();
             }
