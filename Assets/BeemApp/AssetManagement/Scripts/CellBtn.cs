@@ -151,10 +151,11 @@ public class CellBtn : MonoBehaviour,
     private IEnumerator TapTimer() {
         yield return new WaitForSeconds(LONG_CLICK_TIME);
 
-        if (_arMsgData.ext_content_data == null || _arMsgData.ext_content_data.Count == 0 || _arMsgData.GetStatus == ARMsgJSON.Data.PROCESSING_STATUS) {
+        if (_arMsgData.ext_content_data == null || _arMsgData.ext_content_data.Count == 0) {
             OpenARMsg();
         } else {
-            _businessProfileManager.GetMyData(SuccessedBusinessProfile, FailedBusinessProfile);
+
+            OpenBusinessOptions();
         }
     }
 }
