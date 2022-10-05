@@ -1,12 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 using Beem.SSO;
-using Zenject.ReflectionBaking.Mono.Cecil.Cil;
 using System.Text.RegularExpressions;
 
 /// <summary>
