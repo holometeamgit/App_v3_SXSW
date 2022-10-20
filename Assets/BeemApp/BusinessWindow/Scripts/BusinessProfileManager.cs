@@ -29,7 +29,7 @@ public class BusinessProfileManager {
     public void GetMyData(Action<BusinessProfileJsonData> onSuccess, Action<WebRequestError> onFailed = null, bool forceUpdate = false) {
         if (_data == null || forceUpdate) {
             getMyBusinessProfile.GetMyProfile((code, body) => {
-                OnSuccess(code, body, onSuccess, onFailed);
+                OnSuccess(code, body, onSuccess);
             }, onFailed);
         } else {
             onSuccess?.Invoke(_data);
@@ -48,19 +48,15 @@ public class BusinessProfileManager {
         return _data == null ? null : _data.cta_label;
     }
 
-    private void OnSuccess(long code, string body, Action<BusinessProfileJsonData> onSuccess, Action<WebRequestError> onFailed) {
-        BusinessProfileJsonData data = JsonUtility.FromJson<BusinessProfileJsonData>(body);
-        if (data != null) {
-            _data = GetBusinessProfileJsonData(body);
-            CallBacks.onBusinessDataUpdated?.Invoke();
-            onSuccess?.Invoke(_data);
-        } else {
-            onFailed?.Invoke(new WebRequestError());
-        }
+    private void OnSuccess(long code, string body, Action<BusinessProfileJsonData> onSuccess) {
+        _data = GetBusinessProfileJsonData(body);
+        CallBacks.onBusinessDataUpdated?.Invoke();
+        onSuccess?.Invoke(_data);
+
     }
 
     private BusinessProfileJsonData GetBusinessProfileJsonData(string body) {
-        BusinessProfileJsonData dataJson = JsonUtility.FromJson<BusinessProfileJsonData>(body);
+        BusinessProfileJsonData dataJson = string.IsNullOrWhiteSpace(body) ? null : JsonUtility.FromJson<BusinessProfileJsonData>(body);
         return dataJson;
     }
 }

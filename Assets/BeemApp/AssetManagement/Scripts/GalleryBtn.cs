@@ -15,15 +15,15 @@ public class GalleryBtn : MonoBehaviour {
 
     private WebRequestHandler _webRequestHandler;
 
-    private GetAllARMsgController _galleryController;
+    SignalBus _signalBus;
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler) {
+    public void Construct(WebRequestHandler webRequestHandler, SignalBus signalBus) {
         _webRequestHandler = webRequestHandler;
+        _signalBus = signalBus;
     }
 
     private void Start() {
-        _galleryController = new GetAllARMsgController(_arMsgAPIScriptableObject, _webRequestHandler);
     }
 
     /// <summary>
@@ -31,22 +31,31 @@ public class GalleryBtn : MonoBehaviour {
     /// </summary>
     public void OnClick() {
         if (open) {
-            _galleryController.GetAllArMessages(onSuccess: Show);
+            _signalBus.Fire(new GetAllArMessagesSignal() { });
         } else {
             Hide();
         }
     }
 
-    private void Show(ARMsgJSON data) {
+    private void Show(GetAllArMessagesSuccesSignal signal) {
         StreamOverlayConstructor.onDeactivatedAsBroadcaster?.Invoke();
         ARMsgRecordConstructor.OnActivated?.Invoke(false);
         GalleryNotificationConstructor.OnHide?.Invoke();
         MenuConstructor.OnActivated?.Invoke(false);
-        GalleryConstructor.OnShow?.Invoke(data);
+        GalleryConstructor.OnShow?.Invoke(signal.arMsgJSON);
     }
 
     private void Hide() {
         GalleryConstructor.OnHide?.Invoke();
         MenuConstructor.OnActivated?.Invoke(true);
+    }
+
+
+    private void OnEnable() {
+        _signalBus.Subscribe<GetAllArMessagesSuccesSignal>(Show);
+    }
+
+    private void OnDisable() {
+        _signalBus.Unsubscribe<GetAllArMessagesSuccesSignal>(Show);
     }
 }

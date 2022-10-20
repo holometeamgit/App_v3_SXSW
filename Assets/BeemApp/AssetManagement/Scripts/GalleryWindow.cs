@@ -24,22 +24,14 @@ public class GalleryWindow : MonoBehaviour {
     private BusinessProfileManager _businessProfileManager;
     private WebRequestHandler _webRequestHandler;
 
-    private GetAllARMsgController _galleryController;
+    SignalBus _signalBus;
 
     [Inject]
-    public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager, BusinessProfileManager businessProfileManager) {
+    public void Construct(WebRequestHandler webRequestHandler, UserWebManager userWebManager, BusinessProfileManager businessProfileManager, SignalBus signalBus) {
         _userWebManager = userWebManager;
         _businessProfileManager = businessProfileManager;
         _webRequestHandler = webRequestHandler;
-        _galleryController = new GetAllARMsgController(_arMsgAPIScriptableObject, webRequestHandler);
-    }
-
-    private void OnEnable() {
-        GalleryNotificationController.OnShow += RefreshWindow;
-    }
-
-    private void OnDisable() {
-        GalleryNotificationController.OnShow -= RefreshWindow;
+        _signalBus = signalBus;
     }
 
     /// <summary>
@@ -75,8 +67,12 @@ public class GalleryWindow : MonoBehaviour {
         }
     }
 
+    private void Show(GetAllArMessagesSuccesSignal signal) {
+        Show(signal.arMsgJSON);
+    }
+
     private void RefreshWindow(ARMsgJSON.Data data) {
-        _galleryController.GetAllArMessages(onSuccess: Show);
+        _signalBus.Fire<GetAllArMessagesSignal>();
     }
 
     /// <summary>
@@ -85,4 +81,15 @@ public class GalleryWindow : MonoBehaviour {
     public void Hide() {
         gameObject.SetActive(false);
     }
+
+    private void OnEnable() {
+        GalleryNotificationController.OnShow += RefreshWindow;
+        _signalBus.Subscribe<GetAllArMessagesSuccesSignal>(Show);
+    }
+
+    private void OnDisable() {
+        GalleryNotificationController.OnShow -= RefreshWindow;
+        _signalBus.Unsubscribe<GetAllArMessagesSuccesSignal>(Show);
+    }
+
 }

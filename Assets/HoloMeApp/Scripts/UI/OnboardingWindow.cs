@@ -1,13 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using Zenject;
 
 /// <summary>
 /// OnboardingWindow for new users
 /// </summary>
 public class OnboardingWindow : MonoBehaviour {
+
+    private BusinessProfileManager _businessProfileManager;
+    [SerializeField]
+    private GameObject[] _businessTutorialsElements;
+    [SerializeField]
+    private GameObject _scrollMarker;
+
     public Action onOnboardingClose;
     public Action onOnboardingOpen;
 
@@ -32,6 +38,18 @@ public class OnboardingWindow : MonoBehaviour {
     private CanvasGroup _interactableCanvasGroup;
 
     private bool _initialized;
+
+    [Inject]
+    public void Constructor(BusinessProfileManager businessProfileManager) {
+        _businessProfileManager = businessProfileManager;
+    }
+
+    private void Awake() {
+        foreach(GameObject businessTutorialElement in _businessTutorialsElements) {
+            businessTutorialElement.gameObject.SetActive(_businessProfileManager.IsBusinessProfile());
+        }
+        _scrollMarker.gameObject.SetActive(_businessProfileManager.IsBusinessProfile());
+    }
 
     /// <summary>
     /// Skip onboarding

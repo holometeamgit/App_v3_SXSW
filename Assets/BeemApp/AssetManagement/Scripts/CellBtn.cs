@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Zenject;
 
 /// <summary>
 /// Btn for cell in AssetManagement
@@ -31,6 +32,8 @@ public class CellBtn : MonoBehaviour,
 
     private const string BUSINESS_OPTIONS_VIEW = "BusinessOptionsView";
 
+    SignalBus _signalBus;
+
     public void Init(ARMsgJSON.Data arMsgData) {
         _arMsgData = arMsgData;
     }
@@ -55,19 +58,15 @@ public class CellBtn : MonoBehaviour,
     }
 
     public void OnPointerDown(PointerEventData eventData) {
-        if (_arMsgData.GetStatus == ARMsgJSON.Data.PROCESSING_STATUS) {
-            if (!CanShowPushNotificationPopup) {
-                OpenProcessingPopup();
-            } else {
-                OpenNotificationPopup();
-            }
-        } else if (_arMsgData.GetStatus == ARMsgJSON.Data.COMPETED_STATUS) {
-            _tapTimerCoroutine = StartCoroutine(TapTimer());
-        }
+        _tapTimerCoroutine = StartCoroutine(TapTimer());
     }
 
     public void OnPointerUp(PointerEventData eventData) {
         StopTimer();
+    }
+
+    private void Start() {
+        _signalBus = FindObjectOfType<SignalBusMonoBehaviour>().SignalBus;
     }
 
     private bool CanShowPushNotificationPopup {
@@ -80,7 +79,11 @@ public class CellBtn : MonoBehaviour,
     }
 
     private void SuccessedBusinessProfile(BusinessProfileJsonData businessProfileData) {
-        OpenBusinessOptions();
+        if (businessProfileData != null) {
+            OpenBusinessOptions();
+        } else {
+            OpenARMsg();
+        }
     }
 
     private void FailedBusinessProfile(WebRequestError error) {
@@ -88,11 +91,19 @@ public class CellBtn : MonoBehaviour,
     }
 
     private void OpenARMsg() {
-        ARMsgRecordConstructor.OnActivated?.Invoke(false);
-        ARenaConstructor.onActivateForARMessaging?.Invoke(_arMsgData);
-        ARMsgARenaConstructor.OnActivatedARena?.Invoke(_arMsgData);
-        GalleryConstructor.OnHide?.Invoke();
-        PnlRecord.CurrentUser = _arMsgData.user;
+        if (_arMsgData.GetStatus == ARMsgJSON.Data.PROCESSING_STATUS) {
+            if (!CanShowPushNotificationPopup) {
+                OpenProcessingPopup();
+            } else {
+                OpenNotificationPopup();
+            }
+        } else if (_arMsgData.GetStatus == ARMsgJSON.Data.COMPETED_STATUS) {
+            ARMsgRecordConstructor.OnActivated?.Invoke(false);
+            ARenaConstructor.onActivateForARMessaging?.Invoke(_arMsgData);
+            ARMsgARenaConstructor.OnActivatedARena?.Invoke(_arMsgData);
+            GalleryConstructor.OnHide?.Invoke();
+            PnlRecord.CurrentUser = _arMsgData.user;
+        }
     }
 
     private void OpenBusinessOptions() {
@@ -111,9 +122,18 @@ public class CellBtn : MonoBehaviour,
     }
 
     private void OpenProcessingPopup() {
-        WarningConstructor.ActivateSingleButton("Proccessing",
-             "Your hologram is processing,\nwe can tell you when it's ready",
-              "GOT IT!");
+        WarningConstructor.ActivateDoubleButton("Proccessing",
+               "Your hologram is processing,\nwe can tell you when it's ready",
+               "GOT IT!",
+               "DELETE",
+               () => {
+                   FirebaseMessaging.SubscribeAsync(string.Format(TOPIC, _userWebManager?.GetUsername()));
+                   CanShowPushNotificationPopup = false;
+               }, () => { Delete(); });
+    }
+
+    private void Delete() {
+        _signalBus.Fire(new DeleteARMsgSignal() { idARMsg = _arMsgData.id });
     }
 
     private void StopTimer() {
@@ -134,7 +154,8 @@ public class CellBtn : MonoBehaviour,
         if (_arMsgData.ext_content_data == null || _arMsgData.ext_content_data.Count == 0) {
             OpenARMsg();
         } else {
-            _businessProfileManager.GetMyData(SuccessedBusinessProfile, FailedBusinessProfile);
+
+            OpenBusinessOptions();
         }
     }
 }

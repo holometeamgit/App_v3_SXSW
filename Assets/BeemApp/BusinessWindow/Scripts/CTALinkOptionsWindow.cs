@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 using Beem.SSO;
+using System.Text.RegularExpressions;
 
 /// <summary>
 /// CTA Link Window
@@ -122,7 +119,7 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
     public void UpdateDataButton() {
 
         if (_data == null || _postARMsgExtDataController == null) {
-            ShowError();
+            ShowError("");
             return;
         }
 
@@ -137,12 +134,21 @@ public class CTALinkOptionsWindow : MonoBehaviour, IBlindView {
             () => {
                 CallBacks.onUpdatedCTA?.Invoke(); _lastCallobjects = null;
                 _data.ext_content_data[0] = extContentData; },
-            _ => ShowError());
+            (code, body)=> { ShowError(body); });
     }
 
-    private void ShowError() {
-        WarningConstructor.ActivateDoubleButton(message: "Something went wrong",
-            buttonOneText: "Retry", buttonTwoText: "Cancel",
-            onButtonOnePress: UpdateDataButton, onButtonTwoPress: () => BlindOptionsConstructor.Show(CTA_LINK_OPTIONS_VIEW, _lastCallobjects), isWarning: true);
+    private void ShowError(string body) {
+
+        string limit = Regex.Match(body, @"(?<=varying\()\d+").Value;
+
+        if (body.Contains("value too long for type")) {
+            WarningConstructor.ActivateSingleButton(header: " ",message: $"The link must not exceed {limit} characters",
+                buttonText: "Confirm",
+                onBackPress: () => BlindOptionsConstructor.Show(CTA_LINK_OPTIONS_VIEW, _lastCallobjects), isWarning: true);
+        } else {
+            WarningConstructor.ActivateDoubleButton(message: "Something went wrong",
+                buttonOneText: "Retry", buttonTwoText: "Cancel",
+                onButtonOnePress: UpdateDataButton, onButtonTwoPress: () => BlindOptionsConstructor.Show(CTA_LINK_OPTIONS_VIEW, _lastCallobjects), isWarning: true);
+        }
     }
 }

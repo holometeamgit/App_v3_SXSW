@@ -12,9 +12,9 @@ namespace Beem.ARMsg {
         private UserWebManager _userWebManager;
         private BusinessProfileManager _businessProfileManager;
 
-        private List<int> _timers = new List<int> { 15, 30, 45, 60, 10 };
+        private List<int> _timers = new List<int> { 60, 10, 15, 30, 45 };
         private int _currentTimerID = 0;
-        private const int TIME_FOR_SUPER_USER = 180;
+        private const int TIME_FOR_SUPER_USER = 300;
         private const string SUPER_USER_CAPABILITY = "PC__AR_BEEM_UP_TO_5_MINS";
 
         [Inject]
