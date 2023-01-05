@@ -23,13 +23,13 @@ namespace Beem.Permissions {
         }
 
         public bool HasAccesses(DevicePermissions[] devicePermissions) {
+            //need because if user close the app before cancel or confirm camera we will have problem with mic. Because we will not ask permission
+            bool resultPermission = true;
             foreach (var item in devicePermissions) {
-                if (!Permission.HasUserAuthorizedPermission(permissions[item])) {
-                    return false;
-                }
+                resultPermission = resultPermission && Permission.HasUserAuthorizedPermission(permissions[item]);
             }
 
-            return true;
+            return resultPermission;
         }
 
         public void RequestAccess(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed) {
