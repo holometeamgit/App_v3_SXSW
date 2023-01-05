@@ -40,6 +40,8 @@ namespace Beem.SSO {
 
         public static Action<string> onFail = delegate { };
 
+        public static Func<long> onUserId;
+
         //requests
         public static Action onQuickLogInRequest = delegate { };
         public static Action onLogOutRequest = delegate { };

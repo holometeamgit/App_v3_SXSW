@@ -256,9 +256,11 @@ public class UserWebManager : MonoBehaviour {
 
     private void OnEnable() {
         CallBacks.onSignOut += RemoveUserData;
+        CallBacks.onUserId += GetUserID;
     }
 
     private void OnDisable() {
         CallBacks.onSignOut -= RemoveUserData;
+        CallBacks.onUserId -= GetUserID;
     }
 }

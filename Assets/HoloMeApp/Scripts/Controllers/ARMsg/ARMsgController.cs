@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.Networking;
+using Firebase.Storage;
+using System.Threading.Tasks;
+using Beem.SSO;
 
 namespace Beem.ARMsg {
     /// <summary>
@@ -72,7 +75,7 @@ namespace Beem.ARMsg {
         /// <summary>
         /// OnCancelLastGetARMsgById
         /// </summary>
-        public void OnCancelLastGetARMsgById () {
+        public void OnCancelLastGetARMsgById() {
             _cancelGetARMsgById?.InvokeAction();
         }
 
@@ -137,19 +140,35 @@ namespace Beem.ARMsg {
 
         #region UploadARMsg
 
-        private void UploadARMsg(string pathToVideoFile) {
+        private async void UploadARMsg(string pathToVideoFile) {
+
+            string uploadedVideoURI = "";
 
             HelperFunctions.DevLog("Try upload video: " + pathToVideoFile);
 
-            _cancelUploadARMsg?.InvokeAction();
-            _cancelUploadARMsg = new ActionWrapper();
+            FirebaseStorageController firebaseStorageController = new FirebaseStorageController();
 
+            ProcessingFirebaseStorageUploading processingFirebaseStorageUploading = new ProcessingFirebaseStorageUploading();
 
-            Dictionary<string, string> content = new Dictionary<string, string>();
-            content.Add(_arMsgAPIScriptableObject.SourceVideoFieldName, pathToVideoFile);
+            var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
-            _webRequestHandler.PostMultipart(GetPostRequestUploadARMsgURL(), content, PostUploadARMsgCallback, ErrorPostUploadARMsgCallback,
-                onCancel: _cancelUploadARMsg, uploadProgress: OnProcessingUploading);
+            await firebaseStorageController.Upload(pathToVideoFile, processingFirebaseStorageUploading).ContinueWith(result => {
+
+                if (result.IsFaulted) {
+                    ErrorPostUploadARMsgCallback(400, "");
+                    return;
+                }
+
+                HelperFunctions.DevLog("Uploaded address: " + result.Result);
+
+                ARMsgUploadingJSON arMsgUploadingJSON = new ARMsgUploadingJSON();
+                arMsgUploadingJSON.gcp_storage_ref_source = result.Result;
+
+                _webRequestHandler.Post(GetPostRequestUploadARMsgURL(), arMsgUploadingJSON, WebRequestBodyType.JSON, PostUploadARMsgCallback, ErrorPostUploadARMsgCallback,
+                onCancel: _cancelUploadARMsg);
+
+                uploadedVideoURI = result.Result;
+            }, taskScheduler);
         }
 
         private void PostUploadARMsgCallback(long code, string body) {
@@ -167,10 +186,6 @@ namespace Beem.ARMsg {
         private void ErrorPostUploadARMsgCallback(long code, string body) {
             HelperFunctions.DevLogError(string.Format("Can't upload ARMsg. {0} {1}", code, body));
             CallBacks.OnARMsgUploadedError?.Invoke();
-        }
-
-        private void OnProcessingUploading(float value) {
-            CallBacks.OnARMsgUpdloadedProcessing?.Invoke(value);
         }
 
         private string GetPostRequestUploadARMsgURL() {
@@ -260,6 +275,12 @@ namespace Beem.ARMsg {
 
         ~ARMsgController() {
             OnCancelAll();
+        }
+
+        public class ProcessingFirebaseStorageUploading : IProgress<UploadState> {
+            public void Report(UploadState value) {
+                CallBacks.OnARMsgUpdloadedProcessing?.Invoke((float)((double)value.BytesTransferred / value.TotalByteCount));
+            }
         }
     }
 }
