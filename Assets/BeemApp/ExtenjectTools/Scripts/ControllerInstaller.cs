@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Beem.SSO;
 using Zenject;
 
@@ -19,7 +20,10 @@ public class ControllerInstaller : MonoInstaller {
         Container.BindInterfacesAndSelfTo<IAPController>().FromComponentInHierarchy(false).AsSingle();
         Container.BindInterfacesAndSelfTo<PurchasesSaveManager>().FromComponentInHierarchy(false).AsSingle();
         Container.BindInterfacesAndSelfTo<PnlStreamMLCameraView>().FromComponentInHierarchy(true).AsSingle();
-      
+        Container.BindInterfacesAndSelfTo<PnlViewingExperience>().FromComponentInHierarchy(true).AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<SharingOnViewCntroller>().FromComponentInHierarchy(true).AsSingle().NonLazy();
+
+
 
         Container.BindInterfacesAndSelfTo<BusinessLogoController>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<BusinessProfileManager>().AsSingle().NonLazy();
@@ -37,5 +41,9 @@ public class ControllerInstaller : MonoInstaller {
         Container.DeclareSignal<DeleteARMsgSignal>();
         Container.DeclareSignal<GetAllArMessagesSignal>();
         Container.DeclareSignal<GetAllArMessagesSuccesSignal>();
+
+        Container.DeclareSignal<PnlViewingExperience.BeemVideoPlayStartedSignal>();
+        Container.DeclareSignal<PnlViewingExperience.BeemVideoPlayStoped>();
+        Container.DeclareSignal<PnlViewingExperience.ARBeemShareLinkReceived>();
     }
 }
