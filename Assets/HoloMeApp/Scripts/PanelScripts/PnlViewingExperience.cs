@@ -8,6 +8,7 @@ using Beem.Permissions;
 using Zenject;
 
 public class PnlViewingExperience : MonoBehaviour {
+
     [SerializeField]
     GameObject scanAnimationItems;
     [SerializeField]
@@ -32,8 +33,11 @@ public class PnlViewingExperience : MonoBehaviour {
     private enum TutorialState { MessageScan, MessageTapToPlace, WaitingForTap, WaitingForPinch, TutorialComplete };
     TutorialState tutorialState = TutorialState.MessageScan;
 
+    private SignalBus _signalBus;
+
     [Inject]
-    public void Construct(HologramHandler hologramHandler) {
+    public void Construct(SignalBus signalBus, HologramHandler hologramHandler) {
+        _signalBus = signalBus;
         _hologramHandler = hologramHandler;
     }
 
@@ -135,6 +139,8 @@ public class PnlViewingExperience : MonoBehaviour {
     public void ActivateForARMessaging(ARMsgJSON.Data streamJsonData) {
         SharedActivationFunctions();
         _hologramHandler.PlayIfPlaced(streamJsonData.ar_message_s3_link);
+        _signalBus.Fire(new BeemVideoPlayStartedSignal());
+        _signalBus.Fire(new ARBeemShareLinkReceived() { ShareLink = streamJsonData.share_link });
         _hologramHandler.TogglePreRecordedVideoRenderer(true);
         if (tutorialState == TutorialState.TutorialComplete) //Re-enable record settings if tutorial was complete when coming back to viewing
         {
@@ -172,6 +178,14 @@ public class PnlViewingExperience : MonoBehaviour {
         ApplicationSettingsHandler.Instance.ToggleSleepTimeout(false);
         ARConstructor.onActivated?.Invoke(false);
         _hologramHandler.StopVideo();
+        _signalBus.Fire(new BeemVideoPlayStoped());
         FadeOutCanvas();
     }
+
+    public class BeemVideoPlayStartedSignal { }
+    public class BeemVideoPlayStoped { }
+    public class ARBeemShareLinkReceived {
+        public string ShareLink;
+    }
+
 }
