@@ -72,6 +72,7 @@ public class SharingOnViewCntroller : MonoBehaviour, IInitializable, IDisposable
         StopPreparing();
         _shareLink = "";
         _sharePopup.SetActive(false);
+        _needShow = false;
     }
 
     private IEnumerator PreparePopup() {
