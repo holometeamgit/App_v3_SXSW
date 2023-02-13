@@ -124,7 +124,7 @@ public class CellBtn : MonoBehaviour,
     private void OpenProcessingPopup() {
         WarningConstructor.ActivateDoubleButton("Proccessing",
                "Your hologram is processing,\nwe can tell you when it's ready",
-               "GOT IT!",
+               "NOTIFY",
                "DELETE",
                () => {
                    FirebaseMessaging.SubscribeAsync(string.Format(TOPIC, _userWebManager?.GetUsername()));
