@@ -57,6 +57,7 @@ public class SharingOnViewCntroller : MonoBehaviour, IInitializable, IDisposable
 
     private void onBeemVideoPlayStoped(PnlViewingExperience.BeemVideoPlayStoped beemVideoPlayStoped) {
         _needShow = false;
+        HidePopUp();
     }
 
     private void onARBeemShareLinkReceived(PnlViewingExperience.ARBeemShareLinkReceived arBeemShareLinkReceived) {
@@ -68,11 +69,15 @@ public class SharingOnViewCntroller : MonoBehaviour, IInitializable, IDisposable
             StopCoroutine(_preparePopupCorotine);
     }
 
-    private void OnDisable() {
+    private void HidePopUp() {
         StopPreparing();
         _shareLink = "";
         _sharePopup.SetActive(false);
         _needShow = false;
+    }
+
+private void OnDisable() {
+        HidePopUp();
     }
 
     private IEnumerator PreparePopup() {
