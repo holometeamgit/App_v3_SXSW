@@ -97,7 +97,7 @@ public class InputFieldController : MonoBehaviour {
     }
 
     public void DisableAnimator() {
-        animator.keepAnimatorControllerStateOnDisable = false;
+        animator.keepAnimatorStateOnDisable = false;
         animator.enabled = false;
     }
 

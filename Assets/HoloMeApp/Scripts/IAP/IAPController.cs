@@ -140,4 +140,10 @@ public class IAPController : MonoBehaviour, IStoreListener {
         // this reason with the user to guide their troubleshooting actions.
         OnPurchaseFailedHandler?.Invoke();
     }
+
+    public void OnInitializeFailed(InitializationFailureReason error, string message)
+    {
+        //throw new NotImplementedException();
+        HelperFunctions.DevLogError("IAPController: OnInitializeFailed");
+    }
 }
