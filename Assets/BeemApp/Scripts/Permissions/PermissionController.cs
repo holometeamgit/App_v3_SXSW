@@ -89,7 +89,7 @@ namespace Beem.Permissions {
             }
 
             if (!RequestComplete) {
-                RequestComplete = _permissionGranter.RequestAccess(devicePermissions, onSuccessed, onFailed);
+                _permissionGranter.RequestAccess(devicePermissions, onSuccessed, onFailed, OnRequestCompleted);
                 return;
             }
 
@@ -102,6 +102,10 @@ namespace Beem.Permissions {
                 }
             }); ;
 
+        }
+
+        private void OnRequestCompleted() {
+            RequestComplete = true;
         }
 
         private string AccessesStrings(DevicePermissions[] devicePermissions) {

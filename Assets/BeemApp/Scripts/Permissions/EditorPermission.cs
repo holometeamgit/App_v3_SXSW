@@ -14,12 +14,12 @@ namespace Beem.Permissions {
             return true;
         }
 
-        public bool RequestAccess(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed) {
+        public void RequestAccess(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed, Action onRequestCompleted) {
             foreach (var item in devicePermissions) {
                 Debug.LogError($"{nameof(EditorPermission)} Requested {item} Access Editor");
             }
 
-            return true;
+            onRequestCompleted?.Invoke();
         }
 
         public void RequestSettings() {
