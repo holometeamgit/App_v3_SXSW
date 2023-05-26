@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
 
 namespace Beem.Permissions {
     /// <summary>
@@ -29,22 +30,24 @@ namespace Beem.Permissions {
             return resultPermission;
         }
 
-        public void RequestAccess(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed) {
-            RequestAccessAsync(devicePermissions, onSuccessed, onFailed);
+        public bool RequestAccess(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed) {
+            return RequestAccessAsync(devicePermissions, onSuccessed, onFailed).Result;
         }
 
 
-        private async void RequestAccessAsync(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed) {
+        private async Task<bool> RequestAccessAsync(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed) {
 
             foreach (var item in devicePermissions) {
                 await Application.RequestUserAuthorization(permissions[item]);
                 if (!Application.HasUserAuthorization(permissions[item])) {
                     onFailed?.Invoke();
-                    return;
+                    return false;
                 }
             }
 
             onSuccessed?.Invoke();
+
+            return true;
         }
 
         public void RequestSettings() {

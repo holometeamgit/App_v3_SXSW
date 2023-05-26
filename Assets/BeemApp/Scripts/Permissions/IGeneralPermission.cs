@@ -28,6 +28,6 @@ namespace Beem.Permissions {
         /// </summary>
         /// <param name="onSuccessed"></param>
         /// <param name="onFailed"></param>
-        void RequestAccess(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed);
+        bool RequestAccess(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed);
     }
 }

@@ -32,11 +32,11 @@ namespace Beem.Permissions {
             return resultPermission;
         }
 
-        public void RequestAccess(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed) {
-            RequestAccessAsync(devicePermissions, onSuccessed, onFailed);
+        public bool RequestAccess(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed) {
+            return RequestAccessAsync(devicePermissions, onSuccessed, onFailed).Result;
         }
 
-        private async void RequestAccessAsync(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed) {
+        private async Task<bool> RequestAccessAsync(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed) {
 
             string[] tempPermissions = new string[devicePermissions.Length];
             for (int i = 0; i < devicePermissions.Length; i++) {
@@ -47,10 +47,11 @@ namespace Beem.Permissions {
             await Task.Delay(DELAY);
             if (!HasAccesses(devicePermissions)) {
                 onFailed?.Invoke();
-                return;
+                return false;
             }
 
             onSuccessed?.Invoke();
+            return true;
         }
 
         public void RequestSettings() {
