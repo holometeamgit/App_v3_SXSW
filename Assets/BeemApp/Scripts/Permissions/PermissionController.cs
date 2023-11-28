@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using VoxelBusters.EssentialKit;
 
 namespace Beem.Permissions {
 
@@ -73,14 +74,22 @@ namespace Beem.Permissions {
         /// <param name="onFailed"></param>
         public void CheckAccesses(DevicePermissions[] devicePermissions, Action onSuccessed, Action onFailed = null) {
 
-            if (HasAccesses(devicePermissions)) {
+            var cameraAccess = MediaServices.GetCameraAccessStatus();
+
+            if (cameraAccess != CameraAccessStatus.Authorized) {
+                MediaServices.RequestCameraAccess(callback: (result, error) => {
+                    Debug.Log("Request for camera access finished.");
+                    Debug.Log("Camera access status: " + result.AccessStatus);
+                });
+            }
+
+                if (HasAccesses(devicePermissions)) {
                 onSuccessed.Invoke();
                 return;
             }
 
             if (!RequestComplete) {
-                _permissionGranter.RequestAccess(devicePermissions, onSuccessed, onFailed);
-                RequestComplete = true;
+                _permissionGranter.RequestAccess(devicePermissions, onSuccessed, onFailed, OnRequestCompleted);
                 return;
             }
 
@@ -93,6 +102,10 @@ namespace Beem.Permissions {
                 }
             }); ;
 
+        }
+
+        private void OnRequestCompleted() {
+            RequestComplete = true;
         }
 
         private string AccessesStrings(DevicePermissions[] devicePermissions) {
