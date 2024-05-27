@@ -7,19 +7,19 @@ using Zenject;
 /// </summary>
 public class ControllerInstaller : MonoInstaller {
     public override void InstallBindings() {
-        Container.BindInterfacesAndSelfTo<WebRequestHandler>().FromComponentInHierarchy(false).AsSingle();
-        Container.BindInterfacesAndSelfTo<AccountManager>().FromComponentInHierarchy(false).AsSingle();
-        Container.BindInterfacesAndSelfTo<AuthController>().FromComponentInHierarchy(false).AsSingle();
-        Container.BindInterfacesAndSelfTo<UserWebManager>().FromComponentInHierarchy(false).AsSingle();
-        Container.BindInterfacesAndSelfTo<HologramHandler>().FromComponentInHierarchy(false).AsSingle();
-        Container.BindInterfacesAndSelfTo<AgoraController>().FromComponentInHierarchy(false).AsSingle();
-        Container.BindInterfacesAndSelfTo<PurchaseManager>().FromComponentInHierarchy(false).AsSingle();
-        Container.BindInterfacesAndSelfTo<AgoraRTMChatController>().FromComponentInHierarchy(false).AsSingle();
-        Container.BindInterfacesAndSelfTo<SecondaryServerCalls>().FromComponentInHierarchy(false).AsSingle();
-        Container.BindInterfacesAndSelfTo<AgoraRequests>().FromComponentInHierarchy(false).AsSingle();
-        Container.BindInterfacesAndSelfTo<IAPController>().FromComponentInHierarchy(false).AsSingle();
-        Container.BindInterfacesAndSelfTo<PurchasesSaveManager>().FromComponentInHierarchy(false).AsSingle();
-        Container.BindInterfacesAndSelfTo<PnlStreamMLCameraView>().FromComponentInHierarchy(true).AsSingle();
+        Container.BindInterfacesAndSelfTo<WebRequestHandler>().FromComponentInHierarchy(false).AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<AccountManager>().FromComponentInHierarchy(false).AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<AuthController>().FromComponentInHierarchy(false).AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<UserWebManager>().FromComponentInHierarchy(false).AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<HologramHandler>().FromComponentInHierarchy(false).AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<AgoraController>().FromComponentInHierarchy(false).AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<PurchaseManager>().FromComponentInHierarchy(false).AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<AgoraRTMChatController>().FromComponentInHierarchy(false).AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<SecondaryServerCalls>().FromComponentInHierarchy(false).AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<AgoraRequests>().FromComponentInHierarchy(false).AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<IAPController>().FromComponentInHierarchy(false).AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<PurchasesSaveManager>().FromComponentInHierarchy(false).AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<PnlStreamMLCameraView>().FromComponentInHierarchy(true).AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<PnlViewingExperience>().FromComponentInHierarchy(true).AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<SharingOnViewCntroller>().FromComponentInHierarchy(true).AsSingle().NonLazy();
 

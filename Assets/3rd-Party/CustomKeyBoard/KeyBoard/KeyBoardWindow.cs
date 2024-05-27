@@ -1,8 +1,6 @@
-using Mopsicus.Plugins;
-using System;
 using System.Collections.Generic;
+using UMI;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Beem.KeyBoard {
@@ -83,7 +81,7 @@ namespace Beem.KeyBoard {
             _keyBoardPositionView.UpdatePosition(isShown, height);
 
             if (isShown) {
-                MobileInputField.SetRectNative();
+               // MobileInputField.SetRectNative();
             }
         }
 

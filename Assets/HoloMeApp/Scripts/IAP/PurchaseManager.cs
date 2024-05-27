@@ -18,16 +18,16 @@ public class PurchaseManager : MonoBehaviour {
     [SerializeField] GameObject backgroudGO;
 
     StreamJsonData.Data streamData;
-    private WebRequestHandler _webRequestHandler;
-    private IAPController _iapController;
-    private PurchasesSaveManager _purchasesSaveManager;
+    [Inject] private WebRequestHandler _webRequestHandler;
+    [Inject] private IAPController _iapController;
+    [Inject] private PurchasesSaveManager _purchasesSaveManager;
 
-    [Inject]
-    public void Construct(WebRequestHandler webRequestHandler, IAPController iapController, PurchasesSaveManager purchasesSaveManager) {
-        _webRequestHandler = webRequestHandler;
-        _iapController = iapController;
-        _purchasesSaveManager = purchasesSaveManager;
-    }
+    // [Inject]
+    // public void Construct(WebRequestHandler webRequestHandler, IAPController iapController, PurchasesSaveManager purchasesSaveManager) {
+    //     _webRequestHandler = webRequestHandler;
+    //     _iapController = iapController;
+    //     _purchasesSaveManager = purchasesSaveManager;
+    // }
 
     public void SetPurchaseStreamData(StreamJsonData.Data data) {
         streamData = data;

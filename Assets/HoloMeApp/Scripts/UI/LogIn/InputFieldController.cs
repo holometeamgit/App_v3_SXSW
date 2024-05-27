@@ -1,13 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UMI;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
-using System;
-using Mopsicus.Plugins;
-using System.Linq;
 
 public class InputFieldController : MonoBehaviour {
     public bool IsClearOnDisable = true;

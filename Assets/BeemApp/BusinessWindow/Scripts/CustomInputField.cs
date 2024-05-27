@@ -1,11 +1,6 @@
-using Mopsicus.Plugins;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using UMI;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 
 /// <summary>
@@ -52,7 +47,7 @@ public class CustomInputField : MonoBehaviour {
     }
 
     private void Update() {
-        _mobileInputField.SetRectNative();
+        // _mobileInputField.SetRectNative();
     }
 
     private void OnMobileFocus(bool focus) {

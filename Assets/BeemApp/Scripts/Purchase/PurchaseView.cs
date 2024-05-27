@@ -13,12 +13,12 @@ public class PurchaseView : MonoBehaviour {
     [SerializeField]
     private UnityEvent onPurchasedSuccess;
 
-    private PurchaseManager _purchaseManager;
+    [Inject] private PurchaseManager _purchaseManager;
 
-    [Inject]
-    public void Construct(PurchaseManager purchaseManager) {
-        _purchaseManager = purchaseManager;
-    }
+    // [Inject]
+    // public void Construct(PurchaseManager purchaseManager) {
+    //     _purchaseManager = purchaseManager;
+    // }
 
     private void OnEnable() {
         if (_purchaseManager != null) {
