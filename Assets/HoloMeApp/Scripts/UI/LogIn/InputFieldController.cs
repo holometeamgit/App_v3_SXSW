@@ -4,6 +4,11 @@ using TMPro;
 using UMI;
 using UnityEngine.Events;
 
+public class MobileInputFieldAdapter : MobileInputField {
+    private InputFieldController _inputFieldController;
+}
+
+
 public class InputFieldController : MonoBehaviour {
     public bool IsClearOnDisable = true;
     public bool IsLowercase;
@@ -16,14 +21,19 @@ public class InputFieldController : MonoBehaviour {
     [SerializeField]
     InputField inputField;
 
-    [SerializeField]
-    private MobileInputField _mobileInputField;
-
-    public MobileInputField MobileInputField {
-        get {
-            return _mobileInputField;
-        }
-    }
+    public InputField MobileInputField => inputField;
+    
+    // [SerializeField]
+    // private MobileInputField _mobileInputField;
+    //
+    // public MobileInputField MobileInputField {
+    //     get {
+    //         if (_mobileInputField == null) {
+    //             _mobileInputField = GetComponent<MobileInputField>();
+    //         }
+    //         return _mobileInputField;
+    //     }
+    // }
 
     [SerializeField]
     TMP_Text warningMsgText;
@@ -43,18 +53,18 @@ public class InputFieldController : MonoBehaviour {
 
     public string text {
         get {
-            if (_mobileInputField != null && _mobileInputField.InputField != null) {
-                return _mobileInputField.Text;
-            } else {
+            // if (_mobileInputField != null && _mobileInputField.InputField != null) {
+            //     return _mobileInputField.Text;
+            // } else {
                 return inputField.text;
-            }
+            //}
         }
         set {
-            if (_mobileInputField != null && _mobileInputField.InputField != null) {
-                _mobileInputField.Text = value;
-            } else {
+            // if (_mobileInputField != null && _mobileInputField.InputField != null) {
+            //     _mobileInputField.Text = value;
+            // } else {
                 inputField.text = value;
-            }
+            // }
         }
     }
 
@@ -66,9 +76,9 @@ public class InputFieldController : MonoBehaviour {
     private void Awake() {
         inputField.onEndEdit.AddListener(DoOnEndEditPassword);
         inputField.onValueChanged.AddListener(OnValueChanged);
-        if (_mobileInputField != null) {
-            _mobileInputField.OnReturnPressedEvent.AddListener(OnReturn);
-        }
+        // if (_mobileInputField != null) {
+        //     _mobileInputField.OnReturnPressedEvent.AddListener(OnReturn);
+        // }
         if (isEmail) {
             inputField.contentType = InputField.ContentType.EmailAddress;
         }
@@ -163,7 +173,7 @@ public class InputFieldController : MonoBehaviour {
     }
 
     private void OnValueChanged(string value) {
-        onValueChanged.Invoke();
+       //  onValueChanged.Invoke();
     }
 
     private void OnReturn() {
@@ -173,9 +183,9 @@ public class InputFieldController : MonoBehaviour {
     private void OnDestroy() {
         inputField.onEndEdit.RemoveListener(DoOnEndEditPassword);
         inputField.onValueChanged.RemoveListener(OnValueChanged);
-        if (_mobileInputField != null) {
-            _mobileInputField.OnReturnPressedEvent.RemoveListener(OnReturn);
-        }
+        // if (_mobileInputField != null) {
+        //     _mobileInputField.OnReturnPressedEvent.RemoveListener(OnReturn);
+        // }
     }
 
     private void OnDisable() {

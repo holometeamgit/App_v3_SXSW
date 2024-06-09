@@ -37,7 +37,7 @@ public class PnlChangeUsername : MonoBehaviour {
     }
 
     private void UpdateUserDataCallBack() {
-        usernameInputField.MobileInputField.gameObject.SetActive(false);
+        usernameInputField.MobileInputField?.gameObject.SetActive(false);
         WarningConstructor.ActivateSingleButton(" ", "Username has been successfully updated", "Continue", () => { ChangeUserNameToSettings(); usernameInputField.MobileInputField.gameObject.SetActive(true); });
     }
 

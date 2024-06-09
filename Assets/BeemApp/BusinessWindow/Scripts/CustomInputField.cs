@@ -47,7 +47,7 @@ public class CustomInputField : MonoBehaviour {
     }
 
     private void Update() {
-        // _mobileInputField.SetRectNative();
+        _mobileInputField.SetRectNative();
     }
 
     private void OnMobileFocus(bool focus) {

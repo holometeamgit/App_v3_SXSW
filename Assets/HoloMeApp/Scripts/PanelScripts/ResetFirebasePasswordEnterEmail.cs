@@ -40,7 +40,7 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     }
 
     private void ShowWarning() {
-        emailInputField.MobileInputField.gameObject.SetActive(false);
+        emailInputField.MobileInputField?.gameObject.SetActive(false);
         WarningConstructor.ActivateDoubleButton(null,
             string.Format("Changing a password associated with a Facebook account will create login issues with your Beem account."),
             "Continue",
@@ -54,7 +54,7 @@ public class ResetFirebasePasswordEnterEmail : MonoBehaviour {
     }
 
     private void MsgSentCallBack() {
-        emailInputField.MobileInputField.gameObject.SetActive(false);
+        emailInputField.MobileInputField?.gameObject.SetActive(false);
         WarningConstructor.ActivateSingleButton("Change password",
             string.Format("Password change information has been sent to email {0}", emailInputField.text),
             "Continue",

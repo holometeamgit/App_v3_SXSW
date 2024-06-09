@@ -14,6 +14,8 @@ namespace Beem.KeyBoard {
         [SerializeField]
         private int keyBoardHeightAndroid = 800;
 
+        public RectTransform RectTransform => _rectTransform;
+
         /// <summary>
         /// Update Keyboard Position
         /// </summary>

@@ -23,7 +23,8 @@ namespace Beem.KeyBoard {
         private void Awake() {
             onShow += Show;
             onHide += Hide;
-            // MobileInput.OnShowKeyboard += OnShowKeyboard;
+            
+            MobileInput.OnKeyboardAction += OnShowKeyboard;
         }
 
         private void OnShowKeyboard(bool isShown, int height) {
@@ -85,7 +86,7 @@ namespace Beem.KeyBoard {
         private void OnDestroy() {
             onShow -= Show;
             onHide -= Hide;
-           //MobileInput.OnShowKeyboard -= OnShowKeyboard;
+            MobileInput.OnKeyboardAction -= OnShowKeyboard;
         }
     }
 }
